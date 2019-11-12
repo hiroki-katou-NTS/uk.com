@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.hr.develop.dom.databeforereflecting;
 
+import java.math.BigInteger;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -98,16 +100,16 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public String select_code_09;
 	public String select_code_10;
 
-	public Integer select_id_01;
-	public Integer select_id_02;
-	public Integer select_id_03;
-	public Integer select_id_04;
-	public Integer select_id_05;
-	public Integer select_id_06;
-	public Integer select_id_07;
-	public Integer select_id_08;
-	public Integer select_id_09;
-	public Integer select_id_10;
+	public BigInteger select_id_01;
+	public BigInteger select_id_02;
+	public BigInteger select_id_03;
+	public BigInteger select_id_04;
+	public BigInteger select_id_05;
+	public BigInteger select_id_06;
+	public BigInteger select_id_07;
+	public BigInteger select_id_08;
+	public BigInteger select_id_09;
+	public BigInteger select_id_10;
 
 	public String select_name_01; // retirementCategory - 退職区分
 	public String select_name_02; // retirementReasonCtgName1 - 退職理由区分1_名称
@@ -145,9 +147,9 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 			Float num_13, Float num_14, Float num_15, Float num_16, Float num_17, Float num_18, Float num_19,
 			Float num_20, String select_code_01, String select_code_02, String select_code_03, String select_code_04,
 			String select_code_05, String select_code_06, String select_code_07, String select_code_08,
-			String select_code_09, String select_code_10, Integer select_id_01, Integer select_id_02,
-			Integer select_id_03, Integer select_id_04, Integer select_id_05, Integer select_id_06,
-			Integer select_id_07, Integer select_id_08, Integer select_id_09, Integer select_id_10,
+			String select_code_09, String select_code_10, BigInteger select_id_01, BigInteger select_id_02,
+			BigInteger select_id_03, BigInteger select_id_04, BigInteger select_id_05, BigInteger select_id_06,
+			BigInteger select_id_07, BigInteger select_id_08, BigInteger select_id_09, BigInteger select_id_10,
 			String select_name_01, String select_name_02, String select_name_03, String select_name_04,
 			String select_name_05, String select_name_06, String select_name_07, String select_name_08,
 			String select_name_09, String select_name_10, String str_01, String str_02, String str_03, String str_04,
@@ -275,10 +277,10 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 			Float num_12, Float num_13, Float num_14, Float num_15, Float num_16, Float num_17, Float num_18,
 			Float num_19, Float num_20, String select_code_01, String select_code_02, String select_code_03,
 			String select_code_04, String select_code_05, String select_code_06, String select_code_07,
-			String select_code_08, String select_code_09, String select_code_10, Integer select_id_01,
-			Integer select_id_02, Integer select_id_03, Integer select_id_04, Integer select_id_05,
-			Integer select_id_06, Integer select_id_07, Integer select_id_08, Integer select_id_09,
-			Integer select_id_10, String select_name_01, String select_name_02, String select_name_03,
+			String select_code_08, String select_code_09, String select_code_10, BigInteger select_id_01,
+			BigInteger select_id_02, BigInteger select_id_03, BigInteger select_id_04, BigInteger select_id_05,
+			BigInteger select_id_06, BigInteger select_id_07, BigInteger select_id_08, BigInteger select_id_09,
+			BigInteger select_id_10, String select_name_01, String select_name_02, String select_name_03,
 			String select_name_04, String select_name_05, String select_name_06, String select_name_07,
 			String select_name_08, String select_name_09, String select_name_10, String str_01, String str_02,
 			String str_03, String str_04, String str_05, String str_06, String str_07, String str_08, String str_09,
