@@ -357,3 +357,10 @@ html {
 #id-vertical-middle>*{
 	vertical-align: middle;
 }
+.fixed-flex-layout-left {
+	width: 70px;
+}
+.label.warning {
+	width: 90px !important;
+	padding: 15px 3px !important;
+}
