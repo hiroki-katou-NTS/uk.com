@@ -88,7 +88,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		if (x == 0) {
 			dto.setShowsGroupCompany(false);
 			return dto;
-		} else {
+		} 
 			// アルゴリズム「使用している共通マスタの取得」を実行する --- (thực hiện thuật toán [lấy
 			// CommonMaster đang sử dụng])
 			/*
@@ -106,10 +106,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 					.map(item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(),
 							item.getCommonMasterItemName().v()))
 					.collect(Collectors.toList()));
-
 			return dto;
-
-		}
 	}
 
 	/*
