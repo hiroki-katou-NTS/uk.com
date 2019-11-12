@@ -659,7 +659,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 50,
+                    windowXOccupation: 20,
                     windowYOccupation: 230,
                     manipulatorId: self.employeeIdLogin,
                     manipulatorKey: "empId",
@@ -702,9 +702,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         setWidth(): any {
-            $(".ex-header-detail").width(window.innerWidth - 287);
-            $(".ex-body-detail").width(window.innerWidth - 270);
-            $("#extable").width(window.innerWidth - 270); 
+            $(".ex-header-detail").width(window.innerWidth - 277);
+            $(".ex-body-detail").width(window.innerWidth - 253);
+            $("#extable").width(window.innerWidth - 253); 
         }
 
         /**

@@ -170,6 +170,10 @@ public class ToppageStartupProcessMobFinder {
 						spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
 			}
 		}
+		Closure closure = closureService.getClosureDataByEmployee(AppContexts.user().employeeId(), GeneralDate.today());
+		toppageStartupDto.closureID = closure.getClosureId().value;
+		toppageStartupDto.closureYearMonth = closure.getClosureMonth().getProcessingYm().v();
+		
 		return toppageStartupDto;
 
 	}
