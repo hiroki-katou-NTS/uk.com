@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.CommonMaterItemDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -34,13 +35,13 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	/** The repository. */
 	@Inject
 	private EmploymentRepository repository;
-	
+
 	@Inject
 	private IGroupCommonMaster groupCommonMaster;
-	
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findAll()
 	 */
 	public List<EmploymentDto> findAll() {
@@ -53,7 +54,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 
 		// Get All Employment
 		List<Employment> empList = this.repository.findAll(companyId);
-		
+
 		// Save to Memento
 		return empList.stream().map(employment -> {
 			EmploymentDto dto = new EmploymentDto();
@@ -62,10 +63,12 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
 	 */
 	@Override
 	public EmploymentFindDto findByCode(String employmentCode) {
@@ -80,44 +83,50 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		dto.setName(employment.get().getEmploymentName().v());
 		dto.setEmpExternalCode(employment.get().getEmpExternalCode());
 		dto.setMemo(employment.get().getMemo());
-		
+
 		int x = 1;
-		if( x == 0){
+		if (x == 0) {
 			dto.setShowsGroupCompany(false);
-			return dto;	
-		}
-		else {	
-			//アルゴリズム「使用している共通マスタの取得」を実行する  --- (thực hiện thuật toán [lấy CommonMaster đang sử dụng])
-			/*[Input]
-					・契約コード//(contract code)
-					・共通マスタID = M000031//(common master ID=M000031)
-					・会社ID//(company ID)
-					・基準日 = システム日付//(baseDate= System Date)
-			 		*/			
-			GroupCommonMaster data =groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId, GeneralDate.today());
-			if (data.getCommonMasterItems().isEmpty()){
+			return dto;
+		} else {
+			// アルゴリズム「使用している共通マスタの取得」を実行する --- (thực hiện thuật toán [lấy
+			// CommonMaster đang sử dụng])
+			/*
+			 * [Input] ・契約コード//(contract code) ・共通マスタID = M000031//(common
+			 * master ID=M000031) ・会社ID//(company ID) ・基準日 = システム日付//(baseDate=
+			 * System Date)
+			 */
+			GroupCommonMaster data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
+					GeneralDate.today());
+			if (data.getCommonMasterItems().isEmpty()) {
 				throw new BusinessException("Msg_1580");
 			}
 			dto.setShowsGroupCompany(true);
-			dto.setCommonMasterName(data.getCommonMasterName().v());
-			dto.setCommonMasterItems(data.getCommonMasterItems());
-			
+			dto.setCommonMasterItems(data.getCommonMasterItems().stream()
+					.map(item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(),
+							item.getCommonMasterItemName().v()))
+					.collect(Collectors.toList()));
+
 			return dto;
 
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder#findByCodes(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder#findByCodes(
+	 * java.util.List)
 	 */
 	@Override
 	public List<EmploymentDto> findByCodes(List<String> empCodes) {
 		// Get Company Id
 		String companyId = AppContexts.user().companyId();
-		
+
 		// Get All Employment
 		List<Employment> empList = this.repository.findByEmpCodes(companyId, empCodes);
-		
+
 		// Save to Memento
 		return empList.stream().map(employment -> {
 			EmploymentDto dto = new EmploymentDto();
@@ -126,34 +135,36 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder#findByCodesWithNull(java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder#
+	 * findByCodesWithNull(java.util.List)
 	 */
 	@Override
 	public List<EmploymentDto> findByCodesWithNull(List<String> empCodes) {
 		// Get Company Id
-		
+
 		List<EmploymentDto> result = new ArrayList<EmploymentDto>();
-		
+
 		String companyId = AppContexts.user().companyId();
-		if(CollectionUtil.isEmpty(empCodes)){
+		if (CollectionUtil.isEmpty(empCodes)) {
 			return result;
 		}
-		
-		empCodes.forEach(code->{
+
+		empCodes.forEach(code -> {
 			Optional<Employment> optEmp = this.repository.findEmployment(companyId, code);
-			String itemName ;
-			if(optEmp.isPresent()){
+			String itemName;
+			if (optEmp.isPresent()) {
 				itemName = optEmp.get().getEmploymentName().v();
-			}else{
-				itemName = code+ I18NText.getText("KMF004_163");
+			} else {
+				itemName = code + I18NText.getText("KMF004_163");
 			}
-			
+
 			result.add(new EmploymentDto(code, itemName));
 		});
 		return result;
 	}
-	
-	
+
 }

@@ -42,9 +42,9 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 
 	private boolean showsGroupCompany;
 	
-	private List<CommonMasterItem> commonMasterItems;
+	private List<CommonMaterItemDto> commonMasterItems;
 	
-	private String commonMasterName;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
