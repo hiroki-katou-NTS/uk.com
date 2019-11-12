@@ -38,7 +38,7 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
 	public Integer status;
 	
 	@Column(name = "LAST_EXEC_DATETIME")
-	private GeneralDateTime lastExecDateTime;
+	public GeneralDateTime lastExecDateTime;
 	
 	@Column(name = "LAST_END_EXEC_DATETIME")
 	public GeneralDateTime lastEndExecDateTime;
