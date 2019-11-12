@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.hr.shared.infra.entity.medicalhistory;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Basic;
@@ -11,24 +12,25 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author laitv
  */
 
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "PPEDT_JYUSIN_HIST_ITEM")
-public class PpedtMedicalHisItem {
+public class PpedtMedicalHisItem  extends UkJpaEntity implements Serializable{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public PpedtMedicalHisItemPk key;
+	public PpedtMedicalHisItemPk PpedtMedicalHisItemPk;
 
 	// 会社ID
 	@Basic(optional = true)
@@ -284,5 +286,10 @@ public class PpedtMedicalHisItem {
 	@Basic(optional = true)
 	@Column(name = "J_RESULT")
 	public String resultNote;
+
+	@Override
+	protected Object getKey() {
+		return PpedtMedicalHisItemPk;
+	}
 
 }
