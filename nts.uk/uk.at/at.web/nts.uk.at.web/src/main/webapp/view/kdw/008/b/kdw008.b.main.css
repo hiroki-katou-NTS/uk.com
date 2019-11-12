@@ -52,13 +52,12 @@
 	margin-top: 1px;
 }
 
-#swap-list2-grid1_horizontalScrollContainer {
+#swap-list2-grid1_horizontalScrollContainer, #swap-list-grid1_horizontalScrollContainer,
+#swap-list3-grid1_horizontalScrollContainer {
+	height: 0px !important;
 	overflow: hidden !important;
 }
 
-#swap-list3-grid1_horizontalScrollContainer {
-	overflow: hidden !important;
-}
 
 #swap-list2-grid1_displayContainer, #swap-list2-grid2_displayContainer,
 	#swap-list2-grid1_scrollContainer, #swap-list2-grid2_scrollContainer {
