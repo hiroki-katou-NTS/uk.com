@@ -1,18 +1,14 @@
-module nts.uk.pr.view.qui001.a.viewmodel {
+module nts.uk.pr.view.qui004.a.viewmodel {
 
-    import model = nts.uk.pr.view.qui001.share.model;
     import dialog = nts.uk.ui.dialog;
-    import errors = nts.uk.ui.errors;
-    import block = nts.uk.ui.block;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import JapanDateMoment = nts.uk.time.JapanDateMoment;
+    import model = nts.uk.pr.view.qui004.share.model;
 
     export class ScreenModel {
 
-        submittedNames: KnockoutObservableArray<model.ItemModel>;
-        changedName: KnockoutObservableArray<model.ItemModel>;
+        item_list: KnockoutObservableArray<model.ItemModel>;
+        item_list_one: KnockoutObservableArray<model.ItemModel>;
+        item_list_two: KnockoutObservableArray<model.ItemModel>;
+        item_list_three: KnockoutObservableArray<model.ItemModel>;
 
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
@@ -23,10 +19,10 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        /*submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
+        submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
+        outputOrders: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSocialInsurOutOrder());
         changedName: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getChangedName());
-        newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());*/
-
+        newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());
         selectedCode: KnockoutObservable<any> = ko.observable(1);
         submittedName: KnockoutObservable<any> = ko.observable(0);
 
@@ -45,15 +41,28 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         disableSelection : KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
+        /*socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
+            officeInformation: 0,
+            printPersonNumber: 3,
+            businessArrSymbol: 0,
+            outputOrder: 1,
+            submittedName: 0,
+            insuredNumber: 0,
+            fdNumber: null,
+            textPersonNumber: 0,
+            outputFormat: 0,
+            lineFeedCode: 0
+        }));
+*/
         constructor() {
             let self = this;
 
-            self.submittedNames = ko.observableArray([
+            self.item_list = ko.observableArray([
                 new model.ItemModel(0, '基本給'),
                 new model.ItemModel(1, '役職手当')
             ]);
 
-            /*self.item_list_one = ko.observableArray([
+            self.item_list_one = ko.observableArray([
                 new model.ItemModel(0, '個人名'),
                 new model.ItemModel(1, '届出氏名')
             ]);
@@ -61,9 +70,9 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             self.item_list_two = ko.observableArray([
                 new model.ItemModel(0, '印字する'),
                 new model.ItemModel(1, '印字しない')
-            ]);*/
+            ]);
 
-            self.changedName = ko.observableArray([
+            self.item_list_three = ko.observableArray([
                 new model.ItemModel(0, '付加する'),
                 new model.ItemModel(1, '付加しない'),
                 new model.ItemModel(2, 'e-Gov')
@@ -113,6 +122,27 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
+            /*service.getSocialInsurNotiCreateSet().done(function(data: ISocInsurNotiCreSet) {
+                if(data != null) {
+                    self.socInsurNotiCreSet().officeInformation(data.officeInformation);
+                    self.socInsurNotiCreSet().printPersonNumber(data.printPersonNumber);
+                    self.socInsurNotiCreSet().businessArrSymbol(data.businessArrSymbol);
+                    self.socInsurNotiCreSet().outputOrder(data.outputOrder);
+                    self.socInsurNotiCreSet().submittedName(data.submittedName);
+                    self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
+                    self.socInsurNotiCreSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
+                    self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
+                    self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
+                    self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                } else {
+                    self.screenMode(model.SCREEN_MODE.NEW);
+                }
+            }).fail(function(result) {
+                dialog.alertError(result.errorMessage);
+                dfd.reject();
+            });
+*/
             dfd.resolve();
             return dfd.promise();
         }
@@ -217,44 +247,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let self = this;
             return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
         }
-
-        exportPDF() {
-            let self = this;
-            if (self.validate()) {
-                return;
-            }
-            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
-            let data = {
-                empInsReportSettingExport: {
-                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
-                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
-                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
-                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
-                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
-                },
-            };
-            nts.uk.ui.block.grayout();
-            service.exportPDF(data).done(function () {
-            }).fail(function (error) {
-                nts.uk.ui.dialog.alertError(error);
-            }).always(function () {
-                nts.uk.ui.block.clear();
-            });
-        }
-
-        exportCSV() {
-
-        }
-
-        validate() {
-            errors.clearAll();
-            $(".nts-input").trigger("validate");
-            return errors.hasError();
-        }
-
-        getSelectedEmpIds(selectedCode: Array, employeeList: Array) {
-            return _.map(_.filter(employeeList, e => _.includes(selectedCode, e)), e => e.id);
-        }
     }
 
     export interface GroupOption {
@@ -341,6 +333,45 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         code: string;
         isAlreadySetting: boolean;
     }
+
+    /*export interface ISocInsurNotiCreSet {
+        officeInformation: number;
+        printPersonNumber: number;
+        businessArrSymbol: number;
+        outputOrder: number;
+        submittedName: number;
+        insuredNumber: number;
+        fdNumber: string;
+        textPersonNumber:number;
+        outputFormat: number;
+        lineFeedCode: number;
+    }*/
+
+    /*export class SocInsurNotiCreSet {
+        officeInformation: KnockoutObservable<number>;
+        printPersonNumber: KnockoutObservable<number>;
+        businessArrSymbol: KnockoutObservable<number>;
+        outputOrder: KnockoutObservable<number>;
+        submittedName: KnockoutObservable<number>;
+        insuredNumber: KnockoutObservable<number>;
+        fdNumber: KnockoutObservable<string>;
+        textPersonNumber: KnockoutObservable<number>;
+        outputFormat: KnockoutObservable<number>;
+        lineFeedCode: KnockoutObservable<number>;
+
+        constructor(params: ISocInsurNotiCreSet) {
+            this.officeInformation = ko.observable(params.officeInformation);
+            this.printPersonNumber = ko.observable(params.printPersonNumber);
+            this.businessArrSymbol = ko.observable(params.businessArrSymbol);
+            this.outputOrder = ko.observable(params.outputOrder);
+            this.submittedName = ko.observable(params.submittedName);
+            this.insuredNumber = ko.observable(params.insuredNumber);
+            this.fdNumber = ko.observable(params ? params.fdNumber : null);
+            this.textPersonNumber = ko.observable(params ? params.textPersonNumber : null);
+            this.outputFormat = ko.observable(params ? params.outputFormat : null);
+            this.lineFeedCode = ko.observable(params ? params.lineFeedCode : null);
+        }
+    }*/
 
     export class Employee {
         id: string;
