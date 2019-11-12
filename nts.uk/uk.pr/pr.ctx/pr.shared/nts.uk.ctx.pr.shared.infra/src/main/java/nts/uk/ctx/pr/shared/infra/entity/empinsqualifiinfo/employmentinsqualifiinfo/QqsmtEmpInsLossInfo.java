@@ -33,35 +33,35 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
     /**
      * 労働時間
      */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "WORKING_TIME")
     public int workingTime;
 
     /**
      * 喪失原因
      */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CAUSE_OF_LOSS_ATR")
     public int causeOfLossAtr;
 
     /**
      * 雇用保険喪失原因
      */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CAUSE_OF_LOST_EMP_INS")
     public String causeOfLostEmpIns;
 
     /**
      * 補充予定
      */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "SCHE_REPLEN_ATR")
     public int scheReplenAtr;
 
     /**
      * 離職票交付希望
      */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "REQ_ISSU_ATR")
     public int reqIssuAtr;
 
