@@ -138,3 +138,7 @@
 #gridListEmployeesContent {
     height: 300px !important;
 }
+
+#gridListEmployeesContentIcm007 .ui-iggrid tbody td {
+	white-space: nowrap;
+}
