@@ -43,7 +43,7 @@ export class CdlS04AComponent extends Vue {
                         name: ''
                     });
                 }
-                self.allData = _.sortBy(result.data, ['code']);
+                self.allData = result.data;
                 self.data = self.allData;
 
                 if (!_.isEmpty(self.params.selectedCode) || _.find(self.allData, (item) => item.code == self.params.selectedCode) != undefined) {
