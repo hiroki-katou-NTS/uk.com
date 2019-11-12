@@ -29,6 +29,9 @@ public class EmployeeInformationExport {
 	/** The business name. */
 	String businessName; // ビジネスネーム
 
+	/** The business name Kana. */
+	String businessNameKana; // ビジネスネームカナ
+
 	/** The workplace. */
 	WorkplaceExport workplace; // 所属職場
 

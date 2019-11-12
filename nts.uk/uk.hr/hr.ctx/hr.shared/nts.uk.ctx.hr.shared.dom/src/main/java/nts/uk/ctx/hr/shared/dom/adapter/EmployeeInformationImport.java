@@ -2,8 +2,7 @@ package nts.uk.ctx.hr.shared.dom.adapter;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.hr.shared.dom.adapter.ClassificationImport;
-import nts.uk.ctx.hr.shared.dom.adapter.DepartmentImport;
+
 @Builder
 @Data
 public class EmployeeInformationImport {
@@ -15,6 +14,9 @@ public class EmployeeInformationImport {
 
 	/** The business name. */
 	String businessName; // ビジネスネーム
+
+	/** The business name Kana. */
+	String businessNameKana; // ビジネスネームカナ
 
 	/** The workplace. */
 	WorkplaceImport workplace; // 所属職場
@@ -35,12 +37,13 @@ public class EmployeeInformationImport {
 	Integer employmentCls; // 就業区分
 
 	public EmployeeInformationImport(String employeeId, String employeeCode, String businessName,
-			WorkplaceImport workplace, ClassificationImport classification, DepartmentImport department,
-			PositionImport position, EmploymentImport employment, Integer employmentCls) {
+			String businessNameKana, WorkplaceImport workplace, ClassificationImport classification,
+			DepartmentImport department, PositionImport position, EmploymentImport employment, Integer employmentCls) {
 		super();
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.businessName = businessName;
+		this.businessNameKana = businessNameKana;
 		this.workplace = workplace;
 		this.classification = classification;
 		this.department = department;

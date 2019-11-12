@@ -33,8 +33,8 @@ public class InterviewRecord extends AggregateRoot {
 	private String interviewRecordId;
 	/** 面談記録内容 **/
 	private List<InterviewRecordContent> listInterviewRecordContent;
-	/** サブ面談者 **/
-	private Optional<List<SubInterviewer>> listSubInterviewer;
+	/** Optional サブ面談者 **/
+	private List<SubInterviewer> listSubInterviewer;
 
 	public InterviewRecord(EmployeeId mainInterviewerSid, CompanyId cid, EmployeeId intervieweeSid,
 			InterviewCategory interviewCategory, GeneralDate interviewDate, String interviewRecordId,
@@ -48,7 +48,7 @@ public class InterviewRecord extends AggregateRoot {
 		this.interviewDate = interviewDate;
 		this.interviewRecordId = interviewRecordId;
 		this.listInterviewRecordContent = listInterviewRecordContent;
-		this.listSubInterviewer = Optional.ofNullable(listSubInterviewer);
+		this.listSubInterviewer = listSubInterviewer;
 	}
 
 	

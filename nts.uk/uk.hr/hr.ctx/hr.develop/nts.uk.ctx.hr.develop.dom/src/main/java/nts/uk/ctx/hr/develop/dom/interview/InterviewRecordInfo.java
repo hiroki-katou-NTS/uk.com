@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.develop.dom.interview;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -35,25 +36,10 @@ public class InterviewRecordInfo {
 	private Optional<String> employmentCd;
 	/** 雇用名称 **/
 	private Optional<String> employmentName;
-	public InterviewRecordInfo(String employeeID, String interviewRecordId, GeneralDate interviewDate,
-			String mainInterviewerEmployeeID, String employeeCD, String businessName, String businessNameKana,
-			String departmentCd, String departmentDisplayName, String positionCd, String positionName,
-			String employmentCd, String employmentName) {
-		super();
-		this.employeeID = employeeID;
-		this.interviewRecordId = interviewRecordId;
-		this.interviewDate = interviewDate;
-		this.mainInterviewerEmployeeID = mainInterviewerEmployeeID;
-		this.employeeCD = employeeCD;
-		this.businessName = Optional.ofNullable(businessName);
-		this.businessNameKana =  Optional.ofNullable(businessNameKana);
-		this.departmentCd =  Optional.ofNullable(departmentCd);
-		this.departmentDisplayName =  Optional.ofNullable(departmentDisplayName);
-		this.positionCd =  Optional.ofNullable(positionCd);
-		this.positionName =  Optional.ofNullable(positionName);
-		this.employmentCd =  Optional.ofNullable(employmentCd);
-		this.employmentName =  Optional.ofNullable(employmentName);
-	}
+	/** Optional サブ面談者 **/
+	private List<SubInterviewer> listSubInterviewer;
+		
+	
 	public void setDataByDepartment(boolean hasDepartment){
 		if(!hasDepartment){
 		 this.departmentCd = Optional.empty();
@@ -71,6 +57,29 @@ public class InterviewRecordInfo {
 			 this.employmentCd = Optional.empty();
 			 this.employmentName = Optional.empty();
 		}
-	} 
+	}
+	public InterviewRecordInfo(String employeeID, String interviewRecordId, GeneralDate interviewDate,
+			String mainInterviewerEmployeeID, String employeeCD, String businessName,
+			String businessNameKana, String departmentCd, String departmentDisplayName,
+			String positionCd, String positionName,String employmentCd,
+			String employmentName, List<SubInterviewer> listSubInterviewer) {
+		super();
+		this.employeeID = employeeID;
+		this.interviewRecordId = interviewRecordId;
+		this.interviewDate = interviewDate;
+		this.mainInterviewerEmployeeID = mainInterviewerEmployeeID;
+		this.employeeCD = employeeCD;
+		this.businessName = Optional.ofNullable(businessName);
+		this.businessNameKana = Optional.ofNullable(businessNameKana);
+		this.departmentCd =  Optional.ofNullable(departmentCd);
+		this.departmentDisplayName =  Optional.ofNullable(departmentDisplayName);
+		this.positionCd =  Optional.ofNullable(positionCd);
+		this.positionName =  Optional.ofNullable(positionName);
+		this.employmentCd =  Optional.ofNullable(employmentCd);
+		this.employmentName =  Optional.ofNullable(employmentName);
+		this.listSubInterviewer =  listSubInterviewer;
+	}
+	
+	
 	
 }

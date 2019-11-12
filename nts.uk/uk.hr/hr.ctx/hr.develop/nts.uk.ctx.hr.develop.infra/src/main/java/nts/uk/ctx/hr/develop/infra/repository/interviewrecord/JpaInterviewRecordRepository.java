@@ -1,12 +1,7 @@
 package nts.uk.ctx.hr.develop.infra.repository.interviewrecord;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,7 +17,6 @@ import nts.uk.ctx.hr.develop.dom.interview.InterviewRecordRepository;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInforAdapter;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
-import nts.uk.query.model.employee.EmployeeInformationQuery;
 @Stateless
 public class JpaInterviewRecordRepository extends JpaRepository implements InterviewRecordRepository{
 	
@@ -64,33 +58,52 @@ public class JpaInterviewRecordRepository extends JpaRepository implements Inter
 		List<EmployeeInformationImport> listImport = employeeInforAdapter.find(param);
 		//[Output] ---メイン面談者情報リスト = List<社員情報> 
 		//面談記録情報リストを生成する --- Tạo danh sách thông tin hồ sơ phỏng vấn
+		List<InterviewRecordInfo> listRecordInfo = createInterviewRecordInfo(param, listInterView, listImport);
+		if (listRecordInfo.isEmpty()) {
+			
+		} else {
+			
+		}
 		
-		InterviewRecordInfo recordInfo = new InterviewRecordInfo(employeeID, interviewRecordId, interviewDate,
-				mainInterviewerEmployeeID, employeeCD, businessName, businessNameKana, departmentCd,
-				departmentDisplayName, positionCd, positionName, employmentCd, employmentName);
 		
-		recordInfo.setDataByDepartment(department);
-		recordInfo.setDataByPosition(jobtitle);
-		recordInfo.setDataByEmployment(employment);
+		
+		
+		return null;
 	}
 
 	
 
-	public List<InterviewRecordInfo> createInterviewRecordInfo(List<InterviewRecord> listInterView  , List<EmployeeInformationImport> listImport ){
-		
+	private List<InterviewRecordInfo> createInterviewRecordInfo(EmployeeInfoQueryImport param, List<InterviewRecord> listInterView  , List<EmployeeInformationImport> listImport ){
 		List<InterviewRecordInfo> listData = new ArrayList<>();	
-		
 		for(InterviewRecord itemData :listInterView){
 			for(EmployeeInformationImport itemInfo : listImport){
 				if(itemData.getMainInterviewerSid().v().equals(itemInfo.getEmployeeId())){
+					// 面談記録情報リストを生成する
+					String departmentCode = null;
+					String departmentName = null;
+					String positionCode = null;
+					String positionName = null;
+					String employmentCd = null;
+					String employmentName =null;
+					if (!param.isToGetDepartment()) {
+						departmentCode = itemInfo.getDepartment().getDepartmentCode();
+						departmentName = itemInfo.getDepartment().getDepartmentName();
+					}
+					if(!param.isToGetPosition()){
+						positionCode = itemInfo.getPosition().getPositionCode();
+						positionName = itemInfo.getPosition().getPositionName();
+					}
+					if(!param.isToGetEmployment()){
+						employmentCd = itemInfo.getEmployment().getEmploymentCode();
+						employmentName = itemInfo.getEmployment().getEmploymentName();		
+					}
 					listData.add(new InterviewRecordInfo(itemData.getIntervieweeSid().v(), itemData.getInterviewRecordId(), itemData.getInterviewDate(),
-							itemData.getMainInterviewerSid().v(), itemInfo.getEmployeeCode(), itemInfo.getBusinessName(), null, itemInfo.getDepartment().getDepartmentCode(),
-							itemInfo.getDepartment().getDepartmentName(), itemInfo.getPosition().getPositionCode(), itemInfo.getPosition().getPositionName(), itemInfo.getEmployment().getEmploymentCode(), itemInfo.getEmployment().getEmploymentName()));
-				break;
+							itemData.getMainInterviewerSid().v(), itemInfo.getEmployeeCode(), itemInfo.getBusinessName(), itemInfo.getBusinessNameKana(), departmentCode, departmentName,
+							positionCode, positionName, employmentCd, employmentName,itemData.getListSubInterviewer()));
+					break;
 				}
 			}
 		}
 		return listData;
-		
 	}
 }
