@@ -32,40 +32,19 @@ import { KdwS03CComponent } from 'views/kdw/s03/c';
 })
 export class Kdws03AComponent extends Vue {
 
-    @Prop({ default: () => ({ 
-        screenMode: 0, 
-        closureID: 0, 
-        changePeriodAtr: true, 
-        displayFormat: 0, 
+    @Prop({ default: () => ({
+        screenMode: 0,
+        closureID: 0,
+        changePeriodAtr: true,
+        displayFormat: 0,
         targetEmployee: '',
         closureYM: 0,
         dateTarget: null,
         initClock: null,
         transitionDesScreen: null,
-        errorRefStartAtr: true 
+        errorRefStartAtr: true
     }) })
-    public readonly params: {
-        // 画面モード
-        screenMode: number, 
-        // 対象締め
-        closureID: number, 
-        // 期間を変更する
-        changePeriodAtr: boolean, 
-        // 表示形式
-        displayFormat: number, 
-        // 対象社員
-        targetEmployee: string,
-        // 対象年月
-        closureYM: number,
-        // 対象年月日
-        dateTarget: Date,
-        // 打刻初期値
-        initClock: any,
-        // 遷移元の画面
-        transitionDesScreen: any,
-        // エラー参照を起動する
-        errorRefStartAtr: boolean 
-    };
+    public readonly params: Params;
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
@@ -188,6 +167,8 @@ export class Kdws03AComponent extends Vue {
     public created() {
         if (this.$route.query.displayformat == '0' || this.$route.query.displayformat == '1') {
             this.displayFormat = this.$route.query.displayformat;
+        } else {
+            this.displayFormat = this.params.displayFormat;
         }
 
         if (this.displayFormat == '0') {
@@ -247,19 +228,20 @@ export class Kdws03AComponent extends Vue {
         self.$mask('show', { message: true });
 
         let param = {
-            changePeriodAtr: false,
+            changePeriodAtr: self.params.changePeriodAtr,
             screenMode: self.params.screenMode,
-            errorRefStartAtr: false,
+            errorRefStartAtr: self.params.errorRefStartAtr,
             initDisplayDate: null,
-            employeeID: self.selectedEmployee,
+            employeeID: self.selectedEmployee == '' ? self.params.targetEmployee : self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
+                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } :
+                (!_.isNil(self.params.dateTarget) ? { startDate: self.params.dateTarget, endDate: self.params.dateTarget } : null)),
             lstEmployee: [],
-            initClock: null,
+            initClock: self.params.initClock,
             displayFormat: self.displayFormat,
             displayDateRange: null,
-            transitionDesScreen: null,
+            transitionDesScreen: self.params.transitionDesScreen,
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -849,4 +831,27 @@ enum ClosureId {
     ClosureThree = 3,
     ClosureFour = 4,
     ClosureFive = 5,
+}
+
+interface Params {
+    // 画面モード
+    screenMode: number;
+    // 対象締め
+    closureID: number;
+    // 期間を変更する
+    changePeriodAtr: boolean;
+    // 表示形式
+    displayFormat: number;
+    // 対象社員
+    targetEmployee: string;
+    // 対象年月
+    closureYM: number;
+    // 対象年月日
+    dateTarget: Date;
+    // 打刻初期値
+    initClock: any;
+    // 遷移元の画面
+    transitionDesScreen: any;
+    // エラー参照を起動する
+    errorRefStartAtr: boolean;
 }
