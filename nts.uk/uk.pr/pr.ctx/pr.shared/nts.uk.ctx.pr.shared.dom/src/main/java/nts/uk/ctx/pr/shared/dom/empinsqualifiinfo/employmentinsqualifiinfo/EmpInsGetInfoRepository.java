@@ -16,6 +16,4 @@ public interface EmpInsGetInfoRepository {
 
     void update(EmpInsGetInfo domain);
 
-    void remove(String sid);
-
 }
