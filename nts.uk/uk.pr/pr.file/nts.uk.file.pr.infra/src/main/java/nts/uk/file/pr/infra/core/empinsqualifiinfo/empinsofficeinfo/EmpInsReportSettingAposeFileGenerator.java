@@ -151,11 +151,13 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
                 }
                 //A1_9
-                detachText(45, 466, element.getFullName() != null ? element.getFullName() : "", 28, paragraphs);
+                String fullName = element.getFullName() != null ? element.getFullName() : "";
+                detachText(45, 466, fullName, 28, paragraphs);
 
                 //A1_10
-                detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, paragraphs);
-
+                if(fullName.length() >= 29){
+                    detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, paragraphs);
+                 }
                 //A2_1
                 paragraphs.add(setValue(112, 362, element.getOldName() != null ? element.getOldName() : "", 9));
                 //A2_2
