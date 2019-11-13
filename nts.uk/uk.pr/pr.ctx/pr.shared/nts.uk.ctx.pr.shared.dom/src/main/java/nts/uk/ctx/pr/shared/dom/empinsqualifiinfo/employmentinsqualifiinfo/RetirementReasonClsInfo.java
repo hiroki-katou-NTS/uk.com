@@ -14,7 +14,7 @@ public class RetirementReasonClsInfo extends AggregateRoot{
     /**
      * 会社ID
      */
-    private String CID;
+    private String cId;
 
     /**
      * 退職解雇理由区分コード
@@ -28,8 +28,8 @@ public class RetirementReasonClsInfo extends AggregateRoot{
 
     public RetirementReasonClsInfo() {};
 
-    public RetirementReasonClsInfo(String CID, String reasonTermination, String retirementReasonClsName){
-        this.CID = CID;
+    public RetirementReasonClsInfo(String cId, String reasonTermination, String retirementReasonClsName){
+        this.cId = cId;
         this.retirementReasonClsCode = new RetirementReasonClsCode(reasonTermination);
         this.retirementReasonClsName = new CauseOfLossEmpInsurance(retirementReasonClsName);
     }

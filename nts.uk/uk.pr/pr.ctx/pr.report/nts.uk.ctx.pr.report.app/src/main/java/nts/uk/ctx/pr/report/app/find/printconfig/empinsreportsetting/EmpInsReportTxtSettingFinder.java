@@ -12,11 +12,11 @@ public class EmpInsReportTxtSettingFinder {
     @Inject
     private EmpInsReportTxtSettingRepository empInsReportTxtSetting;
 
-    String CID = AppContexts.user().companyId();
-    String SID = AppContexts.user().userId();
+    String cId = AppContexts.user().companyId();
+    String userId = AppContexts.user().userId();
 
     public EmpInsReportTxtSettingDto getEmpInsReportTxtSetting(){
-        return empInsReportTxtSetting.getEmpInsReportTxtSettingByUserId(CID, SID).map(item -> EmpInsReportTxtSettingDto.fromDomain(item)).orElse(null);
+        return empInsReportTxtSetting.getEmpInsReportTxtSettingByUserId(cId, userId).map(item -> EmpInsReportTxtSettingDto.fromDomain(item)).orElse(null);
     }
 
 }
