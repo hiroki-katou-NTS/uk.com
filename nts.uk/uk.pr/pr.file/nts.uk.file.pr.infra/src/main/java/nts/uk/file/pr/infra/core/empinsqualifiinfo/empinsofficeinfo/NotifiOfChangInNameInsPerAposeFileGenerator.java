@@ -1,13 +1,15 @@
 package nts.uk.file.pr.infra.core.empinsqualifiinfo.empinsofficeinfo;
 
+
 import com.aspose.pdf.*;
 import com.aspose.pdf.drawing.Circle;
 import com.aspose.pdf.drawing.Graph;
 import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExFileGenerator;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExportData;
+import nts.gul.text.KatakanaConverter;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExFileGenerator;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -16,7 +18,6 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
-public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenerator implements EmpInsReportSettingExFileGenerator {
+public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReportGenerator implements NotifiOfChangInNameInsPerExFileGenerator {
     private static final String TEMPLATE_FILE = "report/氏名変更届.pdf";
     private static final String SHOWA = "昭和";
 
@@ -40,7 +41,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
     private JapaneseErasAdapter adapter;
 
     @Override
-    public void generate(FileGeneratorContext fileContext, List<EmpInsReportSettingExportData> data) {
+    public void generate(FileGeneratorContext fileContext, List<NotifiOfChangInNameInsPerExportData> data) {
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1), doc.getPages().get_Item(2)};
@@ -56,7 +57,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
             for (int i = 0; i < data.size(); i++) {
 
                 Paragraphs paragraphs = doc.getPages().get_Item(indexPage).getParagraphs();
-                EmpInsReportSettingExportData element = data.get(i);
+                NotifiOfChangInNameInsPerExportData element = data.get(i);
 
                 // A1_2
                 paragraphs.add(setValue(114, 757, "0", 16));
@@ -64,8 +65,8 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 String emInsNumInfo =  element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "" ;
                 if( element.getEmpInsNumInfo() != null && !element.getEmpInsNumInfo().getEmpInsNumber().v().equals("")  ){
                     detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,paragraphs);
-                    detachText(130,711,emInsNumInfo.length() > 8 ? emInsNumInfo.substring(4,10): "",6,paragraphs);
-                    detachText(150,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,11): "",0,paragraphs);
+                    detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,paragraphs);
+                    detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,paragraphs);
                 }
 
                 //A1_4
@@ -74,29 +75,29 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                         case OUTPUT_COMPANY: {
                             if (element.getCompanyInfor() != null) {
                                 String companyCode = element.getCompanyInfor().getCompanyCode();
-                                detachText(362, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : "", 4, paragraphs);
-                                detachText(400, 711, companyCode.length() > 8 ? companyCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(450, 711, companyCode.length() > 11 ? companyCode.substring(10,11) : "", 0, paragraphs);
+                                detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, paragraphs);
+                                detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, paragraphs);
+                                detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, paragraphs);
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
                                 String postCd = element.getCompanyInfor().getPostCd();
-                                paragraphs.add(setValue(150, 186,formatPostalCode(postCd), 9));
+                                paragraphs.add(setValue(150, 190,formatPostalCode(postCd), 9));
                                 //A3_2
-                                paragraphs.add(setValue(210, 186, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
+                                paragraphs.add(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
                                 //A3_3
                                 paragraphs.add(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
-                                paragraphs.add(setValue(150, 130, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
+                                paragraphs.add(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
                             }
                             break;
                         }
                         case OUPUT_LABOR_OFFICE: {
                             if (element.getLaborInsuranceOffice() != null) {
                                 String laborOfficeCode =  element.getLaborInsuranceOffice().getLaborOfficeCode().v();
-                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : "", 4, paragraphs);
-                                detachText(362, 711, laborOfficeCode.length() > 8 ? laborOfficeCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(450, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,11) : "", 0, paragraphs);
+                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : laborOfficeCode, 4, paragraphs);
+                                detachText(362, 711, laborOfficeCode.length() > 4 ? laborOfficeCode.substring(4,laborOfficeCode.length()) : "", 6, paragraphs);
+                                detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, paragraphs);
 
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
@@ -107,10 +108,10 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                                     //A3_2
                                     String addressLabor;
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + " " + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
+                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                     } else {
                                         if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent()) {
-                                            addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + " " + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
+                                            addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
                                         } else {
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
@@ -146,12 +147,12 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
                     paragraphs.add(setValue(45, 586, element.getName() != null ? element.getName() : "", 16));
                     //A1_8
-                    detachText(178, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, paragraphs);
+                    detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, paragraphs);
 
                 } else {
                     paragraphs.add(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName() : "", 16));
                     //A1_8
-                    detachText(178, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
+                    detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
                 }
                 //A1_9
                 String fullName = element.getFullName() != null ? element.getFullName() : "";
@@ -169,13 +170,13 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 Graph graph = new Graph(50, 50);
                 // tạo line gạch chữ
                 Line line = new Line(new float[]{295, 495, 357, 495});
+                Line line2 = new Line(new float[]{125, -102, 180, -102});
                 graph.getShapes().add(line);
-                paragraphs.add(graph);
-                //
-                // tạo line gạch chữ
-                Line line2 = new Line(new float[]{295, 300, 357, 300});
                 graph.getShapes().add(line2);
                 paragraphs.add(graph);
+
+                //
+
                 Circle rect = null;
                 if (element.getGender() == 1) {
                     rect = new Circle(317, 38, 8);
@@ -190,7 +191,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
 //                paragraphs.add(setValue(400,353,);
                 Circle rect2 = null;
                 switch (birthDay.era()) {
-                    case TAISO: {
+                    case MEI: {
                         rect2 = new Circle(370, 40, 7);
                         break;
                     }
@@ -216,9 +217,9 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 //A2_5
                 {
                     JapaneseDate birthDayJapanCla = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-                    paragraphs.add(setValue(418, 357, (birthDayJapanCla.year() + 1 < 10 ? "0" + (birthDayJapanCla.year() + 1) + "" : birthDayJapanCla.year() + 1 + ""), 9));
-                    paragraphs.add(setValue(455, 357, (birthDayJapanCla.month() < 10 ? "0" + birthDayJapanCla.month() + "" : birthDayJapanCla.month() + ""), 9));
-                    paragraphs.add(setValue(491, 357, (birthDayJapanCla.day() < 10 ? "0" + birthDayJapanCla.day() + "" : birthDayJapanCla.day() + ""), 9));
+                    paragraphs.add(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
+                    paragraphs.add(setValue(455, 357,  birthDayJapanCla.month() + "", 9));
+                    paragraphs.add(setValue(491, 357, birthDayJapanCla.day() + "", 9));
                 }
                 //A2_7
                 if (!element.getChangeDate().equals("")) {
@@ -230,6 +231,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 JapaneseDate fillingDate = toJapaneseDate(GeneralDate.fromString(element.getFillingDate().substring(0, 10), "yyyy/MM/dd"));
 
                 detachDate(486, 206, fillingDate, paragraphs);
+
                 //index page
                 indexPage = indexPage + 2;
             }
@@ -278,13 +280,11 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells, Paragraphs paragraphs) {
+        value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
         List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        lstValue.forEach(e -> {
-
-        });
         for (int i = 0; i < lstValue.size(); i++) {
             int pixel = xRoot + (17 * i);
             paragraphs.add(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
@@ -302,9 +302,9 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
     }
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, Paragraphs paragraphs) {
-        paragraphs.add(setValue(xRoot, yRoot, (value.year() + 1 < 10 ? "0" + (value.year() + 1) + "" : value.year() + 1 + ""), 9));
-        paragraphs.add(setValue(xRoot + 30, yRoot, (value.month() < 10 ? "0" + value.month() + "" : value.month() + ""), 9));
-        paragraphs.add(setValue(xRoot + 60, yRoot, (value.day() < 10 ? "0" + value.day() + "" : value.day() + ""), 9));
+        paragraphs.add(setValue(xRoot, yRoot,  value.year() + 1 + "", 9));
+        paragraphs.add(setValue(xRoot + 30, yRoot, value.month() + "", 9));
+        paragraphs.add(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
     }
     private String formatPhoneNumber(String number){
         String numberPhone = "";
@@ -315,15 +315,15 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
 
             if(numberSplit[1].length() <= 3){
                 temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）";
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　）";
             }else{
                 temp[0] = numberSplit[1].substring(0,3);
                 temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）" + temp[1];
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　）" + temp[1];
             }
 
         }else if(numberSplit.length >= 3){
-            numberPhone = numberSplit[0] + "（   　" + numberSplit[1] + "   　局）" + numberSplit[2];
+            numberPhone = numberSplit[0] + "（   　" + numberSplit[1] + "   　）" + numberSplit[2];
         }else if(numberSplit.length == 1){
             if(number.length() <= 3){
                 temp[0] = number.substring(0,number.length());
@@ -331,12 +331,12 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
             }else if(number.length() > 3 && number.length() <=6){
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,number.length());
-                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）";
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　）";
             }else if(number.length() > 6){
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,6);
                 temp[2] = number.substring(6,number.length());
-                numberPhone = temp[0] + "（   　" + temp[1] + "   　局）" + temp[2];
+                numberPhone = temp[0] + "（   　" + temp[1] + "   　）" + temp[2];
             }
 
         }

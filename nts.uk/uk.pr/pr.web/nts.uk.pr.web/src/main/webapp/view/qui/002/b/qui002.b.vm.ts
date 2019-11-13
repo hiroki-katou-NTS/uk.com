@@ -60,7 +60,8 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                             columnKey: 'changeDate', allowResizing: false, minimumWidth: 150,
                         }]
                     },
-                    {name: 'Selection', mode: 'row', multipleSelection: true}]
+                    {name: 'Selection', mode: 'row', multipleSelection: false}],
+
 
             });
             $("#B_2").setupSearchScroll("igGrid", true);
