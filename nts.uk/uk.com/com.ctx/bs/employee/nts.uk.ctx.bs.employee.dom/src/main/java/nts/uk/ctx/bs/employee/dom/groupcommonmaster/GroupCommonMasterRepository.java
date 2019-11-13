@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.employee.dom.groupcommonmaster;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface GroupCommonMasterRepository {
 
 	/**
@@ -32,6 +34,26 @@ public interface GroupCommonMasterRepository {
 	Optional<GroupCommonMaster> getByContractCodeAndId(String contractCode, String commonMasterId);
 
 	/**
+	 * 
+	 * @param 契約コード
+	 * @param 共通マスタID
+	 * @return グループ会社共通マスタ
+	 */
+	Optional<GroupCommonMaster> getBasicInfo(String contractCode, String commonMasterId);
+
+	/**
+	 * 使用している共通マスタの取得
+	 * 
+	 * @param 契約コード
+	 * @param 共通マスタID
+	 * @param 会社ID
+	 * @param 基準日
+	 * @return
+	 */
+	List<CommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId, String companyId,
+			GeneralDate baseDate);
+
+	/**
 	 * グループ会社共通マスタ項目の使用設定を削除する
 	 * 
 	 * @param 契約コード
@@ -52,4 +74,5 @@ public interface GroupCommonMasterRepository {
 	 */
 	void addGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
 			List<String> masterItemIds);
+
 }

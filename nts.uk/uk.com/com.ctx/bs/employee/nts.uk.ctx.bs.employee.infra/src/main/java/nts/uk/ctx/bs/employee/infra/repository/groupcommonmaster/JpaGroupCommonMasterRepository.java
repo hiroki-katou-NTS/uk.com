@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterCode;
@@ -28,19 +29,29 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	private static final String GET_BY_CONTRACT_CODE = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode";
 
-	private static final String GET_ITEM_BY_CONTRACT_CODE_AND_LIST_MASTER_ID = "SELECT mi BsymtGpMasterItem mi WHERE mi.contractCode = :contractCode AND mi.commonMasterId IN :commonMasterIds";
+	private static final String GET_ITEM_BY_CONTRACT_CODE_AND_LIST_MASTER_ID = "SELECT mi FROM BsymtGpMasterItem mi WHERE mi.contractCode = :contractCode AND mi.commonMasterId IN :commonMasterIds";
 
-	private static final String GET_NOT_USE_BY_LIST_ITEM_ID = "SELECT nu BsymtGpMasterNotUse nu WHERE nu.pk.commonMasterItemId IN :commonMasterItemIds";
+	private static final String GET_NOT_USE_BY_LIST_ITEM_ID = "SELECT nu FROM BsymtGpMasterNotUse nu WHERE nu.pk.commonMasterItemId IN :commonMasterItemIds";
 
 	private static final String GET_BY_CONTRACT_CODE_AND_ID = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode AND mc.commonMasterId = :commonMasterId";
+
+	private static final String GET_ENABLE_ITEM = "SELECT mi FROM BsymtGpMasterItem mi "
+			+ "WHERE mi.contractCode = :contractCode " + "AND mi.commonMasterId = :commonMasterId "
+			+ "AND :baseDate BETWEEN mi.usageStartDate " + "AND mi.usageEndDate "
+			+ "AND NOT EXISTS(SELECT nu FROM BsymtGpMasterNotUse nu "
+			+ "WHERE nu.pk.commonMasterItemId = mi.commonMasterItemId " + "AND nu.pk.companyId = :companyId)";
 
 	@Override
 	public void addListGroupCommonMaster(List<GroupCommonMaster> domains) {
 
 		// add categories
-		List<BsymtGpMasterCategory> Categories = domains.stream().map(x -> mapCategory(x)).collect(Collectors.toList());
+		List<BsymtGpMasterCategory> categories = domains.stream().map(x -> mapCategory(x)).collect(Collectors.toList());
 
-		this.commandProxy().insertAll(Categories);
+		this.commandProxy().insertAll(categories);
+
+		if (!CollectionUtil.isEmpty(categories)) {
+			return;
+		}
 
 		// add items
 		List<BsymtGpMasterItem> items = domains.stream().filter(x -> !CollectionUtil.isEmpty(x.getCommonMasterItems()))
@@ -108,6 +119,10 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 				.query(GET_BY_CONTRACT_CODE, BsymtGpMasterCategory.class).setParameter("contractCode", contractCode)
 				.getList().stream().map(x -> toCategoryDomain(x)).collect(Collectors.toList());
 
+		if (CollectionUtil.isEmpty(commonMasters)) {
+			return commonMasters;
+		}
+
 		setMasterItems(contractCode, commonMasters);
 
 		setNotUses(commonMasters);
@@ -140,6 +155,10 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 				.map(x -> x.getCommonMasterItems().stream().map(item -> item.getCommonMasterItemId())
 						.collect(Collectors.toList()))
 				.flatMap(List::stream).collect(Collectors.toList());
+
+		if (CollectionUtil.isEmpty(commonMasterItemIds)) {
+			return;
+		}
 
 		List<BsymtGpMasterNotUse> notUseCompanyList = this.queryProxy()
 				.query(GET_NOT_USE_BY_LIST_ITEM_ID, BsymtGpMasterNotUse.class)
@@ -188,7 +207,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 		GroupCommonMaster commonMaster = null;
 
-		if (!commonMasterOpt.isPresent()) {
+		if (commonMasterOpt.isPresent()) {
 
 			commonMaster = commonMasterOpt.get();
 
@@ -197,15 +216,33 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 			setNotUses(Arrays.asList(commonMaster));
 		}
 
-		return Optional.of(commonMaster);
+		return Optional.ofNullable(commonMaster);
+	}
+
+	@Override
+	public Optional<GroupCommonMaster> getBasicInfo(String contractCode, String commonMasterId) {
+
+		Optional<GroupCommonMaster> commonMasterOpt = this.queryProxy()
+				.query(GET_BY_CONTRACT_CODE_AND_ID, BsymtGpMasterCategory.class)
+				.setParameter("contractCode", contractCode).setParameter("commonMasterId", commonMasterId).getSingle()
+				.map(x -> toCategoryDomain(x));
+
+		GroupCommonMaster commonMaster = null;
+
+		if (commonMasterOpt.isPresent()) {
+			commonMaster = commonMasterOpt.get();
+		}
+
+		return Optional.ofNullable(commonMaster);
 	}
 
 	@Override
 	public void removeGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
 			List<String> masterItemIds) {
 
-		this.commandProxy().removeAll(genNotUseEntity(masterItemIds, companyId));
-
+		this.commandProxy().removeAll(BsymtGpMasterNotUse.class,
+				masterItemIds.stream().map(x -> new BsymtGpMasterNotUsePK(x, companyId)).collect(Collectors.toList()));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -213,13 +250,23 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 			List<String> masterItemIds) {
 
 		this.commandProxy().insertAll(genNotUseEntity(masterItemIds, companyId));
-
+		this.getEntityManager().flush();
 	}
 
 	private List<BsymtGpMasterNotUse> genNotUseEntity(List<String> masterItemIds, String companyId) {
 		return masterItemIds.stream()
 				.map(masterItemId -> new BsymtGpMasterNotUse(new BsymtGpMasterNotUsePK(masterItemId, companyId)))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<CommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
+			String companyId, GeneralDate baseDate) {
+		return this.queryProxy().query(GET_ENABLE_ITEM, BsymtGpMasterItem.class)
+				.setParameter("contractCode", contractCode).setParameter("commonMasterId", commonMasterId)
+				.setParameter("baseDate", baseDate).setParameter("companyId", companyId).getList().stream()
+				.map(x -> toItemDomain(x)).collect(Collectors.toList());
+
 	}
 
 }

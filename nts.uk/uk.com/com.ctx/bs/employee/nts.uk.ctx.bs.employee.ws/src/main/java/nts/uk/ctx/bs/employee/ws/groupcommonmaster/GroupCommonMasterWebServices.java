@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonMasterFinder
  * @author sonnlb
  *
  */
-@Path("bs/employee/groupcommonmaster")
+@Path("bs/employee/group_common_master")
 @Produces(MediaType.APPLICATION_JSON)
 public class GroupCommonMasterWebServices extends WebService {
 
@@ -32,19 +32,19 @@ public class GroupCommonMasterWebServices extends WebService {
 	private SaveGroupCommonMasterCommandHandler saveHandler;
 
 	@POST
-	@Path("getmaster")
+	@Path("get_master")
 	public List<GroupCommonMasterDto> getMaster() {
 		return this.commonFinder.getMaster();
 	}
 
 	@POST
-	@Path("getitems/{commonMasterId}")
+	@Path("get_items/{commonMasterId}")
 	public List<GroupCommonItemDto> getItems(@PathParam("commonMasterId") String commonMasterId) {
 		return this.commonFinder.getItems(commonMasterId);
 	}
 
 	@POST
-	@Path("savemaster")
+	@Path("save_master")
 	public void getCurrentHistoryItem(SaveGroupCommonMasterCommand command) {
 		this.saveHandler.handle(command);
 	}

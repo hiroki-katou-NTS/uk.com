@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +31,7 @@ import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 @AllArgsConstructor
 @Stateless
 @NoArgsConstructor
-public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMaster {
+public class GroupCommonMaster extends AggregateRoot {
 
 	// 契約コード
 	private ContractCode contractCode;
@@ -51,10 +52,16 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 
 	private List<CommonMasterItem> commonMasterItems;
 
+	@Inject
 	private GroupCommonMasterRepository groupMasterRepo;
 
 	public GroupCommonMaster(ContractCode contractCode, String commonMasterId, CommonMasterCode commonMasterCode,
 			CommonMasterName commonMasterName, String commonMasterMemo) {
+		this.contractCode = contractCode;
+		this.commonMasterId = commonMasterId;
+		this.commonMasterCode = commonMasterCode;
+		this.commonMasterName = commonMasterName;
+		this.commonMasterMemo = commonMasterMemo;
 	}
 
 	/**
@@ -71,7 +78,8 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 		List<GroupCommonMaster> ListMaster = this.groupMasterRepo.getByContractCode(contractCode);
 
 		if (!CollectionUtil.isEmpty(ListMaster)) {
-			return ListMaster;
+			return ListMaster.stream().sorted(Comparator.comparing(GroupCommonMaster::getCommonMasterCode))
+					.collect(Collectors.toList());
 		}
 
 		// アルゴリズム [グループ会社共通マスタの追加] を実行する
@@ -176,7 +184,7 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 
 		if (!CollectionUtil.isEmpty(usageList)) {
 			// ドメインモデル [グループ会社共通マスタ] を削除する
-			this.groupMasterRepo.removeGroupCommonMasterUsage(contractCode, commonMasterId, companyId, masterItemIds);
+			this.groupMasterRepo.removeGroupCommonMasterUsage(contractCode, commonMasterId, companyId, usageList);
 		}
 		// ドメインモデル [グループ会社共通マスタ] を追加する
 		this.groupMasterRepo.addGroupCommonMasterUsage(contractCode, commonMasterId, companyId, masterItemIds);
@@ -195,10 +203,30 @@ public class GroupCommonMaster extends AggregateRoot implements IGroupCommonMast
 		return false;
 	}
 
-	@Override
+	/**
+	 * 
+	 * @param 契約コード
+	 * @param 共通マスタID
+	 * @param 会社ID
+	 * @param 基準日
+	 * @return グループ会社共通マスタ
+	 */
 	public GroupCommonMaster getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
 			String companyId, GeneralDate baseDate) {
-		// TODO Auto-generated method stub
-		return null;
+
+		GroupCommonMaster result = new GroupCommonMaster();
+
+		Optional<GroupCommonMaster> masterOpt = this.groupMasterRepo.getBasicInfo(contractCode, commonMasterId);
+		if (!masterOpt.isPresent()) {
+			return result;
+		}
+
+		result = masterOpt.get();
+
+		result.setCommonMasterItems(
+				this.groupMasterRepo.getGroupCommonMasterEnableItem(contractCode, commonMasterId, companyId, baseDate));
+
+		return result;
 	}
+
 }

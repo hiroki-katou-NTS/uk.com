@@ -24,9 +24,13 @@ public class GroupCommonMasterDto {
 	// 共通マスタ名
 	private String commonMasterName;
 
+	// 備考
+	private String commonMasterMemo;
+
 	public GroupCommonMasterDto(GroupCommonMaster domain) {
 		this.commonMasterId = domain.getCommonMasterId();
 		this.commonMasterCode = domain.getCommonMasterCode().v();
 		this.commonMasterName = domain.getCommonMasterName().v();
+		this.commonMasterMemo = domain.getCommonMasterMemo();
 	}
 }

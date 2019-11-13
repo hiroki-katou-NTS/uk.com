@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.IGroupCommonMaster;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -37,7 +36,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	private EmploymentRepository repository;
 
 	@Inject
-	private IGroupCommonMaster groupCommonMaster;
+	private GroupCommonMaster groupCommonMaster;
 
 	/*
 	 * (non-Javadoc)
@@ -88,25 +87,24 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		if (x == 0) {
 			dto.setShowsGroupCompany(false);
 			return dto;
-		} 
-			// アルゴリズム「使用している共通マスタの取得」を実行する --- (thực hiện thuật toán [lấy
-			// CommonMaster đang sử dụng])
-			/*
-			 * [Input] ・契約コード//(contract code) ・共通マスタID = M000031//(common
-			 * master ID=M000031) ・会社ID//(company ID) ・基準日 = システム日付//(baseDate=
-			 * System Date)
-			 */
-			GroupCommonMaster data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
-					GeneralDate.today());
-			if (data.getCommonMasterItems().isEmpty()) {
-				throw new BusinessException("Msg_1580");
-			}
-			dto.setShowsGroupCompany(true);
-			dto.setCommonMasterItems(data.getCommonMasterItems().stream()
-					.map(item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(),
-							item.getCommonMasterItemName().v()))
-					.collect(Collectors.toList()));
-			return dto;
+		}
+		// アルゴリズム「使用している共通マスタの取得」を実行する --- (thực hiện thuật toán [lấy
+		// CommonMaster đang sử dụng])
+		/*
+		 * [Input] ・契約コード//(contract code) ・共通マスタID = M000031//(common master
+		 * ID=M000031) ・会社ID//(company ID) ・基準日 = システム日付//(baseDate= System
+		 * Date)
+		 */
+		GroupCommonMaster data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
+				GeneralDate.today());
+		if (data.getCommonMasterItems().isEmpty()) {
+			throw new BusinessException("Msg_1580");
+		}
+		dto.setShowsGroupCompany(true);
+		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
+				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
+				.collect(Collectors.toList()));
+		return dto;
 	}
 
 	/*
