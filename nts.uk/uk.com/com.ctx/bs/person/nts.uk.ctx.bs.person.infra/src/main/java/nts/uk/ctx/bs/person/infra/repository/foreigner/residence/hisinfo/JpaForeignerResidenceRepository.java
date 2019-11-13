@@ -75,10 +75,11 @@ public class JpaForeignerResidenceRepository extends JpaRepository implements Fo
 	private ForeignerResidenceHistoryInforItem toDomain(PpetdForeignerResidenceHisInfoItem entity) {
 		return new ForeignerResidenceHistoryInforItem(entity.pid, entity.issueDate, entity.key.hisId,
 				entity.statusOfResidenceID.longValue(), entity.statusOfResidenceCode, entity.statusOfResidenceName,
-				entity.periodOfStayID.intValue(), entity.periodOfStayCode, entity.periodOfStayName,
+				entity.periodOfStayID == null ? null : entity.periodOfStayID.intValue(), entity.periodOfStayCode, entity.periodOfStayName,
 				entity.numberResidencePermit,
-				EnumAdaptor.valueOf(entity.perUnqualifiedActivity, PerUnqualifiedActivity.class),
-				EnumAdaptor.valueOf(entity.reportWorkOutside, ReportWorkOutside.class), entity.nationalityID.intValue(),
+				EnumAdaptor.valueOf(entity.perUnqualifiedActivity == null ? 0 : entity.perUnqualifiedActivity , PerUnqualifiedActivity.class),
+				EnumAdaptor.valueOf(entity.reportWorkOutside == null ? 0 : entity.reportWorkOutside , ReportWorkOutside.class), 
+				entity.nationalityID == null ?  null : entity.nationalityID.intValue(),
 				entity.nationalityCode, entity.nationalityName);
 	}
 

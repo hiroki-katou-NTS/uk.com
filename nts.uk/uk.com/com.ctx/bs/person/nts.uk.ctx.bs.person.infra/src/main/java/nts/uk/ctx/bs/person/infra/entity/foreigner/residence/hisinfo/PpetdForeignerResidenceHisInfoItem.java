@@ -84,12 +84,12 @@ public class PpetdForeignerResidenceHisInfoItem extends UkJpaEntity implements S
 	// 資格外活動許可
 	@Basic(optional = true)
 	@Column(name = "SIKAKUGAI_KBN")
-	public int perUnqualifiedActivity;
+	public Integer perUnqualifiedActivity;
 
 	// 届出事業所外就労区分
 	@Basic(optional = true)
 	@Column(name = "JIGYOSYOGAI_KBN")
-	public int reportWorkOutside;
+	public Integer reportWorkOutside;
 
 	// 国籍ID
 	@Basic(optional = true)
