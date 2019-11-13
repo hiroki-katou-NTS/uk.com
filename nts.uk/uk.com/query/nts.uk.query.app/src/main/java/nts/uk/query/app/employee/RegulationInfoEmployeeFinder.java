@@ -4,18 +4,20 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.query.model.department.DepartmentAdapter;
+import nts.uk.query.model.department.DepartmentInfoImport;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
@@ -28,7 +30,11 @@ import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
+import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
+import nts.uk.query.model.operationrule.OperationRuleImport;
 import nts.uk.query.model.person.QueryPersonAdapter;
+import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
+import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -42,15 +48,15 @@ public class RegulationInfoEmployeeFinder {
 	/** The repo. */
 	@Inject
 	private RegulationInfoEmployeeRepository repo;
-	
+
 	/** The role repo. */
 	@Inject
 	private EmployeeRoleRepository roleRepo;
-	
+
 	/** The work place adapter. */
 	@Inject
 	private RoleWorkPlaceAdapter workPlaceAdapter;
-	
+
 	/** The emp auth adapter. */
 	@Inject
 	private EmployeeAuthAdapter empAuthAdapter;
@@ -74,6 +80,16 @@ public class RegulationInfoEmployeeFinder {
 	@Inject
 	private EmploymentHistoryAdapter empHisAdapter;
 
+	@Inject
+	private DepartmentAdapter departmentAdapter;
+
+	@Inject
+	private QueryWorkplaceAdapter queryWorkplaceAdapter;
+
+	@Inject
+	private QueryOperationRuleAdapter operationRuleAdapter;
+
+
 	/**
 	 * Find.
 	 *
@@ -88,24 +104,28 @@ public class RegulationInfoEmployeeFinder {
 		}
 
 		EmployeeRoleImported role = this.getRole(queryDto.getSystemType());
-		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF &&
-			queryDto.getSystemType() != CCG001SystemType.EMPLOYMENT.value) {
-			return Arrays.asList(this.findCurrentLoginEmployeeInfo(
-					GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
-							RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.getSystemType()));
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF && queryDto.getSystemType() != CCG001SystemType.EMPLOYMENT.value) {
+			LoginEmployeeQuery query = new LoginEmployeeQuery(GeneralDateTime.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START,
+					RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.getSystemType());
+			return Arrays.asList(this.findCurrentLoginEmployeeInfo(query));
 		}
 
 		// Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
-
-		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF){
+		if (role != null && role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
 			queryDto.setReferenceRange(EmployeeReferenceRange.ONLY_MYSELF.value);
 			this.changeListWorkplaces(queryDto);
-		}
-		else if (role != null) {
+		} else if (role != null) {
 			this.changeWorkplaceListByRole(queryDto, role);
+			Optional<OperationRuleImport> optOperationRuleImport = operationRuleAdapter.getOperationRuleByCompanyId(AppContexts.user().companyId());
+            // Default synchronization = true;
+            if (optOperationRuleImport.isPresent() && !optOperationRuleImport.get().isSynchronization()) {
+                this.changeDepartmentListByRole(queryDto, role);
+            }
 		}
 		List<RegulationInfoEmployeeDto> result = this.findEmployeesInfo(queryDto);
 		
+		//ThanhPV hiện tại đoạn này đang được thêm vào. khi resole conflict 
+		// đang lấy theo đoạn 
 		if (queryDto.getSystemType() == CCG001SystemType.EMPLOYMENT.value) {
 			List<String> narrowedSids = empAuthAdapter.narrowEmpListByReferenceRange(
 											result.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), 3,
@@ -117,7 +137,59 @@ public class RegulationInfoEmployeeFinder {
 		return result;
 	}
 
-	/**
+    private void changeDepartmentListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
+        EmployeeReferenceRange employeeReferenceRange = role.getEmployeeReferenceRange(); // employee's reference authority
+        SearchReferenceRange searchReferenceRange = SearchReferenceRange.valueOf(queryDto.getReferenceRange());
+
+        // An employee's search reference range depends on his reference authority
+        switch (searchReferenceRange) {
+            case ALL_REFERENCE_RANGE:
+                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
+                    // not change departmentCodes
+                    break;
+                } else {
+                    queryDto.setReferenceRange(employeeReferenceRange.value);
+                    this.changeListDepartment(queryDto);
+                }
+                break;
+            case AFFILIATION_ONLY:
+                // Get list String Department
+                this.changeListDepartment(queryDto);
+                break;
+            case AFFILIATION_AND_ALL_SUBORDINATES:
+                if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE ||
+					employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+                    // Get list String Department
+                    this.changeListDepartment(queryDto);
+                    break;
+                } else {
+                    // Get list String Department
+                    queryDto.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_ONLY.value);
+                    this.changeListDepartment(queryDto);
+                }
+                break;
+            default:
+                throw new RuntimeException("Invalid enum value");
+        }
+    }
+
+    private void changeListDepartment(RegulationInfoEmpQueryDto queryParam) {
+        // Get list department
+        GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
+        List<String> depList = new ArrayList<>(); // Processing is not prepared yet
+
+        // Check param filterByDepartment
+        if (queryParam.getFilterByDepartment() != null && queryParam.getFilterByDepartment()) {
+            // Merge list department
+            queryParam.setDepartmentCodes(queryParam.getDepartmentCodes().stream().filter(depList::contains).collect(Collectors.toList()));
+        } else {
+            // Set list department
+            queryParam.setDepartmentCodes(depList);
+            queryParam.setFilterByDepartment(true);
+        }
+    }
+
+    /**
 	 * Find by employee code.
 	 *
 	 * @param query the query
@@ -128,7 +200,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		
+
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
 
@@ -140,10 +212,10 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeName(SearchEmployeeQuery query) {
 		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType(), query.getReferenceDate());
-		
+
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		
+
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
 
@@ -155,10 +227,10 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeEntryDate(SearchEmployeeQuery query) {
 		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType(), query.getReferenceDate());
-		
+
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		
+
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
 
@@ -170,10 +242,10 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeRetirementDate(SearchEmployeeQuery query) {
 		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType(), query.getReferenceDate());
-		
+
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		
+
 		return getEmployeeInfo(sIds, query.getReferenceDate());
 	}
 
@@ -198,7 +270,7 @@ public class RegulationInfoEmployeeFinder {
 		// Find Role by roleId
 		return roleId == null ? null : this.roleRepo.findRoleById(roleId);
 	}
-	
+
 	/**
 	 * Change workplace list by role.
 	 *
@@ -241,7 +313,7 @@ public class RegulationInfoEmployeeFinder {
 			throw new RuntimeException("Invalid enum value");
 		}
 	}
-	
+
 	/**
 	 * Change list workplaces.
 	 *
@@ -365,21 +437,39 @@ public class RegulationInfoEmployeeFinder {
 	 *
 	 * @return the list
 	 */
-	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(GeneralDateTime baseDate, int systemType) {
+	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(LoginEmployeeQuery query) {
 		String loginEmployeeId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate(), query.getSystemType());
 
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(AppContexts.user().companyId(), loginEmployeeId, baseDate, systemType);
-		if (loginEmployee == null) {
-			throw new BusinessException("Msg_317");
+		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
+			case SALARY:
+				if (loginEmployee == null || !loginEmployee.getDepartmentId().isPresent()) {
+					throw new BusinessException("Msg_317");
+				}
+				List<DepartmentInfoImport> departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
+				return RegulationInfoEmployeeDto.builder()
+						.employeeCode(loginEmployee.getEmployeeCode())
+						.employeeId(loginEmployee.getEmployeeID())
+						.employeeName(loginEmployee.getName().orElse(""))
+						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
+						.affiliationCode(loginEmployee.getDepartmentCode().orElse(""))
+						.affiliationName(departmentInfoImports.get(0).getDepartmentName())
+						.build();
+			default:
+				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
+					throw new BusinessException("Msg_317");
+				}
+				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
+				return RegulationInfoEmployeeDto.builder()
+					.employeeCode(loginEmployee.getEmployeeCode())
+					.employeeId(loginEmployee.getEmployeeID())
+					.employeeName(loginEmployee.getName().orElse(""))
+					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
+					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
+					.affiliationName(workplaceInfoImports.get(0).getWorkplaceName())
+					.build();
 		}
-		
-		return RegulationInfoEmployeeDto.builder()
-				.employeeCode(loginEmployee.getEmployeeCode())
-				.employeeId(loginEmployee.getEmployeeID())
-				.employeeName(loginEmployee.getName().orElse(""))
-				.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
-				.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
-				.affiliationName(loginEmployee.getWorkplaceName().orElse("")).build();
 	}
 
 	/**
@@ -389,8 +479,74 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	private List<RegulationInfoEmployeeDto> findEmployeesInfo(RegulationInfoEmpQueryDto queryDto) {
-		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
-				.map(model -> this.toDto(model)).collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.fromString(queryDto.getBaseDate(), "yyyy-MM-dd");
+
+		// return data
+		List<RegulationInfoEmployeeDto> empDtos;
+
+		// get list employee
+		List<RegulationInfoEmployee> regulationInfoEmployees = this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel());
+
+		// check system type
+		if (queryDto.getSystemType() == CCG001SystemType.SALARY.value) {
+			// filter present department config span by reference date
+			regulationInfoEmployees = regulationInfoEmployees.stream().
+					filter(e -> e.getDepartmentId().isPresent())
+					.collect(Collectors.toList());
+
+			// get data for list department with no data
+			List<String> noDataDepIds = regulationInfoEmployees.stream()
+					.filter(e -> !e.getDepartmentCode().isPresent() || !e.getDepartmentDeleteFlag().isPresent() || e.getDepartmentDeleteFlag().get())
+					.map(e -> e.getDepartmentId().get())
+					.distinct()
+					.collect(Collectors.toList());
+			// Request list 563
+			Map<String, DepartmentInfoImport> depInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, noDataDepIds, baseDate)
+					.stream().collect(Collectors.toMap(DepartmentInfoImport::getDepartmentId, Function.identity()));
+
+			// Set return data
+			empDtos = regulationInfoEmployees
+						.stream()
+						.map(e -> RegulationInfoEmployeeDto.builder()
+                                .employeeCode(e.getEmployeeCode())
+                                .employeeId(e.getEmployeeID())
+                                .employeeName(e.getName().orElse(""))
+                                .affiliationId(e.getDepartmentId().orElse(""))
+                                .affiliationCode(e.getDepartmentCode().orElse(""))
+                                .affiliationName(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : e.getDepartmentName().get())
+                                .build())
+						.collect(Collectors.toList());
+		} else {
+			// filter present workplace config span by reference date
+			regulationInfoEmployees = regulationInfoEmployees.stream().
+					filter(e -> e.getWorkplaceId().isPresent())
+					.collect(Collectors.toList());
+
+			// get data for list workplace with no data
+			List<String> noDataWkpIds = regulationInfoEmployees.stream()
+					.filter(e -> !e.getWorkplaceCode().isPresent() || !e.getWorkplaceDeleteFlag().isPresent() || e.getWorkplaceDeleteFlag().get())
+					.map(e -> e.getWorkplaceId().get())
+					.distinct()
+					.collect(Collectors.toList());
+            // Request list 560
+			Map<String, WorkplaceInfoImport> wkpInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, noDataWkpIds, baseDate)
+					.stream().collect(Collectors.toMap(WorkplaceInfoImport::getWorkplaceId, Function.identity()));
+
+			// Set return data
+			empDtos = regulationInfoEmployees
+					.stream()
+					.map(e -> RegulationInfoEmployeeDto.builder()
+							.employeeCode(e.getEmployeeCode())
+							.employeeId(e.getEmployeeID())
+							.employeeName(e.getName().orElse(""))
+							.affiliationId(e.getWorkplaceId().orElse(""))
+							.affiliationCode(e.getWorkplaceCode().orElse(""))
+							.affiliationName(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : e.getWorkplaceName().get())
+							.build())
+					.collect(Collectors.toList());
+		}
+		return empDtos;
 	}
 
 	/**
@@ -408,7 +564,7 @@ public class RegulationInfoEmployeeFinder {
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds,
 				this.roleTypeFrom(CCG001SystemType.valueOf(systemType)).value, referenceDate);
 	}
-	
+
 	// ・ロール種類：
 	// ※パラメータ「システム区分」＝「個人情報」の場合
 	// →「ロール種類」＝「個人情報」
