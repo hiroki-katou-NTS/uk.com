@@ -1,14 +1,15 @@
 module nts.uk.pr.view.qui004.a.viewmodel {
 
     import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText
     import model = nts.uk.pr.view.qui004.share.model;
 
     export class ScreenModel {
 
         item_list: KnockoutObservableArray<model.ItemModel>;
-        item_list_one: KnockoutObservableArray<model.ItemModel>;
+        itemListSubmitName: KnockoutObservableArray<model.ItemModel>;
         item_list_two: KnockoutObservableArray<model.ItemModel>;
-        item_list_three: KnockoutObservableArray<model.ItemModel>;
+        itemListCode: KnockoutObservableArray<model.ItemModel>;
 
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
@@ -62,9 +63,9 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 new model.ItemModel(1, '役職手当')
             ]);
 
-            self.item_list_one = ko.observableArray([
-                new model.ItemModel(0, '個人名'),
-                new model.ItemModel(1, '届出氏名')
+            self.itemListSubmitName = ko.observableArray([
+                new model.ItemModel(0, getText("QUI004_A222_18")),
+                new model.ItemModel(1, getText("QUI004_A222_19"))
             ]);
 
             self.item_list_two = ko.observableArray([
@@ -72,10 +73,10 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 new model.ItemModel(1, '印字しない')
             ]);
 
-            self.item_list_three = ko.observableArray([
-                new model.ItemModel(0, '付加する'),
-                new model.ItemModel(1, '付加しない'),
-                new model.ItemModel(2, 'e-Gov')
+            self.itemListCode = ko.observableArray([
+                new model.ItemModel(0, getText("QUI004_A222_37")),
+                new model.ItemModel(1, getText("QUI004_A222_38")),
+                new model.ItemModel(2, getText("QUI004_A222_39"))
             ]);
 
             self.startDate.subscribe((data) =>{

@@ -61,23 +61,23 @@ module nts.uk.pr.view.qui004.share.model {
 
     export function getSubNameClass(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_18')),
-            new ItemModel(1, getText('QUI001_A222_19'))
+            new ItemModel(0, getText('QUI004_A222_18')),
+            new ItemModel(1, getText('QUI004_A222_19'))
         ];
     }
 
     export function getChangedName(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_35')),
-            new ItemModel(1, getText('QUI001_A222_36'))
+            new ItemModel(0, getText('QUI004_A222_35')),
+            new ItemModel(1, getText('QUI004_A222_36'))
         ];
     }
 
     export function getNewLine(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_41')),
-            new ItemModel(1, getText('QUI001_A222_42')),
-            new ItemModel(2, getText('QUI001_A222_43'))
+            new ItemModel(0, getText('QUI004_A222_37')),
+            new ItemModel(1, getText('QUI004_A222_38')),
+            new ItemModel(2, getText('QUI004_A222_39'))
         ];
     }
 
