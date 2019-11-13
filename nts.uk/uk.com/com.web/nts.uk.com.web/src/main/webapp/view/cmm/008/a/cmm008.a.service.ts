@@ -62,6 +62,8 @@ module nts.uk.com.view.cmm008.a {
                 name: string;
                 empExternalCode: string;
                 memo: string;
+                commonMasterName: string;
+                commonMasterItemID:string;
             }
             
             

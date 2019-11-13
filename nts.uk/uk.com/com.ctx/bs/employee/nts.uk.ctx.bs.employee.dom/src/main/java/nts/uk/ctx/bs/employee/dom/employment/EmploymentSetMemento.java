@@ -48,10 +48,12 @@ public interface EmploymentSetMemento {
 	 * @param memo the new memo
 	 */
 	void setMemo(Memo memo);
+	
 	//グループ会社共通マスタID
-	void setempCommonMasterId(String  empCommonMasterId);
+	void setEmpCommonMasterId(String  empCommonMasterId);
+	
 	// グループ会社共通マスタ項目ID
-	void setempCommonMasterItemId(String  empCommonMasterItemId); 
+	void setEmpCommonMasterItemId(String  empCommonMasterItemId); 
 	
 	
 }
