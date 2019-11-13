@@ -52,15 +52,15 @@
                     <hr />
                     <div style="padding-left: 20px">
 
-                        <div class="control-group">
-                            <div id="B3_3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_34')}</div>
-                            <input  id="B3_4" tabindex="5" data-bind="ntsTextEditor: {
+                        <div style="display: flex; margin-bottom: 10px">
+                            <div id="B3_3" class="column-1" data-bind="ntsFormLabel: { constraint: 'BasicPenNumber'}">#{i18n.getText('QSI014_34')}</div>
+                            <div style="margin-left: 10px;margin-top: 4px;"> <input  id="B3_4" tabindex="5" data-bind="ntsTextEditor: {
                                     value: basicPenNumber,
                                     name: '#{i18n.getText('QSI014_34')}',
                                     constraint: 'BasicPenNumber',
                                     required: false,
                                     enable: true,
-                                    readonly: false}"/>
+                                    readonly: false}"/></div>
 
                         </div>
                         <div class="column-1" id="B3_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI014_35')}</div>
