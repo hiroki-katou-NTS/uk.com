@@ -173,7 +173,12 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
                     Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
                         @Override
                         public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                            if(o1.getNameKana().compareTo(o2.getNameKana()) == 0){
+                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                            }
+                            else {
+                                return o1.getNameKana().compareTo(o2.getNameKana());
+                            }
                         }
                     });
                 }
@@ -182,10 +187,10 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
                         @Override
                         public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
                            if(o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0){
-                                return 0;
+                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
                            }
                            else {
-                               return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                               return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
                            }
                         }
                     });
