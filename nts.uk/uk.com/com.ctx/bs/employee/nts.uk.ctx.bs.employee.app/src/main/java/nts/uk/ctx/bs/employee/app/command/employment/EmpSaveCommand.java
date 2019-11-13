@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.employment;
 
+import java.util.Optional;
+
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
@@ -33,6 +35,10 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 	
 	/** The is update mode. */
 	private Boolean isUpdateMode;
+	//グループ会社共通マスタID
+	private String empCommonMasterId;
+	// グループ会社共通マスタ項目ID
+	private String empCommonMasterItemId;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getCompanyId()
@@ -72,6 +78,18 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 	@Override
 	public Memo getMemo() {
 		return new Memo(this.memo);
+	}
+
+	@Override
+	public Optional<String> empCommonMasterId() {
+		
+		return this.empCommonMasterId();
+	}
+
+	@Override
+	public Optional<String> empCommonMasterItemId() {
+		// TODO Auto-generated method stub
+		return empCommonMasterItemId();
 	}
 
 }
