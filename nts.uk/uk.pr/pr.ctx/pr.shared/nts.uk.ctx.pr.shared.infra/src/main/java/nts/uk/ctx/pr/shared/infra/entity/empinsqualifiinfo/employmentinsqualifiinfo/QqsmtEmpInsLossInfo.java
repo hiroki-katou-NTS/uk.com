@@ -73,7 +73,7 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
 
     public EmpInsuranceLossInfo toDomain() {
         return new EmpInsuranceLossInfo (
-                this.empInsLossInfoPk.sid,
+                this.empInsLossInfoPk.sId,
                 this.causeOfLossAtr,
                 this.reqIssuAtr,
                 this.scheReplenAtr,
@@ -82,7 +82,7 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
     }
     public static QqsmtEmpInsLossInfo toEntity(EmpInsuranceLossInfo domain) {
         return new QqsmtEmpInsLossInfo(
-                new QqsmtEmpInsLossInfoPk(domain.getSID()),
+                new QqsmtEmpInsLossInfoPk(domain.getSId()),
                 domain.getScheduleWorkingHourPerWeek().get().v(),
                 domain.getCauseOfLossAtr().get().value,
                 domain.getCauseOfLossEmpInsurance().toString(),

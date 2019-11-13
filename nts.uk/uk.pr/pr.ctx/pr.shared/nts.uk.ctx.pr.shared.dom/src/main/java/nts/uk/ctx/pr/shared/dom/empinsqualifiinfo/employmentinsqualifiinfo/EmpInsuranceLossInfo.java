@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@NoArgsConstructor
 /**
  * 雇用保険喪失時情報
  */
@@ -17,7 +19,7 @@ public class EmpInsuranceLossInfo extends AggregateRoot{
     /**
      * 社員ID
      */
-    private String SID;
+    private String sId;
 
     /**
      * 喪失原因
@@ -44,15 +46,13 @@ public class EmpInsuranceLossInfo extends AggregateRoot{
      */
     private Optional<WorkingTime> scheduleWorkingHourPerWeek;
 
-    public EmpInsuranceLossInfo(){};
-
-    public EmpInsuranceLossInfo(String SID,
+    public EmpInsuranceLossInfo(String sId,
                                 Integer causeOfLossAtr,
                                 Integer requestForIssuance,
                                 Integer scheduleForReplenishment,
                                 String causeOfLossEmpInsurance,
                                 Integer scheduleWorkingHourPerWeek) {
-        this.SID = SID;
+        this.sId = sId;
         this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new CauseOfLossEmpInsurance(causeOfLossEmpInsurance));
         this.causeOfLossAtr = causeOfLossAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLossAtr, CauseOfLossAtr.class));
         this.requestForIssuance = requestForIssuance == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(requestForIssuance, RequestForIssuance.class));

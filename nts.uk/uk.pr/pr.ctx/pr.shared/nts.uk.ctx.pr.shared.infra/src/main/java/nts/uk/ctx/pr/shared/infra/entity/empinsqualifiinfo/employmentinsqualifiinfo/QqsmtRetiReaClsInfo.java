@@ -44,7 +44,7 @@ public class QqsmtRetiReaClsInfo extends UkJpaEntity implements Serializable {
 
     public RetirementReasonClsInfo toDomain (){
         return new RetirementReasonClsInfo(
-                this.qqsmtRetiReaClsInfoPk.sid,
+                this.qqsmtRetiReaClsInfoPk.sId,
                 this.retirementReasonClsCode,
                 this.retirementReasonClsName
         );
@@ -52,7 +52,7 @@ public class QqsmtRetiReaClsInfo extends UkJpaEntity implements Serializable {
 
     public static QqsmtRetiReaClsInfo toEntity (RetirementReasonClsInfo domain) {
         return new QqsmtRetiReaClsInfo(
-                new QqsmtRetiReaClsInfoPk(domain.getCID()),
+                new QqsmtRetiReaClsInfoPk(domain.getCId()),
                 domain.getRetirementReasonClsCode().toString(),
                 domain.getRetirementReasonClsName().toString()
         );
