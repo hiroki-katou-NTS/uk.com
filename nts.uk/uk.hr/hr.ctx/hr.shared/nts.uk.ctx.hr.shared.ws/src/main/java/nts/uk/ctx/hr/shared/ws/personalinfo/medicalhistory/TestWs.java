@@ -26,13 +26,13 @@ public class TestWs {
 	@POST
 	@Path("/testhr") // test service
 	public List<PersonnelAssessment> testDomain(TestDto dto) {
-		return hrEval.loadHRevaluation(dto.getSid(), dto.getBaseDate());
+		return hrEval.loadHRevaluation(dto.getSid(), dto.getBaseDate().addMonths(-1));
 	}
 
 	@POST
 	@Path("/teststress") // test service
 	public List<StressCheck> testStress(TestDto dto) {
-		return stresscheck.loadStressCheck(dto.getSid(), dto.getBaseDate());
+		return stresscheck.loadStressCheck(dto.getSid(), dto.getBaseDate().addMonths(-1));
 	}
 
 }
