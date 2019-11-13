@@ -231,7 +231,7 @@ project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom') {
 	dependencies {
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		compile group: 'aspose', name: 'aspose.pdf', version: '19.10'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
