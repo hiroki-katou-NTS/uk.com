@@ -171,8 +171,11 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 Graph graph = new Graph(50, 50);
                 // tạo line gạch chữ
                 Line line = new Line(new float[]{295, 495, 357, 495});
+                Line line2 = new Line(new float[]{125, -102, 180, -102});
                 graph.getShapes().add(line);
+                graph.getShapes().add(line2);
                 paragraphs.add(graph);
+
                 //
 
                 Circle rect = null;
@@ -229,6 +232,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 JapaneseDate fillingDate = toJapaneseDate(GeneralDate.fromString(element.getFillingDate().substring(0, 10), "yyyy/MM/dd"));
 
                 detachDate(486, 206, fillingDate, paragraphs);
+
                 //index page
                 indexPage = indexPage + 2;
             }
