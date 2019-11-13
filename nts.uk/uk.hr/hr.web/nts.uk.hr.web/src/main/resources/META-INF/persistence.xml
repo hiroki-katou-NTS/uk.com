@@ -32,6 +32,8 @@
         <jar-file>lib/nts.uk.ctx.at.request.infra.jar</jar-file>
         <jar-file>lib/nts.uk.ctx.at.schedule.infra.jar</jar-file>
         <jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
+        
+        <jar-file>lib/nts.uk.ctx.hr.develop.infra.jar</jar-file>
 		
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>
 		<class>nts.uk.shr.infra.i18n.entity.SystemResource</class>

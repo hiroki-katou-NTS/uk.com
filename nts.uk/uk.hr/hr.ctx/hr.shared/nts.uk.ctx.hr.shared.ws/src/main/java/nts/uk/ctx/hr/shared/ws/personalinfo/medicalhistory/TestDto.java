@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.ws;
+package nts.uk.ctx.hr.shared.ws.personalinfo.medicalhistory;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
