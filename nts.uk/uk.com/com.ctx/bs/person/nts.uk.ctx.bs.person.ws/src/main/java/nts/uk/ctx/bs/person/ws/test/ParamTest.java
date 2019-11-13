@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 public class ParamTest {
-	public List<String> listSid;
-	public String sid;
+	public List<String> listPid;
+	public String pid;
 	public GeneralDate baseDate;
 }

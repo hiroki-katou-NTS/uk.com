@@ -25,18 +25,18 @@ public class ResidenceHistoryWS {
 	@Path("/get") // test service
 	public ListForeignerResidence testDomain(ParamTest param) {
 
-		List<String> listSid = param.listSid;
-		String sid = param.sid;
+		List<String> listPid = param.listPid;
+		String pid = param.pid;
 		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date());
 
-		if (sid == null || sid == "") {
-			ListForeignerResidence result = domain.getListForeignerResidenceHistoryInforItem(listSid, baseDate);
+		if (pid == null || pid == "") {
+			ListForeignerResidence result = domain.getListForeignerResidenceHistoryInforItem(listPid, baseDate);
 			return result;
 
 		} else {
-			ListForeignerResidence result = domain.getListForeignerResidenceHistoryInforItem(listSid, baseDate);
+			ListForeignerResidence result = domain.getListForeignerResidenceHistoryInforItem(listPid, baseDate);
 			domain.setListForeignerResidence(result);
-			ForeignerResidenceHistoryInforItem mItem1 = domain.getForeignerResidenceHistoryInforItem(param.sid,
+			ForeignerResidenceHistoryInforItem mItem1 = domain.getForeignerResidenceHistoryInforItem(param.pid,
 					baseDate);
 
 			if (mItem1 == null) {
