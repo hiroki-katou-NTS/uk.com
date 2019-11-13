@@ -34,7 +34,7 @@ export class Kdws03AComponent extends Vue {
 
     @Prop({ default: () => ({
         screenMode: 0,
-        closureID: 0,
+        closureID: null,
         changePeriodAtr: true,
         displayFormat: 0,
         targetEmployee: '',
@@ -242,6 +242,7 @@ export class Kdws03AComponent extends Vue {
             displayFormat: self.displayFormat,
             displayDateRange: null,
             transitionDesScreen: self.params.transitionDesScreen,
+            closureId: self.params.closureID,
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -357,6 +358,9 @@ export class Kdws03AComponent extends Vue {
         if (self.isFirstLoad) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
+            if (self.params.closureYM != 0) {
+                self.yearMonth = self.params.closureYM;
+            }
         }
 
         if (self.displayFormat == 1 && self.isFirstLoad) {
