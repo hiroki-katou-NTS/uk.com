@@ -11,9 +11,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
     export class ScreenModel {
 
-        submittedNames: KnockoutObservableArray<model.ItemModel>;
-        changedName: KnockoutObservableArray<model.ItemModel>;
-
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
         startDate: KnockoutObservable<string> = ko.observable('');
@@ -23,12 +20,23 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        /*submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
+        submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
         changedName: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getChangedName());
-        newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());*/
+        newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());
 
-        selectedCode: KnockoutObservable<any> = ko.observable(1);
-        submittedName: KnockoutObservable<any> = ko.observable(0);
+        empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
+            submitNameAtr: 0,
+            outputOrderAtr: 0,
+            officeClsAtr: 0,
+            myNumberClsAtr: 0,
+            nameChangeClsAtr: 0
+        }));
+
+        empInsRptTxtSetting: KnockoutObservable<EmpInsRptTxtSetting> = ko.observable(new EmpInsRptTxtSetting({
+            lineFeedCode: 0,
+            officeAtr: 0,
+            fdNumber: 0
+        }));
 
         /* kcp005 */
         baseDate: any;
@@ -47,27 +55,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         constructor() {
             let self = this;
-
-            self.submittedNames = ko.observableArray([
-                new model.ItemModel(0, '基本給'),
-                new model.ItemModel(1, '役職手当')
-            ]);
-
-            /*self.item_list_one = ko.observableArray([
-                new model.ItemModel(0, '個人名'),
-                new model.ItemModel(1, '届出氏名')
-            ]);
-
-            self.item_list_two = ko.observableArray([
-                new model.ItemModel(0, '印字する'),
-                new model.ItemModel(1, '印字しない')
-            ]);*/
-
-            self.changedName = ko.observableArray([
-                new model.ItemModel(0, '付加する'),
-                new model.ItemModel(1, '付加しない'),
-                new model.ItemModel(2, 'e-Gov')
-            ]);
 
             self.startDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
@@ -112,8 +99,18 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-
-            dfd.resolve();
+            block.invisible();
+            $.when(service.getEmpInsReportSetting(), service.getEmpInsReportTxtSetting())
+            .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
+                if (setting && txtSetting) {
+                    self.empInsReportSetting(new EmpInsReportSetting(setting));
+                    self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+                }
+                dfd.resolve();
+            }).fail(function (result) {
+                dialog.alertError(result.errorMessage);
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -232,12 +229,13 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                     myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
+
             };
             nts.uk.ui.block.grayout();
-            service.exportPDF(data).done(function () {
-            }).fail(function (error) {
+            service.exportPDF(data).done(() => {
+            }).fail((error) => {
                 nts.uk.ui.dialog.alertError(error);
-            }).always(function () {
+            }).always(() => {
                 nts.uk.ui.block.clear();
             });
         }
@@ -253,7 +251,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         }
 
         getSelectedEmpIds(selectedCode: Array, employeeList: Array) {
-            return _.map(_.filter(employeeList, e => _.includes(selectedCode, e)), e => e.id);
+            return _.map(_.filter(employeeList, e => _.includes(selectedCode, e.code)), e => e.id);
         }
     }
 
@@ -356,4 +354,45 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         }
     }
 
+    export interface IEmpInsReportSetting {
+        submitNameAtr: number;
+        outputOrderAtr: number;
+        officeClsAtr: number;
+        myNumberClsAtr: number;
+        nameChangeClsAtr: number;
+    }
+
+    export class EmpInsReportSetting {
+        submitNameAtr: KnockoutObservable<number>;
+        outputOrderAtr: KnockoutObservable<number>;
+        officeClsAtr: KnockoutObservable<number>;
+        myNumberClsAtr: KnockoutObservable<number>;
+        nameChangeClsAtr: KnockoutObservable<number>;
+
+        constructor(params: IEmpInsReportSetting) {
+            this.submitNameAtr = ko.observable(params.submitNameAtr);
+            this.outputOrderAtr = ko.observable(params.outputOrderAtr);
+            this.officeClsAtr = ko.observable(params.officeClsAtr);
+            this.myNumberClsAtr = ko.observable(params.myNumberClsAtr);
+            this.nameChangeClsAtr = ko.observable(params.nameChangeClsAtr);
+        }
+    }
+
+    export interface IEmpInsRptTxtSetting {
+        lineFeedCode: number,
+        officeAtr: number,
+        fdNumber: number
+    }
+
+    export class EmpInsRptTxtSetting {
+        lineFeedCode: KnockoutObservable<number>;
+        officeAtr: KnockoutObservable<number>;
+        fdNumber: KnockoutObservable<number>;
+
+        constructor(params: IEmpInsRptTxtSetting) {
+            this.lineFeedCode =  ko.observable(params.lineFeedCode);
+            this.officeAtr =  ko.observable(params.officeAtr);
+            this.fdNumber =  ko.observable(params.fdNumber);
+        }
+    }
 }
