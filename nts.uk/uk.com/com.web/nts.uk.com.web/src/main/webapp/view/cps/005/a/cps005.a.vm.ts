@@ -201,6 +201,7 @@ module nts.uk.com.view.cps005.a {
         ];
         constructor(data: IData) {
             let self = this;
+            self.rowCategoryItems = self.rowCategoryItems -1;
             if (data) {
                 self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
                 self.historyTypes = data.historyTypes ? data.historyTypes.splice(0, 3) : [];
