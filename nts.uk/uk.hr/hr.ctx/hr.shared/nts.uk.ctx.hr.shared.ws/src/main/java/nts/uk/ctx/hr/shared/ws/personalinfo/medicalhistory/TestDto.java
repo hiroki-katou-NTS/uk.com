@@ -5,6 +5,6 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 public class TestDto {
-	private String employeeID;
-	private GeneralDate date;
+	private String sid;
+	private GeneralDate baseDate;
 }
