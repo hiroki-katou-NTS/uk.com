@@ -66,8 +66,8 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                 String emInsNumInfo =  element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "" ;
                 if( element.getEmpInsNumInfo() != null && !element.getEmpInsNumInfo().getEmpInsNumber().v().equals("")  ){
                     detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,paragraphs);
-                    detachText(130,711,emInsNumInfo.length() > 8 ? emInsNumInfo.substring(4,10): "",6,paragraphs);
-                    detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,11): "",1,paragraphs);
+                    detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,paragraphs);
+                    detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,paragraphs);
                 }
 
                 //A1_4
@@ -76,29 +76,29 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
                         case OUTPUT_COMPANY: {
                             if (element.getCompanyInfor() != null) {
                                 String companyCode = element.getCompanyInfor().getCompanyCode();
-                                detachText(362, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : "", 4, paragraphs);
-                                detachText(400, 711, companyCode.length() > 8 ? companyCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(450, 711, companyCode.length() > 11 ? companyCode.substring(10,11) : "", 1, paragraphs);
+                                detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, paragraphs);
+                                detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, paragraphs);
+                                detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, paragraphs);
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
                                 String postCd = element.getCompanyInfor().getPostCd();
-                                paragraphs.add(setValue(150, 186,formatPostalCode(postCd), 9));
+                                paragraphs.add(setValue(150, 190,formatPostalCode(postCd), 9));
                                 //A3_2
-                                paragraphs.add(setValue(210, 186, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
+                                paragraphs.add(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
                                 //A3_3
                                 paragraphs.add(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
-                                paragraphs.add(setValue(150, 130, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
+                                paragraphs.add(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
                             }
                             break;
                         }
                         case OUPUT_LABOR_OFFICE: {
                             if (element.getLaborInsuranceOffice() != null) {
                                 String laborOfficeCode =  element.getLaborInsuranceOffice().getLaborOfficeCode().v();
-                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : "", 4, paragraphs);
-                                detachText(362, 711, laborOfficeCode.length() > 8 ? laborOfficeCode.substring(4,10) : "", 6, paragraphs);
-                                detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,11) : "", 1, paragraphs);
+                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : laborOfficeCode, 4, paragraphs);
+                                detachText(362, 711, laborOfficeCode.length() > 4 ? laborOfficeCode.substring(4,laborOfficeCode.length()) : "", 6, paragraphs);
+                                detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, paragraphs);
 
                                 //A2_6
                                 paragraphs.add(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
@@ -319,11 +319,11 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
 
             if(numberSplit[1].length() <= 3){
                 temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）";
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　）";
             }else{
                 temp[0] = numberSplit[1].substring(0,3);
                 temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　局）" + temp[1];
+                numberPhone = numberSplit[0] + "（   　" + temp[0] + "   　）" + temp[1];
             }
 
         }else if(numberSplit.length >= 3){
