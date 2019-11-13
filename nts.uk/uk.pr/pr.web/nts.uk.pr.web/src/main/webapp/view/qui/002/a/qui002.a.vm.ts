@@ -195,6 +195,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             }).fail(function (error) {
                 nts.uk.ui.dialog.alertError(error);
             }).always(function () {
+                $('#A222_14').focus();
                 nts.uk.ui.block.clear();
             });
 
