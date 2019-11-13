@@ -66,3 +66,6 @@
 	margin-left: calc(15vw - 153px);
 	display: inline-block;
 }
+#returnReason {
+	padding: 10px 10px;
+}
