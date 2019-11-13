@@ -95,19 +95,21 @@
 									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo'}" />
 							</div>
 						</div>
+						<div data-bind="visible : true" > 
 						<div class="fixed-flex-layout">
 							<div data-bind="ntsFormLabel: {required: true}" class="width-label fixed-flex-layout-left">
-								<label>雇用形態</label>
+								<label data-bind ="$parent.commonMasterName"></label>
 							</div>
 							<div id="combo-box" data-bind="ntsComboBox: {
 								options: $parent.itemListMatter,
-								optionsValue: 'code',
+								optionsValue: 'commonMasterItemCode',
 								visibleItemsCount: 5,
 								value: $parent.selectedCode1,
-								optionsText: 'name',
+								optionsText: 'commonMasterItemName',
 								columns: [
-									{ prop: 'name', length: 10 },
-								]}"></div>
+									{ prop: 'commonMasterItemName', length: 10 },
+								]}"></div> 
+						</div>
 						</div>
 					</div>
 				</div>

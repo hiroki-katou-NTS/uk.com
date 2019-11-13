@@ -13,14 +13,18 @@ module nts.uk.com.view.cmm008.a {
             isUpdateMode: KnockoutObservable<boolean>;
             itemListMatter: KnockoutObservableArray<ItemModel>;
             selectedCode1: KnockoutObservable<string>;
+            showsGroupCompany: KnockoutObservable<boolean>;
+            commonMasterName : KnockoutObservable<string>;
+            
             constructor() {
                 var self = this;
 
+                self.showsGroupCompany = ko.observable(true);
                 self.isUpdateMode = ko.observable(false);
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
                 self.selectedCode = ko.observable("");
-                
+                self.commonMasterName = ko.observable("");
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
                         self.clearErrors();
@@ -44,11 +48,7 @@ module nts.uk.com.view.cmm008.a {
                 self.enableEmpCode = ko.observable(false);
                 
                 //Item List Master Common
-                 self.itemListMatter = ko.observableArray([
-                        new ItemModel('1', '基本給'),
-                        new ItemModel('2', '役職手当'),
-                        new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-        ]);
+                 self.itemListMatter = ko.observableArray([]);
                 self.selectedCode1 = ko.observable('1');
                 
             }
@@ -96,6 +96,13 @@ module nts.uk.com.view.cmm008.a {
                         self.employmentModel().isEnableCode(false);
                         self.enableDelete(true);
                         self.isUpdateMode(true);
+                        self.itemListMatter(employment.commonMasterItems);
+                        self.commonMasterName(employment.commonMasterName);
+                        if(employment.errMessage !== null) {
+                            self.showsGroupCompany(false);
+                            nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
+                            
+                            }
                         $('#empName').focus();
                     }
                 });

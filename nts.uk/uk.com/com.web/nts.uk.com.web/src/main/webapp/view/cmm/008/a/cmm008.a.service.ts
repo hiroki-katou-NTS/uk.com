@@ -16,6 +16,8 @@ module nts.uk.com.view.cmm008.a {
         export function findEmployment(employmentCode: string): JQueryPromise<model.EmploymentDto> {
             return nts.uk.request.ajax(paths.findEmployment + "/" + employmentCode);
         }
+        
+        
 
         /**
          * Save Employment

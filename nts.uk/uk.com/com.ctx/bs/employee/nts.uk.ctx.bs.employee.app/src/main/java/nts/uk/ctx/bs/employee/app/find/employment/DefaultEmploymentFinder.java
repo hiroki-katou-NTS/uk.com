@@ -98,9 +98,11 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		GroupCommonMaster data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
 				GeneralDate.today());
 		if (data.getCommonMasterItems().isEmpty()) {
-			throw new BusinessException("Msg_1580");
+			dto.setErrMessage("Msg_1580");
+			return dto;
 		}
 		dto.setShowsGroupCompany(true);
+		dto.setCommonMasterName(data.getCommonMasterName().v());
 		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
 				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
 				.collect(Collectors.toList()));
