@@ -104,9 +104,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         performanceDisplayAtr: KnockoutObservable<boolean> = ko.observable(false);
         preDisplayAtr: KnockoutObservable<boolean> = ko.observable(false);
         workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
-        
-        instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
-        instructInfor : KnockoutObservable <string> = ko.observable('');
 
         overtimeWork: KnockoutObservableArray<common.OvertimeWork> = ko.observableArray([
             new common.OvertimeWork("",0,0,0,0,"",""),
@@ -432,8 +429,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.multilContent2(data.divergenceReasonContent); 
             }
             
-            self.instructInforFlag(data.displayOvertimeInstructInforFlg);
-            self.instructInfor(data.overtimeInstructInformation);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.prePostEnable(data.prePostCanChangeFlg);
@@ -1038,15 +1033,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.restTime(times);
             }
         }
-        /**
-         * Jump to CMM018 Screen
-         */
-        openCMM018() {
-                let self = this;
-            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
-            nts.uk.sessionStorage.setItemAsJson(nts.uk.request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
-            window.location.href = "../../../../../nts.uk.com.web/view/cmm/018/a/index.xhtml";
-        }
         
         findBychangeAppDateData(data: any) {
             var self = this;
@@ -1089,8 +1075,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.multilContent2(overtimeDto.divergenceReasonContent); 
             }
             
-            self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);
-            self.instructInfor(overtimeDto.overtimeInstructInformation);
             // preAppOvertime
             self.convertpreAppOvertimeDto(overtimeDto);
             self.referencePanelFlg(data.referencePanelFlg);
