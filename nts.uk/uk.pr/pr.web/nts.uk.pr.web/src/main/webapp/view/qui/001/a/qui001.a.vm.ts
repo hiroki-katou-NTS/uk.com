@@ -1,6 +1,13 @@
 module nts.uk.pr.view.qui001.a.viewmodel {
 
     import model = nts.uk.pr.view.qui001.share.model;
+    import dialog = nts.uk.ui.dialog;
+    import errors = nts.uk.ui.errors;
+    import block = nts.uk.ui.block;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import JapanDateMoment = nts.uk.time.JapanDateMoment;
 
     export class ScreenModel {
 
@@ -209,6 +216,44 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         getStyle(){
             let self = this;
             return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+        }
+
+        exportPDF() {
+            let self = this;
+            if (self.validate()) {
+                return;
+            }
+            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
+            let data = {
+                empInsReportSettingExport: {
+                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
+                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
+                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
+                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
+                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
+                },
+            };
+            nts.uk.ui.block.grayout();
+            service.exportPDF(data).done(function () {
+            }).fail(function (error) {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(function () {
+                nts.uk.ui.block.clear();
+            });
+        }
+
+        exportCSV() {
+
+        }
+
+        validate() {
+            errors.clearAll();
+            $(".nts-input").trigger("validate");
+            return errors.hasError();
+        }
+
+        getSelectedEmpIds(selectedCode: Array, employeeList: Array) {
+            return _.map(_.filter(employeeList, e => _.includes(selectedCode, e)), e => e.id);
         }
     }
 

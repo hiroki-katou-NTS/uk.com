@@ -13,7 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-
 public class QqsmtEmpInsGetInfoPk implements Serializable {
     /**
      * 社員ID

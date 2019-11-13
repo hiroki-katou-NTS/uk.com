@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ public class EmpInsGetInfo extends AggregateRoot {
     /**
      * 社員ID
      */
-    private String sid;
+    private String salaryId;
 
     /**
      * 労働時間
@@ -61,8 +62,17 @@ public class EmpInsGetInfo extends AggregateRoot {
      */
     private Optional<EmploymentStatus> employmentStatus;
 
-    public EmpInsGetInfo(String sid, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
-        this.sid = sid;
+    public EmpInsGetInfo(String salaryId, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
+        this.salaryId = salaryId;
+        this.workingTime = workingTime == null ? Optional.empty() : Optional.of(new WorkingTime(workingTime));
+        this.acquisitionAtr = acquisitionAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(acquisitionAtr, AcquisitionAtr.class));
+        this.printAtr = printAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(printAtr, ContractPeriodPrintAtr.class));
+        this.jobPath = jobPath == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(jobPath, JobPath.class));
+        this.payWage = payWage == null ? Optional.empty() : Optional.of(new PayWage(payWage));
+        this.jobAtr = jobAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(jobAtr, JobAtr.class));
+        this.insCauseAtr = insCauseAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(insCauseAtr, InsuranceCauseAtr.class));
+        this.paymentMode = paymentMode == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(paymentMode, WagePaymentMode.class));
+        this.employmentStatus = employmentStatus == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(employmentStatus, EmploymentStatus.class));
     }
 
 }

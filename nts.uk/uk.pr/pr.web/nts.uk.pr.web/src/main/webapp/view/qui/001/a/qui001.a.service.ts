@@ -3,17 +3,16 @@ module nts.uk.pr.view.qui001.a {
 
     export module service {
         let paths: any = {
-            getSocialInsurNotiCreateSet: "ctx/pr/report/printconfig/socinsurnoticreset/getSocialInsurNotiCreateSet"
-            /*,
-            exportFilePDF: "ctx/pr/report/printconfig/changeAdd/exportData"*/
+            getSocialInsurNotiCreateSet: "ctx/pr/report/printconfig/socinsurnoticreset/getSocialInsurNotiCreateSet",
+            exportPDF: ""
         };
 
         export function getSocialInsurNotiCreateSet(): JQueryPromise<any> {
             return ajax("pr", paths.getSocialInsurNotiCreateSet);
         }
 
-        /*export function exportFilePDF(data: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportFilePDF, data);
-        }*/
+        export function exportPDF(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportPDF, data);
+        }
     }
 }

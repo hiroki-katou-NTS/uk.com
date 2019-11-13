@@ -2,6 +2,10 @@ package nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifi
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -88,5 +92,31 @@ public class QqsmtEmpInsGetInfo extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return null;
+    }
+
+    public EmpInsGetInfo toDomain() {
+        return new EmpInsGetInfo(
+                this.empInsGetInfoPk.sid,
+                this.workingTime,
+                this.acquiAtr,
+                this.contrPeriPrintAtr,
+                this.jobPath,
+                this.payWage,
+                this.jobAtr,
+                this.insCauseAtr,
+                this.wagePaymentMode,
+                this.employmentStatus);
+    }
+    public static QqsmtEmpInsGetInfo toEntity(EmpInsGetInfo domain) {
+        return new QqsmtEmpInsGetInfo(new QqsmtEmpInsGetInfoPk(domain.getSalaryId()),
+                domain.getWorkingTime().map(PrimitiveValueBase::v).orElse(null),
+                domain.getAcquisitionAtr().isPresent() ? domain.getAcquisitionAtr().get().value : null,
+                domain.getPrintAtr().isPresent() ? domain.getPrintAtr().get().value : null,
+                domain.getJobPath().isPresent() ? domain.getJobPath().get().value : null,
+                domain.getPayWage().map(PrimitiveValueBase::v).orElse(null),
+                domain.getJobAtr().isPresent() ? domain.getJobAtr().get().value : null,
+                domain.getInsCauseAtr().isPresent() ? domain.getInsCauseAtr().get().value : null,
+                domain.getPaymentMode().isPresent() ? domain.getPaymentMode().get().value : null,
+                domain.getEmploymentStatus().isPresent() ? domain.getEmploymentStatus().get().value : null);
     }
 }
