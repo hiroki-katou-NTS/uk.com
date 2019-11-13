@@ -27,7 +27,7 @@ public class ResidenceHistoryWS {
 
 		List<String> listPid = param.listPid;
 		String pid = param.pid;
-		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date());
+		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
 
 		if (pid == null || pid == "") {
 			ListForeignerResidence result = domain.getListForeignerResidenceHistoryInforItem(listPid, baseDate);

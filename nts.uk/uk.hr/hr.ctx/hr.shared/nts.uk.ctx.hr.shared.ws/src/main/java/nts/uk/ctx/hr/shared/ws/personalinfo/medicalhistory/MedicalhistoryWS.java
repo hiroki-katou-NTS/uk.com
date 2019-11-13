@@ -27,7 +27,7 @@ public class MedicalhistoryWS {
 
 		List<String> listSid = param.listSid;
 		String sid = param.sid;
-		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date());
+		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
 
 		if (sid == null || sid == "") {
 			ListMedicalhistory result = domain.getListMedicalhistoryItem(listSid, baseDate);
