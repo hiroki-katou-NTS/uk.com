@@ -131,7 +131,7 @@ public class CompanyPubImp implements ICompanyPub {
 
 	@Override
 	public Optional<CompanyExport622> getCompanyNotAbolitionByCid(String cid) {
-		Optional<Company> companyOpt =  repo.getComanyByCid(cid);
+		Optional<Company> companyOpt =  repo.getComanyNotAbolitionByCid(cid);
 		
 		if(companyOpt.isPresent()) {
 			

@@ -30,6 +30,8 @@ public class FamilyMemberPubImpl implements FamilyPub{
 		return familyMembers.stream().map(c -> {
 			Optional<FullNameSet> romajiOpt = c.getFullNameRomaji();
 			return new FamilyExport623(c.getFamilyMemberId(), c.getBirthday() == null?"": c.getBirthday().toString(),
+					c.getFullName().getFullName() == null? "": c.getFullName().getFullName().v(),
+					c.getFullName().getFullNameKana() == null? "": c.getFullName().getFullNameKana().v(),
 					Optional.ofNullable(romajiOpt.isPresent()? (romajiOpt.get().getFullName() == null? "":romajiOpt.get().getFullName().v()):""),
 					Optional.ofNullable(romajiOpt.isPresent()? (romajiOpt.get().getFullNameKana() == null?"":romajiOpt.get().getFullNameKana().v()):""));
 			}).collect(Collectors.toList());

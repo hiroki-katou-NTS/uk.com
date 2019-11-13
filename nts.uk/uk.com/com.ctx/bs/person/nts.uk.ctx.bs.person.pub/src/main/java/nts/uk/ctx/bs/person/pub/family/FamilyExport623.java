@@ -13,6 +13,12 @@ import lombok.Setter;
 public class FamilyExport623 {
 	private String familyId;
 	private String birthday;
+	// 家族.氏名.氏名
+	private String fullName;
+	//家族.氏名.氏名カナ
+	private String fullNameKana;
+	//家族.氏名ローマ字.氏名
 	private Optional<String> romajiName;
+	//家族.氏名ローマ字.氏名カナ
 	private Optional<String> romajiNameKana;
 }
