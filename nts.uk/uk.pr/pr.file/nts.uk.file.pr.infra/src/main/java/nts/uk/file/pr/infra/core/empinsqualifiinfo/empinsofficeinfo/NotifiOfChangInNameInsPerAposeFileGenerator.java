@@ -8,8 +8,8 @@ import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExFileGenerator;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExportData;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExFileGenerator;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -18,7 +18,6 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
-public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenerator implements EmpInsReportSettingExFileGenerator {
+public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReportGenerator implements NotifiOfChangInNameInsPerExFileGenerator {
     private static final String TEMPLATE_FILE = "report/氏名変更届.pdf";
     private static final String SHOWA = "昭和";
 
@@ -42,7 +41,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
     private JapaneseErasAdapter adapter;
 
     @Override
-    public void generate(FileGeneratorContext fileContext, List<EmpInsReportSettingExportData> data) {
+    public void generate(FileGeneratorContext fileContext, List<NotifiOfChangInNameInsPerExportData> data) {
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1), doc.getPages().get_Item(2)};
@@ -58,7 +57,7 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
             for (int i = 0; i < data.size(); i++) {
 
                 Paragraphs paragraphs = doc.getPages().get_Item(indexPage).getParagraphs();
-                EmpInsReportSettingExportData element = data.get(i);
+                NotifiOfChangInNameInsPerExportData element = data.get(i);
 
                 // A1_2
                 paragraphs.add(setValue(114, 757, "0", 16));
@@ -286,9 +285,6 @@ public class EmpInsReportSettingAposeFileGenerator extends AsposePdfReportGenera
             value = value.substring(0, numCells);
         }
         List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        lstValue.forEach(e -> {
-
-        });
         for (int i = 0; i < lstValue.size(); i++) {
             int pixel = xRoot + (17 * i);
             paragraphs.add(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
