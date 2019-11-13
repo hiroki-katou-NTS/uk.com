@@ -235,8 +235,7 @@ export class Kdws03AComponent extends Vue {
             employeeID: self.selectedEmployee == '' ? self.params.targetEmployee : self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } :
-                (!_.isNil(self.params.dateTarget) ? { startDate: self.params.dateTarget, endDate: self.params.dateTarget } : null)),
+                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: self.params.initClock,
             displayFormat: self.displayFormat,
