@@ -2693,6 +2693,13 @@ public class ProgramsManager {
 			"/view/qsi/014/a/index.xhtml");
 	public static final Program QSI014B = new Program(WebAppId.PR, ProgramIdConsts.QSI014B, "QSI014_2",
 			"/view/qsi/014/b/index.xhtml");
+	/**
+	 * QUI002
+	 */
+	public static final Program QUI002A = new Program(WebAppId.PR, ProgramIdConsts.QUI002A, "QUI002_23",
+			"/view/qui/002/a/index.xhtml");
+	public static final Program QUI002B = new Program(WebAppId.PR, ProgramIdConsts.QUI002B, "QUI002_15",
+			"/view/qui/002/b/index.xhtml");
 
 	/**
 	 * All programs map.

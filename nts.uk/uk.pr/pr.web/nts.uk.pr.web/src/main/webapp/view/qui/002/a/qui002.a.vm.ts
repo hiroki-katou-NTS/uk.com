@@ -41,7 +41,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
-            officeClsAtr: 0,
+            officeClsAtr: 1,
             myNumberClsAtr: 0,
             nameChangeClsAtr: 0
         }));
@@ -101,6 +101,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                     self.empInsReportSetting().myNumberClsAtr(data.myNumberClsAtr);
                     self.empInsReportSetting().nameChangeClsAtr(data.nameChangeClsAtr);
                 }
+
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
@@ -194,6 +195,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
             }).fail(function (error) {
                 nts.uk.ui.dialog.alertError(error);
             }).always(function () {
+                $('#A222_14').focus();
                 nts.uk.ui.block.clear();
             });
 
@@ -265,7 +267,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 3,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
