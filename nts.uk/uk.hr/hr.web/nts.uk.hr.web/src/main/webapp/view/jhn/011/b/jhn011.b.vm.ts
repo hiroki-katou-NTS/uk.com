@@ -18,11 +18,11 @@ module jhn011.b.viewmodel {
         enaBtnSave : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
+        checkAbolition: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
-
 
             self.start();
 
@@ -35,9 +35,7 @@ module jhn011.b.viewmodel {
                     self.enaBtnDel(true);
                     service.getDetails(id).done((data: any) => {
                         if (data) {
-                            layout.code(data.layoutCode);
-                            layout.name(data.layoutName);
-
+                             self.setDetailLayout(data, layout);
                             // remove all sibling sperators
                             lv.removeDoubleLine(data.itemsClassification);
 
@@ -49,10 +47,14 @@ module jhn011.b.viewmodel {
                     });
                 }else{
                     self.enaBtnSave(false);
-                    self.enaBtnCoppy(false);
                     self.enaBtnDel(false);
                 }
             });
+            
+            self.checkAbolition.subscribe(c =>{
+                self.start(layout.id());
+            
+            })
         }
 
         start(code?: string): JQueryPromise<any> {
@@ -62,13 +64,15 @@ module jhn011.b.viewmodel {
                 dfd = $.Deferred();
             // get all layout
             layouts.removeAll();
-            service.getAll().done((data: Array<any>) => {
+            service.getAll(self.checkAbolition()).done((data: Array<any>) => {
+                
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
-                            id: x.maintenanceLayoutID,
-                            name: x.layoutName,
-                            code: x.layoutCode
+                            id: x.reportClsId,
+                            reportCode: x.reportName,
+                            reportName: x.reportCode,
+                            isAbolition: x.isAbolition
                         }
                     });
                     _.each(_data, d => layouts.push(d));
@@ -76,7 +80,7 @@ module jhn011.b.viewmodel {
                         layout.id(_data[0].id);
                     }
                     else {
-                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.code == code);
+                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.reportCode == code);
                         if (_item) {
                             layout.id(_item.id);
                         } else {
@@ -98,14 +102,12 @@ module jhn011.b.viewmodel {
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
             layout.id(undefined);
+            self.setDetailLayout({}, layout);
             self.enaBtnSave(true);
-            self.enaBtnCoppy(false);
             self.enaBtnDel(false);
-            layout.code(null);
-            layout.name(null);
             layout.classifications([]);
             layout.action(LAYOUT_ACTION.INSERT);
-            $("#A_INP_CODE").focus();
+            $("#B222_1_1").focus();
         }
 
         saveDataLayout() {
@@ -113,8 +115,15 @@ module jhn011.b.viewmodel {
                 data: ILayout = ko.toJS(self.layout),
                 command: any = {
                     id: data.id,
-                    code: data.code,
-                    name: data.name,
+                    reportCode: data.reportCode,
+                    reportName: data.reportName,
+                    reportNameYomi : data.reportNameYomi,
+                    isAbolition : data.isAbolition,
+                    reportType: data.reportType,
+                    remark: data.remark,
+                    memo: data.memo,
+                    message: data.message,
+                    formReport: data.formReport == 0? false: true,
                     action: data.action,
                     classifications: data.outData
                 };
@@ -132,19 +141,20 @@ module jhn011.b.viewmodel {
             service.saveData(command).done((_data: any) => {
                 unblock();
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-                    $("#A_INP_NAME").focus();
+                    $("#B222_1_2").focus();
                 });
 
-                self.start(data.code);
+                self.start(data.reportCode);
 
 
             }).fail((error: any) => {
                 unblock();
-                if (error.message == 'Msg_3') {
-                    showDialog.alert({ messageId: "Msg_3" }).then(function() {
-                        $("#A_INP_CODE").focus();
-                    });
-                }
+                nts.uk.ui.dialog.bundledErrors(error);
+//                _.each(error.errors, c=>{
+//                    if(c
+//                
+//                })
+                block.clear();
 
 
             });
@@ -166,10 +176,22 @@ module jhn011.b.viewmodel {
             });
         }
 
+        setDetailLayout(param: ILayout, layout: any){
+            layout.reportCode(param.reportCode || null);
+            layout.reportName(param.reportName || null);
+            layout.reportNameYomi(param.reportNameYomi || null);
+            layout.isAbolition(param.isAbolition || null);
+            layout.reportType(param.reportType || "0");
+            layout.remark(param.remark || null);
+            layout.memo(param.memo || null);
+            layout.message(param.message || null);
+            layout.formReport(param.formReport || 0);
+            layout.agentReportIsCan(param.agentReportIsCan || 0);
+        }
+            
         removeDataLayout() {
             let self = this,
-                data: ILayout = ko.toJS(self.layout),
-                layouts: Array<ILayout> = ko.toJS(self.layouts);
+                data: ILayout = ko.toJS(self.layout);
 
             data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
 
@@ -178,19 +200,13 @@ module jhn011.b.viewmodel {
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 var command: any = {
-                    id: data.id,
-                    code: data.code,
-                    name: data.name,
-                    action: data.action,
-                    classifications: data.outData
+                    id: data.id
                 };
 
                 // call service remove
                 invisible();
                 let itemListLength = self.layouts().length;
-                service.saveData(command).done((data: any) => {
-
-
+                service.removeData(data.id).done((data: any) => {
                     showDialog.info({ messageId: "Msg_16" }).then(function() {
                         if (itemListLength === 1) {
                             self.start().done(() => {
@@ -252,12 +268,20 @@ module jhn011.b.viewmodel {
         itemName: string;
         dispOrder: number;
     }
-
+        
 
     interface ILayout {
         id: string;
-        code: string;
-        name: string;
+        reportCode: string;
+        reportName: string;
+        reportNameYomi?: string;
+        isAbolition: boolean;
+        reportType?: int;
+        remark?: string;
+        memo?: string;
+        message?: string;
+        formReport?: boolean;
+        agentReportIsCan?: boolean;
         classifications?: Array<IItemClassification>;
         action?: number;
         outData?: Array<any>;
@@ -265,10 +289,40 @@ module jhn011.b.viewmodel {
 
     class Layout {
         id: KnockoutObservable<string> = ko.observable(null);
-        code: KnockoutObservable<string> = ko.observable(null);
-        name: KnockoutObservable<string> = ko.observable(null);
+        
+        reportCode: KnockoutObservable<string> = ko.observable(null);
+        
+        reportName: KnockoutObservable<string> = ko.observable(null);
+        
+        reportNameYomi: KnockoutObservable<string> = ko.observable(null);
+        
+        isAbolition: KnockoutObservable<boolean> = ko.observable(null);
+        
+        reportType: KnockoutObservable<any> = ko.observable(null);
+        
+        remark: KnockoutObservable<string> = ko.observable(null);
+        
+        memo: KnockoutObservable<string> = ko.observable(null);
+
+        message: KnockoutObservable<string> = ko.observable(null);
+
+        formReport: KnockoutObservable<string> = ko.observable(null);
+        
+        agentReportIsCan: KnockoutObservable<string> = ko.observable(null);
+    
+        comboxReportType: KnockoutObservableArray < any > = ko.observableArray([
+            { code: "0", name: Text("JHN011_B222_2_1_1") },
+            { code: "1", name: Text("JHN011_B222_2_1_2") },
+            { code: "2", name: Text("JHN011_B222_2_1_3") }]);
+    
+        roundingRules: KnockoutObservableArray < any > = ko.observableArray([
+            { code: "0", name: Text("JHN011_B222_6_1_1") },
+            { code: "1", name: Text("JHN011_B222_6_1_2") }]);
+        
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
+        
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(param: ILayout) {
@@ -276,9 +330,16 @@ module jhn011.b.viewmodel {
 
             if (param) {
                 self.id(param.id || null);
-                self.code(param.code || null);
-                self.name(param.name || null);
-
+                self.reportCode(param.reportCode || null);
+                self.reportName(param.reportName || null);
+                self.reportNameYomi(param.reportNameYomi || null);
+                self.isAbolition(param.isAbolition || null);
+                self.reportType(param.reportType || null);
+                self.remark(param.remark || null);
+                self.memo(param.memo || null);
+                self.message(param.message || null);
+                self.formReport(param.formReport || 0);
+                self.agentReportIsCan(param.agentReportIsCan || 0);
                 self.classifications(param.classifications || []);
             }
         }

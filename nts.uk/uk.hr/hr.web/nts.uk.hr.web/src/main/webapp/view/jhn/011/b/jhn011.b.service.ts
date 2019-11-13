@@ -3,27 +3,32 @@ module jhn011.b.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAll: "ctx/pereg/person/maintenance/findAll",
-        getDetails: "ctx/pereg/person/maintenance/findOne/{0}",
-        saveData: "ctx/pereg/person/maintenance/saveLayout"
+        getAll: "hr/notice/report/findAll/{0}",
+        getDetails: "hr/notice/report/findOne/{0}",
+        remove:"hr/notice/report/delete/{0}",
+        saveData: "hr/notice/report/save"
     };
     
 
     /**
     * Get list Maintenance Layout
     */
-    export function getAll() {
-        return ajax("com", paths.getAll);
+    export function getAll(abolition) {
+        return ajax(format(paths.getAll, abolition));
     }
 
-    export function getDetails(lid) {
-        return ajax("com", format(paths.getDetails, lid));
+    export function getDetails(reportClsId) {
+        return ajax(format(paths.getDetails, reportClsId));
+    }
+    
+    export function removeData(reportClsId) {
+        return ajax(format(paths.remove, reportClsId));
     }
 
    /**
     * add  Maintenance Layout
     */
     export function saveData(data: any) {
-        return ajax("com", paths.saveData, data);
+        return ajax(paths.saveData, data);
     }
 }

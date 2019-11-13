@@ -33,7 +33,7 @@
 					data-bind="ntsPanel:{width: '300px',direction: 'right', showIcon: true, visible: true}">
 					
 					<div id="B221_2"
-							data-bind="ntsCheckBox: { checked: true }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
+							data-bind="ntsCheckBox: { checked: checkAbolition }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
 					<div class="cf">
 						<div style="float: left">
 							<div  id="B221_3" style="width: 300px"
@@ -45,7 +45,7 @@
 									items: layouts, 
 									selected: 'id',
 									selectedKey: 'id', 
-									fields: ['name', 'code'] }" />
+									fields: ['reportName', 'reportCode'] }" />
 							<table id="B221_4"
 								data-bind="ntsGridList: {
 									height: 535,
@@ -53,8 +53,8 @@
 									optionsValue: 'id',
 									columns: [
 						                { headerText: '', key: 'id', width: 0, hidden: true },
-						                { headerText: '#{i18n.getText('JHN011_B221_4_1')}', key: 'code', width: 60, hidden: false },
-						                { headerText: '#{i18n.getText('JHN011_B221_4_2')}', key: 'name', width: 220, hidden: false, formatter: _.escape }
+						                { headerText: '#{i18n.getText('JHN011_B221_4_1')}', key: 'reportCode', width: 60, hidden: false },
+						                { headerText: '#{i18n.getText('JHN011_B221_4_2')}', key: 'reportName', width: 220, hidden: false, formatter: _.escape }
 						            ],
 									multiple: false,
 									value: layout().id}">
@@ -88,7 +88,7 @@
 										<div class="input_002 input_code">
 											<input id="B222_1_1" tabindex="6"
 												data-bind="ntsTextEditor: {
-															value: code,
+															value: reportCode,
 															name: '#[JHN011_B222_1_1]',
 															constraint: 'Code_AlphaNumeric_3',
 															required:true,
@@ -98,14 +98,14 @@
 										<div class="input_002 input_name">
 											<input id="B222_1_2" tabindex="7"
 												data-bind="ntsTextEditor: {
-															value: name,
+															value: reportName,
 															name: '#[JHN011_B222_1_2]',
 															constraint: 'String_Any_20',
 															required:true,
 															enable: true
 											}" />
 											
-										<div id="B222_1_3" data-bind="ntsCheckBox: { checked: true }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
+										<div id="B222_1_3" data-bind="ntsCheckBox: { checked: isAbolition }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
 										
 										</div>
 									</div>
@@ -123,7 +123,7 @@
 										<div class="input_002 input_code">
 											<input id="B222_7_1" tabindex="8"
 												data-bind="ntsTextEditor: {
-															value: code,
+															value: reportNameYomi,
 															name: '#[JHN011_B222_7_1]',
 															constraint: 'String_Any_20',
 															required:false}" />
@@ -140,31 +140,22 @@
 								</td>
 								<td class="valign-center">
 									<div>
-										<div class="input_002 input_code">
-											<input id="B222_2_1" tabindex="9"
-												data-bind="ntsTextEditor: {
-															value: code,
-															name: '#[JHN011_B222_7_1]',
-															constraint: 'String_Any_20',
-															required:false}" />
-										</div>	
-<!-- nhap										<div
+										<div class="input_002 input_code"
 											data-bind="ntsComboBox: {
-													options: selection,
-													optionsValue: 'optionValue',
+													options: comboxReportType,
+													optionsValue: 'code',
 													visibleItemsCount: 5,
-													value: selectedCode,
-													optionsText: 'optionText',
-													editable: false,
+													value: reportType,
+													optionsText: 'name',
+													editable: true,
 													enable: true,
 													dropDownAttachedToBody:true,
-													selectFirstIfNull: false,
+													selectFirstIfNull: true,
 													required: false,
 													columns: [
-														{ prop: 'optionText', length: 10 },
-													]},
-													attr: { id: perInfoItemDefId, NameID: itemName }">
-										</div>	 -->																
+														{ prop: 'name', length: 10 },
+													]}">
+										</div>															
 									</div>
 								</td>
 							</tr>
@@ -181,7 +172,7 @@
 										<div class="input_002 input_code">
 											<input id="B222_3_1" tabindex="10"
 												data-bind="ntsTextEditor: {
-															value: code,
+															value: remark,
 															name: '#[JHN011_B222_3_1]',
 															constraint: 'String_Any_20',
 															required:false}" />
@@ -202,7 +193,7 @@
 										<div class="input_002 input_code">
 											<input id="B222_4_1" tabindex="11"
 												data-bind="ntsTextEditor: {
-															value: code,
+															value: memo,
 															name: '#[JHN011_B222_4_1]',
 															constraint: 'String_Any_20',
 															required:false}" />
@@ -224,7 +215,7 @@
 										<div class="input_002 input_code">
 											<input id="B222_5_1" tabindex="11"
 												data-bind="ntsTextEditor: {
-															value: code,
+															value: message,
 															name: '#[JHN011_B222_5_1]',
 															constraint: 'String_Any_20',
 															required:false}" />
@@ -233,6 +224,27 @@
 								</td>
 							</tr>	
 							
+							<!-- line 7  帳票印刷 -->
+							<tr>
+								<td class="row_1">
+									<div id="B222_6"
+										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										#{i18n.getText('JHN011_B222_6')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div id='B222_6_1' class="cf input_002 input_code"  data-bind="ntsSwitchButton: {
+											name: '#[JHN011_B222_6_1]',
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: formReport,
+											required: true,
+											enable: true }"></div>																		
+									</div>
+								</td>
+							</tr>								
+							
 																																										
 						</table>
 						<div>
@@ -240,7 +252,9 @@
 								data-bind="click: $parent.showDialogC.bind($parent), enable: !!id()">#{i18n.getText('JHN011_B222_101')}</button>
 						</div>
 						<com:ko tag="if" bind="action() == LAYOUT_ACTION.INSERT">
-							<div class="nosetarea">#{i18n.getText('CPS008_44')}</div>
+							<div class="nosetarea">
+							<span>#{i18n.getText('CPS008_44')}</span>
+							</div>
 						</com:ko>
 						<div style="padding-top: 10px"
 							data-bind="ntsLayoutControl: { 
