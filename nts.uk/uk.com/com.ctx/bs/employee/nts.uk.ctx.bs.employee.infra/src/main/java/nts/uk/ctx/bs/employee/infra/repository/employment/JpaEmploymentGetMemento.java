@@ -74,12 +74,12 @@ public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 
 	@Override
 	public Optional<String> empCommonMasterId() {
-		return  Optional.of(this.typedValue.getEmpCommonMasterId());
+		return  Optional.ofNullable(this.typedValue.getEmpCommonMasterId());
 	}
 
 	@Override
 	public Optional<String> empCommonMasterItemId() {
-		return Optional.of(this.typedValue.getEmpCommonMasterItemId());
+		return Optional.ofNullable(this.typedValue.getEmpCommonMasterItemId());
 	}
 
 }

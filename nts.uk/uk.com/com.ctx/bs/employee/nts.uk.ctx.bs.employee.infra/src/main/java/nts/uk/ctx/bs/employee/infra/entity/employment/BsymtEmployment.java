@@ -47,11 +47,11 @@ public class BsymtEmployment extends UkJpaEntity implements Serializable {
 	private String memo;
 	
 	@Basic(optional = true)
-	@Column(name = "EMPCOMMONMASTERID")
+	@Column(name = "COMMON_MASTER_ID")
 	private String empCommonMasterId;
 	
 	@Basic(optional = true)
-	@Column(name = "EMPCOMMONMASTERITEMID")
+	@Column(name = "COMMON_MASTER_ITEM_ID")
 	private String empCommonMasterItemId;
 	
 	/**

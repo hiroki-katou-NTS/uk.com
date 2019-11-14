@@ -93,12 +93,12 @@ public class JpaEmploymentSetMemento implements EmploymentSetMemento {
 	}
 
 	@Override
-	public void setempCommonMasterId(String empCommonMasterId) {
-		this.typedValue.setMemo(empCommonMasterId);
+	public void setEmpCommonMasterId(String empCommonMasterId) {
+		this.typedValue.setEmpCommonMasterId(empCommonMasterId);
 	}
 
 	@Override
-	public void setempCommonMasterItemId(String empCommonMasterItemId) {
-		this.typedValue.setMemo(empCommonMasterItemId);
+	public void setEmpCommonMasterItemId(String empCommonMasterItemId) {
+		this.typedValue.setEmpCommonMasterItemId(empCommonMasterItemId);
 	}
 }

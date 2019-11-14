@@ -101,6 +101,9 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			dto.setErrMessage("Msg_1580");
 			return dto;
 		}
+		if(employment.get().getEmpCommonMasterItemId().isPresent()){
+			dto.setEmpCommonMasterItemId(employment.get().getEmpCommonMasterItemId().get());
+		}
 		dto.setShowsGroupCompany(true);
 		dto.setCommonMasterName(data.getCommonMasterName());
 		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
