@@ -24,12 +24,12 @@ public class EmpForeignerResidenceWS {
 	@Path("/get1") // test service
 	public EmpForeignerResidenceManagement getList(ParamTest param) {
 
-		List<String> listPid = param.listPid;
+		List<String> listSid = param.listSid;
 		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
 
 		EmpForeignerResidenceManagement foreignerResidenceMng = new EmpForeignerResidenceManagement();
 
-		foreignerResidenceMng = empforeignerResidenceServices.loadForeignerResidence(listPid, baseDate,
+		foreignerResidenceMng = empforeignerResidenceServices.loadForeignerResidence(listSid, baseDate,
 				foreignerResidenceMng);
 		return foreignerResidenceMng;
 
@@ -39,8 +39,8 @@ public class EmpForeignerResidenceWS {
 	@Path("/get2") // test service
 	public ForeignerResidenceHistoryInforItem getSingle(ParamTest param) {
 
-		List<String> listPid = param.listPid;
-		String pid = param.pid;
+		List<String> listPid = param.listSid;
+		String pid = param.sid;
 		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
 
 		EmpForeignerResidenceManagement foreignerResidenceMng = new EmpForeignerResidenceManagement();
