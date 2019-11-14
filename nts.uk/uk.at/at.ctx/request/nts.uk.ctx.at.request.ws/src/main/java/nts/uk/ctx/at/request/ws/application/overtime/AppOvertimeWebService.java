@@ -55,8 +55,23 @@ public class AppOvertimeWebService {
 		
 	}
 	
-	public void calculate() {
-		
+	public void calculate(OvertimeCalcParam calcParam) {
+		appOvertimeFinder.calculate(
+				calcParam.appDate, 
+				calcParam.employeeID, 
+				calcParam.prePostAtr, 
+				calcParam.workTypeCD, 
+				calcParam.siftCD, 
+				calcParam.startTime, 
+				calcParam.endTime, 
+				calcParam.overTimeLst, 
+				calcParam.breakTimeLst, 
+				calcParam.opAppBefore, 
+				calcParam.beforeAppStatus, 
+				calcParam.actualLst, 
+				calcParam.actualStatus, 
+				calcParam.preExcessDisplaySetting, 
+				calcParam.performanceExcessAtr);
 	}
 	
 	public void register() {
