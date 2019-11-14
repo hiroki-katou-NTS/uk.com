@@ -20,6 +20,8 @@
 		<jar-file>lib/nts.uk.ctx.sys.log.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.hr.develop.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.hr.notice.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.hr.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.screen.hr.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.shr.com.jar</jar-file>
@@ -30,6 +32,8 @@
         <jar-file>lib/nts.uk.ctx.at.request.infra.jar</jar-file>
         <jar-file>lib/nts.uk.ctx.at.schedule.infra.jar</jar-file>
         <jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
+        
+        <jar-file>lib/nts.uk.ctx.hr.develop.infra.jar</jar-file>
 		
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>
 		<class>nts.uk.shr.infra.i18n.entity.SystemResource</class>

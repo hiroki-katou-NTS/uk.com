@@ -11,14 +11,20 @@ module nts.uk.com.view.cmm008.a {
             empList: KnockoutObservableArray<ItemModel>;
             enableEmpCode: KnockoutObservable<boolean>;
             isUpdateMode: KnockoutObservable<boolean>;
+            itemListMatter: KnockoutObservableArray<ItemModel>;
+            selectedCodeMaster: KnockoutObservable<string>;
+            showsGroupCompany: KnockoutObservable<boolean>;
+            commonMasterName : KnockoutObservable<string>;
             
             constructor() {
                 var self = this;
 
+                self.showsGroupCompany = ko.observable(true);
                 self.isUpdateMode = ko.observable(false);
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
                 self.selectedCode = ko.observable("");
+                self.commonMasterName = ko.observable("");
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
                         self.clearErrors();
@@ -40,6 +46,11 @@ module nts.uk.com.view.cmm008.a {
 
                 self.empList = ko.observableArray<ItemModel>([]);
                 self.enableEmpCode = ko.observable(false);
+                
+                //Item List Master Common
+                 self.itemListMatter = ko.observableArray([]);
+                self.selectedCodeMaster = ko.observable('1');
+                
             }
 
             /**
@@ -85,6 +96,14 @@ module nts.uk.com.view.cmm008.a {
                         self.employmentModel().isEnableCode(false);
                         self.enableDelete(true);
                         self.isUpdateMode(true);
+                        self.itemListMatter(employment.commonMasterItems);
+                        self.commonMasterName(employment.commonMasterName);
+                        self.selectedCodeMaster(employment.empCommonMasterItemId);
+                        if(employment.errMessage !== null) {
+                            self.showsGroupCompany(false);
+                            nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
+                            
+                            }
                         $('#empName').focus();
                     }
                 });
@@ -118,6 +137,8 @@ module nts.uk.com.view.cmm008.a {
                 command.empExternalCode = self.employmentModel().empExternalCode();
                 command.memo = self.employmentModel().memo();
                 command.isUpdateMode = self.isUpdateMode();
+                command.commonMasterName = 'M0000301';
+                command.selectedCodeMaster = self.selectedCodeMaster();
 
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
@@ -257,6 +278,7 @@ module nts.uk.com.view.cmm008.a {
             empExternalCode: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
             isEnableCode: KnockoutObservable<boolean>;
+           
             
             constructor() {
                 this.employmentCode = ko.observable("");
@@ -319,6 +341,15 @@ module nts.uk.com.view.cmm008.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        /** Item MasterCombobox **/
+        class ItemMaster {
+            commonMasterName: string;
+            commonMasterItemID: string;
+            constructor(commonMasterName: string, commonMasterItemID: string) {
+                this.commonMasterName = commonMasterName;
+                this.commonMasterItemID = commonMasterItemID;
             }
         }
     }

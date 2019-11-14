@@ -67,8 +67,9 @@ module nts.uk.hr.view.jmm017.b.viewmodel {
                 contentArea = sidebarArea - ($("#header")[0].getBoundingClientRect().height + $(".sidebar-content-header")[0].getBoundingClientRect().height),
                 //height of combobox of display page size = 44
                 groupArea = 44 + $("#grid_groupbyarea")[0].getBoundingClientRect().height;
-         return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
+			return {contentAreaHeight: contentArea, gridAreaHeight: contentArea + groupArea};
         }
+		
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();

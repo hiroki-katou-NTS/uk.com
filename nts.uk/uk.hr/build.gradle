@@ -186,6 +186,8 @@ project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra') {
 
 project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ac') {
 	dependencies {
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
@@ -244,6 +246,8 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra') {
 
 project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac') {
 	dependencies {
+		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
+		compile project(':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
@@ -301,7 +305,11 @@ project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.infra') {
 
 project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ac') {
 	dependencies {
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
+		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
 		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		
+		compile (group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
 	}
 }
 

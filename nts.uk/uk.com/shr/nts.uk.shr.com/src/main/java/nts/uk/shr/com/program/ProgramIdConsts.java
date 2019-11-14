@@ -660,6 +660,7 @@ public class ProgramIdConsts {
 	public static final String CMM021A = "CMM021A";
 	public static final String CMM021B = "CMM021B";
 	public static final String CMM021C = "CMM021C";
+	public static final String CMM023A = "CMM023A";
 	public static final String CDL023A = "CDL023A";
 	public static final String KMF002A = "KMF002A";
 	public static final String KMF002B = "KMF002B";
