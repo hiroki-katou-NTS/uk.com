@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -38,9 +37,9 @@ public class GroupCommonMasterWebServices extends WebService {
 	}
 
 	@POST
-	@Path("get_items/{commonMasterId}")
-	public List<GroupCommonItemDto> getItems(@PathParam("commonMasterId") String commonMasterId) {
-		return this.commonFinder.getItems(commonMasterId);
+	@Path("get_items")
+	public List<GroupCommonItemDto> getItems(GetItemParam param) {
+		return this.commonFinder.getItems(param.getCommonMasterId());
 	}
 
 	@POST
