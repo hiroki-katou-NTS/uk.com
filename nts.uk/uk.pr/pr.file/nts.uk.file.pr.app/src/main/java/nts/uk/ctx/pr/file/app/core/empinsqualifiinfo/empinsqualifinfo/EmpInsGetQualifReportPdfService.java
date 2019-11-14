@@ -1,10 +1,8 @@
-package nts.uk.ctx.pr.file.app.core.empinsqualifinfo.empinsqualifinfo;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExport;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExportData;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSettingRepository;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportTxtSetting;

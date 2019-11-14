@@ -1,8 +1,7 @@
-package nts.uk.ctx.pr.file.app.core.empinsqualifinfo.empinsqualifinfo;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.file.app.core.empinsreportsetting.EmpInsReportSettingExport;
 
 @Value
 public class EmpInsGetQualifReportQuery {

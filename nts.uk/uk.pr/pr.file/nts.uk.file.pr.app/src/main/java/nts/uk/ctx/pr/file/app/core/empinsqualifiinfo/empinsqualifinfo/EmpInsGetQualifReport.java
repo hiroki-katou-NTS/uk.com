@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.file.app.core.empinsqualifinfo.empinsqualifinfo;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
