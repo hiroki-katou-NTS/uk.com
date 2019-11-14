@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm008.a {
             enableEmpCode: KnockoutObservable<boolean>;
             isUpdateMode: KnockoutObservable<boolean>;
             itemListMatter: KnockoutObservableArray<ItemModel>;
-            selectedCode1: KnockoutObservable<string>;
+            selectedCodeMaster: KnockoutObservable<string>;
             showsGroupCompany: KnockoutObservable<boolean>;
             commonMasterName : KnockoutObservable<string>;
             
@@ -49,7 +49,7 @@ module nts.uk.com.view.cmm008.a {
                 
                 //Item List Master Common
                  self.itemListMatter = ko.observableArray([]);
-                self.selectedCode1 = ko.observable('1');
+                self.selectedCodeMaster = ko.observable('1');
                 
             }
 
@@ -98,6 +98,7 @@ module nts.uk.com.view.cmm008.a {
                         self.isUpdateMode(true);
                         self.itemListMatter(employment.commonMasterItems);
                         self.commonMasterName(employment.commonMasterName);
+                        self.selectedCodeMaster(employment.empCommonMasterItemId);
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
                             nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
@@ -136,6 +137,8 @@ module nts.uk.com.view.cmm008.a {
                 command.empExternalCode = self.employmentModel().empExternalCode();
                 command.memo = self.employmentModel().memo();
                 command.isUpdateMode = self.isUpdateMode();
+                command.commonMasterName = 'M0000301';
+                command.selectedCodeMaster = self.selectedCodeMaster();
 
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
@@ -275,6 +278,7 @@ module nts.uk.com.view.cmm008.a {
             empExternalCode: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
             isEnableCode: KnockoutObservable<boolean>;
+           
             
             constructor() {
                 this.employmentCode = ko.observable("");
@@ -341,11 +345,11 @@ module nts.uk.com.view.cmm008.a {
         }
         /** Item MasterCombobox **/
         class ItemMaster {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            commonMasterName: string;
+            commonMasterItemID: string;
+            constructor(commonMasterName: string, commonMasterItemID: string) {
+                this.commonMasterName = commonMasterName;
+                this.commonMasterItemID = commonMasterItemID;
             }
         }
     }

@@ -36,9 +36,9 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 	/** The is update mode. */
 	private Boolean isUpdateMode;
 	//グループ会社共通マスタID
-	private String empCommonMasterId;
+	private String commonMasterName;
 	// グループ会社共通マスタ項目ID
-	private String empCommonMasterItemId;
+	private String selectedCodeMaster;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getCompanyId()
@@ -82,14 +82,12 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 
 	@Override
 	public Optional<String> empCommonMasterId() {
-		
-		return this.empCommonMasterId();
+		return Optional.of(commonMasterName);
 	}
 
 	@Override
 	public Optional<String> empCommonMasterItemId() {
-		// TODO Auto-generated method stub
-		return empCommonMasterItemId();
+		return Optional.of(selectedCodeMaster);
 	}
 
 }

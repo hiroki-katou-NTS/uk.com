@@ -37,7 +37,7 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	private String memo;
 	//グループ会社共通マスタID
 	private String empCommonMasterId;
-		// グループ会社共通マスタ項目ID
+	// グループ会社共通マスタ項目ID
 	private String empCommonMasterItemId;
 
 	private boolean showsGroupCompany;
@@ -107,12 +107,12 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	}
 
 	@Override
-	public void setempCommonMasterId(String empCommonMasterId) {
+	public void setEmpCommonMasterId(String empCommonMasterId) {
 		this.empCommonMasterId = empCommonMasterId;
 	}
 
 	@Override
-	public void setempCommonMasterItemId(String empCommonMasterItemId) {
+	public void setEmpCommonMasterItemId(String empCommonMasterItemId) {
 		this.empCommonMasterItemId = empCommonMasterItemId;	
 	}
 
