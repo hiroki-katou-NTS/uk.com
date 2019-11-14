@@ -244,6 +244,22 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+        openCScreen() {
+            let self = this;
+            let params = {
+                employeeList: self.getListEmpId(self.selectedCode(), self.employeeList())
+            };
+            setShared("QUI001_PARAMS_A", params);
+            modal("/view/qui/001/c/index.xhtml");
+        }
+        getListEmpId(empCode: Array, listEmp: Array){
+            let listEmpId =[];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+                listEmpId.push(emp);
+            });
+            return listEmpId;
+        }
 
         exportCSV() {
             let self = this;

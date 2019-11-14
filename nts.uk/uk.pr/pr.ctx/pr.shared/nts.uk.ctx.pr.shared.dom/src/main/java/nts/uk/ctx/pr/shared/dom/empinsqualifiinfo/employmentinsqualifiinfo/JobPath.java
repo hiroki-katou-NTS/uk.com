@@ -6,11 +6,10 @@ import nts.arc.i18n.I18NText;
  * 就職経路
  */
 public enum JobPath {
-    STABLE_INTRODUCTION(0, I18NText.getText("")),
-    SELF_EMPLOYMENT(1, I18NText.getText("")),
-    PRIVATE_INTRODUCTION(2, I18NText.getText("")),
-    DO_NOT_KNOW(3, I18NText.getText(""));
-
+    STABLE_INTRODUCTION(0, I18NText.getText("Enum_JobPath_STABLE_INTRODUCTION")),
+    SELF_EMPLOYMENT(1, I18NText.getText("Enum_JobPath_SELF_EMPLOYMENT")),
+    PRIVATE_INTRODUCTION(2, I18NText.getText("Enum_JobPath_PRIVATE_INTRODUCTION")),
+    DO_NOT_KNOW(3, I18NText.getText("Enum_JobPath_DO_NOT_KNOW"));
 
     /**
      * The value.
