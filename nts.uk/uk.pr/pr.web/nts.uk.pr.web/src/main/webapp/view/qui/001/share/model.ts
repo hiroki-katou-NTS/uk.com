@@ -15,6 +15,33 @@ module nts.uk.pr.view.qui001.share.model {
             this.name = name;
         }
     }
+    // 23: 出力順
+    export function getEmpInsOutOrder(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
+            new ItemModel(1, getText('Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE')),
+            new ItemModel(2, getText('Enum_EmpInsOutOrder_EMPLOYEE_CODE')),
+            new ItemModel(3, getText('Enum_EmpInsOutOrder_EMPLOYEE'))
+        ];
+    }
+    // 25: 印字区分
+    export function isPrintMyNum(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('QUI001_A222_26')),
+            new ItemModel(1, getText('QUI001_A222_27'))
+        ];
+    }
+
+    // 32: 事業所区分
+    export function getOfficeCls(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
+            new ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+            new ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
+        ];
+    }
+
+    // 48: 事業所情報
 
     export function getSubNameClass(): Array<ItemModel> {
         return [
