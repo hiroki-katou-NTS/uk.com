@@ -1,9 +1,9 @@
-package nts.uk.ctx.pr.file.app.core.empinsreportsetting;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo;
 
 import lombok.Value;
 
 @Value
-public class EmpInsReportSettingExport {
+public class NotifiOfChangInNameInsPerExport {
     /**
      * 会社ID
      */

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.file.app.core.empinsreportsetting;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
@@ -24,10 +24,10 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsOutOrder.INSURANCE_NUMBER;
+import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
-public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSettingExportQuery> {
+public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfChangInNameInsPerExportQuery> {
 
     @Inject
     private EmpInsReportSettingRepository mEmpInsReportSettingRepository;
@@ -42,7 +42,7 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
     private EmpEstabInsHistRepository mEmpEstabInsHistRepository;
 
     @Inject
-    private EmpInsReportSettingExRepository empInsReportSettingExRepository;
+    private NotifiOfChangInNameInsPerExRepository empInsReportSettingExRepository;
 
     @Inject
     private EmployeeInfoAdapter employeeInfoAdapter;
@@ -54,15 +54,15 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
     private EmpInsNumInfoRepository mEmpInsNumInfoRepository;
 
     @Inject
-    private EmpInsReportSettingExFileGenerator generator;
+    private NotifiOfChangInNameInsPerExFileGenerator generator;
 
 
 
     @Override
-    protected void handle(ExportServiceContext<EmpInsReportSettingExportQuery> exportServiceContext) {
+    protected void handle(ExportServiceContext<NotifiOfChangInNameInsPerExportQuery> exportServiceContext) {
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
-        EmpInsReportSettingExport mEmpInsReportSettingExport =  exportServiceContext.getQuery().getEmpInsReportSettingExport();
+        NotifiOfChangInNameInsPerExport mEmpInsReportSettingExport =  exportServiceContext.getQuery().getEmpInsReportSettingExport();
         GeneralDate fillingDate = exportServiceContext.getQuery().getFillingDate();
         List<EmployeeChangeDate> empIds = exportServiceContext.getQuery().getEmpIdChangDate();
         EmpInsReportSetting empInsReportSetting = new EmpInsReportSetting(
@@ -76,13 +76,13 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
         );
         mEmpInsReportSettingRepository.update(empInsReportSetting);
         // data export
-        List<EmpInsReportSettingExportData> listDataExport = new ArrayList<>();
+        List<NotifiOfChangInNameInsPerExportData> listDataExport = new ArrayList<>();
         List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empIds.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList()));
         List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
 
         employee.forEach(e ->{
 
-            EmpInsReportSettingExportData temp = new EmpInsReportSettingExportData();
+            NotifiOfChangInNameInsPerExportData temp = new NotifiOfChangInNameInsPerExportData();
             Optional<EmpInsHist> mEmpInsHist = mEmpInsHistRepository.getEmpInsHistById(cid,e.getEmployeeId());
             if(!mEmpInsHist.isPresent()){
                 return;
@@ -130,51 +130,74 @@ public class EmpInsReportSettingPDFService extends ExportService<EmpInsReportSet
         if(listDataExport.isEmpty()){
             throw new BusinessException("MsgQ_51");
         }
-        if(empInsReportSetting.getOutputOrderAtr() == INSURANCE_NUMBER){
-            Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-                @Override
-                public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-                    return o1.getEmpInsNumInfo().getEmpInsNumber().v().compareTo(o2.getEmpInsNumInfo().getEmpInsNumber().v());
-                }
-            });
-        }
+
         else{
-            Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
+            Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
                 @Override
-                public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
+                public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
                     return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
                 }
             });
         }
-//        switch (empInsReportSetting.getOutputOrderAtr()){
-//            case INSURANCE_NUMBER:{
-//
-//                break;
-//            }
-//            case DEPARTMENT_EMPLOYEE:{
-//
-//                break;
-//            }
-//            case EMPLOYEE_CODE:{
-//                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-//                    @Override
-//                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-//                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-//                    }
-//                });
-//                break;
-//            }
-//            case EMPLOYEE:{
-//                Collections.sort(listDataExport, new Comparator<EmpInsReportSettingExportData>() {
-//                    @Override
-//                    public int compare(EmpInsReportSettingExportData o1, EmpInsReportSettingExportData o2) {
-//                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-//                    }
-//                });
-//                break;
-//            }
-//
-//        }
+        switch (empInsReportSetting.getOutputOrderAtr()){
+            case INSURANCE_NUMBER:{
+                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
+                    @Override
+                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
+                        return o1.getEmpInsNumInfo().getEmpInsNumber().v().compareTo(o2.getEmpInsNumInfo().getEmpInsNumber().v());
+                    }
+                });
+                break;
+            }
+            case DEPARTMENT_EMPLOYEE:{
+                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
+                    @Override
+                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
+                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                    }
+                });
+                break;
+            }
+            case EMPLOYEE_CODE:{
+                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
+                    @Override
+                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
+                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                    }
+                });
+                break;
+            }
+            case EMPLOYEE:{
+                if(empInsReportSetting.getSubmitNameAtr() == PERSONAL_NAME ){
+                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
+                        @Override
+                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
+                            if(o1.getNameKana().compareTo(o2.getNameKana()) == 0){
+                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                            }
+                            else {
+                                return o1.getNameKana().compareTo(o2.getNameKana());
+                            }
+                        }
+                    });
+                }
+                else{
+                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
+                        @Override
+                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
+                           if(o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0){
+                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                           }
+                           else {
+                               return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
+                           }
+                        }
+                    });
+                }
+                break;
+            }
+
+        }
         generator.generate(exportServiceContext.getGeneratorContext(),listDataExport);
     }
 }
