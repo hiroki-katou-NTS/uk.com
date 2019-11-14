@@ -118,7 +118,7 @@ module nts.uk.com.view.cmm008.a {
                 self.selectedCode("");
                 self.employmentModel().resetEmpData();
                 self.selectedCodeMaster('1');
-                self.enableDelete(false);
+                self.enableDelete(false);   
                 self.clearErrors();
                 self.isUpdateMode(false);
                 $('#empCode').focus();
