@@ -10,8 +10,8 @@
         <com:scriptfile path="../share/model.js"/>
         <com:stylefile path="qui004.a.style.css"/>
         <com:scriptfile path="qui004.a.service.js"/>
-        <com:scriptfile path="qui004.a.start.js"/>
         <com:scriptfile path="qui004.a.vm.js"/>
+        <com:scriptfile path="qui004.a.start.js"/>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -21,7 +21,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button id="A1_1" tabindex="1" class="proceed" style="margin-left: 77px;"
+            <button id="A1_1" tabindex="1" class="proceed" style="margin-left: 77px;" data-bind="click: exportFile"
             >#{i18n.getText('QUI004_A1_1')}</button>  <!--data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: exportFile"-->
             <button id="A1_2" tabindex="2"
             >#{i18n.getText('QUI004_A1_2')}</button> <!--data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen"-->
@@ -185,10 +185,10 @@
                             <span style="padding-left: 14px !important; padding-right: 1px !important;" class="control-group"><span id="A222_45" class="label">#{i18n.getText('QUI004_A222_45')}</span></span>
                             <div id="A222_46" style=" width: 50px; height: 18px" tabindex="17" data-bind="ntsTextEditor: {
                                 name: '#[QUI001_A222_46]',
-                                value: selectedCode,
+                                value: fdCode,
                                 required: true,
                                 enable: false,
-                                readonly: true}"> <!---->
+                                readonly: false}"> <!---->
                             </div>
                         </div>
                     </div>

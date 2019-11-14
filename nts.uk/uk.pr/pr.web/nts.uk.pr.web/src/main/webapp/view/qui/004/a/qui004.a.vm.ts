@@ -22,16 +22,13 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         filingDateJp: KnockoutObservable<string> = ko.observable('');
 
         submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
-        outputOrders: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSocialInsurOutOrder());
-        changedName: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getChangedName());
-        newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());
-        selectedCode: KnockoutObservable<any> = ko.observable(1);
-        empInsOutOrderCode: KnockoutObservable<any> = ko.observable(1);
-        submitNameClsCode: KnockoutObservable<any> = ko.observable(1);
-        printCfgCode: KnockoutObservable<any> = ko.observable(1);
-        officeClsPdf: KnockoutObservable<any> = ko.observable(1);
-        officeClsText: KnockoutObservable<any> = ko.observable(1);
+        empInsOutOrderCode: KnockoutObservable<any> = ko.observable(0);
+        submitNameClsCode: KnockoutObservable<any> = ko.observable(0);
+        printCfgCode: KnockoutObservable<any> = ko.observable(0);
+        officeClsPdf: KnockoutObservable<any> = ko.observable(0);
+        officeClsText: KnockoutObservable<any> = ko.observable(0);
         lineFeedCodeClsSelected: KnockoutObservable<any> = ko.observable(0);
+        fdCode: KnockoutObservable<any> = ko.observable('');
 
         /* kcp005 */
         baseDate: any;
@@ -48,6 +45,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         disableSelection : KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
+
+
         screenMode : number;
 
         constructor() {
@@ -63,7 +62,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.officeCls = ko.observableArray([
                 new model.ItemModel(0, 'Enum_OfficeCls_OUPUT_LABOR_OFFICE'),
                 new model.ItemModel(1, 'Enum_OfficeCls_OUTPUT_COMPANY'),
-                new model.ItemModel(1, 'Enum_OfficeCls_DO_NOT_OUTPUT')
+                new model.ItemModel(2, 'Enum_OfficeCls_DO_NOT_OUTPUT')
             ]);
 
             self.submitNameCls = ko.observableArray([
@@ -122,8 +121,27 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.initScreen();
         }
 
-        exportTextOutput() {
+        exportFile() {
+            let self = this;
+            let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
+            let data: any = {
+                IEmpInsReportSetting: {
+                    submitNameAtr : self.submitNameClsCode(),
+                    outputOrderAtr : self.empInsOutOrderCode(),
+                    officeClsAtr : self.officeClsPdf(),
+                    myNumberClsAtr : self.printCfgCode()
+                },
+                IEmpInsReportTxtSetting: {
+                    officeAtr : self.officeClsText(),
+                    fdNumber : self.fdCode(),
+                    lineFeedCode : self.lineFeedCodeClsSelected()
+                }, employList
+            };
+            service.registerReportSetting(data).done(function () {
 
+            }).fail(function (error) {
+                nts.uk.ui.dialog.alertError(error);
+            });
         }
 
         initScreen(): JQueryPromise<any> {
@@ -134,6 +152,13 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 .done((reportSetting :EmpInsReportSetting, reportTxtSetting :EmpInsReportTxtSetting) =>{
                     if (reportSetting != null && reportTxtSetting != null) {
                         this.screenMode = ScreenMode.UPDATE_MODE;
+                        self.submitNameClsCode = ko.observable(reportSetting.submitNameAtr);
+                        self.empInsOutOrderCode = ko.observable(reportSetting.outputOrderAtr);
+                        self.officeClsPdf = ko.observable(reportSetting.officeClsAtr);
+                        self.printCfgCode = ko.observable(reportSetting.myNumberClsAtr);
+                        self.officeClsText = ko.observable(reportTxtSetting.officeAtr);
+                        self.fdCode = ko.observable(reportTxtSetting.fdNumber);
+                        self.lineFeedCodeClsSelected = ko.observable(reportTxtSetting.lineFeedCode);
                     } else {
                         this.screenMode = ScreenMode.NEW_MODE;
                     }
@@ -240,6 +265,17 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 listEmployee.push(employee);
             });
             return listEmployee;
+        }
+
+        getListEmpId(empCode: Array, listEmp: Array) {
+            let listEmpId = [];
+            _.each(empCode, (item) => {
+                let emp = _.find(listEmp, function (itemEmp) {
+                    return itemEmp.code == item;
+                });
+                listEmpId.push(emp.id);
+            });
+            return listEmpId;
         }
 
         getStyle(){
