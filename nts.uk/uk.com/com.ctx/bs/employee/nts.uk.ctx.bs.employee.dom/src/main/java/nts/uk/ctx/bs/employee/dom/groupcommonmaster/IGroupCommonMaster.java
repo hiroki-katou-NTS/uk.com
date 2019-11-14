@@ -12,6 +12,6 @@ public interface IGroupCommonMaster {
 	 * @param 基準日
 	 * @return グループ会社共通マスタ
 	 */
-	public GroupCommonMaster getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
+	GroupCommonMasterExportDto getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
 			String companyId, GeneralDate baseDate);
 }

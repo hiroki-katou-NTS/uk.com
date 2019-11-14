@@ -52,12 +52,12 @@ module nts.uk.com.view.cmm023.a.viewmodel {
                         virtualization: true,
                         virtualizationMode: 'continuous',
                         columns: [
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemId', dataType: 'text', width: '80px', hidden: true },
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemCode', dataType: 'text', width: '80px' },
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemName', dataType: 'text', width: '180px' },
-                            { headerText: getText('CMM023_A221_5'), key: 'useSetting', dataType: 'boolean', width: '70px', ntsControl: 'Checkbox' },
-                            { headerText: getText('CMM023_A221_5'), key: 'usageStartDate', dataType: 'text', width: '260px', formatter: genDate },
-                            { headerText: getText('CMM023_A221_5'), key: 'usageEndDate', dataType: 'text', width: '250px', hidden: true },
+                            { headerText: getText('CMM023_A222_5'), key: 'commonMasterItemId', dataType: 'text', width: '80px', hidden: true },
+                            { headerText: getText('CMM023_A222_6'), key: 'commonMasterItemCode', dataType: 'text', width: '80px' },
+                            { headerText: getText('CMM023_A222_7'), key: 'commonMasterItemName', dataType: 'text', width: '180px' },
+                            { headerText: getText('CMM023_A222_8'), key: 'useSetting', dataType: 'boolean', width: '70px', ntsControl: 'Checkbox' },
+                            { headerText: getText('CMM023_A222_9'), key: 'usageStartDate', dataType: 'text', width: '260px', formatter: genDate },
+                            { headerText: getText('CMM023_A222_9'), key: 'usageEndDate', dataType: 'text', width: '250px', hidden: true },
 
                         ],
 

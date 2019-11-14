@@ -17,7 +17,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="CMM023_A1_1" class="proceed" data-bind="click:saveData">#{i18n.getText('CMM023_A1_1')}</button>
+					<button id="CMM023_A1_1" class="proceed"
+						data-bind="click:saveData,enable: items().length>0">#{i18n.getText('CMM023_A1_1')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
