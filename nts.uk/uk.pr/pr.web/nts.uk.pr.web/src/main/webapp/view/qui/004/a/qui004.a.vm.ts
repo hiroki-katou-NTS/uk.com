@@ -1,3 +1,5 @@
+import result = require("lodash/result");
+
 module nts.uk.pr.view.qui004.a.viewmodel {
 
     import dialog = nts.uk.ui.dialog;
@@ -42,19 +44,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         disableSelection : KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
-        /*socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
-            officeInformation: 0,
-            printPersonNumber: 3,
-            businessArrSymbol: 0,
-            outputOrder: 1,
-            submittedName: 0,
-            insuredNumber: 0,
-            fdNumber: null,
-            textPersonNumber: 0,
-            outputFormat: 0,
-            lineFeedCode: 0
-        }));
-*/
+        screenMode : number;
+
         constructor() {
             let self = this;
 
@@ -119,31 +110,26 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.initScreen();
         }
 
+        exportTextOutput() {
+
+        }
+
         initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
 
-            /*service.getSocialInsurNotiCreateSet().done(function(data: ISocInsurNotiCreSet) {
-                if(data != null) {
-                    self.socInsurNotiCreSet().officeInformation(data.officeInformation);
-                    self.socInsurNotiCreSet().printPersonNumber(data.printPersonNumber);
-                    self.socInsurNotiCreSet().businessArrSymbol(data.businessArrSymbol);
-                    self.socInsurNotiCreSet().outputOrder(data.outputOrder);
-                    self.socInsurNotiCreSet().submittedName(data.submittedName);
-                    self.socInsurNotiCreSet().insuredNumber(data.insuredNumber);
-                    self.socInsurNotiCreSet().fdNumber(data.fdNumber == null ? "0" : data.fdNumber);
-                    self.socInsurNotiCreSet().textPersonNumber(data.textPersonNumber == null ? 0 : data.textPersonNumber);
-                    self.socInsurNotiCreSet().outputFormat(data.outputFormat == null ? 0 : data.outputFormat);
-                    self.socInsurNotiCreSet().lineFeedCode(data.lineFeedCode == null ? 0 : data.lineFeedCode);
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
-                } else {
-                    self.screenMode(model.SCREEN_MODE.NEW);
-                }
-            }).fail(function(result) {
+            $.when(service.getReportSetting(), service.getReportTxtSetting())
+                .done((reportSetting :EmpInsReportSetting, reportTxtSetting :EmpInsReportTxtSetting) =>{
+                    if (reportSetting != null && reportTxtSetting != null) {
+                        this.screenMode = ScreenMode.UPDATE_MODE;
+                    } else {
+                        this.screenMode = ScreenMode.NEW_MODE;
+                    }
+            }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
-*/
+
             dfd.resolve();
             return dfd.promise();
         }
@@ -335,45 +321,6 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         isAlreadySetting: boolean;
     }
 
-    /*export interface ISocInsurNotiCreSet {
-        officeInformation: number;
-        printPersonNumber: number;
-        businessArrSymbol: number;
-        outputOrder: number;
-        submittedName: number;
-        insuredNumber: number;
-        fdNumber: string;
-        textPersonNumber:number;
-        outputFormat: number;
-        lineFeedCode: number;
-    }*/
-
-    /*export class SocInsurNotiCreSet {
-        officeInformation: KnockoutObservable<number>;
-        printPersonNumber: KnockoutObservable<number>;
-        businessArrSymbol: KnockoutObservable<number>;
-        outputOrder: KnockoutObservable<number>;
-        submittedName: KnockoutObservable<number>;
-        insuredNumber: KnockoutObservable<number>;
-        fdNumber: KnockoutObservable<string>;
-        textPersonNumber: KnockoutObservable<number>;
-        outputFormat: KnockoutObservable<number>;
-        lineFeedCode: KnockoutObservable<number>;
-
-        constructor(params: ISocInsurNotiCreSet) {
-            this.officeInformation = ko.observable(params.officeInformation);
-            this.printPersonNumber = ko.observable(params.printPersonNumber);
-            this.businessArrSymbol = ko.observable(params.businessArrSymbol);
-            this.outputOrder = ko.observable(params.outputOrder);
-            this.submittedName = ko.observable(params.submittedName);
-            this.insuredNumber = ko.observable(params.insuredNumber);
-            this.fdNumber = ko.observable(params ? params.fdNumber : null);
-            this.textPersonNumber = ko.observable(params ? params.textPersonNumber : null);
-            this.outputFormat = ko.observable(params ? params.outputFormat : null);
-            this.lineFeedCode = ko.observable(params ? params.lineFeedCode : null);
-        }
-    }*/
-
     export class Employee {
         id: string;
         code: string;
@@ -388,4 +335,46 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         }
     }
 
+    export interface IEmpInsReportSetting {
+        submitNameAtr : number;
+        outputOrderAtr : number;
+        officeClsAtr : number;
+        myNumberClsAtr : number;
+    }
+
+    export class EmpInsReportSetting {
+        submitNameAtr : KnockoutObservable<number>;
+        outputOrderAtr : KnockoutObservable<number>;
+        officeClsAtr : KnockoutObservable<number>;
+        myNumberClsAtr : KnockoutObservable<number>;
+
+        constructor (params : IEmpInsReportSetting) {
+            this.submitNameAtr = ko.observable(params.submitNameAtr);
+            this.outputOrderAtr = ko.observable(params.outputOrderAtr);
+            this.officeClsAtr = ko.observable(params.officeClsAtr);
+            this.myNumberClsAtr = ko.observable(params.myNumberClsAtr);
+        }
+    }
+
+    export interface IEmpInsReportTxtSetting {
+        officeAtr : number;
+        fdNumber : number;
+        lineFeedCode : number;
+    }
+
+    export class EmpInsReportTxtSetting {
+        officeAtr : KnockoutObservable<number>;
+        fdNumber : KnockoutObservable<number>;
+        lineFeedCode : KnockoutObservable<number>;
+        constructor(params : IEmpInsReportTxtSetting) {
+            this.officeAtr = ko.observable(params.officeAtr);
+            this.fdNumber = ko.observable(params.fdNumber);
+            this.lineFeedCode = ko.observable(params.lineFeedCode);
+        }
+    }
+
+    export class ScreenMode {
+        static NEW_MODE = 1;
+        static UPDATE_MODE = 2;
+    }
 }
