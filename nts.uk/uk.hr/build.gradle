@@ -308,6 +308,8 @@ project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ac') {
 		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom')
 		compile project(':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
 		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		
+		compile (group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
 	}
 }
 
