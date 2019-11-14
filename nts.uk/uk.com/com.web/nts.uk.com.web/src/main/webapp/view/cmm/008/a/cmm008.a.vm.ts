@@ -101,6 +101,7 @@ module nts.uk.com.view.cmm008.a {
                         self.selectedCodeMaster(employment.empCommonMasterItemId);
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
+                            self.selectedCode(employment.code);
                             nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
                             
                             }
@@ -116,6 +117,7 @@ module nts.uk.com.view.cmm008.a {
                 let self = this;
                 self.selectedCode("");
                 self.employmentModel().resetEmpData();
+                self.selectedCodeMaster('1');
                 self.enableDelete(false);
                 self.clearErrors();
                 self.isUpdateMode(false);

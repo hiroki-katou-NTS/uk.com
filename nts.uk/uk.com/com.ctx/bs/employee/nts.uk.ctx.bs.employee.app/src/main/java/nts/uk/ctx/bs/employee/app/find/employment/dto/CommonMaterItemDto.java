@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class CommonMaterItemDto {
 
-	private String commonMasterItemCode;
+	private String commonMasterItemID;
 	
     private String commonMasterItemName;
 
-	public CommonMaterItemDto(String commonMasterItemCode, String commonMasterItemName) {
+	public CommonMaterItemDto(String commonMasterItemID, String commonMasterItemName) {
 		super();
-		this.commonMasterItemCode = commonMasterItemCode;
+		this.commonMasterItemID = commonMasterItemID;
 		this.commonMasterItemName = commonMasterItemName;
 	}
     
