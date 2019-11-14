@@ -318,6 +318,7 @@ export class Kdws03AComponent extends Vue {
                 //パラメータ「日別実績の修正の状態．表示形式」をチェックする
                 //パラメータ「日別実績の修正の起動．エラー参照を起動する」をチェックする
                 if (self.displayFormat == 0 && self.params.errorRefStartAtr && !_.isNil(dateR)) {//表示形式　＝　個人別 && エラー参照を起動する = TRUE
+                    self.params.errorRefStartAtr = false;
                     //D：エラー参照（個人）を起動する
                     this.$modal('kdws03d', {
                         employeeID: self.selectedEmployee,
@@ -340,6 +341,12 @@ export class Kdws03AComponent extends Vue {
                                 'date': param.date,
                                 'rowData': rowData,
                                 'paramData': self.paramData
+                            }).then((v: any) => {
+                                if (v.reload) {
+                                    this.startPage();
+                                } else {
+                                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                                }
                             });
                         }
                     });
