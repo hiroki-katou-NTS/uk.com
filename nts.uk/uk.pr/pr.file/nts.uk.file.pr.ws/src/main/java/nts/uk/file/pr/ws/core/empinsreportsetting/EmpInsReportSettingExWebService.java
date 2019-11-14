@@ -1,8 +1,8 @@
 package nts.uk.file.pr.ws.core.empinsreportsetting;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.uk.ctx.pr.file.app.core.empinsqualifinfo.empinsqualifinfo.EmpInsGetQualifReportPdfService;
-import nts.uk.ctx.pr.file.app.core.empinsqualifinfo.empinsqualifinfo.EmpInsGetQualifReportQuery;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQualifReportPdfService;
+import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQualifReportQuery;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportQuery;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerPDFService;
 
