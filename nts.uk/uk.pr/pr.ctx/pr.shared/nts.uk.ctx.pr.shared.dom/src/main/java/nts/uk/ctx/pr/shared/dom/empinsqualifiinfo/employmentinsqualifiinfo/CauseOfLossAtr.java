@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo;
 
 import nts.arc.i18n.I18NText;
 
+/**
+ * 喪失原因
+ */
 public enum CauseOfLossAtr {
 
     OTHER_REASON(0, I18NText.getText("離職以外の理由")),

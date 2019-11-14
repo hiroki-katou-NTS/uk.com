@@ -1,5 +1,3 @@
-import result = require("lodash/result");
-
 module nts.uk.pr.view.qui004.a.viewmodel {
 
     import dialog = nts.uk.ui.dialog;
@@ -8,10 +6,11 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
     export class ScreenModel {
 
-        item_list: KnockoutObservableArray<model.ItemModel>;
-        itemListSubmitName: KnockoutObservableArray<model.ItemModel>;
-        item_list_two: KnockoutObservableArray<model.ItemModel>;
-        itemListCode: KnockoutObservableArray<model.ItemModel>;
+        empInsOutOrder: KnockoutObservableArray<model.ItemModel>;
+        officeCls: KnockoutObservable<model.ItemModel>;
+        submitNameCls: KnockoutObservableArray<model.ItemModel>;
+        printCfg: KnockoutObservableArray<model.ItemModel>;
+        lineFeedCodeCls: KnockoutObservableArray<model.ItemModel>;
 
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         ccg001ComponentOption: GroupOption;
@@ -27,7 +26,12 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         changedName: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getChangedName());
         newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());
         selectedCode: KnockoutObservable<any> = ko.observable(1);
-        submittedName: KnockoutObservable<any> = ko.observable(0);
+        empInsOutOrderCode: KnockoutObservable<any> = ko.observable(1);
+        submitNameClsCode: KnockoutObservable<any> = ko.observable(1);
+        printCfgCode: KnockoutObservable<any> = ko.observable(1);
+        officeClsPdf: KnockoutObservable<any> = ko.observable(1);
+        officeClsText: KnockoutObservable<any> = ko.observable(1);
+        lineFeedCodeClsSelected: KnockoutObservable<any> = ko.observable(0);
 
         /* kcp005 */
         baseDate: any;
@@ -49,22 +53,30 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         constructor() {
             let self = this;
 
-            self.item_list = ko.observableArray([
-                new model.ItemModel(0, '基本給'),
-                new model.ItemModel(1, '役職手当')
+            self.empInsOutOrder = ko.observableArray([
+                new model.ItemModel(0, 'Enum_EmpInsOutOrder_INSURANCE_NUMBER'),
+                new model.ItemModel(1, 'Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE'),
+                new model.ItemModel(2, 'Enum_EmpInsOutOrder_EMPLOYEE_CODE'),
+                new model.ItemModel(3, 'Enum_EmpInsOutOrder_EMPLOYEE')
             ]);
 
-            self.itemListSubmitName = ko.observableArray([
+            self.officeCls = ko.observableArray([
+                new model.ItemModel(0, 'Enum_OfficeCls_OUPUT_LABOR_OFFICE'),
+                new model.ItemModel(1, 'Enum_OfficeCls_OUTPUT_COMPANY'),
+                new model.ItemModel(1, 'Enum_OfficeCls_DO_NOT_OUTPUT')
+            ]);
+
+            self.submitNameCls = ko.observableArray([
                 new model.ItemModel(0, getText("QUI004_A222_18")),
                 new model.ItemModel(1, getText("QUI004_A222_19"))
             ]);
 
-            self.item_list_two = ko.observableArray([
-                new model.ItemModel(0, '印字する'),
-                new model.ItemModel(1, '印字しない')
+            self.printCfg = ko.observableArray([
+                new model.ItemModel(0, getText("Enum_PrinfCtg_PRINT")),
+                new model.ItemModel(1, getText("Enum_prinfCtg_DO_NOT_PRINT"))
             ]);
 
-            self.itemListCode = ko.observableArray([
+            self.lineFeedCodeCls = ko.observableArray([
                 new model.ItemModel(0, getText("QUI004_A222_37")),
                 new model.ItemModel(1, getText("QUI004_A222_38")),
                 new model.ItemModel(2, getText("QUI004_A222_39"))

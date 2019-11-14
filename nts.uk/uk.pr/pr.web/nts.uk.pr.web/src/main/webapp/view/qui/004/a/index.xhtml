@@ -92,9 +92,9 @@
                             <div id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: false }">#{i18n.getText('QUI004_A222_16')}</div>
                             <div id="A222_17" style=" height: 27px;" tabindex="10" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_17')}',
-                                options: itemListSubmitName,
+                                options: submitNameCls,
                                 optionsValue: 'code',
-                                value: selectedCode,
+                                value: submitNameClsCode,
                                 optionsText: 'name',
                                 enable: true  }"></div> <!--options: submittedNames, constraint: 'SubNameClass',
                             value: submittedName,-->
@@ -106,11 +106,11 @@
                             <div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QUI004_A222_21')}</div>
                             <div id="A222_22" style=" width: 300px;" tabindex="12" data-bind="ntsComboBox: {
                                 name: '#[QUI004_A222_22]',
-                                options: item_list,
+                                options: empInsOutOrder,
                                 optionsValue: 'code',
                                 visibleItemsCount: 5,
                                 optionsText: 'name',
-                                value: selectedCode,
+                                value: empInsOutOrderCode,
                                 editable: false,
                                 enable: true,
                             }"><!---->
@@ -121,9 +121,9 @@
                             <div id="A222_24" class="column-first" data-bind="ntsFormLabel: {  required: false }, enable: false">#{i18n.getText('QUI004_A222_24')}</div>
                             <div id="A222_25" tabindex="13" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_25')}',
-                                options: item_list,
+                                options: printCfg,
                                 constraint: 'SubNameClass',
-                                value: selectedCode,
+                                value: printCfgCode,
                                 optionsValue: 'code',
                                 optionsText: 'name',
                                 enable: false  }"/>
@@ -135,10 +135,10 @@
                             <div id="A222_30" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QUI004_A222_30')}</div>
                             <div id="A222_31" style=" width: 300px;" tabindex="14" data-bind="ntsComboBox: {
                                 name: '#[QUI004_A222_31]',
-                                options: item_list,
+                                options: officeCls,
                                 optionsValue: 'code',
                                 visibleItemsCount: 5,
-                                value: selectedCode,
+                                value: officeClsPdf,
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true
@@ -152,9 +152,9 @@
                             <div id="A222_35" class="column-first" data-bind="ntsFormLabel: {  required: false }">#{i18n.getText('QUI004_A222_35')}</div>
                             <div id="A222_36" style=" height: 27px;" tabindex="15" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_36')}',
-                                options: itemListCode,
+                                options: lineFeedCodeCls,
                                 optionsValue: 'code',
-                                value: submittedName,
+                                value: lineFeedCodeClsSelected,
                                 optionsText: 'name',
                                 enable: true  }"></div> <!--options: newLine, constraint: 'SubNameClass',
                             value: submittedName,-->
@@ -170,9 +170,9 @@
                             <span style="padding-left: 14px !important; padding-right: 1px !important;" class="column-first"><span id="A222_42" class="label">#{i18n.getText('QUI004_A222_42')}</span></span>
                             <div id="A222_43" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
                                 name: '#[QUI001_A222_43]',
-                                options: item_list,
+                                options: officeCls,
                                 optionsValue: 'code',
-                                value: selectedCode,
+                                value: officeClsText,
                                 visibleItemsCount: 5,
                                 optionsText: 'name',
                                 editable: false,

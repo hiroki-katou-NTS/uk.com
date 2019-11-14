@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo;
 
 import nts.arc.i18n.I18NText;
 
+/**
+ * 離職票交付希望区分
+ */
 public enum RequestForIssuance {
 
     NO(0, I18NText.getText("なし")),
