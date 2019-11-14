@@ -3,12 +3,7 @@
  */
 package nts.uk.ctx.bs.person.dom.person.foreigner.residence.hisinfo;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +23,7 @@ import nts.arc.time.GeneralDateTime;
 public class ForeignerResidenceHistoryInforItem extends AggregateRoot {
 
 	// 個人ID
-	String pid;
+	public String pid;
 
 	// 交付年月日
 	GeneralDateTime issueDate;

@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.ac.employee.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.employee.service.EmpBasicInfo;
 import nts.uk.ctx.bs.employee.dom.employee.service.RoleTypeImport;
 import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employee.service.System;
@@ -90,7 +92,11 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepository;
+	
+	@Inject
+	private PersonRepository personRepository;
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -428,5 +434,64 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 							? person.get().getPersonNameGroup().getPersonName().getFullName().v() : null);
 			return Optional.of(result);
 		}
+	}
+
+	@Override
+	public List<EmpBasicInfo> getEmpBasicInfo(List<String> lstSid) {
+
+
+		if (lstSid.isEmpty())
+			return new ArrayList<>();
+
+		List<EmployeeDataMngInfo> lstEmp = this.empDataMngRepo.findByListEmployeeId(lstSid);
+
+		if (lstEmp.isEmpty())
+			return new ArrayList<>();
+
+		List<String> sids = lstEmp.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
+
+		List<String> pids = lstEmp.stream().map(i -> i.getPersonId()).collect(Collectors.toList());
+
+		Map<String, List<AffCompanyHistItem>> mapAffComHistItem = this.affComHistRepo.getAffEmployeeHistory(sids)
+				.stream().collect(Collectors.toMap(e -> e.getSId(), e -> e.getLstAffCompanyHistoryItem()));
+
+		Map<String, Person> personMap = personRepository.getPersonByPersonIds(pids).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+
+		return lstEmp.stream().map(employee -> {
+
+			EmpBasicInfo result = new EmpBasicInfo();
+
+			// Get Person
+			Person person = personMap.get(employee.getPersonId());
+
+			if (person != null) {
+				result.setGender(person.getGender().value);
+				result.setBusinessName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+				result.setBirthDay(person.getBirthDate());
+
+				List<AffCompanyHistItem> lstAffComHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+
+				if (lstAffComHistItem != null) {
+					List<AffCompanyHistItem> lstAff = lstAffComHistItem.stream()
+							.sorted((f1, f2) -> f2.getDatePeriod().start().compareTo(f1.getDatePeriod().start()))
+							.collect(Collectors.toList());
+
+					result.setEntryDate(lstAff.get(0).getDatePeriod().start());
+					result.setRetiredDate(lstAff.get(0).getDatePeriod().end());
+				}
+
+				result.setPId(employee.getPersonId());
+				result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+				result.setEmployeeId(employee.getEmployeeId());
+
+				return result;
+			}
+
+			return null;
+
+		}).filter(f -> f != null).collect(Collectors.toList());
+	
 	}
 }
