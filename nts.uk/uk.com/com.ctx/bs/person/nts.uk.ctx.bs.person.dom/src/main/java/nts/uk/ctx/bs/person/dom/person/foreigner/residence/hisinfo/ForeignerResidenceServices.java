@@ -18,8 +18,6 @@ import nts.arc.time.GeneralDateTime;
  * @author laitv
  */
 
-@Getter
-@NoArgsConstructor
 @Stateless
 public class ForeignerResidenceServices {
 
