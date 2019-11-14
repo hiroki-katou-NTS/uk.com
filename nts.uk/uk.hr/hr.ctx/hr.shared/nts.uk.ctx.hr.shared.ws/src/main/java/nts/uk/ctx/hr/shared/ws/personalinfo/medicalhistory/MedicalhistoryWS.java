@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.shared.ws.personalinfo.medicalhistory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,41 +9,46 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.ListMedicalhistory;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
 
 @Path("medicalhistory")
 @Produces(MediaType.APPLICATION_JSON)
 public class MedicalhistoryWS {
 
 	@Inject
-	private MedicalhistoryItem domain;
+	private MedicalhistoryServices medicalhisServices;
 
 	@POST
-	@Path("/get") // test service
-	public ListMedicalhistory testDomain(ParamTest param) {
+	@Path("/get1") // test service
+	public MedicalhistoryManagement getList(ParamTest param) {
 
 		List<String> listSid = param.listSid;
 		String sid = param.sid;
 		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
+		
+		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
 
-		if (sid == null || sid == "") {
-			ListMedicalhistory result = domain.getListMedicalhistoryItem(listSid, baseDate);
-			return result;
-			
-		} else {
-			ListMedicalhistory result = domain.getListMedicalhistoryItem(listSid, baseDate);
-			domain.setListMedicalhistory(result);
-			MedicalhistoryItem mItem1 = domain.getMedicalhistoryItem(param.sid, baseDate);
-			
-			if (mItem1 == null) {
-				result.setListMedicalhistoryItem(new ArrayList<MedicalhistoryItem>());
-			}else{
-				result.setListMedicalhistoryItem(new ArrayList<MedicalhistoryItem>());
-				result.setListMedicalhistoryItem(Arrays.asList(mItem1));
-			}
+			medicalhisMng  = medicalhisServices.loadMedicalhistoryItem(listSid, baseDate, medicalhisMng);
+			return medicalhisMng;
+	}
+	
+	@POST
+	@Path("/get2") // test service
+	public MedicalhistoryItem getSingle(ParamTest param) {
 
-			return result;
+		List<String> listSid = param.listSid;
+		String sid = param.sid;
+		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
+		
+		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
+
+			medicalhisMng  = medicalhisServices.loadMedicalhistoryItem(listSid, baseDate, medicalhisMng);
+			
+			MedicalhistoryItem mItem1 = medicalhisServices.getMedicalhistoryItem(sid, baseDate, medicalhisMng);
+			
+			return mItem1;
 		}
 	}
 	
@@ -57,5 +60,3 @@ public class MedicalhistoryWS {
 	 * "4859993b-8065-4789-90d6-735e3b65626b",
 	 * "aeaa869d-fe62-4eb2-ac03-2dde53322cb5";
 	 */
-
-}
