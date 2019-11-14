@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -32,11 +30,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
-import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
@@ -44,7 +39,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -214,5 +208,34 @@ public class AppOvertimeFinder_New {
 		// 色表示チェック
 		preActualColorCheck.preActualColorCheck(preExcessDisplaySetting, performanceExcessAtr, ApplicationType.OVER_TIME_APPLICATION, 
 				prePostAtr, Collections.emptyList(), overTimeLst, opAppBefore, beforeAppStatus, actualLst, actualStatus);
+	}
+	
+	/**
+	 * 17_申請日付を変更 
+	 * @param overtimeAtr 残業区分
+	 * @param rootAtr 就業ルート区分
+	 * @param overtimeInstructionAtr 残業指示の利用区分
+	 * @param employeeID 申請者ID
+	 * @param appDate 申請日
+	 * @param startTime 開始時刻
+	 * @param endTime 終了時刻
+	 * @param prePostAtr 事前事後区分
+	 */
+	public void changeAppDate(Integer overtimeAtr, Integer rootAtr, Integer overtimeInstructionAtr, String employeeID, String appDate, 
+			Integer startTime, Integer endTime, Integer prePostAtr) {
+		String companyID = AppContexts.user().companyId();
+		GeneralDate generalAppDate = Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
+		// 11_設定データを取得
+		appOvertimeService.getSettingDatas(companyID, employeeID, rootAtr, ApplicationType.OVER_TIME_APPLICATION, generalAppDate);
+		// 12_承認ルートを取得
+		appOvertimeService.getApprovalRoute(companyID, employeeID, rootAtr, ApplicationType.OVER_TIME_APPLICATION, generalAppDate);
+		// 01-01_残業通知情報を取得
+		// OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
+		if(true) {
+			// 3.事前事後の判断処理(事前事後非表示する場合)
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(ApplicationType.OVER_TIME_APPLICATION, generalAppDate, 0);
+		}
+		// 14_表示データを取得
+		this.getDisplayData(companyID, employeeID, generalAppDate, PrePostAtr.POSTERIOR, generalAppDate, null, Optional.ofNullable(startTime), Optional.ofNullable(endTime));;
 	}
 }
