@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class EmpAddChangeInfoExport {
     private String scd;
     private String empId;
@@ -161,20 +160,10 @@ public class EmpAddChangeInfoExport {
     /**事業所整理記号2*/
     private String businessEstCode2;
 
-    public EmpAddChangeInfoExport(String empId) {
-        this.empId = empId;
+    public EmpAddChangeInfoExport() {
         this.healthInsurance = false;
         this.empPenInsurance = false;
         this.personAddChangeDate = null;
         this.spouseAddChangeDate = null;
-    }
-
-    public static List<EmpAddChangeInfoExport> getListExport(List<String> empIds) {
-        List<EmpAddChangeInfoExport> listExport = new ArrayList<>();
-        empIds.forEach(i->{
-            EmpAddChangeInfoExport e = new EmpAddChangeInfoExport(i);
-            listExport.add(e);
-        });
-        return listExport;
     }
 }
