@@ -1,48 +1,31 @@
 module nts.uk.pr.view.qui001.c.viewmodel {
-    var dialog = nts.uk.ui.dialog;
     import model = nts.uk.pr.view.qui001.share.model;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
-        // paymentDateProcessingList: KnockoutObservableArray<any>;
-        // selectedPaymentDate: KnockoutObservable<any>;
-        submittedNameA: KnockoutObservable<any> = ko.observable(0);
-        submittedNameB: KnockoutObservable<any> = ko.observable(0);
+        selectedItem: KnockoutObservable<string>= ko.observable('');
         /**
          *ComboBox
          */
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
-        /**
-         *
-         * @type {KnockoutObservable<string>}
-         */
-        selectedItem: KnockoutObservable<string>= ko.observable('');
+        insuranceCauAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.insuranceCauAtr());
+        jobAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobAtr());
+        jobPaths: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobPath());
+        wagePaymentModes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.wagePaymentMode());
+        employmentStatuses: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.employmentStatus());
         /**
          * Button Switch
          */
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-
-        roundingRules1: KnockoutObservableArray<any>;
-        selectedRuleCode1: any;
-
-        submittedNamesA: KnockoutObservableArray<model.ItemModelA> = ko.observableArray(model.getSubNameClassA());
-        submittedNamesB: KnockoutObservableArray<model.ItemModelB> = ko.observableArray(model.getSubNameClassB());
-        socInsurNotiCreSet : KnockoutObservable<SocInsurNotiCreSet> = ko.observable(new SocInsurNotiCreSet({
-            submittedNameA: 0,
-            submittedNameB: 0
-        }));
+        acquisitionArts: KnockoutObservableArray<model.ItemModel> =  ko.observableArray(model.acquisitionArt());
+        contractPeriodPrintArts: KnockoutObservableArray<model.ItemModel> =  ko.observableArray(model.contractPeriodPrintArt());
         /**
          * Text Editor
          */
-        simpleValue: KnockoutObservable<string>;
-
+        workingTime: KnockoutObservable<string> = ko.observable('');
+        payWage: KnockoutObservable<string> = ko.observable('');
         /**
          * KCP009-社員送り
          */
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
@@ -50,66 +33,74 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
+        inline: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+        /**
+         *
+         */
+        sId: KnockoutObservable<string> = ko.observable('');
+        acquiArt: KnockoutObservable<number> = ko.observable(0);
+        insuranceCauAtr: KnockoutObservable<number> = ko.observable(0);
+        jobAtr: KnockoutObservable<number> = ko.observable(0);
+        jobPath: KnockoutObservable<number> = ko.observable(0);
+        wagePaymentMode: KnockoutObservable<number> = ko.observable(0);
+        employmentStatus: KnockoutObservable<number> = ko.observable(0);
+        conPerPrintArt: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             var self = this;
-
-            // self.paymentDateProcessingList = ko.observableArray([]);
-            // self.selectedPaymentDate = ko.observable(null);
-
-            /**
-             * loadComboBox
-             */
-            self.loadComboBox()
-
-            /**
-             * Text Editor
-             */
-            self.simpleValue = ko.observable("");
-            /**
-             * loadKCP009
-             */
-            self.loadKCP009()
             /**
              * startPage
              */
-            self.startPage();
+            $('#emp-component').focus();
+            self.selectedItem.subscribe(e => {
+                self.startPage(e);
+            });
+            /**
+             *KCP009
+             */
+            let params = getShared("QUI001_PARAMS_A");
+            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
+                close();
+            }
+            self.employeeInputList(self.createEmployeeModel(params.employeeList));
+            this.loadKCP009();
+            self.selectedItem(self.employeeInputList()[0].id);
         }
 
-        loadComboBox(){
-            let self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
-            self.selectedCode = ko.observable('1');
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
+        createEmployeeModel(data) {
+            let listEmployee = [];
+            _.each(data, data => {
+                listEmployee.push({
+                    id: data.id,
+                    code: data.code,
+                    businessName: data.name,
+                    workplaceName: data.workplaceName
+                });
+            });
 
+            return listEmployee;
+        }
+
+        cancel(){
+            nts.uk.ui.windows.close();
         }
 
         loadKCP009(){
-            let self = this;
-            self.employeeInputList = ko.observableArray([
-                {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
-
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
+            var self = this;
+            self.inline = ko.observable(true);
+            self.required = ko.observable(true);
+            self.enable = ko.observable(true);
+            self.systemReference = ko.observable(SystemType.SALARY);
+            self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-            self.selectedItem = ko.observable(null);
-            self.tabindex = 1;
-            // Initial listComponentOption
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.tabindex = 3;
+
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -121,29 +112,66 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
-        startPage(): JQueryPromise<any> {
+        register(){
+            var self = this;
+            let empInsGetInfo: any ={
+                sId: self.selectedItem(),
+                acquiArt: self.acquiArt(),
+                jobPath: self.jobPath,
+                workingTime: self.workingTime().length > 0 ? self.workingTime: null,
+                jobArt: self.jobAtr(),
+                payWage: self.payWage().length > 0 ? self.payWage: null,
+                insuranceCauArt: self.insuranceCauAtr(),
+                wagePaymentMode: self.wagePaymentMode(),
+                employmentStatus: self.employmentStatus(),
+                conPerPrintArt: self.conPerPrintArt(),
+                screenMode: model.SCREEN_MODE.UPDATE
+            };
+            service.register(empInsGetInfo).done(function () {
+                self.screenMode(model.SCREEN_MODE.UPDATE);
+                self.startPage(self.selectedItem());
+            });
+        }
+
+        startPage(sId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getSocialInsurNotiCreateSet().done(function (data : ISocInsurNotiCreSet) {
-                if (data != null){
-                    self.socInsurNotiCreSet().submittedNameA(data.submittedNameA);
-                    self.socInsurNotiCreSet().submittedNameB(data.submittedNameB);
+            service.start(sId).done(function (data: any) {
+                if (data){
+                    self.acquiArt(data.acquiArt);
+                    self.jobPath(data.jobPath);
+                    self.workingTime(data.workingTime);
+                    self.jobAtr(data.jobAtr);
+                    self.payWage(data.payWage);
+                    self.insuranceCauAtr(data.insuranceCauAtr);
+                    self.wagePaymentMode(data.wagePaymentMode);
+                    self.employmentStatus(data.employmentStatus);
+                    self.conPerPrintArt(data.conPerPrintArt);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 }else {
-                    self.screenMode(model.SCREEN_MODE.NEW);
+                    self.getDefault();
                 }
-            })
+            });
             return dfd.promise();
         }
-    }
 
-    class ItemModel {
-        code: string;
-        name: string;
+        getDefault(){
+            let self = this;
+            self.createNew();
+            self.screenMode(model.SCREEN_MODE.NEW);
+        }
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        createNew(){
+            let self = this;
+            self.acquiArt(0);
+            self.jobPath(0);
+            self.workingTime('');
+            self.jobAtr(0);
+            self.payWage('');
+            self.insuranceCauAtr(0);
+            self.wagePaymentMode(0);
+            self.employmentStatus(0);
+            self.conPerPrintArt(0);
         }
     }
 
@@ -171,20 +199,6 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         static PERSONNEL = 3;
         static ACCOUNTING = 4;
         static OH = 6;
-    }
-
-    export interface ISocInsurNotiCreSet {
-        submittedNameA: number;
-        submittedNameB: number;
-    }
-
-    export class SocInsurNotiCreSet {
-        submittedNameA: KnockoutObservable<number>;
-        submittedNameB: KnockoutObservable<number>;
-        constructor(params: ISocInsurNotiCreSet) {
-            this.submittedNameA = ko.observable(params.submittedNameA);
-            this.submittedNameB = ko.observable(params.submittedNameB);
-        }
     }
 
 }
