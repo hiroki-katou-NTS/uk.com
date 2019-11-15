@@ -108,8 +108,11 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 if (setting && txtSetting) {
                     self.empInsReportSetting(new EmpInsReportSetting(setting));
                     self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+
+                    service.updateEmpInsRptTxtSetting(txtSetting);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 }
+                service.addEmpInsRptTxtSetting(setting);
                 self.screenMode(model.SCREEN_MODE.NEW);
 
                 dfd.resolve();
@@ -252,6 +255,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             setShared("QUI001_PARAMS_A", params);
             modal("/view/qui/001/c/index.xhtml");
         }
+
         getListEmpId(empCode: Array, listEmp: Array){
             let listEmpId =[];
             _.each(empCode, (item) =>{

@@ -6,13 +6,14 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportTxtS
 import nts.uk.ctx.pr.report.infra.entity.printconfig.empinsreportsetting.QrsmtEmpInsRptTxtSetting;
 
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
 public class JpaEmpInsReportTxtSettingRepository extends JpaRepository implements EmpInsReportTxtSettingRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QrsmtEmpInsRptTxtSetting f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.qrsmtEmpInsRptTxtSettingPk.cid =:cid AND  f.qrsmtEmpInsRptTxtSettingPk.userId =:userId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.qrsmtEmpInsRptTxtSettingPk.cid =:cid AND f.qrsmtEmpInsRptTxtSettingPk.userId =:userId";
 
     @Override
     public Optional<EmpInsReportTxtSetting> getEmpInsReportTxtSettingByUserId(String cid, String userId) {

@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.report.ws.printconfig.empinsurreportcreset;
 
+import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.AddEmpInsRptTxtSettingCommandHandler;
+import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
+import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.UpdateEmpInsRptTxtSettingCommandHandler;
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAddChangeInfoCommand;
 import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportSettingDto;
 import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportSettingFinder;
@@ -20,6 +23,12 @@ public class EmpInsurReportCreSetWebService {
     @Inject
     EmpInsReportTxtSettingFinder txtSettingFinder;
 
+    @Inject
+    AddEmpInsRptTxtSettingCommandHandler addTxtSettingCommandHandler;
+
+    @Inject
+    UpdateEmpInsRptTxtSettingCommandHandler updateTxtSettingCommandHandler;
+
     @POST
     @Path("/start")
     public EmpInsReportSettingDto startScreen() {
@@ -30,6 +39,18 @@ public class EmpInsurReportCreSetWebService {
     @Path("/get-emp-ins-rpt-txt-stg")
     public EmpInsReportTxtSettingDto getEmpInsReportTxtSetting() {
         return txtSettingFinder.getEmpInsReportTxtSetting();
+    }
+
+    @POST
+    @Path("/add-emp-ins-rpt-txt-stg")
+    public void addEmpInsRptTxtSetting(EmpInsRptTxtSettingCommand command) {
+        addTxtSettingCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("/update-emp-ins-rpt-txt-stg")
+    public void updateEmpInsRptTxtSetting(EmpInsRptTxtSettingCommand command) {
+        updateTxtSettingCommandHandler.handle(command);
     }
 
     @POST
