@@ -4,9 +4,12 @@ module nts.uk.pr.view.qui001.a {
     export module service {
         let paths: any = {
             exportTxt: "export-txt-qui001",
-            getEmpInsReportTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg",
+            getEmpInsReportTxtSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg"*/,
             exportPDF: "export-pdf-qui001",
-            getEmpInsReportSetting: "ctx/pr/report/printconfig/empinsurreportcreset/start"
+            getEmpInsReportSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/start"*/,
+
+            addEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/add-emp-ins-rpt-txt-stg",
+            updateEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/update-emp-ins-rpt-txt-stg"
         };
 
         export function getEmpInsReportTxtSetting(): JQueryPromise<any> {
@@ -23,6 +26,14 @@ module nts.uk.pr.view.qui001.a {
 
         export function exportPDF(data: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportPDF, data);
+        }
+
+        export function addEmpInsRptTxtSetting(data): JQueryPromise<any> {
+            return ajax('pr', paths.addEmpInsRptTxtSetting, data);
+        }
+
+        export function updateEmpInsRptTxtSetting(data): JQueryPromise<any> {
+            return ajax('pr', paths.updateEmpInsRptTxtSetting, data);
         }
     }
 }
