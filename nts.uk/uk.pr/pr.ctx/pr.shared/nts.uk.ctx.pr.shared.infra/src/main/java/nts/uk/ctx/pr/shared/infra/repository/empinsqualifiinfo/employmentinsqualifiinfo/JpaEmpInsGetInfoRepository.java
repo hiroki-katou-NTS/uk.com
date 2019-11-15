@@ -13,7 +13,7 @@ import java.util.Optional;
 public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsGetInfoRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT e FROM QqsmtEmpInsGetInfo e";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + "WHERE e.empInsGetInfoPk.sid =:sid";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.sid =:sid";
 
     @Override
     public List<EmpInsGetInfo> getAllEmpInsGetInfo(){

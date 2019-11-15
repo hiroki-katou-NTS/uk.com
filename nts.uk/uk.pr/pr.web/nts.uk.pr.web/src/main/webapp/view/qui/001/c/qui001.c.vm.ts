@@ -25,7 +25,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         /**
          * KCP009-社員送り
          */
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
@@ -62,25 +62,27 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             /**
              *KCP009
              */
-            // let params = getShared("QUI001_PARAMS_A");
-            let params = ko.observableArray([
-                    {id: '01', code: 'A000000000001',  name: '大塚太郎A', workplaceName: '名古屋支店', isAlreadySetting: false},
-                    {id: '02', code: 'A000000000002',  name: '大塚太郎B', workplaceName: '名古屋支店', isAlreadySetting: false},
-                    {id: '03', code: 'A000000000003',  name: '大塚太郎C', workplaceName: '名古屋支店', isAlreadySetting: false},
-                    {id: '04', code: 'A000000000004',  name: '大塚太郎D', workplaceName: '名古屋支店', isAlreadySetting: false},
-                ]);
-            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params)) {
+            let params = getShared("QUI001_PARAMS_A");
+            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
                 close();
             }
-            // data fake
-            self.employeeInputList = ko.observableArray([
-                {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            ]);
+            self.employeeInputList(self.createEmployeeModel(params.employeeList));
             this.loadKCP009();
             self.selectedItem(self.employeeInputList()[0].id);
+        }
+
+        createEmployeeModel(data) {
+            let listEmployee = [];
+            _.each(data, data => {
+                listEmployee.push({
+                    id: data.id,
+                    code: data.code,
+                    businessName: data.name,
+                    workplaceName: data.workplaceName
+                });
+            });
+
+            return listEmployee;
         }
 
         cancel(){
