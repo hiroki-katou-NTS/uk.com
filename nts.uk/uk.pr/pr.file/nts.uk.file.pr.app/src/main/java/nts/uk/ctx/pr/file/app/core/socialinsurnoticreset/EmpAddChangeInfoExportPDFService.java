@@ -146,7 +146,7 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
                     && e.getSpouseAddChangeDate().beforeOrEquals(fe.getEndDate())
                     && e.getSpouseAddChangeDate().afterOrEquals(fe.getStartDate())
                     && fe.getDependent() == 1).findFirst();
-            if (!ef.isPresent()) {
+                if (!ef.isPresent()) {
                 e.setSpouseAddChangeDate(null);
             }
 
@@ -185,9 +185,9 @@ public class EmpAddChangeInfoExportPDFService extends ExportService<Notification
 
         eList.forEach(el->{
             Optional<EmpCorpOffHisInfo> corp = empCorpOffHisInfoList.stream().filter(cor->cor.getEmpId().equals(el.getEmpId())
-                    && el.getSpouseAddChangeDate() != null
-                    && el.getSpouseAddChangeDate().afterOrEquals(cor.getStartDate())
-                    && el.getSpouseAddChangeDate().beforeOrEquals(cor.getEndDate()) ).findFirst();
+                    && el.getPersonAddChangeDate() != null
+                    && el.getPersonAddChangeDate().afterOrEquals(cor.getStartDate())
+                    && el.getPersonAddChangeDate().beforeOrEquals(cor.getEndDate()) ).findFirst();
 
             if(corp.isPresent()) {
                 Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeList.stream().filter(soc->soc.getCompanyID().equals(corp.get().getCid())

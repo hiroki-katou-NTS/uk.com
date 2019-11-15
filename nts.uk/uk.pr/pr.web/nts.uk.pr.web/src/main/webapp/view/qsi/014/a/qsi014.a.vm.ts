@@ -265,7 +265,7 @@ module nts.uk.pr.view.qsi014.a.viewmodel {
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: true,
+                showClosure: false,
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
