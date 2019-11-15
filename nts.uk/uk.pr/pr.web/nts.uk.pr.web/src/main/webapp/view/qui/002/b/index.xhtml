@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 700, height: 500 };</script>
+        <script>var dialogSize = { width: 695, height: 530 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="qui002.b.vm.js" />
         <com:scriptfile path="qui002.b.start.js" />
@@ -15,22 +15,29 @@
     </ui:define>
     <ui:define name="content">
 
-       <div id="contents-area">
-           <div id="B_1" tabindex="1" style="width: 260px" data-bind="
+       <div id="contents-area" >
+           <div style="margin-left: 20px; margin-top: 15px;">
+                <i class="icon icon-searchbox" style="margin-top: 25px; margin-left: 29px;"></i>
+                <div id="B_1" tabindex="1" style="width: 260px; margin-left: 35px;" data-bind="
                         ntsSearchBox: {
-                                targetKey: 'employeeId',
+                                targetKey: 'id',
                                 comId: 'B_2',
 	                            items: listEmp,
-	                            selectedKey: 'employeeId',
-	                            fields: ['employeeId', 'employeeCode'],
-	                            mode: 'iGrid'}" />
-           <table tabindex="2" id="B_2" ></table>
+	                            selectedKey: 'id',
+	                            fields: ['employeeCode', 'employeeName'],
+	                            mode: 'igGrid'}" />
+
+           </div>
+           <div style="margin-left: 20px; margin-top: 15px;">
+               <table tabindex="2" id="B_2" ></table>
+           </div>
+
        </div>
-        <div id="functions-area">
-            <button id="B1_1" tabindex="3" class="proceed"
-                    data-bind="click:register,enable: $root.errors.isEmpty()">#{i18n.getText('QUI002_21')}</button>
-            <button id="B1_2" tabindex="4"
-                    data-bind="click:cancel">#{i18n.getText('QUI002_22')}</button>
+        <div id="functions-area-bottom">
+            <button id="B1_1" tabindex="3" class="large proceed" style="margin-top: 13px;"
+                    data-bind="click:register,enable: $root.errors.isEmpty()">#{i18n.getText('QUI002_B222_10')}</button>
+            <button id="B1_2" tabindex="4" style="margin-top: 13px;"
+                    data-bind="click:cancel">#{i18n.getText('QUI002_B222_11')}</button>
         </div>
     </ui:define>
 </ui:composition>
