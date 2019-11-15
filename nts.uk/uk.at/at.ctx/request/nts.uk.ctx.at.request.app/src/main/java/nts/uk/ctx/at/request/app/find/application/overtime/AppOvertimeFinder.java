@@ -898,23 +898,10 @@ public class AppOvertimeFinder {
 		}
 		overTimeDto.setAppOvertimeReference(appOvertimeReference);
 		
-		// display flex
+		GeneralDate baseDate = appCommonSettingOutput.generalDate;
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
-			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
-				overTimeDto.setFlexFLag(false);
-			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
-				GeneralDate baseDate = appCommonSettingOutput.generalDate;
-				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(appOverTime.getApplication().getEmployeeID(),baseDate);
-				if(personalLablorCodition.isPresent()){
-					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
-						overTimeDto.setFlexFLag(true);
-					}else{
-						overTimeDto.setFlexFLag(false);
-					}
-				}
-			}else{
-				overTimeDto.setFlexFLag(true);
-			}
+			//フレックス時間を表示するかチェック
+			overTimeDto.setFlexFLag(flexDisplayCheck(baseDate, appOverTime.getApplication().getEmployeeID()));
 			//ドメインモデル「残業申請設定」.勤種変更可否フラグがtrueの場合
 			overTimeDto.setWorkTypeChangeFlg(false);
 			if(appOvertimeSettingRepository.getAppOver().get().getWorkTypeChangeFlag().equals(Changeable.CHANGEABLE)){
@@ -1562,23 +1549,10 @@ public class AppOvertimeFinder {
 				}
 			}
 		}
+		GeneralDate baseDate = appCommonSettingOutput.generalDate;
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
-			// display flex
-			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
-				result.setFlexFLag(false);
-			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
-				GeneralDate baseDate = appCommonSettingOutput.generalDate;
-				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
-				if(personalLablorCodition.isPresent()){
-					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
-						result.setFlexFLag(true);
-					}else{
-						result.setFlexFLag(false);
-					}
-				}
-			}else{
-				result.setFlexFLag(true);
-			}
+			//フレックス時間を表示するかチェック
+			result.setFlexFLag(flexDisplayCheck(baseDate, employeeID));
 			//ドメインモデル「残業申請設定」.勤種変更可否フラグがtrueの場合
 			result.setWorkTypeChangeFlg(false);
 			if(appOvertimeSettingRepository.getAppOver().get().getWorkTypeChangeFlag().equals(Changeable.CHANGEABLE)){
@@ -1851,17 +1825,10 @@ public class AppOvertimeFinder {
 					null));
 		}
 		appOverTimeMobDto.appOvertimeNightFlg = appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value == 1 ? true : false;
-		if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.ALWAYSDISPLAY){
-			appOverTimeMobDto.flexFLag = true;
-		} else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.DISPLAY){
-			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
-					.getBySidAndStandardDate(application.getEmployeeID(), application.getAppDate());
-			if(personalLablorCodition.isPresent()){
-				if(personalLablorCodition.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK){
-					appOverTimeMobDto.flexFLag = true;
-				}
-			}
-		}
+		
+		//フレックス時間を表示するかチェック
+		appOverTimeMobDto.flexFLag = flexDisplayCheck(application.getAppDate(), application.getEmployeeID());
+
 		if(appOverTimeMobDto.appOvertimeNightFlg) {
 			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 11, null));
 		}
@@ -1965,5 +1932,31 @@ public class AppOvertimeFinder {
 		appOverTimeMobDto.displayDivergenceReasonInput = commonOvertimeHoliday.displayDivergenceReasonInput(
 						EnumAdaptor.valueOf(appOverTimeMobDto.prePostAtr, PrePostAtr.class), overtimeRestAppCommonSet.getDivergenceReasonInputAtr());
 		return appOverTimeMobDto;
+	}
+	
+	/**
+	 * フレックス時間を表示するかチェック
+	 * 
+	 * @param baseDate
+	 * @param employeeID
+	 * @return フレックス時間を表示する区分
+	 */
+	public boolean flexDisplayCheck(GeneralDate baseDate, String employeeID) {
+		if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)) {
+			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID, baseDate);
+			if (personalLablorCodition.isPresent()) {
+				if (personalLablorCodition.get().getLaborSystem().isFlexTimeWork()) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.ALWAYSDISPLAY)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
