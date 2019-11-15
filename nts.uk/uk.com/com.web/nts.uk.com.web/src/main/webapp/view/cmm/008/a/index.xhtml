@@ -97,10 +97,10 @@
 						</div>
 						<div data-bind="visible : true" > 
 						<div class="fixed-flex-layout">
-							<div data-bind="ntsFormLabel: {required: true}" class="width-label fixed-flex-layout-left">
+							<div data-bind="ntsFormLabel: {}" class="width-label fixed-flex-layout-left">
 								<label data-bind ="text :$parent.commonMasterName"></label>
 							</div>
-							<div id="combo-box" data-bind="ntsComboBox: {
+							<div  tabindex="10" id="combo-box" data-bind="ntsComboBox: {
 								options: $parent.itemListMatter,
 								optionsValue: 'commonMasterItemCode',
 								visibleItemsCount: 5,

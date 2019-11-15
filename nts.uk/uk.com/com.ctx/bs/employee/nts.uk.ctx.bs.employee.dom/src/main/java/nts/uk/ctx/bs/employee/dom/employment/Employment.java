@@ -71,7 +71,11 @@ public class Employment extends AggregateRoot {
 		memento.setEmpExternalCode(this.empExternalCode);
 		memento.setMemo(this.memo);
 		memento.setEmpCommonMasterId(this.empCommonMasterId==null?null:this.empCommonMasterId.get());
-		memento.setEmpCommonMasterItemId(this.empCommonMasterItemId==null?null:this.empCommonMasterItemId.get());
+		String empCommonMasterItemIdValue = null;
+		if(this.empCommonMasterItemId.isPresent()){
+			empCommonMasterItemIdValue = this.empCommonMasterItemId.get();
+		}
+		memento.setEmpCommonMasterItemId(empCommonMasterItemIdValue);
 	}
 
 	/*
