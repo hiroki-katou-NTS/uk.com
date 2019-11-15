@@ -139,7 +139,7 @@ module nts.uk.com.view.cmm008.a {
                 command.empExternalCode = self.employmentModel().empExternalCode();
                 command.memo = self.employmentModel().memo();
                 command.isUpdateMode = self.isUpdateMode();
-                command.commonMasterName = 'M0000301';
+                command.commonMasterName = 'M000031';
                 command.selectedCodeMaster = self.selectedCodeMaster();
 
                 blockUI.invisible();
