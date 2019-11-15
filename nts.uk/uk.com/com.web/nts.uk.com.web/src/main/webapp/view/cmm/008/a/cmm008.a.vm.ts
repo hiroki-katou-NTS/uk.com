@@ -76,7 +76,7 @@ module nts.uk.com.view.cmm008.a {
                         self.selectedCode(self.empList()[0].code);
 
                         // Find and bind selected Employment
-                        self.loadEmployment(self.selectedCode());
+                        //self.loadEmployment(self.selectedCode());
                     }
                     blockUI.clear();
                 });
@@ -102,7 +102,7 @@ module nts.uk.com.view.cmm008.a {
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
                             self.selectedCode(employment.code);
-                            nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
+                           nts.uk.ui.dialog.alertError({ messageId: employment.errMessage });
                             
                             }
                         $('#empName').focus();

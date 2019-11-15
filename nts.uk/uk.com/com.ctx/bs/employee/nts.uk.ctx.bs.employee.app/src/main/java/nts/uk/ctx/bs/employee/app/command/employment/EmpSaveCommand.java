@@ -87,7 +87,7 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 
 	@Override
 	public Optional<String> empCommonMasterItemId() {
-		return Optional.of(selectedCodeMaster);
+		return Optional.ofNullable(selectedCodeMaster);
 	}
 
 }
