@@ -45,7 +45,19 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         disableSelection : KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
+        empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
+            submitNameAtr: 0,
+            outputOrderAtr: 0,
+            officeClsAtr: 0,
+            myNumberClsAtr: 1,
+            nameChangeClsAtr: 0
+        }));
 
+        empInsReportTxtSetting: KnockoutObservable<EmpInsReportTxtSetting> = ko.observable(new EmpInsReportTxtSetting({
+            lineFeedCode: 0,
+            officeAtr: 0,
+            fdNumber: 0
+        }));
 
         screenMode : number;
 
@@ -121,21 +133,27 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.initScreen();
         }
 
-        exportFile() {
+        exportPDF() {
             let self = this;
-            let employList = self.getListEmpId(self.selectedCode(), self.employeeList());
+            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
+
             let data: any = {
-                IEmpInsReportSetting: {
-                    submitNameAtr : self.submitNameClsCode(),
-                    outputOrderAtr : self.empInsOutOrderCode(),
-                    officeClsAtr : self.officeClsPdf(),
-                    myNumberClsAtr : self.printCfgCode()
+                empInsReportSettingExport: {
+                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
+                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
+                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
+                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
+                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-                IEmpInsReportTxtSetting: {
-                    officeAtr : self.officeClsText(),
-                    fdNumber : self.fdCode(),
-                    lineFeedCode : self.lineFeedCodeClsSelected()
-                }, employList
+                empInsReportSettingTxtExport: {
+                    officeAtr : self.empInsReportTxtSetting().officeAtr,
+                    fdNumber : self.empInsReportTxtSetting().fdNumber,
+                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode
+                },
+                listEmployeeId,
+                startPeriod: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                endPeriod: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
             service.registerReportSetting(data).done(function () {
 
@@ -149,16 +167,11 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let dfd = $.Deferred();
 
             $.when(service.getReportSetting(), service.getReportTxtSetting())
-                .done((reportSetting :EmpInsReportSetting, reportTxtSetting :EmpInsReportTxtSetting) =>{
-                    if (reportSetting != null && reportTxtSetting != null) {
+                .done((reportSetting :IEmpInsReportSetting, reportTxtSetting :IEmpInsReportTxtSetting) =>{
+                    if (reportSetting  && reportTxtSetting) {
                         this.screenMode = ScreenMode.UPDATE_MODE;
-                        self.submitNameClsCode = ko.observable(reportSetting.submitNameAtr);
-                        self.empInsOutOrderCode = ko.observable(reportSetting.outputOrderAtr);
-                        self.officeClsPdf = ko.observable(reportSetting.officeClsAtr);
-                        self.printCfgCode = ko.observable(reportSetting.myNumberClsAtr);
-                        self.officeClsText = ko.observable(reportTxtSetting.officeAtr);
-                        self.fdCode = ko.observable(reportTxtSetting.fdNumber);
-                        self.lineFeedCodeClsSelected = ko.observable(reportTxtSetting.lineFeedCode);
+                        self.empInsReportSetting(new EmpInsReportSetting(reportSetting));
+                        self.empInsReportTxtSetting(new EmpInsReportTxtSetting(reportTxtSetting));
                     } else {
                         this.screenMode = ScreenMode.NEW_MODE;
                     }
@@ -388,6 +401,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         outputOrderAtr : number;
         officeClsAtr : number;
         myNumberClsAtr : number;
+        nameChangeClsAtr : number;
     }
 
     export class EmpInsReportSetting {
@@ -395,12 +409,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         outputOrderAtr : KnockoutObservable<number>;
         officeClsAtr : KnockoutObservable<number>;
         myNumberClsAtr : KnockoutObservable<number>;
+        nameChangeClsAtr: KnockoutObservable<number>;
 
         constructor (params : IEmpInsReportSetting) {
             this.submitNameAtr = ko.observable(params.submitNameAtr);
             this.outputOrderAtr = ko.observable(params.outputOrderAtr);
             this.officeClsAtr = ko.observable(params.officeClsAtr);
             this.myNumberClsAtr = ko.observable(params.myNumberClsAtr);
+            this.nameChangeClsAtr = ko.observable(params.nameChangeClsAtr);
         }
     }
 

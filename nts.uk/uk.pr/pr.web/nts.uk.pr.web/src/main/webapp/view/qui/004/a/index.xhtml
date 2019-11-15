@@ -75,7 +75,7 @@
 
                 <div class="fixed-flex-layout-right"> <!--data-bind="with: socInsurNotiCreSet"-->
                     <div class="panel panel-frame " style="width: 435px; height: 540px;"> <!--498px-->
-                        <div id="A222_12" class = "label"> #{i18n.getText('QUI004_A222_12')}</div>
+                        <div id="A222_12" class = "label" style="padding-bottom: 10px"> #{i18n.getText('QUI004_A222_12')}</div>
                         <div class = "valign-center control-group">
                             <div id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI004_A222_13')}</div>
                             <div id = "A222_14"  data-bind="ntsDatePicker: {
@@ -89,7 +89,7 @@
                         </div>
 
                         <div class="valign-center control-group">
-                            <div id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: false }">#{i18n.getText('QUI004_A222_16')}</div>
+                            <div id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI004_A222_16')}</div>
                             <div id="A222_17" style=" height: 27px;" tabindex="10" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_17')}',
                                 options: submitNameCls,
@@ -103,7 +103,7 @@
                         </div>
 
                         <div class="valign-center control-group ">
-                            <div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QUI004_A222_21')}</div>
+                            <div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI004_A222_21')}</div>
                             <div id="A222_22" style=" width: 300px;" tabindex="12" data-bind="ntsComboBox: {
                                 name: '#[QUI004_A222_22]',
                                 options: empInsOutOrder,
@@ -118,7 +118,7 @@
                         </div>
 
                         <div class="valign-center control-group">
-                            <div id="A222_24" class="column-first" data-bind="ntsFormLabel: {  required: false }, enable: false">#{i18n.getText('QUI004_A222_24')}</div>
+                            <div id="A222_24" class="column-first" data-bind="ntsFormLabel: {  required: true }, enable: false">#{i18n.getText('QUI004_A222_24')}</div>
                             <div id="A222_25" tabindex="13" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_25')}',
                                 options: printCfg,
@@ -129,10 +129,10 @@
                                 enable: false  }"/>
                         </div>
 
-                        <div id="A222_29" style="border-bottom: 1px solid #bfb4b4; padding-top:20px;" class="control-group"><span id="A222_28" class="label">#{i18n.getText('QUI004_A222_28')}</span></div>
+                        <div id="A222_29" style="border-bottom: 1px solid #bfb4b4; padding-top:20px;" class="control-group"><span id="A222_28" class="label" style="padding-bottom: 5px">#{i18n.getText('QUI004_A222_28')}</span></div>
 
                         <div class="valign-center control-group ">
-                            <div id="A222_30" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:false}">#{i18n.getText('QUI004_A222_30')}</div>
+                            <div id="A222_30" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI004_A222_30')}</div>
                             <div id="A222_31" style=" width: 300px;" tabindex="14" data-bind="ntsComboBox: {
                                 name: '#[QUI004_A222_31]',
                                 options: officeCls,
@@ -146,10 +146,10 @@
                             </div>
                         </div>
 
-                        <div id="A222_34" style="border-bottom: 1px solid #bfb4b4; padding-top: 20px;" class="control-group"><span id="A222_33" class="label">#{i18n.getText('QUI004_A222_33')}</span></div>
+                        <div id="A222_34" style="border-bottom: 1px solid #bfb4b4; padding-top: 20px;" class="control-group"><span id="A222_33" class="label" style="padding-bottom: 5px">#{i18n.getText('QUI004_A222_33')}</span></div>
 
                         <div class="valign-center control-group">
-                            <div id="A222_35" class="column-first" data-bind="ntsFormLabel: {  required: false }">#{i18n.getText('QUI004_A222_35')}</div>
+                            <div id="A222_35" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI004_A222_35')}</div>
                             <div id="A222_36" style=" height: 27px;" tabindex="15" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QUI004_A222_36')}',
                                 options: lineFeedCodeCls,
@@ -167,8 +167,8 @@
                         </div>
 
                         <div class="valign-center control-group A222_42">
-                            <span style="padding-left: 14px !important; padding-right: 1px !important;" class="column-first"><span id="A222_42" class="label">#{i18n.getText('QUI004_A222_42')}</span></span>
-                            <div id="A222_43" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
+                            <span style="padding-left: 14px !important; padding-right: 1px !important; width: 130px !important;" class="column-first"><span id="A222_42" class="label">#{i18n.getText('QUI004_A222_42')}</span></span>
+                            <div id="A222_43" style=" width: 250px;" tabindex="17" data-bind="ntsComboBox: {
                                 name: '#[QUI001_A222_43]',
                                 options: officeCls,
                                 optionsValue: 'code',
@@ -181,16 +181,17 @@
                             </div>
                         </div>
 
-                        <div class="valign-center control-group ">
-                            <span style="padding-left: 14px !important; padding-right: 1px !important;" class="control-group"><span id="A222_45" class="label">#{i18n.getText('QUI004_A222_45')}</span></span>
+                        <div class="valign-center control-group">
+                            <span id="A222_45" style="padding-left: 14px; padding-right: 1px;">
+                                #{i18n.getText('QUI004_A222_45')}
+                            </span>
                             <div id="A222_46" style=" width: 50px; height: 18px" tabindex="17" data-bind="ntsTextEditor: {
                                 name: '#[QUI001_A222_46]',
-                                value: fdCode,
-                                required: true,
-                                enable: false,
-                                readonly: false}"> <!---->
+                                value: fdCode
+                                }">
                             </div>
                         </div>
+
                     </div>
                 </div>
 
