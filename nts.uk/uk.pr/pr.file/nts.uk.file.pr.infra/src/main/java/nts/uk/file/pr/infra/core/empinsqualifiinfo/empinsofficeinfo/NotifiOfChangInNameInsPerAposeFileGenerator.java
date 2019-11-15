@@ -56,17 +56,19 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
 
             for (int i = 0; i < data.size(); i++) {
 
-                Paragraphs paragraphs = doc.getPages().get_Item(indexPage).getParagraphs();
+                Page pdfPage = doc.getPages().get_Item(indexPage);
+                TextBuilder textBuilder = new TextBuilder(pdfPage);
+                Paragraphs paragraphs = pdfPage.getParagraphs();
                 NotifiOfChangInNameInsPerExportData element = data.get(i);
 
                 // A1_2
-                paragraphs.add(setValue(114, 757, "0", 16));
+                textBuilder.appendText(setValue(114, 757, "0", 16));
                 //A1_3
                 String emInsNumInfo =  element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "" ;
                 if( element.getEmpInsNumInfo() != null && !element.getEmpInsNumInfo().getEmpInsNumber().v().equals("")  ){
-                    detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,paragraphs);
-                    detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,paragraphs);
-                    detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,paragraphs);
+                    detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,textBuilder);
+                    detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,textBuilder);
+                    detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,textBuilder);
                 }
 
                 //A1_4
@@ -75,36 +77,36 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                         case OUTPUT_COMPANY: {
                             if (element.getCompanyInfor() != null) {
                                 String companyCode = element.getCompanyInfor().getCompanyCode();
-                                detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, paragraphs);
-                                detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, paragraphs);
-                                detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, paragraphs);
+                                detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, textBuilder);
+                                detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, textBuilder);
+                                detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, textBuilder);
                                 //A2_6
-                                paragraphs.add(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
+                                textBuilder.appendText(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
                                 String postCd = element.getCompanyInfor().getPostCd();
-                                paragraphs.add(setValue(150, 190,formatPostalCode(postCd), 9));
+                                textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
                                 //A3_2
-                                paragraphs.add(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
+                                textBuilder.appendText(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
                                 //A3_3
-                                paragraphs.add(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
+                                textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
-                                paragraphs.add(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
+                                textBuilder.appendText(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
                             }
                             break;
                         }
                         case OUPUT_LABOR_OFFICE: {
                             if (element.getLaborInsuranceOffice() != null) {
                                 String laborOfficeCode =  element.getLaborInsuranceOffice().getLaborOfficeCode().v();
-                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : laborOfficeCode, 4, paragraphs);
-                                detachText(362, 711, laborOfficeCode.length() > 4 ? laborOfficeCode.substring(4,laborOfficeCode.length()) : "", 6, paragraphs);
-                                detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, paragraphs);
+                                detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : laborOfficeCode, 4, textBuilder);
+                                detachText(362, 711, laborOfficeCode.length() > 4 ? laborOfficeCode.substring(4,laborOfficeCode.length()) : "", 6, textBuilder);
+                                detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, textBuilder);
 
                                 //A2_6
-                                paragraphs.add(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
+                                textBuilder.appendText(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
                                 //A3_1
                                 if (element.getLaborInsuranceOffice().getBasicInformation() != null) {
                                     String postCd =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
-                                    paragraphs.add(setValue(150, 190,formatPostalCode(postCd), 9));
+                                    textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
                                     //A3_2
                                     String addressLabor;
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
@@ -116,12 +118,12 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
-                                    paragraphs.add(setValue(210, 190, addressLabor, 9));
+                                    textBuilder.appendText(setValue(210, 190, addressLabor, 9));
                                     //A3_3
-                                    paragraphs.add(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
+                                    textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
                                     String phoneNumber =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";
-                                    paragraphs.add(setValue(150, 131,formatPhoneNumber(phoneNumber), 9));
+                                    textBuilder.appendText(setValue(150, 131,formatPhoneNumber(phoneNumber), 9));
 
                                 }
 
@@ -137,35 +139,35 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 }
                 //A1_5
                 JapaneseDate empInsHistStartDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).start().toString().substring(0, 10), "yyyy/MM/dd"));
-                paragraphs.add(setValue(45, 677, findEra(empInsHistStartDate.era()), 16));
+                textBuilder.appendText(setValue(45, 677, findEra(empInsHistStartDate.era()), 16));
                 //A1_6
                 {
                     String value = (empInsHistStartDate.year() + 1 < 10 ? "0" + (empInsHistStartDate.year() + 1) : empInsHistStartDate.year() + 1) + "" + (empInsHistStartDate.month() < 10 ? "0" + empInsHistStartDate.month() : empInsHistStartDate.month()) + "" + (empInsHistStartDate.day() < 10 ? "0" + empInsHistStartDate.day() : empInsHistStartDate.day()) + "";
-                    detachText(79, 677, value, 6, paragraphs);
+                    detachText(79, 677, value, 6, textBuilder);
                 }
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
-                    paragraphs.add(setValue(45, 586, element.getName() != null ? element.getName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName() : "", 16));
                     //A1_8
-                    detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, paragraphs);
+                    detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
 
                 } else {
-                    paragraphs.add(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName() : "", 16));
                     //A1_8
-                    detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, paragraphs);
+                    detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
                 //A1_9
                 String fullName = element.getFullName() != null ? element.getFullName() : "";
-                detachText(45, 466, fullName, 28, paragraphs);
+                detachText(45, 466, fullName, 28, textBuilder);
 
                 //A1_10
                 if(fullName.length() >= 29){
-                    detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, paragraphs);
+                    detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
                  }
                 //A2_1
-                paragraphs.add(setValue(112, 362, element.getOldName() != null ? element.getOldName() : "", 9));
+                textBuilder.appendText(setValue(112, 362, element.getOldName() != null ? element.getOldName() : "", 9));
                 //A2_2
-                paragraphs.add(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana() : "", 9));
+                textBuilder.appendText(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana() : "", 9));
                 //A2_3
                 Graph graph = new Graph(50, 50);
                 // tạo line gạch chữ
@@ -188,7 +190,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 graph.getShapes().add(rect);
                 //A2_4
                 JapaneseDate birthDay = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-//                paragraphs.add(setValue(400,353,);
+//                textBuilder.appendText(setValue(400,353,);
                 Circle rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
@@ -217,20 +219,20 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A2_5
                 {
                     JapaneseDate birthDayJapanCla = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-                    paragraphs.add(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
-                    paragraphs.add(setValue(455, 357,  birthDayJapanCla.month() + "", 9));
-                    paragraphs.add(setValue(491, 357, birthDayJapanCla.day() + "", 9));
+                    textBuilder.appendText(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
+                    textBuilder.appendText(setValue(455, 357,  birthDayJapanCla.month() + "", 9));
+                    textBuilder.appendText(setValue(491, 357, birthDayJapanCla.day() + "", 9));
                 }
                 //A2_7
                 if (!element.getChangeDate().equals("")) {
                     JapaneseDate changeDate = toJapaneseDate(GeneralDate.fromString(element.getChangeDate().substring(0, 10), "yyyy/MM/dd"));
                     //lấy ví dụ  element.getChangeDate()
-                    detachDate(445, 284, changeDate, paragraphs);
+                    detachDate(445, 284, changeDate, textBuilder);
                 }
                 //A3_5
                 JapaneseDate fillingDate = toJapaneseDate(GeneralDate.fromString(element.getFillingDate().substring(0, 10), "yyyy/MM/dd"));
 
-                detachDate(486, 206, fillingDate, paragraphs);
+                detachDate(486, 206, fillingDate, textBuilder);
 
                 //index page
                 indexPage = indexPage + 2;
@@ -279,15 +281,15 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
         textFragmentState.setForegroundColor(Color.getBlack());
     }
 
-    private void detachText(int xRoot, int yRoot, String value, int numCells, Paragraphs paragraphs) {
+    private void detachText(int xRoot, int yRoot, String value, int numCells,TextBuilder textBuilder) {
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        for (int i = 0; i < lstValue.size(); i++) {
+        String[] lstValue = value.split("");
+        for (int i = 0; i < lstValue.length; i++) {
             int pixel = xRoot + (17 * i);
-            paragraphs.add(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
+            textBuilder.appendText(setValue(pixel, yRoot, lstValue[i], 16));
         }
 
     }
@@ -301,10 +303,10 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
         marginInfo.setBottom(0);
     }
 
-    private void detachDate(int xRoot, int yRoot, JapaneseDate value, Paragraphs paragraphs) {
-        paragraphs.add(setValue(xRoot, yRoot,  value.year() + 1 + "", 9));
-        paragraphs.add(setValue(xRoot + 30, yRoot, value.month() + "", 9));
-        paragraphs.add(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
+    private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
+        textBuilder.appendText(setValue(xRoot, yRoot,  value.year() + 1 + "", 9));
+        textBuilder.appendText(setValue(xRoot + 30, yRoot, value.month() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
     }
     private String formatPhoneNumber(String number){
         String numberPhone = "";
