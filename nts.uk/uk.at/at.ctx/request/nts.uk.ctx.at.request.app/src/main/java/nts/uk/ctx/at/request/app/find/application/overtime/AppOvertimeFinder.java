@@ -225,18 +225,17 @@ public class AppOvertimeFinder {
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, 
 				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+		
+		// ドメインモデル「申請承認機能設定」．「申請利用設定」．利用区分をチェックする(check 利用区分 trong domain 「申請承認機能設定」．「申請利用設定」  )
+		if (appCommonSettingOutput.getApprovalFunctionSetting().getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)) {
+			// 利用区分が利用しない
+			throw new BusinessException("Msg_323");
+		}
+		
 		result.setRequireAppReasonFlg(appCommonSettingOutput.getApplicationSetting().getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED) ? true : false);
 		result.setManualSendMailAtr(appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value  == 1 ? false : true);
 		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
 		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
-		
-		// 12_承認ルートを取得
-		if(CollectionUtil.isEmpty(employeeIDs) || employeeIDs.size() == 1){
-			//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-			ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(companyID, employeeID, EmploymentRootAtr.APPLICATION, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appCommonSettingOutput.generalDate, "", true);
-			//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
-			 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.OVER_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
-		}
 		
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertimeAtr(url);
@@ -255,13 +254,6 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
-
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
-		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
-		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
-		result.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
-		result.setPerformanceExcessAtr(performanceExcessAtr.value);
 		return result;
 	}
 	
@@ -1259,7 +1251,7 @@ public class AppOvertimeFinder {
 		//申請日付を取得 : lay thong tin lam them
 		applicationDto.setApplicationDate(appDate);
 		
-		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
+		//01-02_時間外労働を取得
 		Optional<AgreeOverTimeOutput> opAgreeOverTimeOutput = commonOvertimeHoliday
 				.getAgreementTime(companyID, employeeID, ApplicationType.OVER_TIME_APPLICATION);
 		if(opAgreeOverTimeOutput.isPresent()){
@@ -1426,7 +1418,8 @@ public class AppOvertimeFinder {
 		result.setOverTimeInputs(overTimeInputs);
 		
 		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appCommonSettingOutput.getAppTypeDiscreteSettings().stream()
+				.filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findFirst();
 		if(appTypeDiscreteSetting.isPresent()){
 			result.setTypicalReasonDisplayFlg(false);
 			// 01-05_申請定型理由を取得
@@ -1588,6 +1581,10 @@ public class AppOvertimeFinder {
 			
 		}
 		result.setApplication(applicationDto);
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
+		result.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
+		result.setPerformanceExcessAtr(performanceExcessAtr.value);
 	}
 
 	/**
