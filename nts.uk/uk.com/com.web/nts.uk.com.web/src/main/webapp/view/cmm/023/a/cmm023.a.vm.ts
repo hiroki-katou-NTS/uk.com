@@ -28,15 +28,11 @@ module nts.uk.com.view.cmm023.a.viewmodel {
 
             self.commonMasterId.subscribe((commonMasterId) => {
 
-                if (!commonMasterId) {
-                    return;
-                }
-
                 self.selectedCommonMaster(_.find(self.master(), ['commonMasterId', commonMasterId]));
 
                 block.grayout();
 
-                service.getItems(commonMasterId).done((data) => {
+                service.getItems({ commonMasterId: commonMasterId }).done((data) => {
                     block.clear();
 
                     self.items(_.map(data, x => new GroupCommonItem(x)));
