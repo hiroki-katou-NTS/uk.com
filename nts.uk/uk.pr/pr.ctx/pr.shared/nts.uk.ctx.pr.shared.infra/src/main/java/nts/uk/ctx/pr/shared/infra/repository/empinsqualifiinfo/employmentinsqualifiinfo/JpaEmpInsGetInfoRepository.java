@@ -14,6 +14,8 @@ public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsG
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT e FROM QqsmtEmpInsGetInfo e";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.sid =:sid";
+    private static final String SELECT_BY_EMP_IDS = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.sid IN :sids";
+
 
     @Override
     public List<EmpInsGetInfo> getAllEmpInsGetInfo(){
@@ -47,6 +49,13 @@ public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsG
     @Override
     public void update(EmpInsGetInfo domain){
         this.commandProxy().update(QqsmtEmpInsGetInfo.toEntity(domain));
+    }
+
+    @Override
+    public List<EmpInsGetInfo> getByEmpIds(List<String> empIds) {
+        return this.queryProxy().query(SELECT_BY_EMP_IDS, QqsmtEmpInsGetInfo.class)
+                .setParameter("sids", empIds)
+                .getList(QqsmtEmpInsGetInfo::toDomain);
     }
 
 }
