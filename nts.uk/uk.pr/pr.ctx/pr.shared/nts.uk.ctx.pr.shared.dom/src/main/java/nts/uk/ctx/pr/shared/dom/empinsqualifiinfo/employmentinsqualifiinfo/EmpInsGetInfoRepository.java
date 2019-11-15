@@ -16,4 +16,6 @@ public interface EmpInsGetInfoRepository {
 
     void update(EmpInsGetInfo domain);
 
+    List<EmpInsGetInfo> getByEmpIds(List<String> empIds);
+
 }
