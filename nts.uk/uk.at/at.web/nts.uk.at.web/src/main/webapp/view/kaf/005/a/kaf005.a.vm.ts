@@ -154,6 +154,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         flexFLag: KnockoutObservable<boolean> = ko.observable(true);
         performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
         preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
+        tmpOverTime: any;
+        tmpBonusTime: any;
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -176,7 +178,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.startPage().done(function() {
                 let url = $(location).attr('search');
                 let urlParam :string = url.split("=")[1];
-                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {
+                    self.tmpOverTime = $("#fixed-overtime-hour-table").clone();
+                    self.tmpBonusTime = $("#fixed-bonus_time-table").clone();
+                    $("#fixed-overtime-hour-table").remove();
+                    if (self.displayBonusTime() == true) {
+                        $("#fixed-bonus_time-table").remove();  
+                    }
+                    self.timeTableEdit(self.prePostSelected());
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -281,18 +290,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                     return dfd.promise();
                     });
+                
+                
+                
                 self.prePostSelected.subscribe(function(value){
                         $('#kaf005-pre-post-select').ntsError('clear');
                         let dfd =$.Deferred();
                         self.clearErrorA6_8();
-                        if(value == 1){
-                           $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                           $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 }); 
-                        }else if(value == 0){
-                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                            $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
+                        
+                        $("#fixed-overtime-hour-table").parents('div')[2].remove();
+                        if (self.displayBonusTime() == true) {
+                            $("#fixed-bonus_time-table").parents('div')[2].remove();
                         }
-                        if(!nts.uk.util.isNullOrEmpty(self.appDate())){
+                        self.timeTableEdit(value);
+                        $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
+
+                        if (!nts.uk.util.isNullOrEmpty(self.appDate())) {
                             nts.uk.ui.errors.clearAll();
                             $("#inputdate").trigger("validate");
                             if (nts.uk.ui.errors.hasError()) {
@@ -357,6 +371,25 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         }
         
+        timeTableEdit(value) {
+            var self = this;
+            if (value == 1) {
+                self.tmpOverTime.children('colgroup').children()[2].width = '110px';
+                self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+                if (self.displayBonusTime() == true) {
+                    self.tmpBonusTime.children('colgroup').children()[2].width = '110px';
+                }
+                
+            } else if (value == 0) {
+                self.tmpOverTime.children('colgroup').children()[2].width = '0px';
+                self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                if (self.displayBonusTime() == true) {
+                    self.tmpBonusTime.children('colgroup').children()[2].width = '0px';
+                }
+            }
+            $("#overtime-container").append(self.tmpOverTime.clone());
+            $("#bonustime-container").append(self.tmpBonusTime.clone());
+        }
         isShowReason(){
             let self =this;
             if(self.screenModeNew()){
