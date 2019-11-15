@@ -39,6 +39,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             let self = this;
             $('#emp-component').focus();
             self.selectedItem.subscribe(e => {
+                $('#emp-component').focus();
                 self.initScreen(e);
             });
             self.empAddChangeInfoDto().otherAtr.subscribe(e =>{
@@ -94,12 +95,11 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             }).always(()=>{
-
                 if(!self.validate()){
                     errors.clearAll();
-                }
+                };
+                $('#emp-component').focus();
             });
-
             return dfd.promise();
         }
 
@@ -124,11 +124,15 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             };
             service.register(data).done(e => {
                 block.clear();
-                dialog.info({ messageId: "Msg_15" })
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    $('#emp-component').focus();
+                    close();
+                });
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
+
             return dfd.promise();
         }
 

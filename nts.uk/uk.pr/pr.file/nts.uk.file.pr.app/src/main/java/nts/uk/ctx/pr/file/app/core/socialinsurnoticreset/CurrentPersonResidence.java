@@ -51,6 +51,16 @@ public class CurrentPersonResidence {
     private String address2;
 
     /**
+     * 住所1
+     */
+    private String address1BeforeChangePs;
+
+    /**
+     * 住所2
+     */
+    private String address2BeforeChangePs;
+
+    /**
      * 開始日
      */
     private GeneralDate startDate;
@@ -91,6 +101,8 @@ public class CurrentPersonResidence {
                     "トウキョウクトウキョウ1-1-1",
                     "東京都",
                     "東京区東京1-1-1",
+                    "東京都",
+                    "東京区東京2-2-2",
                     GeneralDate.fromString("2019/01/01","yyyy/MM/dd" ),
                     i.getPersonNameGroup().getPersonName().getFullNameKana(),
                     i.getPersonNameGroup().getPersonName().getFullName(),

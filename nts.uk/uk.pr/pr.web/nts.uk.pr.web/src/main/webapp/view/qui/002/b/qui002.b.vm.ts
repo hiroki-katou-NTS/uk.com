@@ -13,52 +13,59 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         constructor() {
             var self = this;
-            //let params = getShared("QUI002_PARAMS_B");
+            let params = getShared("QUI002_PARAMS_B");
 
-            self.listEmp(self.createData());
-            /*if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
+            self.listEmp(self.convertListEmployee(self.createData(params.employeeList)));
+            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
                 close();
-            }*/
+            }
             self.loadGird();
+
         }
 
-        createData(){
+        createData(emplist: Array){
             let employeeList = [];
-            for (var i = 0; i < 20; i++) {
-                let employee = new Employee("000000001" + i,"000000001" + i,"000000001" + i , "000000001" + i, "2019/12/12");
+            _.each(emplist, (item,key) =>{
+                let employee = new Employee(key,item.id,item.code,item.name , item.nameBefore, "");
                 employeeList.push(employee);
-            }
+            });
+
             return employeeList;
         }
 
         loadGird(){
             let self = this;
-            let template = "<div id =\"${employeeId}\" data-bind='ntsDatePicker: {name: \"jjj\", value: ko.observable(${changeDate}), dateFormat: \"YYYY/MM/DD\",valueFormat: \"YYYYMMDD\"} '</div>";
+            let template = "<div id =\"${employeeId}\" data-bind='ntsDatePicker: {name: \"#[QUI002_B222_5]\", value: ko.observable(${changeDate}), dateFormat: \"YYYY/MM/DD\",valueFormat: \"YYYYMMDD\"} '</div>";
             $("#B_2").ntsGrid({
-                height: '340px',
+                height: '319px',
                 dataSource: self.listEmp(),
-                primaryKey: 'employeeId',
+                primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: '', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
-                    { headerText: getText('QUI002_17'), key: 'employeeCode', dataType: 'string', width: '120' },
-                    { headerText: getText('QUI002_18'), key: 'employeeName', dataType: 'string', width: '120' },
-                    { headerText: getText('QUI002_19'), key: 'employeeNameBefore', dataType: 'string', width: '120' },
-                    { headerText: getText('QUI002_20'), key: 'changeDate', dataType: 'string',width: '120',template: template}
+                    { headerText: 'id', key: 'id', dataType: 'number', width: '20' , hidden: true},
+                    { headerText: 'employeeId', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
+                    { headerText: getText('QUI002_B222_2'), key: 'employeeCode', dataType: 'string', width: '160' },
+                    { headerText: getText('QUI002_B222_3'), key: 'employeeName', dataType: 'string', width: '170' },
+                    { headerText: getText('QUI002_B222_4'), key: 'employeeNameBefore', dataType: 'string', width: '170' },
+                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113',template: template}
 
                 ],
                 features: [
                     { name: 'Resizing',
                         columnSettings: [{
-                            columnKey: 'employeeCode', allowResizing: false, minimumWidth: 30,
-                            columnKey: 'employeeName', allowResizing: false, minimumWidth: 30,
-                            columnKey: 'employeeNameBefore', allowResizing: false, minimumWidth: 30,
-                            columnKey: 'changeDate', allowResizing: false, minimumWidth: 30,
+                            columnKey: 'employeeCode', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'employeeName', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'employeeNameBefore', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'changeDate', allowResizing: false, minimumWidth: 150,
                         }]
-                    }],
+                    },
+                    {name: 'Selection', mode: 'row', multipleSelection: false}],
+
+
             });
             $("#B_2").setupSearchScroll("igGrid", true);
+
         }
 
         //set cancel method
@@ -75,7 +82,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         getListEmployee(emplist: Array){
             let listEmployee: any = [];
             _.each(emplist, (item) =>{
-                item.changeDate  = $('#item.employeeId').val();
+                item.changeDate  = $("#" + item.employeeId).val();
                 listEmployee.push(item);
             });
             return listEmployee;
@@ -88,12 +95,14 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
     }
     export class Employee {
+        id: number;
         employeeId: string;
         employeeCode: string;
         employeeName: string;
         employeeNameBefore: string;
         changeDate: KnockoutObservable<string>;
-        constructor(employeeId, employeeCode,employeeName, employeeNameBefore, changeDate){
+        constructor(key, employeeId, employeeCode,employeeName, employeeNameBefore, changeDate){
+            this.id = key;
             this.employeeId = employeeId;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;

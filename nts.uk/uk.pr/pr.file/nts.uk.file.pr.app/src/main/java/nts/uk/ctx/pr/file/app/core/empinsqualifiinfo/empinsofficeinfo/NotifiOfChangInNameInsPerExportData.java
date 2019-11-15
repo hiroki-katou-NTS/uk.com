@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.file.app.core.empinsreportsetting;
+package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 雇用保険被保険者住所変更届
  */
-public class EmpInsReportSettingExportData {
+public class NotifiOfChangInNameInsPerExportData {
     /**
      * 会社情報
      */

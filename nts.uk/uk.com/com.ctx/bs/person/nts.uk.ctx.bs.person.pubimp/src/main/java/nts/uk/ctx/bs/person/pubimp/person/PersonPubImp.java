@@ -103,11 +103,11 @@ public class PersonPubImp implements PersonPub {
 						new FullNameSetExport(group.getOldName() == null ? null : group.getOldName().getFullName().v(),
 								group.getOldName() == null ? null : group.getOldName().getFullNameKana().v()));
 				
-				return new PersonExport(c.getBirthDate(), c.getBloodType() == null ? 0 : c.getBloodType().value,
+				return new PersonExport(c.getBirthDate(), c.getGender() == null ? 1 : c.getGender().value,
 						c.getPersonId(), groupExport);
 			}
 			
-			return new PersonExport(c.getBirthDate(), c.getBloodType() == null ? 0 : c.getBloodType().value,
+			return new PersonExport(c.getBirthDate(), c.getGender() == null ? 1 : c.getGender().value,
 					c.getPersonId(), null);
 			
 		}).collect(Collectors.toList());
