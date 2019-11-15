@@ -17,9 +17,12 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         startDateJp: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
         endDateJp: KnockoutObservable<string> = ko.observable('');
-        filingDate: KnockoutObservable<string> = ko.observable('');
-        filingDateJp: KnockoutObservable<string> = ko.observable('');
+        fillingDate: KnockoutObservable<string> = ko.observable('');
+        fillingDateJp: KnockoutObservable<string> = ko.observable('');
 
+        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls());
+        outputOrders: KnockoutObservable<model.ItemModel> = ko.observable(model.getEmpInsOutOrder());
+        printPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.isPrintMyNum());
         submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
         changedName: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getChangedName());
         newLine:  KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNewLine());
@@ -28,7 +31,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             submitNameAtr: 0,
             outputOrderAtr: 0,
             officeClsAtr: 0,
-            myNumberClsAtr: 0,
+            myNumberClsAtr: 1,
             nameChangeClsAtr: 0
         }));
 
@@ -70,11 +73,11 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
-            self.filingDate.subscribe((data)=>{
+            self.fillingDate.subscribe((data)=>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.fillingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
             });
 
             let today  = new Date();
@@ -89,7 +92,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let yyyyE = today.getFullYear();
             self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
             self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
-            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.fillingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
             self.loadKCP005();
             self.loadCCG001();
 
@@ -105,7 +108,10 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 if (setting && txtSetting) {
                     self.empInsReportSetting(new EmpInsReportSetting(setting));
                     self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
                 }
+                self.screenMode(model.SCREEN_MODE.NEW);
+
                 dfd.resolve();
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
@@ -229,7 +235,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                     myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-
             };
             nts.uk.ui.block.grayout();
             service.exportPDF(data).done(() => {
@@ -239,8 +244,44 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+        openCScreen() {
+            let self = this;
+            let params = {
+                employeeList: self.getListEmpId(self.selectedCode(), self.employeeList())
+            };
+            setShared("QUI001_PARAMS_A", params);
+            modal("/view/qui/001/c/index.xhtml");
+        }
+        getListEmpId(empCode: Array, listEmp: Array){
+            let listEmpId =[];
+            _.each(empCode, (item) =>{
+                let emp = _.find(listEmp, function(itemEmp) { return itemEmp.code == item; });
+                listEmpId.push(emp);
+            });
+            return listEmpId;
+        }
 
         exportCSV() {
+            let self = this;
+            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
+            if(empIds.length == 0) {
+                dialog.alertError({ messageId: 'Msg_37' });
+                return;
+            }
+            let data = {
+                empInsReportTxtSettingExport: {
+                    lineFeedCode: self.empInsRptTxtSetting().lineFeedCode(),
+                    officeAtr: self.empInsRptTxtSetting().officeAtr(),
+                    fdNumber: self.empInsRptTxtSetting().fdNumber()
+                },
+            };
+            nts.uk.ui.block.grayout();
+            service.exportTXT(data).done(() => {
+            }).fail((error) => {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
 
         }
 

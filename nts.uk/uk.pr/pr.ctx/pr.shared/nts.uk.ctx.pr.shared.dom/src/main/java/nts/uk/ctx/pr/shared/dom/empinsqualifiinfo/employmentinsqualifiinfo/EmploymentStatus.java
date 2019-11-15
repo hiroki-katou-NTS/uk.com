@@ -6,13 +6,13 @@ import nts.arc.i18n.I18NText;
  * 雇用形態区分
  */
 public enum EmploymentStatus {
-    DAILY_WORK(0, I18NText.getText("")),
-    DISPATCH(1, I18NText.getText("")),
-    PART_TIME(2, I18NText.getText("")),
-    FIXED_TERM_CONTRACT(3, I18NText.getText("")),
-    SEASONAL(4, I18NText.getText("")),
-    SAILOR(5, I18NText.getText("")),
-    OTHER(6, I18NText.getText(""));
+    DAILY_WORK(0, I18NText.getText("Enum_EmploymentStatus_DAILY_WORK")),
+    DISPATCH(1, I18NText.getText("Enum_EmploymentStatus_DISPATCH")),
+    PART_TIME(2, I18NText.getText("Enum_EmploymentStatus_PART_TIME")),
+    FIXED_TERM_CONTRACT(3, I18NText.getText("Enum_EmploymentStatus_FIXED_TERM_CONTRACT")),
+    SEASONAL(4, I18NText.getText("Enum_EmploymentStatus_SEASONAL")),
+    SAILOR(5, I18NText.getText("Enum_EmploymentStatus_SAILOR")),
+    OTHER(6, I18NText.getText("Enum_EmploymentStatus_OTHER"));
 
 
     /**

@@ -6,11 +6,11 @@ import nts.arc.i18n.I18NText;
  * 被保険者となったことの原因区分
  */
 public enum InsuranceCauseAtr {
-    NEW_EMPLOYMENT_NEW_GRADUATE(0, I18NText.getText("")),
-    NEW_EMPLOYMENT_OTHER(1, I18NText.getText("")),
-    SWITCHING_FROM_DAY_LABOR(2, I18NText.getText("")),
-    OTHER(3, I18NText.getText("")),
-    TEMPORARY_RETURN(4, I18NText.getText(""));
+    NEW_EMPLOYMENT_NEW_GRADUATE(0, I18NText.getText("Enum_InsuranceCause_NEW_EMPLOYMENT_NEW_GRADUATE")),
+    NEW_EMPLOYMENT_OTHER(1, I18NText.getText("Enum_InsuranceCause_NEW_EMPLOYMENT_OTHER")),
+    SWITCHING_FROM_DAY_LABOR(2, I18NText.getText("Enum_InsuranceCause_SWITCHING_FROM_DAY_LABOR")),
+    OTHER(3, I18NText.getText("Enum_InsuranceCause_OTHER")),
+    TEMPORARY_RETURN(4, I18NText.getText("Enum_InsuranceCause_TEMPORARY_RETURN_OLDER_65"));
 
 
     /**
