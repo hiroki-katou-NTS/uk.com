@@ -351,11 +351,11 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
             return number;
         }
         if(numberSplit.length > 1){
-            postalCode = "〒" + numberSplit[0] + "－" + numberSplit[1];
+            postalCode =  numberSplit[0] + "－" + numberSplit[1];
         }else{
             temp[0] = number.length() > 2 ? number.substring(0,3) : number;
             temp[1] = number.length() > 3 ? number.substring(3,number.length()) : "";
-            postalCode = "〒" + temp[0] + "－" + temp[1];
+            postalCode =  temp[0] + "－" + temp[1];
         }
         return postalCode;
     }
