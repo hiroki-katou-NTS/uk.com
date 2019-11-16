@@ -16,9 +16,9 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             let params = getShared("QUI002_PARAMS_B");
             self.initScreen(params.employeeList);
             $('#B_2_container table tr th').attr( 'tabIndex', -1 );
-            $('#B_2').attr( 'tabIndex', -1 );
             $('#B_2 tr').attr( 'tabIndex', -1 );
             $('#B_2 tr td').attr( 'tabIndex', -1 );
+
         }
 
         initScreen(emplist: Array){
@@ -33,9 +33,17 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             let data = {
                 employeeIds: employeeIdList
             };
+            self.listEmp(_.orderBy(employeeList, ['employeeCode'], ['asc']));
             service.getPersonInfo(data).done((listEmp: any)=>{
                 if(listEmp && listEmp.length > 0) {
-                    self.listEmp( _.orderBy(listEmp, ['employeeCode'], ['asc']));
+                    _.each(self.listEmp(), (employee) =>{
+                        _.each(listEmp, (person) => {
+                            if(employee.employeeId == person.employeeId) {
+                                employee.personId = person.personId;
+                                employee.employeeNameBefore = person.oldName;
+                            }
+                        });
+                    });
                 }
                 self.loadGird();
             });
@@ -70,7 +78,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     },
                     {name: 'Selection', mode: 'row', multipleSelection: false}],
                 ntsControls: [
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false } }
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false }}
                 ],
 
             });
@@ -165,6 +173,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         employeeName: string;
         employeeNameBefore: string;
         changeDate: KnockoutObservable<string>;
+        personId: string;
         constructor(key, employeeId, employeeCode,employeeName, employeeNameBefore, changeDate){
             this.id = key;
             this.employeeId = employeeId;

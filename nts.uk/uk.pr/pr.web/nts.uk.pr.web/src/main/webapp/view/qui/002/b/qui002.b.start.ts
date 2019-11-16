@@ -3,7 +3,7 @@ module nts.uk.pr.view.qui002.b {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         _.defer(() => {
-            $("#" + screenModel.listEmp()[0].employeeId ).focus();
+            $(".nts-editor nts-input" ).focus();
         });
     });
 }
