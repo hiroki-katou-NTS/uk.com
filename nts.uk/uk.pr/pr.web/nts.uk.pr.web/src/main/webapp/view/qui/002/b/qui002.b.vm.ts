@@ -33,14 +33,12 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             let data = {
                 employeeIds: employeeIdList
             };
-            /*service.getPersonInfo(data).done((listEmp: any)=>{
+            service.getPersonInfo(data).done((listEmp: any)=>{
                 if(listEmp && listEmp.length > 0) {
                     self.listEmp( _.orderBy(listEmp, ['employeeCode'], ['asc']));
                 }
                 self.loadGird();
-            });*/
-            self.listEmp( _.orderBy(employeeList, ['employeeCode'], ['asc']));
-            self.loadGird();
+            });
         }
 
         loadGird(){
