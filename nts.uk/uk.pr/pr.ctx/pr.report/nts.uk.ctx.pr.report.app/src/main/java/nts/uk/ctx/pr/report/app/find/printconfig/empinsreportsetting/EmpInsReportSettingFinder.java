@@ -1,17 +1,30 @@
 package nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting;
 
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
+import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsReportSettingFinder {
+
     @Inject
     EmpInsReportSettingRepository mEmpInsReportSettingRepository;
+
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    @Inject
+    private PersonExportAdapter personExportAdapter;
 
     public EmpInsReportSettingDto getEmpInsReportSetting(){
         String cid = AppContexts.user().companyId();
@@ -40,6 +53,18 @@ public class EmpInsReportSettingFinder {
                 .nameChangeClsAtr(0)
                 .build();
 
+    }
+
+    public List<PersonDto> getPerson(List<String> employeeId){
+        List<EmployeeInfoEx> employeeInfo= employeeInfoAdapter.findBySIds(employeeId);
+        List<PersonExport> person = personExportAdapter.findByPids(employeeInfo.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+        return employeeInfo.stream().map(item -> toPersonDto(item, person)).collect(Collectors.toList());
+    }
+
+    private PersonDto toPersonDto(EmployeeInfoEx employee, List<PersonExport> persons){
+        Optional<PersonExport> person = persons.stream().filter(item -> item.getPersonId().equals(employee.getPId())).findFirst();
+        String oldName = person.isPresent() ? person.get().getPersonNameGroup().getOldName().getFullName() : "";
+        return new PersonDto(employee.getPId(), oldName, employee.getEmployeeId());
     }
 
 

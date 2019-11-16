@@ -14,28 +14,38 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         constructor() {
             var self = this;
             let params = getShared("QUI002_PARAMS_B");
-
-            self.listEmp(self.convertListEmployee(self.createData(params.employeeList)));
-            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
-                close();
-            }
-            self.loadGird();
-
+            self.initScreen(params.employeeList);
+            $('#B_2_container table tr th').attr( 'tabIndex', -1 );
+            $('#B_2').attr( 'tabIndex', -1 );
+            $('#B_2 tr').attr( 'tabIndex', -1 );
+            $('#B_2 tr td').attr( 'tabIndex', -1 );
         }
 
-        createData(emplist: Array){
+        initScreen(emplist: Array){
+            let self = this;
             let employeeList = [];
+            let employeeIdList = [];
             _.each(emplist, (item,key) =>{
                 let employee = new Employee(key,item.id,item.code,item.name , item.nameBefore, "");
                 employeeList.push(employee);
+                employeeIdList.push(item.id);
             });
-
-            return employeeList;
+            let data = {
+                employeeIds: employeeIdList
+            };
+            /*service.getPersonInfo(data).done((listEmp: any)=>{
+                if(listEmp && listEmp.length > 0) {
+                    self.listEmp( _.orderBy(listEmp, ['employeeCode'], ['asc']));
+                }
+                self.loadGird();
+            });*/
+            self.listEmp( _.orderBy(employeeList, ['employeeCode'], ['asc']));
+            self.loadGird();
         }
 
         loadGird(){
             let self = this;
-            let template = "<div id =\"${employeeId}\" data-bind='ntsDatePicker: {name: \"#[QUI002_B222_5]\", value: ko.observable(${changeDate}), dateFormat: \"YYYY/MM/DD\",valueFormat: \"YYYYMMDD\"} '</div>";
+            let template = "<div id ='${employeeId}' </div>";
             $("#B_2").ntsGrid({
                 height: '319px',
                 dataSource: self.listEmp(),
@@ -48,7 +58,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     { headerText: getText('QUI002_B222_2'), key: 'employeeCode', dataType: 'string', width: '160' },
                     { headerText: getText('QUI002_B222_3'), key: 'employeeName', dataType: 'string', width: '170' },
                     { headerText: getText('QUI002_B222_4'), key: 'employeeNameBefore', dataType: 'string', width: '170' },
-                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113',template: template}
+                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113', ntsControl: 'TextEditor'}
 
                 ],
                 features: [
@@ -61,13 +71,79 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                         }]
                     },
                     {name: 'Selection', mode: 'row', multipleSelection: false}],
-
+                ntsControls: [
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false } }
+                ],
 
             });
             $("#B_2").setupSearchScroll("igGrid", true);
 
         }
 
+        validate(listItem){
+            let self = this;
+            _.each(listItem, (item) =>{
+                self.checkDate(item.changeDate, item.id);
+            });
+            return errors.hasError();
+        }
+
+        checkDate(yearMonthDate: any, id) {
+            let classError =".nts-grid-control-changeDate-" + id;
+            if (yearMonthDate === undefined || yearMonthDate === null) {
+                return;
+            }
+            if (!(yearMonthDate instanceof String)) {
+                yearMonthDate = yearMonthDate.toString();
+            }
+            yearMonthDate = yearMonthDate.replace("/", "");
+            yearMonthDate = yearMonthDate.replace("/", "");
+            var checkNum = yearMonthDate.replace(/[0-9]/g, "");
+            if (checkNum) {
+                $(classError).ntsError('set', "変更年月日は 1900/01/01 ～ 9999/12/31 の日付を入力してください","MsgB_18");
+            }
+            var year = parseInt(yearMonthDate.substring(0, 4));
+            if (year < 1900 || year > 9999) {
+                $(classError).ntsError('set', "変更年月日は 1900/01/01 ～ 9999/12/31 の日付を入力してください","MsgB_18");
+                return;
+            }
+            var month = parseInt(yearMonthDate.substring(4, 6));
+            if (month < 1 || month > 12) {
+                $(classError).ntsError('set', "変更年月日は 1900/01/01 ～ 9999/12/31 の日付を入力してください","MsgB_18");
+                return;
+            }
+
+            var date = parseInt(yearMonthDate.substring(6));
+            var maxDate = 30;
+            switch (month) {
+                case 2:
+                    if (year % 400 == 0) {
+                        maxDate = 29;
+                    } else if (year % 4 == 0 && year % 25 != 0) {
+                        maxDate = 29;
+                    } else {
+                        maxDate = 28;
+                    }
+                    break;
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    maxDate = 31;
+                    break;
+                default:
+                    maxDate = 30;
+                    break;
+            }
+            if (date < 1 || date > maxDate) {
+                $(classError).ntsError('set', "変更年月日は 1900/01/01 ～ 9999/12/31 の日付を入力してください","MsgB_18");
+                return;
+            }
+
+        }
         //set cancel method
         cancel() {
             nts.uk.ui.windows.close();
@@ -75,21 +151,11 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         register(){
             let self = this;
-            setShared("QUI002_PARAMS_A", self.getListEmployee(self.listEmp()));
+            if(self.validate(self.listEmp())) {
+                return;
+            }
+            setShared("QUI002_PARAMS_A", self.listEmp());
             nts.uk.ui.windows.close();
-        }
-
-        getListEmployee(emplist: Array){
-            let listEmployee: any = [];
-            _.each(emplist, (item) =>{
-                item.changeDate  = $("#" + item.employeeId).val();
-                listEmployee.push(item);
-            });
-            return listEmployee;
-        }
-
-        convertListEmployee(array :Array<Employee>){
-            return _.orderBy(array, ['employeeCode'], ['asc'])
         }
 
 

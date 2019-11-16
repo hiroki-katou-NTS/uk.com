@@ -14,9 +14,6 @@ module nts.uk.pr.view.qui002.a {
         export function exportFilePDF(data: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportFilePDF, data);
         }
-
-
-
     }
 
 }
