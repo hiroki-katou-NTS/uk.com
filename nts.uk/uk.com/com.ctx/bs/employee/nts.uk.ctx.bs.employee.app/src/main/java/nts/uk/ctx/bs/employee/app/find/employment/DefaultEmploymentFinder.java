@@ -171,4 +171,11 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		return result;
 	}
 
+	@Override
+	public GroupCommonMasterExportDto findGroupCommonMaster() {
+		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		return groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId, GeneralDate.today());
+	}
+
 }

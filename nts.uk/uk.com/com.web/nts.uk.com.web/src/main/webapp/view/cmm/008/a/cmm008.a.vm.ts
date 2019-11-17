@@ -62,8 +62,8 @@ module nts.uk.com.view.cmm008.a {
                 blockUI.invisible();
                 
                 // Load Component
-                $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-
+                var taskNtsComponent = $('#emp-component').ntsListComponent(self.listComponentOption);
+                taskNtsComponent.done(function() {
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
                         self.clearData();
@@ -71,16 +71,24 @@ module nts.uk.com.view.cmm008.a {
                     else {
                         // Get Employment List after Load Component
                         self.empList($('#emp-component').getDataList());
-
                         // Select first Item in Employment List
                         self.selectedCode(self.empList()[0].code);
-
+                        
                         // Find and bind selected Employment
                         //self.loadEmployment(self.selectedCode());
                     }
                     blockUI.clear();
                 });
-                dfd.resolve();
+                
+                let taskFindGroupCommonMaster = service.findGroupCommonMaster();
+                taskFindGroupCommonMaster.done(function(data) {
+                    self.itemListMatter(data.commonMasterItems);
+                    self.commonMasterName(data.commonMasterName);
+                });
+                
+                $.when(taskNtsComponent, taskFindGroupCommonMaster).then(function() {
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
