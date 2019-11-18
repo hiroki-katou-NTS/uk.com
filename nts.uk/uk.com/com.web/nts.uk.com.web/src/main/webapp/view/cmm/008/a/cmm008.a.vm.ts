@@ -25,6 +25,9 @@ module nts.uk.com.view.cmm008.a {
                 self.employmentModel = ko.observable(new EmploymentModel);
                 self.selectedCode = ko.observable("");
                 self.commonMasterName = ko.observable("");
+                self.selectedCodeMaster =  ko.observable("");
+                //Item List Master Common
+                self.itemListMatter = ko.observableArray([]);
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
                         self.clearErrors();
@@ -47,9 +50,7 @@ module nts.uk.com.view.cmm008.a {
                 self.empList = ko.observableArray<ItemModel>([]);
                 self.enableEmpCode = ko.observable(false);
                 
-                //Item List Master Common
-                 self.itemListMatter = ko.observableArray([]);
-                self.selectedCodeMaster = ko.observable('1');
+                
                 
             }
 
@@ -60,10 +61,9 @@ module nts.uk.com.view.cmm008.a {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 blockUI.invisible();
-                
-                // Load Component
-                var taskNtsComponent = $('#emp-component').ntsListComponent(self.listComponentOption);
-                taskNtsComponent.done(function() {
+
+                $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
+
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
                         self.clearData();
@@ -71,24 +71,25 @@ module nts.uk.com.view.cmm008.a {
                     else {
                         // Get Employment List after Load Component
                         self.empList($('#emp-component').getDataList());
+
                         // Select first Item in Employment List
                         self.selectedCode(self.empList()[0].code);
-                        
+
                         // Find and bind selected Employment
                         //self.loadEmployment(self.selectedCode());
                     }
+                
+                service.findGroupCommonMaster().done(function(data) {
+                    // self.itemListMatter(data.commonMasterItems);
+                   self.commonMasterName(data.commonMasterName);
+                     self.itemListMatter(data.commonMasterItems);        
+                });
                     blockUI.clear();
                 });
                 
-                let taskFindGroupCommonMaster = service.findGroupCommonMaster();
-                taskFindGroupCommonMaster.done(function(data) {
-                    self.itemListMatter(data.commonMasterItems);
-                    self.commonMasterName(data.commonMasterName);
-                });
-                
-                $.when(taskNtsComponent, taskFindGroupCommonMaster).then(function() {
+               // $.when(taskNtsComponent, taskFindGroupCommonMaster).then(function() {
                     dfd.resolve();
-                });
+               // });
                 return dfd.promise();
             }
 
@@ -107,6 +108,7 @@ module nts.uk.com.view.cmm008.a {
                         self.itemListMatter(employment.commonMasterItems);
                         self.commonMasterName(employment.commonMasterName);
                         self.selectedCodeMaster(employment.empCommonMasterItemId);
+                      
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
                             self.selectedCode(employment.code);
@@ -125,11 +127,11 @@ module nts.uk.com.view.cmm008.a {
                 let self = this;
                 self.selectedCode("");
                 self.employmentModel().resetEmpData();
-                self.selectedCodeMaster('1');
+                self.selectedCodeMaster("");
                 self.enableDelete(false);   
                 self.clearErrors();
                 self.isUpdateMode(false);
-                $('#empCode').focus();
+                $('#empCode').focus(); 
             }
 
             /**

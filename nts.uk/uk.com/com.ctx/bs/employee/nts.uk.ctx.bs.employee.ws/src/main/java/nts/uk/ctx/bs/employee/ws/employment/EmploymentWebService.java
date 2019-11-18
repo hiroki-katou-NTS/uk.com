@@ -25,6 +25,7 @@ import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
 
 /**
@@ -135,7 +136,7 @@ public class EmploymentWebService extends WebService {
 	
 	@POST
 	@Path("findGroupCommonMaster")
-	public GroupCommonMasterExportDto findGroupCommonMaster()
+	public GroupCommonMasterImport findGroupCommonMaster()
 	{
 		return finder.findGroupCommonMaster();
 	}
