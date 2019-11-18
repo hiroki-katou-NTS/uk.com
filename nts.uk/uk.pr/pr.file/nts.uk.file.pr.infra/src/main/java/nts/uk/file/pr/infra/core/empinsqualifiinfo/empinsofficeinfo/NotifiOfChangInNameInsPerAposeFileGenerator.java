@@ -161,9 +161,9 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
                 }
                 //A2_1
-                textBuilder.appendText(setValue(112, 362, element.getOldName() != null ?  element.getOldName().length() > 23 ? element.getOldName().substring(0,22) : element.getOldName() : "", 9));
+                textBuilder.appendText(setValue(112, 362, element.getOldName() != null ?  element.getOldName().length() > 21 ? element.getOldName().substring(0,20) : element.getOldName() : "", 9));
                 //A2_2
-                textBuilder.appendText(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana().length() > 23 ? element.getOldNameKana().substring(0,22) :element.getOldNameKana() : "", 9));
+                textBuilder.appendText(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana().length() > 21 ? element.getOldNameKana().substring(0,20) :element.getOldNameKana() : "", 9));
                 //A2_3
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
