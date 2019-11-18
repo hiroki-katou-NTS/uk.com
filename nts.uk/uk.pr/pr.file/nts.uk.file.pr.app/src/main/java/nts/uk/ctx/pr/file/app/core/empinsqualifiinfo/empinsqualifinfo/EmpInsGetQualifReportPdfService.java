@@ -114,7 +114,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         switch (reportSetting.getOfficeClsAtr()) {
             case OUPUT_LABOR_OFFICE:
                 List<EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate);
-                List<LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getLaborInsuranceOfficeById();
+//                List<LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getLaborInsuranceOfficeById();
                 break;
             case OUTPUT_COMPANY:
                 CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
