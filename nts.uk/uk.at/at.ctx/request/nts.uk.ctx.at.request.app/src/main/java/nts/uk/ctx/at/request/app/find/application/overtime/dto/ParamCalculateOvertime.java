@@ -2,7 +2,11 @@ package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 public class ParamCalculateOvertime {
@@ -17,6 +21,10 @@ public class ParamCalculateOvertime {
 	public Integer endTime;
 	public List<Integer> startTimeRests; 
 	public List<Integer> endTimeRests;
+	public Optional<Application_New> opAppBefore;
+	public ActualStatus beforeAppStatus;
+	public boolean actualStatus;
+	public List<OvertimeColorCheck> actualLst;
 	
 	public List<Integer> getStartTimeRests() {
 

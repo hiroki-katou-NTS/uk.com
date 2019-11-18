@@ -483,7 +483,8 @@ public class AppOvertimeFinder {
 	 * @return
 	 */
 	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
-			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests){
+			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests,
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst){
 		String companyID = AppContexts.user().companyId();
 		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -501,21 +502,21 @@ public class AppOvertimeFinder {
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
 		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 		// 07-01_事前申請状態チェック
-		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-				companyID, 
-				employeeID, 
-				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.OVER_TIME_APPLICATION);
+//		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+//				companyID, 
+//				employeeID, 
+//				GeneralDate.fromString(appDate, DATE_FORMAT), 
+//				ApplicationType.OVER_TIME_APPLICATION);
 		// 07-02_実績取得・状態チェック
-		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-				companyID, 
-				employeeID, 
-				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.OVER_TIME_APPLICATION, 
-				workTypeCD, 
-				workTimeCD, 
-				appOvertimeSetting.getPriorityStampSetAtr(), 
-				Optional.empty());
+//		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+//				companyID, 
+//				employeeID, 
+//				GeneralDate.fromString(appDate, DATE_FORMAT), 
+//				ApplicationType.OVER_TIME_APPLICATION, 
+//				workTypeCD, 
+//				workTimeCD, 
+//				appOvertimeSetting.getPriorityStampSetAtr(), 
+//				Optional.empty());
 		// 07_事前申請・実績超過チェック
 		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
@@ -524,10 +525,10 @@ public class AppOvertimeFinder {
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				overtimeInputCaculations, 
 				otTimeLst, 
-				preAppCheckResult.opAppBefore, 
-				preAppCheckResult.beforeAppStatus, 
-				actualStatusCheckResult.actualLst, 
-				actualStatusCheckResult.actualStatus);
+				opAppBefore, 
+				beforeAppStatus, 
+				actualLst, 
+				actualStatus);
 		return preActualColorResult;
 	}
 
@@ -1382,6 +1383,8 @@ public class AppOvertimeFinder {
 						ApplicationType.OVER_TIME_APPLICATION);
 				if(appOvertime != null){
 					result.setPreAppPanelFlg(true);
+					result.setOpAppBefore(ApplicationDto_New.fromDomain(appOvertime.getApplication()));
+					result.setBeforeAppStatus(true);
 					convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
 				}			
 			}
@@ -1409,6 +1412,8 @@ public class AppOvertimeFinder {
 				if(actualStatusCheckResult.actualStatus==ActualStatus.NO_ACTUAL) {
 					appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
 					result.setAppOvertimeReference(appOvertimeReference);
+					result.setActualStatus(actualStatusCheckResult.actualStatus.value);
+					result.setActualLst(null);
 				} else {
 					appOvertimeReference.setWorkTypeRefer(
 							new WorkTypeOvertime(actualStatusCheckResult.workType, 
@@ -1425,6 +1430,8 @@ public class AppOvertimeFinder {
 					}
 					appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
 					result.setAppOvertimeReference(appOvertimeReference);
+					result.setActualStatus(actualStatusCheckResult.actualStatus.value);
+				    result.setActualLst(actualStatusCheckResult.actualLst);
 				}
 			}
 		}
