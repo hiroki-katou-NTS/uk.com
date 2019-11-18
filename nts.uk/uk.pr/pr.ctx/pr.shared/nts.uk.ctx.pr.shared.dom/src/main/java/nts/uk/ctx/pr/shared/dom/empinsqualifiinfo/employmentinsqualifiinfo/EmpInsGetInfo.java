@@ -15,7 +15,7 @@ public class EmpInsGetInfo extends AggregateRoot {
     /**
      * 社員ID
      */
-    private String salaryId;
+    private String sId;
 
     /**
      * 労働時間
@@ -62,8 +62,8 @@ public class EmpInsGetInfo extends AggregateRoot {
      */
     private Optional<EmploymentStatus> employmentStatus;
 
-    public EmpInsGetInfo(String salaryId, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
-        this.salaryId = salaryId;
+    public EmpInsGetInfo(String sId, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
+        this.sId = sId;
         this.workingTime = workingTime == null ? Optional.empty() : Optional.of(new WorkingTime(workingTime));
         this.acquisitionAtr = acquisitionAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(acquisitionAtr, AcquisitionAtr.class));
         this.printAtr = printAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(printAtr, ContractPeriodPrintAtr.class));

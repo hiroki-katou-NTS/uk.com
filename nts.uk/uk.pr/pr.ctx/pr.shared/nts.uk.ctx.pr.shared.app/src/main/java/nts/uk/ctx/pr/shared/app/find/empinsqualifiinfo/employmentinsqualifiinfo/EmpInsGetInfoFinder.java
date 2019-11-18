@@ -1,24 +1,34 @@
 package nts.uk.ctx.pr.shared.app.find.empinsqualifiinfo.employmentinsqualifiinfo;
 
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfoRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Stateless
 public class EmpInsGetInfoFinder {
     @Inject
-    private EmpInsGetInfoRepository finder;
+    private EmpInsGetInfoRepository empInsGetInfoRepository;
 
-    public List<EmpInsGetInfoDto> getAllEmpInsGetInfo(){
-        return finder.getAllEmpInsGetInfo().stream().map(item -> EmpInsGetInfoDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
-
-    public EmpInsGetInfoDto getEmpInsGetInfoById(String sid){
-        return finder.getEmpInsGetInfo(AppContexts.user().companyId()).map(EmpInsGetInfoDto::fromDomain).orElse(null);
+    public EmpInsGetInfoDto getEmpInsGetInfoById(String sId) {
+        Optional<EmpInsGetInfo> result = empInsGetInfoRepository.getEmpInsGetInfoById(sId);
+        if (result.isPresent()) {
+            return result.map(e -> new EmpInsGetInfoDto(
+                    e.getSId(),
+                    e.getWorkingTime().map(PrimitiveValueBase::v).orElse(null),
+                    e.getAcquisitionAtr().isPresent() ? e.getAcquisitionAtr().get().value : null,
+                    e.getPrintAtr().isPresent() ? e.getPrintAtr().get().value : null,
+                    e.getJobPath().isPresent() ? e.getJobPath().get().value : null,
+                    e.getPayWage().map(PrimitiveValueBase::v).orElse(null),
+                    e.getJobAtr().isPresent() ? e.getJobAtr().get().value : null,
+                    e.getInsCauseAtr().isPresent() ? e.getInsCauseAtr().get().value : null,
+                    e.getPaymentMode().isPresent() ? e.getPaymentMode().get().value : null,
+                    e.getEmploymentStatus().isPresent() ? e.getEmploymentStatus().get().value : null
+            )).get();
+        }
+        return null;
     }
 }

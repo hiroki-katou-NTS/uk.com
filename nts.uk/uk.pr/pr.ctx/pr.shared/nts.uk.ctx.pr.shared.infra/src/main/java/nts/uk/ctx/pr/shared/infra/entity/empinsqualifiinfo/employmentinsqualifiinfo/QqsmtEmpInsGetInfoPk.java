@@ -19,5 +19,5 @@ public class QqsmtEmpInsGetInfoPk implements Serializable {
      */
     @Basic(optional = false)
     @Column(name = "SID")
-    public String sid;
+    public String sId;
 }

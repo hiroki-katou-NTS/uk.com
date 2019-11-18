@@ -96,7 +96,7 @@ public class QqsmtEmpInsGetInfo extends UkJpaEntity implements Serializable {
 
     public EmpInsGetInfo toDomain() {
         return new EmpInsGetInfo(
-                this.empInsGetInfoPk.sid,
+                this.empInsGetInfoPk.sId,
                 this.workingTime,
                 this.acquiAtr,
                 this.contrPeriPrintAtr,
@@ -108,7 +108,7 @@ public class QqsmtEmpInsGetInfo extends UkJpaEntity implements Serializable {
                 this.employmentStatus);
     }
     public static QqsmtEmpInsGetInfo toEntity(EmpInsGetInfo domain) {
-        return new QqsmtEmpInsGetInfo(new QqsmtEmpInsGetInfoPk(domain.getSalaryId()),
+        return new QqsmtEmpInsGetInfo(new QqsmtEmpInsGetInfoPk(domain.getSId()),
                 domain.getWorkingTime().map(PrimitiveValueBase::v).orElse(null),
                 domain.getAcquisitionAtr().isPresent() ? domain.getAcquisitionAtr().get().value : null,
                 domain.getPrintAtr().isPresent() ? domain.getPrintAtr().get().value : null,

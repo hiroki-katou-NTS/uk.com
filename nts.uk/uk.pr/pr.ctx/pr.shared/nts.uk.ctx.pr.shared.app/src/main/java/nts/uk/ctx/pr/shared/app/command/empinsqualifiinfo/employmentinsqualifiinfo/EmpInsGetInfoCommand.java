@@ -7,49 +7,53 @@ public class EmpInsGetInfoCommand {
     /**
      * 社員ID
      */
-    public String sid;
+    public String sId;
     /**
      * 労働時間
      */
     public Integer workingTime;
 
     /**
-     *取得区分
+     * 取得区分
      */
-    public  Integer acquiAtr;
+    public Integer acquiAtr;
 
     /**
-     *契約期間の印刷区分
+     * 契約期間の印刷区分
      */
-    public  Integer contrPeriPrintAtr;
+    public Integer contrPeriPrintAtr;
 
     /**
-     *就職経路
+     * 就職経路
      */
-    public  Integer jobPath;
+    public Integer jobPath;
 
     /**
-     *支払賃金
+     * 支払賃金
      */
-    public  Integer payWage;
+    public Integer payWage;
 
     /**
-     *職種
+     * 職種
      */
-    public  Integer jobAtr;
+    public Integer jobAtr;
 
     /**
-     *被保険者原因
+     * 被保険者原因
      */
-    public  Integer insCauseAtr;
+    public Integer insCauseAtr;
 
     /**
-     *賃金支払態様
+     * 賃金支払態様
      */
-    public  Integer wagePaymentMode;
+    public Integer wagePaymentMode;
 
     /**
-     *雇用形態
+     * 雇用形態
      */
-    public  Integer employmentStatus;
+    public Integer employmentStatus;
+    /**
+     * ScreenMode
+     */
+    public Integer screenMode;
 }
