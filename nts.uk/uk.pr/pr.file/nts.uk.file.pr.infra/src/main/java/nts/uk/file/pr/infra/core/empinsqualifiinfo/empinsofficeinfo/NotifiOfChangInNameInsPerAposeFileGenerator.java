@@ -153,12 +153,17 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
                 //A1_9
-                String fullName = element.getFullName() != null ? element.getFullName() : "";
-                detachText(45, 466, fullName, 28, textBuilder);
+                GeneralDate dummyStart = GeneralDate.fromString("2015/01/01", "yyyy/MM/dd");
+                GeneralDate dummyEnd = GeneralDate.fromString("2019/01/01", "yyyy/MM/dd");
+                GeneralDate baseDate = GeneralDate.fromString(element.getFillingDate().substring(0, 10), "yyyy/MM/dd");
 
-                //A1_10
-                if(fullName.length() >= 29){
-                    detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
+                if(baseDate.beforeOrEquals(dummyEnd) && baseDate.afterOrEquals(dummyStart)){
+                    String fullName = element.getFullName() != null ? element.getFullName() : "";
+                    detachText(45, 466, fullName, 28, textBuilder);
+                    //A1_10
+                    if(fullName.length() >= 29){
+                        detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
+                    }
                 }
                 //A2_1
                 textBuilder.appendText(setValue(112, 362, element.getOldName() != null ?  element.getOldName().length() > 21 ? element.getOldName().substring(0,20) : element.getOldName() : "", 9));
