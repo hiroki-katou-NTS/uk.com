@@ -18,6 +18,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.CommonMaterItemDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
@@ -169,6 +170,20 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			result.add(new EmploymentDto(code, itemName));
 		});
 		return result;
+	}
+
+	@Override
+	public GroupCommonMasterImport findGroupCommonMaster() {
+		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		GroupCommonMasterExportDto data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
+				GeneralDate.today());
+		GroupCommonMasterImport dto = new GroupCommonMasterImport();
+		dto.setCommonMasterName(data.getCommonMasterName());
+		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
+				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
+				.collect(Collectors.toList()));
+		return dto;
 	}
 
 }
