@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHistRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
@@ -26,7 +28,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid ";
     private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
     private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
-    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.histId IN :histIds";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
 
 
     @Override
@@ -48,11 +50,15 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 
     @Override
     public List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate) {
-        return toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_DATE, QqsmtEmpInsHist.class)
-                .setParameter("cid", AppContexts.user().companyId())
-                .setParameter("sids", empIds)
-                .setParameter("startDate", startDate)
-                .getList());
+        List<EmpInsHist> result = new ArrayList<>();
+        CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList -> {
+            result.addAll(toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_DATE, QqsmtEmpInsHist.class)
+                    .setParameter("cid", AppContexts.user().companyId())
+                    .setParameter("sids", splitIdList)
+                    .setParameter("startDate", startDate)
+                    .getList()));
+        });
+        return result;
     }
 
     private EmpInsHist toEmploymentHistory(List<QqsmtEmpInsHist> listHist) {
@@ -87,9 +93,14 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     }
 
     @Override
-    public List<EmpInsNumInfo> getByHistIds(List<String> histIds) {
-        return this.queryProxy().query(SELECT_BY_HIST_IDS, QqsmtEmpInsHist.class)
-                .setParameter("histIds", histIds)
-                .getList(e -> new EmpInsNumInfo(e.empInsHistPk.histId,e.empInsNumber));
+    public List<EmpInsNumInfo> getByCidAndHistIds(String cid, List<String> histIds) {
+        List<EmpInsNumInfo> result = new ArrayList<>();
+        CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitList ->
+                result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS, QqsmtEmpInsHist.class)
+                        .setParameter("histIds", histIds)
+                        .setParameter("cid", cid)
+                        .getList(e -> new EmpInsNumInfo(e.empInsHistPk.histId,e.empInsNumber)))
+        );
+         return result;
     }
 }

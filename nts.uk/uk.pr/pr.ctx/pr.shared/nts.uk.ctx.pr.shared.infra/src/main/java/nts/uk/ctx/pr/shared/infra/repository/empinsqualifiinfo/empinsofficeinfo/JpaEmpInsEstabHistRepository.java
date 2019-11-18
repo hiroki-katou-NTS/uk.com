@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.shared.infra.repository.empinsqualifiinfo.empinsofficeinfo;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHistRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
@@ -35,10 +37,14 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
 
     @Override
     public List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate endDate) {
-        return toEmpInsOfficeDomain(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
-                .setParameter("histIds", histIds)
-                .setParameter("endDate", endDate)
-                .getList());
+        List<EmpInsOffice> result = new ArrayList<>();
+        CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
+            result.addAll(toEmpInsOfficeDomain(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
+                    .setParameter("histIds", histIds)
+                    .setParameter("endDate", endDate)
+                    .getList()))
+        );
+         return result;
     }
 
     private List<EmpInsOffice> toEmpInsOfficeDomain(List<QqsmtEmpInsEsmHist> listHist) {

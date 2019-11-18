@@ -37,7 +37,7 @@ public class EmpInsGetQualifReport {
     /**
      * 元号（生年月日）
      */
-    private String originalName;
+    private String eraDateOfBirth;
 
     /**
      * 取得区分
