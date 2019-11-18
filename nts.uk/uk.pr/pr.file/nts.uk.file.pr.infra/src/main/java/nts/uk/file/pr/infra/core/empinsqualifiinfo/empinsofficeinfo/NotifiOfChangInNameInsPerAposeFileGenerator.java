@@ -18,6 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,8 +53,6 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
             }
             stylePage(doc);
             int indexPage = 1;
-            //xóa
-
             for (int i = 0; i < data.size(); i++) {
 
                 Page pdfPage = doc.getPages().get_Item(indexPage);
@@ -70,7 +69,6 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,textBuilder);
                     detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,textBuilder);
                 }
-
                 //A1_4
                 {
                     switch (element.getEmpInsReportSetting().getOfficeClsAtr()) {
@@ -124,9 +122,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                     //A3_4
                                     String phoneNumber =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";
                                     textBuilder.appendText(setValue(150, 131,formatPhoneNumber(phoneNumber), 9));
-
                                 }
-
                             }
                             break;
                         }
@@ -147,12 +143,12 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 }
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
-                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName().length() > 8 ? element.getName().substring(0,7) : element.getName() : "", 16));
                     //A1_8
                     detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
 
                 } else {
-                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName().length() > 8 ? element.getReportFullName().substring(0,7) : element.getReportFullName()  : "", 16));
                     //A1_8
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
@@ -163,16 +159,18 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A1_10
                 if(fullName.length() >= 29){
                     detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
-                 }
+                }
                 //A2_1
-                textBuilder.appendText(setValue(112, 362, element.getOldName() != null ? element.getOldName() : "", 9));
+                textBuilder.appendText(setValue(112, 362, element.getOldName() != null ?  element.getOldName().length() > 23 ? element.getOldName().substring(0,22) : element.getOldName() : "", 9));
                 //A2_2
-                textBuilder.appendText(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana() : "", 9));
+                textBuilder.appendText(setValue(112, 375, element.getOldNameKana() != null ? element.getOldNameKana().length() > 23 ? element.getOldNameKana().substring(0,22) :element.getOldNameKana() : "", 9));
                 //A2_3
-                Graph graph = new Graph(50, 50);
+                Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
                 Line line = new Line(new float[]{295, 495, 357, 495});
-                Line line2 = new Line(new float[]{125, -102, 180, -102});
+                Line line2 = new Line(new float[]{125, -101, 180, -101});
+                line.getGraphInfo().setLineWidth(5f);
+                line2.getGraphInfo().setLineWidth(5f);
                 graph.getShapes().add(line);
                 graph.getShapes().add(line2);
                 paragraphs.add(graph);
@@ -282,14 +280,31 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells,TextBuilder textBuilder) {
+        value = "ｶﾞﾅﾞﾅremojiNameﾋﾗ　ｶﾞﾅremojiNameﾋﾗ　ｶ";
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
         String[] lstValue = value.split("");
+        ArrayList<String> listValueCells = new ArrayList<>();
         for (int i = 0; i < lstValue.length; i++) {
+            String valueCell = lstValue[i];
+
+            if(i < lstValue.length-1 && (lstValue[i+1].equals("ﾟ") || lstValue[i+1].equals("ﾞ"))) {
+                listValueCells.add(valueCell + lstValue[i + 1]);
+            }
+            else {
+               if(lstValue[i].equals("ﾟ") || lstValue[i].equals("ﾞ")){
+                   listValueCells.add(valueCell);
+               }
+            }
+        }
+        for (int i = 0; i < listValueCells.size(); i++) {
+            String valueCell = lstValue[i];
             int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, lstValue[i], 16));
+            textBuilder.appendText(setValue(pixel, yRoot, valueCell, 16));
+
+
         }
 
     }
@@ -330,11 +345,11 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
             if(number.length() <= 3){
                 temp[0] = number.substring(0,number.length());
                 numberPhone = temp[0];
-            }else if(number.length() > 3 && number.length() <=6){
+            }else if( number.length() <=6){
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,number.length());
                 numberPhone = temp[0] + "（  " + temp[1] + "  ）";
-            }else if(number.length() > 6){
+            }else{
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,6);
                 temp[2] = number.substring(6,number.length());

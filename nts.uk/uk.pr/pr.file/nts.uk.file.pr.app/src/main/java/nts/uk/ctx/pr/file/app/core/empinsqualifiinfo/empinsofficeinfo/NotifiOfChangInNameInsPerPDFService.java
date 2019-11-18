@@ -39,9 +39,6 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
     private CompanyInforAdapter mCompanyInforAdapter;
 
     @Inject
-    private EmpEstabInsHistRepository mEmpEstabInsHistRepository;
-
-    @Inject
     private NotifiOfChangInNameInsPerExRepository empInsReportSettingExRepository;
 
     @Inject
@@ -77,10 +74,10 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
         mEmpInsReportSettingRepository.update(empInsReportSetting);
         // data export
         List<NotifiOfChangInNameInsPerExportData> listDataExport = new ArrayList<>();
-        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empIds.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList()));
-        List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
+        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empIds.stream().map(EmployeeChangeDate::getEmployeeId).collect(Collectors.toList()));
+        List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
 
-        employee.forEach(e ->{
+        employee.forEach((EmployeeInfoEx e) ->{
 
             NotifiOfChangInNameInsPerExportData temp = new NotifiOfChangInNameInsPerExportData();
             Optional<EmpInsHist> mEmpInsHist = mEmpInsHistRepository.getEmpInsHistById(cid,e.getEmployeeId());
@@ -107,7 +104,7 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
             };
             String hisId = mEmpInsHist.get().getHistoryItem().get(0).identifier();
             Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),hisId);
-            temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : new EmpInsNumInfo(hisId,""));
+            temp.setEmpInsNumInfo(empInsNumInfo.orElseGet(() -> new EmpInsNumInfo(hisId, "")));
             // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
             Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
             if(person.isPresent()){
@@ -130,67 +127,35 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
         if(listDataExport.isEmpty()){
             throw new BusinessException("MsgQ_51");
         }
-
-        else{
-            Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                @Override
-                public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                    return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                }
-            });
-        }
         switch (empInsReportSetting.getOutputOrderAtr()){
             case INSURANCE_NUMBER:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmpInsNumInfo().getEmpInsNumber().v().compareTo(o2.getEmpInsNumInfo().getEmpInsNumber().v());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(o -> o.getEmpInsNumInfo().getEmpInsNumber().v()));
                 break;
             }
             case DEPARTMENT_EMPLOYEE:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(NotifiOfChangInNameInsPerExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE_CODE:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(NotifiOfChangInNameInsPerExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE:{
                 if(empInsReportSetting.getSubmitNameAtr() == PERSONAL_NAME ){
-                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                        @Override
-                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                            if(o1.getNameKana().compareTo(o2.getNameKana()) == 0){
-                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                            }
-                            else {
-                                return o1.getNameKana().compareTo(o2.getNameKana());
-                            }
+                    listDataExport.sort((o1, o2) -> {
+                        if (o1.getNameKana().compareTo(o2.getNameKana()) == 0) {
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                        } else {
+                            return o1.getNameKana().compareTo(o2.getNameKana());
                         }
                     });
                 }
                 else{
-                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                        @Override
-                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                           if(o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0){
-                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                           }
-                           else {
-                               return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
-                           }
+                    listDataExport.sort((o1, o2) -> {
+                        if (o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0) {
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                        } else {
+                            return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
                         }
                     });
                 }
