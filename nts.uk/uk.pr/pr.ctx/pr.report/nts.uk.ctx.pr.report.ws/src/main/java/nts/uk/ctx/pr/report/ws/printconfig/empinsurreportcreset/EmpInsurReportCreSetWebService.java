@@ -4,19 +4,18 @@ import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.AddEmpIn
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.UpdateEmpInsRptTxtSettingCommandHandler;
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpAddChangeInfoCommand;
-import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportSettingDto;
-import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportSettingFinder;
-import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportTxtSettingDto;
-import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.EmpInsReportTxtSettingFinder;
+import nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Path("ctx/pr/report/printconfig/empinsurreportcreset")
 @Produces("application/json")
 public class EmpInsurReportCreSetWebService {
+
     @Inject
     EmpInsReportSettingFinder finder;
 
@@ -57,5 +56,11 @@ public class EmpInsurReportCreSetWebService {
     @Path("/register")
     public void registerEmpAddChangeInfo(EmpAddChangeInfoCommand empAddChangeInfoCommand) {
 
+    }
+
+    @POST
+    @Path("/getPersonInfo")
+    public List<PersonDto> getPersonInfo(PersonParam personParam) {
+        return finder.getPerson(personParam.getEmployeeIds());
     }
 }
