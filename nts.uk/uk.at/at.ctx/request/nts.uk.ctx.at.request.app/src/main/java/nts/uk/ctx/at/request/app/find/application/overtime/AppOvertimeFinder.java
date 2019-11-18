@@ -613,25 +613,6 @@ public class AppOvertimeFinder {
 		overtimeInputFlexExessTime.setFrameNo(12);
 		overTimeInputs.add(overtimeInputFlexExessTime);
 		
-		// 01-04_加給時間を取得: chua xong
-		if(overtimeRestAppCommonSet.getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-			overTimeDto.setDisplayBonusTime(true);
-			List<BonusPayTimeItem> bonusPayTimeItems= this.commonOvertimeHoliday.getBonusTime(
-					companyID,
-					appOverTime.getApplication().getEmployeeID(),
-					appOverTime.getApplication().getAppDate(),
-					overtimeRestAppCommonSet.getBonusTimeDisplayAtr());
-			for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-				overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
-				overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
-				overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-				overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
-				overTimeInputs.add(overtimeInputDto);
-			}
-		}else{
-			overTimeDto.setDisplayBonusTime(false);
-		}
 		for(int i = 1; i < 11; i++){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceType.RESTTIME.value);
