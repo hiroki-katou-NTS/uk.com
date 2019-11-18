@@ -1311,33 +1311,6 @@ public class AppOvertimeFinder {
 			//時間外表示区分
 			result.setExtratimeDisplayFlag(overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
 		}
-		
-		// 01-04_加給時間を取得
-		List<CaculationTime> bonusTimes = new ArrayList<>();
-		if(overtimeRestAppCommonSet.isPresent()){
-			result.setDisplayBonusTime(false);
-			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-				result.setDisplayBonusTime(true);
-				List<BonusPayTimeItem> bonusPayTimeItems= this.commonOvertimeHoliday
-						.getBonusTime(companyID, employeeID, 
-								appDate == null ? GeneralDate.today() : GeneralDate.fromString(appDate, DATE_FORMAT), 
-								overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr());
-				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-					CaculationTime cal = new CaculationTime();
-					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-					overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
-					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
-					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
-					overTimeInputs.add(overtimeInputDto);
-					cal.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
-					cal.setFrameNo(bonusPayTimeItem.getId());
-					cal.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
-					cal.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-					bonusTimes.add(cal);
-				}
-			}
-		}
 		result.setOverTimeInputs(overTimeInputs);
 		
 		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
@@ -1491,7 +1464,7 @@ public class AppOvertimeFinder {
 				&& !StringUtils.isEmpty(result.getSiftType().getSiftCode())
 				&& result.isDisplayCaculationTime()){
 			result.setCaculationTimes(this.getCaculationValue(overTimeHours,
-					bonusTimes,
+					Collections.emptyList(),
 					result.getApplication().getPrePostAtr(), 
 					appDate,
 					result.getSiftType().getSiftCode(),
