@@ -14,16 +14,17 @@ public class FamilyMemberInfoEx {
     private String personId;
     private String familyId;
     private String birthday;
+    private String fullName;
+    private String fullNameKana;
     private Optional<String> romajiName;
     private Optional<String> romajiNameKana;
 
-    public FamilyMemberInfoEx(String familyId, String birthday, Optional<String> romajiName, Optional<String> romajiNameKana) {
+    public FamilyMemberInfoEx(String familyId, String birthday, String fullName, String fullNameKana, Optional<String> romajiName, Optional<String> romajiNameKana) {
         this.familyId = familyId;
         this.birthday = birthday;
-        this.romajiName = romajiName;
+        this.fullName = fullName;
+        this.fullNameKana = fullNameKana;
+        this.romajiName  = romajiName;
         this.romajiNameKana = romajiNameKana;
     }
-
-
-
 }

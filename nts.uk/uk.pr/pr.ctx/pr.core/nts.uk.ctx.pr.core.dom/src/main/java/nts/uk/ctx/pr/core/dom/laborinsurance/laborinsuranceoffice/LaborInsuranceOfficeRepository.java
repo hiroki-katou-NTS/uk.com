@@ -19,4 +19,6 @@ public interface LaborInsuranceOfficeRepository
 
     void remove(String laborOfficeCode);
 
+    List<LaborInsuranceOffice> getByCidAndCodes(String cid, List<String> codes);
+
 }

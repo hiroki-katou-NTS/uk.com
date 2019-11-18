@@ -23,6 +23,13 @@ public class QqsmtEmpInsLossInfoPk implements Serializable
     private static final long serialVersionUID = 1L;
 
     /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cId;
+
+    /**
      * 社員ID
      */
     @Basic(optional = false)

@@ -20,6 +20,8 @@ public class FamilyMemberAdapterImpl implements FamilyMemberAdapter {
                     return new FamilyMemberInfoEx(
                           e.getFamilyId(),
                           e.getBirthday(),
+                          e.getFullName(),
+                          e.getFullNameKana(),
                           e.getRomajiName(),
                           e.getRomajiNameKana()
                     );

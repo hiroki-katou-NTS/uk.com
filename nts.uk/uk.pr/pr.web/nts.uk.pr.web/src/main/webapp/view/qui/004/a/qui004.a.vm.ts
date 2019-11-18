@@ -21,15 +21,6 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         filingDate: KnockoutObservable<string> = ko.observable('');
         filingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
-        empInsOutOrderCode: KnockoutObservable<any> = ko.observable(0);
-        submitNameClsCode: KnockoutObservable<any> = ko.observable(0);
-        printCfgCode: KnockoutObservable<any> = ko.observable(0);
-        officeClsPdf: KnockoutObservable<any> = ko.observable(0);
-        officeClsText: KnockoutObservable<any> = ko.observable(0);
-        lineFeedCodeClsSelected: KnockoutObservable<any> = ko.observable(0);
-        fdCode: KnockoutObservable<any> = ko.observable('');
-
         /* kcp005 */
         baseDate: any;
         listComponentOption: any;
@@ -175,12 +166,11 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                     } else {
                         this.screenMode = ScreenMode.NEW_MODE;
                     }
+                    dfd.resolve();
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
-
-            dfd.resolve();
             return dfd.promise();
         }
 

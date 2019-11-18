@@ -39,6 +39,7 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
             let self = this;
             $('#emp-component').focus();
             self.selectedItem.subscribe(e => {
+                $('#emp-component').focus();
                 self.initScreen(e);
             });
             self.empAddChangeInfoDto().otherAtr.subscribe(e =>{
@@ -94,12 +95,11 @@ module nts.uk.pr.view.qsi014.b.viewmodel {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             }).always(()=>{
-                $('#emp-component').focus();
                 if(!self.validate()){
                     errors.clearAll();
-                }
+                };
+                $('#emp-component').focus();
             });
-
             return dfd.promise();
         }
 
