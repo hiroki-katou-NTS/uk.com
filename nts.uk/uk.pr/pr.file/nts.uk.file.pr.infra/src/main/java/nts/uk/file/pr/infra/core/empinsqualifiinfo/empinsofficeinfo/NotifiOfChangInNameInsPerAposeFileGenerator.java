@@ -293,7 +293,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 listValueCells.add(valueCell + lstValue[i + 1]);
             }
             else {
-               if(lstValue[i].equals("ﾟ") || lstValue[i].equals("ﾞ")){
+               if(!lstValue[i].equals("ﾟ") || !lstValue[i].equals("ﾞ")){
                    listValueCells.add(valueCell);
                }
             }
