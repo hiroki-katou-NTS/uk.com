@@ -14,7 +14,12 @@ import java.util.Optional;
 /**
  * 雇用保険喪失時情報
  */
-public class EmpInsuranceLossInfo extends AggregateRoot{
+public class EmpInsLossInfo extends AggregateRoot{
+
+    /**
+     * 会社ID
+     */
+    private String cId;
 
     /**
      * 社員ID
@@ -46,12 +51,14 @@ public class EmpInsuranceLossInfo extends AggregateRoot{
      */
     private Optional<WorkingTime> scheduleWorkingHourPerWeek;
 
-    public EmpInsuranceLossInfo(String sId,
-                                Integer causeOfLossAtr,
-                                Integer requestForIssuance,
-                                Integer scheduleForReplenishment,
-                                String causeOfLossEmpInsurance,
-                                Integer scheduleWorkingHourPerWeek) {
+    public EmpInsLossInfo(String cId,
+                          String sId,
+                          Integer causeOfLossAtr,
+                          Integer requestForIssuance,
+                          Integer scheduleForReplenishment,
+                          String causeOfLossEmpInsurance,
+                          Integer scheduleWorkingHourPerWeek) {
+        this.cId = cId;
         this.sId = sId;
         this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new CauseOfLossEmpInsurance(causeOfLossEmpInsurance));
         this.causeOfLossAtr = causeOfLossAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLossAtr, CauseOfLossAtr.class));

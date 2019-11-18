@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsuranceLossInfo;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -71,8 +71,9 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
         return empInsLossInfoPk;
     }
 
-    public EmpInsuranceLossInfo toDomain() {
-        return new EmpInsuranceLossInfo (
+    public EmpInsLossInfo toDomain() {
+        return new EmpInsLossInfo(
+                this.empInsLossInfoPk.cId,
                 this.empInsLossInfoPk.sId,
                 this.causeOfLossAtr,
                 this.reqIssuAtr,
@@ -80,9 +81,9 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
                 this.causeOfLostEmpIns,
                 this.workingTime);
     }
-    public static QqsmtEmpInsLossInfo toEntity(EmpInsuranceLossInfo domain) {
+    public static QqsmtEmpInsLossInfo toEntity(EmpInsLossInfo domain) {
         return new QqsmtEmpInsLossInfo(
-                new QqsmtEmpInsLossInfoPk(domain.getSId()),
+                new QqsmtEmpInsLossInfoPk(domain.getCId(), domain.getSId()),
                 domain.getScheduleWorkingHourPerWeek().get().v(),
                 domain.getCauseOfLossAtr().get().value,
                 domain.getCauseOfLossEmpInsurance().toString(),

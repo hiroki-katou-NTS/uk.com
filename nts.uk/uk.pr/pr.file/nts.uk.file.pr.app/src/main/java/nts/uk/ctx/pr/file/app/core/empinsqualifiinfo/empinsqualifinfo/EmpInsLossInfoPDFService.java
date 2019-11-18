@@ -76,15 +76,14 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsGetQualifRepor
         }
 
         List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, startDate);
-        List<String> empInsHistEmpIds = empInsHists.stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-//        List<EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(empInsHistEmpIds);
         if (empInsHists.isEmpty()) {
             throw new BusinessException("Msg_51");
         }
 
-        empInsHists.forEach(e->{
-//            var acquisitionAtr = empInsGetInfos.stream().filter(item -> item.getSalaryId().equalsIgnoreCase(e.getSid()));
+        List<String> empInsHistEmpIds = empInsHists.stream().map(EmpInsHist::getSid).collect(Collectors.toList());
+        List<EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(empInsHistEmpIds);
 
-        });
+
+
     }
 }
