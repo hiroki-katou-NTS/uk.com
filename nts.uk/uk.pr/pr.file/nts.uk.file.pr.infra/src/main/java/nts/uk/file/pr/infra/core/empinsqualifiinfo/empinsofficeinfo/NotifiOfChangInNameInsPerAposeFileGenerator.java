@@ -280,7 +280,6 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells,TextBuilder textBuilder) {
-        value = "ｶﾞﾅﾞﾅremojiNameﾋﾗ　ｶﾞﾅremojiNameﾋﾗ　ｶ";
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
