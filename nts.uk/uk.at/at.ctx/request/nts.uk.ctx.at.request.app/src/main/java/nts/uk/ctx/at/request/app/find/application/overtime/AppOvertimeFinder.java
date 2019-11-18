@@ -1066,9 +1066,6 @@ public class AppOvertimeFinder {
 					result.setDisplayCaculationTime(false);
 				}
 			}
-			if (prePostAtr  == PrePostAtr.POSTERIOR.value) {
-				
-			}
 			//01-09_事前申請を取得
 			if(result.isAllPreAppPanelFlg()){
 				if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
