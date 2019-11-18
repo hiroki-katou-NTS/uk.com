@@ -151,6 +151,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
         preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
         callServiceChangePrePost: boolean = true;
+        opAppBefore: KnockoutObservable<any> = ko.observable(null);
+        beforeAppStatus: KnockoutObservable<boolean> = ko.observable(true);
+        actualStatus: KnockoutObservable<number> = ko.observable(0);
+        actualLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        tmpOverTime: any;
+        tmpBonusTime: any;
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -452,6 +458,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
             self.workTypeChangeFlg(data.workTypeChangeFlg);
+            self.opAppBefore(data.opAppBefore);
+            self.beforeAppStatus(data.beforeAppStatus);
+            self.actualStatus(data.actualStatus);
+            self.actualLst(data.actualLst);
             // list employeeID
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
                 self.employeeFlag(true);
@@ -864,7 +874,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                 endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                 startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
-                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()})     
+                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()}),
+                opAppBefore: self.opAppBefore(),
+                beforeAppStatus: self.beforeAppStatus(),
+                actualStatus: self.actualStatus(),
+                actualLst: self.actualLst();    
             }
             //setting work content
             self.preWorkContent = {

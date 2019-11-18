@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
@@ -27,6 +31,7 @@ public class OverTimeDto {
 	private Long version;
 	/**
 	 * application
+	 * 
 	 */
 	private ApplicationDto_New application;
 	/**
@@ -259,9 +264,24 @@ public class OverTimeDto {
 	private String enteredPersonName;
 	
 	private PreActualColorResult preActualColorResult;
-	
 	private int performanceExcessAtr;
 	private int preExcessDisplaySetting;
+	/**
+	 * 事前申請内容
+	 */
+	private ApplicationDto_New opAppBefore;
+	
+	/** 事前申請状態 */
+	private boolean beforeAppStatus;
+	
+	/**
+	 * 実績状態
+	 */
+	private int actualStatus;
+	/**
+	 * 実績内容
+	 */
+	private List<OvertimeColorCheck> actualLst;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
@@ -329,7 +349,12 @@ public class OverTimeDto {
 				"",
 				null,
 				0,
-				0);
+				0,
+				ApplicationDto_New.fromDomain(appOverTime.getApplication()),
+				false,
+				1,
+				Collections.emptyList()
+				);
 	}
 	
 }
