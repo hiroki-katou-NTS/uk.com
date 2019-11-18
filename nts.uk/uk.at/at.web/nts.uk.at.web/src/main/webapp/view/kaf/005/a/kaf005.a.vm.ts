@@ -154,6 +154,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         flexFLag: KnockoutObservable<boolean> = ko.observable(true);
         performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
         preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
+        callServiceChangePrePost: boolean = true;
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -278,50 +279,59 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                 self.calculateFlag(1);
                             }
                         }
+                        if (self.prePostSelected() == 0) {
+                            self.callServiceChangePrePost = true;
+                        }
                     }
                     return dfd.promise();
                     });
-                self.prePostSelected.subscribe(function(value){
-                        $('#kaf005-pre-post-select').ntsError('clear');
-                        let dfd =$.Deferred();
-                        self.clearErrorA6_8();
-                        if(value == 1){
-                           $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                           $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 }); 
-                        }else if(value == 0){
-                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                            $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
-                        }
-                        if(!nts.uk.util.isNullOrEmpty(self.appDate())){
-                            nts.uk.ui.errors.clearAll();
-                            $("#inputdate").trigger("validate");
-                            if (nts.uk.ui.errors.hasError()) {
-                                if(value == 0){
-                                    self.isRightContent(false);
-                                }
-                                if(value == 1 && self.performanceDisplayAtr()){
-                                    self.isRightContent(true);
-                                    self.referencePanelFlg(true);
-                                }
-                                if(value == 1 && self.preDisplayAtr()){
-                                    self.isRightContent(true);
-                                    self.allPreAppPanelFlg(true);
-                                }
-                                return;
+                self.prePostSelected.subscribe(function(value) {
+                    $('#kaf005-pre-post-select').ntsError('clear');
+                    let dfd = $.Deferred();
+                    self.clearErrorA6_8();
+                    if (value == 1) {
+                        $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
+                    } else if (value == 0) {
+                        $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(self.appDate())) {
+                        nts.uk.ui.errors.clearAll();
+                        $("#inputdate").trigger("validate");
+                        if (nts.uk.ui.errors.hasError()) {
+                            if (value == 0) {
+                                self.isRightContent(false);
                             }
-                         }
+                            if (value == 1 && self.performanceDisplayAtr()) {
+                                self.isRightContent(true);
+                                self.referencePanelFlg(true);
+                            }
+                            if (value == 1 && self.preDisplayAtr()) {
+                                self.isRightContent(true);
+                                self.allPreAppPanelFlg(true);
+                            }
+                            return;
+                        }
+                    }
+                    if (value == 0) {
+                        self.isRightContent(false);
+                    } else {
+                        self.isRightContent(self.allPreAppPanelFlg || self.referencePanelFlg);
+                    }
+                    if (self.callServiceChangePrePost) {
                         service.checkConvertPrePost({
                             prePostAtr: value,
-                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                             siftCD: self.siftCD(),
-                            overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
+                            overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => { return self.initCalculateData(item); }),
                             workTypeCode: self.workTypeCd(),
-                            startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.startTime()}),
-                            endTimeRests:nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.endTime()}) ,
+                            startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.startTime() }),
+                            endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.endTime() }),
                             startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                             endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
-                        }).done((data) =>{
-                            
+                        }).done((data) => {
+
                             self.convertpreAppOvertimeDto(data);
                             self.convertAppOvertimeReferDto(data);
                             self.referencePanelFlg(data.referencePanelFlg);
@@ -330,10 +340,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                             self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
                             self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-                        }).fail((res) =>{
-                            dfd.reject(res);    
+                            self.callServiceChangePrePost = false;
+                        }).fail((res) => {
+                            dfd.reject(res);
                         });
-                     return dfd.promise();
+                    }
+                    
+                    return dfd.promise();
                 });
                 
                 //Check work content Changed
