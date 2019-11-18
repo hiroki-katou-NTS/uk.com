@@ -1034,7 +1034,6 @@ public class AppOvertimeFinder {
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
-		// 申請日を変更する : chưa xử lí(Hung)
 		
 		// 01-01_残業通知情報を取得
 		int rootAtr = 1;
@@ -1049,8 +1048,8 @@ public class AppOvertimeFinder {
 		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
 		applicationDto.setPrePostAtr(prePostAtr);
 		result.setApplication(applicationDto);
-		// 01-09_事前申請を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
@@ -1065,6 +1064,7 @@ public class AppOvertimeFinder {
 				result.setAllPreAppPanelFlg(true);
 			}
 		}
+		
 		//01-09_事前申請を取得
 		if(result.isAllPreAppPanelFlg()){
 			if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
@@ -1105,9 +1105,6 @@ public class AppOvertimeFinder {
 					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 					// 07_勤務種類取得: lay loai di lam 
 					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
-					/*if(!CollectionUtil.isEmpty(workTypeOvertimes)){
-						result.setWorkType(workTypeOvertimes.get(0));
-					}*/
 					List<String> workTypeCodes = new ArrayList<>();
 					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
 						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
@@ -1120,10 +1117,6 @@ public class AppOvertimeFinder {
 						siftCodes.add(siftType.getSiftCode());
 					}
 					result.setSiftTypes(siftCodes);
-					/*if(!CollectionUtil.isEmpty(siftTypes)){
-						result.setSiftType(siftTypes.get(0));
-					}*/
-					
 					
 					// 09_勤務種類就業時間帯の初期選択をセットする
 					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
