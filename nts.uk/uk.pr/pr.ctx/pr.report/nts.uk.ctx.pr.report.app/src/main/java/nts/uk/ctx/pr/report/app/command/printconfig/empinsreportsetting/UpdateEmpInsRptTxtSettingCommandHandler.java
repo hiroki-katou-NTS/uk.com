@@ -21,6 +21,5 @@ public class UpdateEmpInsRptTxtSettingCommandHandler extends CommandHandler<EmpI
     protected void handle(CommandHandlerContext<EmpInsRptTxtSettingCommand> commandHandlerContext) {
         EmpInsRptTxtSettingCommand command = commandHandlerContext.getCommand();
         repository.update(new EmpInsReportTxtSetting(AppContexts.user().companyId(), AppContexts.user().userId(), command.getOfficeAtr(), command.getFdNumber(), command.getLineFeedCode()));
-
     }
 }
