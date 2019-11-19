@@ -126,28 +126,14 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
         List<String> empInsHistEmpIds = empInsHists.values().stream().map(EmpInsHist::getSid).collect(Collectors.toList());
         Map<String, EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(cid, empInsHistEmpIds).stream().collect(Collectors.toMap(EmpInsGetInfo::getSalaryId, Function.identity()));
-        if (empInsGetInfos.isEmpty()) {
-            throw new BusinessException("Msg_51");
-        }
 
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
         Map<String, EmpInsNumInfo> empInsNumInfos = empInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
-        if (empInsNumInfos.isEmpty()) {
-            throw new BusinessException("Msg_51");
-        }
 
-        switch (reportSetting.getOfficeClsAtr()) {
-            case OUPUT_LABOR_OFFICE:
-                Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
-                List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
-                Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
-                break;
-            case OUTPUT_COMPANY:
-                CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
-                break;
-            default:
-                break;
-        }
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
+        Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
+        CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
         // dummy param
         LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
@@ -164,20 +150,20 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             tempReport.setSid(e);
             if (empInsGetInfos.containsKey(e)) {
                 // A1_2
-                tempReport.setAcquisitionAtr(empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value).orElse(null));
-
+                tempReport.setAcquisitionAtr(empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null));
+                // A1_11
                 tempReport.setCauseOfInsured(empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value).orElse(null));
-
+                // A1_18
                 tempReport.setScheduleWorkingTimePerWeek(empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null));
-
+                // A1_15
                 tempReport.setEmploymentStatus(empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value).orElse(null));
-
+                // A1_17
                 tempReport.setJobPath(empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null));
-
+                // A1_13
                 tempReport.setPaymentWage(empInsGetInfos.get(e).getPayWage().map(x -> x.v()).orElse(null));
-
+                // A1_12
                 tempReport.setWagePaymentMode(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value).orElse(null));
-
+                // A1_16
                 tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
             }
             if (empInsHists.containsKey(e)) {
@@ -185,6 +171,24 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
                     tempReport.setInsuredNumber(Integer.valueOf(empInsNumInfos.get(histId).getEmpInsNumber().v()));
+
+                    String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
+                    // A1_10
+                    tempReport.setOfficeNumber(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v());
+
+                    // A1_23
+                    if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
+                        tempReport.setOfficeName(companyInfo.getCompanyName());
+                    } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
+                        tempReport.setOfficeName(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
+                    } else {
+                        tempReport.setOfficeName("");
+                    }
+
+                    val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
+                    val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
+                    // A1_14
+                    tempReport.setQualificationDateJp(toEraNumber(qualificationDateJp.era()) + qualificationDateJp.toFullDateInt());
                 }
             }
             if(employeeInfos.containsKey(e)) {
@@ -227,19 +231,52 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                     val birthDate = personExports.get(pId).getBirthDate();
                     val birthDateJp = toJapaneseDate(jpEras, birthDate);
-                    val eraNumb = toEraNumb(birthDateJp.era());
+                    val eraNumb = toEraNumber(birthDateJp.era());
                     // A1_8
                     tempReport.setEraDateOfBirth(eraNumb);
                     // A1_9
                     tempReport.setDateOfBirthJp(birthDateJp.toFullDateInt() + "");
+
+                    String insuredEnglishName = personExports.get(pId).getPersonNameGroup().getBusinessEnglishName();
+                    // A2_1
+                    tempReport.setInsuredEnglishName(insuredEnglishName.substring(0, 29));
+                    // A2_2
+                    tempReport.setInsuredEnglishName2(insuredEnglishName.substring(29));
                 }
             }
+
+            // dummy
+            {
+                // A1_19
+                tempReport.setEstContractPeriod("1");
+
+                val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
+                // A1_20
+                tempReport.setContractStartDateJp(contractStartDateJp.era() + contractStartDateJp);
+
+                val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
+                // A1_21
+                tempReport.setContractEndDateJp(contractEndDateJp.era() + contractEndDateJp);
+
+                // A1_22
+                tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
+
+                // A1_24 pending
+
+                // A2_3
+                tempReport.setNationalityRegion(dummyForResHistInfo.getNationalityRegion());
+                // A2_4
+                tempReport.setResidenceStatus(dummyForResHistInfo.getResidenceStatus());
+                // A2_5
+                tempReport.setStayPeriod(dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").replace("/", ""));
+            }
+
         });
 
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
 
-    private String toEraNumb(String eraName) {
+    private String toEraNumber(String eraName) {
         switch(eraName) {
             case MEIJI:
                 return "1";

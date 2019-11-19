@@ -1,8 +1,6 @@
 package nts.uk.ctx.pr.core.dom.adapter.employee.employment;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,6 +9,8 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class LaborContractHist {
     /**
      * 社員ID

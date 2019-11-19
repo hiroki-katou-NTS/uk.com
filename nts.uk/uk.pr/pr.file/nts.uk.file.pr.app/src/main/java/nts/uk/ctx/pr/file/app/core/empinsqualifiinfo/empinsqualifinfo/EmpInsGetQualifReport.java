@@ -27,7 +27,7 @@ public class EmpInsGetQualifReport {
     /**
      * 事業所番号
      */
-    private Integer officeNumber;
+    private String officeNumber;
 
     /**
      * 個人番号
@@ -139,4 +139,29 @@ public class EmpInsGetQualifReport {
      */
     private Integer employmentStatus;
 
+    private String insuredEnglishName;
+
+    private String insuredEnglishName2;
+
+    private String nationalityRegion;
+
+    private String residenceStatus;
+
+    private String stayPeriod;
+
+    private Integer nonQualifPermission;
+
+    private Integer contractWorkAtr;
+
+    private String officePostalCode;
+
+    private String location1;
+
+    private String location2;
+
+    private String businessOwnerName;
+
+    private String officePhoneNumber;
+
+    private String submissionDateJp;
 }
