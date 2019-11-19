@@ -123,15 +123,12 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
 				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyId, appID));
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, divergenceReason,
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
+				divergenceReason, command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID), 
 				appOvertimeDetailOtp);
 

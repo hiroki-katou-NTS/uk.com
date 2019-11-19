@@ -312,51 +312,6 @@
 						</table>
 					</div>
 				</div>
-				<div class="cf valign-top control-group"
-					data-bind="if: displayBreakTimeFlg">
-					<!--A7_1 休出時間ラベル-->
-					<div class="cm-column" style="display: inline-block;">
-						<div class="lblTitle pull-left"
-							data-bind="ntsFormLabel: {required : true}">#{i18n.getText('KAF005_70')}</div>
-					</div>
-					<div class="table-time">
-						<table id="fixed-break_time-table">
-							<colgroup>
-								<col width="110px" />
-								<col width="110px" />
-								<col width="110px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<!--A7_2 休出時間入力テーブル-->
-									<th class="ui-widget-header" rowspan="2"></th>
-									<!--A7_3 休出申請時間ラベル-->
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_71')}</th>
-									<!--A7_4 休出事前申請ラベル-->
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_72')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: breakTimes">
-								<tr>
-									<!--A7_7 休出時間名称-->
-									<td class="header" data-bind=" text: frameName"></td>
-									<!--A7_8 休出申請時間入力-->
-									<td><input tabindex="16" class="right-content"
-										data-bind="ntsTimeEditor: {
-									name: '#[KAF005_76]',
-									value: applicationTime, 
-									option: {width: '80px'}, 
-									inputFormat: 'time', 
-									mode: 'time',
-									constraint:'OvertimeAppPrimitiveTime',
-									enable: $vm.editable }" /></td>
-									<!--A7_9 休出事前申請時間-->
-									<td class="right-content" data-bind="text: preAppTime"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
 				<!--定型理由 -->
 				<div class="valign-center control-group overlay-reason"
 					data-bind="if: typicalReasonDisplayFlg">
@@ -480,12 +435,6 @@
 						<label data-bind="text : workClockFrom1To1Reference"></label>
 					</div>
 					<div class="control-group"
-						data-bind="visible: displayWorkClockFrom2To2Reference">
-						<!--A11_18 申請者表示氏名-->
-						<label style="margin-left: 72px"
-							data-bind="text : workClockFrom2To2Reference"></label>
-					</div>
-					<div class="control-group"
 						data-bind="foreach: overtimeHoursReference">
 						<div class="control-group">
 							<!--A11_16-->
@@ -545,10 +494,6 @@
 								<label>#{i18n.getText('KAF005_125')} :</label>
 								<!--A12_13-->
 								<label data-bind="text : workClockFrom1To1Pre"></label>
-								<!-- 				A12_14 -->
-								<!-- 				<label>#{i18n.getText('KAF005_126')}</label> -->
-								<!-- 				A12_15 -->
-								<!-- 				<label data-bind="text : workClockTo1Pre"></label> -->
 							</div>
 
 							<div class="control-group" data-bind="foreach: overtimeHoursPre">

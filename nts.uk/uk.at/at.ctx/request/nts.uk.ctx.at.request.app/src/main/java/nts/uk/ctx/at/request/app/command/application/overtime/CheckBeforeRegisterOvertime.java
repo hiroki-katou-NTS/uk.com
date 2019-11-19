@@ -90,12 +90,10 @@ public class CheckBeforeRegisterOvertime {
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
+				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
@@ -121,12 +119,10 @@ public class CheckBeforeRegisterOvertime {
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
+				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
@@ -224,51 +220,6 @@ public class CheckBeforeRegisterOvertime {
 		return result;
 	}
 	
-	public ColorConfirmResult checkBeforeUpdateColor(CreateOvertimeCommand command){
-		// 会社ID
-		String companyId = AppContexts.user().companyId();
-		// 申請ID
-		String appID = IdentifierUtil.randomUniqueId();
-
-		// Create Application
-		Application_New appRoot = factoryOvertime.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
-
-		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
-		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
-
-		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
-				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
-				Optional.empty());
-		// 社員ID
-		String employeeId = AppContexts.user().employeeId();
-		int calculateFlg = command.getCalculateFlag();
-		// 登録前エラーチェック
-		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
-				ApplicationType.OVER_TIME_APPLICATION, appRoot.getAppDate());
-		// 事前申請超過チェック
-		Map<AttendanceType, List<OverTimeInput>> findMap = overTimeDomain.getOverTimeInput().stream()
-				.collect(groupingBy(OverTimeInput::getAttendanceType));
-		// Only check for [残業時間]
-		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceType.NORMALOVERTIME);
-		
-		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
-			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.NORMALOVERTIME.value, overtimeInputs, employeeId);
-			if (colorConfirmResult.isConfirm()) {
-				return colorConfirmResult;
-			}
-		}
-		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
-	}
-	
 	public OvertimeCheckResultDto checkBeforeUpdate(CreateOvertimeCommand command) {
 
 		// 会社ID
@@ -282,12 +233,10 @@ public class CheckBeforeRegisterOvertime {
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
+				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
@@ -315,12 +264,6 @@ public class CheckBeforeRegisterOvertime {
 
 	public static List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
 		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
-		/**
-		 * 休憩時間  ATTENDANCE_ID = 2
-		 */
-		if (null != command.getBreakTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceType.BREAKTIME.value));
-		}
 		/**
 		 * 残業時間 ATTENDANCE_ID = 1
 		 */

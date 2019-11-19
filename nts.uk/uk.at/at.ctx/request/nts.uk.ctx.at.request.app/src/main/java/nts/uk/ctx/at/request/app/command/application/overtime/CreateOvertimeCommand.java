@@ -71,19 +71,6 @@ public class CreateOvertimeCommand {
 	 * 残業申請.勤務終了時刻1
 	 */
 	private Integer workClockTo1;
-	/**
-	 * 残業申請.勤務開始時刻2
-	 */
-	private Integer workClockFrom2;
-	/**
-	 * 残業申請.勤務終了時刻2
-	 */
-	private Integer workClockTo2;
-	/**
-	 * 休出時間
-	 * ATTENDANCE_ID = 2
-	 */
-	private List<OvertimeInputCommand> breakTimes;
 	
 	/**
 	 *  残業時間
