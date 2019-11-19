@@ -82,9 +82,6 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
 				item -> new CommonMaterItemDto(item.getCommonMasterItemId(), item.getCommonMasterItemName().v(), item.getCommonMasterItemCode().v()))
 				.collect(Collectors.toList()));
-		
-		
-		
 		if (!employment.isPresent()) {
 		return dto;
 		}
