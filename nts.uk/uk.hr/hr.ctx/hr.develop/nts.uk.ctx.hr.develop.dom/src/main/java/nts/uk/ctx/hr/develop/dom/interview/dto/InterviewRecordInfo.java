@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.interview;
+package nts.uk.ctx.hr.develop.dom.interview.dto;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.develop.dom.interview.SubInterviewer;
 
 @Getter
 @Setter
