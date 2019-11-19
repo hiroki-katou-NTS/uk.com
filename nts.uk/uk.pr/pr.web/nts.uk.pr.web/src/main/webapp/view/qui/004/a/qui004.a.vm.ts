@@ -168,16 +168,16 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
                 empInsReportTxtSettingCommand: {
-                    officeAtr : self.empInsReportTxtSetting().officeAtr,
-                    fdNumber : self.empInsReportTxtSetting().fdNumber,
-                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode
+                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
                 },
                 employeeIds: listEmployeeId,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD")
             };
             service.exportFileCSV(data)
-                .fail(function (result) {
+                .fail(function(result) {
                     dialog.alertError(result.errorMessage);
                     dfd.reject();
                 });

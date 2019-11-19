@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import com.aspose.cells.Cells;
 import com.aspose.cells.Encoding;
 import com.aspose.cells.SaveFormat;
@@ -19,6 +21,7 @@ import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.ExportDataCsv;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportTxtSettingCsvGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+@Stateless
 public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGenerator
 		implements EmpInsReportTxtSettingCsvGenerator {
 
@@ -52,6 +55,16 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 	// row 8
 	private static final String A1_42 = "[data]";
 
+	// row 9
+	private static final List<String> ROW_9_HEADERS = Arrays.asList("帳票種別", "安定所番号", "個人番号", "被保険者番号4桁", "被保険者番号6桁",
+			"被保険者番号CD", "事業所番号（安定所番号）", "事業所番号（一連番号）", "事業所番号（CD）", "資格取得年月日（元号）", "資格取得年月日（年）", "資格取得年月日（月）",
+			"資格取得年月日（日）", "離職等年月日（元号）", "離職等年月日（年）", "離職等年月日（月）", "離職等年月日（日）", "喪失原因", "離職票交付希望", "喪失時被保険者種類",
+			"新氏名フリガナ（カタカナ）", "新氏名", "補充採用予定の有無", "被保険者氏名フリガナ（カタカナ）", "被保険者氏名", "性別", "生年月日（元号）", "生年月日（年）", "生年月日（月）",
+			"生年月日（日）", "被保険者の住所又は居所", "事業所名称", "氏名変更年月日（元号）", "氏名変更年月日（年）", "氏名変更年月日（月）", "氏名変更年月日（日）",
+			"被保険者でなくなったことの原因", "１週間の所定労働時間（時間）", "１週間の所定労働時間（分）", "あて先", "被保険者氏名（ローマ字）", "国籍・地域", "国籍地域コード", "在留資格",
+			"在留資格コード", "在留期間（年）", "在留期間（月）", "在留期間（日）", "資格外活動許可の有無", "派遣・請負就労区分", "備考欄（審査者）", "確認通知年月日（元号）",
+			"確認通知年月日（年）", "確認通知年月日（月）", "確認通知年月日（日）");
+
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ExportDataCsv dataSource) {
 		try (val reportContext = this.createEmptyContext(REPORT_ID)) {
@@ -60,6 +73,7 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			Worksheet worksheet = worksheets.get(0);
 			int row = 0;
 			this.fillFixedRows(worksheet, row);
+			this.fillDataRows(worksheet, row);
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			this.saveAsCSV(this.createNewFile(generatorContext, FILE_NAME), workbook);
@@ -134,17 +148,29 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			cells.get(row, c).setValue(header);
 		}
 		row++;
-		
+
 		// row 7
 		for (int c = 0; c < ROW_6_HEADERS.size(); c++) {
 			String value = "test";
 			cells.get(row, c).setValue(value);
 		}
 		row++;
-		
+
 		// row 8
 		cells.get(row, 0).setValue(A1_42);
 		row++;
 	}
 
+	private void fillDataRows(Worksheet worksheet, int row) {
+		Cells cells = worksheet.getCells();
+		// row 9
+		for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
+			String header = ROW_9_HEADERS.get(c);
+			cells.get(row, c).setValue(header);
+		}
+		row++;
+		
+		// data
+		// TODO: add data
+	}
 }
