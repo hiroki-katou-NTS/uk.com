@@ -80,8 +80,10 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 				GeneralDate.today());
 		dto.setCommonMasterName(data.getCommonMasterName());
 		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
-				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
+				item -> new CommonMaterItemDto(item.getCommonMasterItemId(), item.getCommonMasterItemName().v(), item.getCommonMasterItemCode().v()))
 				.collect(Collectors.toList()));
+		
+		
 		
 		if (!employment.isPresent()) {
 		return dto;
@@ -181,7 +183,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		GroupCommonMasterImport dto = new GroupCommonMasterImport();
 		dto.setCommonMasterName(data.getCommonMasterName());
 		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
-				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
+				item -> new CommonMaterItemDto(item.getCommonMasterItemId(), item.getCommonMasterItemName().v(), item.getCommonMasterItemCode().v()))
 				.collect(Collectors.toList()));
 		return dto;
 	}

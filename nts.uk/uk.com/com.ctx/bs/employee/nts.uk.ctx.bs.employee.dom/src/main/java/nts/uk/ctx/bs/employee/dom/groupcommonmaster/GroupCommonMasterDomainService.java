@@ -92,7 +92,8 @@ public class GroupCommonMasterDomainService {
 			return Collections.emptyList();
 		}
 
-		return masterOpt.get().getCommonMasterItems();
+		return masterOpt.get().getCommonMasterItems().stream().sorted(Comparator.comparing(CommonMasterItem::getCommonMasterItemCode))
+				.collect(Collectors.toList());
 	}
 
 	/**

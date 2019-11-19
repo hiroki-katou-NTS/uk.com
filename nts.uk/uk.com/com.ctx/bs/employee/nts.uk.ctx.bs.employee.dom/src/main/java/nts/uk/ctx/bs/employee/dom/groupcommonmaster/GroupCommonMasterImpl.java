@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.dom.groupcommonmaster;
 
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,8 +36,9 @@ public class GroupCommonMasterImpl implements IGroupCommonMaster {
 
 		result = masterOpt.get();
 
-		result.setCommonMasterItems(
-				this.groupMasterRepo.getGroupCommonMasterEnableItem(contractCode, commonMasterId, companyId, baseDate));
+		result.setCommonMasterItems(this.groupMasterRepo
+				.getGroupCommonMasterEnableItem(contractCode, commonMasterId, companyId, baseDate).stream()
+				.sorted(Comparator.comparing(CommonMasterItem::getDisplayNumber)).collect(Collectors.toList()));
 
 		return result;
 	}

@@ -15,7 +15,7 @@ module nts.uk.com.view.cmm008.a {
             selectedCodeMaster: KnockoutObservable<string>;
             showsGroupCompany: KnockoutObservable<boolean>;
             commonMasterName : KnockoutObservable<string>;
-            
+            commonMasterItemId : KnockoutObservable<string>;
             constructor() {
                 var self = this;
 
@@ -108,6 +108,7 @@ module nts.uk.com.view.cmm008.a {
                         self.itemListMatter(employment.commonMasterItems);
                         self.commonMasterName(employment.commonMasterName);
                         self.selectedCodeMaster(employment.empCommonMasterItemId);
+                        self.commonMasterItemId(employment.commonMasterItemId);
                       
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
@@ -150,7 +151,7 @@ module nts.uk.com.view.cmm008.a {
                 command.memo = self.employmentModel().memo();
                 command.isUpdateMode = self.isUpdateMode();
                 command.commonMasterName = 'M000031';
-                command.selectedCodeMaster = self.selectedCodeMaster();
+                command.selectedCodeMaster = self.commonMasterItemId();
 
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
