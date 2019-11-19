@@ -193,7 +193,8 @@ public class OvertimeWebService extends WebService{
 		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours(),param.getWorkTypeCode(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
-				param.isRestTimeDisFlg());
+				param.isRestTimeDisFlg(),
+				param.getAppCommonSettingOutput());
 	}
 	
 	@POST

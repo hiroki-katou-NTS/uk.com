@@ -16,11 +16,13 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 
 @Data
@@ -283,6 +285,11 @@ public class OverTimeDto {
 	 */
 	private List<OvertimeColorCheck> actualLst;
 	
+	/**
+	 * 申請共通設定
+	 */
+	private AppCommonSettingOutput appCommonSettingOutput;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -353,7 +360,8 @@ public class OverTimeDto {
 				ApplicationDto_New.fromDomain(appOverTime.getApplication()),
 				false,
 				1,
-				Collections.emptyList()
+				Collections.emptyList(),
+				null
 				);
 	}
 	

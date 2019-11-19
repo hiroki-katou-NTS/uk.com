@@ -215,6 +215,7 @@ public class AppOvertimeFinder {
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, 
 				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+		result.setAppCommonSettingOutput(appCommonSettingOutput);
 		
 		// ドメインモデル「申請承認機能設定」．「申請利用設定」．利用区分をチェックする(check 利用区分 trong domain 「申請承認機能設定」．「申請利用設定」  )
 		if (appCommonSettingOutput.getApprovalFunctionSetting().getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)) {
@@ -1600,18 +1601,15 @@ public class AppOvertimeFinder {
 	 * @return
 	 */
 	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours,
-			String workTypeCode,List<Integer> startRestTimes,List<Integer> endRestTimes, boolean restTimeDisFlg){
+			String workTypeCode,List<Integer> startRestTimes,List<Integer> endRestTimes, boolean restTimeDisFlg,
+			AppCommonSettingOutput appCommonSettingOutput){
 		
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = null; 
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
-		GeneralDate inputDate=  appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				employeeID,
-				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), inputDate);
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
 		RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(companyID, employeeID, null, appDate,

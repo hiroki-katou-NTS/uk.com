@@ -156,7 +156,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         actualStatus: KnockoutObservable<number> = ko.observable(0);
         actualLst: KnockoutObservableArray<any> = ko.observableArray([]);
         tmpOverTime: any;
-        tmpBonusTime: any;
+        appCommonSettingOutput: any
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -179,7 +179,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.startPage().done(function() {
                 let url = $(location).attr('search');
                 let urlParam :string = url.split("=")[1];
-                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {
+                    self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
+                    for(let i = self.overtimeHours().length - 1; i > 0; i--){
+                        self.tmpOverTime.children('tbody').children('tr')[i].remove();
+                    }
+                    $("#fixed-overtime-hour-table").remove();
+                    self.timeTableEdit(self.prePostSelected());
+                    ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
+                    ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
+                                   
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -291,13 +300,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     $('#kaf005-pre-post-select').ntsError('clear');
                     let dfd = $.Deferred();
                     self.clearErrorA6_8();
-                    if (value == 1) {
-                        $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
-                    } else if (value == 0) {
-                        $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
-                    }
+                    
+                    $("#fixed-overtime-hour-table").parents('div')[2].remove();
+                    self.timeTableEdit(value);
+                    ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
+                    ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
+                    $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+
                     if (!nts.uk.util.isNullOrEmpty(self.appDate())) {
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
@@ -369,7 +378,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             });
             return dfd.promise();
-
+        }
+        
+        timeTableEdit(value) {
+            var self = this;
+            if (value == 1) {
+                self.tmpOverTime.children('colgroup').children()[2].width = '110px';
+                self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+                
+            } else if (value == 0) {
+                self.tmpOverTime.children('colgroup').children()[2].width = '0px';
+                self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+            }
+            $("#overtime-container").append(self.tmpOverTime.clone(true));
         }
         
         isShowReason(){
@@ -595,6 +616,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     break;    
                 default: break;
             }
+            self.appCommonSettingOutput = data.appCommonSettingOutput;
         }
         
         getStartTime(data) {
@@ -981,7 +1003,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             workTypeCode: self.workTypeCd(),
                             startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.startTime()}),
                             endTimeRests:nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.endTime()}),
-                            restTimeDisFlg: self.restTimeDisFlg()
+                            restTimeDisFlg: self.restTimeDisFlg(),
+                            appCommonSettingOutput: self.appCommonSettingOutput
                         }
                     ).done(data => {
                         $("#inpStartTime1").ntsError("clear"); 

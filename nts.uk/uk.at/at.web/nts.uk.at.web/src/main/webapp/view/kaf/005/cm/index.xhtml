@@ -259,59 +259,13 @@
 						tabindex="14" style="margin: 15px 0px 10px 290px;"
 						class="caret-bottom">#{i18n.getText('KAF005_43')}</button>
 				</div>
-				<div class="cf valign-top control-group cell"
-					data-bind="if: prePostSelected() == 0">
+				<div class="cf valign-top control-group cell">
 					<!--A6_1 残業時間ラベル-->
 					<div class="cm-column" style="display: inline-block;">
 						<div class="lblTitle pull-left"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF005_50')}</div>
 					</div>
-					<div class="table-time">
-						<table id="fixed-overtime-hour-table-pre">
-							<colgroup>
-								<col width="110px" />
-								<col width="110px" />
-
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header" rowspan="2"></th>
-									<!--A6_3 申請時間ラベル-->
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_51')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: overtimeHours">
-								<tr>
-									<!--A6_7 残業時間名称-->
-									<td class="header"
-										data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
-									<!--A6_8 残業申請時間入力-->
-									<td
-										data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}">
-										<input tabindex="15" class="right-content overtimeHoursCheck"
-										data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, 
-								ntsTimeEditor: {
-									name: nameID, 
-									value: applicationTime, 
-									option: {width: '80px'}, 
-									inputFormat: 'time', 
-									mode: 'time',
-									constraint:'OvertimeAppPrimitiveTime',
-									enable: $vm.editable() &amp;&amp; $vm.enableOvertimeInput() }" />
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="cf valign-top control-group cell"
-					data-bind="if: prePostSelected() == 1">
-					<!--A6_1 残業時間ラベル-->
-					<div class="cm-column" style="display: inline-block;">
-						<div class="lblTitle pull-left"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF005_50')}</div>
-					</div>
-					<div class="table-time">
+					<div class="table-time" id="overtime-container">
 						<table id="fixed-overtime-hour-table">
 							<colgroup>
 								<col width="110px" />
@@ -347,7 +301,7 @@
 									inputFormat: 'time', 
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $vm.editable() &amp;&amp; $vm.enableOvertimeInput() }" />
+									enable: $root.editable &amp;&amp; $root.enableOvertimeInput }" />
 									</td>
 									<!--A6_9 残業事前申請時間-->
 									<td class="right-content" data-bind="text: preAppTime"></td>
