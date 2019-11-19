@@ -64,10 +64,8 @@ module nts.uk.com.view.cmm023.a.viewmodel {
 
                         ]
                     });
-
-                    if (_.isEmpty(data)) {
+                    if (_.isEmpty(data) && commonMasterId) {
                         alert({ messageId: "Msg_672" });
-                        return;
                     }
 
                 }).fail(function(res) {
