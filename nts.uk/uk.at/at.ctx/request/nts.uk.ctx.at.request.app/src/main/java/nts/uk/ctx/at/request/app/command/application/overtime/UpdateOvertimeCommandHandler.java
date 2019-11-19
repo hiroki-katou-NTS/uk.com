@@ -147,8 +147,6 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		List<OverTimeInput> overTimeInputs = new ArrayList<>();
 		overTimeInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		overTimeInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		overTimeInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
 				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyID, appOverTime.getAppID()));
 		String applicationReason = appReason;
@@ -160,9 +158,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setOverTimeShiftNight(command.getOverTimeShiftNight());
 		appOverTime.setSiftCode(StringUtil.isNullOrEmpty(command.getSiftTypeCode(), true)? null : new WorkTimeCode(command.getSiftTypeCode()));
 		appOverTime.setWorkClockFrom1(command.getWorkClockFrom1());
-		appOverTime.setWorkClockFrom2(command.getWorkClockFrom2());
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
-		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
 		appOverTime.setWorkTypeCode( StringUtil.isNullOrEmpty(command.getWorkTypeCode(), true)? null : new WorkTypeCode(command.getWorkTypeCode()));
 		appOverTime.getApplication().setAppReason(new AppReason(applicationReason));
 		appOverTime.setVersion(appOverTime.getVersion());
