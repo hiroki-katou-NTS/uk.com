@@ -26,6 +26,8 @@ module nts.uk.com.view.cmm008.a {
                 self.selectedCode = ko.observable("");
                 self.commonMasterName = ko.observable("");
                 self.selectedCodeMaster =  ko.observable("");
+                self.commonMasterItemId =  ko.observable("");
+                
                 //Item List Master Common
                 self.itemListMatter = ko.observableArray([]);
                 self.selectedCode.subscribe(function(empCode) {
@@ -108,7 +110,7 @@ module nts.uk.com.view.cmm008.a {
                         self.itemListMatter(employment.commonMasterItems);
                         self.commonMasterName(employment.commonMasterName);
                         self.selectedCodeMaster(employment.empCommonMasterItemId);
-                        self.commonMasterItemId(employment.commonMasterItemId);
+                       // self.commonMasterItemId(employment.commonMasterItemId);
                       
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
@@ -151,7 +153,7 @@ module nts.uk.com.view.cmm008.a {
                 command.memo = self.employmentModel().memo();
                 command.isUpdateMode = self.isUpdateMode();
                 command.commonMasterName = 'M000031';
-                command.selectedCodeMaster = self.commonMasterItemId();
+                command.selectedCodeMaster = self.selectedCodeMaster();
 
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
