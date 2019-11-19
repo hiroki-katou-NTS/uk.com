@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 
 @Getter
 public class CreateOvertimeCommand {
@@ -137,4 +139,24 @@ public class CreateOvertimeCommand {
 	private boolean checkOver1Year;
 	
 	private boolean checkAppDate;
+	
+	/**
+	 * 事前申請
+	 */
+	private ApplicationDto_New opAppBefore;
+	
+	/**
+	 * 事前申請状態
+	 */
+	private boolean beforeAppStatus;
+	
+	/**
+	 * 実績状態
+	 */
+	private int actualStatus;
+	
+	/**
+	 * 実績
+	 */
+	private List<OvertimeColorCheck> actualLst;
 }

@@ -15,12 +15,14 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
@@ -101,9 +103,14 @@ public class CheckBeforeRegisterOvertime {
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
+		
+		Optional<Application_New> opAppBefore = command.getOpAppBefore() == null ? null : Optional.ofNullable(ApplicationDto_New.toEntity(command.getOpAppBefore()));
+		boolean beforeAppStatus = command.isBeforeAppStatus();
+		ActualStatus actualStatus = EnumAdaptor.valueOf(command.getActualStatus(), ActualStatus.class);
+		List<OvertimeColorCheck> actualLst = command.getActualLst();
 
-
-		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate(), command.getAppID());
+		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate(), command.getAppID(),
+				opAppBefore, beforeAppStatus, actualStatus, actualLst);
 	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command) {
@@ -132,7 +139,8 @@ public class CheckBeforeRegisterOvertime {
 		return checkBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate());
 	}
 
-	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate, String appID) {
+	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate, String appID,
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst) {
 		// 社員ID
 		String employeeId = app.getEmployeeID();
 		String companyID =  app.getCompanyID();
@@ -203,29 +211,12 @@ public class CheckBeforeRegisterOvertime {
 		if(app.getPrePostAtr()==PrePostAtr.POSTERIOR) {
 			UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
 			AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
-			AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 			otTimeLst = otTimeLst.stream().map(x -> {
 				Integer value = overtimeInputs.stream()
 				.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
 				.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
 				return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
 			}).collect(Collectors.toList());
-			// 07-01_事前申請状態チェック
-			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-					companyID, 
-					employeeId, 
-					app.getAppDate(), 
-					ApplicationType.OVER_TIME_APPLICATION);
-			// 07-02_実績取得・状態チェック
-			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-					companyID, 
-					employeeId, 
-					app.getAppDate(), 
-					ApplicationType.OVER_TIME_APPLICATION, 
-					overtime.getWorkTypeCode() == null ? null : overtime.getWorkTypeCode().v(), 
-					overtime.getSiftCode() == null ? null : overtime.getSiftCode().v(), 
-							appOvertimeSetting.getPriorityStampSetAtr(), 
-					Optional.empty());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			preActualColorResult = preActualColorCheck.preActualColorCheck(
 					preExcessDisplaySetting, 
@@ -234,10 +225,10 @@ public class CheckBeforeRegisterOvertime {
 					app.getPrePostAtr(), 
 					Collections.emptyList(), 
 					otTimeLst,
-					preAppCheckResult.opAppBefore,
-					preAppCheckResult.beforeAppStatus,
-					actualStatusCheckResult.actualLst,
-					actualStatusCheckResult.actualStatus);
+					opAppBefore,
+					beforeAppStatus,
+					actualLst,
+					actualStatus);
 		}
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
 	}

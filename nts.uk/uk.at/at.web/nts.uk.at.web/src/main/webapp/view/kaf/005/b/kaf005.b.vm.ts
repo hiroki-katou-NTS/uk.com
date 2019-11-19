@@ -138,6 +138,10 @@ module nts.uk.at.view.kaf005.b {
             flexFLag: KnockoutObservable<boolean> = ko.observable(true);
             performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
             preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
+            opAppBefore: any = null;
+            beforeAppStatus: boolean = true;
+            actualStatus: number = 0;
+            actualLst: any = [];
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata, rebind?: boolean) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -256,6 +260,10 @@ module nts.uk.at.view.kaf005.b {
             
             initData(data: any) {
                 var self = this;
+                self.opAppBefore = data.opAppBefore;
+                self.beforeAppStatus = data.beforeAppStatus;
+                self.actualStatus = data.actualStatus;
+                self.actualLst = data.actualLst;
                 self.preExcessDisplaySetting(data.preExcessDisplaySetting);
                 self.performanceExcessAtr(data.performanceExcessAtr);
                 self.appOvertimeNightFlg(data.appOvertimeNightFlg == 1 ? true : false);
@@ -307,13 +315,6 @@ module nts.uk.at.view.kaf005.b {
                 
                 self.multilContent2(data.divergenceReasonContent);
                 self.overtimeAtr(data.overtimeAtr);
-//                if (data.overtimeAtr == 0) {
-//                    self.heightOvertimeHours(56);
-//                } else if (data.overtimeAtr == 1) {
-//                    self.heightOvertimeHours(180);
-//                } else {
-//                    self.heightOvertimeHours(216);
-//                }
                 self.instructInforFlag(data.displayOvertimeInstructInforFlg);
                 self.instructInfor(data.overtimeInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
@@ -637,7 +638,11 @@ module nts.uk.at.view.kaf005.b {
                     appReasonID: comboBoxReason,
                     divergenceReasonArea: areaDivergenceReason,
                     user: self.user,
-                    reflectPerState: self.reflectPerState
+                    reflectPerState: self.reflectPerState,
+                    opAppBefore: self.opAppBefore,
+                    beforeAppStatus: self.beforeAppStatus,
+                    actualStatus: self.actualStatus,
+                    actualLst: self.actualLst
                 }
                 
                 self.beforeUpdateColorConfirm(command);

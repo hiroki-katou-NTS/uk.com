@@ -123,7 +123,7 @@ public class ApplicationDto_New {
 				appDto.getCompanyID(), 
 				appDto.getApplicationID(),
 				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr.class), 
-				GeneralDateTime.fromString(appDto.getInputDate(), DATE_FORMAT), 
+				GeneralDateTime.fromString(appDto.getInputDate(), DATE_TIME_FORMAT), 
 				appDto.getEnteredPersonSID(), 
 				new AppReason(appDto.getReversionReason()), 
 				GeneralDate.fromString(appDto.getApplicationDate(), DATE_FORMAT),
@@ -146,9 +146,9 @@ public class ApplicationDto_New {
 						.notReasonReal(Optional.ofNullable(appDto.getReflectPerScheReason())
 								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
 						.dateTimeReflection(Optional
-								.ofNullable(GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_FORMAT)))
+								.ofNullable(appDto.getReflectPlanTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_FORMAT)))
 						.dateTimeReflectionReal(Optional
-								.ofNullable(GeneralDateTime.fromString(appDto.getReflectPerTime(), DATE_FORMAT)))
+								.ofNullable(appDto.getReflectPerTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPerTime(), DATE_FORMAT)))
 						.build());
 		return app;
 	}
