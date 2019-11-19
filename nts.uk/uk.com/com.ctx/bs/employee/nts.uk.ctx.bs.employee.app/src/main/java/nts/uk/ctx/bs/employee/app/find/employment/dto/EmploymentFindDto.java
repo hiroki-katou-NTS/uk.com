@@ -48,6 +48,8 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	
 	private String errMessage;
 	
+	private String commonMasterItemId;
+	
 	
 	/*
 	 * (non-Javadoc)
