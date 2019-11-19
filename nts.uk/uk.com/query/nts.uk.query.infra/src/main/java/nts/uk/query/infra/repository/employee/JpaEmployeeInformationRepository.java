@@ -18,6 +18,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.model.classification.ClassificationModel;
+import nts.uk.query.model.department.DepartmentModel;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -47,6 +48,18 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND awh.endDate >= :refDate"
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
+	
+	// 社員の所属部門を取得する
+	private static final String DEPARTMENT_QUERY = "SELECT dph.sid, di.cd, di.name, di.bsymtDepartmentInfoPK.depId  "
+			+ " FROM BsymtAffiDepartmentHist dph"
+			+ " LEFT JOIN BsymtAffiDepartmentHistItem dphi ON dphi.hisId = dph.hisId AND dph.cid = :cid"
+			+ " LEFT JOIN BsymtDepartmentHist dh ON dphi.depId = dh.bsymtDepartmentHistPK.depId AND dh.bsymtDepartmentHistPK.cid =:cid"
+			+ " LEFT JOIN BsymtDepartmentInfo di ON di.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId AND di.bsymtDepartmentInfoPK.cid =:cid"
+			+ " WHERE dph.sid IN :listSid"
+			+ " AND dph.strDate <= :refDate"
+			+ " AND dph.endDate >= :refDate"
+			+ " AND dh.strD <= :refDate"
+			+ " AND dh.endD >= :refDate";
 
 	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
@@ -160,6 +173,30 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 							.positionCode(jobCode)
 							.positionName(jobName)
 							.positionId(jobId)
+							.build()));
+				}
+			});
+		}
+	    // 社員の所属部門を取得する
+		// set department
+		if(param.isToGetDepartment()) {
+			List<Object[]> departments = this.getOptionalResult(param, DEPARTMENT_QUERY, false);
+			
+			employeeInfoList.keySet().forEach(empId -> {
+				Optional<Object[]> department = departments.stream().filter(wpl -> {
+					String id = (String) wpl[0];
+					return id.equals(empId);
+				}).findAny();
+
+				if (department.isPresent()) {
+					String departmentCode = (String) department.get()[1];
+					String departmentId = (String) department.get()[2];
+					String departmentName = (String) department.get()[3];
+					employeeInfoList.get(empId)
+					.setDepartment(Optional.of(DepartmentModel.builder()
+							.departmentCode(departmentCode)
+							.departmentId(departmentId)
+							.departmentName(departmentName)
 							.build()));
 				}
 			});

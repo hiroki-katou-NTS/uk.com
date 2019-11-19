@@ -21,6 +21,6 @@ public class DepartmentModel {
 	/** The department name. */
 	private String departmentName; // 部門表示名
 	
-	/** The department generic name. */
-	private String departmentGenericName; // 部門総称
+	/** The department id. */
+	private String departmentId; // 部門総称
 }
