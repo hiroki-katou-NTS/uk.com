@@ -13,6 +13,11 @@ import java.util.Optional;
 public class EmpInsGetInfo extends AggregateRoot {
 
     /**
+     * 会社ID
+     */
+    private String cId;
+
+    /**
      * 社員ID
      */
     private String sId;
@@ -62,7 +67,8 @@ public class EmpInsGetInfo extends AggregateRoot {
      */
     private Optional<EmploymentStatus> employmentStatus;
 
-    public EmpInsGetInfo(String sId, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
+    public EmpInsGetInfo(String cId, String sId, Integer workingTime, Integer acquisitionAtr, Integer printAtr, Integer jobPath, Integer payWage, Integer jobAtr, Integer insCauseAtr, Integer paymentMode, Integer employmentStatus) {
+        this.cId = cId;
         this.sId = sId;
         this.workingTime = workingTime == null ? Optional.empty() : Optional.of(new WorkingTime(workingTime));
         this.acquisitionAtr = acquisitionAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(acquisitionAtr, AcquisitionAtr.class));

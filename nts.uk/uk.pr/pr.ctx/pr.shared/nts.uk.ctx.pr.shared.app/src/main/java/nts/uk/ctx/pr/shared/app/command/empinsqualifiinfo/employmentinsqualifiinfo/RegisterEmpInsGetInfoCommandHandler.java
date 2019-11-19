@@ -21,6 +21,7 @@ public class RegisterEmpInsGetInfoCommandHandler extends CommandHandler<EmpInsGe
         EmpInsGetInfoCommand command = context.getCommand();
         if (command.screenMode == 0) {
             repository.add(new EmpInsGetInfo(
+                    AppContexts.user().companyId(),
                     command.getSId(),
                     command.getWorkingTime(),
                     command.getAcquiAtr(),
@@ -34,6 +35,7 @@ public class RegisterEmpInsGetInfoCommandHandler extends CommandHandler<EmpInsGe
             ));
         } else {
             repository.update(new EmpInsGetInfo(
+                    AppContexts.user().companyId(),
                     command.getSId(),
                     command.getWorkingTime(),
                     command.getAcquiAtr(),

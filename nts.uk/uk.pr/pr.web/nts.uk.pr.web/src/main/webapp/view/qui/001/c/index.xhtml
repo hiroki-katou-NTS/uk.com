@@ -17,7 +17,7 @@
         <com:scriptfile path="qui001.c.service.js"/>
         <com:scriptfile path="qui001.c.start.js"/>
         <com:scriptfile path="qui001.c.vm.js"/>
-        <script>var dialogSize = {width: 1000, height: 700};</script>
+        <script>var dialogSize = {width: 850, height: 650};</script>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
         <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
@@ -44,7 +44,7 @@
                         value: acquiAtr
                         }"></div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group valign-center">
                         <div id="C222_7" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_7')}</div>
                         <div id="C222_8" tabindex="6" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI001_C222_8')}',
@@ -60,7 +60,7 @@
                         <div id="C222_10" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_10')}</div>
                         <input id="C222_11" tabindex="7" data-bind="ntsTimeEditor: {value: workingTime, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group valign-center">
                         <div id="C222_12" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_12')}</div>
                         <div id="C222_13" tabindex="8" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI001_C222_13')}',
@@ -74,9 +74,9 @@
                     </div>
                     <div class="control-group">
                         <div id="C222_15" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_15')}</div>
-                        <input id="C222_16" tabindex="9" data-bind="ntsNumberEditor: {value: payWage, constraint: 'PayWage', option: { decimallength: 0 } }"/>
+                        <input id="C222_16" tabindex="9" data-bind="ntsNumberEditor: {value: payWage, constraint: 'PayWage', option: { decimallength: 2 } }"/>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group valign-center">
                         <div id="C222_17" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_17')}</div>
                         <div id="C222_18" tabindex="10" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI001_C222_18')}',
@@ -88,7 +88,7 @@
                         width: 'auto'
                         }"></div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group valign-center">
                         <div id="C222_20" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_20')}</div>
                         <div id="C222_21" tabindex="11" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI001_C222_21')}',
@@ -100,7 +100,7 @@
                         width: 'auto'
                         }"></div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group valign-center">
                         <div id="C222_23" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_23')}</div>
                         <div id="C222_24" tabindex="12" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI001_C222_24')}',

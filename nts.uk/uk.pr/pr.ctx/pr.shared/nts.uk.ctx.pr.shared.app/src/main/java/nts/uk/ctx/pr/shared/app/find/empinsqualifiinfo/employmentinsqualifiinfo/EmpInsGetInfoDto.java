@@ -9,6 +9,10 @@ import lombok.Value;
 @Builder
 public class EmpInsGetInfoDto {
     /**
+     * 会社ID
+     */
+    public String cId;
+    /**
      * 社員ID
      */
     public String sId;
