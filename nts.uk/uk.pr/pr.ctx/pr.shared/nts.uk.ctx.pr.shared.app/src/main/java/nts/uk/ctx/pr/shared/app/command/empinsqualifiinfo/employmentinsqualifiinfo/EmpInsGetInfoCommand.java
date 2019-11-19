@@ -5,6 +5,10 @@ import lombok.Value;
 @Value
 public class EmpInsGetInfoCommand {
     /**
+     * 会社ID
+     */
+    public String cId;
+    /**
      * 社員ID
      */
     public String sId;

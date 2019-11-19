@@ -6,6 +6,7 @@ import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -96,6 +97,7 @@ public class QqsmtEmpInsGetInfo extends UkJpaEntity implements Serializable {
 
     public EmpInsGetInfo toDomain() {
         return new EmpInsGetInfo(
+                this.empInsGetInfoPk.cId,
                 this.empInsGetInfoPk.sId,
                 this.workingTime,
                 this.acquiAtr,
@@ -108,7 +110,7 @@ public class QqsmtEmpInsGetInfo extends UkJpaEntity implements Serializable {
                 this.employmentStatus);
     }
     public static QqsmtEmpInsGetInfo toEntity(EmpInsGetInfo domain) {
-        return new QqsmtEmpInsGetInfo(new QqsmtEmpInsGetInfoPk(domain.getSId()),
+        return new QqsmtEmpInsGetInfo(new QqsmtEmpInsGetInfoPk(AppContexts.user().companyId(), domain.getSId()),
                 domain.getWorkingTime().map(PrimitiveValueBase::v).orElse(null),
                 domain.getAcquisitionAtr().isPresent() ? domain.getAcquisitionAtr().get().value : null,
                 domain.getPrintAtr().isPresent() ? domain.getPrintAtr().get().value : null,

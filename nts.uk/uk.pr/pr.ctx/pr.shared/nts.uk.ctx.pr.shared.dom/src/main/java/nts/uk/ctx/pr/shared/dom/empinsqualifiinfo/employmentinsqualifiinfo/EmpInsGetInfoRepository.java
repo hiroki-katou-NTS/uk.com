@@ -8,9 +8,7 @@ import java.util.Optional;
  */
 public interface EmpInsGetInfoRepository {
 
-    List<EmpInsGetInfo> getAllEmpInsGetInfo();
-
-    Optional<EmpInsGetInfo> getEmpInsGetInfoById(String sId);
+    Optional<EmpInsGetInfo> getEmpInsGetInfoById(String cId, String sId);
 
     void add(EmpInsGetInfo domain);
 

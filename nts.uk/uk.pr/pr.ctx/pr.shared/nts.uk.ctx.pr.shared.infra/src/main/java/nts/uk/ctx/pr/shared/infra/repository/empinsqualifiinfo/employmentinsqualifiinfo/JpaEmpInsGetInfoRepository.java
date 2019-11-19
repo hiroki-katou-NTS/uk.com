@@ -16,18 +16,13 @@ import java.util.Optional;
 public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsGetInfoRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT e FROM QqsmtEmpInsGetInfo e";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.sId =:sId";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.cId =:cId AND e.empInsGetInfoPk.sId =:sId";
     private static final String SELECT_BY_EMP_IDS = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.cid = :cid e.empInsGetInfoPk.sid IN :sids";
 
-
     @Override
-    public List<EmpInsGetInfo> getAllEmpInsGetInfo() {
-        return null;
-    }
-
-    @Override
-    public Optional<EmpInsGetInfo> getEmpInsGetInfoById(String sId) {
+    public Optional<EmpInsGetInfo> getEmpInsGetInfoById( String cId, String sId) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsGetInfo.class)
+                .setParameter("cId", cId)
                 .setParameter("sId", sId)
                 .getSingle(e -> e.toDomain());
     }

@@ -15,6 +15,12 @@ import java.io.Serializable;
 @Embeddable
 public class QqsmtEmpInsGetInfoPk implements Serializable {
     /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public  String cId;
+    /**
      * 社員ID
      */
     @Basic(optional = false)

@@ -135,6 +135,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
             });
+            $('#emp-component').focus();
         }
 
         startPage(sId: string): JQueryPromise<any> {

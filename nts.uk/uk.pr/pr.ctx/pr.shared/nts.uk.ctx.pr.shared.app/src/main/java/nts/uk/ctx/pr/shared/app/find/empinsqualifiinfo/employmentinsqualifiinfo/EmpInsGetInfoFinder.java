@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.app.find.empinsqualifiinfo.employmentinsqualifiinfo
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,9 +15,11 @@ public class EmpInsGetInfoFinder {
     private EmpInsGetInfoRepository empInsGetInfoRepository;
 
     public EmpInsGetInfoDto getEmpInsGetInfoById(String sId) {
-        Optional<EmpInsGetInfo> result = empInsGetInfoRepository.getEmpInsGetInfoById(sId);
+        String cId = AppContexts.user().companyId();
+        Optional<EmpInsGetInfo> result = empInsGetInfoRepository.getEmpInsGetInfoById(cId, sId);
         if (result.isPresent()) {
             return result.map(e -> new EmpInsGetInfoDto(
+                    AppContexts.user().companyId(),
                     e.getSId(),
                     e.getWorkingTime().map(PrimitiveValueBase::v).orElse(null),
                     e.getAcquisitionAtr().isPresent() ? e.getAcquisitionAtr().get().value : null,
