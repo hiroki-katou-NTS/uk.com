@@ -96,11 +96,6 @@ public class CreateOvertimeCommand {
 	 */
 	private List<OvertimeInputCommand> restTime;
 	/**
-	 * 加給時間
-	 * ATTENDANCE_ID = 3
-	 */
-	private List<OvertimeInputCommand> bonusTimes;
-	/**
 	 * 残業申請.残業区分
 	 */
 	private int overtimeAtr;

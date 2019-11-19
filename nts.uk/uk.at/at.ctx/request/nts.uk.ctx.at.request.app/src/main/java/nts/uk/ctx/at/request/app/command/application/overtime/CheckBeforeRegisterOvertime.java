@@ -23,12 +23,10 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -40,13 +38,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -159,7 +155,6 @@ public class CheckBeforeRegisterOvertime {
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = new ArrayList<>(); 
 		overtimeInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.NORMALOVERTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.NORMALOVERTIME));
-		overtimeInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BONUSPAYTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BONUSPAYTIME));
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, app.getEmployeeID(), 1, 
 				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), app.getAppDate());
 		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = this.overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -189,23 +184,6 @@ public class CheckBeforeRegisterOvertime {
 		}
 		if(flexFLag) {
 			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 12, null));
-		}
-		boolean displayBonusTime = false;
-		if(overTimeSettingOpt.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-			displayBonusTime = true;
-		} 
-		if(displayBonusTime){
-			List<BonusPayTimeItem> bonusPayTimeItems= this.commonOvertimeHoliday.getBonusTime(
-					companyID,
-					app.getEmployeeID(),
-					app.getAppDate(),
-					overTimeSettingOpt.get().getBonusTimeDisplayAtr());
-			for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-				otTimeLst.add(OvertimeColorCheck.createApp(
-						AttendanceType.BONUSPAYTIME.value, 
-						bonusPayTimeItem.getId(), 
-						null));
-			}
 		}
 		PreActualColorResult preActualColorResult = null;
 		if(app.getPrePostAtr()==PrePostAtr.POSTERIOR) {
@@ -356,12 +334,6 @@ public class CheckBeforeRegisterOvertime {
 		if (null != command.getRestTime()) {
 			overTimeInputs
 					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceType.RESTTIME.value));
-		}
-		/**
-		 * 加給時間 ATTENDANCE_ID = 3
-		 */
-		if (null != command.getBonusTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceType.BONUSPAYTIME.value));
 		}
 		return overTimeInputs;
 	}
