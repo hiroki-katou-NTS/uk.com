@@ -125,7 +125,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         // Pending check マイナンバー印字区分
 
         List<String> empInsHistEmpIds = empInsHists.values().stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-        Map<String, EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(cid, empInsHistEmpIds).stream().collect(Collectors.toMap(EmpInsGetInfo::getSalaryId, Function.identity()));
+        Map<String, EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(cid, empInsHistEmpIds).stream().collect(Collectors.toMap(EmpInsGetInfo::getSId, Function.identity()));
         if (empInsGetInfos.isEmpty()) {
             throw new BusinessException("Msg_51");
         }

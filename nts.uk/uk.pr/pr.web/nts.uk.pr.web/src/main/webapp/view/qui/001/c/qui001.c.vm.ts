@@ -1,7 +1,6 @@
 module nts.uk.pr.view.qui001.c.viewmodel {
     import model = nts.uk.pr.view.qui001.share.model;
     import dialog = nts.uk.ui.dialog;
-    import errors = nts.uk.ui.errors;
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
@@ -130,7 +129,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 screenMode: self.screenMode()
             };
             service.register(empInsGetInfo).done(function () {
-                dialog.info({ messageId: "Msg_15" }).then(() => {
+                dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 });
             }).fail(error => {
@@ -157,6 +156,9 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 } else {
                     self.getDefault();
                 }
+            }).fail(error => {
+                dialog.alertError(error);
+                dfd.reject();
             });
             return dfd.promise();
         }

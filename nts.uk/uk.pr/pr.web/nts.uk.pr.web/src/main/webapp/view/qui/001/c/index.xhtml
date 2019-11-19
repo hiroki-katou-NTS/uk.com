@@ -28,7 +28,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button id="C1_1" tabindex="1" data-bind="click: updateEmpInsGetInfo" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI001_C1_1')}</button>
+            <button id="C1_1" tabindex="1" data-bind="click: updateEmpInsGetInfo, enable: $root.errors.isEmpty()" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI001_C1_1')}</button>
             <button id="C1_2" tabindex="2" data-bind="click: cancel">#{i18n.getText('QUI001_C1_2')}</button>
         </div>
         <div id="contents-area" >
@@ -58,7 +58,7 @@
                     </div>
                     <div class="control-group">
                         <div id="C222_10" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_10')}</div>
-                        <input id="C222_11" tabindex="7" data-bind="ntsNumberEditor: {value: workingTime, constraint: 'WorkingTime', option: { decimallength: 0 } }"/>
+                        <input id="C222_11" tabindex="7" data-bind="ntsTimeEditor: {value: workingTime, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
                     </div>
                     <div class="control-group">
                         <div id="C222_12" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_12')}</div>

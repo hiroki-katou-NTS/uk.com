@@ -81,7 +81,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsGetQualifRepor
         }
 
         List<String> empInsHistEmpIds = empInsHists.stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-        List<EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(empInsHistEmpIds);
+        //List<EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(empInsHistEmpIds);
 
 
 
