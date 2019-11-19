@@ -18,6 +18,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.jdbc.map.EntityAttributeType;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -470,7 +471,7 @@ public class AppOvertimeFinder {
 	 */
 	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
 			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests,
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst){
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst){
 		String companyID = AppContexts.user().companyId();
 		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -514,7 +515,7 @@ public class AppOvertimeFinder {
 				opAppBefore, 
 				beforeAppStatus, 
 				actualLst, 
-				actualStatus);
+				EnumAdaptor.valueOf(actualStatus, ActualStatus.class));
 		return preActualColorResult;
 	}
 

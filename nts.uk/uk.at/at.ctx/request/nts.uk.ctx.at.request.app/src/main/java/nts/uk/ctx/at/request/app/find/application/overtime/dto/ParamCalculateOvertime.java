@@ -22,8 +22,8 @@ public class ParamCalculateOvertime {
 	public List<Integer> startTimeRests; 
 	public List<Integer> endTimeRests;
 	public Optional<Application_New> opAppBefore;
-	public ActualStatus beforeAppStatus;
-	public boolean actualStatus;
+	public boolean beforeAppStatus;
+	public int actualStatus;
 	public List<OvertimeColorCheck> actualLst;
 	
 	public List<Integer> getStartTimeRests() {

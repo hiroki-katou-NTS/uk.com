@@ -134,8 +134,8 @@ public class OvertimeWebService extends WebService{
 				param.getStartTimeRests(), 
 				param.getEndTimeRests(),
 				param.opAppBefore,
-				param.actualStatus,
 				param.beforeAppStatus,
+				param.actualStatus,
 				param.actualLst);
 	}
 	
