@@ -81,21 +81,21 @@ module nts.uk.pr.view.qui001.share.model {
         static OH = 6;
     }
 
-    export function acquisitionArt(): Array<ItemModel> {
+    export function acquisitionAtr(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('QUI001_C222_5')),
             new ItemModel(1, getText('QUI001_C222_6'))
         ];
     }
 
-    export function contractPeriodPrintArt(): Array<ItemModel> {
+    export function contrPeriPrintAtr(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('QUI001_C222_28')),
             new ItemModel(1, getText('QUI001_C222_29'))
         ];
     }
 
-    export function insuranceCauAtr(): Array<ItemModel> {
+    export function insCauseAtr(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('Enum_InsuranceCause_NEW_EMPLOYMENT_NEW_GRADUATE')),
             new ItemModel(1, getText('Enum_InsuranceCause_NEW_EMPLOYMENT_OTHER')),

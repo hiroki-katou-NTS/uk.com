@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.shared.ws.empinsqualifiinfo.employmentinsqualifiinfo;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.shared.app.command.empinsqualifiinfo.employmentinsqualifiinfo.AddEmpInsGetInfoComandHandler;
+import nts.uk.ctx.pr.shared.app.command.empinsqualifiinfo.employmentinsqualifiinfo.RegisterEmpInsGetInfoCommandHandler;
 import nts.uk.ctx.pr.shared.app.command.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfoCommand;
 import nts.uk.ctx.pr.shared.app.find.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfoDto;
 import nts.uk.ctx.pr.shared.app.find.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsGetInfoFinder;
@@ -19,17 +19,17 @@ public class EmpInsGetInfoWebService extends WebService {
     private EmpInsGetInfoFinder finder;
 
     @Inject
-    private AddEmpInsGetInfoComandHandler addCommandHandler;
+    private RegisterEmpInsGetInfoCommandHandler addCommandHandler;
 
     @POST
-    @Path("/start/{sid}")
-    public EmpInsGetInfoDto getEmpInsGetInfoById(@PathParam("sid") String sid){
-        return finder.getEmpInsGetInfoById(sid);
+    @Path("/start/{sId}")
+    public EmpInsGetInfoDto getEmpInsGetInfoById(@PathParam("sId") String sId) {
+        return finder.getEmpInsGetInfoById(sId);
     }
 
     @POST
     @Path("/register")
-    public void registerEmpInsGetInfo (EmpInsGetInfoCommand empInsGetInfoCommand){
+    public void registerEmpInsGetInfo(EmpInsGetInfoCommand empInsGetInfoCommand) {
         addCommandHandler.handle(empInsGetInfoCommand);
     }
 }

@@ -1,13 +1,15 @@
 module nts.uk.pr.view.qui001.c.viewmodel {
     import model = nts.uk.pr.view.qui001.share.model;
+    import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
-        selectedItem: KnockoutObservable<string>= ko.observable('');
+        selectedItem: KnockoutObservable<string> = ko.observable(null);
         /**
          *ComboBox
          */
-        insuranceCauAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.insuranceCauAtr());
+        insCauseAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.insCauseAtr());
         jobAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobAtr());
         jobPaths: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobPath());
         wagePaymentModes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.wagePaymentMode());
@@ -15,13 +17,13 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         /**
          * Button Switch
          */
-        acquisitionArts: KnockoutObservableArray<model.ItemModel> =  ko.observableArray(model.acquisitionArt());
-        contractPeriodPrintArts: KnockoutObservableArray<model.ItemModel> =  ko.observableArray(model.contractPeriodPrintArt());
+        acquisitionAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.acquisitionAtr());
+        contrPeriPrintAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.contrPeriPrintAtr());
         /**
          * Text Editor
          */
-        workingTime: KnockoutObservable<string> = ko.observable('');
-        payWage: KnockoutObservable<string> = ko.observable('');
+        workingTime: KnockoutObservable<number> = ko.observable(null);
+        payWage: KnockoutObservable<number> = ko.observable(null);
         /**
          * KCP009-社員送り
          */
@@ -31,7 +33,6 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         targetBtnText: string;
         baseDate: KnockoutObservable<Date>;
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string>;
         tabindex: number;
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
@@ -42,13 +43,13 @@ module nts.uk.pr.view.qui001.c.viewmodel {
          *
          */
         sId: KnockoutObservable<string> = ko.observable('');
-        acquiArt: KnockoutObservable<number> = ko.observable(0);
-        insuranceCauAtr: KnockoutObservable<number> = ko.observable(0);
+        acquiAtr: KnockoutObservable<number> = ko.observable(0);
+        insCauseAtr: KnockoutObservable<number> = ko.observable(0);
         jobAtr: KnockoutObservable<number> = ko.observable(0);
         jobPath: KnockoutObservable<number> = ko.observable(0);
         wagePaymentMode: KnockoutObservable<number> = ko.observable(0);
         employmentStatus: KnockoutObservable<number> = ko.observable(0);
-        conPerPrintArt: KnockoutObservable<number> = ko.observable(0);
+        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             var self = this;
@@ -56,14 +57,14 @@ module nts.uk.pr.view.qui001.c.viewmodel {
              * startPage
              */
             $('#emp-component').focus();
-            self.selectedItem.subscribe(e => {
-                self.startPage(e);
+            self.selectedItem.subscribe((data) => {
+                self.startPage(data);
             });
             /**
              *KCP009
              */
             let params = getShared("QUI001_PARAMS_A");
-            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
+            if (nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
                 close();
             }
             self.employeeInputList(self.createEmployeeModel(params.employeeList));
@@ -85,11 +86,11 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             return listEmployee;
         }
 
-        cancel(){
+        cancel() {
             nts.uk.ui.windows.close();
         }
 
-        loadKCP009(){
+        loadKCP009() {
             var self = this;
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
@@ -112,24 +113,27 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
-        register(){
-            var self = this;
-            let empInsGetInfo: any ={
+        updateEmpInsGetInfo() {
+            let self = this;
+            let empInsGetInfo: any = {
                 sId: self.selectedItem(),
-                acquiArt: self.acquiArt(),
-                jobPath: self.jobPath,
-                workingTime: self.workingTime().length > 0 ? self.workingTime: null,
-                jobArt: self.jobAtr(),
-                payWage: self.payWage().length > 0 ? self.payWage: null,
-                insuranceCauArt: self.insuranceCauAtr(),
+                acquiAtr: self.acquiAtr(),
+                jobPath: self.jobPath(),
+                workingTime: self.workingTime() > 0 ? self.workingTime() : null,
+                jobAtr: self.jobAtr(),
+                payWage: self.workingTime() > 0 ? self.payWage() : null,
+                insCauseAtr: self.insCauseAtr(),
                 wagePaymentMode: self.wagePaymentMode(),
                 employmentStatus: self.employmentStatus(),
-                conPerPrintArt: self.conPerPrintArt(),
-                screenMode: model.SCREEN_MODE.UPDATE
+                contrPeriPrintAtr: self.contrPeriPrintAtr() ? 1 : 0,
+                screenMode: self.screenMode()
             };
             service.register(empInsGetInfo).done(function () {
-                self.screenMode(model.SCREEN_MODE.UPDATE);
-                self.startPage(self.selectedItem());
+                dialog.info({messageId: "Msg_15"}).then(() => {
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                });
+            }).fail(error => {
+                dialog.alertError(error);
             });
         }
 
@@ -137,41 +141,45 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.start(sId).done(function (data: any) {
-                if (data){
-                    self.acquiArt(data.acquiArt);
+                if (data) {
+                    self.sId(data.sId);
+                    self.acquiAtr(data.acquiAtr);
                     self.jobPath(data.jobPath);
                     self.workingTime(data.workingTime);
                     self.jobAtr(data.jobAtr);
                     self.payWage(data.payWage);
-                    self.insuranceCauAtr(data.insuranceCauAtr);
+                    self.insCauseAtr(data.insCauseAtr);
                     self.wagePaymentMode(data.wagePaymentMode);
                     self.employmentStatus(data.employmentStatus);
-                    self.conPerPrintArt(data.conPerPrintArt);
+                    self.contrPeriPrintAtr(data.contrPeriPrintAtr);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
-                }else {
+                } else {
                     self.getDefault();
                 }
+            }).fail(error => {
+                dialog.alertError(error);
+                dfd.reject();
             });
             return dfd.promise();
         }
 
-        getDefault(){
+        getDefault() {
             let self = this;
             self.createNew();
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
-        createNew(){
+        createNew() {
             let self = this;
-            self.acquiArt(0);
+            self.acquiAtr(0);
             self.jobPath(0);
-            self.workingTime('');
+            self.workingTime(null);
             self.jobAtr(0);
-            self.payWage('');
-            self.insuranceCauAtr(0);
+            self.payWage(null);
+            self.insCauseAtr(0);
             self.wagePaymentMode(0);
             self.employmentStatus(0);
-            self.conPerPrintArt(0);
+            self.contrPeriPrintAtr(0);
         }
     }
 

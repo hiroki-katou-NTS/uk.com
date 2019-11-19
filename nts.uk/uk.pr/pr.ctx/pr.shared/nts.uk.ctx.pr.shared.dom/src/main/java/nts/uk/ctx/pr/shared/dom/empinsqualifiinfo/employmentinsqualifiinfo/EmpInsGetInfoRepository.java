@@ -10,7 +10,7 @@ public interface EmpInsGetInfoRepository {
 
     List<EmpInsGetInfo> getAllEmpInsGetInfo();
 
-    Optional<EmpInsGetInfo> getEmpInsGetInfo(String sid);
+    Optional<EmpInsGetInfo> getEmpInsGetInfoById(String sId);
 
     void add(EmpInsGetInfo domain);
 

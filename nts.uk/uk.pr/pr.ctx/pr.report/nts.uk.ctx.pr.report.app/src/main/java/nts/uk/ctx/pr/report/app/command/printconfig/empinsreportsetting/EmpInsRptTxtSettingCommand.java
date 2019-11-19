@@ -6,15 +6,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class EmpInsRptTxtSettingCommand {
-    /**
-     * 会社ID
-     */
-    public String cid;
-
-    /**
-     * ユーザID
-     */
-    public String userId;
 
     /**
      * 事業所区分
