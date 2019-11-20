@@ -19,5 +19,5 @@ public class JflmtInterviewContentPK implements Serializable {/**
 	
 	@NotNull
 	@Column(name = "INTERVIEW_ITEM_ID")
-	public String interviewItemID;
+	public long interviewItemID;
 }

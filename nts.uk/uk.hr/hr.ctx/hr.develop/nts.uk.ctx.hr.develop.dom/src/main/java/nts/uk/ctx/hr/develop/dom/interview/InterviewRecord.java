@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
  * @author hieult
  *
  */
+
 /** 面談記録  **/
 
 @Getter
@@ -43,7 +44,7 @@ public class InterviewRecord extends AggregateRoot {
 	/** 被面談者社員SCD **/
 	private Optional<String> intervieweeScd;
 	/** 被面談者社員名 **/
-	private Optional<IntervieweeName> intervieweeName;
+	private Optional<MainInterviewerName> intervieweeName;
 	
 	
 	
@@ -51,7 +52,7 @@ public class InterviewRecord extends AggregateRoot {
 			InterviewCategory interviewCategory, GeneralDate interviewDate, String interviewRecordId,
 			List<InterviewRecordContent> listInterviewRecordContent, List<SubInterviewer> listSubInterviewer,
 			String mainInterviewerScd, MainInterviewerName mainInterviewerName,
-			String intervieweeScd,IntervieweeName intervieweeName) {
+			String intervieweeScd,MainInterviewerName intervieweeName) {
 		super();
 		this.mainInterviewerSid = mainInterviewerSid;
 		this.cid = cid;
@@ -71,7 +72,7 @@ public class InterviewRecord extends AggregateRoot {
 			String intervieweeSid , int interviewCategory , GeneralDate interviewDate , String interviewRecordId, 
 			List<InterviewRecordContent> listInterviewRecordContent, List<SubInterviewer> listSubInterviewer,
 			String mainInterviewerScd, MainInterviewerName mainInterviewerName,
-			String intervieweeScd,IntervieweeName intervieweeName){
+			String intervieweeScd,MainInterviewerName intervieweeName){
 		return new InterviewRecord(
 				new EmployeeId (mainInterviewerSid),
 				new CompanyId(cid),
@@ -79,25 +80,15 @@ public class InterviewRecord extends AggregateRoot {
 				EnumAdaptor.valueOf(interviewCategory , InterviewCategory.class),
 				interviewDate,
 				interviewRecordId,
+				
+				
+				
 				listInterviewRecordContent,
 				listSubInterviewer,
 				mainInterviewerScd,
 				mainInterviewerName,
 				intervieweeScd,
 				intervieweeName);
-//		return new InterviewRecord(
-//				new EmployeeId (mainInterviewerSid),
-//				new CompanyId(cid),
-//				new EmployeeId(intervieweeSid),
-//				EnumAdaptor.valueOf(interviewCategory , InterviewCategory.class),
-//				interviewDate,
-//				interviewRecordId,
-//				listInterviewRecordContent,
-//				listSubInterviewer,
-//				Optional.ofNullable(mainInterviewerScd == null ? null : mainInterviewerScd),
-//				Optional.ofNullable(mainInterviewerName == null ? null : new MainInterviewerName(mainInterviewerName)),
-//				Optional.ofNullable(intervieweeScd == null ? null : intervieweeScd ),
-//				Optional.ofNullable(intervieweeName == null ? null : new IntervieweeName(intervieweeScd)));
 		
 	} 
 

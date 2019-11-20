@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 public class JflmtInterviewRecordPK  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
+	
+	/** 面談記録ID --- interviewRecordId**/
 	@NotNull
 	@Column(name = "INTERVIEW_REC_ID")
 	public String interviewRecordId;

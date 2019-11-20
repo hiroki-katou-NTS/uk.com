@@ -17,11 +17,8 @@ public class JflmtInterviewAnalysisPK implements Serializable{/**
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
-	@Column(name = "CID")
-	public String companyId;
-	
+
 	@NotNull
 	@Column(name = "INTERVIEW_CONTENT_ID")
-	public String interviewContentId;
+	public long interviewContentId;
 }

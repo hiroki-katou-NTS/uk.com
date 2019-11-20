@@ -5,26 +5,52 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+/**
+ * 
+ * @author hieult
+ *
+ */
 @Getter
 public class InterviewRecordContent extends DomainObject{
  
 	/** ヒアリング項目ID **/
-	private String interviewItemId;
+	private long interviewItemId;
 	/** 表示順 **/
 	private int displayNumber; 
+	
+	/** ヒアリング項目CD **/
+	private Optional<String> interviewItemCd;
+	/** ヒアリング項目名 **/
+	private Optional<String> interviewItemName;
+	/** 分析区分カテゴリCD*/
+	private Optional<String> analysisCategoryCd;
 	/** 分析区分カテゴリID **/
-	private Optional<String> analysisCategoryId;
+	private Optional<Long> analysisCategoryId;
+	/** 分析区分カテゴリ名 **/
+	private Optional<String> analysisCategoryName;
+	
 	/**分析区分項目 **/ 
-	private Optional<List<AnalysisItem>> listAnalysisItemId;
+	private List<AnalysisItem> listAnalysisItemId;
 	/** 確認結果 **/
 	private Optional<String> recordContent;
-	public InterviewRecordContent(String interviewItemId, int displayNumber, Optional<String> analysisCategoryId,
-			List<AnalysisItem> listAnalysisItemId, String recordContent) {
+	public InterviewRecordContent(long interviewItemId, int displayNumber, String interviewItemCd,
+			String interviewItemName,String analysisCategoryCd, long analysisCategoryId,
+			String analysisCategoryName, List<AnalysisItem> listAnalysisItemId,
+			String recordContent) {
 		super();
 		this.interviewItemId = interviewItemId;
 		this.displayNumber = displayNumber;
-		this.analysisCategoryId = analysisCategoryId;
-		this.listAnalysisItemId = Optional.ofNullable(listAnalysisItemId);
+		this.interviewItemCd = Optional.ofNullable(interviewItemCd);
+		this.interviewItemName = Optional.ofNullable(interviewItemName);
+		this.analysisCategoryCd = Optional.ofNullable(analysisCategoryCd);
+		this.analysisCategoryId = Optional.ofNullable(analysisCategoryId);
+		this.analysisCategoryName = Optional.ofNullable(analysisCategoryName);
+		this.listAnalysisItemId = listAnalysisItemId;
 		this.recordContent = Optional.ofNullable(recordContent);
 	}
+	
+
+	
+	
+	
 }
