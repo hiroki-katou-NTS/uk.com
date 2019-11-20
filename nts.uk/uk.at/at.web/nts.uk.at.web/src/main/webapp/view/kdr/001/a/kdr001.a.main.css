@@ -1,17 +1,22 @@
 
 .ccg001searchkcp005{
 	float:left;
+	margin-left: 90px;
+	height: 417px;
 }
 
 .holidayAction {
-	margin-left: 50px;
-	margin-top: 40px;
+	margin-left: 30px;
 	z-index: 100;
+	padding-left: 30px;
+	height: 170px;
 }
-
+.holidayAction table {
+	margin-top: 20px;	
+}
 .holidayAction table tr {
 	display: flex;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 .holidayAction table tr td {
@@ -25,9 +30,16 @@
 
 .selectionHoliday {
 	border-radius: 5px;
-	margin: 20px 30px 0px 90px;
 }
 
 #contents-area { 
 	display: flex;
+}
+.panel.panel-frame {
+	width: 525px;
+	min-width: 525px;
+	margin-top: 15px;
+}
+body {
+	-ms-overflow-x: hidden;
 }

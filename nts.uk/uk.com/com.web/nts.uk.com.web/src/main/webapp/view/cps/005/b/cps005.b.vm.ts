@@ -46,6 +46,7 @@ module nts.uk.com.view.cps005.b {
 
             reloadData(): JQueryPromise<any> {
                 let self = this,
+                    isUpdate = self.isUpdate;
                     dfd = $.Deferred();
                 self.currentItemData().personInfoItemList([]);
                 self.currentItemData().selectionItemLst([]);
@@ -54,7 +55,7 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.currentItemData().selectionItemLst(data.selectionItemLst);
                         // resset lai selectiuon Item List
-                        self.isUpdate = true;
+                        self.isUpdate = isUpdate;
                         self.currentItemData().isEnableButtonProceed(true);
                     } else {
                         self.register();

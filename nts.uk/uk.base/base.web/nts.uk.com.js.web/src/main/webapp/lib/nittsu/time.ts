@@ -95,7 +95,7 @@ module nts.uk.time {
         }
 
         public toString() {
-            return `${this.empire}${this.year}年${this.month}${this.date}日`;
+            return `${this.empire}${this.year}年${this.month}月${this.date}日`;
         }
     }
 

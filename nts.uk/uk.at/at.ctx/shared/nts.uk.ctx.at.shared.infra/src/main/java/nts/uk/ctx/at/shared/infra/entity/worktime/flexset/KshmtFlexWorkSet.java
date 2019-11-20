@@ -20,6 +20,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -30,6 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @Entity
 @Table(name = "KSHMT_FLEX_WORK_SET")
 public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {

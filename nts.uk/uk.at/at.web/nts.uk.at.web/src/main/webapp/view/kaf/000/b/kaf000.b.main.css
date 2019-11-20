@@ -1,8 +1,7 @@
 #message-area {
 	background-color: #f8efd4;
-	height: 68px;
 	width: 800px;
-	margin-top: 15px;
+	padding: 0 !important;
 }
 .comment{
 	width: 50px;
@@ -11,8 +10,7 @@
 }
 
 .message-td {
-	padding-left: 10px;
-	padding-top: 10px;
+	padding-left: 8px;
 }
 
 #table-phase, #table-phase td, #table-phase th {
@@ -67,4 +65,7 @@
 .kaf000-function-div-cancel {
 	margin-left: calc(15vw - 153px);
 	display: inline-block;
+}
+#returnReason {
+	padding: 10px 10px;
 }

@@ -29,7 +29,7 @@
 }
 
 .header {
-	border: 1px solid black;
+	border: 1px solid #B1B1B1;
 	height: 150px;
 	border-radius: 15px;
 	margin-top: 0px;
@@ -137,4 +137,8 @@
 
 #gridListEmployeesContent {
     height: 300px !important;
+}
+
+#gridListEmployeesContentIcm007 .ui-iggrid tbody td {
+	white-space: nowrap;
 }

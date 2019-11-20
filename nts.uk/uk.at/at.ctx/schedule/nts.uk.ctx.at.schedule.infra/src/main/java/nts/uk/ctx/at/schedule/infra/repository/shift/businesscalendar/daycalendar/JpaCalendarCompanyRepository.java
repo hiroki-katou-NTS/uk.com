@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -29,6 +31,11 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 			+ " WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId"
 			+ " AND c.ksmmtCalendarCompanyPK.date >= :startDate "
 			+ " AND c.ksmmtCalendarCompanyPK.date <= :endDate";
+	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KsmmtCalendarCompany a"
+			+ " WHERE a.ksmmtCalendarCompanyPK.companyId = :companyId"
+			+ " AND a.ksmmtCalendarCompanyPK.date >= :date"
+			+ " AND a.workingDayAtr = :workingDayAtr"
+			+ " ORDER BY a.ksmmtCalendarCompanyPK.date asc";
 	
 	/**
 	 * toDomanin calendar company
@@ -110,6 +117,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 * find clendar company by dateId
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalendarCompany> findCalendarCompanyByDate(String companyId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_COMPANY_BY_DATE,KsmmtCalendarCompany.class)
 				.setParameter("companyId", companyId)
@@ -137,6 +145,13 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 			.setParameter("startDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
 			.setParameter("endDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd")).executeUpdate();
 	}
-	
+	@Override
+	public List<CalendarCompany> getLstByDateWorkAtr(String companyId, GeneralDate date, int workingDayAtr){
+		return this.queryProxy().query(GET_LIST_BY_DATE_ATR, KsmmtCalendarCompany.class)
+				.setParameter("companyId", companyId)
+				.setParameter("date", date)
+				.setParameter("workingDayAtr", workingDayAtr)
+				.getList(c->toDomainCalendarCompany(c));
+	};
 
 }

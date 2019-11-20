@@ -16,9 +16,9 @@ import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.pereg.dom.filemanagement.services.PersonFileManagementDto;
 import nts.uk.ctx.pereg.dom.filemanagement.services.PersonFileManagementService;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.service.EmployeeService;
 import nts.uk.query.app.employee.ccg029.paramjcm007.Jcm007Param;
 import nts.uk.query.app.employee.ccg029.paramjcm007.Jcm007ParamData;
+import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -29,9 +29,10 @@ public class Ccg029Employeefinder {
 
 	@Inject
 	private SyEmployeePub syEmployeePub;
-	
+
+	/** The emp auth adapter. */
 	@Inject
-	private EmployeeService employeeService;
+	private EmployeeAuthAdapter empAuthAdapter;
 	
 	@Inject
 	private EmployeeInformationRepository employeeInformationRepo;
@@ -69,14 +70,12 @@ public class Ccg029Employeefinder {
 			roleType = 3;
 		}
 		List<String> sID = listEmpBeforeFillter.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+		
 		//アルゴリズム [社員リストを参照範囲で絞り込む] を実行する
-		List<String> employeeID = employeeService.findByEmpId(sID, roleType);
-		if(employeeID.isEmpty()) {
-			return new ArrayList<>();
-		}
+		List<String> narrowedSids = empAuthAdapter.narrowEmpListByReferenceRange(sID, roleType, input.getBaseDate());
 		
 		EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()
-				.employeeIds(employeeID)
+				.employeeIds(narrowedSids)
 				.referenceDate(input.getBaseDate())
 				.toGetWorkplace(true)
 				.toGetDepartment(false)
@@ -88,7 +87,7 @@ public class Ccg029Employeefinder {
 		List<EmployeeInformation> employeeInformation = employeeInformationRepo.find(employeeInformationQuery); 
 		Map<String, EmployeeInformation> employeeInformationMap = employeeInformation.stream().collect(Collectors.toMap(EmployeeInformation::getEmployeeId, c->c));
 		
-		List<EmpInfo614> listEmpAfterFillter = listEmpBeforeFillter.stream().filter(c -> employeeID.contains(c.getEmployeeId())).collect(Collectors.toList());
+		List<EmpInfo614> listEmpAfterFillter = listEmpBeforeFillter.stream().filter(c -> narrowedSids.contains(c.getEmployeeId())).collect(Collectors.toList());
 		
 		List<Ccg029EmployeeInforDto> result = new ArrayList<>(); 
 		if(input.getPersonalFileManagement) {

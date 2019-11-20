@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
@@ -84,8 +86,6 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		this.commandProxy().insert(
 //				KrcdtDayAttendanceTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
 		this.commandProxy().insert(KrcdtDayTime.toEntity(attendanceTime));
-
-
 
 		if (attendanceTime.getActualWorkingTimeOfDaily() != null) {
 			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
@@ -291,6 +291,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 //		StringBuilder query = new StringBuilder();
 //		query.append("SELECT a FROM KrcdtDayAttendanceTime a ");
@@ -401,6 +402,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				.collect(Collectors.toList());		
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
 		List<Integer> resultList = new ArrayList<>();

@@ -30,15 +30,15 @@
 					data-bind="click: Registration,enable:enableState, timeClick: 500" tabindex="2">#{i18n.getText('KMK011_3')}</button>
 			</div>
 
-			<div class="contents-area fixed-flex-layout">
-				<div id="content-area ">
+			<div class="contents-area fixed-flex-layout" style="1180px">
+				<div id="content-area">
 					<div id="left-content"
 						class="bg-green caret-right caret-background fixed-flex-layout-left">
 						<div class="cf">
 							<div style="float: left">
 								<table tabindex="3" id="single-list-dataSource"
 									data-bind="ntsGridList:{
-									width: 350,
+									width: 290,
 									height: 255,
 									options: dataSource,
 									optionsValue: 'divergenceTimeNo',
@@ -111,7 +111,7 @@
 									<button tabindex="6"
 										data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
 									<!-- B3_7: Time item name --> <input class="nts-input"
-									id="inpName" style="width: 300px"
+									id="inpName" style="width: 550px"
 									data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,

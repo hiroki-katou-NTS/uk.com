@@ -28,4 +28,36 @@ public interface EmpInfoItemDataRepository {
 	void deleteEmployInfoItemData(String recordID);
 	
 	boolean hasItemData(String itemCd, List<String> perInfoCtgId);
+	
+	/**
+	 * getAllInfoItemByRecordId
+	 * @author lanlt
+	 * @param recordIds
+	 * @return
+	 */
+	List<EmpInfoItemData> getAllInfoItemByRecordId(List<String>  recordIds);
+	
+	/**
+	 * @author lanlt
+	 * getAllInfoItemByRecordIds and CategoryId
+	 * @param cgtId
+	 * @param recordIds
+	 * @return
+	 */
+	List<EmpInfoItemData> getAllInfoItemByRecordId(List<String> itemIds, List<String>  recordIds);
+	
+	/**
+	 * addAll EmpInfoItemData
+	 * @author lanlt
+	 * @param domains
+	 */
+	void addAll(List<EmpInfoItemData> domains);
+	
+	/**
+	 * updateAll EmpInfoItemData
+	 * @author lanlt
+	 * @param domains
+	 */
+	void updateAll(List<EmpInfoItemData> domains);
+	
 }

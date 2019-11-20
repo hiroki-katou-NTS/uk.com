@@ -42,10 +42,11 @@ module nts.uk.ui.koExtentions {
             } else if (dateType === "dateWeekFull") {
                 dateFormat = 'YYYY/MM/DD dddd';
                 valueFormat = 'YYYY/MM/DD';
-            } else {
-                dateFormat = 'YYYY/MM/DD'; 
-                valueFormat = 'YYYY/MM/DD';   
             }
+            // else {
+            //    dateFormat = 'YYYY/MM/DD'; 
+            //    valueFormat = 'YYYY/MM/DD';   
+            //}
             
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
@@ -320,10 +321,11 @@ module nts.uk.ui.koExtentions {
             } else if (dateType === "dateWeekFull") {
                 dateFormat = 'YYYY/MM/DD dddd';
                 valueFormat = 'YYYY/MM/DD';
-            } else {
-                dateFormat = 'YYYY/MM/DD'; 
-                valueFormat = 'YYYY/MM/DD';   
             }
+            // else {
+            //    dateFormat = 'YYYY/MM/DD'; 
+             //   valueFormat = 'YYYY/MM/DD';   
+            //}
             
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);

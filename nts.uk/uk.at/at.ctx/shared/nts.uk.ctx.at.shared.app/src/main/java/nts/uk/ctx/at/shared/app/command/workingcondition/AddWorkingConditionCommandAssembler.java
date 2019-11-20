@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.app.command.workingcondition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
@@ -26,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 
 @Stateless
 public class AddWorkingConditionCommandAssembler {
@@ -205,6 +209,239 @@ public class AddWorkingConditionCommandAssembler {
 				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,
 				command.getMonthlyPattern() != null ? new MonthlyPatternCode(command.getMonthlyPattern()) : null);
 		return workingCond;
+	}
+	
+	public WokingConditionCommandCustom fromDTOCustom(String histId, AddWorkingConditionCommand command){
+		List<MyCustomizeException> exLst= new ArrayList<>();
+		TimeZoneCustom  timezone = new TimeZoneCustom();
+		// ---------------------- PersonalDayOfWeek
+		/** The monday. */
+		// 月曜日 平日の終了時刻1, 平日の勤務時間1
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "月曜の終了時刻1","月曜の勤務時間1", 
+					command.getMondayStartTime1(),
+					command.getMondayEndTime1(), command.getMondayStartTime2(), command.getMondayEndTime2());
+			SingleDaySchedule mondaySchedule = new SingleDaySchedule(command.getMondayWorkTypeCode(), timezone.getTimezoneLst(),
+					WorkingConditionCommandUtils.getOptionalWorkTime(command.getMondayWorkTimeCode()));
+		if (!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+
+
+		/** The tuesday. */
+		// 火曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "火曜の終了時刻1","月曜の勤務時間1", 
+				command.getTuesdayStartTime1(),
+				command.getTuesdayEndTime1(), command.getTuesdayStartTime2(), command.getTuesdayEndTime2());
+		SingleDaySchedule tuesdaySchedule = new SingleDaySchedule(command.getTuesdayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getTuesdayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The wednesday. */
+		// 水曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "水曜の終了時刻1","水曜の勤務時間1", 
+				command.getWednesdayStartTime1(),
+				command.getWednesdayEndTime1(), command.getWednesdayStartTime2(), command.getWednesdayEndTime2());
+		SingleDaySchedule wedSchedule = new SingleDaySchedule(command.getWednesdayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWednesdayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The thursday. */
+		// 木曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "木曜の終了時刻1","木曜の勤務時間1",
+				command.getThursdayStartTime1(),
+				command.getThursdayEndTime1(), command.getThursdayStartTime2(), command.getThursdayEndTime2());
+		SingleDaySchedule thurSchedule = new SingleDaySchedule(command.getThursdayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getThursdayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The friday. */
+		// 金曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "金曜の終了時刻1","金曜の勤務時間1", 
+				command.getFridayStartTime1(),
+				command.getFridayEndTime1(), command.getFridayStartTime2(), command.getFridayEndTime2());
+		SingleDaySchedule friSchedule = new SingleDaySchedule(command.getFridayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getFridayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The saturday. */
+		// 土曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "土曜の終了時刻1","土曜の勤務時間1", 
+				command.getSaturdayStartTime1(),
+				command.getSaturdayEndTime1(), command.getSaturdayStartTime2(), command.getSaturdayEndTime2());
+		SingleDaySchedule satSchedule = new SingleDaySchedule(command.getSaturdayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getSaturdayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The sunday. */
+		// 日曜日
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "日曜の終了時刻1","日曜の勤務時間1", 
+				command.getSundayStartTime1(),
+				command.getSundayEndTime1(), command.getSundayStartTime2(), command.getSundayEndTime2());
+		SingleDaySchedule sunSchedule = new SingleDaySchedule(command.getSundayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getSundayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		PersonalDayOfWeek workDayOfWeek = new PersonalDayOfWeek(
+				WorkingConditionCommandUtils.getOptionalSingleDay(mondaySchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(tuesdaySchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(wedSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(thurSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(friSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(satSchedule),
+				WorkingConditionCommandUtils.getOptionalSingleDay(sunSchedule));
+		// -------------------------
+
+		// ------------------ PersonalWorkCategory
+		/** The weekday time. */
+		// 平日時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "平日の終了時刻1","平日の勤務時間1", 
+				command.getWeekDayStartTime1(),
+				command.getWeekDayEndTime1(), command.getWeekDayStartTime2(), command.getWeekDayEndTime2());
+		SingleDaySchedule weekdaySchedule = new SingleDaySchedule(command.getWeekdayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWeekdayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The holiday work. */
+		// 休日出勤時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "休出の終了時刻1","休出の勤務時間1", 
+				command.getWorkInHolidayStartTime1(),
+				command.getWorkInHolidayEndTime1(), command.getWorkInHolidayStartTime2(),
+				command.getWorkInHolidayEndTime2());
+		SingleDaySchedule wholidaySchedule = new SingleDaySchedule(command.getWorkInHolidayWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWorkInHolidayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The holiday time. */
+		// 休日時
+		// private SingleDaySchedule holidayTime;
+		SingleDaySchedule holiday = new SingleDaySchedule(command.getHolidayWorkTypeCode(), new ArrayList<>(),
+				Optional.empty());
+
+		/** The in law break time. */
+		// 法内休出時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "法定休出の終了時刻1", "法定休出の勤務時間1", 
+				command.getInLawBreakTimeStartTime1(),
+				command.getInLawBreakTimeEndTime1(), command.getInLawBreakTimeStartTime2(),
+				command.getInLawBreakTimeEndTime2());
+		SingleDaySchedule inLawBreakTime = new SingleDaySchedule(command.getInLawBreakTimeWorkTypeCode(), timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getInLawBreakTimeWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+
+		/** The outside law break time. */
+		// 法外休出時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "法定外休出の終了時刻1","法定外休出の勤務時間1", 
+				command.getOutsideLawBreakTimeStartTime1(),
+				command.getOutsideLawBreakTimeEndTime1(), command.getOutsideLawBreakTimeStartTime2(),
+				command.getOutsideLawBreakTimeEndTime2());
+		SingleDaySchedule outLawBreakTime = new SingleDaySchedule(command.getOutsideLawBreakTimeWorkTypeCode(),
+				timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getOutsideLawBreakTimeWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The holiday attendance time. */
+		// 祝日出勤時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "法定外祝日の終了時刻1", "法定外祝日の勤務時間1", 
+				command.getHolidayAttendanceTimeStartTime1(),
+				command.getHolidayAttendanceTimeEndTime1(), command.getHolidayAttendanceTimeStartTime2(),
+				command.getHolidayAttendanceTimeEndTime2());
+		SingleDaySchedule holidayAttendance = new SingleDaySchedule(command.getHolidayAttendanceTimeWorkTypeCode(),
+				timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getHolidayAttendanceTimeWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		/** The public holiday work. */
+		// 公休出勤時
+		timezone = WorkingConditionCommandUtils.getCustomTimeZone(command.getEmployeeId(), "公休休出の終了時刻1", "公休休出の勤務時間1", 
+				command.getWorkInPublicHolidayStartTime1(),
+				command.getWorkInPublicHolidayEndTime1(), command.getWorkInPublicHolidayStartTime2(),
+				command.getWorkInPublicHolidayEndTime2());
+		SingleDaySchedule wiPublicHoliday = new SingleDaySchedule(command.getWorkInPublicHolidayWorkTypeCode(),
+				timezone.getTimezoneLst(),
+				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWorkInPublicHolidayWorkTimeCode()));
+		if(!CollectionUtil.isEmpty(timezone.getErrors())) {
+			exLst.addAll(timezone.getErrors());
+		}
+		
+		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, holiday,
+				WorkingConditionCommandUtils.getOptionalSingleDay(inLawBreakTime),
+				WorkingConditionCommandUtils.getOptionalSingleDay(outLawBreakTime),
+				WorkingConditionCommandUtils.getOptionalSingleDay(holidayAttendance),
+				WorkingConditionCommandUtils.getOptionalSingleDay(wiPublicHoliday));
+		// -------------------------------
+		
+		
+		// ----------------------- BreakdownTimeDay
+		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(command.getOneDay() != null?
+				new AttendanceTime(command.getOneDay().intValue()):null,
+				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()): null ,
+				command.getAfternoon() != null ? new AttendanceTime(command.getAfternoon().intValue()): null);
+		// ------------------------
+		
+		
+		// ScheduleMethod
+		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
+		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
+				command.getReferenceBusinessDayCalendar() != null
+						? EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue(),WorkScheduleMasterReferenceAtr.class) : EnumAdaptor.valueOf(0,WorkScheduleMasterReferenceAtr.class),
+						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),WorkScheduleMasterReferenceAtr.class) : EnumAdaptor.valueOf(0,WorkScheduleMasterReferenceAtr.class),
+						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class) : EnumAdaptor.valueOf(0,TimeZoneScheduledMasterAtr.class));
+		// MonthlyPatternWorkScheduleCre
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
+				command.getReferenceType() == null ? 0 : command.getReferenceType().intValue());
+		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod() == null ? 0 :command.getBasicCreateMethod().intValue(), busCal,
+				monthlySchedule);
+		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
+				// Default value is Use する
+				EnumAdaptor.valueOf(
+						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : ManageAtr.USE.value,
+								ManageAtr.class),
+				workDayOfWeek, workCategory,
+				// Default value is Notuse しない
+				EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue() : NotUseAtr.NOTUSE.value,
+						NotUseAtr.class),
+				// Default value is Notuse しない
+				EnumAdaptor.valueOf(
+						command.getAutoIntervalSetAtr() != null ? command.getAutoIntervalSetAtr().intValue() : NotUseAtr.NOTUSE.value,
+						NotUseAtr.class),
+				command.getEmployeeId(),
+				// Default value is Notuse しない
+				EnumAdaptor.valueOf(
+						command.getVacationAddedTimeAtr() != null ? command.getVacationAddedTimeAtr().intValue() : NotUseAtr.NOTUSE.value,
+						NotUseAtr.class),
+				// Default vaule is 0
+				command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue())
+						: new LaborContractTime(0),
+				command.getLaborSystem() != null
+						? EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class)
+						: WorkingSystem.REGULAR_WORK,
+				// HourlyPaymentAtr default value is 時給者以外
+				holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : HourlyPaymentAtr.OOUTSIDE_TIME_PAY.value,
+				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,
+				command.getMonthlyPattern() != null ? new MonthlyPatternCode(command.getMonthlyPattern()) : null);
+		return new WokingConditionCommandCustom(workingCond, exLst);
 	}
 	
 }

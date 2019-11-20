@@ -131,4 +131,10 @@ public class CreateOvertimeCommand {
 	private AppOvertimeDetailCommand appOvertimeDetail;
 	
 	private String appReasonID;
+	
+	private String divergenceReasonArea;
+	
+	private boolean checkOver1Year;
+	
+	private boolean checkAppDate;
 }

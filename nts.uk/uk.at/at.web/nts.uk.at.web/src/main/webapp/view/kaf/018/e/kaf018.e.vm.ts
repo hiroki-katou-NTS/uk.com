@@ -37,6 +37,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             self.person = TransmissionAttr.PERSON;
             self.daily = TransmissionAttr.DAILY;
             self.monthly = TransmissionAttr.MONTHLY;
+            window.onresize = function(event) {
+            	$("#gridE_scrollContainer").height(window.innerHeight - 294);
+            	$("#gridE_displayContainer").height(window.innerHeight - 294);
+            	$("#gridE_container").height(window.innerHeight - 255);
+            };
         }
 
         /**
@@ -67,10 +72,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 let obj = {
                     startDate: self.startDate,
                     endDate: self.endDate,
-                    isConfirmData: self.isConfirmData,
                     listWorkplaceId: listWorkplaceId,
                     listEmpCd: self.listEmpCd,
-                    closureID: params.closureID
+                    closureID: params.closureID,
+                    confirmData: self.isConfirmData
                 };
 
                 service.getUseSetting().done(function(setting) {
@@ -119,7 +124,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
             $("#gridE").ntsGrid({
                 width: self.ntsGridWidthCal(),
-                height: '629px',
+                height: window.innerHeight - 250 + 'px',
                 dataSource: self.listWkpStatusConfirm,
                 primaryKey: 'code',
                 rowVirtualization: true,
@@ -127,7 +132,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('KAF018_52'), key: 'name', dataType: 'string', width: '210px', ntsControl: 'LinkLabel' },
+                    { headerText: getText('KAF018_52'), key: 'name', dataType: 'string', width: '400px', ntsControl: 'LinkLabel' },
                     { headerText: getText('KAF018_53'), key: 'monthConfirm', dataType: 'string', width: '100px', hidden: !self.useSetting.monthlyConfirm},
                     { headerText: getText('KAF018_54'), 
                         group:[{ headerText: getText('KAF018_99'), key: 'dayBossUnconfirm', dataType: 'string', width: '100px' },
@@ -158,7 +163,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         
         ntsGridWidthCal() {
             var self = this;
-            let width = 350;
+            let width = 540;
             if (self.useSetting.monthlyConfirm) {
                 width += 100;
             }

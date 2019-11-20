@@ -130,9 +130,7 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSetItemDetail> itemFilter = items.stream().filter(c -> {
 			return itemParents.contains(c.getItemCode());
 		}).collect(Collectors.toList());
-		// Get company id
 		String companyId = AppContexts.user().companyId();
-		// Get Command
 		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,
 				companyId);
 		boolean isContinious = perInfoCategory.isPresent()
@@ -142,6 +140,7 @@ public class PerInfoInitValueSetItemFinder {
 		if (!perInfoCategory.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
+		
 		PersonEmployeeType personEmployeeType = perInfoCategory.get().getPersonEmployeeType();
 		if (ctgCode.equals("CS00001")) {
 			items = items.stream().filter(c -> {

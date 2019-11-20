@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.time.GeneralDateTime;
+import nts.uk.query.app.employee.LoginEmployeeQuery;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
@@ -92,13 +92,13 @@ public class RegulationInfoEmployeeWs {
 	/**
 	 * Find current login employee.
 	 *
-	 * @param baseDate the base date
+	 * @param query the login employee query
 	 * @return the regulation info employee dto
 	 */
 	@POST
 	@Path("find/currentlogin")
-	public RegulationInfoEmployeeDto findCurrentLoginEmployee(GeneralDateTime baseDate) {
-		return this.finder.findCurrentLoginEmployeeInfo(baseDate);
+	public RegulationInfoEmployeeDto findCurrentLoginEmployee(LoginEmployeeQuery query) {
+		return this.finder.findCurrentLoginEmployeeInfo(query);
 	}
 
 }

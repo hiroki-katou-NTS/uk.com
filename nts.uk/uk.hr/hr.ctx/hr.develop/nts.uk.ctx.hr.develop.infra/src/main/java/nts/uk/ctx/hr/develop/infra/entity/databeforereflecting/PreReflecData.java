@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.infra.entity.databeforereflecting;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -265,34 +266,34 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 	// ----------------------------------//
 
 	@Column(name = "SELECT_ID_01")
-	public Integer select_id_01;
+	public BigInteger select_id_01;
 
 	@Column(name = "SELECT_ID_02")
-	public Integer select_id_02;
+	public BigInteger select_id_02;
 
 	@Column(name = "SELECT_ID_03")
-	public Integer select_id_03;
+	public BigInteger select_id_03;
 
 	@Column(name = "SELECT_ID_04")
-	public Integer select_id_04;
+	public BigInteger select_id_04;
 
 	@Column(name = "SELECT_ID_05")
-	public Integer select_id_05;
+	public BigInteger select_id_05;
 
 	@Column(name = "SELECT_ID_06")
-	public Integer select_id_06;
+	public BigInteger select_id_06;
 
 	@Column(name = "SELECT_ID_07")
-	public Integer select_id_07;
+	public BigInteger select_id_07;
 
 	@Column(name = "SELECT_ID_08")
-	public Integer select_id_08;
+	public BigInteger select_id_08;
 
 	@Column(name = "SELECT_ID_09")
-	public Integer select_id_09;
+	public BigInteger select_id_09;
 
 	@Column(name = "SELECT_ID_10")
-	public Integer select_id_10;
+	public BigInteger select_id_10;
 
 	// -------------------------------//
 

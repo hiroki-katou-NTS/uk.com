@@ -31,6 +31,12 @@ module nts.uk.at.view.ksc001.g {
                     self.dateValue.valueHasMutated();
                 });
                 self.items = ko.observableArray([]);
+                
+                window.onresize = function(event) {
+                	$(".ksc001-panel").height(window.innerHeight - 250);
+                	$("#gridTable_displayContainer").height(window.innerHeight - 345);
+                	$("#gridTable_scrollContainer").height(window.innerHeight - 345);
+                };
             }
             
             /**
@@ -46,6 +52,7 @@ module nts.uk.at.view.ksc001.g {
                 blockUI.invisible();
                 service.findExecutionList(data).done(function(data: any) {
                     self.pushDataToList(data);
+                    self.setHeight();
                     dfd.resolve();
                     blockUI.clear();
                 });
@@ -97,7 +104,7 @@ module nts.uk.at.view.ksc001.g {
                 var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
-                    height: '380px',
+                    height: window.innerHeight - 320 + 'px',
                     dataSource: screenModel.items(),
                     primaryKey: 'id',
                     virtualization: true,
@@ -125,6 +132,10 @@ module nts.uk.at.view.ksc001.g {
                     ]
                 });
                 $("#fixed-table").ntsFixedTable({ height: 430 });
+            }
+            
+            setHeight(): void {
+            	$(".ksc001-panel").width(window.innerHeight - 210);
             }
         }
 

@@ -13,7 +13,7 @@ public class Time36UpperLimitCheckResult {
 	/**
 	 * 上限エラーフラグ
 	 */
-	private List<String> errorFlg;
+	private List<Time36ErrorOutput> errorFlg;
 
 	/**
 	 * 時間外時間の詳細

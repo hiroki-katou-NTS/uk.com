@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -32,6 +34,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * フレックス不足の相殺が実施できるかチェックする
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckShortageFlex {
 	
 	@Inject
@@ -88,6 +91,8 @@ public class CheckShortageFlex {
 				}
 			}
 		}
+		//bug 107966 disable edit flex
+		resultCheck.createPeriodCheck(datePeriod);
 		// TODO 対象期間の日の承認が済んでいるかチェックする
 		Optional<ApprovalDayComplete> approvalOpt = checkApprovalDayComplete.checkApprovalDayComplete(employeeId, datePeriod);
 		if (approvalOpt.isPresent() && !approvalOpt.get().isApproved()) {

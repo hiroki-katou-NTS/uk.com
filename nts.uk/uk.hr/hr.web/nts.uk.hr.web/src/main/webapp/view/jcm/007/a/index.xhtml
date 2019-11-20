@@ -23,13 +23,13 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button id="reset" tabindex="1" class="group-button-1"
+				<button id="reset" tabindex="30" class="group-button-1"
 					data-bind="click: newMode "> #{i18n.getText('JCM007_A1_1')} </button>
 				<!-- A1_2 -->
-				<button id="register" tabindex="2" class="proceed group-button-1"
+				<button id="register" tabindex="31" class="proceed group-button-1"
 					data-bind="click: register , enable:  enable_btnRegister"> #{i18n.getText('JCM007_A1_2')}  </button>
 				<!-- A1_3 -->
-				<button id="setting" tabindex="3" class="danger group-button-1" 
+				<button id="setting" tabindex="32" class="danger group-button-1" 
 					data-bind="click: remove , enable: enable_btnRemove">#{i18n.getText('JCM007_A1_3')} </button>
 					
 				<span class = "guideDisplay"  data-bind="visible: false"> 操作ガイド　表示 </span>
@@ -38,7 +38,7 @@
 			<div id="contents-area" class="fixed-flex-layout" style="overflow-y: hidden">
 				<div class="fixed-flex-layout-left">
 					<!-- <Tabpanel> -->
-					<div class="cf flex" tabindex="4">
+					<div class="cf flex">
 						<div style="margin-top: -10px">
 							<div class="cf"
 								data-bind="ntsTabPanel: { dataSource: tabs,
@@ -100,7 +100,7 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_11')} </div>
 							</div>
 							<!-- A222_12 -->					
-							<div id = "retirementDateId" tabindex="5" style="margin-left: 56px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate , name: '#[JCM007_A222_12]' }"></div>					
+							<div id = "retirementDateId" tabindex="8" style="margin-left: 56px" data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate , name: '#[JCM007_A222_12]' }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 6 -->
@@ -109,7 +109,7 @@
 								<div  data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_13')} </div>
 							</div>
 							<!-- A222_14 -->					
-							<div id = "releaseDateId" tabindex="6" style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate, name: '#[JCM007_A222_14]' }"></div>					
+							<div id = "releaseDateId" tabindex="9" style="margin-left: 56px" data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate, name: '#[JCM007_A222_14]' }"></div>					
 						</div>
 					
 						<div class="line-height flex">  <!-- row 7 -->
@@ -118,10 +118,10 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_15')} </div>
 							</div>
 							<!-- A222_16 -->					
-							<div tabindex="7"  style="width: 108px; margin-left: 42px" id="combo-box-rom"
+							<div tabindex="10"  style="width: 108px; margin-left: 42px" id="combo-box-rom"
 									 data-bind="ntsComboBox: {
 												options: listRetirementCtg ,
-												name: '#[JCM007_A222_16]' ,
+												name: '{#JCM007_A222_16}' ,
 												optionsValue: 'value',
 												value: selectedCode_Retiment ,
 												optionsText: 'text',
@@ -138,10 +138,10 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_18')} </div>
 							</div>
 							<!-- A222_20 -->					
-							<div tabindex="8" id = "selectedCode_Reason1Id"  style="width: 170px" 
+							<div tabindex="11" id = "selectedCode_Reason1Id"  style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason1 ,
-												name: '#[JCM007_A222_20]' ,
+												name: '{#JCM007_A222_20}' ,
 												optionsValue: 'value',
 												value: selectedCode_Reason1 ,
 												optionsText: 'text',
@@ -160,10 +160,10 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_22')}</div>
 							</div>
 							<!-- A222_23 -->					
-							<div tabindex="9" id = "selectedCode_Reason2Id" style="width: 170px" 
+							<div tabindex="12" id = "selectedCode_Reason2Id" style="width: 170px" 
 									 data-bind="ntsComboBox: {
 												options: listRetirementReason2 ,
-												name: '#[JCM007_A222_23]' ,
+												name: '{#JCM007_A222_23}' ,
 												optionsValue: 'value',
 												value: selectedCode_Reason2 ,
 												optionsText: 'text',
@@ -185,7 +185,7 @@
 							</div>
 							<!-- A222_26 -->					
 							<div style="margin-left: 86px">
-								<textarea tabindex="10" data-bind="ntsMultilineEditor: {
+								<textarea tabindex="13" data-bind="ntsMultilineEditor: {
 									value: retirementRemarks ,
 									constraint: 'NoteRetiment',
 									name: '#[JCM007_A222_26]' ,
@@ -215,7 +215,7 @@
 								</div>
 								<!-- A222_31 -->
 								<div style="margin-left: 19px">
-									<textarea id = "retirementReasonVal" tabindex="11" data-bind="ntsMultilineEditor: {
+									<textarea id = "retirementReasonVal" tabindex="14" data-bind="ntsMultilineEditor: {
 														value: retirementReasonVal ,
 														constraint: 'NoteRetiment',
 														name: '#[JCM007_A222_31]' ,
@@ -246,7 +246,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: ''}"> #{i18n.getText('JCM007_A222_34')} </div>
 								</div>
 								<!-- A222_35 -->					
-								<div tabindex="12" id = "dismissalNoticeDateId" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate , name: '#[JCM007_A222_35]'  }"></div>					
+								<div tabindex="15" id = "dismissalNoticeDateId" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate , name: '#[JCM007_A222_35]'  }"></div>					
 							</div>
 							
 							<div class="line-height flex">  <!-- row 16 -->
@@ -255,7 +255,7 @@
 									<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> #{i18n.getText('JCM007_A222_36')}</div>
 								</div>
 								<!-- A222_37 -->					
-								<div tabindex="13" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow , name: '#[JCM007_A222_37]' }"></div>					
+								<div tabindex="16" style="margin-left: 27px;" data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow , name: '#[JCM007_A222_37]' }"></div>					
 								<button style="margin-left: 10px" data-bind="ntsHelpButton: {textId: 'JCM007_A222_36_1', textParams:[], position: 'bottom center' }">？</button>										
 							</div>
 							
@@ -266,7 +266,7 @@
 								</div>
 								<!-- A222_39 -->
 								<div style="margin-left: 40px;">
-									<textarea id = "reaAndProForDis" tabindex="14" data-bind="ntsMultilineEditor: {
+									<textarea id = "reaAndProForDis" tabindex="17" data-bind="ntsMultilineEditor: {
 														value: reaAndProForDis ,
 														constraint: 'NoteRetiment',
 														name: '#[JCM007_A222_39]' ,
@@ -290,11 +290,11 @@
 							<div class="line-height flex"> <!-- row 19 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="15" data-bind="ntsCheckBox: { checked: naturalUnaReasons_1 , enable : enable_naturalUnaReasons1  }">#{i18n.getText('JCM007_A222_41')}</div>
+									<div tabindex="18" data-bind="ntsCheckBox: { checked: naturalUnaReasons_1 , enable : enable_naturalUnaReasons1  }">#{i18n.getText('JCM007_A222_41')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="16" id = 'naturalUnaReasons_1Val' 
+									<textarea tabindex="19" id = 'naturalUnaReasons_1Val' 
 										data-bind="ntsMultilineEditor: {
 														value: naturalUnaReasons_1Val ,
 														constraint: 'NoteRetiment',
@@ -312,11 +312,11 @@
 							<div class="line-height flex"> <!-- row 20 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="17" data-bind="ntsCheckBox: { checked: businessReduction_2 , enable : enable_businessReduction2  }">#{i18n.getText('JCM007_A222_43')}</div>
+									<div tabindex="20" data-bind="ntsCheckBox: { checked: businessReduction_2 , enable : enable_businessReduction2  }">#{i18n.getText('JCM007_A222_43')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="18" id = 'businessReduction_2Val' 
+									<textarea tabindex="21" id = 'businessReduction_2Val' 
 										data-bind="ntsMultilineEditor: {
 														value: businessReduction_2Val ,
 														constraint: 'NoteRetiment',
@@ -334,11 +334,11 @@
 							<div class="line-height flex"> <!-- row 21 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="19" data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 , enable : enable_seriousViolationsOrder3  }">#{i18n.getText('JCM007_A222_45')}</div>
+									<div tabindex="22" data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 , enable : enable_seriousViolationsOrder3  }">#{i18n.getText('JCM007_A222_45')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="20" id = 'seriousViolationsOrder_3Val' 
+									<textarea tabindex="23" id = 'seriousViolationsOrder_3Val' 
 										data-bind="ntsMultilineEditor: {
 														value: seriousViolationsOrder_3Val ,
 														constraint: 'NoteRetiment',
@@ -356,11 +356,11 @@
 							<div class="line-height flex"> <!-- row 22 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="21" data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 , enable : enable_unauthorizedConduct4  }">#{i18n.getText('JCM007_A222_47')}</div>
+									<div tabindex="24" data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 , enable : enable_unauthorizedConduct4  }">#{i18n.getText('JCM007_A222_47')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="22" id = 'unauthorizedConduct_4Val' 
+									<textarea tabindex="25" id = 'unauthorizedConduct_4Val' 
 										data-bind="ntsMultilineEditor: {
 														value: unauthorizedConduct_4Val ,
 														constraint: 'NoteRetiment',
@@ -378,11 +378,11 @@
 							<div class="line-height flex"> <!-- row 23 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="23" data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 , enable : enable_leaveConsiderableTime5  }">#{i18n.getText('JCM007_A222_49')}</div>
+									<div tabindex="26" data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 , enable : enable_leaveConsiderableTime5  }">#{i18n.getText('JCM007_A222_49')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="24" id = 'leaveConsiderableTime_5Val' 
+									<textarea tabindex="27" id = 'leaveConsiderableTime_5Val' 
 										data-bind="ntsMultilineEditor: {
 														value: leaveConsiderableTime_5Val ,
 														constraint: 'NoteRetiment',
@@ -400,11 +400,11 @@
 							<div class="line-height flex"> <!-- row 24 -->
 								<div class = "checkbox" >
 									<!-- A222_41 -->
-									<div tabindex="25"  data-bind="ntsCheckBox: { checked: other_6 , enable : enable_other6  }">#{i18n.getText('JCM007_A222_51')}</div>
+									<div tabindex="28"  data-bind="ntsCheckBox: { checked: other_6 , enable : enable_other6  }">#{i18n.getText('JCM007_A222_51')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea tabindex="26"  id = 'other_6Val'
+									<textarea tabindex="29"  id = 'other_6Val'
 										data-bind="ntsMultilineEditor: {
 														value: other_6Val ,
 														constraint: 'NoteRetiment',

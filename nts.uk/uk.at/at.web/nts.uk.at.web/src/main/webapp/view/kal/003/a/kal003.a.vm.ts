@@ -371,8 +371,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
             
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
-            if (self.selectedCategory() == model.CATEGORY.DAILY) {
-                    
+            if ($("#A3_4").ntsError("hasError")) {
+                return;  
             }
             
             

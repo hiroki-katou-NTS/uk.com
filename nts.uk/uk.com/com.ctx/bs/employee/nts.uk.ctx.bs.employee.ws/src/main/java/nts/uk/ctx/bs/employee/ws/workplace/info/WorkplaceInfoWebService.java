@@ -13,10 +13,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.info.WorkplaceInfoFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.personinfo.DisplayWorkplaceFinder;
+import nts.uk.ctx.bs.employee.app.query.employee.DisplayQuery;
 
 /**
  * The Class WorkplaceInfoWebService.
@@ -28,6 +31,9 @@ public class WorkplaceInfoWebService extends WebService {
     /** The wkp info finder. */
     @Inject
     private WorkplaceInfoFinder wkpInfoFinder;
+    
+    @Inject
+    private DisplayWorkplaceFinder displayWorkplaceFinder;
     
     /**
      * Gets the workplace info by history id.
@@ -64,5 +70,12 @@ public class WorkplaceInfoWebService extends WebService {
     @POST
     public WorkplaceInfoDto findByWkpIdAndBaseDate(WkpInfoFindObject findObj) {
         return this.wkpInfoFinder.findByWkpIdAndBaseDate(findObj);
+    }
+    
+    @Path("display")
+    @POST
+    public List<WorkplaceInfoDto> getData(DisplayQuery query) {
+    	//職場に表示する値を取得する
+        return this.displayWorkplaceFinder.getData(query.getBaseDate(), query.getListWorkplaceID());
     }
 }

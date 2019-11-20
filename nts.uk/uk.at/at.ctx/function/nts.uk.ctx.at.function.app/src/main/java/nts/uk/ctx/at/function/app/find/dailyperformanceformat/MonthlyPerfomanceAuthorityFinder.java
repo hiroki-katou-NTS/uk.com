@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -23,16 +25,19 @@ public class MonthlyPerfomanceAuthorityFinder {
 	@Inject
 	private AtItemNameAdapter atItemNameAdapter;
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AttItemName> getListAttendanceItemName(List<Integer> monthlyAttendanceItemIds) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		return companyMonthlyItemService.getMonthlyItems(companyId, Optional.empty(), monthlyAttendanceItemIds, null);
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AttItemName> getMonthlyItemsNew(String cid, Optional<String> authorityId) {
 		return companyMonthlyItemService.getMonthlyItemsNew(cid, authorityId);
 	}
 	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AttItemName> getListAttendanceItemNameByType(int type) {
 		return this.atItemNameAdapter.getNameOfAttdItemByType(EnumAdaptor.valueOf(type, TypeOfItemImport.class));
 	}

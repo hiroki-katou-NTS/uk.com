@@ -7,6 +7,8 @@ package nts.uk.ctx.bs.employee.app.find.employment;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
 
 /**
  * The Interface EmploymentFinder.
@@ -44,4 +46,7 @@ public interface EmploymentFinder {
 	 * */
 
 	List<EmploymentDto> findByCodesWithNull(List<String> empCodes);
+	
+	
+	GroupCommonMasterImport findGroupCommonMaster();
 }

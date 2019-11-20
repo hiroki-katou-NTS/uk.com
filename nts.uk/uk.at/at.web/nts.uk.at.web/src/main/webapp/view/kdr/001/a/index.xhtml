@@ -29,109 +29,91 @@
 
 			<div class="cf" id="contents-area">
 				<!-- A2_1  CCG001-->
-
-				<div class="ccg001searchkcp005">
-					<div id="ccgcomponent"></div>
-
+				<div id="ccgcomponent"></div>
+				
+				<div class="panel panel-frame ccg001searchkcp005">
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
 						<div class="selectionHoliday">
-							<div id="employeeSearch" tabindex="2"></div>
+							<div id="employeeSearch" tabindex="2" style="margin-top: -5px;"></div>
 						</div>
 					</div>
 				</div>
-				
-				<div class="holidayAction">
-					<table>
-						<tr>
-							<td style="width:110px">
-								<!-- A3_1 -->
-								<div class="labelRangeDate"
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
-								</div>
-							</td>
-							<td>
-								<!-- A3_2 -->
-								<div id="A3_2"  tabindex="3" style="width: 162px; "
-									data-bind="ntsDatePicker: {
-									required: true,
-									showJumpButtons: true,
-									value: startDateString,
-									dateFormat: 'yearmonth',
-									name: '#[KDR001_27]'
-									}">
-								</div> <!-- A3_3 -->
-								<div class="ntsDateRangeComponent ntsRangeLabel"
-									style="margin-top: 11px; width: 30px;">
-									<label style="margin: 6px">～</label>
-								</div> <!-- A3_4 -->
-								<div id="A3_4" tabindex="4" style="width: 162px;"
-									data-bind="ntsDatePicker: {
-									required: true,
-									showJumpButtons: true,
-									value: endDateString,
-									dateFormat: 'yearmonth',
-									name: '#[KDR001_28]'
-									}">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td style="width:110px">
-								<!-- A4_1  -->
-								<div class="labelRangeDate"
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
-								</div>
-							</td>
-							<td>
-								<!-- A4_2  -->
-								<div tabindex="6"
-									data-bind="ntsComboBox: {
-							    name:'#[KDR001_30]',
-								options: lstHolidayRemaining,
-								optionsValue: 'cd',
-								value: holidayRemainingSelectedCd,
-								optionsText: 'name',
-								editable: false,
-								enable: true,
-								columns: [
-									{ prop: 'cd', length: 1 },
-									{ prop: 'name', length: 14 }
-								]}">
-								</div> <!-- A4_3  -->
-								<button class="small"
-									data-bind="click: openKDR001b, 
-								enable: isEmployeeCharge()"
-									tabindex="7" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
-							</td>
-						</tr>
-						<tr>
-							<td style="width:110px">
-								<!-- A6_1  -->
-								<div class="labelRangeDate"
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
-								</div>
-							</td>
-							<td>
-								<!-- A6_2  -->
-								<div id="combo-box2" tabindex="9" 
-									data-bind="ntsComboBox: {
-								required: true,
-								options: itemSelected,
-								optionsValue: 'code',
-								visibleItemsCount: 3,
-								value: selectedCode,
-								optionsText: 'name',
-								editable: false,
-								enable: true,
-								
-								columns: [
-									{ prop: 'name', length: 10 }
-								]}">
-								</div>
-							</td>
-						</tr>
-					</table>
+				<div class="panel panel-frame holidayAction">
+					<div class="table valign-center control-group" style="margin-top: 17px;">
+						<div class="cell" style="width:110px">
+							<!-- A3_1 -->
+							<div class="labelRangeDate"
+								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
+							</div>
+						</div>
+						<div class="cell valign-center control-group">
+							<div id="daterangepicker" tabindex="4"
+								data-bind="ntsDateRangePicker: { 
+								required: true, 
+								enable: true, 
+								showNextPrevious: true, 
+								value: dateValue, 
+								maxRange: 'oneYear', 
+								type: 'yearmonth'}" />
+						</div>
+					</div>
+					<div class="table valign-center control-group">
+						<div class="cell" style="width:110px">
+							<!-- A4_1  -->
+							<div class="labelRangeDate"
+								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
+							</div>
+						</div>
+						<div class="cell valign-center control-group">
+							<!-- A4_2  -->
+							<div style="display: inline-block;" tabindex="6"
+								data-bind="ntsComboBox: {
+						    name:'#[KDR001_30]',
+							options: lstHolidayRemaining,
+							optionsValue: 'cd',
+							value: holidayRemainingSelectedCd,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'cd', length: 1 },
+								{ prop: 'name', length: 14 }
+							]}">
+							</div> 
+							<!-- A4_3  -->
+							<div style="display: inline-block">
+								<button data-bind="click: openKDR001b, enable: isEmployeeCharge()"
+									tabindex="7" style="margin-left: 20px">#{i18n.getText('KDR001_31')}</button>
+							</div>
+						</div>
+					</div>
+					<div class="table valign-center control-group">
+						<div class="cell" style="width:110px">
+							<!-- A6_1  -->
+							<div class="labelRangeDate"
+								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
+							</div>
+						</div>
+						<div class="cell valign-center control-group">
+							<!-- A6_2  -->
+							<div id="combo-box2" tabindex="9" 
+								data-bind="ntsComboBox: {
+							required: true,
+							options: itemSelected,
+							optionsValue: 'code',
+							visibleItemsCount: 3,
+							value: selectedCode,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							
+							columns: [
+								{ prop: 'name', length: 10 }
+							]}">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

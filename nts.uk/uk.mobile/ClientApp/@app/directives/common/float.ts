@@ -6,13 +6,18 @@ Vue.directive('float-action', {
         let $vm = vnode.context;
 
         $vm.$mask('hide');
+
+        if (document.body.contains(el)) {
+            el.remove();
+        }
     },
     inserted(el: HTMLElement, binding: DirectiveBinding, vnode: VNode, oldVnode: VNode) {
-        let $vm = vnode.context;
+        let $vm = vnode.context,
+            params: { icon?: string; background?: string; forceground?: string; } = binding.value || {};
 
         el.appendChild(dom.create('a', {
-            html: '<i class="fas fa-plus"></i>',
-            'class': 'btn btn-danger btn-lg btn-floating'
+            html: `${params && params.icon ? `<i class="${params.icon} ${params.forceground}"></i>` : ''}<i class="fas fa-plus ${params.forceground}"></i>`,
+            'class': `btn btn-danger ${params.background} btn-lg btn-floating`
         }));
 
         dom.addClass(el, 'fixed-action-btn');
@@ -33,13 +38,10 @@ Vue.directive('float-action', {
                 if (!dom.hasClass(el, 'active')) {
                     $vm.$mask('hide');
                 } else {
-                    dom.addClass(document.body, 'modal-open');
-                    
                     $vm.$mask('show', 0.02)
                         .on(() => $vm.$mask('hide'), () => {
                             dom.removeAttr(ul, 'style');
                             dom.removeClass(el, 'active');
-                            dom.removeClass(document.body, 'modal-open');
                         });
 
                     dom.setAttr(ul, 'style', `height: ${57 * [].slice.call(ul.querySelectorAll('li.btn-floating')).length}px`);
@@ -47,6 +49,10 @@ Vue.directive('float-action', {
             });
 
             dom.registerGlobalEventHandler(el, 'click', 'li.btn-floating', () => $vm.$mask('hide'));
+        }
+
+        if (el.closest('.modal.show')) {
+            document.body.appendChild(el);
         }
     }
 });

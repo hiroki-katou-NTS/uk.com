@@ -108,7 +108,7 @@ module nts.uk.at.view.kal001.a.model {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(), 
                 isSelectAllAfterReload: true,
-                maxRows  : 22
+                maxRows  : 16
             };
             self.empCount = ko.observable(0);
             self.currentAlarmCode.subscribe((newCode) => {
@@ -120,7 +120,7 @@ module nts.uk.at.view.kal001.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            $("#fixed-table").ntsFixedTable({ height: 500, width: 600 });
+            $("#fixed-table").ntsFixedTable({ height: 400, width: 600 });
             block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 

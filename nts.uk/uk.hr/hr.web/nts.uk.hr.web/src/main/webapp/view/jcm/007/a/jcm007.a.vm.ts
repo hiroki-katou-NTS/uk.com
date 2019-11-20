@@ -319,6 +319,9 @@ module jcm007.a {
                     },
                     {
                         name: 'Resizing'
+                    },
+                    {
+                        name: "Tooltips"
                     }
                 ]
             });

@@ -27,6 +27,9 @@ public interface FlowWorkSettingRepository {
 	 * @return the optional
 	 */
 	Optional<FlowWorkSetting> find(String companyId, String workTimeCode);
+	
+	
+	List<FlowWorkSetting> findByCidAndWorkCodes(String cid, List<String> workTimeCodes);
 
 	/**
 	 * Adds the.

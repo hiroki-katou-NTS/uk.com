@@ -1,9 +1,8 @@
 {
     "jp": {
-        "documentscontrolsinput-date": "Date input (jp)"
+        "documentscontrolsinput-date": "Date Input"
     },
     "vi": {
-        "sample" : "Ví dụ",
-        "documentscontrolsinput-date": "Date input"
+        "documentscontrolsinput-date": "Date Input"
     }
 }
