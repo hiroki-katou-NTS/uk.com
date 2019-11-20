@@ -66,6 +66,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                    worksheets.get(worksheets.addCopy(1)).setName(sheetName2 + i);
                    this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName2 + i);
                }
+               if(empAddChangeInfoExport.getSpouseAddChangeDate() != null && (empAddChangeInfoExport.isEmpPenInsurance() && empAddChangeInfoExport.isHealthInsurance())){
+                   //国民年金第３号被保険者住所変更届
+                   worksheets.get(worksheets.addCopy(1)).setName(sheetName2 + i);
+                   this.pushDataCommon(worksheets, empAddChangeInfoExport, data.getBaseDate(), sheetName2 + i);
+               }
            }
 
            worksheets.removeAt(1);
@@ -199,10 +204,11 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             } else if(!empAddChangeInfoExport.isHealthInsurance() && empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_2").setValue("厚生年金保険");
                 worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
-            } else {
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
             }
+//            else {
+//                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
+//                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
+//            }
 
 
 
