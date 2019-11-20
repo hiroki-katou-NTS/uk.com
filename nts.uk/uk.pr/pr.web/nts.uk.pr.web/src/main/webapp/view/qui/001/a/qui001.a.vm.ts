@@ -108,11 +108,8 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 if (setting && txtSetting) {
                     self.empInsReportSetting(new EmpInsReportSetting(setting));
                     self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
-
-                    service.updateEmpInsRptTxtSetting(txtSetting);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 }
-                service.addEmpInsRptTxtSetting(setting);
                 self.screenMode(model.SCREEN_MODE.NEW);
 
                 dfd.resolve();

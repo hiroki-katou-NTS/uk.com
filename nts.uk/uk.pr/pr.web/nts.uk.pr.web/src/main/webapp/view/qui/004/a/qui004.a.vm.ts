@@ -126,6 +126,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
         exportPDF() {
             let self = this;
+            let dfd = $.Deferred();
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
 
             let data: any = {
@@ -146,12 +147,42 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 endPeriod: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
-            service.registerReportSetting(data).done(function () {
-
-            }).fail(function (error) {
-                nts.uk.ui.dialog.alertError(error);
-            });
+            service.exportFilePDF(data).done()
+                .fail(function (result) {
+                    dialog.alertError(result.errorMessage);
+                    dfd.reject();
+                });
         }
+
+        exportCSV() {
+            let self = this;
+            let dfd = $.Deferred();
+            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
+
+            let data: any = {
+                empInsReportSettingCommand: {
+                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
+                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
+                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
+                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
+                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
+                },
+                empInsReportTxtSettingCommand: {
+                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
+                },
+                employeeIds: listEmployeeId,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD")
+            };
+            service.exportFileCSV(data)
+                .fail(function(result) {
+                    dialog.alertError(result.errorMessage);
+                    dfd.reject();
+                });
+        }
+
 
         initScreen(): JQueryPromise<any> {
             let self = this;

@@ -7,8 +7,8 @@ module nts.uk.pr.view.qui004.a {
             getReportTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg",
             registerReportSetting: " ",
             registerReportTxtSetting: " ",
-            exportFilePDF: " ",
-            exportFileCSV: " "
+            exportFilePDF: "ctx/pr/report/printconfig/empinsreportsetting/export-pdf-qui004",
+            exportFileCSV: "ctx/pr/report/printconfig/empinsreportsetting/exportcsv"
         };
 
         export function  getReportSetting() : JQueryPromise<any> {
@@ -19,11 +19,11 @@ module nts.uk.pr.view.qui004.a {
             return ajax("pr", paths.getReportTxtSetting);
         }
 
-        export function registerReportSetting(data: any): JQueryPromise<any> {
+        export function addSetting(data: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.registerReportSetting, data);
         }
 
-        export function registerReportTxtSetting(data: any): JQueryPromise<any> {
+        export function editSetting(data: any): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.registerReportTxtSetting, data);
         }
 
