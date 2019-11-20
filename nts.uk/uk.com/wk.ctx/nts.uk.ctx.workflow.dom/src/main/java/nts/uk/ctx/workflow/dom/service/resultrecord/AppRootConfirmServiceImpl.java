@@ -101,9 +101,10 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			// 指定する承認フェーズの承認が完了したか
 			boolean phaseComplete = approveService.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			// ループする順のドメインモデル「承認済フェーズ」を更新する
-			if(phaseComplete){
-				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.APPROVED);
+			if(!phaseComplete){
+				return;
 			}
+			appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.APPROVED);
 			// 承認したフラグをチェックする
 			if(approvalFlg==ApprovalBehaviorAtr.APPROVED){
 				// ループする順の「承認済フェーズ」が存在するかチェックする
