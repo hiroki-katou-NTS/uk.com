@@ -4,9 +4,9 @@ module nts.uk.pr.view.qui001.a {
     export module service {
         let paths: any = {
             exportTxt: "export-txt-qui001",
-            getEmpInsReportTxtSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg"*/,
+            getEmpInsReportTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg",
             exportPDF: "export-pdf-qui001",
-            getEmpInsReportSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/start"*/,
+            getEmpInsReportSetting: "ctx/pr/report/printconfig/empinsurreportcreset/start",
 
             addEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/add-emp-ins-rpt-txt-stg",
             updateEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/update-emp-ins-rpt-txt-stg"
