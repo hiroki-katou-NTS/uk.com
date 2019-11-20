@@ -17,7 +17,7 @@ public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsG
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT e FROM QqsmtEmpInsGetInfo e";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.cId =:cId AND e.empInsGetInfoPk.sId =:sId";
-    private static final String SELECT_BY_EMP_IDS = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.cid = :cid e.empInsGetInfoPk.sid IN :sids";
+    private static final String SELECT_BY_EMP_IDS = SELECT_ALL_QUERY_STRING + " WHERE e.empInsGetInfoPk.cId = :cid AND e.empInsGetInfoPk.sId IN :sids";
 
     @Override
     public Optional<EmpInsGetInfo> getEmpInsGetInfoById( String cId, String sId) {
