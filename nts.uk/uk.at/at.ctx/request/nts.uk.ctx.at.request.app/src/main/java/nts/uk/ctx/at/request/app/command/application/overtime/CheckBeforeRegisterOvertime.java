@@ -93,8 +93,7 @@ public class CheckBeforeRegisterOvertime {
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
-				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
 		
@@ -122,8 +121,7 @@ public class CheckBeforeRegisterOvertime {
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
-				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
 
@@ -236,8 +234,7 @@ public class CheckBeforeRegisterOvertime {
 
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
-				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
 				Optional.empty());
 		// 社員ID

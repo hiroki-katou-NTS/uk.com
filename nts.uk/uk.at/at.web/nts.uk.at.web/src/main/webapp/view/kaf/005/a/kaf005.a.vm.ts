@@ -137,6 +137,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         actualLst: any = [];
         tmpOverTime: any;
         overtimeSettingDataDto: any
+        forceYearConfirm: boolean = false;
+        forcePreApp: boolean = false;
+        forceActual: boolean = false;
+        forceOvertimeDetail: boolean = false;
+        forceInconsistency: boolean = false;
+        appOvertimeDetail: any = null;
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -671,20 +677,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //block screen
             nts.uk.ui.block.invisible();
             
-            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
-            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
-            
-            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
-                return;
-            }
-            
-            let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
-            let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
-            
-            if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
-                return;
-            }
-            
             let overTimeShiftNightTmp: number = null;
             let flexExessTimeTmp: number = null;
             for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -699,7 +691,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 applicationDate: new Date(self.appDate()),
                 prePostAtr: self.prePostSelected(),
                 applicantSID: self.employeeID(),
-                applicationReason: textAreaReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
                 workClockFrom1: self.timeStart1(),
@@ -708,12 +699,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 restTime: ko.toJS(self.restTime()),
                 overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                 flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
-                divergenceReasonContent: comboDivergenceReason,
                 sendMail: self.checkBoxValue(),
                 overtimeAtr: self.overtimeAtr(),
                 calculateFlag: self.calculateFlag(),
-                appReasonID: comboBoxReason,
-                divergenceReasonArea: areaDivergenceReason,
                 checkOver1Year: true,
                 checkAppDate:false,
                 opAppBefore: self.opAppBefore,
@@ -728,6 +716,25 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //登録処理を実行
         registerData(overtime) {
             var self = this;
+            self.forceInconsistency = true;
+            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
+            
+            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
+                return;
+            }
+            
+            let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
+            let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
+            
+            if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
+                return;
+            }
+            overtime.applicationReason = textAreaReason;
+            overtime.divergenceReasonContent = comboDivergenceReason;
+            overtime.appReasonID = comboBoxReason;
+            overtime.divergenceReasonArea = areaDivergenceReason;
+            overtime.appOvertimeDetail = self.appOvertimeDetail;
             service.createOvertime(overtime).done((data) => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(self.isSpr){
@@ -990,13 +997,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         setTimeZones(timeZones) {
             let self = this;
+            let times = [];
             if (timeZones) {
-                let times = [];
                 for (let i = 1; i < 11; i++) {
                     times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
                 }
-                self.restTime(times);
             }
+            self.restTime(times);
         }
         
         findBychangeAppDateData(data: any) {
@@ -1298,23 +1305,36 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         beforeRegisterColorConfirm(overtime: any){
             let self = this;
+            if(self.forceYearConfirm && self.forcePreApp && self.forceActual) {
+                self.beforeRegisterProcess(overtime);   
+                return;  
+            }
             service.beforeRegisterColorConfirm(overtime).done((data2) => {
                 overtime.checkOver1Year = false;
                 self.contentBefRegColorConfirmDone(overtime, data2);
             }).fail((res) => {
                 if (res.messageId == "Msg_1518") {//confirm
-                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                    if(self.forceYearConfirm) {
                         overtime.checkOver1Year = false;
                         service.beforeRegisterColorConfirm(overtime).done((data3) => {
                             self.contentBefRegColorConfirmDone(overtime, data3);
                         }).fail((res) => {
                             dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                                 .then(function() { nts.uk.ui.block.clear(); });
+                        });    
+                    } else {
+                        dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+                            overtime.checkOver1Year = false;
+                            service.beforeRegisterColorConfirm(overtime).done((data3) => {
+                                self.contentBefRegColorConfirmDone(overtime, data3);
+                            }).fail((res) => {
+                                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                    .then(function() { nts.uk.ui.block.clear(); });
+                            });
+                        }).ifNo(() => {
+                            nts.uk.ui.block.clear();
                         });
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    });
-
+                    }
                 } else {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });
@@ -1324,6 +1344,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         contentBefRegColorConfirmDone(overtime, data2) {
             let self = this;
+            self.forceYearConfirm = true;
             if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
                 self.beforeRegisterProcess(overtime);    
             } else {
@@ -1335,6 +1356,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         checkPreApp(overtime, data) {
             let self = this;
+            if(self.forcePreApp) {
+                self.checkActual(overtime, data);
+                return;    
+            }
             let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
             let actualStatus = data.preActualColorResult.actualStatus;
             let resultLst = data.preActualColorResult.resultLst;
@@ -1344,6 +1369,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             if(beforeAppStatus){
                 dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
+                    self.forcePreApp = true;
                     self.checkActual(overtime, data);   
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1367,6 +1393,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }    
                 }); 
                 dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
+                    self.forcePreApp = true;
                     self.checkActual(overtime, data);
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1376,6 +1403,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         checkActual(overtime, data) {
             let self = this;
+            if(self.forceActual) {
+                self.beforeRegisterProcess(overtime);
+                return;    
+            }
             let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
             let actualStatus = data.preActualColorResult.actualStatus;
             let resultLst = data.preActualColorResult.resultLst;
@@ -1392,6 +1423,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     return;
                 } else {
                     dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
+                        self.forceActual = true;
                         self.beforeRegisterProcess(overtime);  
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1433,6 +1465,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }    
                 }); 
                 dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
+                    self.forceActual = true;
                     self.beforeRegisterProcess(overtime);
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1445,9 +1478,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         beforeRegisterProcess(overtime: any){
             let self = this;
-            service.checkBeforeRegister(overtime).done((data) => {    
-                overtime.appOvertimeDetail = data.appOvertimeDetail;
-                self.confirmInconsistency(data, overtime);
+            self.forcePreApp = true;
+            self.forceActual = true;
+            if(self.forceOvertimeDetail) {
+                self.confirmInconsistency(overtime);
+                return;       
+            }
+            service.checkBeforeRegister(overtime).done((data) => {
+                self.forceOvertimeDetail = true;    
+                self.appOvertimeDetail = data.appOvertimeDetail;
+                self.confirmInconsistency(overtime);
             }).fail((res) => {
                 if(nts.uk.util.isNullOrEmpty(res.errors)){
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
@@ -1477,8 +1517,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             });        
         }
         
-        confirmInconsistency(data: any, overtime: any){
+        confirmInconsistency(overtime: any){
             let self = this;
+            if(self.forceInconsistency) {
+                self.registerData(overtime);
+                return;       
+            }
             service.confirmInconsistency(overtime).done((data1) => { 
                 if (!nts.uk.util.isNullOrEmpty(data1)) {
                     dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {

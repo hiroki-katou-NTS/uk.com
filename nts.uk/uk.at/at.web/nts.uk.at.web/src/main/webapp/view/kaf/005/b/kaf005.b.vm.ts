@@ -116,6 +116,11 @@ module nts.uk.at.view.kaf005.b {
             beforeAppStatus: boolean = true;
             actualStatus: number = 0;
             actualLst: any = [];
+            forceYearConfirm: boolean = false;
+            forcePreApp: boolean = false;
+            forceActual: boolean = false;
+            forceOvertimeDetail: boolean = false;
+            appOvertimeDetail: any = null;
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata, rebind?: boolean) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -452,13 +457,13 @@ module nts.uk.at.view.kaf005.b {
             
             setTimeZones(timeZones) {
                 let self = this;
+                let times = [];
                 if (timeZones) {
-                    let times = [];
                     for (let i = 1; i < 11; i++) {
                         times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
                     }
-                    self.restTime(times);
                 }
+                self.restTime(times);
             }
             
             getStartTime(data) {
@@ -537,20 +542,6 @@ module nts.uk.at.view.kaf005.b {
                     self.multilContent()
                 );
                 
-                let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
-                let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
-                
-                if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
-                    return;
-                }
-                
-                let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
-                let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
-                
-                if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
-                    return;
-                }
-                
                 let overTimeShiftNightTmp: number = null;
                 let flexExessTimeTmp: number = null;
                 for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -567,7 +558,6 @@ module nts.uk.at.view.kaf005.b {
                     applicationDate: new Date(self.appDate()),
                     prePostAtr: self.prePostSelected(),
                     applicantSID: self.employeeID(),
-                    applicationReason: textAreaReason,
                     appApprovalPhaseCmds: self.approvalList,
                     workTypeCode: self.workTypeCd(),
                     siftTypeCode: self.siftCD(),
@@ -578,11 +568,8 @@ module nts.uk.at.view.kaf005.b {
                     overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                     flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                     overtimeAtr: self.overtimeAtr(),
-                    divergenceReasonContent: comboDivergenceReason,
                     sendMail: self.manualSendMailAtr(),
                     calculateFlag: self.calculateFlag(),
-                    appReasonID: comboBoxReason,
-                    divergenceReasonArea: areaDivergenceReason,
                     user: self.user,
                     reflectPerState: self.reflectPerState,
                     opAppBefore: self.opAppBefore,
@@ -612,6 +599,23 @@ module nts.uk.at.view.kaf005.b {
             
             updateOvertime(command: any){
                 let self = this;
+                let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+                let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
+                
+                if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
+                    return;
+                }
+                
+                let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
+                let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
+                
+                if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
+                    return;
+                }
+                command.applicationReason = textAreaReason;
+                command.divergenceReasonContent = comboDivergenceReason;
+                command.appReasonID = comboBoxReason;
+                command.divergenceReasonArea = areaDivergenceReason;
                 service.updateOvertime(command)
                 .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -1024,6 +1028,10 @@ module nts.uk.at.view.kaf005.b {
             
             beforeUpdateColorConfirm(overtime: any){
                 let self = this;
+                if(self.forcePreApp && self.forceActual) {
+                    self.beforeUpdateProcess(overtime);   
+                    return;  
+                }
                 service.beforeRegisterColorConfirm(overtime).done((data2) => { 
                     if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
                         self.beforeUpdateProcess(overtime);    
@@ -1040,6 +1048,10 @@ module nts.uk.at.view.kaf005.b {
             
             checkPreApp(overtime, data) {
                 let self = this;
+                if(self.forcePreApp) {
+                    self.checkActual(overtime, data);
+                    return;    
+                }
                 let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
                 let actualStatus = data.preActualColorResult.actualStatus;
                 let resultLst = data.preActualColorResult.resultLst;
@@ -1049,6 +1061,7 @@ module nts.uk.at.view.kaf005.b {
                 }
                 if(beforeAppStatus){
                     dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
+                        self.forcePreApp = true;
                         self.checkActual(overtime, data);   
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1072,6 +1085,7 @@ module nts.uk.at.view.kaf005.b {
                         }    
                     }); 
                     dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
+                        self.forcePreApp = true;
                         self.checkActual(overtime, data);
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1081,6 +1095,10 @@ module nts.uk.at.view.kaf005.b {
         
             checkActual(overtime, data) {
                 let self = this;
+                if(self.forceActual) {
+                    self.beforeUpdateProcess(overtime);
+                    return;    
+                }
                 let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
                 let actualStatus = data.preActualColorResult.actualStatus;
                 let resultLst = data.preActualColorResult.resultLst;
@@ -1097,6 +1115,7 @@ module nts.uk.at.view.kaf005.b {
                         return;
                     } else {
                         dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
+                            self.forceActual = true;
                             self.beforeUpdateProcess(overtime);  
                         }).ifNo(() => {
                             nts.uk.ui.block.clear();
@@ -1138,6 +1157,7 @@ module nts.uk.at.view.kaf005.b {
                         }    
                     }); 
                     dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
+                        self.forceActual = true;
                         self.beforeUpdateProcess(overtime);
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1150,8 +1170,15 @@ module nts.uk.at.view.kaf005.b {
             
             beforeUpdateProcess(overtime: any){
                 let self = this;
+                self.forcePreApp = true;
+                self.forceActual = true;
+                if(self.forceOvertimeDetail) {
+                    self.updateOvertime(overtime);
+                    return;       
+                }
                 service.checkBeforeUpdate(overtime).done((data) => {    
-                    overtime.appOvertimeDetail = data.appOvertimeDetail;
+                    self.forceOvertimeDetail = true;    
+                    self.appOvertimeDetail = data.appOvertimeDetail;
                     self.updateOvertime(overtime);
                 }).fail((res) => {
                     if(nts.uk.util.isNullOrEmpty(res.errors)){
