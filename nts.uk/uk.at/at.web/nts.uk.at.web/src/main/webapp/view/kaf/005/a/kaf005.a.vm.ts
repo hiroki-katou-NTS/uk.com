@@ -18,13 +18,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
-        displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
-        //Pre-POST
-        prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
+        prePostSelected: KnockoutObservable<number> = ko.observable(0);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable('');
         //TIME LINE 1
@@ -70,7 +67,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //menu-bar 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-        useMulti: KnockoutObservable<boolean> = ko.observable(true);
 
         displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
         displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);

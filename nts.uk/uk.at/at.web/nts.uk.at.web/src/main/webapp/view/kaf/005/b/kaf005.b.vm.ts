@@ -13,12 +13,10 @@ module nts.uk.at.view.kaf005.b {
             screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
             
             manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
-            displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
             //申請者
             employeeName: KnockoutObservable<string> = ko.observable("");
             //Pre-POST
             prePostSelected: KnockoutObservable<number> = ko.observable(0);
-            workState: KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
             appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
@@ -57,16 +55,7 @@ module nts.uk.at.view.kaf005.b {
             overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             
             overtimeHoursOld: Array<common.OvertimeCaculation> = [];
-            //menu-bar 
-            enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
-            prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
-            prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-            useMulti: KnockoutObservable<boolean> = ko.observable(true);
     
-            displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
-            displayCaculationTime: KnockoutObservable<boolean> = ko.observable(true);
-            displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(true);
-            displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
             restTimeDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
             typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
             displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
