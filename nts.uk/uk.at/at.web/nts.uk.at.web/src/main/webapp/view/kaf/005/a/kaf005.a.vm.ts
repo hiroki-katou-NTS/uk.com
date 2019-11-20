@@ -135,10 +135,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
         preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
         callServiceChangePrePost: boolean = true;
-        opAppBefore: KnockoutObservable<any> = ko.observable(null);
-        beforeAppStatus: KnockoutObservable<boolean> = ko.observable(true);
-        actualStatus: KnockoutObservable<number> = ko.observable(0);
-        actualLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        opAppBefore: any = null;
+        beforeAppStatus: boolean = true;
+        actualStatus: number = 0;
+        actualLst: any = [];
         tmpOverTime: any;
         appCommonSettingOutput: any
         constructor(transferData :any) {
@@ -326,7 +326,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                             endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
                         }).done((data) => {
-
+                            self.opAppBefore = data.opAppBefore;
+                            self.beforeAppStatus = data.beforeAppStatus;
+                            self.actualStatus = data.actualStatus;
+                            self.actualLst = data.actualLst;
                             self.convertpreAppOvertimeDto(data);
                             self.convertAppOvertimeReferDto(data);
                             self.referencePanelFlg(data.referencePanelFlg);
@@ -461,10 +464,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
             self.workTypeChangeFlg(data.workTypeChangeFlg);
-            self.opAppBefore(data.opAppBefore);
-            self.beforeAppStatus(data.beforeAppStatus);
-            self.actualStatus(data.actualStatus);
-            self.actualLst(data.actualLst);
+            self.opAppBefore = data.opAppBefore;
+            self.beforeAppStatus = data.beforeAppStatus;
+            self.actualStatus = data.actualStatus;
+            self.actualLst = data.actualLst;
             // list employeeID
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
                 self.employeeFlag(true);
@@ -716,7 +719,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 appReasonID: comboBoxReason,
                 divergenceReasonArea: areaDivergenceReason,
                 checkOver1Year: true,
-                checkAppDate:false
+                checkAppDate:false,
+                opAppBefore: self.opAppBefore,
+                beforeAppStatus: self.beforeAppStatus,
+                actualStatus: self.actualStatus,
+                actualLst: self.actualLst
             };
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);
@@ -864,10 +871,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                 startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
                 endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()}),
-                opAppBefore: self.opAppBefore(),
-                beforeAppStatus: self.beforeAppStatus(),
-                actualStatus: self.actualStatus(),
-                actualLst: self.actualLst()    
+                opAppBefore: self.opAppBefore,
+                beforeAppStatus: self.beforeAppStatus,
+                actualStatus: self.actualStatus,
+                actualLst: self.actualLst    
             }
             //setting work content
             self.preWorkContent = {
@@ -1041,6 +1048,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+            self.opAppBefore = data.opAppBefore;
+            self.beforeAppStatus = data.beforeAppStatus;
+            self.actualStatus = data.actualStatus;
+            self.actualLst = data.actualLst;
            
              // 残業時間
             if (overtimeDto.overTimeInputs != null) {

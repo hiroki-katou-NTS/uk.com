@@ -780,7 +780,11 @@ module nts.uk.at.view.kaf005.b {
                     startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                     endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                     startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
-                    endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()})     
+                    endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()}),
+                    opAppBefore: self.opAppBefore,
+                    beforeAppStatus: self.beforeAppStatus,
+                    actualStatus: self.actualStatus,
+                    actualLst: self.actualLst       
                 }
                 //setting work content
                 self.preWorkContent = {

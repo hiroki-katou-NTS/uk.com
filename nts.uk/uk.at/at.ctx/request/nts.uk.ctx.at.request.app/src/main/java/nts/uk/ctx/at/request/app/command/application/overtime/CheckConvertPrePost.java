@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -81,110 +83,119 @@ public class CheckConvertPrePost {
 		String employeeID = AppContexts.user().employeeId();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		OverTimeDto result = new OverTimeDto();
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
+		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 		if(prePostAtr == 1){
-			if(overtimeRestAppCommonSet.isPresent()){
-				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
-					result.setReferencePanelFlg(true);
-					// 01-18_実績の内容を表示し直す
-					AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-					if(appDate==null) {
+			if(overtimeRestAppCommonSet.getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				result.setReferencePanelFlg(true);
+				// 01-18_実績の内容を表示し直す
+				AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
+				if(appDate==null) {
+					result.setAppOvertimeReference(appOvertimeReference);
+				} else {
+					// 07-01_事前申請状態チェック
+					PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+							companyID, 
+							employeeID, 
+							GeneralDate.fromString(appDate, DATE_FORMAT), 
+							ApplicationType.OVER_TIME_APPLICATION);
+					// 07-02_実績取得・状態チェック
+					ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
+							.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
+									result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
+									result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
+									appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
+					result.setOpAppBefore(preAppCheckResult.opAppBefore.map(x -> ApplicationDto_New.fromDomain(x)).orElse(null));
+					result.setBeforeAppStatus(preAppCheckResult.beforeAppStatus);
+					result.setActualStatus(actualStatusCheckResult.actualStatus.value);
+					result.setActualLst(actualStatusCheckResult.actualLst);
+					appOvertimeReference.setAppDateRefer(appDate);
+					List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
+					List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
+					for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
+						overTimeInputsRefer.add(CaculationTime.builder()
+								.attendanceID(1)
+								.frameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue())
+								.frameName(overtimeFrame.getOvertimeWorkFrName().toString())
+								.build());
+					}
+					if(actualStatusCheckResult.actualStatus==ActualStatus.NO_ACTUAL) {
+						appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
 						result.setAppOvertimeReference(appOvertimeReference);
 					} else {
-						AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
-						ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
-								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
-										workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
-						appOvertimeReference.setAppDateRefer(appDate);
-						List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
-						List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
-						for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
-							overTimeInputsRefer.add(CaculationTime.builder()
-									.attendanceID(1)
-									.frameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue())
-									.frameName(overtimeFrame.getOvertimeWorkFrName().toString())
-									.build());
-						}
-						if(actualStatusCheckResult.actualStatus==ActualStatus.NO_ACTUAL) {
-							appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
-							result.setAppOvertimeReference(appOvertimeReference);
-						} else {
-							appOvertimeReference.setWorkTypeRefer(
-									new WorkTypeOvertime(actualStatusCheckResult.workType, 
-											workTypeRepository.findByPK(companyID, actualStatusCheckResult.workType).map(x -> x.getName().toString()).orElse(null)));
-							appOvertimeReference.setSiftTypeRefer(
-									new SiftType(actualStatusCheckResult.workTime, 
-											workTimeRepository.findByCode(companyID, actualStatusCheckResult.workTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
-							appOvertimeReference.setWorkClockFromTo1Refer(convertWorkClockFromTo(actualStatusCheckResult.startTime, actualStatusCheckResult.endTime));
-							for(CaculationTime caculationTime : overTimeInputsRefer) {
-								caculationTime.setApplicationTime(actualStatusCheckResult.actualLst.stream()
-										.filter(x -> x.attendanceID == caculationTime.getAttendanceID() && x.frameNo == caculationTime.getFrameNo())
-										.findAny().map(y -> y.actualTime).orElse(null));
-							}
-							appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
-							appOvertimeReference.setOverTimeShiftNightRefer(actualStatusCheckResult.actualLst.stream()
-									.filter(x -> x.attendanceID == 1 && x.frameNo == 11)
+						appOvertimeReference.setWorkTypeRefer(
+								new WorkTypeOvertime(actualStatusCheckResult.workType, 
+										workTypeRepository.findByPK(companyID, actualStatusCheckResult.workType).map(x -> x.getName().toString()).orElse(null)));
+						appOvertimeReference.setSiftTypeRefer(
+								new SiftType(actualStatusCheckResult.workTime, 
+										workTimeRepository.findByCode(companyID, actualStatusCheckResult.workTime).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null)));
+						appOvertimeReference.setWorkClockFromTo1Refer(convertWorkClockFromTo(actualStatusCheckResult.startTime, actualStatusCheckResult.endTime));
+						for(CaculationTime caculationTime : overTimeInputsRefer) {
+							caculationTime.setApplicationTime(actualStatusCheckResult.actualLst.stream()
+									.filter(x -> x.attendanceID == caculationTime.getAttendanceID() && x.frameNo == caculationTime.getFrameNo())
 									.findAny().map(y -> y.actualTime).orElse(null));
-							appOvertimeReference.setFlexExessTimeRefer(actualStatusCheckResult.actualLst.stream()
-									.filter(x -> x.attendanceID == 1 && x.frameNo == 12)
-									.findAny().map(y -> y.actualTime).orElse(null));
-							result.setAppOvertimeReference(appOvertimeReference);
 						}
+						appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+						appOvertimeReference.setOverTimeShiftNightRefer(actualStatusCheckResult.actualLst.stream()
+								.filter(x -> x.attendanceID == 1 && x.frameNo == 11)
+								.findAny().map(y -> y.actualTime).orElse(null));
+						appOvertimeReference.setFlexExessTimeRefer(actualStatusCheckResult.actualLst.stream()
+								.filter(x -> x.attendanceID == 1 && x.frameNo == 12)
+								.findAny().map(y -> y.actualTime).orElse(null));
+						result.setAppOvertimeReference(appOvertimeReference);
 					}
 				}
-				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
-					result.setAllPreAppPanelFlg(true);
-					AppOverTime appOverTime = otherCommonAlgorithm.getPreApplication(
-							employeeID,
-							EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-							overtimeRestAppCommonSet.get().getPreDisplayAtr(), 
-							appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
-							ApplicationType.OVER_TIME_APPLICATION);
-					if(appOverTime != null){
-						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
-						result.setPreAppPanelFlg(true);
-					}else{
-						result.setPreAppPanelFlg(false);
-					}
+			}
+			if(overtimeRestAppCommonSet.getPreDisplayAtr().value== UseAtr.USE.value){
+				result.setAllPreAppPanelFlg(true);
+				AppOverTime appOverTime = otherCommonAlgorithm.getPreApplication(
+						employeeID,
+						EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+						overtimeRestAppCommonSet.getPreDisplayAtr(), 
+						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
+						ApplicationType.OVER_TIME_APPLICATION);
+				if(appOverTime != null){
+					convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
+					result.setPreAppPanelFlg(true);
 				}else{
-					result.setAllPreAppPanelFlg(false);
+					result.setPreAppPanelFlg(false);
 				}
-				// chi du bao them.EA khong co(ngay 05/12/2017)
-				if(overtimeRestAppCommonSet.isPresent()){
-					//01-08_乖離定型理由を取得
-					if(overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
-						result.setDisplayDivergenceReasonForm(true);
-						List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
-								.getDivergenceReasonForm(
-										companyID,
-										EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-										overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(),
-										ApplicationType.OVER_TIME_APPLICATION);
-						convertToDivergenceReasonDto(divergenceReasons,result);
-					}else{
-						result.setDisplayDivergenceReasonForm(false);
-					}
-					//01-07_乖離理由を取得
-					result.setDisplayDivergenceReasonInput(
-							commonOvertimeHoliday.displayDivergenceReasonInput(
-									EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-									overtimeRestAppCommonSet.get().getDivergenceReasonInputAtr()));
-				}
+			}else{
+				result.setAllPreAppPanelFlg(false);
 			}
 		}else if(prePostAtr == 0){
-			if(overtimeRestAppCommonSet.isPresent()){
-				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
-					result.setReferencePanelFlg(false);
-					//to do....
-				}
-				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
-					result.setAllPreAppPanelFlg(false);
-					//to do....
-				}
-				// chi du bao them.EA khong co(ngay 05/12/2017)
+			// chi du bao them.EA khong co(ngay 05/12/2017)
+			//01-08_乖離定型理由を取得
+			if(overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+				result.setDisplayDivergenceReasonForm(true);
+				List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
+						.getDivergenceReasonForm(
+								companyID,
+								EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+								overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
+								ApplicationType.OVER_TIME_APPLICATION);
+				convertToDivergenceReasonDto(divergenceReasons,result);
+			}else{
 				result.setDisplayDivergenceReasonForm(false);
-				result.setDisplayDivergenceReasonInput(false);
 			}
+			//01-07_乖離理由を取得
+			result.setDisplayDivergenceReasonInput(
+					commonOvertimeHoliday.displayDivergenceReasonInput(
+							EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+							overtimeRestAppCommonSet.getDivergenceReasonInputAtr()));
+		} else {
+			if(overtimeRestAppCommonSet.getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				result.setReferencePanelFlg(false);
+				//to do....
+			}
+			if(overtimeRestAppCommonSet.getPreDisplayAtr().value == UseAtr.USE.value){
+				result.setAllPreAppPanelFlg(false);
+				//to do....
+			}
+			// chi du bao them.EA khong co(ngay 05/12/2017)
+			result.setDisplayDivergenceReasonForm(false);
+			result.setDisplayDivergenceReasonInput(false);
 		}
 		return result;
 	}

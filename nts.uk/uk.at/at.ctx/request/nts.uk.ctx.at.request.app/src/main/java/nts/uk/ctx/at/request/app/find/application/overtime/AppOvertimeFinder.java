@@ -18,7 +18,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.infra.data.jdbc.map.EntityAttributeType;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -471,7 +470,7 @@ public class AppOvertimeFinder {
 	 */
 	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
 			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests,
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst){
+			ApplicationDto_New opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst){
 		String companyID = AppContexts.user().companyId();
 		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -487,23 +486,6 @@ public class AppOvertimeFinder {
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
-		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
-		// 07-01_事前申請状態チェック
-//		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-//				companyID, 
-//				employeeID, 
-//				GeneralDate.fromString(appDate, DATE_FORMAT), 
-//				ApplicationType.OVER_TIME_APPLICATION);
-		// 07-02_実績取得・状態チェック
-//		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-//				companyID, 
-//				employeeID, 
-//				GeneralDate.fromString(appDate, DATE_FORMAT), 
-//				ApplicationType.OVER_TIME_APPLICATION, 
-//				workTypeCD, 
-//				workTimeCD, 
-//				appOvertimeSetting.getPriorityStampSetAtr(), 
-//				Optional.empty());
 		// 07_事前申請・実績超過チェック
 		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
@@ -512,7 +494,7 @@ public class AppOvertimeFinder {
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				overtimeInputCaculations, 
 				otTimeLst, 
-				opAppBefore, 
+				opAppBefore == null ? Optional.empty() : Optional.of(ApplicationDto_New.toEntity(opAppBefore)), 
 				beforeAppStatus, 
 				actualLst, 
 				EnumAdaptor.valueOf(actualStatus, ActualStatus.class));
@@ -818,6 +800,14 @@ public class AppOvertimeFinder {
 					preAppCheckResult.beforeAppStatus,
 					actualStatusCheckResult.actualLst,
 					actualStatusCheckResult.actualStatus);
+			overTimeDto.setOpAppBefore(preAppCheckResult.opAppBefore.map(x -> ApplicationDto_New.fromDomain(x)).orElse(null));
+			overTimeDto.setBeforeAppStatus(preAppCheckResult.beforeAppStatus);
+			overTimeDto.setActualStatus(actualStatusCheckResult.actualStatus.value);
+			overTimeDto.setWorkTypeActual(actualStatusCheckResult.workType);
+			overTimeDto.setWorkTimeActual(actualStatusCheckResult.workTime);
+			overTimeDto.setStartTimeActual(actualStatusCheckResult.startTime);
+			overTimeDto.setEndTimeActual(actualStatusCheckResult.endTime);
+			overTimeDto.setActualLst(actualStatusCheckResult.actualLst);
 			caculationTimes = preActualColorResult.resultLst.stream()
 					.map(x -> new CaculationTime(
 							companyID, 
