@@ -1,5 +1,5 @@
-module nts.uk.pr.view.qui001.c.viewmodel {
-    import model = nts.uk.pr.view.qui001.share.model;
+module nts.uk.pr.view.qui004.c.viewmodel {
+    import model = nts.uk.pr.view.qui004.share.model;
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -9,21 +9,17 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         /**
          *ComboBox
          */
-        insCauseAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.insCauseAtr());
-        jobAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobAtr());
-        jobPaths: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.jobPath());
-        wagePaymentModes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.wagePaymentMode());
-        employmentStatuses: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.employmentStatus());
+        causeOfLossAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCauseOfLossAtr());
         /**
          * Button Switch
          */
-        acquisitionAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.acquisitionAtr());
-        contrPeriPrintAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.contrPeriPrintAtr());
+        requestForInsurances: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRequestForInsurance());
+        scheduleForReplenishments: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getScheduleForReplenishment());
         /**
          * Text Editor
          */
-        workingTime: KnockoutObservable<number> = ko.observable(null);
-        payWage: KnockoutObservable<number> = ko.observable(null);
+        scheduleWorkingHourPerWeek: KnockoutObservable<number> = ko.observable(null);
+        causeOfLossEmpInsurance: KnockoutObservable<string> = ko.observable(null);
         /**
          * KCP009-社員送り
          */
@@ -43,13 +39,9 @@ module nts.uk.pr.view.qui001.c.viewmodel {
          *
          */
         sId: KnockoutObservable<string> = ko.observable('');
-        acquiAtr: KnockoutObservable<number> = ko.observable(0);
-        insCauseAtr: KnockoutObservable<number> = ko.observable(0);
-        jobAtr: KnockoutObservable<number> = ko.observable(0);
-        jobPath: KnockoutObservable<number> = ko.observable(0);
-        wagePaymentMode: KnockoutObservable<number> = ko.observable(0);
-        employmentStatus: KnockoutObservable<number> = ko.observable(0);
-        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(0);
+        causeOfLossAtr: KnockoutObservable<number> = ko.observable(0);
+        requestForInsurance: KnockoutObservable<number> = ko.observable(0);
+        scheduleForReplenishment: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             var self = this;
@@ -63,7 +55,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             /**
              *KCP009
              */
-            let params = getShared("QUI001_PARAMS_A");
+            let params = getShared("QUI004_PARAMS_A");
             if (nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
                 close();
             }
@@ -115,20 +107,16 @@ module nts.uk.pr.view.qui001.c.viewmodel {
 
         updateEmpInsGetInfo() {
             let self = this;
-            let empInsGetInfo: any = {
+            let empInsLossInfo: any = {
                 sId: self.selectedItem(),
-                acquiAtr: self.acquiAtr(),
-                jobPath: self.jobPath(),
-                workingTime: self.workingTime() > 0 ? self.workingTime() : null,
-                jobAtr: self.jobAtr(),
-                payWage: self.payWage() > 0 ? self.payWage() : null,
-                insCauseAtr: self.insCauseAtr(),
-                wagePaymentMode: self.wagePaymentMode(),
-                employmentStatus: self.employmentStatus(),
-                contrPeriPrintAtr: self.contrPeriPrintAtr(),
+                causeOfLossAtr: self.causeOfLossAtr(),
+                requestForInsurance: self.requestForInsurance(),
+                scheduleWorkingHourPerWeek: self.scheduleWorkingHourPerWeek() > 0 ? self.scheduleWorkingHourPerWeek() : null,
+                scheduleForReplenishment: self.scheduleForReplenishment(),
+                causeOfLossEmpInsurance: self.causeOfLossEmpInsurance().length > 0 ? self.causeOfLossEmpInsurance() : null,
                 screenMode: self.screenMode()
             };
-            service.register(empInsGetInfo).done(function () {
+            service.register(empInsLossInfo).done(function () {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 });
@@ -144,15 +132,11 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             service.start(sId).done(function (data: any) {
                 if (data) {
                     self.sId(data.sId);
-                    self.acquiAtr(data.acquiAtr);
-                    self.jobPath(data.jobPath);
-                    self.workingTime(data.workingTime);
-                    self.jobAtr(data.jobAtr);
-                    self.payWage(data.payWage);
-                    self.insCauseAtr(data.insCauseAtr);
-                    self.wagePaymentMode(data.wagePaymentMode);
-                    self.employmentStatus(data.employmentStatus);
-                    self.contrPeriPrintAtr(data.contrPeriPrintAtr);
+                    self.causeOfLossAtr(data.causeOfLossAtr);
+                    self.requestForInsurance(data.requestForInsurance);
+                    self.scheduleWorkingHourPerWeek(data.scheduleWorkingHourPerWeek);
+                    self.scheduleForReplenishment(data.scheduleForReplenishment);
+                    self.causeOfLossEmpInsurance(data.causeOfLossEmpInsurance);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.getDefault();
@@ -172,15 +156,11 @@ module nts.uk.pr.view.qui001.c.viewmodel {
 
         createNew() {
             let self = this;
-            self.acquiAtr(0);
-            self.jobPath(0);
-            self.workingTime(null);
-            self.jobAtr(0);
-            self.payWage(null);
-            self.insCauseAtr(0);
-            self.wagePaymentMode(0);
-            self.employmentStatus(0);
-            self.contrPeriPrintAtr(0);
+            self.causeOfLossAtr(0);
+            self.requestForInsurance(0);
+            self.scheduleWorkingHourPerWeek(null);
+            self.scheduleForReplenishment(0);
+            self.causeOfLossEmpInsurance(null);
         }
     }
 

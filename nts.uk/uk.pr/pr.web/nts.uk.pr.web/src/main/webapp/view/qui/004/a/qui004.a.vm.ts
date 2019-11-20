@@ -3,6 +3,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText
     import model = nts.uk.pr.view.qui004.share.model;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
 
@@ -183,6 +185,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 });
         }
 
+        openCScreen() {
+            let self = this;
+            let params = {
+                employeeList: self.getListEmpId(self.selectedCode(), self.employeeList())
+            };
+            setShared("QUI004_PARAMS_A", params);
+            modal("/view/qui/004/c/index.xhtml");
+        }
 
         initScreen(): JQueryPromise<any> {
             let self = this;
