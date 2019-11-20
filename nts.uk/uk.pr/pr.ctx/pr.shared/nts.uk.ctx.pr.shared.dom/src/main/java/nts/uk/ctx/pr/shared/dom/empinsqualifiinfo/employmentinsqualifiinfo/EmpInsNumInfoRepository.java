@@ -8,4 +8,5 @@ import java.util.List;
 */
 public interface EmpInsNumInfoRepository{
     Optional<EmpInsNumInfo> getEmpInsNumInfoById(String cid, String sid,String hisId);
+    List<EmpInsNumInfo> getByCidAndHistIds(String cid, List<String> histIds);
 }
