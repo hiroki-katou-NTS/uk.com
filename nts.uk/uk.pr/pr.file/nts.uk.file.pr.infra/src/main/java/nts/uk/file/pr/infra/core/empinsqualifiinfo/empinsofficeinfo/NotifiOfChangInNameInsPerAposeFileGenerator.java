@@ -292,23 +292,11 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
             value = value.substring(0, numCells);
         }
         String[] lstValue = value.split("");
-        ArrayList<String> listValueCells = new ArrayList<>();
         for (int i = 0; i < lstValue.length; i++) {
-            String valueCell = lstValue[i];
-
-            if (i < lstValue.length - 1 && (lstValue[i + 1].equals("ﾟ") || lstValue[i + 1].equals("ﾞ"))) {
-                listValueCells.add(valueCell + lstValue[i + 1]);
-            } else {
-                if (!lstValue[i].equals("ﾟ") || !lstValue[i].equals("ﾞ")) {
-                    listValueCells.add(valueCell);
-                }
-            }
-        }
-        for (int i = 0; i < listValueCells.size(); i++) {
-            String valueCell = lstValue[i];
             int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, valueCell, 16));
+            textBuilder.appendText(setValue(pixel, yRoot, lstValue[i], 16));
         }
+
     }
 
     private void stylePage(Document doc) {
