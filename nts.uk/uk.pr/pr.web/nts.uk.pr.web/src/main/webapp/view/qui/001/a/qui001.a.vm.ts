@@ -228,13 +228,12 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             }
             let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
             let data = {
-                empInsReportSettingExport: {
-                    submitNameAtr: self.empInsReportSetting().submitNameAtr(),
-                    outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
-                    officeClsAtr: self.empInsReportSetting().officeClsAtr(),
-                    myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
-                    nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
-                },
+                empInsReportSetting: ko.toJS(self.empInsReportSetting),
+                empInsRptTxtSetting: ko.toJS(self.empInsRptTxtSetting),
+                fillingDate: moment.utc(self.fillingDate(), "YYYY/MM/DD"),
+                startDate:  moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate:  moment.utc(self.endDate(), "YYYY/MM/DD"),
+                empIds: empIds
             };
             nts.uk.ui.block.grayout();
             service.exportPDF(data).done(() => {
