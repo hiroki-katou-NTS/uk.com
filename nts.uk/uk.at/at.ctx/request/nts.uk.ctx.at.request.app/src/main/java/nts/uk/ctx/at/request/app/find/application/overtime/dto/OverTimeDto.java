@@ -278,6 +278,10 @@ public class OverTimeDto {
 	/**
 	 * 実績内容
 	 */
+	private String workTypeActual; // 出勤時刻
+	private String workTimeActual; // 退勤時刻
+	private Integer startTimeActual; // 勤務種類
+	private Integer endTimeActual; // 就業時間帯
 	private List<OvertimeColorCheck> actualLst;
 	
 	/**
@@ -352,9 +356,13 @@ public class OverTimeDto {
 				null,
 				0,
 				0,
-				ApplicationDto_New.fromDomain(appOverTime.getApplication()),
+				null,
 				false,
-				1,
+				0,
+				null,
+				null,
+				null, 
+				null,
 				Collections.emptyList(),
 				null
 				);

@@ -10,27 +10,19 @@ module nts.uk.at.view.kaf005.b {
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = "YYYY/MM/DD";
-            datatest : any;
             screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
-            //current Data
-            //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
-            //manualSendMailAtr
+            
             manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
-            displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
             //申請者
             employeeName: KnockoutObservable<string> = ko.observable("");
             //Pre-POST
             prePostSelected: KnockoutObservable<number> = ko.observable(0);
-            workState: KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
             appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
             //TIME LINE 1
             timeStart1: KnockoutObservable<number> = ko.observable(null);
             timeEnd1: KnockoutObservable<number> = ko.observable(null);
-            //TIME LINE 2
-            timeStart2: KnockoutObservable<number> = ko.observable(null);
-            timeEnd2: KnockoutObservable<number> = ko.observable(null);
             //勤務種類
             workTypeCd: KnockoutObservable<string> = ko.observable('');
             workTypeName: KnockoutObservable<string> = ko.observable('');
@@ -51,8 +43,7 @@ module nts.uk.at.view.kaf005.b {
             //MultilineEditor
             requiredReason2: KnockoutObservable<boolean> = ko.observable(false);
             multilContent2: KnockoutObservable<string> = ko.observable('');
-            //Approval 
-            approvalSource: Array<common.AppApprovalPhase> = [];
+            
             employeeID: KnockoutObservable<string> = ko.observable('');
             employeeList: KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
             selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
@@ -64,18 +55,7 @@ module nts.uk.at.view.kaf005.b {
             overtimeHours: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
             
             overtimeHoursOld: Array<common.OvertimeCaculation> = [];
-            //休憩時間
-            breakTimes: KnockoutObservableArray<common.OvertimeCaculation> = ko.observableArray([]);
-            //menu-bar 
-            enableSendMail: KnockoutObservable<boolean> = ko.observable(true);
-            prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
-            prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-            useMulti: KnockoutObservable<boolean> = ko.observable(true);
     
-            displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
-            displayCaculationTime: KnockoutObservable<boolean> = ko.observable(true);
-            displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(true);
-            displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
             restTimeDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
             typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
             displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -101,9 +81,6 @@ module nts.uk.at.view.kaf005.b {
             siftNamePre:  KnockoutObservable<string> = ko.observable("");
             //TIME LINE 1
             workClockFrom1To1Pre: KnockoutObservable<string> = ko.observable(null);
-            //TIME LINE 2
-            workClockFrom2To2Pre: KnockoutObservable<string> = ko.observable(null);
-            displayWorkClockFrom2To2Pre: KnockoutObservable <boolean> = ko.observable(true);
             overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
@@ -117,9 +94,6 @@ module nts.uk.at.view.kaf005.b {
             siftNameReference:  KnockoutObservable<string> = ko.observable("");
             //TIME LINE 1
             workClockFrom1To1Reference: KnockoutObservable<string> = ko.observable(null);
-            //TIME LINE 2
-            workClockFrom2To2Reference: KnockoutObservable<string> = ko.observable(null);
-            displayWorkClockFrom2To2Reference: KnockoutObservable <boolean> = ko.observable(true);
             overtimeHoursReference: KnockoutObservableArray<common.AppOvertimePre> = ko.observableArray([]);
             overTimeShiftNightRefer: KnockoutObservable<string> = ko.observable(null);
             flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
@@ -257,7 +231,6 @@ module nts.uk.at.view.kaf005.b {
                 return result;
             }
 
-            
             initData(data: any) {
                 var self = this;
                 self.opAppBefore = data.opAppBefore;
@@ -297,8 +270,6 @@ module nts.uk.at.view.kaf005.b {
                 
                 self.timeStart1(data.workClockFrom1 == null ? null : data.workClockFrom1);
                 self.timeEnd1(data.workClockTo1 == null ? null : data.workClockTo1);
-                self.timeStart2(data.workClockFrom2 == null ? null : data.workClockFrom2);
-                self.timeEnd2(data.workClockTo2 == null ? null : data.workClockTo2);
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
@@ -340,10 +311,6 @@ module nts.uk.at.view.kaf005.b {
                         self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
                     }
                     self.workClockFrom1To1Pre(data.preAppOvertimeDto.workClockFromTo1Pre);
-                    self.workClockFrom2To2Pre(data.preAppOvertimeDto.workClockFromTo2Pre);
-                    if (nts.uk.util.isNullOrEmpty(self.workClockFrom2To2Pre())) {
-                        self.displayWorkClockFrom2To2Pre(false);
-                    }
                     if(data.preAppOvertimeDto.overTimeInputsPre != null){
                         for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
                             if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
@@ -367,17 +334,14 @@ module nts.uk.at.view.kaf005.b {
                 let dataRestTime = _.filter(data.overTimeInputs, {'attendanceID': 0});
                 let dataOverTime = _.filter(data.overTimeInputs, {'attendanceID': 1});
                 let dataBreakTime = _.filter(data.overTimeInputs, {'attendanceID': 2});
-                self.datatest = dataOverTime;
                 self.restTime.removeAll();
                 self.overtimeHours.removeAll();
-                self.breakTimes.removeAll();
                 if(nts.uk.util.isNullOrEmpty(dataRestTime)){
                     for (let i = 0; i < 11; i++) {
                         self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,""));
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
-                        
                             self.restTime.push(new common.OverTimeInput(
                                 item.companyID, 
                                 item.appID, 
@@ -403,20 +367,6 @@ module nts.uk.at.view.kaf005.b {
                     } else {
                         self.overtimeHours.push(self.createOvertimeInputInit(data.caculationTimes, item));
                     }
-                   
-                }); 
-                _.forEach(dataBreakTime, (item :any) => { 
-                    self.breakTimes.push(new common.OvertimeCaculation(
-                        item.companyID, 
-                        item.appID, 
-                        item.attendanceID, 
-                        "", 
-                        item.frameNo, 
-                        item.timeItemTypeAtr, 
-                        item.frameName, 
-                        item.applicationTime, 
-                        null, 
-                        null, "","",""));
                 }); 
                 
                 switch(self.overtimeHours().length){
@@ -623,12 +573,8 @@ module nts.uk.at.view.kaf005.b {
                     siftTypeCode: self.siftCD(),
                     workClockFrom1: self.timeStart1(),
                     workClockTo1: self.timeEnd1(),
-                    workClockFrom2: self.timeStart2(),
-                    workClockTo2: self.timeEnd2(),
-                    breakTimes: ko.mapping.toJS(_.map(self.breakTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     restTime: ko.mapping.toJS(self.restTime()),
-                    bonusTimes: [],
                     overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
                     flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                     overtimeAtr: self.overtimeAtr(),
@@ -644,7 +590,6 @@ module nts.uk.at.view.kaf005.b {
                     actualStatus: self.actualStatus,
                     actualLst: self.actualLst
                 }
-                
                 self.beforeUpdateColorConfirm(command);
                 
             }
@@ -748,8 +693,6 @@ module nts.uk.at.view.kaf005.b {
                             $("#inpEndTime1").ntsError("clear");
                             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
                             self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-                            self.timeStart2(data.startTime2 == null ? null : data.startTime2);
-                            self.timeEnd2(data.endTime2 == null ? null : data.endTime2); 
                             self.convertAppOvertimeReferDto(data);   
                             self.setTimeZones(data.timezones);
                         });
@@ -769,11 +712,6 @@ module nts.uk.at.view.kaf005.b {
                 if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                     return false;
                 };
-//                if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-//                    if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-//                        return false;
-//                    };
-//                }
                 //休憩時間
                 for (let i = 0; i < self.restTime().length; i++) {
                     let startTime = self.restTime()[i].startTime();
@@ -831,7 +769,11 @@ module nts.uk.at.view.kaf005.b {
                     startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                     endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                     startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.startTime()}),
-                    endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()})     
+                    endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(),x=>{return x.endTime()}),
+                    opAppBefore: self.opAppBefore,
+                    beforeAppStatus: self.beforeAppStatus,
+                    actualStatus: self.actualStatus,
+                    actualLst: self.actualLst       
                 }
                 //setting work content
                 self.preWorkContent = {
@@ -840,8 +782,6 @@ module nts.uk.at.view.kaf005.b {
                     siftType: self.siftCD(),
                     workClockFrom1: self.timeStart1(),
                     workClockTo1: self.timeEnd1(),
-                    workClockFrom2: self.timeStart2(),
-                    workClockTo2: self.timeEnd2(),
                     overtimeHours:  ko.toJS(self.overtimeHours())
                 }
                 service.getCalculateValue(param1).done((data: any) => {
@@ -900,10 +840,6 @@ module nts.uk.at.view.kaf005.b {
                         self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
                     }
                     self.workClockFrom1To1Reference(data.appOvertimeReference.workClockFromTo1Refer);
-                    self.workClockFrom2To2Reference(data.appOvertimeReference.workClockFromTo2Refer);
-                    if(nts.uk.util.isNullOrEmpty(self.workClockFrom2To2Reference())){
-                        self.displayWorkClockFrom2To2Reference(false);
-                    }
                     self.overtimeHoursReference.removeAll();
                     if(data.appOvertimeReference.overTimeInputsRefer != null){
                         for (let i = 0; i < data.appOvertimeReference.overTimeInputsRefer.length; i++) {
@@ -927,8 +863,6 @@ module nts.uk.at.view.kaf005.b {
                     self.siftCodeReference("");
                     self.siftNameReference("");
                     self.workClockFrom1To1Reference("");
-                    self.workClockFrom2To2Reference("");
-                    self.displayWorkClockFrom2To2Reference(false);
                     self.overtimeHoursReference.removeAll();
                     for (let index in self.overtimeHours()) {
                         let overtimeHour = self.overtimeHours()[index];
@@ -1081,22 +1015,6 @@ module nts.uk.at.view.kaf005.b {
                 self.timeEnd1.subscribe(value => {
                     if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
                         if (self.preWorkContent.workClockTo1 != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-                self.timeStart2.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.workClockFrom2 != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-                self.timeEnd2.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.workClockTo2 != value) {
                             //→エラーＭＳＧ
                             self.calculateFlag(1);
                         }
