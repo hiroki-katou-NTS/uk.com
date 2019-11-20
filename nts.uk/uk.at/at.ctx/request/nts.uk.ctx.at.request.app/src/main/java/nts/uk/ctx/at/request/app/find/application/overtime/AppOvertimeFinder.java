@@ -21,9 +21,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppCommonSettingOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOverTimeMobDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
@@ -32,9 +36,14 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeBreakDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeFrameDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
+import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.Changeable;
@@ -214,6 +223,7 @@ public class AppOvertimeFinder {
 		
 		// 11_設定データを取得
 		OvertimeSettingData overtimeSettingData = getSettingData(companyID, employeeID, rootAtr, ApplicationType.OVER_TIME_APPLICATION, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+		result.setOvertimeSettingDataDto(this.convSettingToDto(overtimeSettingData));
 		
 		AppCommonSettingOutput appCommonSettingOutput = overtimeSettingData.appCommonSettingOutput;
 		result.setRequireAppReasonFlg(appCommonSettingOutput.getApplicationSetting().getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED) ? true : false);
@@ -235,6 +245,36 @@ public class AppOvertimeFinder {
 		}
 		result.setEmployeeName(employeeName);
 		return result;
+	}
+	
+	public OvertimeSettingDataDto convSettingToDto(OvertimeSettingData overtimeSettingData) {
+		AppOvertimeSettingDto appOvertimeSettingDto = AppOvertimeSettingDto
+				.convertToDto(overtimeSettingData.getAppOvertimeSetting());
+
+		ApplicationSettingDto applicationSettingDto = ApplicationSettingDto
+				.convertToDto(overtimeSettingData.getAppCommonSettingOutput().getApplicationSetting());
+		ApprovalFunctionSettingDto approvalFunctionSettingDto = ApprovalFunctionSettingDto
+				.convertToDto(overtimeSettingData.getAppCommonSettingOutput().getApprovalFunctionSetting());
+		List<AppTypeDiscreteSettingDto> appTypeDiscreteSettingDto = overtimeSettingData.getAppCommonSettingOutput()
+				.getAppTypeDiscreteSettings().stream().map(item -> AppTypeDiscreteSettingDto.convertToDto(item))
+				.collect(Collectors.toList());
+		List<ApplicationDeadlineDto> applicationDeadlineDto = overtimeSettingData.getAppCommonSettingOutput()
+				.getApplicationDeadlines().stream().map(item -> ApplicationDeadlineDto.convertToDto(item))
+				.collect(Collectors.toList());
+		List<AppEmploymentSettingDto> appEmploymentSettingDto = overtimeSettingData.getAppCommonSettingOutput()
+				.getAppEmploymentWorkType().stream().map(item -> AppEmploymentSettingDto.fromDomain(item))
+				.collect(Collectors.toList());
+		AppCommonSettingOutputDto appCommonSettingOutputDto = new AppCommonSettingOutputDto(
+				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate(), applicationSettingDto,
+				approvalFunctionSettingDto, appTypeDiscreteSettingDto, applicationDeadlineDto, appEmploymentSettingDto);
+
+		OvertimeRestAppCommonSettingDto overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto
+				.convertToDto(overtimeSettingData.getOvertimeRestAppCommonSet());
+
+		OvertimeSettingDataDto overtimeSettingDto = new OvertimeSettingDataDto(appCommonSettingOutputDto,
+				appOvertimeSettingDto, overtimeRestAppCommonSettingDto);
+		
+		return overtimeSettingDto;
 	}
 	
 	public ColorConfirmResult calculationresultConfirm(List<CaculationTime> overtimeHours,
@@ -1416,7 +1456,7 @@ public class AppOvertimeFinder {
 	 */
 	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours,
 			String workTypeCode,List<Integer> startRestTimes,List<Integer> endRestTimes, boolean restTimeDisFlg,
-			AppCommonSettingOutput appCommonSettingOutput){
+			OvertimeSettingDataDto overtimeSettingDataDto){
 		
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = null; 
@@ -1424,7 +1464,9 @@ public class AppOvertimeFinder {
 		Integer startTime2 = null;
 		Integer endTime2 = null;
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		AppCommonSettingOutputDto appCommonSettingOutput = overtimeSettingDataDto.appCommonSettingOutput;
+		ApprovalFunctionSettingDto approvalFunctionSettingDto = appCommonSettingOutput.getApprovalFunctionSetting();
+		ApprovalFunctionSetting approvalFunctionSetting = ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSettingDto);
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
 		RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(companyID, employeeID, null, appDate,
 				approvalFunctionSetting,siftCD, true);

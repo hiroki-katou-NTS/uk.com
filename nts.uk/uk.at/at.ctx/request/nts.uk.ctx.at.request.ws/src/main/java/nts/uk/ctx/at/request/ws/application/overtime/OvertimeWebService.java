@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.app.find.application.overtime.ParamGetOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
@@ -194,7 +195,7 @@ public class OvertimeWebService extends WebService{
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
 				param.isRestTimeDisFlg(),
-				param.getAppCommonSettingOutput());
+				param.getOvertimeSettingDataDto());
 	}
 	
 	@POST

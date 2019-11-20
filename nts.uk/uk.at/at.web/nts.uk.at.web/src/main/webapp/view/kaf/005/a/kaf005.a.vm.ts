@@ -156,7 +156,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         actualStatus: KnockoutObservable<number> = ko.observable(0);
         actualLst: KnockoutObservableArray<any> = ko.observableArray([]);
         tmpOverTime: any;
-        appCommonSettingOutput: any
+        overtimeSettingDataDto: any
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -616,7 +616,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     break;    
                 default: break;
             }
-            self.appCommonSettingOutput = data.appCommonSettingOutput;
+            self.overtimeSettingDataDto = data.overtimeSettingDataDto;
         }
         
         getStartTime(data) {
@@ -900,7 +900,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 opAppBefore: self.opAppBefore(),
                 beforeAppStatus: self.beforeAppStatus(),
                 actualStatus: self.actualStatus(),
-                actualLst: self.actualLst();    
+                actualLst: self.actualLst()
             }
             //setting work content
             self.preWorkContent = {
@@ -1004,7 +1004,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.startTime()}),
                             endTimeRests:nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.endTime()}),
                             restTimeDisFlg: self.restTimeDisFlg(),
-                            appCommonSettingOutput: self.appCommonSettingOutput
+                            overtimeSettingDataDto: ko.toJS(self.initSettingData(self.overtimeSettingDataDto))
                         }
                     ).done(data => {
                         $("#inpStartTime1").ntsError("clear"); 
@@ -1256,6 +1256,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             caculationTime: null,
                             nameID: item.nameID, 
                             itemName:item.itemName};
+        }
+        
+        private initSettingData(item: any): any {
+            item.appCommonSettingOutput.generalDate = moment(item.appCommonSettingOutput.generalDate).toDate();
+            return item;
         }
         private checkWorkContentChanged(){
             let self = this;
@@ -1558,4 +1563,135 @@ module nts.uk.at.view.kaf005.a.viewmodel {
     }
 
 }
+enum FlexExcessUseSetAtr {
+    NOTDISPLAY = 0,
+    DISPLAY = 1,
+    ALWAYSDISPLAY = 2
+}
+enum UseAtr {
+    NOTUSE = 0,
+    USE = 1
+}
+enum OverrideSet {
+    SYSTEM_TIME_PRIORITY = 0,
+    TIME_OUT_PRIORITY = 1
+}
+enum BreakReflect {
+    REFLEC_SHIFT_BREAK = 0,
+    REFLEC_GO_OUT = 1
+}
+enum UnitAssignmentOvertime {
+    ONEMIN = 0,
+    FIVEMIN = 1,
+    SIXMIN = 2,
+    TENMIN = 3,
+    FIFTEENMIN = 4,
+    TWENTYMIN = 5,
+    THIRTYMIN = 6,
+    SIXTYMIN = 7
+}
+enum Changeable {
+    CAN_NOT_CHANGE = 0,
+    CHANGEABLE = 1
+}
+enum AttendanceType {
+    RESTTIME = 0,
+    NORMALOVERTIME = 1,
+    BREAKTIME = 2,
+    BONUSPAYTIME = 3,
+    BONUSSPECIALDAYTIME = 4
+}
+enum AppDisplayAtr {
+    NOTDISPLAY = 0,
+    DISPLAY = 1
+}
+enum AppCanAtr {
+    NOTCAN = 0,
+    CAN = 1
+}
+enum ReflectionFlg {
+    NOTREFLECT = 0,
+    REFLECT = 1
+}
+enum BaseDateFlg {
+    SYSTEM_DATE = 0,
+    APP_DATE = 1
+}
+enum ClassifyScheAchieveAtr {
+    DO_NOT_CHANGE_AUTO = 0,
+    ALWAYS_CHANGE_AUTO = 1,
+    AUTO_CHANGE_ONLY_WORK = 2
+}
+enum PriorityFLg {
+    ACTUAL_STAMPING = 0,
+    TIME_APPLICATION = 1
+}
+enum ApplyTimeSchedulePriority {
+    PRIORITY_APPLI_TIME = 0,
+    PRIORITY_FIX_TIME_SCHEDULED_WORK = 1
+}
+enum RequiredFlg {
+    NOT_USE = 0,
+    USE = 1
+}
+enum SettingFlg {
+    NOTSETTING = 0,
+    SETTING = 1
+}
+enum InstructionCategory {
+    OVERTIME = 0,
+    HOLIDAYWORK = 1
+}
+enum ApplicationType {
+    OVER_TIME_APPLICATION = 0,
+    ABSENCE_APPLICATION = 1,
+    WORK_CHANGE_APPLICATION = 2,
+    BUSINESS_TRIP_APPLICATION = 3,
+    GO_RETURN_DIRECTLY_APPLICATION = 4,
+    BREAK_TIME_APPLICATION = 6,
+    STAMP_APPLICATION = 7,
+    ANNUAL_HOLIDAY_APPLICATION = 8,
+    EARLY_LEAVE_CANCEL_APPLICATION = 9,
+    COMPLEMENT_LEAVE_APPLICATION = 10,
+    STAMP_NR_APPLICATION = 11,
+    LONG_BUSINESS_TRIP_APPLICATION = 12,
+    BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = 13,
+    APPLICATION_36 = 14
+}
+enum UseOtWk {
+    NOT_USE = 0,
+    USE = 1
+}
+enum InitValueAtr {
+    PRE = 0,
+    POST = 1,
+    NOCHOOSE = 2
+}
+enum AllowAtr {
+    NOTALLOW = 0,
+    ALLOW = 1
+}
+enum PossibleAtr {
+    IMPOSSIBLE = 0,
+    POSSIBLE = 1
+}
+enum RetrictDay {
+    THATDAY = 0,
+    ONEDAYAGO = 1,
+    TWODAYAGO = 2,
+    THREEDAYAGO = 3,
+    FOURDAYAGO = 4,
+    FIVEDAYAGO = 5,
+    SIXDAYAGO = 6,
+    SEVENDAYAGO = 7
+}
+enum CheckMethod {
+    TIMECHECK = 0,
+    DAYCHECK = 1
+}
+enum UseOtWk {
+    NOT_USE = 0,
+    USE = 1
+}
+
 

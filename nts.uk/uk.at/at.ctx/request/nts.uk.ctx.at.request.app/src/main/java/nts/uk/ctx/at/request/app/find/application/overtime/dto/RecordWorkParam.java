@@ -18,7 +18,7 @@ public class RecordWorkParam {
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
 	private boolean restTimeDisFlg;
-	private AppCommonSettingOutput appCommonSettingOutput;
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 	
 	public List<Integer> getStartTimeRests() {
 		List<Integer> result=  new ArrayList<Integer>();
