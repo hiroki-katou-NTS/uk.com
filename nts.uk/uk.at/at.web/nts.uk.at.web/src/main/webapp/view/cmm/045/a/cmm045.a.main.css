@@ -78,3 +78,18 @@
 	vertical-align: middle;
 	margin-top: -24px !important;
 }
+.app-left {
+	margin-left: 150px !important;
+}
+#grid1_virtualContainer {
+	border:1px solid #dddddd
+}
+#grid2_virtualContainer {
+	border:1px solid #dddddd
+}
+#content-area{
+	overflow: auto;
+}
+html {
+    overflow: hidden;
+}

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.enums.PCSmartPhoneAtt;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,7 +32,7 @@ public class DailyPerformanceCodeFinder {
 				.getListCode(companyId);
 		for (AuthorityDailyPerformanceFormat format : listDailyFormat) {
 			boolean defaultInitial = this.authorityFormatInitialDisplayRepository.checkExistData(companyId,
-					format.getDailyPerformanceFormatCode());
+					format.getDailyPerformanceFormatCode(), PCSmartPhoneAtt.PC);
 			DailyPerformanceCodeDto dto = new DailyPerformanceCodeDto(format.getDailyPerformanceFormatCode().v(),
 					format.getDailyPerformanceFormatName().v(), defaultInitial);
 			dailyPerformanceCodeDtos.add(dto);

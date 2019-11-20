@@ -11,7 +11,7 @@ module nts.uk.at.view.kdw006 {
             __viewContext.bind(screenModel);
             let sidebar = 0;
             if(dataShare){
-                sidebar = dataShare.ShareObject;   
+                sidebar = dataShare.ShareObject || 0;
             }
                 
             $("#sidebar").ntsSideBar("active", sidebar);

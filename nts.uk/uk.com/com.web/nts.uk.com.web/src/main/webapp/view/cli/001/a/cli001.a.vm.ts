@@ -7,16 +7,16 @@ module nts.uk.com.view.cli001.a {
         export class ScreenModel {
             items: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
-            currentCodeList: KnockoutObservableArray<any>
+            currentCodeList: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
                 self.items = ko.observableArray([]);
                 this.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText(""), key: "userId", dataType: "string", hidden: true },
-                    { headerText: nts.uk.resource.getText("CLI001_12"), key: "loginId", dataType: "string", width: 100 },
+                    { headerText: nts.uk.resource.getText("CLI001_12"), key: "loginId", dataType: "string", width: 120 },
                     { headerText: nts.uk.resource.getText("CLI001_13"), key: "userName", dataType: "string", width: 170 },
-                    { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string", width: 200, columnCssClass: "col-align-right" },
+                    { headerText: nts.uk.resource.getText("CLI001_14"), key: "lockOutDateTime", dataType: "string", width: 200 },
                     { headerText: nts.uk.resource.getText("CLI001_15"), key: "logType", dataType: "string", width: 300,
                         formatter: v => v == 1 ? '強制ロック' : '自動ロック'
                     },

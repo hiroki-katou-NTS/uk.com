@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.pub.company.AffComHistItem;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
@@ -29,6 +29,7 @@ public class ComPubImp implements SyCompanyPub {
 	@Inject
 	private AffCompanyHistRepository affComHistRepo;
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
 
@@ -55,6 +56,7 @@ public class ComPubImp implements SyCompanyPub {
 		}).filter(c -> c != null).collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public AffCompanyHistExport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
 		
@@ -76,6 +78,7 @@ public class ComPubImp implements SyCompanyPub {
 		return affComHostEx;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public AffCompanyHistExport GetAffComHisBySid(String cid, String sid) {
 		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployee(sid);
@@ -96,6 +99,7 @@ public class ComPubImp implements SyCompanyPub {
 		return affComHostEx;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<StatusOfEmployee> GetListAffComHistByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 		
@@ -163,6 +167,28 @@ public class ComPubImp implements SyCompanyPub {
 		}
 		return result.stream().collect(Collectors.toList());
 
+	}
+
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public List<AffCompanyHistExport> getAffComHisBySids(String cid, List<String> sids) {
+		Map<String, AffCompanyHist> affComHisMap = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sids);
+		List<AffCompanyHistExport> result = new ArrayList<>();
+		sids.stream().forEach(c ->{
+			 AffCompanyHist affComHis = affComHisMap.get(c);
+				if (affComHis == null){
+					result.add(new AffCompanyHistExport(null, Collections.emptyList()));
+					return;
+				}
+				AffCompanyHistByEmployee affComBySid = affComHis.getAffCompanyHistByEmployee(c);
+				AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
+				affComHostEx.setEmployeeId(c);
+				affComHostEx.setLstAffComHistItem(affComBySid.getLstAffCompanyHistoryItem().stream()
+						.map(item -> new AffComHistItem(item.getHistoryId(), item.isDestinationData(), item.getDatePeriod()))
+						.collect(Collectors.toList()));
+				result.add(affComHostEx);
+		});
+		return result;
 	}
 
 }

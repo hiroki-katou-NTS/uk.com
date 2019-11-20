@@ -21,7 +21,7 @@
 
 .placement-wraper {
 	position: relative;
-	height: 470px;
+	height: calc(100vh - 190px);
 	overflow: auto;
 }
 /* Override base */
@@ -37,4 +37,20 @@
 .btn-close {
 	min-width: 85px;
 }
+
+#ver4{
+    z-index: 1;
+    margin-left: calc(100vw - 300px);
+    position: absolute;
+}
+
+#setting{
+	margin-top: 40px;
+    margin-right: -250px;
+    float: right;
+}
+
+#closure{
+	margin-right: 30px;
+    outline: none;
 }

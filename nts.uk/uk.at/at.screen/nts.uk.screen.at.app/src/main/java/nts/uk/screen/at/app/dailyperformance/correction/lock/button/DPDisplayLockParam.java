@@ -10,6 +10,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 
 @Data
 @NoArgsConstructor
@@ -33,5 +34,9 @@ public class DPDisplayLockParam {
 	private boolean showLock;
 	
 	private Integer closureId;
+	
+	private DateRange periodLock;
+	
+	private DPCorrectionStateParam stateParam;
 
 }

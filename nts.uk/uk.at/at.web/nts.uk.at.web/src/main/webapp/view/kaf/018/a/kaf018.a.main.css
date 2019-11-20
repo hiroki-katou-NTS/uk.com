@@ -1,8 +1,10 @@
 .content-area-right {
-	width: 283px;
-	height: 408px;
-	float: left;
+	width: 483px;
+	height: 100px;
 	margin-top:50px;
+	display: inline-block;
+    vertical-align: top;
+    white-space: normal;	
 }
 
 #wkp-list {
@@ -16,7 +18,7 @@
 .content-area-left {
 	margin-left: 20px;
 	margin-top: 10px;
-	float: left;
+	display: inline-block;
 }
 
 .fix-combobox {
@@ -33,6 +35,7 @@
 .format-checkbox {
 	float: left;
 	margin-left: 25px;
+	margin-top: 38px;
 }
 
 .bts-sendMail {
@@ -41,12 +44,10 @@
 
 .btn-excute {
 	float: left;
-	margin-left: 20px;
-	margin-top: 230px;	
 }
 
 .content-left-top {
-	height: 135px;
+	height: 100px;
 	width: : auto;
 }
 
@@ -60,4 +61,21 @@
 
 .clear {
 	clear:both;
+}
+
+#hierarchy {
+	margin-left: 300px;
+    margin-top: -70px !important;
+    position: absolute; 
+}
+#combo-box-tree-component {
+	margin-left: 5px;
+    margin-top: 4px;
+    position: absolute;
+}
+#contents-area {
+	white-space: nowrap;
+}
+html {
+	overflow: hidden;
 }

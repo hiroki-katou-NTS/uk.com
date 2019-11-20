@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -33,7 +35,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	private static final String FIND_BY_KEY;
 
 //	private static final String REMOVE_BY_KEY;
-
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
@@ -107,12 +109,13 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
 			Statement statementU = con.createStatement();
-			statementU.executeUpdate(JDBCUtil.toInsertWithCommonField(updateTableSQL));
+			statementU.executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<WorkTypeOfDailyPerformance> findByKey(String employeeId, GeneralDate processingDate) {
 		Optional<WorkTypeOfDailyPerformance> data = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiWorkType.class)
@@ -125,6 +128,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
 		List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
@@ -154,6 +158,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<KrcdtDaiWorkType> result = new ArrayList<>();

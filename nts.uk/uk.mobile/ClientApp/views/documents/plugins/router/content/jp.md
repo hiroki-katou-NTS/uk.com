@@ -1,31 +1,47 @@
-##### 2. Explaint
-> Sample quote
+##### 1 ビューモデルでナビゲート
 
-- First item list
-- Second item list
+他の画面にナビゲートするために`$goto(component, paramObject)`メソッドを使ってください。
+- `component` はVueコンポーネントかVueコンポーネント名
+- `paramObject` は次の画面に渡される値
 
-**HTML Code:**
-```html
-<div class="sample">
-    <span>Sample html code</span>
-</div>
-```
-
-**Typescript code:**
 ```typescript
-class ClassName {
-    constructor() {
-        // sample contructor
-    }
+export class OriginComponent extends Vue {
 
-    choose() {
-        // sample method
+    gotoComponent() {
+        let self = this;
+        self.$goto('DestinationComponent', { 
+            id: 100, 
+            name: '太郎'
+        });
     }
 }
 ```
+次の画面では渡された値をもらうために`params`というプロパティを定義してください。
+``` typescript
+export class DestinationComponent extends Vue {
 
-##### 3. API
+    @Prop()
+    public readonly params : {
+        id: number,
+        name: string
+    }
 
-id | name | content
-----|----|------
-id | name | content
+}
+```
+##### 2 ビューでナビゲート
+
+ビューでも`v-on:click`を使ってナビゲートできる。
+
+```html
+<a class="btn btn-link" v-on:click="$goto('SampleComponent')">{{'go_to_sample' | i18n}}</a>
+```
+
+`Vue-router`の`<router-link>`タグも使える。
+
+```html
+<router-link to="/sample">{{'go_to_sample' | i18n}}</router-link>
+
+<router-link v-bind:to="{ name: 'SampleComponent' }">{{'go_to_sample' | i18n}}</router-link>
+```
+
+著者: **Nguyen Van Vuong**

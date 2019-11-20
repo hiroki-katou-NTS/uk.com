@@ -1,42 +1,25 @@
-import '@app/index';
 import '@views/index';
 
-import { router } from '@app/core/router';
-import { Vue, Vuex, VueRouter } from '@app/provider';
-import { bstrp, ajax, resources, i18n, mask, modal, dialog, picker, validate, Language } from '@app/plugins';
+import '@app/index';
+import '@app/plugins';
 
-import { obj } from '@app/utils';
-import { LanguageBar } from '@app/plugins';
-import { SideMenuBar, NavMenuBar } from '@app/components';
+import { Vue } from '@app/provider';
+import { RootApp } from '@app/core';
+import { obj, browser } from '@app/utils';
 
-// use ajax request
-Vue.use(ajax, 'webapi');
+import { SideMenuBar, NavMenuBar, SideMenu } from '@app/components';
+import { resources, Language, LanguageBar, } from '@app/plugins/i18n';
 
-Vue.use(bstrp);
-Vue.use(modal);
-Vue.use(dialog);
-
-Vue.use(i18n);
-Vue.use(mask);
-Vue.use(picker);
-
-Vue.use(validate);
-
-Vue.use(Vuex);
-Vue.use(VueRouter);
-
-Vue.config.silent = true;
+// Vue.config.silent = true;
 Vue.config.devtools = true;
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 
-new Vue({
-    router,
+new (RootApp.extend({
     components: {
         'nav-bar': NavMenuBar,
         'side-bar': SideMenuBar,
         'language-bar': LanguageBar
     },
-    el: document.querySelector('body>#app_uk_mobile'),
     computed: {
         pgName: {
             get() {
@@ -45,18 +28,35 @@ new Vue({
         }
     },
     beforeCreate() {
-        const self = this,
-            rapi = '/i18n/resources/mobile/get';
+        const self = this;
 
-        self.$http.get(rapi)
-            .then((resp: { data: any }) => {
-                obj.merge(resources,
-                    {
-                        jp: resp.data
-                    });
+        self.$mask('show', { message: true, opacity: 0.75 });
+
+        browser.private
+            .then((prid: boolean) => {
+                if (browser.version === 'Safari 10' && prid) {
+                    self.$modal.warn({ messageId: 'Msg_1533' });
+                }
+            })
+            .then(() => self.$auth.token)
+            .then((tk: string | null) => {
+                if (tk) {
+                    // xử lý các hàm lấy dữ liệu cần thiết ở đây
+                    SideMenu.reload();
+                }
+            })
+            .then(() => self.$http.resources)
+            .then((resr: any) => {
+                obj.merge(resources.jp, resr, true);
             })
             .then(() => {
                 Language.refresh();
+            })
+            .then(() => {
+                self.$mask('hide');
+            })
+            .catch(() => {
+                self.$mask('hide');
             });
     }
-});
+}))().$mount(document.querySelector('body>#app_uk_mobile'));

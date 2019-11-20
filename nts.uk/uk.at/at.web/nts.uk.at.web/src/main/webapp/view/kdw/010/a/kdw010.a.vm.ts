@@ -72,6 +72,9 @@ module nts.uk.at.view.kdw010.a {
                     self.joinNameIgnoreWorkType(self.joinNameWorkTypeMethod(newIgnoreWorkTypes));
                     self.selectedCodeIgnoreWorkType(newIgnoreWorkTypes.map(e => e.code));
                 });
+                window.onresize = function(event) {
+                	$(".nts-input1").width(window.innerWidth - 360);                   
+                };
 
             }
             startPage(): JQueryPromise<any> {

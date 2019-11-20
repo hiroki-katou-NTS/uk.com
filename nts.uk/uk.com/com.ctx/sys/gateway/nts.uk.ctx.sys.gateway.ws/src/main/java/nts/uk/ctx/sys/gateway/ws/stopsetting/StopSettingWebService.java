@@ -7,6 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.stopsetting.SaveStopSettingCommand;
 import nts.uk.ctx.sys.gateway.app.command.stopsetting.SaveStopSettingCommandHandler;
@@ -33,6 +34,12 @@ public class StopSettingWebService extends WebService {
 	@Path("save")
 	public void save(SaveStopSettingCommand command) {
 		this.saveHandler.handle(command);
+	}
+	
+	@POST
+	@Path("isSystemStop")
+	public JavaTypeResult<Boolean> isSystemStop() {
+		return new JavaTypeResult<Boolean>(this.finder.isSystemStop());
 	}
 
 }

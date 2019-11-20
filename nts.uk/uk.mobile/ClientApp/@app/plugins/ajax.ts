@@ -1,7 +1,7 @@
-import { $, location, csrf, obj } from '@app/utils';
-import { Vue, VueConstructor, ComponentOptions } from '@app/provider';
+import { $, obj, auth } from '@app/utils';
+import { Vue, VueConstructor } from '@app/provider';
 
-import { $dialog } from '@app/plugins';
+import { $dialog } from '@app/plugins/dialog';
 
 interface IFetchOption {
     url: string;
@@ -9,7 +9,7 @@ interface IFetchOption {
     method: 'get' | 'post' | 'push' | 'patch' | 'delete';
     data?: any;
     headers?: any;
-    pg?: 'at' | 'pr' | 'com';
+    pg?: 'at' | 'pr' | 'com' | 'hr';
     responseType?: 'blob' | 'arraybuffer' | 'document' | 'json' | 'text' | null;
     prefixUrl?: 'webapi' | string;
 }
@@ -17,6 +17,7 @@ interface IFetchOption {
 const WEB_APP_NAME = {
     at: 'nts.uk.at.web',
     pr: 'nts.uk.pr.web',
+    hr: 'nts.uk.hr.web',
     com: 'nts.uk.com.web'
 }, ajax = {
     install(vue: VueConstructor<Vue>, prefixUrl: string) {
@@ -24,20 +25,26 @@ const WEB_APP_NAME = {
             return new Promise(function (resolve, reject) {
                 if (!$.isObject(opt)) {
                     reject('No required parameters - "url" and "method".');
+
                     return;
                 }
 
                 if ($.isEmpty(opt.url)) {
                     reject('Parameter "url" is required.');
+
                     return;
                 } else {
+                    let env: { API_URL?: string } = process.env,
+                        hostName: string = window.location.origin;
+
                     $.extend(opt, {
-                        url: (`${['localhost', '0.0.0.0'].indexOf(window.location.hostname) > -1 && window.location.port === '3000' ? 'http://localhost:8080' : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8080')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 
                 if ($.isEmpty(opt.method)) {
                     reject('Parameter "method" is required.');
+
                     return;
                 }
 
@@ -51,13 +58,16 @@ const WEB_APP_NAME = {
                             switch (opt.type.toLowerCase()) {
                                 case 'form':
                                     setHeaders({ 'Content-Type': 'multipart/form-data' });
+
                                     return Object.prototype.toString.call(opt.data) === '[object FormData]' ? opt.data : new FormData(opt.data);
                                 case 'url':
                                     setHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
                                     return JSON.stringify(opt.data);
                                 case 'json':
                                     setHeaders({ 'Content-Type': 'application/json' });
-                                    return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data);
+
+                                    return isJSON(opt.data) ? opt.data : JSON.stringify(opt.data).replace(/^"|"$/g, '');
                                 default:
                                     return opt.data;
                             }
@@ -69,6 +79,7 @@ const WEB_APP_NAME = {
                     }, isJSON = (json: string) => {
                         try {
                             JSON.parse(json);
+
                             return true;
                         } catch (e) {
                             return false;
@@ -101,6 +112,7 @@ const WEB_APP_NAME = {
                                 headers[key] = val;
                             }
                         }
+
                         return headers;
                     };
 
@@ -120,8 +132,8 @@ const WEB_APP_NAME = {
                 // authentication 
                 setHeaders({
                     'MOBILE': 'true',
-                    'PG-Path': location.current.serialize(),
-                    'X-CSRF-TOKEN': csrf.getToken()
+                    'PG-Path': window.location.href,
+                    'X-CSRF-TOKEN': auth.token
                 });
 
                 if (opt.responseType) {
@@ -160,13 +172,20 @@ const WEB_APP_NAME = {
                         resolve({ data: {}, headers: parseHeaders(xhr) });
                     } else {
                         if (self) {
-                            self.$modal($dialog(), {
-                                message: xhr.response
-                            }, {
-                                    title: 'Business exception'
-                                }).then(() => {
-                                    reject(xhr);
-                                });
+                            if (xhr.status == 401) {
+                                // Unauthorize
+                                self.$goto.login();
+                            } else {
+                                self.$modal($dialog(),
+                                    {
+                                        message: xhr.response
+                                    }, {
+                                        title: 'Business exception'
+                                    })
+                                    .then(() => {
+                                        reject(xhr);
+                                    });
+                            }
                         } else {
                             reject(xhr);
                         }
@@ -246,7 +265,30 @@ const WEB_APP_NAME = {
                                     console.log(reason);
                                 });
                             }.bind(self)
-                        }
+                        },
+                        enum: function (enums?: Array<String>) {
+                            enums = enums || self.$options.enums;
+
+                            if (enums && enums.length > 0) {
+                                return self.$http.post('/enums/map', enums);
+                            }
+
+                            return new Promise((resolve) => resolve([]));
+                        }.bind(self)
+                    }
+                });
+
+                // get all resources on serve
+                Object.defineProperty(self.$http, 'resources', {
+                    get() {
+                        let rapi: string = '/i18n/resources/mobile/get',
+                            https: Array<Promise<{}>> = [0, 1, 2, 3, 4].map((m: number) => self.$http.get(`${rapi}/${m}`));
+
+                        return new Promise((resolve) => {
+                            Promise.all(https).then((responses: any[]) => {
+                                resolve(Object.assign({}, ...responses.map((resp) => resp.data)));
+                            });
+                        });
                     }
                 });
             }
@@ -254,4 +296,4 @@ const WEB_APP_NAME = {
     }
 };
 
-export { ajax };
+Vue.use(ajax, 'webapi');

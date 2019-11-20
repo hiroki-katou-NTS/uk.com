@@ -26,7 +26,7 @@ module nts.uk.ui.jqueryExtentions {
             let virtualization = !util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
             let virtualizationMode = !util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
             let multiple = !_.isNil(options.multiple) ? options.multiple : false;
-            let isFilter = ko.unwrap(!util.isNullOrUndefined(data.filter) ? data.filter : false);
+            let isFilter = ko.unwrap(!util.isNullOrUndefined(options.filter) ? options.filter : false);
             
             // Default.
             let showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;

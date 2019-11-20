@@ -17,6 +17,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -47,6 +49,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	@Inject
+	private OvertimeService overtimeService;
 
 	@Override
 	public DataWork getDataWork(String companyId, String sId, GeneralDate appDate,
@@ -95,6 +99,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
 			if (CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+				result = this.workTypeRepository.findNotDeprecated(companyID).stream()
+				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 				return result;
 			}
 			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType::getWorkTypeCode));
@@ -186,6 +192,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 				}
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
+
 			WorkTimeSetting workTime = workTimeSettingRepository.findByCode(companyId,
 					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
 					.orElseGet(()->{
@@ -193,7 +200,24 @@ public class DataWorkServiceImpl implements IDataWorkService {
 					});
 			selectedData.setSelectedWorkTimeCd(workTime.getWorktimeCode().toString());
 			selectedData.setSelectedWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().v());
+			
+			String wkTimeCd = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get()
+					.toString();
+			
+			selectedData.setSelectedWorkTimeCd(wkTimeCd);
+			//12.マスタ勤務種類、就業時間帯データをチェック
+			CheckWorkingInfoResult checkResult = this.overtimeService.checkWorkingInfo(companyId, null, wkTimeCd);
+			if (checkResult.isWkTimeError()) {
+				selectedData.setSelectedWorkTimeCd(workTimeTypes.get(0));
+			}
+			
+            wkTimeCd = selectedData.getSelectedWorkTimeCd();
+            workTimeSettingRepository.findByCode(companyId, wkTimeCd).ifPresent(wkTime -> {
+                selectedData.setSelectedWorkTimeName(wkTime.getWorkTimeDisplayName().getWorkTimeName().v());
+            });
+
 		}
+		
 		// ドメイン「所定時間設定」.「所定時間帯設定」「時間帯(使用区分付き)」の開始時刻、終了時刻を取得する
 		Optional<PredetemineTimeSetting> opPredetemineTimeSetting = 
 				predetemineTimeSettingRepository.findByWorkTimeCode(companyId, selectedData.getSelectedWorkTimeCd());

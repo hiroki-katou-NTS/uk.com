@@ -1,8 +1,9 @@
 #contents-area {
 	overflow-x: hidden;
+	height: 545px;
+	padding-y: 5px !important;
 }
 .label:FIRST-CHILD {
-	margin-top: 5px;
 	margin-left: 15px;
 	font-size: large;
 }
@@ -26,16 +27,15 @@
    	line-height: 37px !important;
 }
 #premium-set-tbl-b {
-	margin-top: 10px;
+	margin-top: 9px;
 	margin-left: 10px;
 }
 #premium-set-tbl-b tr, th, td{ 
 	border: 1px solid #999999
 }
 #premium-set-tbl-b td, th { 
-	padding: 2px;
 	vertical-align: middle;
-	height: 36px;
+	height: 25px;
 	padding-left: 5px;
 	padding-right: 5px;
 }
@@ -60,4 +60,8 @@
 button.nts-switch-button {
 	height: 30px;
 	width: 93px;
+}
+
+#functions-area-bottom {
+	height: 55px !important;
 }

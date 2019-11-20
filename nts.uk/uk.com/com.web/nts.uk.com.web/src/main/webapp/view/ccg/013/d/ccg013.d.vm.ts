@@ -58,11 +58,7 @@
             this.newCurrentCodeList = ko.observableArray([]);
             
             //Set System data to dropdownlist
-            self.systemList = ko.observableArray([
-                new SystemModel(0, nts.uk.resource.getText("Enum_System_COMMON")),
-                new SystemModel(1, nts.uk.resource.getText("Enum_System_TIME_SHEET")),
-              
-            ]);
+            self.systemList = ko.observableArray([]);
             
             self.systemName = ko.observable('');
             self.currentSystemCode = ko.observable(0);
@@ -83,7 +79,7 @@
             var titleBar = nts.uk.ui.windows.getShared("titleBar");
             self.titleBar(titleBar);
 
-            $.when(self.findAllDisplay()).done(function(){
+            $.when(self.findAllDisplay(), self.getSystemEnum()).done(function(){
                 
                 if (titleBar.treeMenus) {
                     _.forEach(titleBar.treeMenus, function(item: any) {
@@ -150,6 +146,24 @@
             
             return dfd.promise();
         }
+        
+        getSystemEnum(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+           
+            /** Get EditMenuBar*/
+            service.getEditMenuBar().done(function(editMenuBar: any) {
+                _.forEach(editMenuBar.listSystem, function(item) {
+                    self.systemList.push(new SystemModel(item.value, item.localizedName));
+                }); 
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject();
+                alert(error.message);
+            });
+            return dfd.promise();
+        }
+        
         
         findBySystem(system: number): void {
             var self = this;
