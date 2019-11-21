@@ -707,7 +707,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 opAppBefore: self.opAppBefore,
                 beforeAppStatus: self.beforeAppStatus,
                 actualStatus: self.actualStatus,
-                actualLst: self.actualLst
+                actualLst: self.actualLst,
+                overtimeSettingDataDto: self.overtimeSettingDataDto
             };
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);

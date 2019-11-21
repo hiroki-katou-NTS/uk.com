@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 /**
  * 
  * @author Doan Duy Hung
@@ -111,4 +112,9 @@ public class UpdateOvertimeCommand {
 	
 	Integer user;
     Integer reflectPerState;
+    
+    /**
+	 * 申請共通設定
+	 */
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 
 @Getter
@@ -141,4 +142,9 @@ public class CreateOvertimeCommand {
 	 * 実績
 	 */
 	private List<OvertimeColorCheck> actualLst;
+	
+	/**
+	 * 申請共通設定
+	 */
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 }

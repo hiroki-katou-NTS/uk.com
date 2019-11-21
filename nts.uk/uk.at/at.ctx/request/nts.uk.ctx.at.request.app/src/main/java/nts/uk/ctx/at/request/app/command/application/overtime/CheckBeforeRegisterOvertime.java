@@ -18,6 +18,8 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -27,26 +29,16 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertim
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
-import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -58,25 +50,11 @@ public class CheckBeforeRegisterOvertime {
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject
 	private IFactoryOvertime factoryOvertime;
-	@Inject
-	private OvertimeRestAppCommonSetRepository overTimeSetRepo;
 	@Inject 
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
-	
-	@Inject
-	private IOvertimePreProcess iOvertimePreProcess;
-	
-	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	
-	@Inject
-	private AppOvertimeSettingRepository appOvertimeSettingRepository;
-	
-	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	public ColorConfirmResult checkBeforeRegisterColor(CreateOvertimeCommand command) {
 		// 会社ID
@@ -103,7 +81,7 @@ public class CheckBeforeRegisterOvertime {
 		List<OvertimeColorCheck> actualLst = command.getActualLst();
 
 		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate(), command.getAppID(),
-				opAppBefore, beforeAppStatus, actualStatus, actualLst);
+				opAppBefore, beforeAppStatus, actualStatus, actualLst, command.getOvertimeSettingDataDto());
 	}
 
 	public OvertimeCheckResultDto CheckBeforeRegister(CreateOvertimeCommand command) {
@@ -130,10 +108,10 @@ public class CheckBeforeRegisterOvertime {
 	}
 
 	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate, String appID,
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst) {
+			Optional<Application_New> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst, OvertimeSettingDataDto overtimeSettingDataDto) {
+		OvertimeSettingData overtimeSettingData = overtimeSettingDataDto.toDomain();
 		// 社員ID
 		String employeeId = app.getEmployeeID();
-		String companyID =  app.getCompanyID();
 		// 2-1.新規画面登録前の処理を実行する
 		if (null == appID) {
 			newBeforeRegister.processBeforeRegister(app,overtime.getOverTimeAtr().value, checkOver1Year, Collections.emptyList());
@@ -149,46 +127,22 @@ public class CheckBeforeRegisterOvertime {
 		// 時間①～フレ超過時間 まで 背景色をピンク
 		List<OverTimeInput> overtimeInputs = new ArrayList<>(); 
 		overtimeInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.NORMALOVERTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.NORMALOVERTIME));
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, app.getEmployeeID(), 1, 
-				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), app.getAppDate());
-		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = this.overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		List<OvertimeColorCheck> otTimeLst = new ArrayList<>();
-		List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
-		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
-			otTimeLst.add(OvertimeColorCheck.createApp(
-					AttendanceType.NORMALOVERTIME.value, 
-					overtimeFrame.getOvertimeWorkFrNo().v().intValue(), 
-					null));
-		}
-		boolean appOvertimeNightFlg = appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value == 1 ? true : false;
-		boolean flexFLag = false;
-		if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.ALWAYSDISPLAY){
-			flexFLag = true;
-		} else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr() == FlexExcessUseSetAtr.DISPLAY){
-			Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
-					.getBySidAndStandardDate(app.getEmployeeID(), app.getAppDate());
-			if(personalLablorCodition.isPresent()){
-				if(personalLablorCodition.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK){
-					flexFLag = true;
-				}
-			}
-		}
-		if(appOvertimeNightFlg) {
-			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 11, null));
-		}
-		if(flexFLag) {
-			otTimeLst.add(OvertimeColorCheck.createApp(AttendanceType.NORMALOVERTIME.value, 12, null));
-		}
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSetting = overtimeSettingData.overtimeRestAppCommonSet;
+		List<OvertimeColorCheck> otTimeLst = overtimeInputs.stream()
+				.map(x -> new OvertimeColorCheck(
+						x.getAttendanceType().value, 
+						x.getFrameNo(), 
+						x.getApplicationTimeValue(), 
+						0, 
+						null, 
+						0, 
+						null, 
+						0))
+				.collect(Collectors.toList());
 		PreActualColorResult preActualColorResult = null;
 		if(app.getPrePostAtr()==PrePostAtr.POSTERIOR) {
-			UseAtr preExcessDisplaySetting = overTimeSettingOpt.get().getPreExcessDisplaySetting();
-			AppDateContradictionAtr performanceExcessAtr = overTimeSettingOpt.get().getPerformanceExcessAtr();
-			otTimeLst = otTimeLst.stream().map(x -> {
-				Integer value = overtimeInputs.stream()
-				.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
-				.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
-				return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
-			}).collect(Collectors.toList());
+			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSetting.getPreExcessDisplaySetting();
+			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSetting.getPerformanceExcessAtr();
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			preActualColorResult = preActualColorCheck.preActualColorCheck(
 					preExcessDisplaySetting, 
