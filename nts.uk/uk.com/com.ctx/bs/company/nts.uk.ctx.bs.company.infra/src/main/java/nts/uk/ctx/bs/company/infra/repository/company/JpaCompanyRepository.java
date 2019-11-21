@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -72,9 +71,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 			+ " AND c.isAbolition = :isAbolition "
 			+ " ORDER BY c.companyCode ASC ";
 	
-	private static final String GET_NOT_ABOLITION_BY_CID = "SELECT c, d FROM BcmmtCompanyInfor c, BcmmtAddInfor d "
-			+ " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 "
-			+ " AND c.bcmmtCompanyInforPK.companyId = d.bcmmtAddInforPK.companyId";
+	private static final String GET_NOT_ABOLITION_BY_CID = "SELECT c, d FROM BcmmtCompanyInfor c"
+			+ " LEFT JOIN  BcmmtAddInfor d "
+			+ " ON c.bcmmtCompanyInforPK.companyId = d.bcmmtAddInforPK.companyId"
+			+ " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
 //	/**
 //	 * @param entity
 //	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
