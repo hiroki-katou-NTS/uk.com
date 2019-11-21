@@ -12,7 +12,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         printCfg: KnockoutObservableArray<model.ItemModel>;
         lineFeedCodeCls: KnockoutObservableArray<model.ItemModel>;
 
-        screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
+        screenMode : number;
         ccg001ComponentOption: GroupOption;
         startDate: KnockoutObservable<string> = ko.observable('');
         startDateJp: KnockoutObservable<string> = ko.observable('');
@@ -50,7 +50,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             fdNumber: 0
         }));
 
-        screenMode : number;
+
 
         constructor() {
             let self = this;
@@ -130,21 +130,21 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
 
             let data: any = {
-                empInsReportSettingExport: {
+                empInsReportSetting: {
                     submitNameAtr: self.empInsReportSetting().submitNameAtr(),
                     outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
                     officeClsAtr: self.empInsReportSetting().officeClsAtr(),
                     myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-                empInsReportSettingTxtExport: {
-                    officeAtr : self.empInsReportTxtSetting().officeAtr,
-                    fdNumber : self.empInsReportTxtSetting().fdNumber,
-                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode
+                empInsRptTxtSetting: {
+                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
                 },
-                listEmployeeId,
-                startPeriod: moment.utc(self.startDate(), "YYYY/MM/DD") ,
-                endPeriod: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                empIds: listEmployeeId,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
             service.exportFilePDF(data).done()
