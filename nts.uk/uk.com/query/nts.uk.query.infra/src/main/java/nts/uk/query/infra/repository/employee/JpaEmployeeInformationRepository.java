@@ -52,11 +52,14 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.endD >= :refDate";
 	
 	// 社員の所属部門を取得する
-	private static final String DEPARTMENT_QUERY = "SELECT dph.sid, di.cd, di.name, di.bsymtDepartmentInfoPK.depId  "
+	private static final String DEPARTMENT_QUERY = "SELECT dph.sid, di.bsymtDepartmentInforPK.company, di.deleteFlag,di.bsymtDepartmentInforPK.departmentHistoryId"
+													+ " di.bsymtDepartmentInforPK.departmentHistoryId , di.departmentId "
+													+ "di.departmentCode ,di.departmentName,di.departmentGeneric,"
+													+ "di.departmentDisplayName , di.hierarchyCode , di.departmentExternalCode"
 			+ " FROM BsymtAffiDepartmentHist dph"
 			+ " LEFT JOIN BsymtAffiDepartmentHistItem dphi ON dphi.hisId = dph.hisId AND dph.cid = :cid"
 			+ " LEFT JOIN BsymtDepartmentHist dh ON dphi.depId = dh.bsymtDepartmentHistPK.depId AND dh.bsymtDepartmentHistPK.cid =:cid"
-			+ " LEFT JOIN BsymtDepartmentInfo di ON di.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId AND di.bsymtDepartmentInfoPK.cid =:cid"
+			+ " LEFT JOIN BsymtDepartmentInfor di ON di.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId AND di.bsymtDepartmentInfoPK.cid =:cid"
 			+ " WHERE dph.sid IN :listSid"
 			+ " AND dph.strDate <= :refDate"
 			+ " AND dph.endDate >= :refDate"
@@ -192,14 +195,29 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 				}).findAny();
 
 				if (department.isPresent()) {
-					String departmentCode = (String) department.get()[1];
-					String departmentId = (String) department.get()[2];
-					String departmentName = (String) department.get()[3];
+					String companyId = (String) department.get()[1];
+					boolean deleteFlag = (boolean) department.get()[2];
+					String departmentHistoryId = (String) department.get()[3];
+					String departmentId = (String) department.get()[4];
+					String departmentCode = (String) department.get()[5];
+					String departmentName = (String) department.get()[6];
+					String departmentGeneric = (String) department.get()[7];
+					String departmentDisplayName = (String) department.get()[8];
+					String hierarchyCode = (String) department.get()[9];
+					String departmentExternalCode = (String) department.get()[10];
+					
 					employeeInfoList.get(empId)
 					.setDepartment(Optional.of(DepartmentModel.builder()
-							.departmentCode(departmentCode)
+							.companyId(companyId)
+							.deleteFlag(deleteFlag)
+							.departmentHistoryId(departmentHistoryId)
 							.departmentId(departmentId)
+							.departmentCode(departmentCode)
 							.departmentName(departmentName)
+							.departmentGeneric(departmentGeneric)
+							.departmentDisplayName(departmentDisplayName)
+							.hierarchyCode(hierarchyCode)
+							.departmentExternalCode(departmentExternalCode)
 							.build()));
 				}
 			});
