@@ -31,16 +31,8 @@ public class AppOvertimeWebService {
 				startParam.prePostAtr);
 	}
 	
-	public void changeAppDate(OvertimeChangeDateParam changeDateParam) {
-		appOvertimeFinder.changeAppDate(
-				changeDateParam.overtimeAtr, 
-				changeDateParam.rootAtr, 
-				changeDateParam.overtimeInstructionAtr, 
-				changeDateParam.employeeID, 
-				changeDateParam.appDate, 
-				changeDateParam.startTime, 
-				changeDateParam.endTime, 
-				changeDateParam.prePostAtr);
+	public void changeAppDate() {
+		
 	}
 	
 	public void changeWorkType() {
