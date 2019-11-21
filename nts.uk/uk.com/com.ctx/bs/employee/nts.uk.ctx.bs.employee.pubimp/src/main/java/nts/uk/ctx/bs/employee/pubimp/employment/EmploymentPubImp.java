@@ -30,6 +30,7 @@ import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentInfoExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -227,6 +228,71 @@ public class EmploymentPubImp implements SyEmploymentPub {
 						.employmentName(emp.getEmploymentName()).period(hist.getPeriod()).build());
 		}
 		return mapResult;
+	}
+
+	@Override
+	public List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam, Optional<Boolean> getEmpExternalCodeParam,
+			Optional<Boolean> getMemoParam, Optional<Boolean> getempCommonMasterIDParam,
+			Optional<Boolean> getempCommonMasterItemIDParam) {
+				
+		Boolean getEmploymentName = true;
+		Boolean getEmpExternalCode = false;
+		Boolean getMemo = false;
+		Boolean getempCommonMasterID = false;
+		Boolean getempCommonMasterItemID = false;
+		
+		if (!getEmploymentNameParam.isPresent()) {
+			getEmploymentName = true;
+		}else{
+			getEmploymentName = getEmploymentNameParam.get();
+		}
+		
+		if (!getEmpExternalCodeParam.isPresent()) {
+			getEmpExternalCode = false;
+		}else{
+			getEmpExternalCode = getEmpExternalCodeParam.get();
+		}
+		
+		if (!getMemoParam.isPresent()) {
+			getMemo = false;
+		}else{
+			getMemo = getMemoParam.get();
+		}
+		
+		if (!getempCommonMasterIDParam.isPresent()) {
+			getempCommonMasterID = false;
+		}else{
+			getempCommonMasterID = getempCommonMasterIDParam.get();
+		}
+		
+		if (!getempCommonMasterItemIDParam.isPresent()) {
+			getempCommonMasterItemID = false;
+		}else{
+			getempCommonMasterItemID = getempCommonMasterItemIDParam.get();
+		}
+		
+		List<Employment> listEmployment = this.employmentRepository.findAll(cid);
+		if (listEmployment.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<EmploymentInfoExport> result = new ArrayList<>();
+		
+		for (Employment employment : listEmployment) {
+			EmploymentInfoExport employmentInfoExport = EmploymentInfoExport.builder()
+					.companyId(employment.getCompanyId().toString())
+					.employmentCode(employment.getEmpExternalCode().toString())
+					.employmentName(getEmploymentName == true ? employment.getEmploymentName().toString() : null)
+					.empExternalCode(getEmpExternalCode == true ? employment.getEmpExternalCode().toString() : null)
+					.memo(getMemo == true ? employment.getMemo().toString() : null)
+					.empCommonMasterId(getempCommonMasterID == true && employment.getEmpCommonMasterId().isPresent() ? employment.getEmpCommonMasterId().get() : null)
+					.empCommonMasterItemId(getempCommonMasterItemID == true && employment.getEmpCommonMasterItemId().isPresent() ? employment.getEmpCommonMasterItemId().get() : null)
+					.build();
+			
+			result.add(employmentInfoExport);
+		}
+		
+		return result;
 	}
 
 }
