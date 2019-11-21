@@ -163,7 +163,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     //A1_10
                     //Check
                     if (fullName.length() >= 28) {
-                        detachText(45, 434, element.getFullName().substring(29, element.getFullName().length()), 12, textBuilder);
+                        detachText(45, 434, element.getFullName().substring(28, element.getFullName().length()), 12, textBuilder);
                     }
                 }
                 //A2_1
