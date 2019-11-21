@@ -80,7 +80,7 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
         employee.forEach((EmployeeInfoEx e) ->{
 
             NotifiOfChangInNameInsPerExportData temp = new NotifiOfChangInNameInsPerExportData();
-            Optional<EmpInsHist> mEmpInsHist = mEmpInsHistRepository.getEmpInsHistById(cid,e.getEmployeeId());
+            Optional<EmpInsHist> mEmpInsHist = mEmpInsHistRepository.getEmpInsHistById(cid,e.getEmployeeId(),fillingDate);
             if(!mEmpInsHist.isPresent()){
                 return;
             }
