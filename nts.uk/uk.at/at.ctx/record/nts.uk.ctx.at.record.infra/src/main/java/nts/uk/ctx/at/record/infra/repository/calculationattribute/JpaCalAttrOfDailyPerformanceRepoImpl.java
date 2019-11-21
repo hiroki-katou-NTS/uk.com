@@ -19,7 +19,6 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
@@ -307,35 +306,50 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT c, ot, f, ho FROM KrcstDaiCalculationSet c ");
-		query.append(" LEFT JOIN KrcstOtAutoCalSet ot ON c.overTimeWorkId = ot.overTimeWorkId ");
-		query.append(" LEFT JOIN KrcstFlexAutoCalSet f ON c.flexExcessTimeId = f.flexExcessTimeId ");
-		query.append(" LEFT JOIN KrcstHolAutoCalSet ho ON c.holWorkTimeId = ho.holWorkTimeId ");
-		query.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
-		query.append("AND c.krcstDaiCalculationSetPK.ymd IN :date");
-		
-		TypedQueryWrapper<Object[]> tCalcQuery=  this.queryProxy().query(query.toString(), Object[].class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			List<Object[]> calces = tCalcQuery.setParameter("ids", p.keySet())
-								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet())).getList();
-			calces = calces.stream().filter(e -> {
-				KrcstDaiCalculationSet c = (KrcstDaiCalculationSet) e[0];
-				return p.get(c.krcstDaiCalculationSetPK.sid).contains(c.krcstDaiCalculationSetPK.ymd);
-			}).collect(Collectors.toList());
-			if (!calces.isEmpty()) {
-				result.addAll(calces.stream().map(e -> {
-					KrcstDaiCalculationSet c = (KrcstDaiCalculationSet) e[0];
-					KrcstOtAutoCalSet ot = (KrcstOtAutoCalSet) e[1];
-					KrcstFlexAutoCalSet flex = (KrcstFlexAutoCalSet) e[2];
-					KrcstHolAutoCalSet holi = (KrcstHolAutoCalSet) e[3];
-					return toDomain(c, flex, holi, ot);
-				}).collect(Collectors.toList()));
+    	List<String> employeeIds = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> dates = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	String subEmp = NtsStatement.In.createParamsString(employeeIds);
+    	String subDate = NtsStatement.In.createParamsString(dates);
+		StringBuilder query = new StringBuilder("SELECT * FROM KRCST_DAI_CALCULATION_SET c  ");
+		query.append(" LEFT JOIN KRCST_OT_AUTO_CAL_SET ot ON c.OVER_TIME_WORK_ID = ot.OVER_TIME_WORK_ID  ");
+		query.append(" LEFT JOIN KRCST_FLEX_AUTO_CAL_SET f ON c.FLEX_EXCESS_TIME_ID = f.FLEX_EXCESS_TIME_ID  ");
+		query.append(" LEFT JOIN KRCST_HOL_AUTO_CAL_SET ho ON c.HOL_WORK_TIME_ID = ho.HOL_WORK_TIME_ID ");
+		query.append(" WHERE c.SID IN (" + subEmp + ")");
+		query.append(" AND c.YMD IN (" + subDate  + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			for (int i = 0; i < employeeIds.size(); i++) {
+				stmt.setString(i + 1, employeeIds.get(i));
 			}
-		});
-		return result;
+			
+			for (int i = 0; i < dates.size(); i++) {
+				stmt.setDate(1 + i + employeeIds.size(), Date.valueOf(dates.get(i).localDate()));
+			}
+			
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				return new CalAttrOfDailyPerformance(rec.getString("SID"), 
+						rec.getGeneralDate("YMD"), 
+						new AutoCalFlexOvertimeSetting(new AutoCalSetting(EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_LIMIT_SET"), TimeLimitUpperLimitSetting.class), 
+																			EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"), AutoCalAtrOvertime.class))), 
+						new AutoCalRaisingSalarySetting(rec.getInt("BONUS_PAY_SPE_CAL_SET") == 1, 
+														rec.getInt("BONUS_PAY_NORMAL_CAL_SET") == 1), 
+						new AutoCalRestTimeSetting(
+								newAutoCalcSetting(rec.getInt("HOL_WORK_TIME_CAL_ATR"), rec.getInt("HOL_WORK_TIME_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("LATE_NIGHT_TIME_CAL_ATR"), rec.getInt("LATE_NIGHT_TIME_LIMIT_SET"))), 
+						new AutoCalOvertimeSetting(
+								newAutoCalcSetting(rec.getInt("EARLY_OVER_TIME_CAL_ATR"), rec.getInt("EARLY_OVER_TIME_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("EARLY_MID_OT_CAL_ATR"), rec.getInt("EARLY_MID_OT_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("NORMAL_OVER_TIME_CAL_ATR"), rec.getInt("NORMAL_OVER_TIME_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("NORMAL_MID_OT_CAL_ATR"), rec.getInt("NORMAL_MID_OT_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("LEGAL_OVER_TIME_CAL_ATR"), rec.getInt("LEGAL_OVER_TIME_LIMIT_SET")),
+								newAutoCalcSetting(rec.getInt("LEGAL_MID_OT_CAL_ATR"), rec.getInt("LEGAL_MID_OT_LIMIT_SET"))), 
+						new AutoCalcOfLeaveEarlySetting(rec.getInt("LEAVE_EARLY_SET") == 1,
+														rec.getInt("LEAVE_LATE_SET")  == 1),
+						new AutoCalcSetOfDivergenceTime(getEnum(rec.getInt("DIVERGENCE_TIME"), DivergenceTimeAttr.class)));
+			});
+		}
 	}
 
 }

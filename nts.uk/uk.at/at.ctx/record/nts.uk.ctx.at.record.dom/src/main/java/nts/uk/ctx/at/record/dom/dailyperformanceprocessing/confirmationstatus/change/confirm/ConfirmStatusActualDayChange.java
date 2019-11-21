@@ -51,7 +51,10 @@ public class ConfirmStatusActualDayChange {
 
 	// [No.584]日の実績の確認状況を取得する（NEW）
 	public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
-			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
+			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt, boolean clearState) {
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> optIndentity = iFindDataDCRecord.findIdentityByKey(companyId);
 		if (!optIndentity.isPresent() || !optIndentity.get().isUseConfirmByYourself())
@@ -68,6 +71,13 @@ public class ConfirmStatusActualDayChange {
 			return Collections.emptyList();
 		return checkProcess(companyId, empTarget, employeeIds, confirmInfoResults, optIndentity, approvalUseSettingOpt);
 	}
+
+	// [No.584]日の実績の確認状況を取得する（NEW）
+	public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
+			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
+		return processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt, true);
+	}
+		
 
 	private List<ConfirmStatusActualResult> checkProcess(String companyId, String empTarget, List<String> employeeIds,
 			List<ConfirmInfoResult> confirmInfoResults, Optional<IdentityProcessUseSet> optIndentity,

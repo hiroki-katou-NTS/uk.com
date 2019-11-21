@@ -20,6 +20,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -727,6 +728,31 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				.setParameter("typeAtrLst", typeAtrLst)
 				.getList();
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toDomain(entity)).collect(Collectors.toList());
+	}
+
+	@SneakyThrows
+	@Override
+	public List<String> checkErrorInList(String companyId, List<String> listCode) {
+		if (listCode.isEmpty())
+			return listCode;
+		List<String> lstResult = new ArrayList<>();
+		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			String sql = "select ERROR_ALARM_CD from KRCMT_ERAL_SET where CID = ? and ERROR_ALARM_CD IN ("
+					+ subIdList.stream().map(s -> "?").collect(Collectors.joining(",")) + " )";
+			try (val statement = this.connection().prepareStatement(sql.toString())) {
+				statement.setString(1, AppContexts.user().companyId());
+				for (int i = 0; i < listCode.size(); i++) {
+					statement.setString(i + 2, listCode.get(i));
+				}
+
+				lstResult.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return rec.getString("ERROR_ALARM_CD");
+				}));
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		});
+		return lstResult;
 	}
 
 }

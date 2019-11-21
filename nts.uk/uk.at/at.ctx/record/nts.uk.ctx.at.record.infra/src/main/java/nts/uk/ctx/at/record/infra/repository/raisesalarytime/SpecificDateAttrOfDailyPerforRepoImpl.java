@@ -154,27 +154,50 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
-		List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiSpeDayCla a ");
-		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
-		query.append("AND a.krcdtDaiSpeDayClaPK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiSpeDayCla> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-								.getList().stream()
-								.filter(c -> p.get(c.krcdtDaiSpeDayClaPK.sid).contains(c.krcdtDaiSpeDayClaPK.ymd))
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
-								.entrySet().stream()
-								.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
-													c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
-													c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
-								.collect(Collectors.toList()));
-		});
-		return result;
+    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	
+    	String subEmp = NtsStatement.In.createParamsString(subList);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAI_SPE_DAY_CLA  ");
+		query.append(" WHERE SID IN (" + subEmp + ")");
+		query.append(" AND YMD IN (" + subInDate + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				Map<String, Object> r = new HashMap<>();
+				r.put("SPE_DAY_ITEM_NO", rec.getInt(1));
+				r.put("YMD", rec.getGeneralDate(2));
+				r.put("SID", rec.getString(3));
+				r.put("TOBE_SPE_DAY", rec.getInt(4));
+				return r;
+			}).stream().collect(Collectors.groupingBy(r -> (String) r.get("SID"), Collectors.collectingAndThen(Collectors.toList(), s -> {
+				
+				 Map<GeneralDate, List<SpecificDateAttrSheet>> mapped = s.stream().collect(Collectors.groupingBy(c -> (GeneralDate) c.get("YMD"), 
+						 Collectors.collectingAndThen(Collectors.toList(), d -> {
+					return d.stream().map(sd -> {
+						return new SpecificDateAttrSheet(new SpecificDateItemNo((int) sd.get("SPE_DAY_ITEM_NO")), 
+								((int) sd.get("TOBE_SPE_DAY")) == SpecificDateAttr.USE.value ? SpecificDateAttr.USE : SpecificDateAttr.NOT_USE);
+					}).collect(Collectors.toList());
+				})));
+				 
+				return mapped;
+			}))).entrySet().stream().map(r -> {
+				
+				return r.getValue().entrySet().stream().map(c -> {
+					return new SpecificDateAttrOfDailyPerfor(r.getKey(), c.getValue(), c.getKey());
+				}).collect(Collectors.toList());
+			}).flatMap(List::stream).collect(Collectors.toList());
+		}
 	}
 
 	private SpecificDateAttrSheet specificDateAttr(KrcdtDaiSpeDayCla c) {

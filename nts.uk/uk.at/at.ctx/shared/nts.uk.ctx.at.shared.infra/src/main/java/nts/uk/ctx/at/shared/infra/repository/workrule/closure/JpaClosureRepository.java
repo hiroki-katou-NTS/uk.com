@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -191,11 +194,49 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@SneakyThrows
 	public Optional<Closure> findById(String companyId, int closureId) {
-		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
-				.map(c -> this.toDomain(c, this.findHistoryByClosureId(companyId, closureId)));
+		String sql = "select * from KCLMT_CLOSURE cls "
+				+ "left join KCLMT_CLOSURE_HIST clsHist on cls.CID = clsHist.CID and cls.CLOSURE_ID = clsHist.CLOSURE_ID "
+				+ "where cls.CID = ? " + "and cls.CLOSURE_ID = ? ";
+		try (PreparedStatement statement = this.connection().prepareStatement(sql.toString())) {
+			statement.setString(1, companyId);
+			statement.setInt(2, closureId);
+			List<Closure> lstClosure = new NtsResultSet(statement.executeQuery()).getList(rs -> getResultFind(rs));
+			if (lstClosure.isEmpty())
+				return Optional.empty();
+			List<ClosureHistory> closureHistories = lstClosure.stream().flatMap(x -> x.getClosureHistories().stream())
+					.collect(Collectors.toList());
+			Closure cls = lstClosure.get(0);
+			cls.setClosureHistories(closureHistories);
+			return Optional.of(cls);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+//		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
+//				.map(c -> this.toDomain(c, this.findHistoryByClosureId(companyId, closureId)));
 	}
 
+	@SneakyThrows
+	private Closure getResultFind(NtsResultRecord rs){
+		
+		KclmtClosure closureEntity = new KclmtClosure(new KclmtClosurePK(rs.getString("CID"), rs.getInt("CLOSURE_ID")));
+		closureEntity.setUseClass(rs.getInt("USE_ATR"));
+		closureEntity.setClosureMonth(rs.getInt("CLOSURE_MONTH"));
+
+		KclmtClosureHist entityHist = new KclmtClosureHist();
+		entityHist.setKclmtClosureHistPK(
+				new KclmtClosureHistPK(rs.getString("CID"), rs.getInt("CLOSURE_ID"), rs.getInt("STR_YM")));
+		entityHist.setName(rs.getString("CLOSURE_NAME"));
+		entityHist.setEndYM(rs.getInt("END_YM"));
+		entityHist.setCloseDay(rs.getInt("CLOSURE_DAY"));
+		entityHist.setIsLastDay(rs.getInt("IS_LAST_DAY"));
+
+		List<KclmtClosureHist> lstHIst = new ArrayList<>();
+		lstHIst.add(entityHist);
+		
+		return this.toDomain(closureEntity, lstHIst);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

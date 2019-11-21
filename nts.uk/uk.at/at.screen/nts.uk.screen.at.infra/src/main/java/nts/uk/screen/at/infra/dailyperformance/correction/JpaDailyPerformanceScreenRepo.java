@@ -1312,19 +1312,30 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return datas;
 	}
 
+	@SneakyThrows
 	@Override
 	public Optional<ActualLockDto> findAutualLockById(String companyId, int closureId) {
-		return this.queryProxy().find(new KrcstActualLockPK(companyId, closureId), KrcstActualLock.class)
-				.map(c -> new ActualLockDto(companyId, closureId, c.getDLockState(), c.getMLockState()));
+		try (val statement = this.connection()
+				.prepareStatement("select * from KRCST_ACTUAL_LOCK where CID = ? and CLOSURE_ID = ? ")) {
+			statement.setString(1, AppContexts.user().companyId());
+			statement.setInt(2, closureId);
+
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+
+				return new ActualLockDto(companyId, closureId, rec.getInt("D_LOCK_STATE"), rec.getInt("M_LOCK_STATE"));
+
+			});
+
+		}
 	}
 
 	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
 		try (val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1")) {
-			statement.setString(1, AppContexts.user().companyId());
-			statement.setInt(2, closureId);
+				"select * from KRCST_WORK_FIXED where CLOSURE_ID = ? and CID = ? and CONFIRM_CLS = 1")) {
+			statement.setInt(1, closureId);
+			statement.setString(2, AppContexts.user().companyId());
 
 			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				KrcstWorkFixed w = new KrcstWorkFixed();

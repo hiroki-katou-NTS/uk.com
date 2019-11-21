@@ -389,7 +389,9 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			
 			if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
 			    // SQLServerの場合の処理
+				long startTime = System.currentTimeMillis();
 				internalQueryWithIndex(companyID, date, rootType, results, employeeIDs); 
+				System.out.print("\n thoi gian findByEmpDate:  " +(System.currentTimeMillis() - startTime) + "\n");
 			} else {
 				internalQuery(companyID, date, rootType, results, employeeIDs); 
 			}

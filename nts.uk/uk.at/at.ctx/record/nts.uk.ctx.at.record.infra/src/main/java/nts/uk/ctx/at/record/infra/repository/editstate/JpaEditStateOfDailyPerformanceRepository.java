@@ -159,10 +159,31 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<EditStateOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		
-		return internalFinds(param, c -> toDomain(c));
+    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	
+    	String subEmp = NtsStatement.In.createParamsString(subList);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAILY_REC_EDIT_SET");
+		query.append(" WHERE SID IN (" + subEmp + ")");
+		query.append(" AND YMD IN (" + subInDate + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				return new EditStateOfDailyPerformance(rec.getString("SID"), rec.getInt("ATTENDANCE_ITEM_ID"),
+						rec.getGeneralDate("YMD"), EnumAdaptor.valueOf(rec.getInt("EDIT_STATE"), EditStateSetting.class));
+			});
+		}
 	}
 	
 	private <T> List<T> internalFinds(Map<String, List<GeneralDate>> param, Function<KrcdtDailyRecEditSet, T> actions) {
