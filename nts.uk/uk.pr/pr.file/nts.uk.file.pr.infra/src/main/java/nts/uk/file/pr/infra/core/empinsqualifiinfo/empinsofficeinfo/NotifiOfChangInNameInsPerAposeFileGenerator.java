@@ -3,6 +3,7 @@ package nts.uk.file.pr.infra.core.empinsqualifiinfo.empinsofficeinfo;
 
 import com.aspose.pdf.*;
 import com.aspose.pdf.drawing.Circle;
+import com.aspose.pdf.drawing.Ellipse;
 import com.aspose.pdf.drawing.Graph;
 import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -45,7 +46,8 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     public void generate(FileGeneratorContext fileContext, List<NotifiOfChangInNameInsPerExportData> data) {
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
-            Page[] curPage = {doc.getPages().get_Item(1), doc.getPages().get_Item(2)};
+            Page[] curPage = {doc.getPages().get_Item(1)};
+            doc.getPages().delete(2);
             for (int i = 0; i < data.size(); i++) {
                 if (i != 0) {
                     doc.getPages().add(curPage);
@@ -115,7 +117,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
-                                    textBuilder.appendText(setValue(210, 190, addressLabor, 9));
+                                    textBuilder.appendText(setValue(210, 190, addressLabor.length() > 41 ? addressLabor.substring(0,40) : addressLabor, 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
@@ -142,12 +144,16 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 }
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
-                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName().length() > 8 ? element.getName().substring(0, 7) : element.getName() : "", 16));
+                    String name = KatakanaConverter.hiraganaToKatakana(element.getName() != null ? element.getName() : "");
+                    name = KatakanaConverter.fullKatakanaToHalf(name);
+                    textBuilder.appendText(setValue(45, 586, name, 16));
                     //A1_8
                     detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
 
                 } else {
-                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName().length() > 8 ? element.getReportFullName().substring(0, 7) : element.getReportFullName() : "", 16));
+                    String reportFullName = KatakanaConverter.hiraganaToKatakana(element.getReportFullName() != null ? element.getReportFullName() : "");
+                    reportFullName = KatakanaConverter.fullKatakanaToHalf(reportFullName);
+                    textBuilder.appendText(setValue(45, 586,reportFullName, 16));
                     //A1_8
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
@@ -193,26 +199,26 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A2_4
                 JapaneseDate birthDay = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
 //                textBuilder.appendText(setValue(400,353,);
-                Circle rect2 = null;
+                Ellipse rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Circle(370, 40, 7);
+                        rect2 = new Ellipse(364, 37, 15,9.5);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Circle(392, 40, 7);
+                        rect2 = new Ellipse(385, 37, 15,9.5);
                         break;
                     }
                     case PEACE: {
-                        rect2 = new Circle(392, 32, 7);
+                        rect2 = new Ellipse(385, 27.5, 15,9.5);
                         break;
                     }
                     case HEISEI: {
-                        rect2 = new Circle(370, 32, 7);
+                        rect2 = new Ellipse(364, 27.5, 15,9.5);
                         break;
                     }
                     default: {
-                        rect2 = new Circle(370, 40, 0);
+                        rect2 = new Ellipse(370, 40, 15,9);
                     }
                 }
                 rect2.getGraphInfo().setLineWidth(1f);
@@ -240,7 +246,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 detachDate(486, 206, fillingDate, textBuilder);
 
                 //index page
-                indexPage = indexPage + 2;
+                indexPage++;
             }
             report.saveAsPdf(this.createNewFile(fileContext, "雇用保険被保険者氏名変更届.pdf"));
         } catch (Exception e) {
@@ -287,6 +293,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells, TextBuilder textBuilder) {
+        value = KatakanaConverter.hiraganaToKatakana(value);
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
