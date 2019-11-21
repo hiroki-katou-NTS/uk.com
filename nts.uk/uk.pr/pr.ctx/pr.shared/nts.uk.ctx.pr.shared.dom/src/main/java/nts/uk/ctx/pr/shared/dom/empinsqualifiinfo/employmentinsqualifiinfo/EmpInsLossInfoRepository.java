@@ -5,5 +5,5 @@ import java.util.Optional;
 
 public interface EmpInsLossInfoRepository {
     List<EmpInsHist> getAllEmpInsLossInfo();
-    Optional<EmpInsLossInfo> getEmpInsLossInfoById(String cid, String sid);
+    Optional<EmpInsLossInfo> getEmpInsLossInfoById(String sid);
 }

@@ -103,4 +103,14 @@ public class EmpInsLossInfoExportData {
     private EmpInsNumInfo empInsNumInfo;
 
     private EmpInsReportSetting empInsReportSetting;
+
+    private String periodOfStay;
+
+    private Integer workCategory;
+
+    private String nationality;
+
+    private String residenceStatus;
+
+
 }

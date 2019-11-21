@@ -28,7 +28,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid ";
     private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
     private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
-    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.histId IN :histIds";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
     private static final String SELECT_BY_EMP_AND_PERIOD = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.sid = :sid AND f.endDate >= :startDate AND f.endDate <= :endDate";
 
     @Override

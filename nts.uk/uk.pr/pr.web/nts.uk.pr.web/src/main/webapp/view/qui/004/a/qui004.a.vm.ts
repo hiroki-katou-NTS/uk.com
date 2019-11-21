@@ -130,27 +130,29 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
 
             let data: any = {
-                empInsReportSetting: {
+                empInsReportSettingCommand: {
                     submitNameAtr: self.empInsReportSetting().submitNameAtr(),
                     outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
                     officeClsAtr: self.empInsReportSetting().officeClsAtr(),
                     myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-                empInsRptTxtSetting: {
+                empInsReportTxtSettingCommand: {
                     officeAtr : self.empInsReportTxtSetting().officeAtr(),
                     fdNumber : self.empInsReportTxtSetting().fdNumber(),
                     lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
                 },
-                empIds: listEmployeeId,
+                employeeIds: listEmployeeId,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
+            nts.uk.ui.block.grayout();
             service.exportFilePDF(data).done()
                 .fail(function (result) {
-                    dialog.alertError(result.errorMessage);
-                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(result);
+                }).always(() => {
+                nts.uk.ui.block.clear();
                 });
         }
 

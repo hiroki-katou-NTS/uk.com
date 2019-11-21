@@ -12,6 +12,7 @@ public class EmpInsReportSettingExportQuery {
 	private List<String> employeeIds;
     private GeneralDate startDate;
     private GeneralDate endDate;
+    private GeneralDate fillingDate;
     
     private EmpInsRptSettingCommand empInsReportSettingCommand;
     private EmpInsRptTxtSettingCommand empInsReportTxtSettingCommand;

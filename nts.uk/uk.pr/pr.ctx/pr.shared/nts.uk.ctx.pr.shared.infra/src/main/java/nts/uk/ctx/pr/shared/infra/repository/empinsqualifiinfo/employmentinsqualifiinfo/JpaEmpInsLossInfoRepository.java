@@ -14,7 +14,7 @@ import java.util.Optional;
 public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpInsLossInfoRepository{
 
     private static final String SELECT_ALL = "SELECT f FROM QqsmtEmpInsLossInfo f";
-    private static final String SELECT_BY_ID = SELECT_ALL + " where f.empInsLossInfoPk.cId =:cId and f.empInsLossInfoPk.sId =:sId";
+    private static final String SELECT_BY_ID = SELECT_ALL + " where f.empInsLossInfoPk.sId =:sId";
 
     @Override
     public List<EmpInsHist> getAllEmpInsLossInfo() {
@@ -22,9 +22,8 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
     }
 
     @Override
-    public Optional<EmpInsLossInfo> getEmpInsLossInfoById(String cid, String sid) {
+    public Optional<EmpInsLossInfo> getEmpInsLossInfoById(String sid) {
         return this.queryProxy().query(SELECT_BY_ID, QqsmtEmpInsLossInfo.class)
-                .setParameter("cId", cid)
                 .setParameter("sId", sid)
                 .getSingle( e-> {
                     return new EmpInsLossInfo(
