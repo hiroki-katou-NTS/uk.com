@@ -196,13 +196,13 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             if(empAddChangeInfoExport.isHealthInsurance() && !empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_1").setValue("健康保険");
                 worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
-            } else if(!empAddChangeInfoExport.isHealthInsurance() && empAddChangeInfoExport.isEmpPenInsurance()) {
+            }
+            if(!empAddChangeInfoExport.isHealthInsurance() && empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_2").setValue("厚生年金保険");
                 worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
-            } else {
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
             }
+
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
