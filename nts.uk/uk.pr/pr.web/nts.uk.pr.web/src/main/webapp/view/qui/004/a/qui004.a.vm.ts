@@ -14,7 +14,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         printCfg: KnockoutObservableArray<model.ItemModel>;
         lineFeedCodeCls: KnockoutObservableArray<model.ItemModel>;
 
-        screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
+        screenMode : number;
         ccg001ComponentOption: GroupOption;
         startDate: KnockoutObservable<string> = ko.observable('');
         startDateJp: KnockoutObservable<string> = ko.observable('');
@@ -52,22 +52,22 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             fdNumber: 0
         }));
 
-        screenMode : number;
+
 
         constructor() {
             let self = this;
 
             self.empInsOutOrder = ko.observableArray([
-                new model.ItemModel(0, 'Enum_EmpInsOutOrder_INSURANCE_NUMBER'),
-                new model.ItemModel(1, 'Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE'),
-                new model.ItemModel(2, 'Enum_EmpInsOutOrder_EMPLOYEE_CODE'),
-                new model.ItemModel(3, 'Enum_EmpInsOutOrder_EMPLOYEE')
+                new model.ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
+                new model.ItemModel(1, getText('Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE')),
+                new model.ItemModel(2, getText('Enum_EmpInsOutOrder_EMPLOYEE_CODE')),
+                new model.ItemModel(3, getText('Enum_EmpInsOutOrder_EMPLOYEE'))
             ]);
 
             self.officeCls = ko.observableArray([
-                new model.ItemModel(0, 'Enum_OfficeCls_OUPUT_LABOR_OFFICE'),
-                new model.ItemModel(1, 'Enum_OfficeCls_OUTPUT_COMPANY'),
-                new model.ItemModel(2, 'Enum_OfficeCls_DO_NOT_OUTPUT')
+                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+                new model.ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
             ]);
 
             self.submitNameCls = ko.observableArray([
@@ -132,27 +132,29 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
 
             let data: any = {
-                empInsReportSettingExport: {
+                empInsReportSettingCommand: {
                     submitNameAtr: self.empInsReportSetting().submitNameAtr(),
                     outputOrderAtr: self.empInsReportSetting().outputOrderAtr(),
                     officeClsAtr: self.empInsReportSetting().officeClsAtr(),
                     myNumberClsAtr: self.empInsReportSetting().myNumberClsAtr(),
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
-                empInsReportSettingTxtExport: {
-                    officeAtr : self.empInsReportTxtSetting().officeAtr,
-                    fdNumber : self.empInsReportTxtSetting().fdNumber,
-                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode
+                empInsReportTxtSettingCommand: {
+                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
                 },
-                listEmployeeId,
-                startPeriod: moment.utc(self.startDate(), "YYYY/MM/DD") ,
-                endPeriod: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                employeeIds: listEmployeeId,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
+            nts.uk.ui.block.grayout();
             service.exportFilePDF(data).done()
                 .fail(function (result) {
-                    dialog.alertError(result.errorMessage);
-                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(result);
+                }).always(() => {
+                nts.uk.ui.block.clear();
                 });
         }
 

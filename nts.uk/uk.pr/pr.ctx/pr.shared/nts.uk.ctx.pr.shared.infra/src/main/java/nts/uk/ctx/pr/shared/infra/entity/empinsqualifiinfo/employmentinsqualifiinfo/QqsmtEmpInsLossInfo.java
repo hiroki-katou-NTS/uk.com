@@ -84,11 +84,11 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
     public static QqsmtEmpInsLossInfo toEntity(EmpInsLossInfo domain) {
         return new QqsmtEmpInsLossInfo(
                 new QqsmtEmpInsLossInfoPk(domain.getCId(), domain.getSId()),
-                domain.getScheduleWorkingHourPerWeek().get().v(),
-                domain.getCauseOfLossAtr().get().value,
-                domain.getCauseOfLossEmpInsurance().toString(),
-                domain.getScheduleForReplenishment().get().value,
-                domain.getRequestForIssuance().get().value
+                domain.getScheduleWorkingHourPerWeek().map( i -> i.v()).orElse(null),
+                domain.getCauseOfLossAtr().map( i -> i.value).orElse(null),
+                domain.getCauseOfLossEmpInsurance().map( i -> i.toString()).orElse(null),
+                domain.getScheduleForReplenishment().map( i -> i.value).orElse(null),
+                domain.getRequestForIssuance().map( i -> i.value).orElse(null)
         );
     }
 

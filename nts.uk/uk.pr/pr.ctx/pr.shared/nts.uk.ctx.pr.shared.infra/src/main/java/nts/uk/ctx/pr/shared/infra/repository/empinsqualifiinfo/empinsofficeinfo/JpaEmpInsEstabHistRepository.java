@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEstabInsHistRepository, EmpInsOfficeRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
-    private static final String SELECT_BY_HIST_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.histIds IN :histIds AND f.startDate <= :endDate AND f.endDate >= :endDate";
+    private static final String SELECT_BY_HIST_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.histId IN :histIds AND f.startDate <= :endDate AND f.endDate >= :endDate";
 
 
     @Override
