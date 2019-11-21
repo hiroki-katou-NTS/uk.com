@@ -27,6 +27,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport.AffPeriodEmpCdHistExportBuilder;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
+import nts.uk.ctx.bs.employee.pub.employment.DataEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
@@ -293,6 +294,16 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public List<DataEmployeeExport> getEmploymentInfo(List<String> listSId, GeneralDate baseDate) {
+		
+		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
+		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
+
+		
+		return new ArrayList<>();
 	}
 
 }
