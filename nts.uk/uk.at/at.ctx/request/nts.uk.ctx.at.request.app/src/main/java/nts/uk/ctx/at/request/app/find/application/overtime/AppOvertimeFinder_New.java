@@ -34,7 +34,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
@@ -238,68 +237,5 @@ public class AppOvertimeFinder_New {
 		}
 		// 14_表示データを取得
 		this.getDisplayData(companyID, employeeID, generalAppDate, PrePostAtr.POSTERIOR, generalAppDate, null, Optional.ofNullable(startTime), Optional.ofNullable(endTime));;
-	}
-	
-	/**
-	 * 
-	 * @param appDate
-	 * @param employeeID
-	 * @param prePostAtr
-	 * @param workTypeCD
-	 * @param siftCD
-	 * @param startTime
-	 * @param endTime
-	 * @param overTimeLst
-	 * @param breakTimeLst
-	 * @param opAppBefore
-	 * @param beforeAppStatus
-	 * @param actualLst
-	 * @param actualStatus
-	 * @param preExcessDisplaySetting
-	 * @param performanceExcessAtr
-	 */
-	public void calculate(String appDate, String employeeID, Integer prePostAtr, String workTypeCD, String siftCD, Integer startTime, Integer endTime,
-			List<OvertimeColorCheck> overTimeLst, List<OvertimeColorCheck> breakTimeLst, 
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, 
-			List<OvertimeColorCheck> actualLst, Integer actualStatus,
-			Integer preExcessDisplaySetting, Integer performanceExcessAtr) {
-		GeneralDate generalAppDate = Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
-		this.calc(generalAppDate, employeeID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), workTypeCD, siftCD, 
-				startTime, endTime, overTimeLst, breakTimeLst, opAppBefore, beforeAppStatus, actualLst, 
-				EnumAdaptor.valueOf(actualStatus, ActualStatus.class), 
-				EnumAdaptor.valueOf(preExcessDisplaySetting, UseAtr.class), 
-				EnumAdaptor.valueOf(performanceExcessAtr, AppDateContradictionAtr.class));
-	}
-	
-	/**
-	 * 18_事前事後区分を変更する
-	 * @param prePostAtr 事前事後区分
-	 * @param employeeID 申請者ID
-	 * @param overrideSet 退勤時刻優先設定
-	 * @param appDate 申請日
-	 * @param workTypeCD 勤務種類コード
-	 * @param siftCD 就業時間帯コード
-	 * @param changeDataFlg 取得データFlag
-	 */
-	public void changePrePost(Integer prePostAtr, String employeeID, Integer overrideSet, String appDate,
-			String workTypeCD, String siftCD, Boolean changeDataFlg) {
-		String companyID = AppContexts.user().companyId();
-		GeneralDate generalAppDate = Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
-		// 07-01_事前申請状態チェック
-		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-				companyID, 
-				employeeID, 
-				generalAppDate, 
-				ApplicationType.OVER_TIME_APPLICATION);
-		// 07-02_実績取得・状態チェック
-		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-				companyID, 
-				employeeID, 
-				generalAppDate, 
-				ApplicationType.OVER_TIME_APPLICATION, 
-				workTypeCD, 
-				siftCD, 
-				EnumAdaptor.valueOf(overrideSet, OverrideSet.class), 
-				Optional.empty());
 	}
 }
