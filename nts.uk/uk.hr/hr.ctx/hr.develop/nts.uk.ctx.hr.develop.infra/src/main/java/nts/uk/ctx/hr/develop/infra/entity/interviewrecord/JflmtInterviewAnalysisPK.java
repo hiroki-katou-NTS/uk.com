@@ -19,6 +19,7 @@ public class JflmtInterviewAnalysisPK implements Serializable{/**
 
 
 	@NotNull
-	@Column(name = "INTERVIEW_CONTENT_ID")
-	public long interviewContentId;
+	/** 分析情報ID --- analysisInfoId **/
+	@Column(name = "ANALYSIS_INFO_ID")
+	public String analysisInfoId;
 }

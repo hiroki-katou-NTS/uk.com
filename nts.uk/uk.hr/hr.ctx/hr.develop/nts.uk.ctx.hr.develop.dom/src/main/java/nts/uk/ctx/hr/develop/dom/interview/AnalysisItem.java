@@ -17,15 +17,15 @@ public class AnalysisItem  extends DomainObject {
 	/** 分析区分項目CD **/
 	private Optional<String> analysisItemCd;
 	/** 分析区分項目名  **/
-	private Optional<String> analysisName;
+	private Optional<String> analysisItemName;
 
 	public AnalysisItem(long analysisItemId, String analysisInfoId, Optional<String> analysisItemCd,
-			Optional<String> analysisName) {
+			Optional<String> analysisItemName) {
 		super();
 		this.analysisItemId = analysisItemId;
 		this.analysisInfoId = analysisInfoId;
 		this.analysisItemCd = analysisItemCd;
-		this.analysisName = analysisName;
+		this.analysisItemName = analysisItemName;
 	}
 	
 }

@@ -7,9 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.hr.develop.dom.interview.AnalysisItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -26,13 +24,11 @@ public class JflmtInterviewAnalysis extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public JflmtInterviewAnalysisPK pk;
 
-	
 	@Column(name = "CID")
 	public String companyId;
-	
-	/** 分析情報ID --- analysisInfoId **/
-	@Column(name = "ANALYSIS_INFO_ID")
-	public String analysisInfoId;
+
+	@Column(name = "INTERVIEW_CONTENT_ID")
+	public long interviewContentId;
 
 	/** 分析区分項目ID --- analysisItemID **/
 	@Column(name = "ANALYSIS_ITEM_ID")
@@ -55,36 +51,35 @@ public class JflmtInterviewAnalysis extends UkJpaEntity implements Serializable 
 	 * "ANALYSIS_INFO_ID", insertable = false, updatable = false) }) public
 	 * JflmtInterviewContent jflmtInterviewContent;
 	 */
-	public JflmtInterviewAnalysis(JflmtInterviewAnalysisPK pk, String companyId, String analysisInfoId,
+
+	public JflmtInterviewAnalysis(JflmtInterviewAnalysisPK pk, String companyId, long interviewContentId,
 			long analysisItemId, String analysisItemCd, String analysisItemName) {
 		super();
 		this.pk = pk;
 		this.companyId = companyId;
-		this.analysisInfoId = analysisInfoId;
+		this.interviewContentId = interviewContentId;
 		this.analysisItemId = analysisItemId;
 		this.analysisItemCd = analysisItemCd;
 		this.analysisItemName = analysisItemName;
 	}
-	
+
 	public AnalysisItem toDomain() {
-		return new AnalysisItem(analysisItemId, analysisInfoId, Optional.of(analysisItemCd),
-				Optional.of(analysisItemName));
+		return new AnalysisItem(analysisItemId,
+								pk.analysisInfoId,
+								Optional.of(analysisItemCd),
+								Optional.of(analysisItemName));
 	}
-	
-	public static JflmtInterviewAnalysis toEntity(AnalysisItem domain, long interviewContentId , String companyID){
-		return new JflmtInterviewAnalysis(
-				new JflmtInterviewAnalysisPK(interviewContentId),
-				companyID,
-				domain.getAnalysisInfoId(),
-				domain.getAnalysisItemId(),
+
+	public static JflmtInterviewAnalysis toEntity(AnalysisItem domain, long interviewContentId, String companyID) {
+		return new JflmtInterviewAnalysis(new JflmtInterviewAnalysisPK(domain.getAnalysisInfoId()), companyID,
+				interviewContentId, domain.getAnalysisItemId(),
 				domain.getAnalysisItemCd().isPresent() ? domain.getAnalysisItemCd().get() : null,
-				domain.getAnalysisName().isPresent() ? domain.getAnalysisName().get() : null);
+				domain.getAnalysisItemName().isPresent() ? domain.getAnalysisItemName().get() : null);
 	}
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
-
-	
 
 }

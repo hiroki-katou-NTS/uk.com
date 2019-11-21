@@ -2,18 +2,13 @@ package nts.uk.ctx.hr.develop.infra.entity.interviewrecord;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.hr.develop.dom.interview.InterviewRecordContent;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -31,16 +26,9 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	public String cid;
 
-	/** 面談記録ID --- interviewRecordId **/
-	@Column(name = "INTERVIEW_REC_ID")
-	public String interviewRecID;
-
-	/** 表示順 -- displayNum **/
-	@Column(name = "DISPLAY_NUM")
-	public int displayNum;
-	/** ヒアリング項目ID --- interviewItemId **/
+	/**--- interviewContentId **/
 	@Column(name = "INTERVIEW_CONTENT_ID")
-	public long interviewItemId;
+	public long interviewContentID;
 
 	/** ヒアリング項目CD --- interviewItemCD **/
 	@Column(name = "INTERVIEW_CONTENT_CD")
@@ -68,16 +56,14 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 
 	public List<JflmtInterviewAnalysis> jflmtInterviewAnalysis;
 
-	public JflmtInterviewContent(JflmtInterviewContentPK pk, String cid, String interviewRecID, int displayNum,
-			long interviewItemId, String interviewItemCD, String interviewItemName, String recordContent,
-			long analysisCategoryId, String analysisCategoryCD, String analysisCategoryName,
-			List<JflmtInterviewAnalysis> jflmtInterviewAnalysis) {
+	
+	public JflmtInterviewContent(JflmtInterviewContentPK pk, String cid, long interviewContentID, String interviewItemCD,
+			String interviewItemName, String recordContent, long analysisCategoryId, String analysisCategoryCD,
+			String analysisCategoryName, List<JflmtInterviewAnalysis> jflmtInterviewAnalysis) {
 		super();
 		this.pk = pk;
 		this.cid = cid;
-		this.interviewRecID = interviewRecID;
-		this.displayNum = displayNum;
-		this.interviewItemId = interviewItemId;
+		this.interviewContentID = interviewContentID;
 		this.interviewItemCD = interviewItemCD;
 		this.interviewItemName = interviewItemName;
 		this.recordContent = recordContent;
@@ -88,9 +74,8 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 	}
 
 	public InterviewRecordContent toDomain() {
-		return new InterviewRecordContent(
-				interviewItemId,
-				displayNum,
+		return new InterviewRecordContent(interviewContentID,
+				pk.displayNum,
 				interviewItemCD,
 				interviewItemName,
 				analysisCategoryCD,
@@ -99,22 +84,19 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 				jflmtInterviewAnalysis.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				recordContent);
 	}
-
+	
 	public static JflmtInterviewContent toEntity(InterviewRecordContent domain , String companyID , String interviewRecID){
 		return new JflmtInterviewContent(
-				new JflmtInterviewContentPK(domain.getInterviewItemId()),
+				new JflmtInterviewContentPK(interviewRecID, domain.getDisplayNumber()) ,
 				companyID,
-				interviewRecID,
-				domain.getDisplayNumber(),
-				//Đéo hiểu kiểu gì
 				domain.getInterviewItemId(),
-				domain.getInterviewItemCd().get(),
-				domain.getInterviewItemName().get(),
-				domain.getRecordContent().get(),
-				domain.getAnalysisCategoryId().get(),
-				domain.getAnalysisCategoryCd().get(),
-				domain.getAnalysisCategoryName().get(),
-				domain.getListAnalysisItemId().stream().map(c ->JflmtInterviewAnalysis.toEntity(c,domain.getInterviewItemId(), companyID)).collect(Collectors.toList()));
+				domain.getInterviewItemCd().isPresent() ? domain.getInterviewItemCd().get() : null,
+				domain.getInterviewItemName().isPresent() ? domain.getInterviewItemName().get() : null,
+				domain.getRecordContent().isPresent() ? domain.getRecordContent().get() : null,
+				domain.getAnalysisCategoryId().isPresent() ? domain.getAnalysisCategoryId().get() : null,
+				domain.getAnalysisCategoryCd().isPresent() ? domain.getAnalysisCategoryCd().get() : null,
+				domain.getAnalysisCategoryName().isPresent() ? domain.getAnalysisCategoryName().get() :null,
+			    domain.getListAnalysisItemId().stream().map(c ->JflmtInterviewAnalysis.toEntity(c,domain.getInterviewItemId(), companyID)).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -122,5 +104,5 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 
 		return this.pk;
 	}
-
+	
 }

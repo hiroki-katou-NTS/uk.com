@@ -18,6 +18,11 @@ public class JflmtInterviewContentPK implements Serializable {/**
 	private static final long serialVersionUID = 1L;
 	
 	@NotNull
-	@Column(name = "INTERVIEW_ITEM_ID")
-	public long interviewItemID;
+	@Column(name = "INTERVIEW_REC_ID")
+	public String interviewRecID;
+	
+	@NotNull
+	@Column(name = "DISPLAY_NUM")
+	public int displayNum;
+	
 }

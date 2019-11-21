@@ -10,7 +10,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -83,12 +82,9 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 	@Column(name = "SUB5_INTERVIEWER_SID")
 	public String sub5InterviewSID;
 	
-	/*@OneToMany(mappedBy = "jflmtInterviewContent", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "JFLMT_INTERVIEW_CONTENT")*/
+
 	public List<JflmtInterviewContent> jflmtInterviewContent;
 
-
-	
 	@Override
 		protected Object getKey() {
 			// TODO Auto-generated method stub

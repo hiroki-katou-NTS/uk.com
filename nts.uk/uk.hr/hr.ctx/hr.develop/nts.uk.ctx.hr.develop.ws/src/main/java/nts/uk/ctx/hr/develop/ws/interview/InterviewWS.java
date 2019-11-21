@@ -8,9 +8,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.interview.find.InterviewFinder;
 import nts.uk.ctx.hr.develop.dom.interview.InterviewRecord;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewSummary;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInforAdapter;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 
 
 @Path("interview")
@@ -20,6 +24,10 @@ public class InterviewWS {
 	
 	@Inject
 	private InterviewFinder interviewFinder;
+	
+
+	@Inject
+	private EmployeeInforAdapter employeeInforAdapter;
 	
 	@POST
 	@Path("/interviewSummary")
@@ -32,6 +40,23 @@ public class InterviewWS {
 	@Path("/interviewContent")
 	public List<InterviewRecord> getInterviewContents( String companyID , int interviewCate ,List<String> listEmployeeID ){
 		return interviewFinder.getInterviewContents(companyID, interviewCate, listEmployeeID);
+	}
+	@POST
+	@Path("/testDepartment")
+	public List<EmployeeInformationImport> testQuerDepartment (List<String> listEmployeeID){
+		EmployeeInfoQueryImport paramInterview = EmployeeInfoQueryImport.builder()
+				.employeeIds(null)
+				.referenceDate(GeneralDate.today()) // Xem lai date
+				.toGetWorkplace(false)
+				.toGetDepartment(true)
+				.toGetPosition(false)
+				.toGetEmployment(false)
+				.toGetClassification(false)
+				.toGetEmploymentCls(false).build();
+		
+		
+		List<EmployeeInformationImport> listInterviewEmployeeImport = employeeInforAdapter.find(paramInterview);
+		return listInterviewEmployeeImport;
 	}
 	
 }
