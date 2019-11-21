@@ -47,7 +47,6 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1)};
-            doc.getPages().delete(2);
             for (int i = 0; i < data.size(); i++) {
                 if (i != 0) {
                     doc.getPages().add(curPage);
