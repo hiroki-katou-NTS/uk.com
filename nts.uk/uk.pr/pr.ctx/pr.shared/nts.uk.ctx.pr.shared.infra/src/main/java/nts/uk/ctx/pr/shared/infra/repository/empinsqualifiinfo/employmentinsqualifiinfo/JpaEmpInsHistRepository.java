@@ -25,7 +25,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsHist f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND f.startDate <= :baseDate AND  f.endDate >= :baseDate ";
     private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
     private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
     private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
@@ -37,10 +37,11 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     }
 
     @Override
-    public Optional<EmpInsHist> getEmpInsHistById(String cid, String sid){
+    public Optional<EmpInsHist> getEmpInsHistById(String cid, String sid, GeneralDate baseDate){
         List<QqsmtEmpInsHist> listHist = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsHist.class)
                 .setParameter("sid", sid)
                 .setParameter("cid", cid)
+                .setParameter("baseDate", baseDate)
                 .getList();
         if (listHist != null && !listHist.isEmpty()) {
             return Optional.of(toEmploymentHistory(listHist));

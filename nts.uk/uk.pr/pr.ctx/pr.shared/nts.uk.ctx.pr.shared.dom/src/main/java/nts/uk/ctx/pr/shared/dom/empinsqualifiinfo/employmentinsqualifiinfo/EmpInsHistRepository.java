@@ -11,6 +11,6 @@ import java.util.List;
 */
 public interface EmpInsHistRepository {
     List<EmpInsHist> getAllEmpInsHist();
-    Optional<EmpInsHist> getEmpInsHistById(String cid, String sid);
     List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate);
+    Optional<EmpInsHist> getEmpInsHistById(String cid, String sid,GeneralDate baseDate);
 }
