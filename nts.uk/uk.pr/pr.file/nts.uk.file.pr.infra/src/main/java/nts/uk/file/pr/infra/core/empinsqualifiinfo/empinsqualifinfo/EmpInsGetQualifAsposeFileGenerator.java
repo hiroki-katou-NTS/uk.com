@@ -26,7 +26,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     public void generate(FileGeneratorContext fileContext, List<EmpInsGetQualifReport> reportData) {
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
-            Page[] curPage = {doc.getPages().get_Item(1), doc.getPages().get_Item(2)};
+            Page[] curPage = {doc.getPages().get_Item(1)};
             for (int i = 0; i < reportData.size(); i++) {
                 if (i != 0) {
                     doc.getPages().add(curPage);
@@ -36,96 +36,124 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
             int indexPage = 1;
 
             for (EmpInsGetQualifReport data : reportData) {
-                Paragraphs paragraphs = doc.getPages().get_Item(indexPage).getParagraphs();
+                Page pdfPage = doc.getPages().get_Item(indexPage);
+                TextBuilder textBuilder = new TextBuilder(pdfPage);
+
                 // A1_1
-                detachText(48, 728, data.getPersonalNumber().toString().substring(0, 4), 4, paragraphs);
-                detachText(132, 728, data.getPersonalNumber().toString().substring(5, 10), 6, paragraphs);
-                detachText(252, 728, data.getPersonalNumber().toString().substring(10), 1, paragraphs);
+                String insuredNumber = data.getInsuredNumber() == null ? "" : data.getInsuredNumber().toString();
+                detachText(50, 728, insuredNumber, 4, textBuilder);
+                detachText(130, 728, insuredNumber.length() > 4 ? insuredNumber.substring(4) : "", 6, textBuilder);
+                detachText(250, 728, insuredNumber.length() > 10 ? insuredNumber.substring(10) : "", 1, textBuilder);
                 // A1_2
-                paragraphs.add(setValue(318, 734, data.getAcquisitionAtr().toString(), 16));
+                String acquisitionAtr = data.getAcquisitionAtr() == null ? "" : data.getAcquisitionAtr().toString();
+                textBuilder.appendText(setValue(318, 728, acquisitionAtr, 16));
                 // A1_3
-                paragraphs.add(setValue(48, 698, data.getInsuredName(), 16));
+                String insuredName = data.getInsuredName() == null ? "" : data.getAcquisitionAtr().toString();
+                textBuilder.appendText(setValue(50, 698, insuredName, 16));
                 // A1_4
-                detachText(180, 698, data.getInsuredFullName(), 20, paragraphs);
+                String insuredFullName = data.getInsuredFullName() == null ? "" : data.getAcquisitionAtr().toString();
+                detachText(180, 698, insuredFullName, 20, textBuilder);
                 // A1_5
-                paragraphs.add(setValue(48, 662, data.getNameAfterChange(), 16));
+                String nameAfterChange = data.getNameAfterChange() == null ? "" : data.getNameAfterChange();
+                textBuilder.appendText(setValue(50, 662, nameAfterChange, 16));
                 // A1_6
-                detachText(180, 662, data.getFullNameAfterChange(), 20, paragraphs);
+                String fullNameAfterChange = data.getFullNameAfterChange() == null ? "" : data.getFullNameAfterChange();
+                detachText(180, 662, fullNameAfterChange, 20, textBuilder);
                 // A1_7
-                paragraphs.add(setValue(48, 626, data.getGender().toString(), 16));
+                String gender = data.getGender() == null ? "" : data.getGender().toString();
+                textBuilder.appendText(setValue(50, 626, gender, 16));
                 // A1_8
-                paragraphs.add(setValue(114, 626, data.getEraDateOfBirth(), 16));
+                String eraDob = data.getEraDateOfBirth() == null ? "" : data.getEraDateOfBirth();
+                textBuilder.appendText(setValue(114, 626, eraDob, 16));
                 // A1_9
-                detachText(144, 626, data.getDateOfBirthJp(), 6, paragraphs);
+                String dobJp = data.getDateOfBirthJp() == null ? "" : data.getDateOfBirthJp();
+                detachText(144, 626, data.getDateOfBirthJp(), 6, textBuilder);
                 // A1_10
-                detachText(306, 626, data.getOfficeNumber1(), 4, paragraphs);
-                detachText(390, 626, data.getOfficeNumber2(), 6, paragraphs);
-                detachText(510, 626, data.getOfficeNumber3(), 1, paragraphs);
+                detachText(306, 626, data.getOfficeNumber1() == null ? "" : data.getOfficeNumber1(), 4, textBuilder);
+                detachText(390, 626, data.getOfficeNumber2() == null ? "" : data.getOfficeNumber2(), 6, textBuilder);
+                detachText(510, 626, data.getOfficeNumber3() == null ? "" : data.getOfficeNumber3(), 1, textBuilder);
                 // A1_11
-                paragraphs.add(setValue(90, 578, data.getCauseOfInsured().toString(), 16));
+                String insuredCause = data.getCauseOfInsured() == null ? "" : data.getCauseOfInsured().toString();
+                textBuilder.appendText(setValue(90, 578, insuredCause, 16));
                 // A1_12
-                paragraphs.add(setValue(156, 578, data.getWagePaymentMode().toString(), 16));
+                String wagePaymentMode = data.getWagePaymentMode() == null ? "" : data.getWagePaymentMode().toString();
+                textBuilder.appendText(setValue(156, 578, wagePaymentMode, 16));
                 // A1_13
-                detachText(114, 578, data.getPaymentWage().toString(), 4, paragraphs);
+                String paymentWage = data.getPaymentWage() == null ? "" : data.getPaymentWage().toString();
+                detachText(114, 578, paymentWage, 4, textBuilder);
                 // A1_14
-                detachText(114, 578, data.getQualificationDateJp().substring(0, 1), 1, paragraphs);
-                detachText(114, 578, data.getPaymentWage().toString().substring(1), 6, paragraphs);
+                String qualificationDateJp = data.getQualificationDateJp() == null ? "" : data.getQualificationDateJp().toString();
+                detachText(114, 578, qualificationDateJp, 1, textBuilder);
+                detachText(114, 578, qualificationDateJp.length() > 1 ? qualificationDateJp.substring(1) : "", 6, textBuilder);
                 // A1_15
-                paragraphs.add(setValue(138, 530, data.getEmploymentStatus().toString(), 16));
+                String employmentStatus = data.getEmploymentStatus() == null ? "" : data.getEmploymentStatus().toString();
+                textBuilder.appendText(setValue(138, 530, employmentStatus, 16));
                 // A1_16
-                detachText(246, 530, data.getOccupation() < 10 ? "0" + (data.getOccupation() + 1) : String.valueOf(data.getOccupation() + 1), 2, paragraphs);
+                String occupation = data.getOccupation() == null ? "" : (data.getOccupation() < 10 ? "0" + (data.getOccupation() + 1) : String.valueOf(data.getOccupation() + 1));
+                detachText(246, 530, occupation, 2, textBuilder);
                 // A1_17
-                paragraphs.add(setValue(318, 530, data.getJobPath().toString(), 16));
-                String workingHours = (data.getScheduleWorkingTimePerWeek() / 60) < 10 ? "0" + (data.getScheduleWorkingTimePerWeek() / 60) : String.valueOf(data.getScheduleWorkingTimePerWeek() / 60);
-                String workingMinutes = String.valueOf(data.getScheduleWorkingTimePerWeek() % 60);
+                String jobPath = data.getJobPath() == null ? "" : data.getJobPath().toString();
+                textBuilder.appendText(setValue(318, 530, jobPath, 16));
                 // A1_18
-                detachText(405, 530, workingHours + workingMinutes, 4, paragraphs);
+                String workingTime = formatWorkingTime(data.getScheduleWorkingTimePerWeek());
+                detachText(405, 530, workingTime, 4, textBuilder);
                 // A1_19
-                paragraphs.add(setValue(123, 476, data.getEstContractPeriod(), 16));
+                String estContractPeriod = data.getEstContractPeriod() == null ? "" : data.getEstContractPeriod();
+                textBuilder.appendText(setValue(123, 476, estContractPeriod, 16));
                 // A1_20
-                detachText(114, 476, data.getContractStartDateJp().substring(0, 1), 1, paragraphs);
-                detachText(114, 476, data.getContractStartDateJp().substring(1, 7), 6, paragraphs);
+                String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();
+                detachText(216, 476, contractStartDateJp, 1, textBuilder);
+                detachText(253, 476, contractStartDateJp.length() > 1 ? contractStartDateJp.substring(1) : "", 6, textBuilder);
                 // A1_21
-                detachText(114, 476, data.getContractEndDateJp().substring(0, 1), 1, paragraphs);
-                detachText(114, 476, data.getContractEndDateJp().substring(1, 7), 6, paragraphs);
+                String contractEndDateJp = data.getContractEndDateJp() == null ? "" : data.getContractEndDateJp();
+                detachText(369, 476, contractEndDateJp, 1, textBuilder);
+                detachText(405, 476, contractEndDateJp.length() > 1 ? contractEndDateJp.substring(1) : "", 6, textBuilder);
                 // A1_22
-                paragraphs.add(setValue(252, 446, data.getContractRenewalProvision().toString(), 16));
+                String contractRenewalProvision = data.getContractRenewalProvision() == null ? "" : data.getContractRenewalProvision().toString();
+                textBuilder.appendText(setValue(252, 446, contractRenewalProvision, 16));
                 // A1_23
-                paragraphs.add(setValue(90, 416, data.getOfficeName(), 16));
+                String officeName = data.getOfficeName() == null ? "" : data.getOfficeName();
+                textBuilder.appendText(setValue(90, 416, officeName, 16));
                 // A1_24 pending
-                // detachText(174, 757, "", 12, paragraphs);
-
+                // detachText(174, 757, data.getPersonalNumber().toString(), 12, textBuilder);
                 // A2_1
-                detachText(114, 757, data.getInsuredEnglishName(), 29, paragraphs);
+                String insuredEnglishName = data.getInsuredEnglishName() == null ? "" : data.getInsuredEnglishName();
+                detachText(51, 371, insuredEnglishName, 29, textBuilder);
                 // A2_2
-                detachText(114, 757, data.getInsuredEnglishName2(), 12, paragraphs);
+                String insuredEnglishName2 = data.getInsuredEnglishName2() == null ? "" : data.getInsuredEnglishName2();
+                detachText(51, 335, insuredEnglishName2, 12, textBuilder);
                 // A2_3
-                paragraphs.add(setValue(114, 757, data.getNationalityRegion(), 16));
+                String nationalityRegion = data.getNationalityRegion() == null ? "" : data.getNationalityRegion();
+                textBuilder.appendText(setValue(276, 335, nationalityRegion, 16));
                 // A2_4
-                paragraphs.add(setValue(114, 757, data.getResidenceStatus(), 16));
+                String residenceStatus = data.getResidenceStatus() == null ? "" : data.getResidenceStatus();
+                textBuilder.appendText(setValue(412, 335, residenceStatus, 16));
                 // A2_5
-                detachText(114, 757, data.getStayPeriod(), 8, paragraphs);
+                String stayPeriod = data.getStayPeriod() == null ? "" : data.getStayPeriod();
+                detachText(93, 308, stayPeriod, 8, textBuilder);
                 // A2_6
-                paragraphs.add(setValue(114, 757, data.getNonQualifPermission().toString(), 16));
+                String nonQualificationPermission = data.getNonQualifPermission() == null ? "" : data.getNonQualifPermission().toString();
+                textBuilder.appendText(setValue(309, 308, nonQualificationPermission, 16));
                 // A2_7
-                paragraphs.add(setValue(114, 757, data.getContractWorkAtr().toString(), 16));
-
+                String contractWorkAtr = data.getContractWorkAtr() == null ? "" : data.getContractWorkAtr().toString();
+                textBuilder.appendText(setValue(420, 308, contractWorkAtr, 16));
                 // A3_1
-                paragraphs.add(setValue(114, 757, formatPostalCode(data.getOfficePostalCode()), 9));
+                String postalCode = data.getOfficePostalCode() == null ? "" : data.getOfficePostalCode();
+                textBuilder.appendText(setValue(120, 190, formatPostalCode(postalCode), 9));
                 // A3_2
-                paragraphs.add(setValue(114, 757, data.getOfficeLocation(), 9));
+                String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
+                textBuilder.appendText(setValue(216, 190, officeLocation, 9));
                 // A3_4
-                paragraphs.add(setValue(114, 757, data.getBusinessOwnerName(), 9));
+                String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
+                textBuilder.appendText(setValue(216, 164, businessOwnerName, 9));
                 // A3_4
-                paragraphs.add(setValue(114, 757, formatPhoneNumber(data.getOfficePhoneNumber()), 9));
-                String[] fillingDate = data.getSubmissionDateJp().split("/");
-                // A3_5
-                paragraphs.add(setValue(114, 757, fillingDate[0], 9));
-                paragraphs.add(setValue(114, 757, fillingDate[0], 9));
-                paragraphs.add(setValue(114, 757, fillingDate[0], 9));
+                String officePhoneNumber = data.getOfficePhoneNumber() == null ? "" : data.getOfficePhoneNumber();
+                textBuilder.appendText(setValue(216, 134, formatPhoneNumber(officePhoneNumber), 9));
 
-                //index page
-                indexPage = indexPage + 2;
+                // A3_5
+                detachDate(450, 188, data.getSubmissionDateJp(), textBuilder);
+                // index page
+                indexPage++;
             }
             report.saveAsPdf(this.createNewFile(fileContext, "雇用保険被保険者氏名変更届.pdf"));
         } catch (Exception e) {
@@ -146,7 +174,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         textFragmentState.setForegroundColor(Color.getBlack());
     }
 
-    private void detachText(int xRoot, int yRoot, String value, int numCells, Paragraphs paragraphs) {
+    private void detachText(int xRoot, int yRoot, String value, int numCells, TextBuilder textBuilder) {
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
@@ -154,7 +182,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
         for (int i = 0; i < lstValue.size(); i++) {
             int pixel = xRoot + (17 * i);
-            paragraphs.add(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
+            textBuilder.appendText(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
         }
     }
 
@@ -167,10 +195,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         marginInfo.setBottom(0);
     }
 
-    private void detachDate(int xRoot, int yRoot, JapaneseDate value, Paragraphs paragraphs) {
-        paragraphs.add(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
-        paragraphs.add(setValue(xRoot + 30, yRoot, value.month() + "", 9));
-        paragraphs.add(setValue(xRoot + 60, yRoot, value.day() + "", 9));
+    private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
+        textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
+        textBuilder.appendText(setValue(xRoot + 30, yRoot, value.month() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 60, yRoot, value.day() + "", 9));
     }
 
     private String formatPhoneNumber(String number) {
@@ -224,5 +252,14 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
             postalCode = "〒" + temp[0] + "－" + temp[1];
         }
         return postalCode;
+    }
+
+    private String formatWorkingTime(Integer workingTime) {
+        if (workingTime == null) {
+            return "";
+        }
+        String workingHours = (workingTime / 60) < 10 ? "0" + (workingTime / 60) : String.valueOf(workingTime / 60);
+        String workingMinutes = (workingTime % 60) < 10 ? "0" + (workingTime % 60) : String.valueOf(workingTime % 60);
+        return workingHours + workingMinutes;
     }
 }
