@@ -18,7 +18,7 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE l.empInsLossInfoPk.cId =:cId AND l.empInsLossInfoPk.sId =:sId";
 
     @Override
-    public Optional<EmpInsLossInfo> getEmpInsLossInfoById(String cId, String sId){
+    public Optional<EmpInsLossInfo> getOneEmpInsLossInfo(String cId, String sId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsLossInfo.class)
                 .setParameter("cId", cId)
                 .setParameter("sId", sId)

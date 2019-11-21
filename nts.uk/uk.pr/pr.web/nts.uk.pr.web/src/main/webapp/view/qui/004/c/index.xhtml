@@ -28,7 +28,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button id="C1_1" tabindex="1" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI004_C1_1')}</button>
+            <button id="C1_1" tabindex="1" data-bind="click: updateEmpInsLossInfo" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI004_C1_1')}</button>
             <button id="C1_2" tabindex="2" data-bind="click: cancel">#{i18n.getText('QUI004_C1_2')}</button>
         </div>
         <div id="contents-area" >
@@ -68,22 +68,18 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: causeOfLossAtr,
-                        visibleItemsCount: 5,
+                        visibleItemsCount: 3,
                         width: 'auto'
                         }"></div>
                         </div>
                         <div class="control-group valign-center">
                             <div id="C222_16" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_16')}</div>
-                            <div id="C222_17" tabindex="8" data-bind="ntsComboBox: {
-                        name: '#{i18n.getText('QUI004_C222_17')}',
-                        options: insCauseAtrs,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: insCauseAtr,
-                        visibleItemsCount: 5,
+                            <div id="C222_17" tabindex="9" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI004_C222_16')}',
+                        options: causeOfLossEmpInsurances,
+                        value: causeOfLossEmpInsurance,
                         width: 'auto'
-                        }"></div>
-                        </div>
+                        }">></div>
                         </div>
                     </div>
                 </div>

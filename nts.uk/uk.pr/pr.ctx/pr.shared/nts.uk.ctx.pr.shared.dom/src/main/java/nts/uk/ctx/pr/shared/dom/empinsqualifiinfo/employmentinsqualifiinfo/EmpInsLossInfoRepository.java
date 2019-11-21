@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface EmpInsLossInfoRepository {
     List<EmpInsHist> getAllEmpInsLossInfo();
     Optional<EmpInsLossInfo> getEmpInsLossInfoById(String sid);
-    Optional<EmpInsLossInfo> getEmpInsLossInfoById(String cId, String sId);
+    Optional<EmpInsLossInfo> getOneEmpInsLossInfo(String cId, String sId);
 
     void add(EmpInsLossInfo domain);
 

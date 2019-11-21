@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("shared/empinsqualifiinfo/employmentinsqualifiinfo")
+@Path("shared/empinsqualifiinfo/employmentinsqualifiinfo/empinsgetinfo")
 @Produces("application/json")
 public class EmpInsGetInfoWebService extends WebService {
     @Inject

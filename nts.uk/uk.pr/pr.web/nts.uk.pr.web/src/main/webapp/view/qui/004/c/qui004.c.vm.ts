@@ -10,6 +10,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
          *ComboBox
          */
         causeOfLossAtrs: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCauseOfLossAtr());
+        causeOfLossEmpInsurances: KnockoutObservableArray<RetirementReasonDto> = ko.observableArray([]);
+        listRetirementReason: Array<RetirementReasonDto>;
         /**
          * Button Switch
          */
@@ -19,7 +21,6 @@ module nts.uk.pr.view.qui004.c.viewmodel {
          * Text Editor
          */
         scheduleWorkingHourPerWeek: KnockoutObservable<number> = ko.observable(null);
-        causeOfLossEmpInsurance: KnockoutObservable<string> = ko.observable(null);
         /**
          * KCP009-社員送り
          */
@@ -42,6 +43,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
         causeOfLossAtr: KnockoutObservable<number> = ko.observable(0);
         requestForInsurance: KnockoutObservable<number> = ko.observable(0);
         scheduleForReplenishment: KnockoutObservable<number> = ko.observable(0);
+        causeOfLossEmpInsurance: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             var self = this;
@@ -105,7 +107,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
-        updateEmpInsGetInfo() {
+        updateEmpInsLossInfo() {
             let self = this;
             let empInsLossInfo: any = {
                 sId: self.selectedItem(),
@@ -129,14 +131,14 @@ module nts.uk.pr.view.qui004.c.viewmodel {
         startPage(sId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.start(sId).done(function (data: any) {
-                if (data) {
+            $.when(service.start(sId), service.getRetirement()).done(function (data: any, getRetirement: any) {
+                if (data && getRetirement) {
                     self.sId(data.sId);
                     self.causeOfLossAtr(data.causeOfLossAtr);
                     self.requestForInsurance(data.requestForInsurance);
                     self.scheduleWorkingHourPerWeek(data.scheduleWorkingHourPerWeek);
                     self.scheduleForReplenishment(data.scheduleForReplenishment);
-                    self.causeOfLossEmpInsurance(data.causeOfLossEmpInsurance);
+                    self.causeOfLossEmpInsurances (getRetirement.listRetirementReason);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.getDefault();
@@ -180,6 +182,12 @@ module nts.uk.pr.view.qui004.c.viewmodel {
         businessName: string;
         depName?: string;
         workplaceName?: string;
+    }
+
+    export interface RetirementReasonDto {
+        cid: string;
+        retirementReasonClsCode: string;
+        retirementReasonClsName: string;
     }
 
     export class SystemType {

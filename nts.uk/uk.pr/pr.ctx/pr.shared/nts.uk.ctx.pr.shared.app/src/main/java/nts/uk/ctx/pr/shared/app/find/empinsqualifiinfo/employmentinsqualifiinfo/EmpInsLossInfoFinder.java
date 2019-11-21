@@ -5,11 +5,17 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpIn
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfoRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
+import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsLossInfoFinder {
@@ -20,23 +26,21 @@ public class EmpInsLossInfoFinder {
     @Inject
     RetirementReasonClsInfoRepository retirementReasonClsInfoRepository;
 
-    public RetirementReasonClsInfo getRetirementReasonClsInfoById(String cId){
-//        Optional<RetirementReasonClsInfo> result = retirementReasonClsInfoRepository.getRetirementReasonClsInfoById(cId);
-//        if (result.isPresent()){
-//            return result.map(e -> new RetirementReasonClsInfoDto(
-//                    AppContexts.user().companyId(),
-//                    e.getRetirementReasonClsCode().v(),
-//                    e.getRetirementReasonClsName().v()
-//
-//            )).get();
-//        }
-        return null;
+    public List<RetirementReasonClsInfoDto> getAllRetirementReasonClsInfoById() {
+        List<RetirementReasonClsInfoDto> response = new ArrayList<>();
+        List<RetirementReasonClsInfo> result = retirementReasonClsInfoRepository.getRetirementReasonClsInfoById(AppContexts.user().companyId());
+         response = result.stream().map(x -> new RetirementReasonClsInfoDto(
+                x.getCId(),
+                x.getRetirementReasonClsCode().v(),
+                x.getRetirementReasonClsName().v()
+        )).collect(Collectors.toList());
+         return response;
     }
 
-    public EmpInsLossInfoDto getEmpInsLossInfoById(String sId){
+    public EmpInsLossInfoDto getEmpInsLossInfoById(String sId) {
         String cId = AppContexts.user().companyId();
-        Optional<EmpInsLossInfo> result = empInsLossInfoRepository.getEmpInsLossInfoById(cId, sId);
-        if (result.isPresent()){
+        Optional<EmpInsLossInfo> result = empInsLossInfoRepository.getOneEmpInsLossInfo(cId, sId);
+        if (result.isPresent()) {
             return result.map(e -> new EmpInsLossInfoDto(
                     AppContexts.user().companyId(),
                     e.getSId(),

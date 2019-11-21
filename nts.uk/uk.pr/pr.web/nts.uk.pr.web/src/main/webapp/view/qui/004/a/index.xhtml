@@ -25,7 +25,7 @@
             >#{i18n.getText('QUI004_A1_1')}</button>
             <button id="A1_2" tabindex="2" data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: exportCSV"
             >#{i18n.getText('QUI004_A1_2')}</button>
-            <button id="A1_4" tabindex="3" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty"
+            <button id="A1_4" tabindex="3" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){openCScreen()}"
             >#{i18n.getText('QUI004_A1_4')}</button>
             <button id="A1_3" tabindex="4"
                     data-bind="enable: false">#{i18n.getText('QUI004_A1_3')}</button>

@@ -21,7 +21,7 @@ public class QqsmtRetiReaClsInfoPk {
      * 会社ID
      */
     @Basic(optional = false)
-    @Column(name = "SID")
-    public String sId;
+    @Column(name = "CID")
+    public String cId;
 
 }

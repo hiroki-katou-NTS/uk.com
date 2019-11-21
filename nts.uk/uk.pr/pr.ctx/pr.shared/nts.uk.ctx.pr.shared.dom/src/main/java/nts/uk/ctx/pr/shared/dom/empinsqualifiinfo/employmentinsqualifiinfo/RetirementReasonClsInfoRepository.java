@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface RetirementReasonClsInfoRepository {
-    Optional<RetirementReasonClsInfo> getRetirementReasonClsInfoById(String cId);
+    List<RetirementReasonClsInfo> getRetirementReasonClsInfoById(String cId);
 }
