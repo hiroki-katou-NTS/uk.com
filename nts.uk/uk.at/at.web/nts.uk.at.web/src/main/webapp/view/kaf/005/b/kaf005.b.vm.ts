@@ -121,7 +121,6 @@ module nts.uk.at.view.kaf005.b {
             actualStatus: number = 0;
             actualLst: any = [];
             overtimeSettingDataDto: any = null;
-            forceYearConfirm: boolean = false;
             forcePreApp: boolean = false;
             forceActual: boolean = false;
             forceOvertimeDetail: boolean = false;
@@ -192,6 +191,7 @@ module nts.uk.at.view.kaf005.b {
                             $("#pg-name").text('');
                         }
                     });
+                    self.resetForceAction();
                     self.initData(data);
                     self.timeStart1.subscribe(() => {
                         $("#inpStartTime1").trigger("validate");
@@ -205,6 +205,7 @@ module nts.uk.at.view.kaf005.b {
                             endTime: self.timeEnd1()
                         }).done((timeRs) => {
                             self.setTimeZones(timeRs);    
+                            self.calculateFlag(1);
                         });    
                     });
                     self.timeEnd1.subscribe(() => {
@@ -218,7 +219,8 @@ module nts.uk.at.view.kaf005.b {
                             startTime: self.timeStart1(),
                             endTime: self.timeEnd1()
                         }).done((timeRs) => {
-                            self.setTimeZones(timeRs);      
+                            self.setTimeZones(timeRs); 
+                            self.calculateFlag(1);     
                         });    
                     });
                     self.checkRequiredOvertimeHours();
@@ -602,6 +604,11 @@ module nts.uk.at.view.kaf005.b {
                     actualLst: self.actualLst,
                     overtimeSettingDataDto: self.overtimeSettingDataDto
                 }
+                let newOvertimes = ko.toJSON(self.overtimeHours());
+                let oldOvertimes = ko.toJSON(self.overtimeHoursOld);
+                if(newOvertimes.localeCompare(oldOvertimes)) {
+                    self.resetForceAction();    
+                }  
                 self.beforeUpdateColorConfirm(command);
                 
             }
@@ -817,6 +824,7 @@ module nts.uk.at.view.kaf005.b {
                     overtimeHours:  ko.toJS(self.overtimeHours())
                 }
                 service.getCalculateValue(param1).done((data: any) => {
+                    self.resetForceAction(); 
                     self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                     self.fillColor(data);
                     nts.uk.ui.block.clear();
@@ -1091,6 +1099,7 @@ module nts.uk.at.view.kaf005.b {
                 if(beforeAppStatus){
                     dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
                         self.forcePreApp = true;
+                        self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                         self.checkActual(overtime, data);   
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1115,6 +1124,7 @@ module nts.uk.at.view.kaf005.b {
                     }); 
                     dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
                         self.forcePreApp = true;
+                        self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                         self.checkActual(overtime, data);
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1145,6 +1155,7 @@ module nts.uk.at.view.kaf005.b {
                     } else {
                         dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
                             self.forceActual = true;
+                            self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                             self.beforeUpdateProcess(overtime);  
                         }).ifNo(() => {
                             nts.uk.ui.block.clear();
@@ -1187,6 +1198,7 @@ module nts.uk.at.view.kaf005.b {
                     }); 
                     dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
                         self.forceActual = true;
+                        self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                         self.beforeUpdateProcess(overtime);
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1236,6 +1248,13 @@ module nts.uk.at.view.kaf005.b {
                         .then(function() { nts.uk.ui.block.clear(); });          
                     }           
                 });        
+            }
+            
+            resetForceAction() {
+                let self = this;
+                self.forcePreApp = false;
+                self.forceActual = false;
+                self.forceOvertimeDetail = false;    
             }
         }
     }

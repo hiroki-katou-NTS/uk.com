@@ -206,6 +206,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 employeeIDs: self.employeeIDs()
             }).done((data) => {
+                self.resetForceAction();
                 self.initData(data);
                 self.timeStart1.subscribe(() => {
                     $("#inpStartTime1").trigger("validate");
@@ -219,6 +220,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         endTime: self.timeEnd1()
                     }).done((timeRs) => {
                         self.setTimeZones(timeRs);    
+                        self.calculateFlag(1);
                     });    
                 });
                 self.timeEnd1.subscribe(() => {
@@ -232,7 +234,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         startTime: self.timeStart1(),
                         endTime: self.timeEnd1()
                     }).done((timeRs) => {
-                        self.setTimeZones(timeRs);      
+                        self.setTimeZones(timeRs);     
+                        self.calculateFlag(1); 
                     });    
                 });
                 self.checkRequiredOvertimeHours();
@@ -260,6 +263,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             overtimeAtr: self.overtimeAtr(),
                             changeEmployee: nts.uk.util.isNullOrEmpty(self.employeeList()) ? null : self.employeeList()[0].id
                         }).done((data) =>{
+                            self.resetForceAction();
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                             self.convertAppOvertimeReferDto(data);
@@ -328,6 +332,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                             endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
                         }).done((data) => {
+                            self.resetForceAction();
                             self.opAppBefore = data.opAppBefore;
                             self.beforeAppStatus = data.beforeAppStatus;
                             self.actualStatus = data.actualStatus;
@@ -710,6 +715,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 actualLst: self.actualLst,
                 overtimeSettingDataDto: self.overtimeSettingDataDto
             };
+            let newOvertimes = ko.toJSON(self.overtimeHours());
+            let oldOvertimes = ko.toJSON(self.overtimeHoursOld);
+            if(newOvertimes.localeCompare(oldOvertimes)) {
+                self.resetForceAction();    
+            }  
+            
             //登録前エラーチェック
             self.beforeRegisterColorConfirm(overtime);
         }
@@ -891,6 +902,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours:  ko.toJS(self.overtimeHours())
             }
             service.getCalculateValue(param1).done((data: any) => {
+                self.resetForceAction();
                 self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                 self.fillColor(data);
                 nts.uk.ui.block.clear();
@@ -1368,6 +1380,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(beforeAppStatus){
                 dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
                     self.forcePreApp = true;
+                    self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                     self.checkActual(overtime, data);   
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1392,6 +1405,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }); 
                 dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
                     self.forcePreApp = true;
+                    self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                     self.checkActual(overtime, data);
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1422,6 +1436,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 } else {
                     dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
                         self.forceActual = true;
+                        self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                         self.beforeRegisterProcess(overtime);  
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
@@ -1464,6 +1479,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }); 
                 dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
                     self.forceActual = true;
+                    self.overtimeHoursOld = ko.toJS(self.overtimeHours());
                     self.beforeRegisterProcess(overtime);
                 }).ifNo(() => {
                     nts.uk.ui.block.clear();
@@ -1539,6 +1555,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                 .then(function() { nts.uk.ui.block.clear(); });           
             });    
+        }
+        
+        resetForceAction() {
+            let self = this;
+            self.forceYearConfirm = false;
+            self.forcePreApp = false;
+            self.forceActual = false;
+            self.forceOvertimeDetail = false;
+            self.forceInconsistency = false;        
         }
     }
 
