@@ -125,11 +125,16 @@ module nts.uk.at.view.kaf005.b {
             forceActual: boolean = false;
             forceOvertimeDetail: boolean = false;
             appOvertimeDetail: any = null;
+            tmpOverTime: any;
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata, rebind?: boolean) {
                 super(listAppMetadata, currentApp);
                 var self = this;
                 self.appCur = currentApp;
                 self.startPage(self.appID()).done(function(){
+                    self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
+                    $("#fixed-overtime-hour-table").remove();
+                    self.timeTableEdit(self.prePostSelected());
+
                     if(nts.uk.util.isNullOrUndefined(rebind)){
                         $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                         $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -152,6 +157,19 @@ module nts.uk.at.view.kaf005.b {
                         }    
                     }
                 });
+            }
+            
+            timeTableEdit(value) {
+                var self = this;
+                if (value == 1) {
+                    self.tmpOverTime.children('colgroup').children()[2].width = '110px';
+                    self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+
+                } else if (value == 0) {
+                    self.tmpOverTime.children('colgroup').children()[2].width = '0px';
+                    self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                }
+                $("#overtime-container").append(self.tmpOverTime.clone(true));
             }
             
             startPage(appID: string): JQueryPromise<any> {
