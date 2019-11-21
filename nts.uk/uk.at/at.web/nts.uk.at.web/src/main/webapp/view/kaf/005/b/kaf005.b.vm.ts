@@ -58,6 +58,8 @@ module nts.uk.at.view.kaf005.b {
             
             displayCaculationTime: KnockoutObservable<boolean> = ko.observable(true);
             displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
+            displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
+            displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
             restTimeDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
             typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
             displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
