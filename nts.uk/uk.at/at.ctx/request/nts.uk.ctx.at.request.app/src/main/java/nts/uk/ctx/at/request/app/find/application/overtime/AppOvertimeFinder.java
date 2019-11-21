@@ -575,7 +575,8 @@ public class AppOvertimeFinder {
 		
 		// 11_設定データを取得
 		OvertimeSettingData overtimeSettingData = getSettingData(companyID, appOverTime.getApplication().getEmployeeID(), 1, ApplicationType.OVER_TIME_APPLICATION, appOverTime.getApplication().getAppDate());
-	
+		overTimeDto.setOvertimeSettingDataDto(this.convSettingToDto(overtimeSettingData));
+		
 		AppCommonSettingOutput appCommonSettingOutput = overtimeSettingData.appCommonSettingOutput;
 		
 		//hoatt
