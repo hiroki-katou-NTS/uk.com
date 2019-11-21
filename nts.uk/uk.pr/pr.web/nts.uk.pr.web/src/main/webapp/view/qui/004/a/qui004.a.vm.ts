@@ -56,16 +56,16 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let self = this;
 
             self.empInsOutOrder = ko.observableArray([
-                new model.ItemModel(0, 'Enum_EmpInsOutOrder_INSURANCE_NUMBER'),
-                new model.ItemModel(1, 'Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE'),
-                new model.ItemModel(2, 'Enum_EmpInsOutOrder_EMPLOYEE_CODE'),
-                new model.ItemModel(3, 'Enum_EmpInsOutOrder_EMPLOYEE')
+                new model.ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
+                new model.ItemModel(1, getText('Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE')),
+                new model.ItemModel(2, getText('Enum_EmpInsOutOrder_EMPLOYEE_CODE')),
+                new model.ItemModel(3, getText('Enum_EmpInsOutOrder_EMPLOYEE'))
             ]);
 
             self.officeCls = ko.observableArray([
-                new model.ItemModel(0, 'Enum_OfficeCls_OUPUT_LABOR_OFFICE'),
-                new model.ItemModel(1, 'Enum_OfficeCls_OUTPUT_COMPANY'),
-                new model.ItemModel(2, 'Enum_OfficeCls_DO_NOT_OUTPUT')
+                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+                new model.ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
             ]);
 
             self.submitNameCls = ko.observableArray([
