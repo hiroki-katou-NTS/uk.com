@@ -406,6 +406,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            if(data.displayCaculationTime) {
+                if(_.isEmpty(data.workTypes)) {
+                    dialog.alertError({ messageId: "Msg_1567" })
+                    .then(function() { 
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                        nts.uk.ui.block.clear();
+                    });    
+                    return;            
+                }    
+                if(_.isEmpty(data.siftTypes)) {
+                    dialog.alertError({ messageId: "Msg_1568" })
+                    .then(function() { 
+                        nts.uk.ui.block.clear();
+                    });               
+                } 
+            }
             self.preExcessDisplaySetting(data.preExcessDisplaySetting);
             self.performanceExcessAtr(data.performanceExcessAtr);
             self.appOvertimeNightFlg(data.appOvertimeNightFlg == 1 ? true : false);
@@ -1023,6 +1039,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         findBychangeAppDateData(data: any) {
             var self = this;
             let overtimeDto = data;
+            if(data.displayCaculationTime) {
+                if(_.isEmpty(data.workTypes)) {
+                    dialog.alertError({ messageId: "Msg_1567" })
+                    .then(function() { 
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                        nts.uk.ui.block.clear();
+                    });    
+                    return;            
+                }    
+                if(_.isEmpty(data.siftTypes)) {
+                    dialog.alertError({ messageId: "Msg_1568" })
+                    .then(function() { 
+                        nts.uk.ui.block.clear();
+                    });               
+                } 
+            }
             self.checkBoxValue(!overtimeDto.manualSendMailAtr);
             self.enableSendMail(!overtimeDto.sendMailWhenRegisterFlg);
             self.prePostSelected(overtimeDto.application.prePostAtr);
