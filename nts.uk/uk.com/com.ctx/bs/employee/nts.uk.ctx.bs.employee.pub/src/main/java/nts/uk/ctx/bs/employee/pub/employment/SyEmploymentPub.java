@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.persistence.jpa.jpql.parser.LiteralBNF;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -80,4 +78,8 @@ public interface SyEmploymentPub {
 	// RequestList639 [RQ639]会社ID、取得したい情報パラメータから雇用情報を取得する.
 	List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentName,Optional<Boolean> getEmpExternalCode,
 			Optional<Boolean> getMemo,Optional<Boolean> getempCommonMasterID,Optional<Boolean> getempCommonMasterItemID);
+
+	// RequestList640 [RQ640]社員ID(List)と基準日から個人IDと雇用を合わせて取得する.
+	List<DataEmployeeExport> getEmploymentInfo(List<String> listSId , GeneralDate baseDate  );
+
 }
