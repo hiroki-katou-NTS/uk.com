@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalset
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 
 @Data
@@ -82,5 +81,26 @@ public class AppOvertimeSettingDto {
 				domain.getPriorityStampSetAtr().value, domain.getUnitAssignmentOvertime().value,
 				domain.getNormalOvertimeUseAtr().value, OtHourUnitControlDto.convertToDto(domain.getOtHour()),
 				domain.getRestAtr().value, domain.getWorkTypeChangeFlag().value);
+	}
+	
+	public AppOvertimeSetting toDomain() {
+		return AppOvertimeSetting.createFromJavaType(
+				companyID, 
+				flexJExcessUseSetAtr, 
+				preTypeSiftReflectFlg, 
+				preOvertimeReflectFlg, 
+				postTypeSiftReflectFlg, 
+				postBreakReflectFlg, 
+				postWorktimeReflectFlg, 
+				calendarDispAtr, 
+				earlyOvertimeint, 
+				instructExcessOTAtr, 
+				priorityStampSetAtr, 
+				unitAssignmentOvertime, 
+				normalOvertimeint, 
+				otHour.attendanceId, 
+				otHour.useOt, 
+				restAtr, 
+				workTypeChangeFlag);
 	}
 }

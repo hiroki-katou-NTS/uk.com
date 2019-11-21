@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
 
 
@@ -17,4 +15,12 @@ public class OvertimeSettingDataDto {
 	public AppCommonSettingOutputDto appCommonSettingOutput;
 	public AppOvertimeSettingDto appOvertimeSetting;
 	public OvertimeRestAppCommonSettingDto overtimeRestAppCommonSet;
+	
+	public OvertimeSettingData toDomain() {
+		OvertimeSettingData overtimeSettingData = new OvertimeSettingData();
+		overtimeSettingData.appCommonSettingOutput = appCommonSettingOutput.toDomain();
+		overtimeSettingData.appOvertimeSetting = appOvertimeSetting.toDomain();
+		overtimeSettingData.overtimeRestAppCommonSet = overtimeRestAppCommonSet.toDomain();
+		return overtimeSettingData; 
+	}
 }

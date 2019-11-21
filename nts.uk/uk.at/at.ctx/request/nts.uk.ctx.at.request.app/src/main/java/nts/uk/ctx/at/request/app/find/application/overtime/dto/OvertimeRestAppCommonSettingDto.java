@@ -106,4 +106,24 @@ public class OvertimeRestAppCommonSettingDto {
 				domain.getAppDateContradictionAtr().value, 
 				domain.getCalculationOvertimeDisplayAtr().value);
 	}
+	
+	public OvertimeRestAppCommonSetting toDomain() {
+		return OvertimeRestAppCommonSetting.createSimpleFromJavaType(
+				companyID, 
+				appType, 
+				divergenceReasonInputAtr, 
+				divergenceReasonFormAtr, 
+				divergenceReasonRequired, 
+				preDisplayAtr, 
+				preExcessDisplaySetting, 
+				bonusTimeDisplayAtr, 
+				outingSettingAtr, 
+				performanceDisplayAtr, 
+				performanceExcessAtr, 
+				intructDisplayAtr, 
+				extratimeDisplayAtr, 
+				extratimeExcessAtr, 
+				appDateContradictionAtr, 
+				calculationOvertimeDisplayAtr);
+	}
 }

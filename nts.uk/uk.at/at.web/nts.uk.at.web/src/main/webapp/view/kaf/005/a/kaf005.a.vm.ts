@@ -136,7 +136,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         actualStatus: number = 0;
         actualLst: any = [];
         tmpOverTime: any;
-        overtimeSettingDataDto: any
+        overtimeSettingDataDto: any;
         forceYearConfirm: boolean = false;
         forcePreApp: boolean = false;
         forceActual: boolean = false;
@@ -877,7 +877,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 opAppBefore: self.opAppBefore,
                 beforeAppStatus: self.beforeAppStatus,
                 actualStatus: self.actualStatus,
-                actualLst: self.actualLst
+                actualLst: self.actualLst,
+                overtimeSettingDataDto: self.overtimeSettingDataDto
             }
             //setting work content
             self.preWorkContent = {
@@ -979,7 +980,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.startTime()}),
                             endTimeRests:nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(),x=>{return x.endTime()}),
                             restTimeDisFlg: self.restTimeDisFlg(),
-                            overtimeSettingDataDto: ko.toJS(self.initSettingData(self.overtimeSettingDataDto))
+                            overtimeSettingDataDto: self.overtimeSettingDataDto
                         }
                     ).done(data => {
                         $("#inpStartTime1").ntsError("clear"); 
@@ -1219,10 +1220,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             itemName:item.itemName};
         }
         
-        private initSettingData(item: any): any {
-            item.appCommonSettingOutput.generalDate = moment(item.appCommonSettingOutput.generalDate).toDate();
-            return item;
-        }
         private checkWorkContentChanged(){
             let self = this;
             //Check calculate times

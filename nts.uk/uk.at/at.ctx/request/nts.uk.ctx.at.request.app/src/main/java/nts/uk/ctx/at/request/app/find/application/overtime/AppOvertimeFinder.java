@@ -261,7 +261,7 @@ public class AppOvertimeFinder {
 				.getAppEmploymentWorkType().stream().map(item -> AppEmploymentSettingDto.fromDomain(item))
 				.collect(Collectors.toList());
 		AppCommonSettingOutputDto appCommonSettingOutputDto = new AppCommonSettingOutputDto(
-				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate(), applicationSettingDto,
+				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate().toString(DATE_FORMAT), applicationSettingDto,
 				approvalFunctionSettingDto, appTypeDiscreteSettingDto, applicationDeadlineDto, appEmploymentSettingDto);
 
 		OvertimeRestAppCommonSettingDto overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto
@@ -510,20 +510,16 @@ public class AppOvertimeFinder {
 	 */
 	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
 			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests,
-			ApplicationDto_New opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst){
-		String companyID = AppContexts.user().companyId();
-		GeneralDate generalDate = GeneralDate.fromString(appDate, DATE_FORMAT); 
+			ApplicationDto_New opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst, OvertimeSettingDataDto overtimeSettingDataDto){
+		OvertimeSettingData overtimeSettingData = overtimeSettingDataDto.toDomain();
 		//1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, 
-				ApplicationType.OVER_TIME_APPLICATION, generalDate);
-		
+		AppCommonSettingOutput appCommonSettingOutput = overtimeSettingData.appCommonSettingOutput;
 		// 6.計算処理 : 
 		List<OvertimeInputCaculation> overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, workTimeCD, workTypeCD, startTime, endTime, startTimeRests, endTimeRests);
 		List<OvertimeColorCheck> otTimeLst = overtimeInputLst.stream()
 				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceID(), x.getFrameNo(), x.getApplicationTime()))
 				.collect(Collectors.toList());
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value).get();
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
 		// 07_事前申請・実績超過チェック

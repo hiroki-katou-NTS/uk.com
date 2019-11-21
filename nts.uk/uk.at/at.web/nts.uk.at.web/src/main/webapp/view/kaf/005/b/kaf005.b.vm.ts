@@ -120,6 +120,7 @@ module nts.uk.at.view.kaf005.b {
             beforeAppStatus: boolean = true;
             actualStatus: number = 0;
             actualLst: any = [];
+            overtimeSettingDataDto: any = null;
             forceYearConfirm: boolean = false;
             forcePreApp: boolean = false;
             forceActual: boolean = false;
@@ -414,6 +415,7 @@ module nts.uk.at.view.kaf005.b {
                         break;    
                     default: break;
                 }
+                self.overtimeSettingDataDto = data.overtimeSettingDataDto;
             }
             
             createOvertimeInputInit(calcLstInit, item){
@@ -712,7 +714,9 @@ module nts.uk.at.view.kaf005.b {
                                 overtimeHours:  _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                                 workTypeCode: self.workTypeCd(),
                                 startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.startTime()}),
-                                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.endTime()})
+                                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.endTime()}),
+                                restTimeDisFlg: self.restTimeDisFlg(),
+                                overtimeSettingDataDto: self.overtimeSettingDataDto
                             }
                         ).done(data => {
                             $("#inpStartTime1").ntsError("clear"); 
@@ -799,7 +803,8 @@ module nts.uk.at.view.kaf005.b {
                     opAppBefore: self.opAppBefore,
                     beforeAppStatus: self.beforeAppStatus,
                     actualStatus: self.actualStatus,
-                    actualLst: self.actualLst       
+                    actualLst: self.actualLst,
+                    overtimeSettingDataDto: self.overtimeSettingDataDto       
                 }
                 //setting work content
                 self.preWorkContent = {
@@ -1008,6 +1013,7 @@ module nts.uk.at.view.kaf005.b {
                                 nameID: item.nameID, 
                                 itemName:item.itemName};
             }
+            
             private checkWorkContentChanged(){
                 let self = this;
                 //Check calculate times
