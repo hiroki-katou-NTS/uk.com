@@ -162,7 +162,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     detachText(45, 466, fullName, 28, textBuilder);
                     //A1_10
                     if (fullName.length() >= 29) {
-                        detachText(45, 434, element.getFullNameKana() != null ? element.getFullNameKana() : "", 12, textBuilder);
+                        detachText(45, 434, element.getFullName().substring(29, element.getFullName().length()), 12, textBuilder);
                     }
                 }
                 //A2_1
