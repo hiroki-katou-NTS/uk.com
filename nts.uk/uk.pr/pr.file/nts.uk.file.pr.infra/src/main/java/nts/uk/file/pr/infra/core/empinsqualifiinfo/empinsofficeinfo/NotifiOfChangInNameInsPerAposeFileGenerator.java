@@ -143,16 +143,12 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 }
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
-                    String name = KatakanaConverter.hiraganaToKatakana(element.getName() != null ? element.getName() : "");
-                    name = KatakanaConverter.fullKatakanaToHalf(name);
-                    textBuilder.appendText(setValue(45, 586, name, 16));
+                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName().length() > 8 ? element.getName().substring(0, 7) : element.getName() : "", 16));
                     //A1_8
                     detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
 
                 } else {
-                    String reportFullName = KatakanaConverter.hiraganaToKatakana(element.getReportFullName() != null ? element.getReportFullName() : "");
-                    reportFullName = KatakanaConverter.fullKatakanaToHalf(reportFullName);
-                    textBuilder.appendText(setValue(45, 586,reportFullName, 16));
+                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName().length() > 8 ? element.getReportFullName().substring(0, 7) : element.getReportFullName() : "", 16));
                     //A1_8
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
@@ -217,7 +213,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                         break;
                     }
                     default: {
-                        rect2 = new Ellipse(370, 40, 15,9);
+                        rect2 = new Ellipse(370, 40, 0,0);
                     }
                 }
                 rect2.getGraphInfo().setLineWidth(1f);
