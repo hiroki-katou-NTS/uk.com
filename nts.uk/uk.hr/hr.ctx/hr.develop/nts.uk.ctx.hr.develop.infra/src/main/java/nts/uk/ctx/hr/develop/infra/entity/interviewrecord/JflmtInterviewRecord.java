@@ -114,7 +114,7 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 	}
 	
 	public static JflmtInterviewRecord toEntity(InterviewRecord domain , String companyID , String interviewRecID){
-		/*return new JflmtInterviewRecord(
+		return new JflmtInterviewRecord(
 				new JflmtInterviewRecordPK(interviewRecID) ,
 				companyID,
 				domain.getIntervieweeSid().v(),
@@ -132,8 +132,8 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 				domain.getListSubInterviewer().get(4).getSubInterviewerSid().v(), 
 				domain.getListInterviewRecordContent()
 						.stream().map(c -> JflmtInterviewContent.toEntity(c, interviewRecID, companyID)).collect(Collectors.toList())
-				);*/
-		return null;
+				);
+		//return null;
 	}
 	
 	public JflmtInterviewRecord(JflmtInterviewRecordPK jflmtInterviewRecordPK, String companyID, String intervieweeSid,

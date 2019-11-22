@@ -43,19 +43,17 @@ public class InterviewWS {
 	}
 	@POST
 	@Path("/testDepartment")
-	public List<EmployeeInformationImport> testQueryDepartment (List<String> listEmployeeID , GeneralDate date){
+	public List<EmployeeInformationImport> testQueryDepartment (ParamEmployee data){
 		EmployeeInfoQueryImport paramInterview = EmployeeInfoQueryImport.builder()
 				.employeeIds(null)
-				.referenceDate(date) // Xem lai date
+				.referenceDate(data.getDate()) // Xem lai date
 				.toGetWorkplace(false)
 				.toGetDepartment(true)
 				.toGetPosition(false)
 				.toGetEmployment(false)
 				.toGetClassification(false)
 				.toGetEmploymentCls(false).build();
-		
-		
-		List<EmployeeInformationImport> listInterviewEmployeeImport = employeeInforAdapter.find(paramInterview);
+				List<EmployeeInformationImport> listInterviewEmployeeImport = employeeInforAdapter.find(paramInterview);
 		return listInterviewEmployeeImport;
 	}
 	
