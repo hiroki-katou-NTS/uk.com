@@ -656,6 +656,7 @@ module nts.uk.at.view.kaf005.b {
                 command.divergenceReasonContent = comboDivergenceReason;
                 command.appReasonID = comboBoxReason;
                 command.divergenceReasonArea = areaDivergenceReason;
+                command.appOvertimeDetail = self.appOvertimeDetail;
                 service.updateOvertime(command)
                 .done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
