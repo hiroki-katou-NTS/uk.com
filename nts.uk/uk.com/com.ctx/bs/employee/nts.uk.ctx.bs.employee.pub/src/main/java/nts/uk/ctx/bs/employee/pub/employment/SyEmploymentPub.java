@@ -90,6 +90,6 @@ public interface SyEmploymentPub {
 			Optional<Boolean> getMemo,Optional<Boolean> getempCommonMasterID,Optional<Boolean> getempCommonMasterItemID);
 
 	// RequestList640 [RQ640]社員ID(List)と基準日から個人IDと雇用を合わせて取得する.
-	List<DataEmployeeExport> getEmploymentInfo(List<String> listSId , GeneralDate baseDate  );
+	List<DataEmployeeExport> getEmployeeInfo(List<String> listSId , DatePeriod baseDatePeriod);
 
 }

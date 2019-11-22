@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.employment.EmployeeBasicInfoExport;
-import nts.uk.ctx.bs.employee.pub.employment.ObjectParam;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -64,6 +62,9 @@ public interface EmploymentHistoryRepository {
 	// query from RequetsList 264
 	List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
 	
+	// RequetsList 640
+	List<EmploymentHistory> getByListHistId(List<String> histIds);
+	
 	
 	/**
 	 * @author lanlt
@@ -85,4 +86,7 @@ public interface EmploymentHistoryRepository {
 	
 	List<Object[]>  getEmploymentBasicInfo(String employmentCode, DatePeriod birthdayPeriod, GeneralDate baseDate,
 			String cid);
+	
+	// query from RequetsList 640
+	List<EmploymentHistoryItem> getEmploymentHisItem(List<String> employeeIds, DatePeriod baseDatePeriod);
 }

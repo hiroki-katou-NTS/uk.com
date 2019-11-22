@@ -9,13 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.constraints.Null;
 
+import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -27,9 +30,10 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemReposi
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport.AffPeriodEmpCdHistExportBuilder;
-import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
 import nts.uk.ctx.bs.employee.pub.employment.DataEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employment.DataTemp;
+import nts.uk.ctx.bs.employee.pub.employment.DataTemp1;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
@@ -39,6 +43,7 @@ import nts.uk.ctx.bs.employee.pub.employment.ObjectParam;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -59,6 +64,9 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	/** The employment repository. */
 	@Inject
 	private EmploymentRepository employmentRepository;
+	
+	@Inject
+	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -300,15 +308,6 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		return result;
 	}
 
-	@Override
-	public List<DataEmployeeExport> getEmploymentInfo(List<String> listSId, GeneralDate baseDate) {
-		
-		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
-		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
-
-		
-		return new ArrayList<>();
-	}
 
 	@Override
 	public List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid) {
@@ -336,6 +335,72 @@ public class EmploymentPubImp implements SyEmploymentPub {
 				}
 			}
 		}
+		return result;
+	}
+	
+
+	@Override
+	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, DatePeriod baseDatePeriod) {
+		
+		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
+		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
+
+		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, baseDatePeriod);
+		
+		if (listEmpHistItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<String> listHistID = listEmpHistItem.stream().map(Item -> Item.getHistoryId()).collect(Collectors.toList());
+		
+		List<EmploymentHistory> listEmpHist =  this.empHistRepo.getByListHistId(listHistID);
+		
+		List<DataTemp> listDataTemp = new ArrayList<>();
+		
+		for (int i = 0; i < listEmpHist.size(); i++) {
+			DataTemp dataTemp = new DataTemp();
+			dataTemp.setSid(listEmpHist.get(i).getEmployeeId());
+			List<DataTemp1> listDataTemp1 = new ArrayList<>();
+			if (!listEmpHist.get(i).getHistoryIds().isEmpty()) {
+				for (int j = 0; j < listEmpHist.get(i).getHistoryItems().size(); j++) {
+					DateHistoryItem dateHistoryItem = listEmpHist.get(i).getHistoryItems().get(j);
+					String employmentCode = listEmpHistItem.stream()
+							.filter(it -> it.getHistoryId().equals(dateHistoryItem.identifier())).findFirst().get()
+							.getEmploymentCode().toString();
+					DataTemp1 temp1 = DataTemp1.builder()
+							.employmentCode(employmentCode)
+							.datePeriod(new DatePeriod(dateHistoryItem.start(), dateHistoryItem.end()))
+							.build();
+					listDataTemp1.add(temp1);
+				}
+			}
+			dataTemp.setListEmpCodeAndDatePeriod(listDataTemp1);
+			listDataTemp.add(dataTemp);
+		}
+	
+		List<String> listSid = listDataTemp.stream().map(e -> e.getSid()).collect(Collectors.toList());
+		
+		List<EmployeeDataMngInfo> listEmpdataMng = empDataMngInfoRepo.findBySidNotDel(listSid);
+		
+		List<DataEmployeeExport> result = new ArrayList<>();
+		listEmpdataMng.forEach(emp -> {
+			
+			DataTemp dataHistoryItems = listDataTemp.stream()
+					.filter(e -> e.getSid().equals(emp.getEmployeeId()))
+					.findFirst().get();
+			if (!dataHistoryItems.getListEmpCodeAndDatePeriod().isEmpty()) {
+				for (int i = 0; i < dataHistoryItems.getListEmpCodeAndDatePeriod().size(); i++) {
+					DataTemp1 temp1 = dataHistoryItems.getListEmpCodeAndDatePeriod().get(i);
+					DataEmployeeExport dataEmployeeExport = DataEmployeeExport.builder()
+							.employmentCode(temp1.getEmploymentCode())
+							.sid(emp.getEmployeeId())
+							.pid(emp.getPersonId())
+							.build();
+					result.add(dataEmployeeExport);
+				}
+			}
+		});
+		
 		return result;
 	}
 }

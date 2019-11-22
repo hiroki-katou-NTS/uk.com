@@ -22,8 +22,12 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -51,11 +55,21 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " INNER JOIN BsymtAffCompanyHist ach ON ach.bsymtAffCompanyHistPk.sId = eht.sid "
 			+ " INNER JOIN BsymtEmployeeDataMngInfo e ON e.bsymtEmployeeDataMngInfoPk.sId = eht.sid "
 			+ " INNER JOIN BpsmtPerson ps ON  ps.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId "
-			+ " WHERE eht.empCode IN :employmentCode AND eh.strDate <= :baseDate AND eh.endDate >= :baseDate " 
+			+ " WHERE eht.empCode = :employmentCode AND eh.strDate <= :baseDate AND eh.endDate >= :baseDate " 
 			+ " AND ach.startDate <= :baseDate AND ach.endDate >= :baseDate AND ach.destinationData = 0 " 
 			+ " AND e.delStatus = 0 "
 			+ " AND ps.birthday <= :endDate " 
 			+ " AND ps.birthday >= :startDate ";
+	
+	private static final String SELECT_DATA_REQ640 = "SELECT eht "
+			+ " FROM BsymtEmploymentHistItem  eht  "
+			+ " INNER JOIN BsymtEmploymentHist eh ON eh.hisId = eht.hisId "
+			+ " WHERE eh.sid IN :listSid AND eh.strDate <= :endDate AND eh.endDate >= :startDate ";
+	
+	private static final String SELECT_DATA_REQ640_2 = "SELECT eh "
+			+ " FROM BsymtEmploymentHist  eh  "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
+			+ " WHERE eh.sid IN :histIds";
 	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
@@ -354,6 +368,64 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				.setParameter("startDate", birthdayPeriod.start())
 				.setParameter("endDate", birthdayPeriod.end()).getList();
 		
+		return result;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentHisItem(List<String> employeeIds, DatePeriod datePeriod) {
+		
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
+		
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BsymtEmploymentHistItem> optionDatas = this.queryProxy()
+					.query(SELECT_DATA_REQ640, BsymtEmploymentHistItem.class)
+					.setParameter("listSid", subList)
+					.setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList();
+			resultList.addAll(optionDatas);
+		});
+
+		return resultList.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());
+	}
+	
+	private EmploymentHistoryItem toDomainEmploymentHistoryItem(BsymtEmploymentHistItem entity) {
+		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
+	}
+
+	@Override
+	public List<EmploymentHistory> getByListHistId(List<String> histIds) {
+		
+		List<BsymtEmploymentHist> listEntity = new ArrayList<>();
+
+		// Split employeeId List if size of histIds List is greater than 1000
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BsymtEmploymentHist> optionDatas = this.queryProxy()
+					.query(SELECT_DATA_REQ640_2, BsymtEmploymentHist.class)
+					.setParameter("histIds", subList).getList();
+			listEntity.addAll(optionDatas);
+		});
+
+		Map<String, List<BsymtEmploymentHist>> mapSidWithListEntity = listEntity.stream().collect(Collectors.groupingBy(x -> x.sid)); 
+		
+		List<EmploymentHistory> result = new ArrayList<>();
+
+		for (Map.Entry<String, List<BsymtEmploymentHist>> info : mapSidWithListEntity.entrySet()) {
+			EmploymentHistory empHistory = new EmploymentHistory();
+			empHistory.setEmployeeId(info.getKey());
+			List<BsymtEmploymentHist> values = info.getValue();
+			if (!values.isEmpty()) {
+				empHistory.setHistoryItems(
+						values.stream().map(x -> new DateHistoryItem(x.hisId, new DatePeriod(x.strDate, x.endDate)))
+								.collect(Collectors.toList()));
+			} else {
+				empHistory.setHistoryItems(new ArrayList<>());
+			}
+			result.add(empHistory);
+		}
+
 		return result;
 	}
 }
