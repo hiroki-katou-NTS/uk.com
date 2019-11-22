@@ -55,7 +55,6 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 
 			DepartmentExport dep = item.getDepartment().isPresent() ? DepartmentExport.builder()
 					.departmentCode(item.getDepartment().get().getDepartmentCode())
-					.departmentGenericName(item.getDepartment().get().getDepartmentGenericName())
 					.departmentName(item.getDepartment().get().getDepartmentName())
 					.build() : null;
 
