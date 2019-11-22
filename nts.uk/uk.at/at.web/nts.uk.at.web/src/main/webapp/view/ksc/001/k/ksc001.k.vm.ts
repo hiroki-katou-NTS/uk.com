@@ -16,10 +16,10 @@ module nts.uk.at.view.ksc001.k {
                 self.errorNumber = ko.observable('');
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'id', width: 100, hidden: true },
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 200 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_59"), key: 'errorContent', width: 300 }
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 120 },
+                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 230 },
+                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSC001_59"), key: 'errorContent', width: 350 }
                 ]);
                 self.items = ko.observableArray([]);
                 self.currentCode = ko.observable('');

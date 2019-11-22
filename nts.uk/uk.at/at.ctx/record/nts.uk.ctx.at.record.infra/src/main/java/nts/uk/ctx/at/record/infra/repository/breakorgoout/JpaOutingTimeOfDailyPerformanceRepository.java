@@ -40,18 +40,13 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		implements OutingTimeOfDailyPerformanceRepository {
 
-//	private static final String REMOVE_BY_EMPLOYEE;
-
-	private static final String DEL_BY_LIST_KEY;
 
 	private static final String SELECT_BY_EMPLOYEE_AND_DATE;
 
 	private static final String SELECT_BY_KEY;
 
 	private static final String CHECK_EXIST_DATA;
-
-	private static final String FIND_BY_KEY;
-
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
@@ -68,13 +63,6 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		SELECT_BY_EMPLOYEE_AND_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiOutingTime a ");
-		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiOutingTimePK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiOutingTime a ");
 		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
@@ -89,14 +77,6 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
 		builderString.append("AND a.krcdtDaiOutingTimePK.outingFrameNo = :outingFrameNo ");
 		CHECK_EXIST_DATA = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiOutingTime a ");
-		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
-		builderString.append("AND a.krcdtDaiOutingTimePK.outingFrameNo = :outingFrameNo ");
-		FIND_BY_KEY = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -116,19 +96,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	}
 
-	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistEmployeeIds -> {
-			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistYmds -> {
-				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
-					.setParameter("employeeIds", sublistEmployeeIds)
-					.setParameter("ymds", sublistYmds)
-					.executeUpdate();
-			});
-		});
-		this.getEntityManager().flush();
-	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy()
@@ -271,41 +239,11 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
-	// @Override
-	// public void update(OutingTimeOfDailyPerformance outing) {
-	// commandProxy().insertAll(outing.getOutingTimeSheets().stream()
-	// .map(c -> KrcdtDaiOutingTime.toEntity(outing.getEmployeeId(),
-	// outing.getYmd(), c))
-	// .collect(Collectors.toList()));
-	// }
-
-	@Override
-	public void insert(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
-		// KrcdtDaiOutingTime.toEntity(outingTimeOfDailyPerformance).stream().forEach(item
-		// -> {
-		// this.commandProxy().insert(item);
-		// });
-		// this.getEntityManager().flush();
-	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public boolean checkExistData(String employeeId, GeneralDate ymd, OutingFrameNo outingFrameNo) {
 		return this.queryProxy().query(CHECK_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).setParameter("outingFrameNo", outingFrameNo.v()).getSingle().get() > 0;
-	}
-
-	@Override
-	public void updateOneDataInlist(String employeeId, GeneralDate ymd, OutingTimeSheet outingTimeSheet) {
-		Optional<KrcdtDaiOutingTime> krcdtDaiOutingTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiOutingTime.class)
-				.setParameter("employeeId", employeeId).setParameter("ymd", ymd)
-				.setParameter("outingFrameNo", outingTimeSheet.getOutingFrameNo().v()).getSingle();
-
-		if (krcdtDaiOutingTime.isPresent()) {
-			KrcdtDaiOutingTime outingTime = krcdtDaiOutingTime.get();
-			setEntityValue(outingTimeSheet, outingTime);
-			this.commandProxy().update(outingTime);
-			this.getEntityManager().flush();
-		}
 	}
 
 	@Override
@@ -467,6 +405,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		krcdtDaiOutingTime.outStampTime = null;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();
@@ -523,6 +462,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		return outingTimeSheet;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OutingTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<OutingTimeOfDailyPerformance> result = new ArrayList<>();

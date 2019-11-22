@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -68,8 +69,8 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 
 	@Override
 	public List<AgreementTimeByEmpExport> algorithmImprove(String companyId, List<String> employeeIds, GeneralDate criteria,
-													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs) {
-		return this.getAgreTimeByPeriod.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs)
+													Month startMonth, Year year, List<PeriodAtrOfAgreement> periodAtrs, Map<String, YearMonthPeriod> periodWorking) {
+		return this.getAgreTimeByPeriod.algorithmImprove(companyId, employeeIds, criteria, startMonth, year, periodAtrs, periodWorking)
 				.stream().map(AgreementTimeByEmpExport::fromDomain).collect(Collectors.toList());
 	}
 	

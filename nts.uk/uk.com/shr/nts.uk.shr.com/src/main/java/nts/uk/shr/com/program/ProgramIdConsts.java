@@ -69,6 +69,7 @@ public class ProgramIdConsts {
 	public static final String CDL028A = "CDL028A";
 
 	public static final String CPS007A = "CPS007A";
+	
 	public static final String CPS007B = "CPS007B";
 
 	public static final String CPS008D = "CPS008D";
@@ -76,6 +77,16 @@ public class ProgramIdConsts {
 	public static final String CPS008C = "CPS008C";
 
 	public static final String CPS008A = "CPS008A";
+
+	public static final String KSP001A = "KSP001A";
+	
+	public static final String KSP001B = "KSP001B";
+
+	public static final String KSP001C = "KSP001C";
+
+	public static final String KSP001D = "KSP001D";
+	
+	public static final String KSP001E = "KSP001E";
 
 	public static final String KMK011A = "KMK011A";
 
@@ -650,6 +661,20 @@ public class ProgramIdConsts {
 
 	public static final String CPS001I = "CPS001I";
 
+	public static final String CPS003A = "CPS003A";
+	
+	public static final String CPS003B = "CPS003B";
+	
+	public static final String CPS003C = "CPS003C";
+	
+	public static final String CPS003D = "CPS003D";
+	
+	public static final String CPS003E = "CPS003E";
+	
+	public static final String CPS003F = "CPS003F";
+	
+	public static final String CPS003G = "CPS003G";
+
 	public static final String CMM007A = "CMM007A";
 	public static final String CMM007B = "CMM007B";
 	public static final String CMM007C = "CMM007C";
@@ -989,6 +1014,21 @@ public class ProgramIdConsts {
 	public static final String JMM017A = "JMM017A";
 	public static final String JMM017B = "JMM017B";
 	public static final String JMM017C = "JMM017C";
+
+	//スマホ②
+	public static final String KAFS05A = "KAFS05A";
+	public static final String KAFS05B = "KAFS05B";
+	public static final String CMMS45B = "CMMS45B";
+	public static final String CMMS45C = "CMMS45C";
+	public static final String CMMS45D = "CMMS45B";
+	public static final String CMMS45E = "CMMS45E";
+	public static final String CCGS33 = "CCGS33";
+	public static final String KDWS03A = "KDWS03A";
+
+	/** CPS013 */
+	public static final String CPS013A = "CPS013A";
+	public static final String CPS013B = "CPS013B";
+	
 
 	/** JMM018 */
 	public static final String JMM018A = "JMM018A";

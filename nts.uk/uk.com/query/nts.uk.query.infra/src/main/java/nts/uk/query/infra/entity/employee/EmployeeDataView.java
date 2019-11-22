@@ -170,52 +170,118 @@ public class EmployeeDataView implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate workTypeStrDate;
 
+	/** The department id. */
+	@Column(name = "DEP_ID")
+	private String depId;
+
+	/** The department start date. */
+	@Column(name = "DEP_STR_DATE")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	private GeneralDateTime depStrDate;
+
+	/** The department end date. */
+	@Column(name = "DEP_END_DATE")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	private GeneralDateTime depEndDate;
+
+	/** The department code. */
+	@Column(name = "DEP_CD")
+	private String depCode;
+
+	/** The department name. */
+	@Column(name = "DEP_NAME")
+	private String depName;
+
+	/** The department delete flag. */
+	@Column(name = "DEP_DELETE_FLAG")
+	private Boolean depDeleteFlag;
+
+	/** The department generic. */
+	@Column(name = "DEP_GENERIC")
+	private String depGeneric;
+
+	/** The department display name. */
+	@Column(name = "DEP_DISP_NAME")
+	private String depDisplayName;
+
+	/** The department hierarchy code. */
+	@Column(name = "DEP_HIERARCHY_CD")
+	private String depHierarchyCode;
+
+	/** The department external code. */
+	@Column(name = "DEP_EXTERNAL_CD")
+	private String depExternalCode;
+
+	/** The department history id. */
+	@Column(name = "DEP_HIST_ID")
+	private String depHistoryId;
+
+	/** The department config start date. */
+	@Column(name = "DEP_CONF_STR_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate depConfStrDate;
+
+	/** The department config end date. */
+	@Column(name = "DEP_CONF_END_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate depConfEndDate;
+
 	/** The workplace id. */
-	@Column(name="WORKPLACE_ID")
-	private String workplaceId;
+	@Column(name = "WKP_ID")
+	private String wkpId;
 
-	/** The wpl cd. */
-	@Column(name="WPL_CD")
-	private String wplCd;
-
-	/** The wpl end date. */
-	@Column(name="WPL_END_DATE")
+	/** The workplace start date. */
+	@Column(name = "WKP_STR_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wplEndDate;
+	private GeneralDateTime wkpStrDate;
 
-	/** The wpl info end date. */
-	@Column(name="WPL_INFO_END_DATE")
+	/** The workplace end date. */
+	@Column(name = "WKP_END_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wplInfoEndDate;
+	private GeneralDateTime wkpEndDate;
 
-	/** The wpl info str date. */
-	@Column(name="WPL_INFO_STR_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wplInfoStrDate;
+	/** The workplace code. */
+	@Column(name = "WKP_CD")
+	private String wkpCode;
 
-	/** The wkp conf end date. */
-	@Column(name="WKP_CONF_END_DT")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wkpConfEndDate;
+	/** The workplace name. */
+	@Column(name = "WKP_NAME")
+	private String wkpName;
+
+	/** The workplace delete flag. */
+	@Column(name = "WKP_DELETE_FLAG")
+	private Boolean wkpDeleteFlag;
+
+	/** The workplace generic. */
+	@Column(name = "WKP_GENERIC")
+	private String wkpGeneric;
+
+	/** The workplace display name. */
+	@Column(name = "WKP_DISP_NAME")
+	private String wkpDisplayName;
+
+	/** The workplace hierarchy code. */
+	@Column(name = "WKP_HIERARCHY_CD")
+	private String wkpHierarchyCode;
+
+	/** The workplace external code. */
+	@Column(name = "WKP_EXTERNAL_CD")
+	private String wkpExternalCode;
+
+	/** The workplace history id. */
+	@Column(name = "WKP_HIST_ID")
+	private String wkpHistoryId;
+
+	/** The workplace config start date. */
+	@Column(name = "WKP_CONF_STR_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate wkpConfStrDate;
+
+	/** The workplace config end date. */
+	@Column(name = "WKP_CONF_END_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate wkpConfEndDate;
 	
-	/** The wkp conf str date. */
-	@Column(name="WKP_CONF_STR_DT")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wkpConfStrDate;
-
-	/** The wpl hierarchy code. */
-	@Column(name="WKP_HIERARCHY_CD")
-	private String wplHierarchyCode;
-
-	/** The wpl name. */
-	@Column(name="WPL_NAME")
-	private String wplName;
-
-	/** The wpl str date. */
-	@Column(name="WPL_STR_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime wplStrDate;
-
 	/** The closure id. */
 	@Column(name="CLOSURE_ID")
 	private Integer closureId;

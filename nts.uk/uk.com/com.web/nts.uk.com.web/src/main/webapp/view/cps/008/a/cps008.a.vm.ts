@@ -53,6 +53,27 @@ module cps008.a.viewmodel {
                     self.enaBtnDel(false);
                 }
             });
+            let styles = '';
+            let panelHeight = window.innerHeight - 300;
+            if(panelHeight <= 70) {
+                styles = '.drag-panel { max-height: 70px !important;height: 70px !important; }';   
+            } else {
+                styles = '.drag-panel { max-height: ' + panelHeight + 'px !important;' + 'height: ' + panelHeight + 'px !important;}';
+            } 
+            $( window ).resize(function() {
+                let panelHeightResize = window.innerHeight - 300;
+                if(panelHeightResize <= 70) {   
+                    $( ".drag-panel" ).attr(`style`, `max-height: 70px !important;height: 70px !important;`);
+                } else {
+                    $( ".drag-panel" ).attr(`style`, `max-height: ` + panelHeightResize + `px !important;` + `height: ` + panelHeightResize + `px !important;`);
+                }
+                
+                console.log('resize');
+            });
+            let styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = styles;
+            document.head.appendChild(styleSheet);
         }
 
         start(code?: string): JQueryPromise<any> {

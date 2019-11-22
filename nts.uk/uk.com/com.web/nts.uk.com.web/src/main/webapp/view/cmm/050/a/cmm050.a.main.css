@@ -7,6 +7,7 @@ input {
 td {
 	padding-top: 10px;
 	padding-bottom: 10px;
+	min-width: 160px;
 }
 
 #mail_setting_register {
@@ -34,7 +35,7 @@ td {
 }
 
 .method_info {
-	width: 650px;
+	width: 1015px;
 	margin-top: 50px;
 	border: 1px solid #cccccc;
 	border-radius: 6px;

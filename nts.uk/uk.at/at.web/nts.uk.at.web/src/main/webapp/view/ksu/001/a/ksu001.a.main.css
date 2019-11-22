@@ -11,11 +11,11 @@
 	overflow-x: hidden;
 }
 
-#extable {
+/* #extable {
 	float: left;
 	top: 2px;
 	left: 80px;
-}
+} */
 
 #extable td, #extable td>* {
 	font-size: 10.5px;
@@ -370,3 +370,15 @@ tbody a.x-link {
 	color: #404040;
 }
 
+.right-content {
+	height: calc(100vh - 141px);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+#top-area , #contain-view {
+	min-width: 1022px;
+	width: calc(100vw - 80px);
+}
+html {
+	overflow: hidden;
+}

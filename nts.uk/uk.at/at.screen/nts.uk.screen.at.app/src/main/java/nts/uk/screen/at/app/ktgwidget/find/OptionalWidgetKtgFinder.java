@@ -6,10 +6,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
@@ -107,7 +110,10 @@ public class OptionalWidgetKtgFinder {
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 	
-
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder initDisplayPeriodSwitchSetFinder;
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
 		Integer closureId = this.getClosureId();
@@ -151,22 +157,22 @@ public class OptionalWidgetKtgFinder {
 			return null;
 		return closureEmployment.get().getClosureId();
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode) {
 		String companyId = AppContexts.user().companyId(); 
 		Optional<OptionalWidgetImport> dto = optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode);
 		if(!dto.isPresent())
 			return null;
-		return optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode).get();
+		return dto.get();
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetDisplay getOptionalWidgetDisplay(String topPagePartCode) {
 		DatePeriodDto datePeriodDto = getCurrentMonth();
 		OptionalWidgetImport optionalWidgetImport = findOptionalWidgetByCode(topPagePartCode);
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 	
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -233,13 +239,19 @@ public class OptionalWidgetKtgFinder {
 					int timeOT = 0;
 					List<ApplicationTimeImport> applicationOvertimeImport = optionalWidgetAdapter.acquireTotalApplicationOverTimeHours(employeeId, startDate, endDate);
 					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
-					for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
-						dailyTotalTime = dailyExcessTotalTimeImport.stream().
-								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
-					}
-					for (ApplicationTimeImport OvertimeImport : applicationOvertimeImport) {
-						timeOT += OvertimeImport.getTotalOtHours();
-					}
+					// bug 108198
+                    if(applicationOvertimeImport.size() == 0){
+                        dailyTotalTime = dailyExcessTotalTimeImport;
+                    }else{
+	                    for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
+	                        dailyTotalTime = dailyExcessTotalTimeImport.stream().
+	                                filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+	                    }
+	                    for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
+	                        timeOT += applicationOvertime.getTotalOtHours();
+	                    }
+                    }
+	                    
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						timeOT += dailyExcessTotalTime.getOverTime().getTime();
 					}
@@ -249,13 +261,19 @@ public class OptionalWidgetKtgFinder {
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalApplicationTimeUnreflected(employeeId, startDate, endDate);
 					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
-					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyTotalTime = dailyExcessTotalTimeImport.stream().
-								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					// bug 108198
+					if(applicationflexTimeImport.size() == 0){
+						dailyTotalTime = dailyExcessTotalTimeImport;
+					}else{
+						for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+							dailyTotalTime = dailyExcessTotalTimeImport.stream().
+									filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+						}
+						for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+							time += OvertimeImport.getTotalOtHours();
+						}
 					}
-					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
-						time += OvertimeImport.getTotalOtHours();
-					}
+					
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getFlexOverTime().getTime();
 					}
@@ -265,13 +283,19 @@ public class OptionalWidgetKtgFinder {
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalAppHdTimeNotReflected(employeeId, startDate, endDate);
 					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
-					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyTotalTime = dailyExcessTotalTimeImport.stream().
-								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					// bug 108198
+					if(applicationflexTimeImport.size() == 0){
+						dailyTotalTime = dailyExcessTotalTimeImport;
+					}else{
+						for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+							dailyTotalTime = dailyExcessTotalTimeImport.stream().
+									filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+						}
+						for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+							time += OvertimeImport.getTotalOtHours();
+						}
 					}
-					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
-						time += OvertimeImport.getTotalOtHours();
-					}
+					
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getHolidayWorkTime().getTime();
 					}
@@ -281,13 +305,19 @@ public class OptionalWidgetKtgFinder {
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireAppNotReflected(employeeId, startDate, endDate);
 					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
-					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyTotalTime = dailyExcessTotalTimeImport.stream().
-								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+					// bug 108198
+					if(applicationflexTimeImport.size() == 0){
+						dailyTotalTime = dailyExcessTotalTimeImport;
+					}else{
+						for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
+							dailyTotalTime = dailyExcessTotalTimeImport.stream().
+									filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
+						}
+						for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
+							time += OvertimeImport.getTotalOtHours();
+						}
 					}
-					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
-						time += OvertimeImport.getTotalOtHours();
-					}
+					
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getExcessMidNightTime().getTime();
 					}
@@ -414,8 +444,14 @@ public class OptionalWidgetKtgFinder {
 						//get request list 208 rồi trả về
 						//・上書きフラグ ← falseを渡してください(muto)
 						//・上書き用の暫定管理データ ← 空（null or Empty）で渡してください
-						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, new DatePeriod(datePeriodDto.getStrCurrentMonth(), datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)), false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
-						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
+						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId,
+								new DatePeriod(datePeriodDto.getStrCurrentMonth(),datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
+								false,
+								systemDate,
+								specialHoliday.getSpecialHolidayCode().v(),
+								false, false,
+								new ArrayList<>(), new ArrayList<>(), Optional.empty());
+						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
 						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails(); 
@@ -437,6 +473,8 @@ public class OptionalWidgetKtgFinder {
 		}
 		return dto;
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date, DatePeriod datePeriod) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		//lấy request list 210		

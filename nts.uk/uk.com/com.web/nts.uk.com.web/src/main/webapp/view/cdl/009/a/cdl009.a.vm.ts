@@ -56,7 +56,8 @@ module nts.uk.com.view.cdl009.a {
                     selectedCode: ko.observable(),
                     isDialog: true,
                     employeeInputList: self.employeeList,
-                    maxRows: 12
+                    maxRows: 12,
+                    width: 474
                 };
                 // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {

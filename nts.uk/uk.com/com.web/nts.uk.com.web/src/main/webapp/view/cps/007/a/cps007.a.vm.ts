@@ -19,6 +19,42 @@ module cps007.a.vm {
                 layout = self.layout();
 
             self.start();
+            let styles = '';
+            let lstControlHeight = window.innerHeight - 372;
+            if(lstControlHeight >= 347) {
+                styles += '#cps007_lst_control { height: 347px; }';  
+            } else {
+                styles += '#cps007_lst_control { height: ' + lstControlHeight + 'px; }';
+            } 
+            let panelHeight = window.innerHeight - 169;
+            
+            if(panelHeight <= 50) {   
+                styles += '#cps007_srt_control { max-height: 50px !important;height: 50px !important; }';
+                styles += '#cps007_btn_line { position: absolute;top: 80px !important; }';
+                styles += '.drag-panel { max-height: 110px !important;height: 110px !important; }';
+            } else {
+                styles += '#cps007_srt_control { max-height: ' + (panelHeight - 60) + 'px !important;height: ' + (panelHeight - 60) + 'px !important; }';
+                styles += '#cps007_btn_line { position: absolute;top: ' + (panelHeight - 30)  + 'px !important; }';
+                styles += '.drag-panel { max-height: ' + panelHeight + 'px !important;height: ' + panelHeight + 'px !important; }';
+            }
+            $( window ).resize(function() {
+                let panelHeightResize = window.innerHeight - 169;
+                if(panelHeightResize <= 50) {   
+                    $( "#cps007_srt_control" ).attr(`style`, `max-height: 50px !important;height: 50px !important;`);
+                    $( "#cps007_btn_line" ).attr(`style`,`position: absolute;top: 80px !important;`);
+                    $( ".drag-panel" ).attr(`style`, `max-height: 110px !important;height: 110px !important;`);
+                } else {
+                    $( "#cps007_srt_control" ).attr(`style`, `max-height: ` + (panelHeightResize - 60) + `px !important;height: ` + (panelHeightResize - 60) + `px !important;`);
+                    $( "#cps007_btn_line" ).attr(`style`,`position: absolute;top: ` + (panelHeightResize - 30) + `px !important;`);
+                    $( ".drag-panel" ).attr(`style`, `max-height: ` + panelHeightResize + `px !important;` + `height: ` + panelHeightResize + `px !important;`);
+                }
+                
+                console.log('resize');
+            });
+            let styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = styles;
+            document.head.appendChild(styleSheet);
         }
 
         start() {

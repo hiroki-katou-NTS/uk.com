@@ -22,7 +22,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listWorkplace: Array<model.WorkplaceInfor>;
         inputContent: any;
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
-        constructor() { }
+        constructor() { 
+        	window.onresize = function(event) {
+            	$("#gridB_scrollContainer").height(window.innerHeight - 269);
+            	$("#gridB_displayContainer").height(window.innerHeight - 269);
+            	$("#gridB_container").height(window.innerHeight - 240);
+            };
+        }
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -163,8 +169,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         initNtsGrid(lstHidden: Array<any>) {
             var self = this;
             $("#gridB").ntsGrid({
-                width: '750px',
-                height: '609px',
+                width: '850px',
+                height: window.innerHeight - 240 + 'px',
                 dataSource: self.tempData,
                 primaryKey: 'workplaceId',
                 rowVirtualization: true,
@@ -172,7 +178,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('KAF018_20'), key: 'workplaceName', dataType: 'string', width: '210px', ntsControl: 'LinkLabel' },
+                    { headerText: getText('KAF018_20'), key: 'workplaceName', dataType: 'string', width: '310px', ntsControl: 'LinkLabel' },
                     { headerText: getText('KAF018_21'), key: 'numOfUnreflected', dataType: 'string', width: '100px' },
                     { headerText: getText('KAF018_22'), key: 'numOfUnapproval', dataType: 'string', width: '100px'},
                     { headerText: getText('KAF018_23'), key: 'approvedNumOfCase', dataType: 'string', width: '100px'},

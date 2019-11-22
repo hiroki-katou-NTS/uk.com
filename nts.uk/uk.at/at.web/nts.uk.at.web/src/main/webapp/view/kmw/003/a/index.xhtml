@@ -65,6 +65,8 @@
                     nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes
                     nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+                    nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
+                    nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode
 					
 		    </com:ValidatorScript>
 		</ui:define>
@@ -101,7 +103,7 @@
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left">				
+				<div class="fixed-flex-layout-left" style="width: 70px;">				
 					<div style="min-width: 50px">
 						<!--A1_11 ロック解除中--> 
 						<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	
@@ -209,7 +211,7 @@
 					<!-- <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> -->
 					<!--A7_1 コメント--> 
 					<div style="clear: both"></div>
-					<div style=" margin-top : 80px;width : 50%" data-bind="text: comment"></div>
+					<div style="width : 50%" data-bind="text: comment"></div>
 				</div>
 				
 				<div id="tooltip"><span id="textLock"></span></div>

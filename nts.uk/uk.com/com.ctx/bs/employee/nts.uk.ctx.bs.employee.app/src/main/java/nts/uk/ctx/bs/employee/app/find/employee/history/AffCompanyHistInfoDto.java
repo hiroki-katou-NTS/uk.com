@@ -29,10 +29,15 @@ public class AffCompanyHistInfoDto extends PeregDomainDto {
 	private GeneralDate retirementAllowanceCalcStartDate;
 
 	public AffCompanyHistInfoDto(String recordId, GeneralDate jobEntryDate, GeneralDate retirementDate,
-			GeneralDate adoptionDate, String recruitmentClassification, GeneralDate retirementAllowanceCalcStartDate) {
+			GeneralDate adoptionDate, String recruitmentClassification, GeneralDate retirementAllowanceCalcStartDate, boolean isCps013) {
 		super(recordId);
 		this.jobEntryDate = jobEntryDate;
-		this.retirementDate = retirementDate.equals(GeneralDate.max())?null:retirementDate;
+		if(isCps013 == true) {
+			this.retirementDate = retirementDate;
+		}else {
+			this.retirementDate = retirementDate.equals(GeneralDate.max())?null:retirementDate;
+		}
+		
 		this.adoptionDate = adoptionDate;
 		this.recruitmentClassification = recruitmentClassification;
 		this.retirementAllowanceCalcStartDate = retirementAllowanceCalcStartDate;
@@ -57,7 +62,27 @@ public class AffCompanyHistInfoDto extends PeregDomainDto {
 
 		return new AffCompanyHistInfoDto(histItem.getHistoryId(), histItem.getDatePeriod().start(),
 				histItem.getDatePeriod().end(), info.getAdoptionDate(), info.getRecruitmentClassification().v(),
-				info.getRetirementAllowanceCalcStartDate());
+				info.getRetirementAllowanceCalcStartDate(), false);
+	}
+	
+	public static AffCompanyHistInfoDto fromDomain(AffCompanyHistItem histItem, AffCompanyInfo info) {
+		if (histItem == null) {
+			return null;
+		}
 
+		return new AffCompanyHistInfoDto(histItem.getHistoryId(), histItem.getDatePeriod().start(),
+				histItem.getDatePeriod().end(), info.getAdoptionDate(), info.getRecruitmentClassification().v(),
+				info.getRetirementAllowanceCalcStartDate(), false);
+	}
+
+	public static PeregDomainDto fromDomainForCPS013(AffCompanyHistItem histItem,
+			AffCompanyInfo info) {
+		if (histItem == null) {
+			return null;
+		}
+
+		return new AffCompanyHistInfoDto(histItem.getHistoryId(), histItem.getDatePeriod().start(),
+				histItem.getDatePeriod().end() == null ? GeneralDate.max() : histItem.getDatePeriod().end(), info.getAdoptionDate(), info.getRecruitmentClassification().v(),
+				info.getRetirementAllowanceCalcStartDate(), true);
 	}
 }

@@ -72,6 +72,7 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 
 			return EmployeeInformationExport.builder()
 				.businessName(item.getBusinessName())
+				.businessNameKana(item.getBusinessNameKana())
 				.employeeCode(item.getEmployeeCode())
 				.employeeId(item.getEmployeeId())
 				.classification(cls)

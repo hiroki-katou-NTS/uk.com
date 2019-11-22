@@ -1,20 +1,10 @@
 <div class="contents-area cf">
-	<div id="message-area" data-bind="visible : messageArea">
-		<table >
-			<tr>
-				<!-- A1_1 -->
-				<!-- A1_2 -->
-				<td class="message-td" data-bind="visible : reasonOutputMessFull() != null">
-					<div data-bind="text: reasonOutputMessFull()" ></div>
-				</td>
-			</tr>
-			<tr>
-				<!-- A1_3 -->
-				<!-- A1_4 -->
-				<td class="message-td" data-bind="visible:  reasonOutputMessDealineFull() != null ">
-					<div data-bind="text: reasonOutputMessDealineFull()" ></div>
-				</td>
-			</tr>
-		</table>
+	<div id="message-area" data-bind="if : messageArea">
+		<div class="message-td" data-bind="if: messFullDisp">
+			<div style="padding: 5px;" data-bind="text: reasonOutputMessFull()" ></div>
+		</div>
+		<div class="message-td" data-bind="if: messDealineFullDisp">
+			<div style="padding: 5px;" data-bind="text: reasonOutputMessDealineFull()" ></div>
+		</div>
 	</div>
 </div>

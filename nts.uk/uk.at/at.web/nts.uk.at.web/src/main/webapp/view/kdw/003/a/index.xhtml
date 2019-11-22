@@ -53,6 +53,7 @@
                     nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes
                     nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+                    nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode
                 </com:ValidatorScript>
             </ui:define>
 
@@ -60,31 +61,31 @@
                 <div id="functions-area">
                     <div id="function-content">
                         <button style="margin-left: 15px" class="proceed"
-                                data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
+                                data-bind="enable: $root.errors.isEmpty &amp;&amp; !changeConditionExtract(), visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
                         <button
-                            data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
+                            data-bind="enable: $root.errors.isEmpty &amp;&amp; !changeConditionExtract(), visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
                         <button
-                            data-bind="visible: showButton().available2, click: btnCalculation_Click">#{i18n.getText('KDW003_6')}</button>
+                            data-bind="enable: !changeConditionExtract(), visible: showButton().available2, click: btnCalculation_Click">#{i18n.getText('KDW003_6')}</button>
                         <button
-                            data-bind="visible: showButton().available3, click: btnReCalculation_Click">#{i18n.getText('KDW003_12')}</button>
-                        <button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
+                            data-bind="enable: !changeConditionExtract(), visible: showButton().available3, click: btnReCalculation_Click">#{i18n.getText('KDW003_12')}</button>
+                        <button data-bind="enable: !changeConditionExtract(), click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
                         <button
-                            data-bind="click: tighProcessShow, enable:indentityMonth().enableButton, visible: showButton().available9 &amp;&amp; indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll">#{i18n.getText('KDW003_88')}</button>
+                            data-bind="click: tighProcessShow, enable:indentityMonth().enableButton &amp;&amp; !changeConditionExtract(), visible: showButton().available9() &amp;&amp; indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll">#{i18n.getText('KDW003_88')}</button>
                         <button
-                            data-bind="click: tighProcessRelease, enable:indentityMonth().enableButton, visible: showButton().available9 &amp;&amp; !indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll" >#{i18n.getText('KDW003_124')}</button>
+                            data-bind="click: tighProcessRelease, enable:indentityMonth().enableButton &amp;&amp; !changeConditionExtract(), visible: showButton().available9() &amp;&amp; !indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll" >#{i18n.getText('KDW003_124')}</button>
                         <!-- 本人締め処理 -->
                         <button
-                            data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
+                            data-bind="enable: !changeConditionExtract(), click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
                         <button
-                            data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
-                        <button data-bind="click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
+                            data-bind="enable: !changeConditionExtract(), click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
+                        <button data-bind="enable: !changeConditionExtract(),click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
                         <!--click : historyModification , showButton().available22 -->
                         <button class="danger"
-                                data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
+                                data-bind="enable: !changeConditionExtract(), click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
                         <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
-                        <button data-bind="click : proceedUnLock, visible: showLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_84')}</button>
-                        <button data-bind="click : proceedLock, visible: unLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_85')}</button>
+                        <button data-bind="enable: !changeConditionExtract(), click : proceedUnLock, visible: showLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_84')}</button>
+                        <button data-bind="enable: !changeConditionExtract(), click : proceedLock, visible: unLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_85')}</button>
                     </div>
                 </div>
                 <div id="contents-area">
@@ -93,50 +94,59 @@
                             <a id="back-navigate" class="goback" style="float: left;"
                                data-bind="ntsLinkButton: {}, click: navigateView, visible: transitionDesScreen">#{i18n.getText('KDW003_87')}</a>
                         </div>
+                         <div class="label warning" style="width: 80px; float: left; margin-top: 20px; position: absolute;"
+                                     data-bind="visible: unLock">#{i18n.getText('KDW003_86')}</div>
                         <div id="ccg001"></div>
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -20px; float: left; width: auto">
-                            
-									<div id = "date-extract" style="width: 315px; display: inline-flex;">
-										<div id="daterangepicker"
-											data-bind="ntsDateRangePicker: { 
-											required: true, 
-											enable: showDateRange, 
-											showNextPrevious: true, 
-											value: dateRanger, 
-											startName: nts.uk.resource.getText('KDW003_25'),
-											endName: nts.uk.resource.getText('KDW003_26'),
-											maxRange: 'oneMonth'}" />
-										<div id="cbListDate">
-											<div id="choosenDate" style="top: -12px"
-												data-bind="ntsDatePicker: {value: selectedDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												showJumpButtons: true,
-												name: nts.uk.resource.getText('KDW003_27'),
-												enable: showDateRange}" />
+                            <div style="margin-top: -10px; float: left; width: auto;">
+								<div id="emp-component"></div>
+								<div id = "date-extract" style="width: 480px; display: inline-flex;">
+											<div id="daterangepickererror"
+												data-bind="ntsDateRangePicker: { 
+												required: true, 
+												enable: showDateRange, 
+												showNextPrevious: true, 
+												value: dateRanger, 
+												startName: nts.uk.resource.getText('KDW003_25'),
+												endName: nts.uk.resource.getText('KDW003_26'),
+												maxRange: 'oneMonth'}" />
+												
+											<div id="daterangepicker">
+													<div id="yearMonthPicker" style="top: -9px; height: 27px;" data-bind="ntsDatePicker: { 
+																value: yearMonth,
+																name: '#[KDW003_40]',
+																required: true, 
+																dateFormat: 'yearmonth',
+																showJumpButtons: true,
+																enable: showDateRange,
+																valueFormat: 'YYYYMM'}" />
+													<div id="dislayFormatLbl" data-bind="ntsFormLabel: { required: false}" style="width: 50px ; text-align: center; margin-top: 10px">#{i18n.getText('KDW003_128')}</div>
+													<div  id="dislayFormatLbl" style="vertical-align: middle;  height: 27px;" data-bind="ntsComboBox: {
+															options: actualTimeOptionDisp,
+															optionsValue: 'code',
+															value: actualTimeSelectedCode,
+															optionsText: 'name',
+															enable: showDateRange() &amp;&amp; ko.computed(function() {
+																					        return actualTimeOptionDisp().length  > 1;
+																					    }, this),
+															name:'#[KDW003_128]',
+															columns: [
+																{ prop: 'name', length: 6 },
+															]}">
+													</div>
+											 </div>
+											<div id="cbListDate">
+												<div id="choosenDate"
+													data-bind="ntsDatePicker: {value: selectedDate, 
+													dateFormat: 'YYYY/MM/DD', 
+													showJumpButtons: true,
+													name: nts.uk.resource.getText('KDW003_27'),
+													enable: showDateRange}" />
+											</div>
 										</div>
-									</div>
-									<div id="dislayFormatLbl" data-bind="ntsFormLabel: {}"
-		                                     style="top: -12px!importance">#{i18n.getText('KDW003_19')}</div>
-		                            <div id="cbDisplayFormat"
-		                                     data-bind="ntsComboBox: {
-										options: displayFormatOptions,
-										optionsValue: 'code',
-										value: displayFormat,
-										optionsText: 'name',
-										enable: true,
-										columns: [
-											{ prop: 'name', length: 10 },
-										]}"></div>
-		                            <button id="btnExtraction" data-bind="click: btnExtraction_Click"
-		                                        style="top: -12px">#{i18n.getText('KDW003_20')}</button>
-		                            <button id="btnVacationRemaining"
-		                                        data-bind="visible: referenceVacation().allVacation(), 
-		                                        			click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
-		                            <!-- visible: referenceVacation().allVacation -->
-		                            <div id="vacationRemaining-content">
+			                    <div id="vacationRemaining-content">
 		                            	<table>
 		                            		<tr>
 		                            			<td>
@@ -160,65 +170,100 @@
 		                            		</tr>
 		                            	</table>
 		                            </div>
-		                            <button id="btnComfirmAttendance"
-		                                    data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
-		                            <!-- visible: showButton().available23 -->
-	                            
-	                            <div id="container" style="padding-top: 12px">
-	                                <div id="emp-component"></div>
-	                            </div>                              
                             </div>
-                            <div id="numberHoliday">
-	                            <table id="fixed-table">
-	                                <thead>
-	                                    <tr>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
-	                                    </tr>
-	                                </thead>
-	                                <tbody>
-	                                    <tr>
-	                                        <td class="ui-widget-body remain-compen-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
-	                                       	</td>
-	                                        <td class="ui-widget-body remain-subst-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body remain-annual-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body remain-reserve-day">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
-	                                        </td>
-	                                    </tr>
-	                                    <!-- <tr>
-	                                        <td class="ui-widget-body remain-compen-time">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body"></td>
-	                                        <td class="ui-widget-body remain-annual-time">
-	                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
-	                                        </td>
-	                                        <td class="ui-widget-body"></td>
-	                                    </tr> -->
-	                                </tbody>
-	                            </table>
-	                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()"></label>
-	                            <label style="padding-left: 20px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
-	                        </div>
+                            <div id="holiday-agree" class="agree-row" >
+	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 225px">
+		                            <table id="fixed-table">
+		                                <thead>
+		                                    <tr>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+		                                    </tr>
+		                                </thead>
+		                                <tbody>
+		                                    <tr>
+		                                        <td class="ui-widget-body remain-compen-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationDay"></span>
+		                                       	</td>
+		                                        <td class="ui-widget-body remain-subst-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().substitute"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-annual-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualDay"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-reserve-day">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
+		                                        </td>
+		                                    </tr>
+		                                    <!-- <tr>
+		                                        <td class="ui-widget-body remain-compen-time">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().compensationTime"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body"></td>
+		                                        <td class="ui-widget-body remain-annual-time">
+		                                        	<span class="text-holiday" data-bind="text: dataHoliday().annualTime"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body"></td>
+		                                    </tr> -->
+		                                </tbody>
+		                            </table>
+		                            <div style="width: 300px">
+		                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()" style="max-width: 100px"></label>
+		                            <label style="max-width: 125px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
+		                            </div>
+		                        </div>
+		                        <div class="agree-column" data-bind="let: { fst: agreementInfomation() }">
+                                    <table id="agree-table"
+                                           data-bind="visible : fst.showAgreement()">
+                                        <thead>
+                                            <tr>
+                                                <th class="ui-widget-header"
+                                                    style="width: 70px; height: 29px">#{i18n.getText('KDW003_73')}</th>
+                                                <th class="ui-widget-header" style="width: 70px">#{i18n.getText('KDW003_75')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ui-widget-body" id="agree-time"><span
+                                                        class="text-holiday" data-bind="text: fst.agreementTime()"></span>
+                                                </td>
+                                                <td class="ui-widget-body" id="agree-excess"
+                                                    style="height: 29px"><span
+                                                        data-bind="text: fst.agreementExcess()"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                              </div>
+                            </div>
                         </div>
                         <div id="content-all-grid" style="clear: both">
                             <div id="content-grid-not">
-                                <div class="label warning" style="width: 120px"
-                                     data-bind="visible: unLock">#{i18n.getText('KDW003_86')}</div>
+                                <button id="btnExtraction" class="proceed large"  data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
                                 <button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
                                 <button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
+                                <div style="display: inline-block;">
+                                <button id="btnVacationRemaining"
+		                                        data-bind="enable: !changeConditionExtract(), visible: referenceVacation().allVacation(), 
+		                                        			click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
+		                        <button id="btnComfirmAttendance"
+		                                    data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
+		                         <div id="dislayFormatLblf" style="margin-left: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_19')}</div>
+		                          <div id="cbDisplayFormat"
+		                                     data-bind="ntsComboBox: {
+										options: displayFormatOptions,
+										optionsValue: 'code',
+										value: displayFormat,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}"></div>
                                 <button id="btn-legend"
                                         data-bind="ntsLegendButton: legendOptions">凡例</button>
                                 <button id="btn-saveColumnWidth"
-                                        data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
+                                        data-bind="enable: !changeConditionExtract(), click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
                                 <div class="setting-container">
                                     <button id="btn-setting"
                                             data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
@@ -244,6 +289,7 @@
 	                                        <br />
 										</div>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                             <div class="compact-grid grid-container" id="gid">
@@ -283,7 +329,7 @@
 																							constraint: 'AnnualLeaveGrantDay', 
 																							option:  optionNoOfHolidays, 
 																							required: true, 
-																							enable: canFlex, 
+																							enable: canFlex() &amp;&amp; !lockDisableFlex() &amp;&amp; indentityMonth().show26, 
 																							readonly: false 
 																						} ">
                                                                 </input>
@@ -296,7 +342,7 @@
 																						value: fst.absentDeductionTime, 
 																						inputFormat: 'time', 
 																						mode: 'time', 
-																						enable: canFlex, 
+																						enable: canFlex() &amp;&amp; !lockDisableFlex() &amp;&amp; indentityMonth().show26, 
 																						readonly: false, 
 																						required: true
 																					}"></input>
@@ -323,29 +369,6 @@
                                             <span data-bind="text: flexShortage().messageNoForward"></span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="Column"
-                                     data-bind="let: { fst: agreementInfomation() }">
-                                    <table id="agree-table"
-                                           data-bind="visible : fst.showAgreement()">
-                                        <thead>
-                                            <tr>
-                                                <th class="ui-widget-header"
-                                                    style="width: 175px; height: 22px">#{i18n.getText('KDW003_73')}</th>
-                                                <th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_75')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="ui-widget-body" id="agree-time"><span
-                                                        class="text-holiday" data-bind="text: fst.agreementTime()"></span>
-                                                </td>
-                                                <td class="ui-widget-body" id="agree-excess"
-                                                    style="height: 29px"><span
-                                                        data-bind="text: fst.agreementExcess()"></span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
 					</div>

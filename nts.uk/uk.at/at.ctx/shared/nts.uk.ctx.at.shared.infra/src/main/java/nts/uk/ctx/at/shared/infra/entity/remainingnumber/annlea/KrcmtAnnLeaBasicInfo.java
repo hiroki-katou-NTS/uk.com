@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -31,8 +32,23 @@ public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
 	@Column(name = "GRANT_STANDARD_DATE")
     public GeneralDate grantStandardDate;
 
+	/**
+	 * @param employeeId
+	 * @param workingDaysPerYear
+	 */
+	
+
 	@Override
 	protected Object getKey() {
 		return sid;
 	}
+
+	/**
+	 * @return
+	 */
+	public AnnualLeaveEmpBasicInfo toDomain() {
+		return AnnualLeaveEmpBasicInfo.createFromJavaType(this.sid, this.workDaysPerYear, this.workDaysBeforeIntro, this.grantTableCode, this.grantStandardDate);
+	}
+	
+	
 }

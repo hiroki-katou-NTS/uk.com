@@ -29,6 +29,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @AttendanceItemRoot(rootName = ItemConst.MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AbsenceLeaveRemainDataDto extends MonthlyItemCommon {
 	
+	/***/
+	private static final long serialVersionUID = 1L;
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -90,11 +93,11 @@ public class AbsenceLeaveRemainDataDto extends MonthlyItemCommon {
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				datePeriod == null ? null : datePeriod.getStart(), 
 				datePeriod == null ? null : datePeriod.getEnd(), 
-				occurredDay == null ? null : new RemainDataDaysMonth(occurredDay), 
-				usedDays == null ? null : new RemainDataDaysMonth(usedDays),
-				remainingDays == null ? null : new AttendanceDaysMonthToTal(remainingDays), 
-				carryforwardDays == null ? null : new AttendanceDaysMonthToTal(carryforwardDays),
-				unUsedDays == null ? null : new RemainDataDaysMonth(unUsedDays));
+				occurredDay == null ? new RemainDataDaysMonth(0.0) : new RemainDataDaysMonth(occurredDay), 
+				usedDays == null ? new RemainDataDaysMonth(0.0) : new RemainDataDaysMonth(usedDays),
+				remainingDays == null ? new AttendanceDaysMonthToTal(0.0) : new AttendanceDaysMonthToTal(remainingDays), 
+				carryforwardDays == null ? new AttendanceDaysMonthToTal(0.0) : new AttendanceDaysMonthToTal(carryforwardDays),
+				unUsedDays == null ? new RemainDataDaysMonth(0.0) : new RemainDataDaysMonth(unUsedDays));
 	}
 	@Override
 	public YearMonth yearMonth() {

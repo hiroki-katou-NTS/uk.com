@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Value;
@@ -62,6 +63,8 @@ public interface AffJobTitleHistoryRepository {
 	
 	List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate);
 	
+	List<DateHistoryItem> getListByListSidsNoWithPeriod(String cid, List<String> sid);
+	
 	/**
 	 * Search job title history.
 	 *
@@ -99,6 +102,29 @@ public interface AffJobTitleHistoryRepository {
 	
 	Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate);
 	
+	/**
+	 * getListBySids
+	 * @author lanlt
+	 * @param cid
+	 * @param sids
+	 * @return
+	 */
+	List<AffJobTitleHistory> getListBySids(String cid, List<String> sids);
+	
+	/**
+	 * ドメインモッ�「�務�位」を新規登録する
+	 * @author lanlt
+	 * @param item
+	 * @param sid
+	 * @param cid
+	 */
+	void addAll(Map<String, DateHistoryItem> items);
+	/**
+	 * 取得した「�務�位」を更新する
+	 * @author lanlt
+	 * @param item
+	 */
+	void updateAll(List<DateHistoryItem> items);
 	@Value
 	public static class SingleHistoryItem {
 		

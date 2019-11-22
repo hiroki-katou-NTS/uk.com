@@ -1797,6 +1797,7 @@ module nts.uk.at.view.kmf022 {
                 });
 
             }
+
             initDataA4(allData: any): void {
                 let self = this;
                 // init data A4

@@ -193,8 +193,49 @@ public class FlexTimeOfMonthly {
 		this.flexAggrSet = settingsByFlex.getFlexAggrSet();
 		this.monthlyAggrSetOfFlexOpt = settingsByFlex.getMonthlyAggrSetOfFlexOpt();
 		this.getFlexPredWorkTimeOpt = settingsByFlex.getGetFlexPredWorkTimeOpt();
+		this.holidayAdditionMap = settingsByFlex.getHolidayAdditionMap();
 		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
+		
+		// 「月次法定内のみ加算」を確認する
+		this.addMonthlyWithinStatutory = false;
+		if (this.holidayAdditionMap.containsKey("flexWork")){
+			val setOfFlex = (WorkFlexAdditionSet)this.holidayAdditionMap.get("flexWork");
+			val workTimeCalcMethod = setOfFlex.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
+			if (workTimeCalcMethod.getAdvancedSet().isPresent()){
+				val includeVacationSet = workTimeCalcMethod.getAdvancedSet().get().getIncludeVacationSet();
+				if (includeVacationSet.getAdditionWithinMonthlyStatutory().isPresent()){
+					if (includeVacationSet.getAdditionWithinMonthlyStatutory().get() == NotUseAtr.USE){
+						this.addMonthlyWithinStatutory = true;
+					}
+				}
+			}
+		}
+		else {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"012", new ErrMessageContent(TextResource.localize("Msg_1233"))));
+		}
+		
+		// 「月次法定内のみ加算」を確認する
+		AddSet addSet = new AddSet();
+		if (!this.addMonthlyWithinStatutory){
+			// 加算しない
+			
+			// 加算設定　取得　（割増用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
+		else {
+			// 加算する
+			
+			// 加算設定　取得　（法定内のみ用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
 		
 		// 期間．開始日を処理日にする
 		GeneralDate procDate = datePeriod.start();
@@ -293,7 +334,7 @@ public class FlexTimeOfMonthly {
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
 						settingsByFlex.getPrescribedWorkingTimeMonth(),
 						settingsByFlex.getStatutoryWorkingTimeMonth(),
-						repositories);
+						addSet, repositories);
 				
 				ConcurrentStopwatches.stop("12222.6:超過時間割り当て：");
 			}
@@ -666,8 +707,29 @@ public class FlexTimeOfMonthly {
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
+		// 「月次法定内のみ加算」を確認する
+		AddSet addSet = new AddSet();
+		if (!this.addMonthlyWithinStatutory){
+			// 加算しない
+			
+			// 加算設定　取得　（割増用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
+		else {
+			// 加算する
+			
+			// 加算設定　取得　（法定内のみ用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
+		
 		// 集計対象時間を取得する
-		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod);
+		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod, addSet);
 		
 		// フレックス対象時間に集計対象時間を加算する
 		flexTargetTime = flexTargetTime.addMinutes(totalLegalTime.v());
@@ -683,30 +745,16 @@ public class FlexTimeOfMonthly {
 		if (!this.addMonthlyWithinStatutory){
 			// 加算しない
 			
-			// 加算設定　取得　（割増用）
-			val addSetWhenPremium = GetAddSet.get(
-					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
-			if (addSetWhenPremium.getErrorInfo().isPresent()){
-				this.errorInfos.add(addSetWhenPremium.getErrorInfo().get());
-			}
-			
 			// 休暇加算時間を取得する
 			vacationAddTime = GetVacationAddTime.getTime(
-					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenPremium);
+					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSet);
 		}
 		else {
 			// 加算する
 			
-			// 加算設定　取得　（法定内のみ用）
-			val addSetWhenOnlyLegal = GetAddSet.get(
-					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
-			if (addSetWhenOnlyLegal.getErrorInfo().isPresent()){
-				this.errorInfos.add(addSetWhenOnlyLegal.getErrorInfo().get());
-			}
-			
 			// 休暇加算時間を取得する
 			vacationAddTime = GetVacationAddTime.getTime(
-					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenOnlyLegal);
+					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSet);
 		}
 
 		// フレックス対象時間に休暇加算時間を加算する
@@ -729,9 +777,30 @@ public class FlexTimeOfMonthly {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		int calcFlexTargetMinutes = 0;
+
+		// 「月次法定内のみ加算」を確認する
+		AddSet addSet = new AddSet();
+		if (!this.addMonthlyWithinStatutory){
+			// 加算しない
+			
+			// 加算設定　取得　（割増用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
+		else {
+			// 加算する
+			
+			// 加算設定　取得　（法定内のみ用）
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
+		}
 		
 		// 集計対象時間を取得する
-		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod);
+		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getAggregateTargetTime(datePeriod, addSet);
 		
 		// 計算フレックス対象時間に集計対象時間を加算する
 		calcFlexTargetMinutes += totalLegalTime.v();
@@ -747,30 +816,16 @@ public class FlexTimeOfMonthly {
 		if (!this.addMonthlyWithinStatutory){
 			// 加算しない
 			
-			// 加算設定　取得　（割増用）
-			val addSetWhenPremium = GetAddSet.get(
-					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
-			if (addSetWhenPremium.getErrorInfo().isPresent()){
-				this.errorInfos.add(addSetWhenPremium.getErrorInfo().get());
-			}
-			
 			// 休暇加算時間を取得する
 			vacationAddMinutes = GetVacationAddTime.getTime(
-					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenPremium).v();
+					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSet).v();
 		}
 		else {
 			// 加算する
 			
-			// 加算設定　取得　（法定内のみ用）
-			val addSetWhenOnlyLegal = GetAddSet.get(
-					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
-			if (addSetWhenOnlyLegal.getErrorInfo().isPresent()){
-				this.errorInfos.add(addSetWhenOnlyLegal.getErrorInfo().get());
-			}
-			
 			// 休暇加算時間を取得する
 			vacationAddMinutes = GetVacationAddTime.getTime(
-					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenOnlyLegal).v();
+					datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSet).v();
 		}
 
 		// 計算フレックス対象時間に休暇加算時間を加算する
@@ -886,11 +941,13 @@ public class FlexTimeOfMonthly {
 			else {
 				// 法定内・法定外フレックス時間に分けて計算する
 				
-				// 法定労働時間から代休分を引く
-				val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
-				compensatoryLeave.aggregate(datePeriod);
-				int statutoryAfterDeduct = statutoryWorkingTimeMonth.v() - compensatoryLeave.getUseTime().v();
-				if (statutoryAfterDeduct < 0) statutoryAfterDeduct = 0;
+				// 2019.05.09 DEL shuichi_ishida Redmine#107583
+//				// 法定労働時間から代休分を引く
+//				val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
+//				compensatoryLeave.aggregate(datePeriod);
+//				int statutoryAfterDeduct = statutoryWorkingTimeMonth.v() - compensatoryLeave.getUseTime().v();
+//				if (statutoryAfterDeduct < 0) statutoryAfterDeduct = 0;
+				int statutoryAfterDeduct = statutoryWorkingTimeMonth.v();
 				
 				// 法定内として扱う時間を求める
 				int treatLegal = statutoryAfterDeduct - compensatoryLeaveAfterDudection.v() - this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v();
@@ -908,8 +965,13 @@ public class FlexTimeOfMonthly {
 					}
 					
 					// 休暇加算時間を取得する
-					val vacationAddTime = GetVacationAddTime.getTime(
+					AttendanceTimeMonth vacationAddTime = GetVacationAddTime.getTime(
 							datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenOnlyLegal);
+					
+					// 特別休暇使用時間を休暇加算時間に加算する
+					int specialLeaveUseMinutes = aggregateTotalWorkingTime.getVacationUseTime()
+							.getSpecialHoliday().getTotalUseTime(datePeriod).v();
+					vacationAddTime = vacationAddTime.addMinutes(specialLeaveUseMinutes);
 					
 					// 「フレックス時間」と「休暇加算時間」を比較する
 					if (this.flexTime.getFlexTime().getTime().greaterThan(vacationAddTime.v())){

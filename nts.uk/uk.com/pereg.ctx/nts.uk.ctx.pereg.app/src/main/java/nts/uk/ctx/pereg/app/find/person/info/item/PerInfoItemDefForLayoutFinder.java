@@ -11,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -25,6 +26,8 @@ public class PerInfoItemDefForLayoutFinder {
 
 	@Inject
 	AffCompanyHistRepository achFinder;
+	
+	private final static String nameEndDate  = "終了日";
 
 	/**
 	 * Hàm Đệ Quy
@@ -50,14 +53,28 @@ public class PerInfoItemDefForLayoutFinder {
 			for (int i = 0; i < childItemDefinitionList.size(); i++) {
 
 				PersonInfoItemDefinition childItemDefinition = childItemDefinitionList.get(i);
-				PerInfoItemDefForLayoutDto itemForLayout = createItemLayoutDto(category, childItemDefinition,
-						dispOrder, role);
-				childLayoutitems.add(itemForLayout);
+				
+				
+				if(category.getCategoryType() == CategoryType.CONTINUOUSHISTORY && childItemDefinition.getItemName().v().equals(nameEndDate)){
+					PerInfoItemDefForLayoutDto itemForLayout = createItemLayoutDto(category, childItemDefinition,
+							dispOrder, ActionRole.VIEW_ONLY);
+					childLayoutitems.add(itemForLayout);
 
-				List<PerInfoItemDefForLayoutDto> grandChildItemForLayouts = getChildrenItems(fullItemDefinitionList,
-						category, childItemDefinition, i, role);
+					List<PerInfoItemDefForLayoutDto> grandChildItemForLayouts = getChildrenItems(fullItemDefinitionList,
+							category, childItemDefinition, i, role);
 
-				childLayoutitems.addAll(grandChildItemForLayouts);
+					childLayoutitems.addAll(grandChildItemForLayouts);
+					
+				}else {
+					PerInfoItemDefForLayoutDto itemForLayout = createItemLayoutDto(category, childItemDefinition,
+							dispOrder, role);
+					childLayoutitems.add(itemForLayout);
+
+					List<PerInfoItemDefForLayoutDto> grandChildItemForLayouts = getChildrenItems(fullItemDefinitionList,
+							category, childItemDefinition, i, role);
+
+					childLayoutitems.addAll(grandChildItemForLayouts);
+				}
 			}
 		}
 		return childLayoutitems;

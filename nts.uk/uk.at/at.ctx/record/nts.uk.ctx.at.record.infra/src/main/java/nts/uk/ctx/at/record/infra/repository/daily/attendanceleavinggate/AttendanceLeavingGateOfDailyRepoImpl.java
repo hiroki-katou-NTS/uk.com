@@ -31,17 +31,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
 
-//	private static final String REMOVE_BY_KEY;
-
-	static {
-//		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDayLeaveGate a ");
-//		builderString.append("WHERE a.id.sid = :employeeId ");
-//		builderString.append("AND a.id.ymd = :ymd ");
-//		REMOVE_BY_KEY = builderString.toString();
-	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AttendanceLeavingGateOfDaily> find(String employeeId, GeneralDate baseDate) {
 		List<AttendanceLeavingGate> alGate = findQuery(employeeId, baseDate).getList(c -> c.toDomain());
@@ -51,6 +41,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return Optional.empty();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId, List<GeneralDate> baseDate) {
 		if (baseDate.isEmpty()) {
@@ -68,6 +59,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return resultList;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
@@ -76,6 +68,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				.getList().stream());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
 		if (employeeId.isEmpty()) {
@@ -93,6 +86,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		return result;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttendanceLeavingGateOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		if (param.isEmpty()) {
@@ -167,13 +161,8 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
-			
+			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void remove(AttendanceLeavingGateOfDaily domain) {
-		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -193,8 +182,6 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 //		this.getEntityManager().flush();
 	}
 	
-
-
 	private TypedQueryWrapper<KrcdtDayLeaveGate> findQuery(String employeeId, GeneralDate baseDate){
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");

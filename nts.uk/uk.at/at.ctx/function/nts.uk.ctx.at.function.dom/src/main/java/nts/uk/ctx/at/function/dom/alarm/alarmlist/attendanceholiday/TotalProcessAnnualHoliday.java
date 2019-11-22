@@ -14,9 +14,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.erroralarmcheck.ErrorAlarmCheck;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.whethertocheck.WhetherToCheck;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -28,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.vacation.obligannleause.AnnLeaUsedDaysOutput;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnLeaUseService;
 import nts.uk.ctx.at.shared.dom.vacation.obligannleause.ObligedAnnualLeaveUse;
 import nts.uk.shr.com.context.AppContexts;
@@ -95,30 +98,35 @@ public class TotalProcessAnnualHoliday {
 			if(!ligedUseDays.isPresent())
 				continue;
 			//義務日数計算期間内の年休使用数を取得(JAPAN)
-			Optional<AnnualLeaveUsedDayNumber> ligedAnnLeaUseService = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
+			AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
 					companyId, 
 					employee.getId(),
 					GeneralDate.today(),
 					ReferenceAtr.APP_AND_SCHE,
 					annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
 					obligedAnnualLeaveUse); 
-			if(!ligedAnnLeaUseService.isPresent())
+			if(!ligedUseOutput.getDays().isPresent())
+				continue;
+			if(!ligedUseOutput.getPeriod().isPresent())
 				continue;
 			
 			//エラーアラームチェック
-			boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedAnnLeaUseService.get());
+			boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
 			if(!checkErrorAlarm)
 				continue;
 			ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 					employee.getWorkplaceId(),
 					employee.getId(),
-					"",
+					TextResource.localize("KAL010_908", 
+							dateToString(ligedUseOutput.getPeriod().get().start()),
+							dateToString(ligedUseOutput.getPeriod().get().end())),
 					TextResource.localize("KAL010_400"),
 					TextResource.localize("KAL010_401"),
 					TextResource.localize("KAL010_402",
-							ligedAnnLeaUseService.get().v().toString(),
+							ligedUseOutput.getDays().get().v().toString(),
 							ligedUseDays.get().v().toString()),	
-					annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v()
+					annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
+					null
 					);
 			listValueExtractAlarm.add(resultCheckRemain);
 		}
@@ -168,30 +176,35 @@ public class TotalProcessAnnualHoliday {
 				if(!ligedUseDays.isPresent())
 					continue;
 				//義務日数計算期間内の年休使用数を取得(JAPAN)
-				Optional<AnnualLeaveUsedDayNumber> ligedAnnLeaUseService = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
+				AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
 						companyID, 
 						employee.getId(),
 						GeneralDate.today(),
 						ReferenceAtr.APP_AND_SCHE,
 						annualHolidayAlarmCondition.getAlarmCheckConAgr().isDistByPeriod(), 
 						obligedAnnualLeaveUse); 
-				if(!ligedAnnLeaUseService.isPresent())
+				if(!ligedUseOutput.getDays().isPresent())
+					continue;
+				if(!ligedUseOutput.getPeriod().isPresent())
 					continue;
 				
 				//エラーアラームチェック
-				boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedAnnLeaUseService.get());
+				boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
 				if(!checkErrorAlarm)
 					continue;
 				ValueExtractAlarm resultCheckRemain = new ValueExtractAlarm(
 						employee.getWorkplaceId(),
 						employee.getId(),
-						"",
+						TextResource.localize("KAL010_908", 
+								dateToString(ligedUseOutput.getPeriod().get().start()),
+								dateToString(ligedUseOutput.getPeriod().get().end())),
 						TextResource.localize("KAL010_400"),
 						TextResource.localize("KAL010_401"),
 						TextResource.localize("KAL010_402",
-								ligedAnnLeaUseService.get().v().toString(),
+								ligedUseOutput.getDays().get().v().toString(),
 								ligedUseDays.get().v().toString()),	
-						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v()
+						annualHolidayAlarmCondition.getAlarmCheckConAgr().getDisplayMessage().get().v(),
+						ligedUseOutput.getDays().get().v().toString()
 						);
 				listValueExtractAlarm.add(resultCheckRemain);
 			}
@@ -199,5 +212,9 @@ public class TotalProcessAnnualHoliday {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private String dateToString(GeneralDate date) {
+		return date.toString(ErAlConstant.DATE_FORMAT);
 	}
 }

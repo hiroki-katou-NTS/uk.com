@@ -19,25 +19,16 @@
 }
 #labelRight{
 	margin-left: 340px; 
-	margin-top: 15px;
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 }
 #swap-list{
 	margin-left: 20px;
 }
 #btnLeft {
 	margin-left: 345px; 
-	margin-top: 15px;
 }
 #btnRight {
 	margin-left: 10px;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	#swap-list-grid1_displayContainer, #swap-list-grid2_displayContainer,
-	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
-		height: 361px !important;
-	}
 }
 
 @supports (-ms-ime-align:auto) {
@@ -45,4 +36,10 @@
 	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
 		height: 366px !important;
 	}
+}
+.nts-searchbbox-wrapper.ntsSearchArea {
+	margin-bottom: 0px;
+}
+.ntsMoveDataArea.ntsSwapComponent {
+	width: 104px;
 }

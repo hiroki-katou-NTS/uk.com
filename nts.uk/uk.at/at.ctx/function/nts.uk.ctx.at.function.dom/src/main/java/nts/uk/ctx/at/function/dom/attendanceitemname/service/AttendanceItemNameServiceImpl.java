@@ -10,6 +10,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -52,6 +54,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AttendanceItemNameServiceImpl implements AttendanceItemNameService {
 	@Inject
 	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
@@ -116,6 +119,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
 		List<Integer> attendanceItemIds = attendanceItems.stream().map(x -> x.getAttendanceItemId())
@@ -127,15 +131,16 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		attendanceItems = this.getAttendanceItemName(attendanceItems);
-		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream()
+		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream().distinct()
 				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
-		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream()
+		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream().distinct()
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		for (AttendanceItemLinking link : attendanceItemAndFrameNos) {
 			int id = link.getAttendanceItemId();

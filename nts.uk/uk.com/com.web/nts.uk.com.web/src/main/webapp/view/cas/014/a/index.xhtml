@@ -26,7 +26,7 @@
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
+			<div id="tabpanel-1" role="tabpanel" style="min-width: 600px;">
 				<div class="sidebar-content-header">
 					<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>
 					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
@@ -34,14 +34,14 @@
 				</div>
 				<div class="contents-area-a">
 					<div class="container cf">
-						<div class="valign-center control-group" data-bind="with: roleSetJobTitle">
+						<div class="valign-center control-group" style="display: inline-block;" data-bind="with: roleSetJobTitle">
 							<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
 						</div>
-						<div class="valign-center control-group" style="padding-left: 32px">
+						<div class="valign-center control-group" style="padding-left: 32px; display: inline-block;">
 							<label>#{i18n.getText('CAS014_21')}</label>
 						</div>
 						<br />
-						<div class="valign-center control-group">
+						<div class="valign-center control-group" style="margin-bottom: -10px">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
 							<div tabindex="4" id="A3_4"
 								data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
@@ -50,9 +50,9 @@
 						<br />
 						<table class="fixed-table jobtitle-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
 							<colgroup>
-								<col width="100px" />
-								<col width="150px" />
-								<col width="250px" />
+								<col width="80px" />
+								<col width="170px" />
+								<col width="205px" />
 							</colgroup>
 							<thead>
 								<tr>
@@ -88,7 +88,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelB" style="min-width: 1150px;">
 				<ui:include src="../b/index.xhtml" />
 			</div>
 		</ui:define>

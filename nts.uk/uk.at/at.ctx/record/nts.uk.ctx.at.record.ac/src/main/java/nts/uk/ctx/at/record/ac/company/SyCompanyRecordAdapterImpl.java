@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
@@ -15,6 +17,7 @@ import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 
 	@Inject

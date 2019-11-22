@@ -31,6 +31,9 @@ public class SpecialHolidayDto {
 	/** 対象項目 */
 	private TargetItemDto targetItemDto;
 	
+	/**自動付与区分 */
+	private int autoGrant;
+	
 	/** メモ */
 	private String memo;
 
@@ -56,6 +59,7 @@ public class SpecialHolidayDto {
 				grantPeriodic,
 				specialLeaveRestriction,
 				targetItem,
+				specialHoliday.getAutoGrant().value,
 				specialHoliday.getMemo().v()
 		);
 	}
