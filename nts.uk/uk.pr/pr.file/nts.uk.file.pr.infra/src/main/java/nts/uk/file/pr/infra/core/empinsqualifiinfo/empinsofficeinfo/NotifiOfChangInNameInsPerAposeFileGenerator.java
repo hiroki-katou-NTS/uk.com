@@ -86,7 +86,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 String postCd = element.getCompanyInfor().getPostCd();
                                 textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
                                 //A3_2
-                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),120), 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),63), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
@@ -118,7 +118,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                         }
                                     }
 
-                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,75), 9));
+                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,63), 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
@@ -201,19 +201,19 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 Ellipse rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Ellipse(364, 37, 15, 9.5);
+                        rect2 = new Ellipse(363, 36, 16.5, 11);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Ellipse(385, 37, 15, 9.5);
+                        rect2 = new Ellipse(384, 36, 16.5, 11);
                         break;
                     }
                     case PEACE: {
-                        rect2 = new Ellipse(385, 27.5, 15, 9.5);
+                        rect2 = new Ellipse(384, 26.5, 16.5, 11);
                         break;
                     }
                     case HEISEI: {
-                        rect2 = new Ellipse(364, 27.5, 15, 9.5);
+                        rect2 = new Ellipse(363, 26.5, 16.5, 11);
                         break;
                     }
                     default: {
@@ -376,7 +376,8 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed)
+            return text;
         return text.substring(0, text.length() * maxByteAllowed / text.getBytes("Shift_JIS").length);
     }
 }
