@@ -72,7 +72,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                             columnKey: 'changeDate', allowResizing: false, minimumWidth: 150,
                         }]
                     },
-                    {name: 'Selection', mode: 'row', multipleSelection: true}]
+                    {name: 'Selection', mode: 'row', multipleSelection: false}]
 
             });
             $("#B_2").setupSearchScroll("igGrid", true);
@@ -116,7 +116,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
             this.employeeNameBefore = ko.observable(employeeNameBefore);
-            this.changeDate = ko.observable(changeDate);
+            this.changeDate = changeDate;
         }
         constructor() {
 
