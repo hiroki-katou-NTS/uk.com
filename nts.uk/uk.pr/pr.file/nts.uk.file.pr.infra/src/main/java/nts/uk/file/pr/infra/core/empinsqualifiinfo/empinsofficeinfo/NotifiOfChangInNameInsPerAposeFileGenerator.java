@@ -86,7 +86,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 String postCd = element.getCompanyInfor().getPostCd();
                                 textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
                                 //A3_2
-                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),50), 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),120), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
@@ -118,7 +118,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                         }
                                     }
 
-                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,50), 9));
+                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,75), 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
@@ -146,12 +146,12 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
 
-                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName().length() > 8 ? element.getName().substring(0, 7) : element.getName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586, element.getName() != null ? formatTooLongText(element.getName(),13) :  "", 16));
                     //A1_8
                     detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
 
                 } else {
-                    textBuilder.appendText(setValue(45, 586, element.getReportFullName() != null ? element.getReportFullName().length() > 8 ? element.getReportFullName().substring(0, 7) : element.getReportFullName() : "", 16));
+                    textBuilder.appendText(setValue(45, 586,element.getReportFullName() != null ?  formatTooLongText(element.getReportFullName(),13) : "" , 16));
                     //A1_8
                     detachText(182, 586, element.getReportFullNameKana() != null ? element.getReportFullNameKana() : "", 20, textBuilder);
                 }
