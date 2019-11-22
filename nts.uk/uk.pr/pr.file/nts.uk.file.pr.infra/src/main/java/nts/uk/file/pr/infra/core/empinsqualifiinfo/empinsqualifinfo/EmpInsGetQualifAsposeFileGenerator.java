@@ -10,12 +10,18 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
+    private static final int LOCATION_MAX_BYTE = 44;
+    private static final int BUSINESS_NAME_MAX_BYTE = 52;
+    private static final int OFFICE_NAME_MAX_BYTE = 54;
+    private static final int NATIONALITY_MAX_BYTE = 22;
+    private static final int RESIDENT_STATUS_MAX_BYTE = 18;
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<EmpInsGetQualifReport> reportData) {
@@ -35,7 +41,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
 
                 // A1_1
-                String insuredNumber = data.getInsuredNumber() == null ? "" : data.getInsuredNumber().toString();
+                String insuredNumber = data.getInsuredNumber() == null ? "" : data.getInsuredNumber();
                 detachText(46, 718, insuredNumber, 4, textBuilder);
                 detachText(131, 718, insuredNumber.length() > 4 ? insuredNumber.substring(4) : "", 6, textBuilder);
                 detachText(251, 718, insuredNumber.length() > 10 ? insuredNumber.substring(10) : "", 1, textBuilder);
@@ -108,7 +114,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(250, 432, contractRenewalProvision, 16));
                 // A1_23
                 String officeName = data.getOfficeName() == null ? "" : data.getOfficeName();
-                textBuilder.appendText(setValue(90, 406, officeName, 9));
+                textBuilder.appendText(setValue(90, 406, formatTooLongText(officeName, OFFICE_NAME_MAX_BYTE), 9));
                 // A1_24 pending
                 // detachText(174, 757, data.getPersonalNumber(), 11, textBuilder);
                 // A2_1
@@ -119,10 +125,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(48, 320, insuredRomanName2, 12, textBuilder);
                 // A2_3
                 String nationalityRegion = data.getNationalityRegion() == null ? "" : data.getNationalityRegion();
-                textBuilder.appendText(setValue(270, 324, nationalityRegion, 9));
+                textBuilder.appendText(setValue(271, 324, formatTooLongText(nationalityRegion, NATIONALITY_MAX_BYTE), 9));
                 // A2_4
                 String residenceStatus = data.getResidenceStatus() == null ? "" : data.getResidenceStatus();
-                textBuilder.appendText(setValue(405, 324, residenceStatus, 9));
+                textBuilder.appendText(setValue(405, 324, formatTooLongText(residenceStatus, RESIDENT_STATUS_MAX_BYTE), 9));
                 // A2_5
                 String stayPeriod = data.getStayPeriod() == null ? "" : data.getStayPeriod();
                 detachText(85, 291, stayPeriod, 8, textBuilder);
@@ -137,10 +143,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9));
                 // A3_2
                 String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(176, 179, officeLocation, 9));
+                textBuilder.appendText(setValue(176, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
-                textBuilder.appendText(setValue(110, 151, businessOwnerName, 9));
+                textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9));
                 // A3_4
                 String officePhoneNumber = data.getOfficePhoneNumber() == null ? "" : data.getOfficePhoneNumber();
                 textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9));
@@ -203,7 +209,6 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         String[] temp = new String[3];
 
         if (numberSplit.length == 2) {
-
             if (numberSplit[1].length() <= 3) {
                 temp[0] = numberSplit[1];
                 numberPhone = numberSplit[0] + "（ " + temp[0] + " ）";
@@ -256,5 +261,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         String workingHours = (workingTime / 60) < 10 ? "0" + (workingTime / 60) : String.valueOf(workingTime / 60);
         String workingMinutes = (workingTime % 60) < 10 ? "0" + (workingTime % 60) : String.valueOf(workingTime % 60);
         return workingHours + workingMinutes;
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        return text.substring(0, text.length() * maxByteAllowed / text.getBytes("Shift_JIS").length);
     }
 }
