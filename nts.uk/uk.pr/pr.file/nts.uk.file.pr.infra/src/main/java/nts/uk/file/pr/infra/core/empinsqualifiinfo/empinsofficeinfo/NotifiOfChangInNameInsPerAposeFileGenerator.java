@@ -116,8 +116,33 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
-//                                    checkLenghtText(addressLabor);
-                                    textBuilder.appendText(setValue(210, 190, addressLabor.length() > 41 ? addressLabor.substring(0,40) : addressLabor, 9));
+                                    int lenghtHalfSize = checkLenghtText(addressLabor);
+                                    if(lenghtHalfSize >= 0 && lenghtHalfSize <= 10){
+                                        addressLabor = addressLabor.length() > 33 ? addressLabor.substring(0,32) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 11 && lenghtHalfSize <= 20){
+                                        addressLabor = addressLabor.length() > 29 ? addressLabor.substring(0,28) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 21 && lenghtHalfSize <= 30){
+                                        addressLabor = addressLabor.length() > 39 ? addressLabor.substring(0,38) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 31 && lenghtHalfSize <= 40){
+                                        addressLabor = addressLabor.length() > 49 ? addressLabor.substring(0,48) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 41 && lenghtHalfSize <= 50){
+                                        addressLabor = addressLabor.length() > 59 ? addressLabor.substring(0,58) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 51 && lenghtHalfSize <= 60){
+                                        addressLabor = addressLabor.length() > 69 ? addressLabor.substring(0,68) : addressLabor;
+                                    }
+                                    else if(lenghtHalfSize >= 61 && lenghtHalfSize <= 70){
+                                        addressLabor = addressLabor.length() > 79 ? addressLabor.substring(0,78) : addressLabor;
+                                    }
+                                    else {
+                                        addressLabor = addressLabor.length() > 85 ? addressLabor.substring(0,84) : addressLabor;
+                                    }
+
+                                    textBuilder.appendText(setValue(210, 190, addressLabor, 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
@@ -373,16 +398,16 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
         }
         return postalCode;
     }
-    private boolean checkLenghtText(String value){
+    private int checkLenghtText(String value){
         int count = 0;
         List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-
         for(int i = 0 ; i < lstValue.size() ; i++){
             if(isHalfWidth(lstValue.get(i))){
                 count++;
             }
         }
-        return count > 20 ;
+
+        return count ;
     }
     private boolean isHalfWidth(char c)
     {
