@@ -86,7 +86,7 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 	}
 	
 	public static JflmtInterviewContent toEntity(InterviewRecordContent domain , String companyID , String interviewRecID){
-		return new JflmtInterviewContent(
+		/*return new JflmtInterviewContent(
 				new JflmtInterviewContentPK(interviewRecID, domain.getDisplayNumber()) ,
 				companyID,
 				domain.getInterviewItemId(),
@@ -96,7 +96,8 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 				domain.getAnalysisCategoryId().isPresent() ? domain.getAnalysisCategoryId().get() : null,
 				domain.getAnalysisCategoryCd().isPresent() ? domain.getAnalysisCategoryCd().get() : null,
 				domain.getAnalysisCategoryName().isPresent() ? domain.getAnalysisCategoryName().get() :null,
-			    domain.getListAnalysisItemId().stream().map(c ->JflmtInterviewAnalysis.toEntity(c,domain.getInterviewItemId(), companyID)).collect(Collectors.toList()));
+			    domain.getListAnalysisItemId().stream().map(c ->JflmtInterviewAnalysis.toEntity(c,domain.getInterviewItemId(), companyID)).collect(Collectors.toList()));*/
+		return null;
 	}
 
 	@Override
