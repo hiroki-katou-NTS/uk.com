@@ -99,7 +99,8 @@ export class KafS05aStep3Component extends Vue {
             appReasonID: this.comboBoxReason,
             divergenceReasonArea: self.multilContent2,
             checkOver1Year: true,
-            checkAppDate: false
+            checkAppDate: false,
+            overtimeSettingDataDto: self.overtimeSettingDataDto
         };
 
         if (!self.isCreate) {
