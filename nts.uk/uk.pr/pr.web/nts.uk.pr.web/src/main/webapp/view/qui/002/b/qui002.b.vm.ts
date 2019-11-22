@@ -2,6 +2,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import errors = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
+    import getText = nts.uk.resource.getText;
 
 
     export class ScreenModel {
@@ -42,6 +43,40 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                 dialog.alertError(err);
             });
             return dfd.promise();
+        }
+
+        loadGird(){
+            let self = this;
+            let template = "<div id =\"${employeeId}\" data-bind='ntsDatePicker: {name: \"#[QUI002_B222_5]\", value: ko.observable(${changeDate}), dateFormat: \"YYYY/MM/DD\",valueFormat: \"YYYYMMDD\"} '</div>";
+            $("#B_2").ntsGrid({
+                height: '319px',
+                dataSource: self.listEmp(),
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    { headerText: 'id', key: 'id', dataType: 'number', width: '20' , hidden: true},
+                    { headerText: 'employeeId', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
+                    { headerText: getText('QUI002_B222_2'), key: 'employeeCode', dataType: 'string', width: '160' },
+                    { headerText: getText('QUI002_B222_3'), key: 'employeeName', dataType: 'string', width: '170' },
+                    { headerText: getText('QUI002_B222_4'), key: 'employeeNameBefore', dataType: 'string', width: '170' },
+                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113'}
+
+                ],
+                features: [
+                    { name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'employeeCode', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'employeeName', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'employeeNameBefore', allowResizing: false, minimumWidth: 150,
+                            columnKey: 'changeDate', allowResizing: false, minimumWidth: 150,
+                        }]
+                    },
+                    {name: 'Selection', mode: 'row', multipleSelection: true}]
+
+            });
+            $("#B_2").setupSearchScroll("igGrid", true);
+
         }
 
         //set cancel method

@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 700, height: 508 };</script>
+        <script>var dialogSize = { width: 695, height: 530 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="qui002.b.vm.js" />
         <com:scriptfile path="qui002.b.start.js" />
@@ -16,8 +16,8 @@
     </ui:define>
     <ui:define name="content">
 
-       <div id="contents-area" >
-           <div style="margin-left: 20px; margin-top: 15px;">
+        <div id="contents-area" >
+            <div style="margin-left: 20px; margin-top: 15px;">
                 <i class="icon icon-searchbox" style="margin-top: 25px; margin-left: 29px;"></i>
                 <div id="B_1" tabindex="1" style="width: 260px; margin-left: 35px;" data-bind="
                         ntsSearchBox: {
@@ -28,53 +28,15 @@
 	                            fields: ['employeeCode', 'employeeName'],
 	                            mode: 'igGrid'}" />
 
-           </div>
-           <div style="margin-left: 20px; margin-top: 15px;">
-               <table id="B_2" class="">
-                   <colgroup>
-                       <col width="170px"/>
-                       <col width="180px"/>
-                       <col width="180px"/>
-                       <col width="110px"/>
-                   </colgroup>
-                   <thead>
-                   <tr>
-                       <th  style=" background-color: #CFF1A5;">#{i18n.getText('QUI002_B222_2')}</th>
-                       <th  style=" background-color: #CFF1A5;">#{i18n.getText('QUI002_B222_3')}</th>
-                       <th  style=" background-color: #CFF1A5;">#{i18n.getText('QUI002_B222_4')}</th>
-                       <th  style=" background-color: #CFF1A5;">#{i18n.getText('QUI002_B222_5')}</th>
-                   </tr>
-                   </thead>
-                   <tbody data-bind="foreach: listEmp()">
-                   <tr >
-                       <td>
-                           <span class ="label" data-bind="text: employeeCode"></span>
-                       </td>
-                       <td>
-                           <span class="limited-label" style="width: 180px;" data-bind="text: employeeName"></span>
-                       </td>
-                       <td>
-                           <span class="limited-label" style="width: 180px;" data-bind="text: employeeNameBefore"></span>
-                       </td>
-                       <td>
-                           <div id = "A222_14" class="B222_9"  data-bind="ntsDatePicker: {
-																name: '#{i18n.getText('QUI002_B222_5')}',
-																value: changeDate,
-																dateFormat: 'YYYY/MM/DD',
-																valueFormat: 'YYYYMMDD',
-																required: false
-																}" ></div>
+            </div>
+            <div style="margin-left: 20px; margin-top: 15px;">
+                <table id="B_2" ></table>
+            </div>
 
-                       </td>
-                   </tr>
-                   </tbody>
-               </table>
-           </div>
-
-       </div>
+        </div>
         <div id="functions-area-bottom">
             <button id="B1_1" tabindex="3" class="large proceed" style="margin-top: 13px;"
-                    data-bind="click:register,enable: $root.errors.isEmpty()">#{i18n.getText('QUI002_B222_10')}</button>
+                    data-bind="click:register">#{i18n.getText('QUI002_B222_10')}</button>
             <button id="B1_2" tabindex="4" style="margin-top: 13px;"
                     data-bind="click:cancel">#{i18n.getText('QUI002_B222_11')}</button>
         </div>
