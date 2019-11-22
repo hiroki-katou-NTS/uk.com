@@ -135,16 +135,16 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         return add.toString();
     }
 
-    public static String cutSpace(String name, int ps) {
+    private static String cutSpace(String name, int ps) {
         if (name == null || name.length() == 0) return "";
         String[] listF = name.split("　", 2);
         if(listF.length == 1) {
-            if(ps==1) return listF[0];
+            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
             if(ps==2) return "";
         }
         if(listF.length > 1) {
-            if(ps==1) return listF[0];
-            if(ps==2) return listF[1];
+            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
+            if(ps==2) return listF[1].length() > 4 ? listF[1].substring(0,4) : listF[1];
         }
         return "";
     }
