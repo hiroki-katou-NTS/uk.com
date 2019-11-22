@@ -97,7 +97,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(119, 464, estContractPeriod, 16));
                 // A1_20
                 String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();
-                detachText(218, 464, contractStartDateJp, 1, textBuilder);
+                detachText(217, 464, contractStartDateJp, 1, textBuilder);
                 detachText(251, 464, contractStartDateJp.length() > 1 ? contractStartDateJp.substring(1) : "", 6, textBuilder);
                 // A1_21
                 String contractEndDateJp = data.getContractEndDateJp() == null ? "" : data.getContractEndDateJp();
@@ -112,17 +112,17 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 // A1_24 pending
                 // detachText(174, 757, data.getPersonalNumber(), 11, textBuilder);
                 // A2_1
-                String insuredEnglishName = data.getInsuredRomanName() == null ? "" : data.getInsuredRomanName();
-                detachText(48, 356, insuredEnglishName, 29, textBuilder);
+                String insuredRomanName = data.getInsuredRomanName() == null ? "" : data.getInsuredRomanName();
+                detachText(48, 356, insuredRomanName, 28, textBuilder);
                 // A2_2
-                String insuredEnglishName2 = data.getInsuredRomanName2() == null ? "" : data.getInsuredRomanName2();
-                detachText(48, 320, insuredEnglishName2, 12, textBuilder);
+                String insuredRomanName2 = data.getInsuredRomanName2() == null ? "" : data.getInsuredRomanName2();
+                detachText(48, 320, insuredRomanName2, 12, textBuilder);
                 // A2_3
                 String nationalityRegion = data.getNationalityRegion() == null ? "" : data.getNationalityRegion();
-                textBuilder.appendText(setValue(270, 321, nationalityRegion, 16));
+                textBuilder.appendText(setValue(270, 324, nationalityRegion, 9));
                 // A2_4
                 String residenceStatus = data.getResidenceStatus() == null ? "" : data.getResidenceStatus();
-                textBuilder.appendText(setValue(405, 321, residenceStatus, 16));
+                textBuilder.appendText(setValue(405, 324, residenceStatus, 9));
                 // A2_5
                 String stayPeriod = data.getStayPeriod() == null ? "" : data.getStayPeriod();
                 detachText(85, 291, stayPeriod, 8, textBuilder);
