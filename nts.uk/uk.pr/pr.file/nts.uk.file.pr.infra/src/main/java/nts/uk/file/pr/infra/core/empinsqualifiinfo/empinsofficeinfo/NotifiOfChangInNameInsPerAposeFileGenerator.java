@@ -116,6 +116,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
+//                                    checkLenghtText(addressLabor);
                                     textBuilder.appendText(setValue(210, 190, addressLabor.length() > 41 ? addressLabor.substring(0,40) : addressLabor, 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
@@ -143,6 +144,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 }
                 //A1_7
                 if (element.getEmpInsReportSetting().getSubmitNameAtr() == PERSONAL_NAME) {
+
                     textBuilder.appendText(setValue(45, 586, element.getName() != null ? element.getName().length() > 8 ? element.getName().substring(0, 7) : element.getName() : "", 16));
                     //A1_8
                     detachText(182, 586, element.getNameKana() != null ? element.getNameKana() : "", 20, textBuilder);
@@ -370,5 +372,22 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
             postalCode = temp[0] + "-" + temp[1];
         }
         return postalCode;
+    }
+    private boolean checkLenghtText(String value){
+        int count = 0;
+        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
+
+        for(int i = 0 ; i < lstValue.size() ; i++){
+            if(isHalfWidth(lstValue.get(i))){
+                count++;
+            }
+        }
+        return count > 20 ;
+    }
+    private boolean isHalfWidth(char c)
+    {
+        return c <= '\u00FF'
+                || '\uFF61' <= c && c <= '\uFFDC'
+                || '\uFFE8' <= c && c <= '\uFFEE' ;
     }
 }
