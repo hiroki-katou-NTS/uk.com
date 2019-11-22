@@ -10,7 +10,6 @@ import java.util.List;
 * 社員雇用保険履歴
 */
 public interface EmpInsHistRepository {
-    List<EmpInsHist> getAllEmpInsHist();
-    Optional<EmpInsHist> getEmpInsHistById(String cid, String sid,GeneralDate baseDate);
+    List<EmpInsHist> getEmpInsHistById(String cid, List<String> sid, GeneralDate baseDate);
 
 }
