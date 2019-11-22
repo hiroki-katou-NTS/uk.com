@@ -128,7 +128,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 _.find(listEmp, function (itemEmp) {
                     if(itemEmp.code == item){
                         emp.code = itemEmp.code;
-                        emp.id = itemEmp.code;
+                        emp.id = itemEmp.id;
                         emp.name = itemEmp.name;
                         emp.changeDate = '';
                     }
