@@ -1,7 +1,5 @@
 module nts.uk.pr.view.qui002.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
-    import block = nts.uk.ui.block;
-    import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
 
@@ -57,7 +55,15 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             if(errors.hasError()) {
                 return;
             }
-            setShared("QUI002_PARAMS_A", self.listEmp());
+            let listEmp = [];
+                _.each(self.listEmp(), (item) => {
+                    let employee = new Employee();
+                    employee.employeeId = item.employeeId;
+                    employee.employeeCode = item.employeeCode;
+                    employee.changeDate = item.changeDate();
+                listEmp.push(employee);
+                });
+            setShared("QUI002_PARAMS_A", listEmp);
             nts.uk.ui.windows.close();
         }
 
@@ -76,6 +82,9 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             this.employeeName = employeeName;
             this.employeeNameBefore = ko.observable(employeeNameBefore);
             this.changeDate = ko.observable(changeDate);
+        }
+        constructor() {
+
         }
     }
 }
