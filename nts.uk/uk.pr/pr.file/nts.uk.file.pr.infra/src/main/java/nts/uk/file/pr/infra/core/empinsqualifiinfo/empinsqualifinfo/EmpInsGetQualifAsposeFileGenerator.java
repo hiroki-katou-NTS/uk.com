@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
-    private static final int LOCATION_MAX_BYTE = 44;
+    private static final int LOCATION_MAX_BYTE = 46;
     private static final int BUSINESS_NAME_MAX_BYTE = 52;
     private static final int OFFICE_NAME_MAX_BYTE = 54;
     private static final int NATIONALITY_MAX_BYTE = 22;
