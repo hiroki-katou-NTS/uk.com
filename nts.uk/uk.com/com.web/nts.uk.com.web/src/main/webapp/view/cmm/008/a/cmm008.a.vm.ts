@@ -111,7 +111,7 @@ module nts.uk.com.view.cmm008.a {
                         self.commonMasterName(employment.commonMasterName);
                         self.selectedCodeMaster(employment.empCommonMasterItemId);
                        // self.commonMasterItemId(employment.commonMasterItemId);
-                      
+                      console.log("yeah");
                         if(employment.errMessage !== null) {
                             self.showsGroupCompany(false);
                             self.selectedCode(employment.code);
