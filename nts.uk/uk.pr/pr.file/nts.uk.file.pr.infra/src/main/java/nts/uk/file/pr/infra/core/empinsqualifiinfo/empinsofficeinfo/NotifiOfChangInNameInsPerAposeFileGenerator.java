@@ -86,7 +86,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 String postCd = element.getCompanyInfor().getPostCd();
                                 textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
                                 //A3_2
-                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),63), 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),62), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
@@ -118,7 +118,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                         }
                                     }
 
-                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,63), 9));
+                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,62), 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
