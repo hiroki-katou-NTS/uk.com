@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf005.b {
             overtimeHoursOld: Array<common.OvertimeCaculation> = [];
             
             displayCaculationTime: KnockoutObservable<boolean> = ko.observable(true);
-            displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(false); 
+            displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(true); 
             displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
             displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
             restTimeDisFlg: KnockoutObservable<boolean> = ko.observable(false); // RequestAppDetailSetting 
