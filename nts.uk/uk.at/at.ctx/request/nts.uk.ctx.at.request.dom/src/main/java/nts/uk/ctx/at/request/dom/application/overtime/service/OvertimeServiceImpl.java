@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
@@ -95,9 +95,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
 			ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings) {
 		List<WorkTypeOvertime> result = new ArrayList<>();
-		if(approvalFunctionSetting == null || !approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-			return result;
-		}
 		// 時刻計算利用チェック
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
@@ -119,6 +116,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		List<Integer> halfAtrs = halfAtrs();
 		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
 				.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
+		if(CollectionUtil.isEmpty(result)) {
+			throw new BusinessException("Msg_1567");
+		}
 		return result;
 	}
 	/**
@@ -168,23 +168,18 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public List<SiftType> getSiftType(String companyID, String employeeID,
 			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
 		List<SiftType> result = new ArrayList<>();
-		if (approvalFunctionSetting != null) {
-			// 時刻計算利用チェック
-			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-				// 1.職場別就業時間帯を取得
-				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
-				
-				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-					List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
-					for(WorkTimeSetting workTime : workTimes){
-						SiftType siftType = new SiftType();
-						siftType.setSiftCode(workTime.getWorktimeCode().toString());
-						siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
-						result.add(siftType);
-					}
-					return result;
-				}
+		// 1.職場別就業時間帯を取得
+		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
+		
+		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
+			List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
+			for(WorkTimeSetting workTime : workTimes){
+				SiftType siftType = new SiftType();
+				siftType.setSiftCode(workTime.getWorktimeCode().toString());
+				siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+				result.add(siftType);
 			}
+			return result;
 		}
 		return Collections.emptyList();
 	}

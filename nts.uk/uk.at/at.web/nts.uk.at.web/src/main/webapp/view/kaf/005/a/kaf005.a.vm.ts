@@ -270,8 +270,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
-                            nts.uk.ui.block.clear(); 
-                            dfd.reject(res);
+                            if(res.messageId == 'Msg_426'){
+                                dialog.alertError({messageId : res.messageId}).then(function(){
+                                    nts.uk.ui.block.clear();
+                                });
+                            }else{
+                                nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                                        nts.uk.ui.block.clear();
+                                    });
+                            }
                         });
                         //Check calculate times
                         if(!nts.uk.util.isNullOrEmpty(self.preWorkContent)){
@@ -366,9 +374,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 }else{
                     nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                            nts.uk.ui.block.clear();
-                        });
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                        nts.uk.ui.block.clear();
+                    });
                 }
             });
             return dfd.promise();
@@ -407,14 +415,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         initData(data: any) {
             var self = this;
             if(data.displayCaculationTime) {
-                if(_.isEmpty(data.workTypes)) {
-                    dialog.alertError({ messageId: "Msg_1567" })
-                    .then(function() { 
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                        nts.uk.ui.block.clear();
-                    });    
-                    return;            
-                }    
                 if(_.isEmpty(data.siftTypes)) {
                     dialog.alertError({ messageId: "Msg_1568" })
                     .then(function() { 
@@ -1040,14 +1040,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             var self = this;
             let overtimeDto = data;
             if(data.displayCaculationTime) {
-                if(_.isEmpty(data.workTypes)) {
-                    dialog.alertError({ messageId: "Msg_1567" })
-                    .then(function() { 
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                        nts.uk.ui.block.clear();
-                    });    
-                    return;            
-                }    
                 if(_.isEmpty(data.siftTypes)) {
                     dialog.alertError({ messageId: "Msg_1568" })
                     .then(function() { 

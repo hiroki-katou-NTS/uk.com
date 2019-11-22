@@ -230,9 +230,9 @@ module nts.uk.at.view.kaf005.b {
                     dfd.resolve(); 
                 }).fail(function(res) {
                     if(res.messageId == 'Msg_426'){
-                       dialog.alertError({messageId : res.messageId}).then(function(){
+                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
-                    });
+                        });
                     }else{ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
@@ -264,14 +264,6 @@ module nts.uk.at.view.kaf005.b {
             initData(data: any) {
                 var self = this;
                 if(data.displayCaculationTime) {
-                    if(_.isEmpty(data.workTypes)) {
-                        dialog.alertError({ messageId: "Msg_1567" })
-                        .then(function() { 
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                            nts.uk.ui.block.clear();
-                        });    
-                        return;            
-                    }    
                     if(_.isEmpty(data.siftTypes)) {
                         dialog.alertError({ messageId: "Msg_1568" })
                         .then(function() { 
