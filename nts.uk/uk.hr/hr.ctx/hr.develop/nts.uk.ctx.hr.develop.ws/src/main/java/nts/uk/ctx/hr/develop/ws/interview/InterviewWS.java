@@ -43,7 +43,7 @@ public class InterviewWS {
 	}
 	@POST
 	@Path("/testDepartment")
-	public List<EmployeeInformationImport> testQuerDepartment (List<String> listEmployeeID){
+	public List<EmployeeInformationImport> testQueryDepartment (List<String> listEmployeeID){
 		EmployeeInfoQueryImport paramInterview = EmployeeInfoQueryImport.builder()
 				.employeeIds(null)
 				.referenceDate(GeneralDate.today()) // Xem lai date
