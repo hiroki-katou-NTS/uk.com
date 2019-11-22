@@ -71,11 +71,11 @@ public class JflmtInterviewAnalysis extends UkJpaEntity implements Serializable 
 	}
 
 	public static JflmtInterviewAnalysis toEntity(AnalysisItem domain, long interviewContentId, String companyID) {
-		/*return new JflmtInterviewAnalysis(new JflmtInterviewAnalysisPK(domain.getAnalysisInfoId()), companyID,
+		return new JflmtInterviewAnalysis(new JflmtInterviewAnalysisPK(domain.getAnalysisInfoId()), companyID,
 				interviewContentId, domain.getAnalysisItemId(),
 				domain.getAnalysisItemCd().isPresent() ? domain.getAnalysisItemCd().get() : null,
-				domain.getAnalysisItemName().isPresent() ? domain.getAnalysisItemName().get() : null);*/
-		return null;
+				domain.getAnalysisItemName().isPresent() ? domain.getAnalysisItemName().get() : null);
+		
 	}
 
 	@Override
