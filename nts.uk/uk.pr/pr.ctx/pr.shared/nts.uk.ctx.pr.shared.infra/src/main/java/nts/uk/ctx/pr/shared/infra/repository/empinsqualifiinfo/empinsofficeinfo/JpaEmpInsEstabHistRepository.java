@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHi
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOfficeRepository;
 import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.empinsofficeinfo.QqsmtEmpInsEsmHist;
+import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.empinsofficeinfo.QqsmtEmpInsEsmHistPk;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -69,4 +70,10 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
     public List<EmpInsOffice> getAllEmpEmpmInsOffice() {
         return null;
     }
+
+	@Override
+	public Optional<EmpInsOffice> getEmpInsOfficeById(String cid, String sid, String histId) {
+		Optional<QqsmtEmpInsEsmHist> entity = this.queryProxy().find(new QqsmtEmpInsEsmHistPk(cid, sid, histId), QqsmtEmpInsEsmHist.class);
+		return entity.map(r -> new EmpInsOffice(r.empInsEsmHistPk.histId, r.laborInsCd));
+	}
 }

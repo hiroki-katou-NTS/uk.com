@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.shared.infra.repository.empinsqualifiinfo.employmentinsqua
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,7 +28,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
     private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
     private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
-
+    private static final String SELECT_BY_EMP_IDS_AND_PERIOD = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :endDate AND f.startDate >= :startDate";
 
     @Override
     public List<EmpInsHist> getAllEmpInsHist(){
@@ -103,4 +102,21 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
         );
          return result;
     }
+
+	@Override
+	public List<EmpInsHist> getByEmpIdsAndPeriod(List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
+		List<EmpInsHist> result = new ArrayList<>();
+		if (empIds == null || empIds.isEmpty()) {
+			return result;
+		}
+        CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList -> {
+            result.addAll(toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_PERIOD, QqsmtEmpInsHist.class)
+                    .setParameter("cid", AppContexts.user().companyId())
+                    .setParameter("sids", splitIdList)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getList()));
+        });
+        return result;
+	}
 }
