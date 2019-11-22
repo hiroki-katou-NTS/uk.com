@@ -1,10 +1,8 @@
 module nts.uk.pr.view.qui002.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
-    import block = nts.uk.ui.block;
-    import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
-    import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import getText = nts.uk.resource.getText;
 
 
     export class ScreenModel {
@@ -12,25 +10,39 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
 
         constructor() {
-            var self = this;
-            let params = getShared("QUI002_PARAMS_B");
-
-            self.listEmp(self.convertListEmployee(self.createData(params.employeeList)));
-            if(nts.uk.util.isNullOrEmpty(params) || nts.uk.util.isNullOrEmpty(params.employeeList)) {
-                close();
-            }
-            self.loadGird();
 
         }
 
-        createData(emplist: Array){
+        initScreen(emplist: Array) :JQueryPromise<any>{
+            let dfd = $.Deferred();
+            let self = this;
             let employeeList = [];
+            let employeeIdList = [];
             _.each(emplist, (item,key) =>{
-                let employee = new Employee(key,item.id,item.code,item.name , item.nameBefore, "");
+                let employee = new Employee(key,item.id,item.code,item.name , item.nameBefore, item.changeDate);
                 employeeList.push(employee);
+                employeeIdList.push(item.id);
             });
-
-            return employeeList;
+            let data = {
+                employeeIds: employeeIdList
+            };
+            self.listEmp(_.orderBy(employeeList, ['employeeCode'], ['asc']));
+            service.getPersonInfo(data).done((listEmp: any)=>{
+                if(listEmp && listEmp.length > 0) {
+                    _.each(self.listEmp(), (employee) =>{
+                        _.each(listEmp, (person) => {
+                            if(employee.employeeId == person.employeeId) {
+                                employee.employeeNameBefore = person.oldName;
+                            }
+                        });
+                    });
+                }
+                dfd.resolve();
+            }).fail(function (err) {
+                dfd.reject();
+                dialog.alertError(err);
+            });
+            return dfd.promise();
         }
 
         loadGird(){
@@ -48,7 +60,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     { headerText: getText('QUI002_B222_2'), key: 'employeeCode', dataType: 'string', width: '160' },
                     { headerText: getText('QUI002_B222_3'), key: 'employeeName', dataType: 'string', width: '170' },
                     { headerText: getText('QUI002_B222_4'), key: 'employeeNameBefore', dataType: 'string', width: '170' },
-                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113',template: template}
+                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113'}
 
                 ],
                 features: [
@@ -60,8 +72,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                             columnKey: 'changeDate', allowResizing: false, minimumWidth: 150,
                         }]
                     },
-                    {name: 'Selection', mode: 'row', multipleSelection: false}],
-
+                    {name: 'Selection', mode: 'row', multipleSelection: false}]
 
             });
             $("#B_2").setupSearchScroll("igGrid", true);
@@ -75,23 +86,21 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         register(){
             let self = this;
-            setShared("QUI002_PARAMS_A", self.getListEmployee(self.listEmp()));
+            $("#B222_9").trigger("validate");
+            if(errors.hasError()) {
+                return;
+            }
+            let listEmp = [];
+                _.each(self.listEmp(), (item) => {
+                    let employee = new Employee();
+                    employee.employeeId = item.employeeId;
+                    employee.employeeCode = item.employeeCode;
+                    employee.changeDate = item.changeDate();
+                listEmp.push(employee);
+                });
+            setShared("QUI002_PARAMS_A", listEmp);
             nts.uk.ui.windows.close();
         }
-
-        getListEmployee(emplist: Array){
-            let listEmployee: any = [];
-            _.each(emplist, (item) =>{
-                item.changeDate  = $("#" + item.employeeId).val();
-                listEmployee.push(item);
-            });
-            return listEmployee;
-        }
-
-        convertListEmployee(array :Array<Employee>){
-            return _.orderBy(array, ['employeeCode'], ['asc'])
-        }
-
 
     }
     export class Employee {
@@ -106,8 +115,11 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             this.employeeId = employeeId;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
-            this.employeeNameBefore = employeeNameBefore;
+            this.employeeNameBefore = ko.observable(employeeNameBefore);
             this.changeDate = changeDate;
+        }
+        constructor() {
+
         }
     }
 }

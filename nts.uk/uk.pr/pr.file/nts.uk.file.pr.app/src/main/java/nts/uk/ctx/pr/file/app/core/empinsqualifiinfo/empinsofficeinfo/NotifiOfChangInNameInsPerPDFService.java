@@ -4,6 +4,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
@@ -37,9 +38,6 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
 
     @Inject
     private CompanyInforAdapter mCompanyInforAdapter;
-
-    @Inject
-    private EmpEstabInsHistRepository mEmpEstabInsHistRepository;
 
     @Inject
     private NotifiOfChangInNameInsPerExRepository empInsReportSettingExRepository;
@@ -76,121 +74,86 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
         );
         mEmpInsReportSettingRepository.update(empInsReportSetting);
         // data export
+        CompanyInfor companyInfor = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
         List<NotifiOfChangInNameInsPerExportData> listDataExport = new ArrayList<>();
-        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empIds.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList()));
-        List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
-
-        employee.forEach(e ->{
-
+        List<EmployeeInfoEx> employeeList = employeeInfoAdapter.findBySIds(empIds.stream().map(EmployeeChangeDate::getEmployeeId).collect(Collectors.toList()));
+        List<PersonExport> personExports = mPersonExportAdapter.findByPids(employeeList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
+        List<EmpInsHist> empInsHistList = mEmpInsHistRepository.getEmpInsHistById(cid,empIds.stream().map(EmployeeChangeDate::getEmployeeId).collect(Collectors.toList()), fillingDate);
+        empInsHistList.forEach((e) ->{
             NotifiOfChangInNameInsPerExportData temp = new NotifiOfChangInNameInsPerExportData();
-            Optional<EmpInsHist> mEmpInsHist = mEmpInsHistRepository.getEmpInsHistById(cid,e.getEmployeeId());
-            if(!mEmpInsHist.isPresent()){
-                return;
-            }
-            temp.setEmpInsHist(mEmpInsHist.get());
-            temp.setChangeDate(empIds.stream().filter(eChangDate->eChangDate.getEmployeeId().equals(e.getEmployeeId())).findFirst().get().getChangeDate());
+            temp.setEmpInsHist(e);
+            temp.setChangeDate(empIds.stream().filter(eChangDate->eChangDate.getEmployeeId().equals(e.getSid())).findFirst().get().getChangeDate());
             temp.setFillingDate(fillingDate.toString());
             temp.setEmpInsReportSetting(empInsReportSetting);
             switch (empInsReportSetting.getOfficeClsAtr()){
                 case OUTPUT_COMPANY:{
-                    temp.setCompanyInfor(mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid));
+                    temp.setCompanyInfor(companyInfor);
                     break;
                 }
                 case OUPUT_LABOR_OFFICE:{
-                    List<LaborInsuranceOffice> lstLaborInsuranceOffice =  empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getEmployeeId(),fillingDate);
+                    List<LaborInsuranceOffice> lstLaborInsuranceOffice =  empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getSid(),fillingDate);
                     temp.setLaborInsuranceOffice(lstLaborInsuranceOffice.isEmpty() ? null : lstLaborInsuranceOffice.get(0));
                     break;
                 }
                 case DO_NOT_OUTPUT:{
                     break;
                 }
-            };
-            String hisId = mEmpInsHist.get().getHistoryItem().get(0).identifier();
-            Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),hisId);
-            temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : new EmpInsNumInfo(hisId,""));
-            // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
-            Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
-            if(person.isPresent()){
-                temp.setBrithDay(person.get().getBirthDate().toString());
-                temp.setName(person.get().getPersonNameGroup().getPersonName().getFullName());
-                temp.setNameKana(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
-                temp.setFullName(person.get().getPersonNameGroup().getPersonRomanji().getFullName());
-                temp.setFullNameKana(person.get().getPersonNameGroup().getPersonRomanji().getFullNameKana());
-                temp.setReportFullName(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
-                temp.setReportFullNameKana(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
-                temp.setGender(person.get().getGender());
-                temp.setOldName(person.get().getPersonNameGroup().getOldName().getFullName());
-                temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
             }
-            temp.setEmployeeCode(e.getEmployeeCode());
-            listDataExport.add(temp);
-
+            Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getSid(),e.getHistoryItem().get(0).identifier());
+            temp.setEmpInsNumInfo(empInsNumInfo.orElseGet(() -> new EmpInsNumInfo(e.getHistoryItem().get(0).identifier(), "")));
+            // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
+            Optional<EmployeeInfoEx> employee = employeeList.stream().filter(item-> item.getEmployeeId().equals(e.getSid())).findFirst();
+            if(employee.isPresent()) {
+                Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(employee.get().getPId())).findFirst();
+                if (person.isPresent()) {
+                    temp.setBrithDay(person.get().getBirthDate().toString());
+                    temp.setName(person.get().getPersonNameGroup().getPersonName().getFullName());
+                    temp.setNameKana(person.get().getPersonNameGroup().getPersonName().getFullNameKana());
+                    temp.setFullName(person.get().getPersonNameGroup().getPersonRomanji().getFullName());
+                    temp.setFullNameKana(person.get().getPersonNameGroup().getPersonRomanji().getFullNameKana());
+                    temp.setReportFullName(person.get().getPersonNameGroup().getTodokedeFullName().getFullName());
+                    temp.setReportFullNameKana(person.get().getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                    temp.setGender(person.get().getGender());
+                    temp.setOldName(person.get().getPersonNameGroup().getOldName().getFullName());
+                    temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
+                }
+                temp.setEmployeeCode(employee.get().getEmployeeCode());
+                listDataExport.add(temp);
+            }
 
         });
         if(listDataExport.isEmpty()){
             throw new BusinessException("MsgQ_51");
         }
-
-        else{
-            Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                @Override
-                public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                    return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                }
-            });
-        }
         switch (empInsReportSetting.getOutputOrderAtr()){
             case INSURANCE_NUMBER:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmpInsNumInfo().getEmpInsNumber().v().compareTo(o2.getEmpInsNumInfo().getEmpInsNumber().v());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(o -> o.getEmpInsNumInfo().getEmpInsNumber().v()));
                 break;
             }
             case DEPARTMENT_EMPLOYEE:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(NotifiOfChangInNameInsPerExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE_CODE:{
-                Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                    @Override
-                    public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                        return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                    }
-                });
+                listDataExport.sort(Comparator.comparing(NotifiOfChangInNameInsPerExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE:{
                 if(empInsReportSetting.getSubmitNameAtr() == PERSONAL_NAME ){
-                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                        @Override
-                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                            if(o1.getNameKana().compareTo(o2.getNameKana()) == 0){
-                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                            }
-                            else {
-                                return o1.getNameKana().compareTo(o2.getNameKana());
-                            }
+                    listDataExport.sort((o1, o2) -> {
+                        if (o1.getNameKana().compareTo(o2.getNameKana()) == 0) {
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                        } else {
+                            return o1.getNameKana().compareTo(o2.getNameKana());
                         }
                     });
                 }
                 else{
-                    Collections.sort(listDataExport, new Comparator<NotifiOfChangInNameInsPerExportData>() {
-                        @Override
-                        public int compare(NotifiOfChangInNameInsPerExportData o1, NotifiOfChangInNameInsPerExportData o2) {
-                           if(o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0){
-                                return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
-                           }
-                           else {
-                               return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
-                           }
+                    listDataExport.sort((o1, o2) -> {
+                        if (o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0) {
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
+                        } else {
+                            return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
                         }
                     });
                 }

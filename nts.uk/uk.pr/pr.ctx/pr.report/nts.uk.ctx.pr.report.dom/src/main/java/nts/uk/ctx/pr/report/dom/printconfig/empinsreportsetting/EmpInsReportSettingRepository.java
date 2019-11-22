@@ -9,6 +9,8 @@ public interface EmpInsReportSettingRepository {
 
     Optional<EmpInsReportSetting> getEmpInsReportSettingById(String cid, String userId);
 
+    void insert(EmpInsReportSetting domain);
+
     void update(EmpInsReportSetting domain);
 
 }
