@@ -25,8 +25,8 @@ public class PublicEmploymentSecurityOffice extends AggregateRoot {
      */
     private PublicEmploymentSecurityOfficeName publicEmploymentSecurityOfficeName;
 
-    public PublicEmploymentSecurityOffice(String publicEmploymentSecurityOfficeCode, String publicEmploymentSecurityOfficeName) {
-        this.companyId = AppContexts.user().companyId();
+    public PublicEmploymentSecurityOffice(String cid, String publicEmploymentSecurityOfficeCode, String publicEmploymentSecurityOfficeName) {
+        this.companyId = cid;
         this.publicEmploymentSecurityOfficeCode = new PublicEmploymentSecurityOfficeCode(publicEmploymentSecurityOfficeCode);
         this.publicEmploymentSecurityOfficeName = new PublicEmploymentSecurityOfficeName(publicEmploymentSecurityOfficeName);
     }
