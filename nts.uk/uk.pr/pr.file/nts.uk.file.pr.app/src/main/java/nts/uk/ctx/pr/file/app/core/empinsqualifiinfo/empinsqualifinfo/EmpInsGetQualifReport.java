@@ -23,7 +23,7 @@ public class EmpInsGetQualifReport {
     /**
      * 事業所名
      */
-    private String officeName = "";
+    private String officeName;
 
     /**
      * 事業所番号1
@@ -128,7 +128,7 @@ public class EmpInsGetQualifReport {
     /**
      * 被保険者番号
      */
-    private Integer insuredNumber;
+    private String insuredNumber;
 
     /**
      * 賃金（支払の態様）
@@ -150,9 +150,9 @@ public class EmpInsGetQualifReport {
      */
     private Integer employmentStatus;
 
-    private String insuredEnglishName;
+    private String insuredRomanName;
 
-    private String insuredEnglishName2;
+    private String insuredRomanName2;
 
     private String nationalityRegion;
 

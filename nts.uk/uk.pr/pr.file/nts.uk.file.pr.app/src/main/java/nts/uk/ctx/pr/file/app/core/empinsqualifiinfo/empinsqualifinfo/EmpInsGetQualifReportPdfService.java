@@ -169,17 +169,13 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
-                    tempReport.setInsuredNumber(Integer.valueOf(empInsNumInfos.get(histId).getEmpInsNumber().v()));
+                    tempReport.setInsuredNumber(empInsNumInfos.get(histId).getEmpInsNumber().v());
 
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
-                    // A1_10
-                    if (!laborCode.isEmpty()) {
-                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
-                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
-                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
-                    }
 
                     if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
+                        // A1_10
+                        tempReport.setOfficeNumber1(companyInfo.getCompanyCode());
                         // A1_23
                         tempReport.setOfficeName(companyInfo.getCompanyName());
                         // A3_1
@@ -191,6 +187,10 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_4
                         tempReport.setOfficePhoneNumber(companyInfo.getPhoneNum());
                     } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
+                        // A1_10
+                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
                         // A1_23
                         tempReport.setOfficeName(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
                         // A3_1
@@ -221,7 +221,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
                     val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
                     // A1_14
-                    tempReport.setQualificationDateJp(toEraNumber(qualificationDateJp.era()) + ((qualificationDateJp.year() + 1) < 10 ? "0" + (qualificationDateJp.year() + 1) : (qualificationDateJp.year() + 1)) + qualificationDateJp.month() + qualificationDateJp.day());
+                    tempReport.setQualificationDateJp(toEraDate(qualificationDateJp));
                 }
             }
             if (employeeInfos.containsKey(e)) {
@@ -268,18 +268,16 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     // A1_8
                     tempReport.setEraDateOfBirth(eraNumb);
                     // A1_9
-                    tempReport.setDateOfBirthJp("" + ((birthDateJp.year() + 1) < 10 ? "0" + (birthDateJp.year() + 1) : (birthDateJp.year() + 1)) + birthDateJp.month() + birthDateJp.day());
-                    String insuredEnglishName = personExports.get(pId).getPersonNameGroup().getBusinessEnglishName();
-                    if (insuredEnglishName.length() <= 29) {
+                    tempReport.setDateOfBirthJp(toEraDate(birthDateJp).substring(1));
+                    String insuredRomanName = personExports.get(pId).getPersonNameGroup().getPersonRomanji().getFullName();
+                    if (insuredRomanName.length() <= 28) {
                         // A2_1
-                        tempReport.setInsuredEnglishName(insuredEnglishName);
-                        // A2_1
-                        tempReport.setInsuredEnglishName("");
+                        tempReport.setInsuredRomanName(insuredRomanName);
                     } else {
                         // A2_1
-                        tempReport.setInsuredEnglishName(insuredEnglishName.substring(0, 29));
+                        tempReport.setInsuredRomanName(insuredRomanName.substring(0, 28));
                         // A2_2
-                        tempReport.setInsuredEnglishName2(insuredEnglishName.substring(29));
+                        tempReport.setInsuredRomanName2(insuredRomanName.substring(28));
                     }
                     // to sort
                     tempReport.setPersonalNameKana(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
@@ -293,11 +291,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                 val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
                 // A1_20
-                tempReport.setContractStartDateJp(contractStartDateJp.era() + ((contractStartDateJp.year() + 1) < 10 ? "0" + (contractStartDateJp.year() + 1) : contractStartDateJp.year() + contractStartDateJp.month() + contractStartDateJp.day()));
+                tempReport.setContractStartDateJp(toEraDate(contractStartDateJp));
 
                 val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
                 // A1_21
-                tempReport.setContractEndDateJp(contractEndDateJp.era() + ((contractEndDateJp.year() + 1) < 10 ? "0" + (contractEndDateJp.year() + 1) : contractEndDateJp.year() + contractEndDateJp.month() + contractEndDateJp.day()));
+                tempReport.setContractEndDateJp(toEraDate(contractEndDateJp));
 
                 // A1_22
                 tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
@@ -336,6 +334,47 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 break;
         }
 
+        listDataExport.add(new EmpInsGetQualifReport(2400,
+                "会社2名fffffffffffffffffffffffffff ",
+                "1234", "567890",
+                "1",
+                0,
+                "5",
+                1,
+                "変更後氏名",
+                "変更後氏名フリガナ",
+                1,
+                "1",
+                "5111111",
+                "5111111",
+                1,
+                1,
+                "121212",
+                "1",
+                1,
+                1,
+                "被保険者氏名",
+                "被保険者氏名フリガナ",
+                "12345678912",
+                1,
+                1,
+                "令和121212",
+                1,
+                "被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ",
+                "被保険者氏名フリガナ",
+                "ベトナム",
+                "高度専門職",
+                "20190101",
+                1,
+                1,
+                "1234567",
+                "78 Duy Tan",
+                "会社2名fffffffffffffffffffffffffff被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ ",
+                "0123456789",
+                toJapaneseDate(jpEras, fillingDate),
+                "1",
+                "高度専門職"));
+
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
 
@@ -359,5 +398,9 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
     private JapaneseDate toJapaneseDate(JapaneseEras jpEras, GeneralDate date) {
         Optional<JapaneseEraName> eraName = jpEras.eraOf(date);
         return eraName.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
+    }
+
+    private String toEraDate(JapaneseDate date) {
+        return toEraNumber(date.era()) + ((date.year() + 1) < 10 ? "0" + (date.toFullDateInt() + 10000) : (date.toFullDateInt() + 10000));
     }
 }
