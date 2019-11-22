@@ -41,20 +41,19 @@ public class JdsmtDateDisplaySetting extends UkJpaEntity implements Serializable
 	public int startDateSetDate;
 
 	@Column(name = "END_DATE_SET_CLASS")
-	public int endDateSetClass;
+	public Integer endDateSetClass;
 
 	@Column(name = "END_DATE_SET_NUM")
-	public int endDateSetNum;
+	public Integer endDateSetNum;
 
 	@Column(name = "END_DATE_SET_MONTH")
-	public int endDateSetMonth;
+	public Integer endDateSetMonth;
 
 	@Column(name = "END_DATE_SET_DATE")
-	public int endDateSetDate;
+	public Integer endDateSetDate;
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return programId;
 	}
 }

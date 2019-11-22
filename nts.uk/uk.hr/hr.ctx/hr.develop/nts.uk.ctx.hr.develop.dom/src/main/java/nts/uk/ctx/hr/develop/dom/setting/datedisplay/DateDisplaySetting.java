@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.dom.setting.datedisplay;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -15,6 +16,7 @@ import nts.arc.time.period.DatePeriod;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class DateDisplaySetting extends AggregateRoot implements IDateDisplaySetting {
 	// プログラムID
 	private String programId;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.setting.datedisplay;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class DateDisplaySettingValue {
 	// 設定区分
 	private DateSettingClass settingClass;
