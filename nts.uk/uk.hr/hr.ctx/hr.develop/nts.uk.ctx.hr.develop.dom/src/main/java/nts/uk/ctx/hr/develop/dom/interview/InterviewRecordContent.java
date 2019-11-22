@@ -25,7 +25,7 @@ public class InterviewRecordContent extends DomainObject{
 	/** 分析区分カテゴリCD*/
 	private Optional<String> analysisCategoryCd;
 	/** 分析区分カテゴリID **/
-	private Optional<Long> analysisCategoryId;
+	private long analysisCategoryId;
 	/** 分析区分カテゴリ名 **/
 	private Optional<String> analysisCategoryName;
 	
@@ -43,7 +43,7 @@ public class InterviewRecordContent extends DomainObject{
 		this.interviewItemCd = Optional.ofNullable(interviewItemCd);
 		this.interviewItemName = Optional.ofNullable(interviewItemName);
 		this.analysisCategoryCd = Optional.ofNullable(analysisCategoryCd);
-		this.analysisCategoryId = Optional.ofNullable(analysisCategoryId);
+		this.analysisCategoryId = analysisCategoryId;
 		this.analysisCategoryName = Optional.ofNullable(analysisCategoryName);
 		this.listAnalysisItemId = listAnalysisItemId;
 		this.recordContent = Optional.ofNullable(recordContent);
