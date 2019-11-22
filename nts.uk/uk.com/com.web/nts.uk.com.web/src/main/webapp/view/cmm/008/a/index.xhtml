@@ -97,18 +97,36 @@
 						</div>
 						<div data-bind="visible : true" > 
 						<div class="fixed-flex-layout">
-							<div data-bind="ntsFormLabel: {required: true}" class="width-label fixed-flex-layout-left">
+							<div data-bind="ntsFormLabel: {}" class="width-label fixed-flex-layout-left">
 								<label data-bind ="text :$parent.commonMasterName"></label>
 							</div>
-							<div id="combo-box" data-bind="ntsComboBox: {
+							<div  tabindex="10" id="combo-box" data-bind="ntsComboBox: {
 								options: $parent.itemListMatter,
-								optionsValue: 'commonMasterItemCode',
+								optionsValue: 'commonMasterItemId',
 								visibleItemsCount: 5,
 								value: $parent.selectedCodeMaster,
 								optionsText: 'commonMasterItemName',
+								editable: false ,
+								selectFirstIfNull: false ,
+								required: false ,
 								columns: [
 									{ prop: 'commonMasterItemName', length: 10 },
 								]}"></div> 
+								
+								<!-- <div tabindex="11" id = "selectedCode_Reason1Id"  style="width: 170px" 
+									 data-bind="ntsComboBox: {
+												options: listRetirementReason1 ,
+												name: '{#JCM007_A222_20}' ,
+												optionsValue: 'value',
+												value: selectedCode_Reason1 ,
+												optionsText: 'text',
+												enable : enable_listRetirementReason1 ,
+												editable: false ,
+												selectFirstIfNull: false ,
+												required: true ,
+												columns: [
+													{ prop: 'text', length: 15 }
+												]}"></div> -->
 						</div>
 						</div>
 					</div>
