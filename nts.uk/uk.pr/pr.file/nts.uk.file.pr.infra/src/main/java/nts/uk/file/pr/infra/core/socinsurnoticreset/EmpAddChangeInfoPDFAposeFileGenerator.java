@@ -135,16 +135,16 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         return add.toString();
     }
 
-    public static String cutSpace(String name, int ps) {
+    private static String cutSpace(String name, int ps) {
         if (name == null || name.length() == 0) return "";
         String[] listF = name.split("　", 2);
         if(listF.length == 1) {
-            if(ps==1) return listF[0];
+            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
             if(ps==2) return "";
         }
         if(listF.length > 1) {
-            if(ps==1) return listF[0];
-            if(ps==2) return listF[1];
+            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
+            if(ps==2) return listF[1].length() > 4 ? listF[1].substring(0,4) : listF[1];
         }
         return "";
     }
@@ -196,13 +196,13 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             if(empAddChangeInfoExport.isHealthInsurance() && !empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_1").setValue("健康保険");
                 worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
-            } else if(!empAddChangeInfoExport.isHealthInsurance() && empAddChangeInfoExport.isEmpPenInsurance()) {
+            }
+            if(!empAddChangeInfoExport.isHealthInsurance() && empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_2").setValue("厚生年金保険");
                 worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
-            } else {
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_2"));
-                worksheet.get(i).getShapes().remove(worksheet.get(i).getShapes().get("C1_1"));
             }
+
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -274,10 +274,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A1_10_6", empAddChangeInfoExport.getStartDatePs() != null ? NotificationOfLossInsPDFAposeFileGenerator.convertJpDate(sDayPs) : "",5 );
 
             //A1_11 ~ A1_15
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getShortResidentAtr() , i, "A4_111" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getResidenceOtherResidentAtr() , i, "A4_112" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() , i, "A4_114" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getShortResidentAtr() == null ? 0 :  empAddChangeInfoExport.getShortResidentAtr(), i, "A4_111" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getResidenceOtherResidentAtr() == null ?  0 : empAddChangeInfoExport.getResidenceOtherResidentAtr(), i, "A4_112" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr(), i, "A4_114" );
 
             worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(empAddChangeInfoExport.getOtherAtr()!= null &&
                     empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? "(" + empAddChangeInfoExport.getOtherReason() + ")": "（        ）"));

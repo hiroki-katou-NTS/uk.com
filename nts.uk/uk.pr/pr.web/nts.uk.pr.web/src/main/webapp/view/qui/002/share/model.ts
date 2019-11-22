@@ -66,8 +66,8 @@ module nts.uk.pr.view.qsi013.share.model {
     }
     export function getOfficeClsAtr(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
             new ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
             new ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
         ];
     }

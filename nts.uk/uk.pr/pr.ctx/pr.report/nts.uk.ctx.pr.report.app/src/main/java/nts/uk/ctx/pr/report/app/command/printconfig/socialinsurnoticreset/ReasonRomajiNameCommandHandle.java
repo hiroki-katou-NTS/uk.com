@@ -39,5 +39,5 @@ public class ReasonRomajiNameCommandHandle extends CommandHandler<ReasonRomajiNa
                 ).toDomain(),
                 context.getCommand().getScreenMode()
         );
-    }
+}
 }
