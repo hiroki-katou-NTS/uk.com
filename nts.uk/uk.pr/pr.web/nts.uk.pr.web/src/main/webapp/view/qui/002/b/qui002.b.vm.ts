@@ -3,7 +3,6 @@ module nts.uk.pr.view.qui002.b.viewmodel {
     import block = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
-    import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
 
 
@@ -12,9 +11,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
 
         constructor() {
-            var self = this;
-            let params = getShared("QUI002_PARAMS_B");
-            self.initScreen(params.employeeList);
+
         }
 
         initScreen(emplist: Array) :JQueryPromise<any>{
@@ -36,7 +33,6 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     _.each(self.listEmp(), (employee) =>{
                         _.each(listEmp, (person) => {
                             if(employee.employeeId == person.employeeId) {
-                                employee.personId = person.personId;
                                 employee.employeeNameBefore = person.oldName;
                             }
                         });
@@ -57,23 +53,17 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         register(){
             let self = this;
-            setShared("QUI002_PARAMS_A", self.getListEmployee(self.listEmp()));
+            $("#B222_9").trigger("validate");
+            if(errors.hasError()) {
+                return;
+            }
+            setShared("QUI002_PARAMS_A", self.listEmp());
             nts.uk.ui.windows.close();
-        }
-
-        getListEmployee(emplist: Array){
-            let listEmployee: any = [];
-            _.each(emplist, (item) =>{
-                item.changeDate  = $("#" + item.employeeId).val();
-                listEmployee.push(item);
-            });
-            return listEmployee;
         }
 
     }
     export class Employee {
         id: number;
-        personId: string;
         employeeId: string;
         employeeCode: string;
         employeeName: string;
@@ -84,7 +74,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             this.employeeId = employeeId;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
-            this.employeeNameBefore = employeeNameBefore;
+            this.employeeNameBefore = ko.observable(employeeNameBefore);
             this.changeDate = ko.observable(changeDate);
         }
     }
