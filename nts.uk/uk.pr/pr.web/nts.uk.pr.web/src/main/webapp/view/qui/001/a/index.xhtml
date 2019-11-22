@@ -29,21 +29,21 @@
             </button>
             <button id="A1_4" tabindex="3" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){openCScreen()}">
                 #{i18n.getText('QUI001_A1_3')}
-            </button> <!--data-bind="enable: false"-->
+            </button>
             <button id="A1_3" tabindex="4" data-bind="enable: false">
                 #{i18n.getText('QUI001_A1_4')}
             </button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
-            <div style="margin-top: 15px; min-width: 1000px;" class="fixed-flex-layout">
+            <div style="margin-top: 15px; min-width: 1000px; margin-bottom: 20px" class="fixed-flex-layout">
                 <div id="com-ccg001" style="height: 455px !important;"></div>
 
                 <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
                     <div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
-                        <div class="valign-center control-group " >
+                        <div class="valign-center control-group " style="height: 33px !important; padding-top: 0px; !important;">
 							<span class="label with-image">
                                 <img id="img-calendar" class="image image-calendar" src="../resources/QUI001_1.png"/>
-								<span id="A222_3">資格取得期間</span> <!--#{i18n.getText('QUI001_A222_3')}-->
+								<span id="A222_3">#{i18n.getText('QUI001_A222_3')}</span>
 							</span>
                             <div id="A222_4" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QUI001_A222_4')}',
@@ -55,7 +55,7 @@
                             </div>
                             <span id="A222_5" data-bind="attr: {style: getStyle() }, text: startDateJp"
                                   class="limited-label"></span>
-                            <span id="A222_6">~</span> <!--#{i18n.getText('QUI001_A222_6')}-->
+                            <span id="A222_6">#{i18n.getText('QUI001_A222_6')}</span>
                             <div id="A222_7" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QUI001_A222_7')}',
 																value: endDate,
@@ -69,20 +69,19 @@
                         </div>
                     </div>
                     <div class="bottom" style="margin-top: 15px; margin-left: 44px;">
-                        <div class="panel panel-frame" style=" height: 449px;">
+                        <div class="panel panel-frame" style=" height: 432px;">
                             <div id="component-items-list" tabindex="8" style="margin-left: 40px;"></div>
                         </div>
                     </div>
                 </div>
 
-
-                <div class="fixed-flex-layout-right" > <!--data-bind="with: socInsurNotiCreSet"-->
-                    <div class="panel panel-frame " style="width: 435px; height: 540px;"> <!--498px-->
+                <div class="fixed-flex-layout-right" >
+                    <div class="panel panel-frame " style="width: 462px; height: 514px;">
 
                         <div data-bind="with: empInsReportSetting">
                             <div id="A222_12" class = "label"> #{i18n.getText('QUI001_A222_12')}</div>
                             <div class = "valign-center control-group">
-                                <div id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_13')}</div>
+                                <div style="margin-top: 12px;" id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_13')}</div>
                                 <div id = "A222_14"  data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QUI001_A222_14')}',
                                                                 value: $parent.fillingDate,
@@ -101,8 +100,7 @@
                                 optionsValue: 'code',
                                 value: submitNameAtr,
                                 optionsText: 'name',
-                                enable: true  }"></div> <!--options: submittedNames, constraint: 'SubNameClass',
-                            value: submittedName,-->
+                                enable: true  }"></div>
 
                                 <button id="A222_20" tabindex="11" data-bind="ntsHelpButton: {image: '../resources/QUI001_2.png', position: 'bottom center', enable: true }">?</button>
                             </div>
@@ -118,7 +116,7 @@
                                 value: outputOrderAtr,
                                 editable: false,
                                 enable: true,
-                            }"><!---->
+                            }">
                                 </div>
                             </div>
 
@@ -146,7 +144,7 @@
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true
-                                }"><!---->
+                                }">
                                 </div>
                             </div>
 
@@ -158,8 +156,7 @@
                                 optionsValue: 'code',
                                 value: nameChangeClsAtr,
                                 optionsText: 'name',
-                                enable: true  }"></div> <!--options: changedName, constraint: 'SubNameClass',
-                            value: submittedName,-->
+                                enable: true  }"></div>
                             </div>
 
                         </div>
@@ -175,18 +172,13 @@
                                 optionsValue: 'code',
                                 value: lineFeedCode,
                                 optionsText: 'name',
-                                enable: true  }"></div> <!--options: newLine, constraint: 'SubNameClass',
-                            value: submittedName,-->
+                                enable: true  }"></div>
                                 <button id="A222_44" tabindex="11" data-bind="ntsHelpButton: {image: '../resources/QUI001_3.png', position: 'bottom center', enable: true }">?</button>
 
                             </div>
 
-                            <div class="valign-center control-group ">
-                                <div id="A222_45" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_45')}</div>
-                            </div>
-
                             <div class="valign-center control-group A222_46">
-                                <div id="A222_46" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_46')}</div>
+                                <div id="A222_46" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_46')}</div>
                                 <div id="A222_47" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
                                 name: '#[QUI001_A222_47]',
                                 options: $vm.officeInformations,
@@ -199,10 +191,11 @@
                             </div>
 
                             <div class="valign-center control-group ">
-                                <div id="A222_49" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_49')}</div>
+                                <div id="A222_49" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_49')}</div>
                                 <div id="A222_50" style=" width: 50px; height: 18px" tabindex="17" data-bind="ntsTextEditor: {
                                 name: '#{i18n.getText('QUI001_A222_50')}',
-                                value: fdNumber}">
+                                value: fdNumber,
+                                option: { decimallength: 0 }}">
                                 </div>
                             </div>
                         </div>

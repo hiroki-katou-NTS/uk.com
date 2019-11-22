@@ -1216,8 +1216,16 @@ public class ProgramIdConsts {
 	public static final String QSI014A = "QSI014A";
 	public static final String QSI014B = "QSI014B";
 
+	/** QUI001 */
+	public static final String QUI001A = "QUI001A";
+	public static final String QUI001C = "QUI001C";
+
 	/** QUI002 */
 	public static final String QUI002A = "QUI002A";
 	public static final String QUI002B = "QUI002B";
+
+	/** QUI004 */
+	public static final String QUI004A = "QUI004A";
+	public static final String QUI004C = "QUI004C";
 
 }

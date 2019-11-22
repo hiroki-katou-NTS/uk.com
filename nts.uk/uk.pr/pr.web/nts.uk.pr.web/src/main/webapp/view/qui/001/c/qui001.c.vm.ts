@@ -121,11 +121,11 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 jobPath: self.jobPath(),
                 workingTime: self.workingTime() > 0 ? self.workingTime() : null,
                 jobAtr: self.jobAtr(),
-                payWage: self.workingTime() > 0 ? self.payWage() : null,
+                payWage: self.payWage() > 0 ? self.payWage() : null,
                 insCauseAtr: self.insCauseAtr(),
                 wagePaymentMode: self.wagePaymentMode(),
                 employmentStatus: self.employmentStatus(),
-                contrPeriPrintAtr: self.contrPeriPrintAtr() ? 1 : 0,
+                contrPeriPrintAtr: self.contrPeriPrintAtr(),
                 screenMode: self.screenMode()
             };
             service.register(empInsGetInfo).done(function () {

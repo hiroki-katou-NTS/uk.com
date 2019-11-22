@@ -3,10 +3,10 @@ module nts.uk.pr.view.qui001.a {
 
     export module service {
         let paths: any = {
-            exportTxt: "export-txt-qui001",
-            getEmpInsReportTxtSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg"*/,
-            exportPDF: "export-pdf-qui001",
-            getEmpInsReportSetting: ""/*"ctx/pr/report/printconfig/empinsurreportcreset/start"*/,
+            exportCsv: "ctx/pr/report/printconfig/empinsreportsetting/export-csv-qui001",
+            getEmpInsReportTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg",
+            exportPDF: "ctx/pr/report/printconfig/empinsreportsetting/export-pdf-qui001",
+            getEmpInsReportSetting: "ctx/pr/report/printconfig/empinsurreportcreset/start",
 
             addEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/add-emp-ins-rpt-txt-stg",
             updateEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/update-emp-ins-rpt-txt-stg"
@@ -20,8 +20,8 @@ module nts.uk.pr.view.qui001.a {
             return ajax("pr", paths.getEmpInsReportSetting);
         }
 
-        export function exportTXT(data: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportTxt, data);
+        export function exportCSV(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportCsv, data);
         }
 
         export function exportPDF(data: any): JQueryPromise<any> {

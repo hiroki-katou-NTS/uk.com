@@ -30,7 +30,7 @@ public class EmpInsReportSettingCsvExportWebService extends WebService {
 
     @POST
     @Path("export-pdf-qui004")
-    public ExportServiceResult generatePdfQui004(EmpInsGetQualifReportQuery query){
+    public ExportServiceResult generatePdfQui004(EmpInsReportSettingExportQuery query){
         return qui004PdfService.start(query);
     }
 }

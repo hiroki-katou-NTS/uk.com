@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
@@ -28,10 +29,7 @@ import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -111,7 +109,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         reportSettingRepository.update(reportSetting);
         reportTxtSettingRepository.update(reportTxtSetting);
 
-        if(endDate.before(startDate)) {
+        if (endDate.before(startDate)) {
             throw new BusinessException("Msg_812");
         }
 
@@ -119,13 +117,13 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
         Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
-            throw new BusinessException("Msg_51");
+            throw new BusinessException("MsgQ_51");
         }
+        List<String> insHistEmpIds = new ArrayList<>(empInsHists.keySet());
 
         // Pending check マイナンバー印字区分
 
-        List<String> empInsHistEmpIds = empInsHists.values().stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-        Map<String, EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(cid, empInsHistEmpIds).stream().collect(Collectors.toMap(EmpInsGetInfo::getSalaryId, Function.identity()));
+        Map<String, EmpInsGetInfo> empInsGetInfos = empInsGetInfoRepository.getByEmpIds(cid, insHistEmpIds).stream().collect(Collectors.toMap(EmpInsGetInfo::getSId, Function.identity()));
 
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
         Map<String, EmpInsNumInfo> empInsNumInfos = empInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
@@ -139,30 +137,31 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
         ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
 
-        Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(empInsHistEmpIds).stream().collect(Collectors.toMap(EmployeeInfoEx::getEmployeeId, Function.identity()));
+        Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(insHistEmpIds).stream().collect(Collectors.toMap(EmployeeInfoEx::getEmployeeId, Function.identity()));
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
                 .stream().collect(Collectors.toMap(PersonExport::getPersonId, Function.identity()));
 
         JapaneseEras jpEras = this.jpErasAdapter.getAllEras();
 
-        empIds.forEach(e -> {
+        insHistEmpIds.forEach(e -> {
             EmpInsGetQualifReport tempReport = new EmpInsGetQualifReport();
             tempReport.setSid(e);
+            tempReport.setScd(employeeInfos.containsKey(e) ? employeeInfos.get(e).getEmployeeCode() : "");
             if (empInsGetInfos.containsKey(e)) {
                 // A1_2
                 tempReport.setAcquisitionAtr(empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null));
                 // A1_11
-                tempReport.setCauseOfInsured(empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value).orElse(null));
+                tempReport.setCauseOfInsured(empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value + 1).orElse(null));
                 // A1_18
-                tempReport.setScheduleWorkingTimePerWeek(empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null));
+                tempReport.setScheduleWorkingTimePerWeek(empInsGetInfos.get(e).getWorkingTime().map(PrimitiveValueBase::v).orElse(null));
                 // A1_15
-                tempReport.setEmploymentStatus(empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value).orElse(null));
+                tempReport.setEmploymentStatus(empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value + 1).orElse(null));
                 // A1_17
-                tempReport.setJobPath(empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null));
+                tempReport.setJobPath(empInsGetInfos.get(e).getJobPath().map(x -> x.value + 1).orElse(null));
                 // A1_13
-                tempReport.setPaymentWage(empInsGetInfos.get(e).getPayWage().map(x -> x.v()).orElse(null));
+                tempReport.setPaymentWage(empInsGetInfos.get(e).getPayWage().map(PrimitiveValueBase::v).orElse(null));
                 // A1_12
-                tempReport.setWagePaymentMode(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value).orElse(null));
+                tempReport.setWagePaymentMode(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value + 1).orElse(null));
                 // A1_16
                 tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
             }
@@ -170,57 +169,91 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
-                    tempReport.setInsuredNumber(Integer.valueOf(empInsNumInfos.get(histId).getEmpInsNumber().v()));
+                    tempReport.setInsuredNumber(empInsNumInfos.get(histId).getEmpInsNumber().v());
 
-                    String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-                    // A1_10
-                    tempReport.setOfficeNumber(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v());
+                    String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
-                    // A1_23
                     if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
+                        // A1_10
+                        tempReport.setOfficeNumber1(companyInfo.getCompanyCode());
+                        // A1_23
                         tempReport.setOfficeName(companyInfo.getCompanyName());
+                        // A3_1
+                        tempReport.setOfficePostalCode(companyInfo.getPostCd());
+                        // A3_2
+                        tempReport.setOfficeLocation(companyInfo.getAdd_1() + " " + companyInfo.getAdd_2());
+                        // A3_3
+                        tempReport.setBusinessOwnerName(companyInfo.getCompanyName());
+                        // A3_4
+                        tempReport.setOfficePhoneNumber(companyInfo.getPhoneNum());
                     } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
+                        // A1_10
+                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
+                        // A1_23
                         tempReport.setOfficeName(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
+                        // A3_1
+                        tempReport.setOfficePostalCode(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(PrimitiveValueBase::v).orElse(""));
+
+                        val streetAddress = laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress();
+                        val address1 = streetAddress.getAddress1().map(PrimitiveValueBase::v).orElse("");
+                        val address2 = streetAddress.getAddress1().map(PrimitiveValueBase::v).orElse("");
+                        // A3_2
+                        tempReport.setOfficeLocation(address1 + " " + address2);
+                        // A3_3
+                        tempReport.setBusinessOwnerName(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(""));
+                        // A3_4
+                        tempReport.setOfficePhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(PrimitiveValueBase::v).orElse(""));
                     } else {
+                        // A1_23
                         tempReport.setOfficeName("");
+                        // A3_1
+                        tempReport.setOfficePostalCode("");
+                        // A3_2
+                        tempReport.setOfficeLocation("");
+                        // A3_3
+                        tempReport.setBusinessOwnerName("");
+                        // A3_4
+                        tempReport.setOfficePhoneNumber("");
                     }
 
                     val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
                     val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
                     // A1_14
-                    tempReport.setQualificationDateJp(toEraNumber(qualificationDateJp.era()) + qualificationDateJp.toFullDateInt());
+                    tempReport.setQualificationDateJp(toEraDate(qualificationDateJp));
                 }
             }
-            if(employeeInfos.containsKey(e)) {
+            if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         // A1_4
-                        tempReport.setNameOfInsuredPeople(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
+                        tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         // A1_4
-                        tempReport.setNameOfInsuredPeople(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
+                        tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
-                        tempReport.setNameOfInsuredPeople(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
+                        tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
                         // A1_5
                         tempReport.setNameAfterChange(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         // A1_6
                         tempReport.setFullNameAfterChange(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value &&  tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
-                        tempReport.setNameOfInsuredPeople(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
+                        tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
                         // A1_5
                         tempReport.setNameAfterChange(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         // A1_6
@@ -235,13 +268,19 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     // A1_8
                     tempReport.setEraDateOfBirth(eraNumb);
                     // A1_9
-                    tempReport.setDateOfBirthJp(birthDateJp.toFullDateInt() + "");
-
-                    String insuredEnglishName = personExports.get(pId).getPersonNameGroup().getBusinessEnglishName();
-                    // A2_1
-                    tempReport.setInsuredEnglishName(insuredEnglishName.substring(0, 29));
-                    // A2_2
-                    tempReport.setInsuredEnglishName2(insuredEnglishName.substring(29));
+                    tempReport.setDateOfBirthJp(toEraDate(birthDateJp).substring(1));
+                    String insuredRomanName = personExports.get(pId).getPersonNameGroup().getPersonRomanji().getFullName();
+                    if (insuredRomanName.length() <= 28) {
+                        // A2_1
+                        tempReport.setInsuredRomanName(insuredRomanName);
+                    } else {
+                        // A2_1
+                        tempReport.setInsuredRomanName(insuredRomanName.substring(0, 28));
+                        // A2_2
+                        tempReport.setInsuredRomanName2(insuredRomanName.substring(28));
+                    }
+                    // to sort
+                    tempReport.setPersonalNameKana(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                 }
             }
 
@@ -252,11 +291,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                 val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
                 // A1_20
-                tempReport.setContractStartDateJp(contractStartDateJp.era() + contractStartDateJp);
+                tempReport.setContractStartDateJp(toEraDate(contractStartDateJp));
 
                 val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
                 // A1_21
-                tempReport.setContractEndDateJp(contractEndDateJp.era() + contractEndDateJp);
+                tempReport.setContractEndDateJp(toEraDate(contractEndDateJp));
 
                 // A1_22
                 tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
@@ -269,15 +308,78 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 tempReport.setResidenceStatus(dummyForResHistInfo.getResidenceStatus());
                 // A2_5
                 tempReport.setStayPeriod(dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").replace("/", ""));
-            }
+                // A2_6
+                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualifPermission());
+                // A2_7
+                tempReport.setContractWorkAtr(dummyForResHistInfo.getContractWorkAtr());
 
+            }
+            // A3_5
+            tempReport.setSubmissionDateJp(toJapaneseDate(jpEras, fillingDate));
+            listDataExport.add(tempReport);
         });
+
+        switch (reportSetting.getOutputOrderAtr()) {
+            case INSURANCE_NUMBER:
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getInsuredNumber, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                break;
+            case DEPARTMENT_EMPLOYEE:
+            case EMPLOYEE_CODE:
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                break;
+            case EMPLOYEE:
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getPersonalNameKana, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                break;
+            default:
+                break;
+        }
+
+        listDataExport.add(new EmpInsGetQualifReport(2400,
+                "会社2名fffffffffffffffffffffffffff ",
+                "1234", "567890",
+                "1",
+                0,
+                "5",
+                1,
+                "変更後氏名",
+                "変更後氏名フリガナ",
+                1,
+                "1",
+                "5111111",
+                "5111111",
+                1,
+                1,
+                "121212",
+                "1",
+                1,
+                1,
+                "被保険者氏名",
+                "被保険者氏名フリガナ",
+                "12345678912",
+                1,
+                1,
+                "令和121212",
+                1,
+                "被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ",
+                "被保険者氏名フリガナ",
+                "ベトナム",
+                "高度専門職",
+                "20190101",
+                1,
+                1,
+                "1234567",
+                "78 Duy Tan",
+                "会社2名fffffffffffffffffffffffffff被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ ",
+                "0123456789",
+                toJapaneseDate(jpEras, fillingDate),
+                "1",
+                "高度専門職"));
 
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
 
     private String toEraNumber(String eraName) {
-        switch(eraName) {
+        switch (eraName) {
             case MEIJI:
                 return "1";
             case TAISHO:
@@ -298,5 +400,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         return eraName.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
     }
 
-
+    private String toEraDate(JapaneseDate date) {
+        return toEraNumber(date.era()) + ((date.year() + 1) < 10 ? "0" + (date.toFullDateInt() + 10000) : (date.toFullDateInt() + 10000));
+    }
 }
