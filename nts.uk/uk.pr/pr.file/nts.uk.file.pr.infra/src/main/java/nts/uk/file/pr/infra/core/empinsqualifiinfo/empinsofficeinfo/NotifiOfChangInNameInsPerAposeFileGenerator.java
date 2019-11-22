@@ -19,6 +19,7 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 String postCd = element.getCompanyInfor().getPostCd();
                                 textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
                                 //A3_2
-                                textBuilder.appendText(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),50), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
@@ -116,8 +117,8 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                             addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                         }
                                     }
-//                                    checkLenghtText(addressLabor);
-                                    textBuilder.appendText(setValue(210, 190, addressLabor.length() > 41 ? addressLabor.substring(0,40) : addressLabor, 9));
+
+                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,50), 9));
                                     //A3_3
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
@@ -200,23 +201,23 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 Ellipse rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Ellipse(364, 37, 15,9.5);
+                        rect2 = new Ellipse(364, 37, 15, 9.5);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Ellipse(385, 37, 15,9.5);
+                        rect2 = new Ellipse(385, 37, 15, 9.5);
                         break;
                     }
                     case PEACE: {
-                        rect2 = new Ellipse(385, 27.5, 15,9.5);
+                        rect2 = new Ellipse(385, 27.5, 15, 9.5);
                         break;
                     }
                     case HEISEI: {
-                        rect2 = new Ellipse(364, 27.5, 15,9.5);
+                        rect2 = new Ellipse(364, 27.5, 15, 9.5);
                         break;
                     }
                     default: {
-                        rect2 = new Ellipse(370, 40, 0,0);
+                        rect2 = new Ellipse(370, 40, 0, 0);
                     }
                 }
                 rect2.getGraphInfo().setLineWidth(1f);
@@ -225,7 +226,7 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A2_5
                 {
                     JapaneseDate birthDayJapanCla = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-                    if(!birthDayJapanCla.era().equals(TAISO)){
+                    if (!birthDayJapanCla.era().equals(TAISO)) {
                         textBuilder.appendText(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
                         textBuilder.appendText(setValue(455, 357, birthDayJapanCla.month() + "", 9));
                         textBuilder.appendText(setValue(491, 357, birthDayJapanCla.day() + "", 9));
@@ -373,21 +374,9 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
         }
         return postalCode;
     }
-    private boolean checkLenghtText(String value){
-        int count = 0;
-        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
 
-        for(int i = 0 ; i < lstValue.size() ; i++){
-            if(isHalfWidth(lstValue.get(i))){
-                count++;
-            }
-        }
-        return count > 20 ;
-    }
-    private boolean isHalfWidth(char c)
-    {
-        return c <= '\u00FF'
-                || '\uFF61' <= c && c <= '\uFFDC'
-                || '\uFFE8' <= c && c <= '\uFFEE' ;
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        return text.substring(0, text.length() * maxByteAllowed / text.getBytes("Shift_JIS").length);
     }
 }
