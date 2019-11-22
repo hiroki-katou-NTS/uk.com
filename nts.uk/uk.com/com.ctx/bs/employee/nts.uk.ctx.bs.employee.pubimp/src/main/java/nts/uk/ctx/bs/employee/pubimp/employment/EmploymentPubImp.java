@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.Null;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -26,12 +27,15 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemReposi
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport.AffPeriodEmpCdHistExportBuilder;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
 import nts.uk.ctx.bs.employee.pub.employment.DataEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.employment.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentInfoExport;
+import nts.uk.ctx.bs.employee.pub.employment.ObjectParam;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -306,4 +310,32 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid) {
+		
+		if (listObjParam.isEmpty() || baseDate == null || cid == null || cid == "") {
+			return new ArrayList<>();
+		}
+		
+		List<EmployeeBasicInfoExport> result = new ArrayList<>();
+		
+		for (ObjectParam objectParam : listObjParam) {
+			if (objectParam.getEmploymentCode() != null && objectParam.getBirthdayPeriod().start() != null && objectParam.getBirthdayPeriod().end() != null) {
+				List<Object[]> data = empHistRepo.getEmploymentBasicInfo(objectParam.getEmploymentCode(), objectParam.getBirthdayPeriod(), baseDate, cid); 
+				if (!data.isEmpty()) {
+					for (int i = 0; i < data.size(); i++) {
+						EmployeeBasicInfoExport empInfo =  EmployeeBasicInfoExport.builder()
+								.employmentCode(data.get(i)[0] == null ? null : data.get(i)[0].toString())
+								.dateJoinComp(data.get(i)[1] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.sid(data.get(i)[2] == null ? null : data.get(i)[0].toString())
+								.pid(data.get(i)[3] == null ? null : data.get(i)[0].toString())
+								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.build();
+						result.add(empInfo);
+					}
+				}
+			}
+		}
+		return result;
+	}
 }

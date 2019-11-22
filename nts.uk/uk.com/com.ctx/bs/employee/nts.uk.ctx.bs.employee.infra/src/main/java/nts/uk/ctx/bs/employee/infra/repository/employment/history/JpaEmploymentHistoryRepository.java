@@ -44,6 +44,18 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
 	private static final String GET_BY_LSTSID_DATE = "SELECT c FROM BsymtEmploymentHist c where c.sid IN :lstSID" 
 			+ " AND c.strDate <= :date and c.endDate >= :date";
+
+	private static final String SELECT_DATA_REQ638 = "SELECT eht.empCode, ach.startDate , e.bsymtEmployeeDataMngInfoPk.sId, ps.bpsmtPersonPk.pId, ps.birthday "
+			+ " FROM BsymtEmploymentHist eh  "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
+			+ " INNER JOIN BsymtAffCompanyHist ach ON ach.bsymtAffCompanyHistPk.sId = eht.sid "
+			+ " INNER JOIN BsymtEmployeeDataMngInfo e ON e.bsymtEmployeeDataMngInfoPk.sId = eht.sid "
+			+ " INNER JOIN BpsmtPerson ps ON  ps.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId "
+			+ " WHERE eht.empCode IN :employmentCode AND eh.strDate <= :baseDate AND eh.endDate >= :baseDate " 
+			+ " AND ach.startDate <= :baseDate AND ach.endDate >= :baseDate AND ach.destinationData = 0 " 
+			+ " AND e.delStatus = 0 "
+			+ " AND ps.birthday <= :endDate " 
+			+ " AND ps.birthday >= :startDate ";
 	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
@@ -329,5 +341,19 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			mapResult.put(sid, hist.get(0));
 		}
 		return mapResult;
+	}
+
+	@Override
+	public List<Object[]> getEmploymentBasicInfo(String employmentCode, DatePeriod birthdayPeriod, GeneralDate baseDate,
+			String cid) {
+		
+		List<Object[]> result = queryProxy().query(SELECT_DATA_REQ638, Object[].class)
+				.setParameter("cid", cid)
+				.setParameter("employmentCode", employmentCode)
+				.setParameter("baseDate", baseDate)
+				.setParameter("startDate", birthdayPeriod.start())
+				.setParameter("endDate", birthdayPeriod.end()).getList();
+		
+		return result;
 	}
 }

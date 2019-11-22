@@ -75,6 +75,16 @@ public interface SyEmploymentPub {
 	// RequestList31 - ver2
 	Map<String, SEmpHistExport> findSEmpHistBySidVer2(String companyId, List<String> lstSID, GeneralDate baseDate);
 	
+	// RequestList638 [RQ638]雇用と期間からその期間に生年月日がある社員を取得する
+	/**
+	 *  [Input]
+	 * ・ List <Employment Code, Birthday Period> 
+	 * ・ Base date 
+	 * ・ Company ID
+	 */
+	List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid);
+
+	
 	// RequestList639 [RQ639]会社ID、取得したい情報パラメータから雇用情報を取得する.
 	List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentName,Optional<Boolean> getEmpExternalCode,
 			Optional<Boolean> getMemo,Optional<Boolean> getempCommonMasterID,Optional<Boolean> getempCommonMasterItemID);

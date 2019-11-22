@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employment.EmployeeBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employment.ObjectParam;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -80,4 +82,7 @@ public interface EmploymentHistoryRepository {
 	 * @return
 	 */
 	Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate standardDate);
+	
+	List<Object[]>  getEmploymentBasicInfo(String employmentCode, DatePeriod birthdayPeriod, GeneralDate baseDate,
+			String cid);
 }
