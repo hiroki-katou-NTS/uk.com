@@ -217,7 +217,6 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_4
                         tempReport.setOfficePhoneNumber("");
                     }
-
                     val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
                     val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
                     // A1_14
@@ -333,47 +332,6 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             default:
                 break;
         }
-
-        listDataExport.add(new EmpInsGetQualifReport(2400,
-                "会社2名fffffffffffffffffffffffffff ",
-                "1234", "567890",
-                "1",
-                0,
-                "5",
-                1,
-                "変更後氏名",
-                "変更後氏名フリガナ",
-                1,
-                "1",
-                "5111111",
-                "5111111",
-                1,
-                1,
-                "121212",
-                "1",
-                1,
-                1,
-                "被保険者氏名",
-                "被保険者氏名フリガナ",
-                "12345678912",
-                1,
-                1,
-                "令和121212",
-                1,
-                "被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ",
-                "被保険者氏名フリガナ",
-                "ベトナム",
-                "高度専門職",
-                "20190101",
-                1,
-                1,
-                "1234567",
-                "78 Duy Tan",
-                "会社2名fffffffffffffffffffffffffff被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ ",
-                "0123456789",
-                toJapaneseDate(jpEras, fillingDate),
-                "1",
-                "高度専門職"));
 
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
