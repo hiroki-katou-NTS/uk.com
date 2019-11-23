@@ -3,8 +3,10 @@ package nts.uk.file.pr.infra.report.printconfig.empinsreportsetting;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.Cells;
 import com.aspose.cells.Encoding;
@@ -16,27 +18,34 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsOutOrder;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfoRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.ScheduleForReplenishment;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportSettingExportData;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportTxtSettingCsvGenerator;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
 public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGenerator
 		implements EmpInsReportTxtSettingCsvGenerator {
+	@Inject
+	private JapaneseErasAdapter erasAdapter;
 
 	private static final String REPORT_ID = "CSV_GENERATOR";
 
@@ -78,12 +87,29 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			"在留資格コード", "在留期間（年）", "在留期間（月）", "在留期間（日）", "資格外活動許可の有無", "派遣・請負就労区分", "備考欄（審査者）", "確認通知年月日（元号）",
 			"確認通知年月日（年）", "確認通知年月日（月）", "確認通知年月日（日）");
 
+	private static final String A1_98 = "10191";
+
+	private static final String A1_116 = "2";
+
+	private static final String SEPERATOR = ",";
+
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmpInsReportSettingExportData dataSource) {
 		try (val reportContext = this.createEmptyContext(REPORT_ID)) {
 			Workbook workbook = reportContext.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
+			EmpInsOutOrder outputOrder = EnumAdaptor.valueOf(dataSource.getEmpInsReportSetting().getOutputOrderAtr(), EmpInsOutOrder.class);
+			switch(outputOrder) {
+			case INSURANCE_NUMBER:
+				break;
+			case DEPARTMENT_EMPLOYEE:
+				break;
+			case EMPLOYEE_CODE:
+				break;
+			case EMPLOYEE:
+				break;
+			}
 			this.fillData(worksheet, dataSource);
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
@@ -105,9 +131,15 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 		}
 	}
 
+	private JapaneseDate toJapaneseDate(GeneralDate date) {
+		Optional<JapaneseEraName> era = this.erasAdapter.getAllEras().eraOf(date);
+		return new JapaneseDate(date, era.get());
+	}
+
 	private void fillData(Worksheet worksheet, EmpInsReportSettingExportData dataSource) {
 		int row = 0;
 		Cells cells = worksheet.getCells();
+
 		// row 1
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
 			String header = ROW_1_HEADERS.get(c);
@@ -139,7 +171,6 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			cells.get(row, c).setValue(value);
 		}
 		row++;
-
 		// row 3
 		cells.get(row, 0).setValue(A1_13);
 		row++;
@@ -224,6 +255,7 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 
 		// main data
 		this.fillDataRows(cells, row, dataSource);
+		// }
 	}
 
 	private void fillDataRows(Cells cells, int row, EmpInsReportSettingExportData dataSource) {
@@ -247,10 +279,13 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			CurrentPersonResidence personInfo = employeeInfo != null
 					? dataSource.getCurrentPersonAddressMap().get(employeeInfo.getPId()) : null;
 			LaborInsuranceOffice laborInsuranceOffice = dataSource.getLaborInsuranceOfficeMap().get(employeeId);
+			JapaneseDate empInsHistStart = empInsHist != null ? this.toJapaneseDate(empInsHist.start()) : null;
+			JapaneseDate empInsHistEnd = empInsHist != null ? this.toJapaneseDate(empInsHist.end()) : null;
+			JapaneseDate birthDay = employeeInfo != null ? this.toJapaneseDate(employeeInfo.getBirthDay()) : null;
 			for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
 				String value = "";
 				if (c == 0) {
-					value = "10191";
+					value = A1_98;
 				}
 				if (c == 2) {
 					value = "";
@@ -283,35 +318,35 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 						&& laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent()) {
 					value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().get().v();
 				}
-				if (c == 9 && empInsHist != null) {
-					value = empInsHist.start().toString("yyyyMMdd");
+				if (c == 9 && empInsHistStart != null) {
+					value = empInsHistStart.era();
 				}
-				if (c == 10 && empInsHist != null) {
-					value = empInsHist.start().year() + "";
+				if (c == 10 && empInsHistStart != null) {
+					value = empInsHistStart.year() + "";
 				}
-				if (c == 11 && empInsHist != null) {
-					value = empInsHist.start().month() + "";
+				if (c == 11 && empInsHistStart != null) {
+					value = empInsHistStart.month() + "";
 				}
-				if (c == 12 && empInsHist != null) {
-					value = empInsHist.start().day() + "";
+				if (c == 12 && empInsHistStart != null) {
+					value = empInsHistStart.day() + "";
 				}
-				if (c == 13 && empInsHist != null) {
-					value = empInsHist.end().toString("yyyyMMdd");
+				if (c == 13 && empInsHistEnd != null) {
+					value = empInsHistEnd.era();
 				}
-				if (c == 14 && empInsHist != null) {
-					value = empInsHist.end().year() + "";
+				if (c == 14 && empInsHistEnd != null) {
+					value = empInsHistEnd.year() + "";
 				}
-				if (c == 15 && empInsHist != null) {
-					value = empInsHist.end().month() + "";
+				if (c == 15 && empInsHistEnd != null) {
+					value = empInsHistEnd.month() + "";
 				}
-				if (c == 16 && empInsHist != null) {
-					value = empInsHist.end().day() + "";
+				if (c == 16 && empInsHistEnd != null) {
+					value = empInsHistEnd.day() + "";
 				}
 				if (c == 17 && empInsLossInfo != null && empInsLossInfo.getCauseOfLossAtr().isPresent()) {
 					value = (empInsLossInfo.getCauseOfLossAtr().get().value + 1) + "";
 				}
 				if (c == 18) {
-					value = "2";
+					value = A1_116;
 				}
 				if (c == 22 && empInsLossInfo != null && empInsLossInfo.getScheduleForReplenishment().isPresent()) {
 					value = empInsLossInfo.getScheduleForReplenishment()
@@ -328,17 +363,17 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 				if (c == 25 && employeeInfo != null) {
 					value = employeeInfo.getGender() + "";
 				}
-				if (c == 26 && employeeInfo != null && employeeInfo.getBirthDay() != null) {
-					value = employeeInfo.getBirthDay().toString("yyyyMMdd");
+				if (c == 26 && birthDay != null) {
+					value = birthDay.era();
 				}
-				if (c == 27 && employeeInfo != null && employeeInfo.getBirthDay() != null) {
-					value = employeeInfo.getBirthDay().year() + "";
+				if (c == 27 && birthDay != null) {
+					value = birthDay.year() + "";
 				}
-				if (c == 28 && employeeInfo != null && employeeInfo.getBirthDay() != null) {
-					value = employeeInfo.getBirthDay().month() + "";
+				if (c == 28 && birthDay != null) {
+					value = birthDay.month() + "";
 				}
-				if (c == 29 && employeeInfo != null && employeeInfo.getBirthDay() != null) {
-					value = employeeInfo.getBirthDay().day() + "";
+				if (c == 29 && birthDay != null) {
+					value = birthDay.day() + "";
 				}
 				if (c == 30 && personInfo != null) {
 					value = personInfo.getAddress1() + personInfo.getAddress2();
@@ -362,10 +397,10 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 					value = "publicEmpSecurityOffice.name";
 				}
 				if (c == 40 && personInfo != null) {
-					value = personInfo.getPersonName();
+					value = personInfo.getRomanjiName();
 				}
-				if (c == 41 && c <= 49) {
-					value = "dummy";
+				if (c >= 41 && c <= 49) {
+					value = "dummy foreigner";
 				}
 				cells.get(row, c).setValue(value);
 			}

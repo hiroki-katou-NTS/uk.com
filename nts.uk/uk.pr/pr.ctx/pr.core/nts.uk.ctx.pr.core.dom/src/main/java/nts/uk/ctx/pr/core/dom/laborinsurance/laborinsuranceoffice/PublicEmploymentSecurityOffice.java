@@ -1,9 +1,7 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 公共職業安定所

@@ -113,7 +113,7 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 		// 雇用保険被保険者資格喪失届テキスト出力処理
 		EmpInsReportSettingExportData exportData = new EmpInsReportSettingExportData();
 		exportData.setEmployeeIds(query.getEmployeeIds());
-		exportData.setCreateDate(query.getFillDate());
+		exportData.setCreateDate(query.getFillingDate());
 		CompanyInfor company = companyInforAdapter.getCompanyNotAbolitionByCid(companyId);
 		exportData.setCompanyInfo(company);
 		exportData.setEmpInsReportSetting(query.getEmpInsReportSettingCommand());
@@ -128,13 +128,13 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 		if (startDate.after(endDate)) {
 			throw new BusinessException("Msg_812");
 		}
-		List<EmpInsHist> employeeInsuranceHistories = empInsHistRepo.getByEmpIdsAndPeriod(employeeIds, startDate,
-				endDate);
-		if (employeeInsuranceHistories.isEmpty()) {
-			throw new BusinessException("MsgQ_51");
-		}
+//		List<EmpInsHist> employeeInsuranceHistories = empInsHistRepo.getByEmpIdsAndPeriod(employeeIds, startDate,
+//				endDate);
+//		if (employeeInsuranceHistories.isEmpty()) {
+//			throw new BusinessException("MsgQ_51");
+//		}
 
-		Map<String, EmpInsLossInfo> empInsLossInfos = empInsLossInfoRepo.getByEmpIds(companyId, employeeIds)
+		Map<String, EmpInsLossInfo> empInsLossInfos = empInsLossInfoRepo.getListEmpInsLossInfo(companyId, employeeIds)
 				.stream().collect(Collectors.toMap(i -> i.getSId(), i -> i));
 		exportData.setEmpInsLossInfoMap(empInsLossInfos);
 		Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(employeeIds).stream()
@@ -156,12 +156,10 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 				continue;
 			}
 			empInsHists.put(employeeId, history);
-//			EmpInsLossInfo empInsLossInfo = empInsLossInfos.get(employeeId);
 			EmpInsNumInfo empInsNumInfo = empInsNumInfoRepo
 					.getEmpInsNumInfoById(companyId, employeeId, history.identifier()).orElse(null);
 			empInsNumInfos.put(employeeId, empInsNumInfo);
 			if (officeCls == OfficeCls.OUTPUT_COMPANY.value) {
-//				CompanyInfor company = companyInforAdapter.getCompanyNotAbolitionByCid(companyId);
 			}
 			if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value) {
 				Optional<EmpInsOffice> empInsOffice = empInsOfficeRepo.getEmpInsOfficeById(companyId, employeeId,
@@ -176,7 +174,6 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 					GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
 					GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
 			foreignerResHistInfors.put(employeeId, dummyForResHistInfo);
-//			EmployeeInfoEx employeeInfo = employeeInfos.get(employeeId);
 		}
 		exportData.setEmpInsHistMap(empInsHists);
 		exportData.setEmpInsNumInfoMap(empInsNumInfos);

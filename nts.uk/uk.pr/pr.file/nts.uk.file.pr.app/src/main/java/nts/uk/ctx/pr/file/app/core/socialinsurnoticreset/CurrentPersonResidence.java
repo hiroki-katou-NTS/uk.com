@@ -84,6 +84,11 @@ public class CurrentPersonResidence {
      * 個人届出名称
      */
     private String todokedeName;
+    
+    /**
+     * 個人.個人名グループ.個人名ローマ字
+     */
+    private String romanjiName;
 
     /**
      * 生年月日
@@ -108,6 +113,7 @@ public class CurrentPersonResidence {
                     i.getPersonNameGroup().getPersonName().getFullName(),
                     i.getPersonNameGroup().getTodokedeFullName().getFullNameKana(),
                     i.getPersonNameGroup().getTodokedeFullName().getFullName(),
+                    i.getPersonNameGroup().getPersonRomanji().getFullName(),
                     i.getBirthDate());
             currentPersonResidenceList.add(c);
         });
