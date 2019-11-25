@@ -49,8 +49,8 @@ module jhn011.c.vm {
                 dto: any = getShared('CPS008B_PARAM');
 
             layout.id = dto.id;
-            layout.code = dto.code;
-            layout.name = dto.name;
+            layout.code = dto.reportCode;
+            layout.name = dto.reportName;
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
 
@@ -66,6 +66,7 @@ module jhn011.c.vm {
         pushData() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
+            console.log(layout);
 
             // check item tren man hinh
             if (layout.itemsClassification.length == 0) {

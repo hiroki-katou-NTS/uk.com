@@ -30,7 +30,7 @@
 			</div>
 			<div id="contents-area">
 				<div id="B221"
-					data-bind="ntsPanel:{width: '300px',direction: 'right', showIcon: true, visible: true}">
+					data-bind="ntsPanel:{width: '25%',direction: 'right', showIcon: true, visible: true}">
 					
 					<div id="B221_2"
 							data-bind="ntsCheckBox: { checked: checkAbolition }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
@@ -51,11 +51,7 @@
 									height: 535,
 									options: layouts,
 									optionsValue: 'id',
-									columns: [
-						                { headerText: '', key: 'id', width: 0, hidden: true },
-						                { headerText: '#{i18n.getText('JHN011_B221_4_1')}', key: 'reportCode', width: 60, hidden: false },
-						                { headerText: '#{i18n.getText('JHN011_B221_4_2')}', key: 'reportName', width: 220, hidden: false, formatter: _.escape }
-						            ],
+									columns: reportColums,
 									multiple: false,
 									value: layout().id}">
 							</table>
@@ -63,14 +59,6 @@
 					</div>
 				</div>
 				<div id="B222" data-bind="with: layout">
-					<div
-						data-bind="let: { LAYOUT_ACTION: {
-						        INSERT: 0,
-						        UPDATE: 1,
-						        COPY: 2,
-						        OVERRIDE: 3,
-						        REMOVE: 4
-						    } }">
 						<table class="table_content">
 							<colgroup>
 								<col width="220px" />
@@ -251,6 +239,14 @@
 							<button class="x-large"
 								data-bind="click: $parent.showDialogC.bind($parent), enable: !!id()">#{i18n.getText('JHN011_B222_101')}</button>
 						</div>
+						<div
+						data-bind="let: { LAYOUT_ACTION: {
+						        INSERT: 0,
+						        UPDATE: 1,
+						        COPY: 2,
+						        OVERRIDE: 3,
+						        REMOVE: 4
+						    } }">
 						<com:ko tag="if" bind="action() == LAYOUT_ACTION.INSERT">
 							<div class="nosetarea">
 							<span>#{i18n.getText('CPS008_44')}</span>

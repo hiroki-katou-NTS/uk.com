@@ -1098,7 +1098,7 @@ module nts.custombinding {
                                 }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
-                        <!-- ko if: location.href.indexOf('cps/007') > -1 || location.href.indexOf('cps/008') > -1 -->
+                        <!-- ko if: location.href.indexOf('jhn/011') > -1 || location.href.indexOf('jhn/011') > -1 -->
                         <div style="width: 200px;" class="ui-igcombo-wrapper ui-igCombo-disabled ui-state-disabled ntsControl">
                             <div class="ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable" unselectable="on" style="overflow: hidden; position: relative;">
                                 <div class="ui-igcombo-button ui-state-default ui-unselectable ui-igcombo-button-ltr ui-corner-right" style="float: none; width: 100%; border: 0px; padding: 0px; position: absolute; box-sizing: border-box; background-color: transparent;">
@@ -1245,7 +1245,7 @@ module nts.custombinding {
 
         private services = {
             getCat: (cid) => ajax(`com`, `ctx/pereg/person/info/category/find/companyby/${cid}`),
-            getCats: () => ajax(`com`, `ctx/pereg/person/info/category/findby/companyv2/${location.href.indexOf('cps/007') > -1}`),
+            getCats: () => ajax(`hr/notice/report/find`),
             getGroups: () => ajax(`com`, `ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`com`, `ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`com`, `ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
@@ -1896,7 +1896,9 @@ module nts.custombinding {
 
                     // focus flag of control
                     def.hasFocus = ko.observable(false);
-
+                    def.categoryCode = item.categoryCode;
+                    def.categoryName = item.categoryName;  
+                    def.isFixed = item.isFixed;  
                     def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
@@ -2596,6 +2598,7 @@ module nts.custombinding {
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 //opts.sortable.isEditable.valueHasMutated();
+                console.log(data);
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
@@ -2664,14 +2667,21 @@ module nts.custombinding {
                 if (typeof $editable === 'boolean' || $editable !== 2) {
                     // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
+                        //debugger;
+                        console.log("outData:" + data);
                         return {
                             dispOrder: Number(i) + 1,
                             personInfoCategoryID: item.personInfoCategoryID,
+                            categoryCode: item.listItemDf == undefined?"":(Array.isArray(item.listItemDf) == true? (item.listItemDf.length > 0? item.listItemDf[0].categoryCode: ""): item.listItemDf[0].categoryCode),
+                            categoryName: item.listItemDf == undefined?"":(Array.isArray(item.listItemDf) == true? (item.listItemDf.length > 0? item.listItemDf[0].categoryName: ""): item.listItemDf[0].categoryName),
                             layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                             listItemClsDf: _(_.map(item.listItemDf, m => m) || []).map((def, j) => {
                                 return {
                                     dispOrder: Number(j) + 1,
-                                    personInfoItemDefinitionID: def.id
+                                    personInfoItemDefinitionID: def.id,
+                                    itemCd: def.itemCode,
+                                    itemName: def.itemName,
+                                    isFixed: def.isFixed
                                 };
                             }).value()
                         };
@@ -3009,6 +3019,10 @@ module nts.custombinding {
                                     if (idefs && idefs.length) {
                                         services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
                                             if (defs && defs.length) {
+                                                _.each(defs, c=>{
+                                                    c.categoryCode = cat.categoryCode;
+                                                    c.categoryName = cat.categoryName;
+                                                });
                                                 opts.sortable.pushAllItems(defs, false);
                                                 scrollDown();
                                             }
@@ -3124,6 +3138,8 @@ module nts.custombinding {
         id: string;
         dispOrder?: number;
         perInfoCtgId?: string;
+        categoryCode?:string;
+        categoryName?: string;
         itemCode?: string;
         itemParentCode?: string;
         itemName: string;

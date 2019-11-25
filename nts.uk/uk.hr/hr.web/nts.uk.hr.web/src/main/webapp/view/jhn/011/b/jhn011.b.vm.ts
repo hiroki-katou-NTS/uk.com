@@ -19,6 +19,12 @@ module jhn011.b.viewmodel {
         enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
         checkAbolition: KnockoutObservable<boolean> = ko.observable(true);
+        reportColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: '', key: 'id', width: 0, hidden: true },
+            { headerText: Text('JHN011_B221_4_1'), key: 'reportCode', width: 60, hidden: false },
+            { headerText: Text('JHN011_B221_4_2'), key: 'reportName', width: 230, hidden: false, formatter: _.escape },
+            { headerText: Text('JHN011_B221_4_3'), key: 'isAbolition', width: 50, hidden: false, formatter: makeIcon }
+        ]);
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
@@ -70,8 +76,8 @@ module jhn011.b.viewmodel {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
                             id: x.reportClsId,
-                            reportCode: x.reportName,
-                            reportName: x.reportCode,
+                            reportCode: x.reportCode,
+                            reportName: x.reportName,
                             isAbolition: x.isAbolition
                         }
                     });
@@ -118,7 +124,7 @@ module jhn011.b.viewmodel {
                     reportCode: data.reportCode,
                     reportName: data.reportName,
                     reportNameYomi : data.reportNameYomi,
-                    isAbolition : data.isAbolition,
+                    abolition : data.isAbolition,
                     reportType: data.reportType,
                     remark: data.remark,
                     memo: data.memo,
@@ -154,7 +160,7 @@ module jhn011.b.viewmodel {
 //                    if(c
 //                
 //                })
-                block.clear();
+//                block.clear();
 
 
             });
@@ -253,10 +259,15 @@ module jhn011.b.viewmodel {
     }
 
     interface IItemClassification {
-        layoutID?: string;
+        layoutID?: number;
+        layoutCode?: string;
+        layoutName?: string;
         dispOrder?: number;
         className?: string;
         personInfoCategoryID?: string;
+        categoryCode?:string;
+        categoryName?:string;
+        fixAtr?: boolean;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
     }
@@ -265,7 +276,7 @@ module jhn011.b.viewmodel {
         id: string;
         perInfoCtgId?: string;
         itemCode?: string;
-        itemName: string;
+        itemName?: string;
         dispOrder: number;
     }
         
@@ -327,7 +338,6 @@ module jhn011.b.viewmodel {
 
         constructor(param: ILayout) {
             let self = this;
-
             if (param) {
                 self.id(param.id || null);
                 self.reportCode(param.reportCode || null);
@@ -358,5 +368,11 @@ module jhn011.b.viewmodel {
         ITEM = <any>"ITEM", // single item
         LIST = <any>"LIST", // list item
         SPER = <any>"SeparatorLine" // line item
+    }
+    
+    function makeIcon(value, row) {
+        if (value == '1')
+            return '<img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+        return '<span></span>';
     }
 }
