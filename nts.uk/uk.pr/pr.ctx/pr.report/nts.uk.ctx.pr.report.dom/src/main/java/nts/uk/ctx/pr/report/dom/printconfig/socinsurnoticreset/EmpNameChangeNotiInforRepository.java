@@ -6,16 +6,11 @@ import java.util.Optional;
 /**
 * 社員氏名変更届情報
 */
-public interface EmpNameChangeNotiInforRepository
-{
+public interface EmpNameChangeNotiInforRepository {
 
     List<EmpNameChangeNotiInfor> getAllEmpNameChangeNotiInfor();
 
     Optional<EmpNameChangeNotiInfor> getEmpNameChangeNotiInforById(String employeeId, String cid);
-
-    void add(EmpNameChangeNotiInfor domain);
-
-    void update(EmpNameChangeNotiInfor domain);
 
     void remove(String employeeId, String cid);
 

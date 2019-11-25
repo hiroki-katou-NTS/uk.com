@@ -141,6 +141,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AF12").putValue(day[0]);
             ws.getCells().get("AG12").putValue(day[1]);
         } else {
+            ws.getCells().get("AF12").putValue("0");
             ws.getCells().get("AG12").putValue(day[0]);
         }
 
@@ -148,6 +149,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AD12").putValue(month[0]);
             ws.getCells().get("AE12").putValue(month[1]);
         } else {
+            ws.getCells().get("AD12").putValue("0");
             ws.getCells().get("AE12").putValue(month[0]);
         }
 
@@ -155,6 +157,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AB12").putValue(year[0]);
             ws.getCells().get("AC12").putValue(year[1]);
         } else {
+            ws.getCells().get("AB12").putValue("0");
             ws.getCells().get("AC12").putValue(year[0]);
         }
 

@@ -1,8 +1,5 @@
 package nts.uk.ctx.pr.report.ws.printconfig.socinsurnoticreset;
 
-
-import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.AddEmpNameChangeNotiInforCommandHandler;
-import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforCommand;
 import nts.uk.ctx.pr.report.app.command.printconfig.socialinsurnoticreset.SocialInsurNotiCreateSetCommand;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforDto;
 import nts.uk.ctx.pr.report.app.find.printconfig.socialinsurnoticreset.EmpNameChangeNotiInforFinder;
@@ -28,9 +25,6 @@ public class InsuredNameChangedNotiWebService {
 
     @Inject
     private EmpNameChangeNotiInforFinder empNameChangeNotiInforFinder;
-
-    @Inject
-    private AddEmpNameChangeNotiInforCommandHandler addEmpNameChangeNotiInforCommandHandler;
 
     @Inject
     private SocialInsurNotiCreateSetFinder socialInsurNotiCreateSetFinder;
@@ -71,11 +65,5 @@ public class InsuredNameChangedNotiWebService {
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
         return socialInsurNotiCreateSetFinder.getSocialInsurNotiCreateSetById(userId,cid);
-    }
-
-    @POST
-    @Path("/add")
-    public void add(EmpNameChangeNotiInforCommand command){
-        addEmpNameChangeNotiInforCommandHandler.handle(command);
     }
 }
