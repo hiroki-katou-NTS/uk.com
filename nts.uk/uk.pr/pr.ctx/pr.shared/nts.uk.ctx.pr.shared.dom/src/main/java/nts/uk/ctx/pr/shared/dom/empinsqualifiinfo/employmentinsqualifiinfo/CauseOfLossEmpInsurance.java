@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(2)
+@StringMaxLength(40)
 public class CauseOfLossEmpInsurance extends StringPrimitiveValue <CauseOfLossEmpInsurance> {
     public CauseOfLossEmpInsurance(String rawValue) {
         super(rawValue);

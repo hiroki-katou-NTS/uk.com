@@ -32,7 +32,7 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
 
     @Override
     public void update(EmpInsLossInfo domain){
-        this.commandProxy().insert(QqsmtEmpInsLossInfo.toEntity(domain));
+        this.commandProxy().update(QqsmtEmpInsLossInfo.toEntity(domain));
     }
 
     private static final String SELECT_ALL = "SELECT f FROM QqsmtEmpInsLossInfo f";
@@ -52,7 +52,7 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
                             e.empInsLossInfoPk.cId,
                             e.empInsLossInfoPk.sId,
                             e.causeOfLossAtr,
-                            e.reqIssuAtr,
+                            e.requestForIssuance,
                             e.scheReplenAtr,
                             e.causeOfLostEmpIns,
                             e.workingTime
