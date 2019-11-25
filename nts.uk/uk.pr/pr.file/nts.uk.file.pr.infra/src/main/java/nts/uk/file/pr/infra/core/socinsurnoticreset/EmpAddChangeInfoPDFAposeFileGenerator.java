@@ -16,6 +16,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -179,6 +180,17 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
        }
     }
 
+    private static String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        int textLength = text.length();
+        int subLength = 0;
+        for (int i = 0; i < textLength; i++) {
+            subLength++;
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        }
+        return text.substring(0, subLength);
+    }
+
     private void pushBusCode(WorksheetCollection worksheet,
                              EmpAddChangeInfoExport empAddChangeInfoExport,
                              String i){
@@ -277,7 +289,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getShortResidentAtr() == null ? 0 :  empAddChangeInfoExport.getShortResidentAtr(), i, "A4_111" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getResidenceOtherResidentAtr() == null ?  0 : empAddChangeInfoExport.getResidenceOtherResidentAtr(), i, "A4_112" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr(), i, "A4_114" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() == null ? 0 : empAddChangeInfoExport.getOtherAtr(), i, "A4_114" );
 
             worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(empAddChangeInfoExport.getOtherAtr()!= null &&
                     empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? "(" + empAddChangeInfoExport.getOtherReason() + ")": "（        ）"));
@@ -323,10 +335,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangeF(), empAddChangeInfoExport.getAdd2BeforeChangeF()));
 
             //A2_15 ~ A2_19
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() , i, "A4_221" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() , i, "A4_222" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr() , i, "A4_223" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr() , i, "A4_224" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() == null ? 0 : empAddChangeInfoExport.getSpouseShortResidentAtr(), i, "A4_221" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() == null ? 0 : empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() , i, "A4_222" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr()  == null ? 0 : empAddChangeInfoExport.getSpouseLivingAbroadAtr(), i, "A4_223" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr()  == null ? 0 : empAddChangeInfoExport.getSpouseOtherAtr(), i, "A4_224" );
 
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(empAddChangeInfoExport.getSpouseOtherAtr() != null &&
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? "("+ empAddChangeInfoExport.getSpouseOtherReason() + ")": "（        ）"));
@@ -340,11 +352,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                 int d = japaneseDate.day();
                 worksheet.getRangeByName(i + "!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             }
-            String lenAdd = this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2());
-            if(lenAdd != null && lenAdd.length() > 14) {
-                lenAdd = lenAdd.substring(0, 14);
-            }
-            worksheet.getRangeByName(i + "!A3_2").setValue(lenAdd);
+            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()), 27));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
             worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null && empAddChangeInfoExport.getPhoneNumber().length() > 0?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));
