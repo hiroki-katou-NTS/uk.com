@@ -565,6 +565,7 @@ public class AppOvertimeFinder {
 		Integer startTime = appOverTime.getWorkClockFrom1();
 		Integer endTime = appOverTime.getWorkClockTo1();
 		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);
+		overTimeDto.setOvertimeAtr(appOverTime.getOverTimeAtr().value);
 		String employeeName = employeeAdapter.getEmployeeName(appOverTime.getApplication().getEmployeeID());
 		overTimeDto.setEmployeeName(employeeName);
 		overTimeDto.setEnteredPersonName(appOverTime.getApplication().getEnteredPersonID() == null ? null : employeeAdapter.getEmployeeName(appOverTime.getApplication().getEnteredPersonID()));
