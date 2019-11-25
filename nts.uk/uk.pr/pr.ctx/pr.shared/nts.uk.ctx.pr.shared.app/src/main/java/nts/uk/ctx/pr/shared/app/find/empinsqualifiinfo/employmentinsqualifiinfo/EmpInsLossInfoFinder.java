@@ -29,12 +29,12 @@ public class EmpInsLossInfoFinder {
     public List<RetirementReasonClsInfoDto> getAllRetirementReasonClsInfoById() {
         List<RetirementReasonClsInfoDto> response = new ArrayList<>();
         List<RetirementReasonClsInfo> result = retirementReasonClsInfoRepository.getRetirementReasonClsInfoById(AppContexts.user().companyId());
-         response = result.stream().map(x -> new RetirementReasonClsInfoDto(
+        response = result.stream().map(x -> new RetirementReasonClsInfoDto(
                 x.getCId(),
                 x.getRetirementReasonClsCode().v(),
                 x.getRetirementReasonClsName().v()
         )).collect(Collectors.toList());
-         return response;
+        return response;
     }
 
     public EmpInsLossInfoDto getEmpInsLossInfoById(String sId) {

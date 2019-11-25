@@ -77,6 +77,8 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
     private static final String REIWA = "令和";
+    private static final int DATE_OF_BIRTH = 0;
+    private static final int OTHER_DATE = 1;
 
     @Override
     protected void handle(ExportServiceContext<EmpInsGetQualifReportQuery> exportServiceContext) {
@@ -220,7 +222,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
                     val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
                     // A1_14
-                    tempReport.setQualificationDateJp(toEraDate(qualificationDateJp));
+                    tempReport.setQualificationDateJp(toEraDate(qualificationDateJp, OTHER_DATE));
                 }
             }
             if (employeeInfos.containsKey(e)) {
@@ -263,11 +265,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                     val birthDate = personExports.get(pId).getBirthDate();
                     val birthDateJp = toJapaneseDate(jpEras, birthDate);
-                    val eraNumb = toEraNumber(birthDateJp.era());
+                    val eraNumb = toEraNumber(birthDateJp.era(), DATE_OF_BIRTH);
                     // A1_8
                     tempReport.setEraDateOfBirth(eraNumb);
                     // A1_9
-                    tempReport.setDateOfBirthJp(toEraDate(birthDateJp).substring(1));
+                    tempReport.setDateOfBirthJp(toEraDate(birthDateJp, DATE_OF_BIRTH).substring(1));
                     String insuredRomanName = personExports.get(pId).getPersonNameGroup().getPersonRomanji().getFullName();
                     if (insuredRomanName.length() <= 28) {
                         // A2_1
@@ -290,11 +292,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                 val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
                 // A1_20
-                tempReport.setContractStartDateJp(toEraDate(contractStartDateJp));
+                tempReport.setContractStartDateJp(toEraDate(contractStartDateJp, OTHER_DATE));
 
                 val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
                 // A1_21
-                tempReport.setContractEndDateJp(toEraDate(contractEndDateJp));
+                tempReport.setContractEndDateJp(toEraDate(contractEndDateJp, OTHER_DATE));
 
                 // A1_22
                 tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
@@ -336,20 +338,18 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
 
-    private String toEraNumber(String eraName) {
+    private String toEraNumber(String eraName, int dateType) {
         switch (eraName) {
-            case MEIJI:
-                return "1";
             case TAISHO:
-                return "2";
+                return dateType == 0 ? "2" : " ";
             case SHOWA:
-                return "3";
+                return dateType == 0 ? "3" : " ";
             case HEISEI:
                 return "4";
             case REIWA:
                 return "5";
             default:
-                return "";
+                return " ";
         }
     }
 
@@ -358,7 +358,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         return eraName.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
     }
 
-    private String toEraDate(JapaneseDate date) {
-        return toEraNumber(date.era()) + ((date.year() + 1) < 10 ? "0" + (date.toFullDateInt() + 10000) : (date.toFullDateInt() + 10000));
+    private String toEraDate(JapaneseDate date, int dateType) {
+        return toEraNumber(date.era(), dateType) + ((date.year() + 1) < 10 ? "0" + (date.toFullDateInt() + 10000) : (date.toFullDateInt() + 10000));
     }
 }

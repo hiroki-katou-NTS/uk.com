@@ -320,7 +320,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 let emp = _.find(listEmp, function (itemEmp) {
                     return itemEmp.code == item;
                 });
-                listEmpId.push(emp.id);
+                listEmpId.push(emp);
             });
             return listEmpId;
         }

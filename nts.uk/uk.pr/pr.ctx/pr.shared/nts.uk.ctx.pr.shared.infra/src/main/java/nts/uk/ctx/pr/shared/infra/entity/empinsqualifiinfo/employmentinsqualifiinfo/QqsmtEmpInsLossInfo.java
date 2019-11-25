@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -63,7 +64,7 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
      */
     @Basic(optional = true)
     @Column(name = "REQ_ISSU_ATR")
-    public int reqIssuAtr;
+    public int requestForIssuance;
 
     @Override
     protected Object getKey()
@@ -76,19 +77,18 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
                 this.empInsLossInfoPk.cId,
                 this.empInsLossInfoPk.sId,
                 this.causeOfLossAtr,
-                this.reqIssuAtr,
+                this.requestForIssuance,
                 this.scheReplenAtr,
                 this.causeOfLostEmpIns,
                 this.workingTime);
     }
     public static QqsmtEmpInsLossInfo toEntity(EmpInsLossInfo domain) {
-        return new QqsmtEmpInsLossInfo(
-                new QqsmtEmpInsLossInfoPk(domain.getCId(), domain.getSId()),
-                domain.getScheduleWorkingHourPerWeek().map( i -> i.v()).orElse(null),
-                domain.getCauseOfLossAtr().map( i -> i.value).orElse(null),
-                domain.getCauseOfLossEmpInsurance().map( i -> i.toString()).orElse(null),
-                domain.getScheduleForReplenishment().map( i -> i.value).orElse(null),
-                domain.getRequestForIssuance().map( i -> i.value).orElse(null)
+        return new QqsmtEmpInsLossInfo(new QqsmtEmpInsLossInfoPk(domain.getCId(), domain.getSId()),
+                domain.getScheduleWorkingHourPerWeek().map(PrimitiveValueBase::v).orElse(null),
+                domain.getCauseOfLossAtr().isPresent() ? domain.getCauseOfLossAtr().get().value : null,
+                domain.getCauseOfLossEmpInsurance().map(PrimitiveValueBase::v).orElse(null),
+                domain.getScheduleForReplenishment().isPresent() ? domain.getScheduleForReplenishment().get().value : null,
+                domain.getRequestForIssuance().isPresent() ? domain.getRequestForIssuance().get().value : null
         );
     }
 

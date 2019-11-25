@@ -116,11 +116,27 @@ module nts.uk.pr.view.qui002.a.viewmodel {
         }
 
 
-        getListEmployee(empCode: Array, listEmp: Array) {
+        getListEmployee(empCode: Array, listEmp: Array,emChangDate :Array) {
             let listEmployee: any = [];
             _.each(empCode, (item) => {
-                let emp = _.find(listEmp, function (itemEmp) {
-                    return itemEmp.code == item;
+                let emp = {
+                    id : '',
+                    code : '',
+                    name : '',
+                    changeDate : ''
+                };
+                _.find(listEmp, function (itemEmp) {
+                    if(itemEmp.code == item){
+                        emp.code = itemEmp.code;
+                        emp.id = itemEmp.id;
+                        emp.name = itemEmp.name;
+                        emp.changeDate = '';
+                    }
+                });
+                _.find(emChangDate, function (itemEmpChangeDate) {
+                    if(itemEmpChangeDate.employeeCode == item){
+                        emp.changeDate = itemEmpChangeDate.changeDate;
+                    }
                 });
                 listEmployee.push(emp);
             });
@@ -230,7 +246,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 return;
             }
             let params = {
-                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList())
+                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList(),getShared("QUI002_PARAMS_A"));
             };
             setShared("QUI002_PARAMS_B", params);
             modal("/view/qui/002/b/index.xhtml");

@@ -21,17 +21,13 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHistRepository, EmpInsNumInfoRepository {
+public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHistRepository,EmpInsNumInfoRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsHist f";
-	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid ";
-	private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
-	private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING
-			+ " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
-	private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsHist f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid IN :sids AND f.startDate <= :baseDate AND  f.endDate >= :baseDate ";
+    private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
+    private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
 	private static final String SELECT_BY_EMP_AND_PERIOD = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.empInsHistPk.sid = :sid AND f.endDate >= :startDate AND f.endDate <= :endDate";
 
@@ -40,15 +36,6 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 		return null;
 	}
 
-	@Override
-	public Optional<EmpInsHist> getEmpInsHistById(String cid, String sid) {
-		List<QqsmtEmpInsHist> listHist = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsHist.class)
-				.setParameter("sid", sid).setParameter("cid", cid).getList();
-		if (listHist != null && !listHist.isEmpty()) {
-			return Optional.of(toEmploymentHistory(listHist));
-		}
-		return Optional.empty();
-	}
 
 	@Override
 	public List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate) {
@@ -61,6 +48,15 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 		return result;
 	}
 
+
+    @Override
+    public List<EmpInsHist> getEmpInsHistById(String cid, List<String> sids, GeneralDate baseDate){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpInsHist.class)
+                .setParameter("sids", sids)
+                .setParameter("cid", cid)
+                .setParameter("baseDate", baseDate)
+                .getList(QqsmtEmpInsHist::toEmploymentHistory);
+    }
 	private EmpInsHist toEmploymentHistory(List<QqsmtEmpInsHist> listHist) {
 		EmpInsHist empment = new EmpInsHist(listHist.get(0).empInsHistPk.sid, new ArrayList<>());
 		DateHistoryItem dateItem = null;
@@ -70,7 +66,6 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 		}
 		return empment;
 	}
-
 	private List<EmpInsHist> toEmpInsHistDomain(List<QqsmtEmpInsHist> listHist) {
 		List<EmpInsHist> domains = new ArrayList<>();
 		listHist.stream().collect(Collectors.groupingBy(e -> e.empInsHistPk.sid, Collectors.toList()))
@@ -85,14 +80,16 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 		return domains;
 	}
 
-	@Override
-	public Optional<EmpInsNumInfo> getEmpInsNumInfoById(String cid, String sid, String hisId) {
-		return this.queryProxy().query(SELECT_BY_KEY_HIS, QqsmtEmpInsHist.class).setParameter("sid", sid)
-				.setParameter("cid", cid).setParameter("histId", hisId).getSingle(e -> {
-					return new EmpInsNumInfo(e.empInsHistPk.histId, e.empInsNumber);
-				});
-	}
-
+    @Override
+    public Optional<EmpInsNumInfo> getEmpInsNumInfoById(String cid, String sid, String hisId) {
+        return this.queryProxy().query(SELECT_BY_KEY_HIS, QqsmtEmpInsHist.class)
+                .setParameter("sid", sid)
+                .setParameter("cid", cid)
+                .setParameter("histId", hisId)
+                .getSingle(e ->{
+                    return new EmpInsNumInfo(e.empInsHistPk.histId,e.empInsNumber);
+                });
+    }
 	@Override
 	public List<EmpInsNumInfo> getByCidAndHistIds(String cid, List<String> histIds) {
 		List<EmpInsNumInfo> result = new ArrayList<>();
