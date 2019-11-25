@@ -101,7 +101,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String workingTime = formatWorkingTime(data.getScheduleWorkingTimePerWeek());
                 detachText(402, 516, workingTime, 4, textBuilder);
                 // A1_19
-                String estContractPeriod = data.getEstContractPeriod() == null ? "" : data.getEstContractPeriod();
+                String estContractPeriod = data.getSetContractPeriod() == null ? "" : data.getSetContractPeriod().toString();
                 textBuilder.appendText(setValue(119, 464, estContractPeriod, 16));
                 // A1_20
                 String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();

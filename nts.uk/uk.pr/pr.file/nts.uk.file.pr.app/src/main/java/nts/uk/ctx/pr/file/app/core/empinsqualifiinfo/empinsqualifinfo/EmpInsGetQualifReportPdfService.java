@@ -166,12 +166,14 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 tempReport.setWagePaymentMode(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value + 1).orElse(null));
                 // A1_16
                 tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
+                // A1_19
+                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x.value + 1).orElse(null));
             }
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
-                    tempReport.setInsuredNumber(empInsNumInfos.get(histId).getEmpInsNumber().v());
+                    tempReport.setInsuredNumber(tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value ? empInsNumInfos.get(histId).getEmpInsNumber().v() : "");
 
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
@@ -228,13 +230,13 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         // A1_4
                         tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         // A1_4
@@ -287,19 +289,19 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
             // dummy
             {
-                // A1_19
-                tempReport.setEstContractPeriod("1");
+                // TODO check existence of data
+                if (tempReport.getSetContractPeriod() != null && (tempReport.getSetContractPeriod() - 1) == ContractPeriodPrintAtr.PRINT.value) {
+                    val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
+                    // A1_20
+                    tempReport.setContractStartDateJp(toEraDate(contractStartDateJp, OTHER_DATE));
 
-                val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
-                // A1_20
-                tempReport.setContractStartDateJp(toEraDate(contractStartDateJp, OTHER_DATE));
+                    val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
+                    // A1_21
+                    tempReport.setContractEndDateJp(toEraDate(contractEndDateJp, OTHER_DATE));
 
-                val contractEndDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getEndDate());
-                // A1_21
-                tempReport.setContractEndDateJp(toEraDate(contractEndDateJp, OTHER_DATE));
-
-                // A1_22
-                tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
+                    // A1_22
+                    tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
+                }
 
                 // A1_24 pending
 
