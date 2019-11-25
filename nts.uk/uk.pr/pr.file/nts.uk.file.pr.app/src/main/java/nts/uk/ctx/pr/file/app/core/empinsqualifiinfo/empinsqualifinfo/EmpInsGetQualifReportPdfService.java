@@ -228,19 +228,19 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.NEW.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         // A1_4
                         tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.NEW.value) {
+                    if (reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.NEW.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         // A1_4
                         tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
@@ -250,7 +250,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A1_6
                         tempReport.setFullNameAfterChange(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value &&  tempReport.getAcquisitionAtr() != null && tempReport.getAcquisitionAtr() == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value &&  tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
