@@ -258,6 +258,9 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         if (workingTime == null) {
             return "";
         }
+        if (workingTime > 5999) {
+            return "9959";
+        }
         String workingHours = (workingTime / 60) < 10 ? "0" + (workingTime / 60) : String.valueOf(workingTime / 60);
         String workingMinutes = (workingTime % 60) < 10 ? "0" + (workingTime % 60) : String.valueOf(workingTime % 60);
         return workingHours + workingMinutes;
@@ -268,8 +271,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
-            subLength++;
             if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            subLength++;
         }
         return text.substring(0, subLength);
     }
