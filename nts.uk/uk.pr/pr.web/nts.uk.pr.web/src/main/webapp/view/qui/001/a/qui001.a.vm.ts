@@ -37,8 +37,8 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         empInsRptTxtSetting: KnockoutObservable<EmpInsRptTxtSetting> = ko.observable(new EmpInsRptTxtSetting({
             lineFeedCode: 0,
-            officeAtr: 0,
-            fdNumber: 0
+            officeAtr: 1,
+            fdNumber: ""
         }));
 
         /* kcp005 */
@@ -218,7 +218,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         getStyle(){
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
         }
 
         exportPDF() {
@@ -269,14 +269,15 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 return;
             }
             let data = {
-                empInsReportTxtSettingExport: {
-                    lineFeedCode: self.empInsRptTxtSetting().lineFeedCode(),
-                    officeAtr: self.empInsRptTxtSetting().officeAtr(),
-                    fdNumber: self.empInsRptTxtSetting().fdNumber()
-                },
+                empInsReportSetting: ko.toJS(self.empInsReportSetting),
+                empInsRptTxtSetting: ko.toJS(self.empInsRptTxtSetting),
+                fillingDate: moment.utc(self.fillingDate(), "YYYY/MM/DD"),
+                startDate:  moment.utc(self.startDate(), "YYYY/MM/DD"),
+                endDate:  moment.utc(self.endDate(), "YYYY/MM/DD"),
+                empIds: empIds
             };
             nts.uk.ui.block.grayout();
-            service.exportTXT(data).done(() => {
+            service.exportCSV(data).done(() => {
             }).fail((error) => {
                 nts.uk.ui.dialog.alertError(error);
             }).always(() => {
@@ -422,13 +423,13 @@ module nts.uk.pr.view.qui001.a.viewmodel {
     export interface IEmpInsRptTxtSetting {
         lineFeedCode: number,
         officeAtr: number,
-        fdNumber: number
+        fdNumber: string
     }
 
     export class EmpInsRptTxtSetting {
         lineFeedCode: KnockoutObservable<number>;
         officeAtr: KnockoutObservable<number>;
-        fdNumber: KnockoutObservable<number>;
+        fdNumber: KnockoutObservable<string>;
 
         constructor(params: IEmpInsRptTxtSetting) {
             this.lineFeedCode =  ko.observable(params.lineFeedCode);

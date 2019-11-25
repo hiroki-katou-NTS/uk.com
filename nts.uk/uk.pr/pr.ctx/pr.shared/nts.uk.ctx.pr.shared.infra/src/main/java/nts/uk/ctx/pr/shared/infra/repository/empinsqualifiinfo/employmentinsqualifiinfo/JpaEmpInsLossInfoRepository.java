@@ -10,12 +10,15 @@ import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifii
 import javax.ejb.Stateless;
 import java.util.Optional;
 import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 @Stateless
 public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpInsLossInfoRepository{
     private static final String SELECT_ALL_QUERY_STRING = "SELECT l FROM QqsmtEmpInsLossInfo l";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE l.empInsLossInfoPk.cId =:cId AND l.empInsLossInfoPk.sId =:sId";
+    private static final String SELECT_BY_KEY_LIST_SID = SELECT_ALL_QUERY_STRING
+            + " WHERE l.empInsLossInfoPk.cId = :cId AND l.empInsLossInfoPk.sId IN :sIds";
 
     @Override
     public Optional<EmpInsLossInfo> getOneEmpInsLossInfo(String cId, String sId){
@@ -35,8 +38,7 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
         this.commandProxy().update(QqsmtEmpInsLossInfo.toEntity(domain));
     }
 
-    private static final String SELECT_ALL = "SELECT f FROM QqsmtEmpInsLossInfo f";
-    private static final String SELECT_BY_ID = SELECT_ALL + " where f.empInsLossInfoPk.sId =:sId";
+	private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " where l.empInsLossInfoPk.sId = :sId";
 
     @Override
     public List<EmpInsHist> getAllEmpInsLossInfo() {
@@ -59,4 +61,12 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
                     );
                 });
     }
+
+	@Override
+	public List<EmpInsLossInfo> getListEmpInsLossInfo(String companyId, List<String> employeeIds) {
+		if (employeeIds == null || employeeIds.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(SELECT_BY_KEY_LIST_SID, QqsmtEmpInsLossInfo.class).setParameter("cId", companyId)
+				.setParameter("sIds", employeeIds).getList(i -> i.toDomain());
+	}
 }

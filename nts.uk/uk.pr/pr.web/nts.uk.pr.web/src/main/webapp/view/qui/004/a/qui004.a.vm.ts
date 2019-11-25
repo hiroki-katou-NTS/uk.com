@@ -178,11 +178,12 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 },
                 employeeIds: listEmployeeId,
                 startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
-                endDate: moment.utc(self.endDate(), "YYYY/MM/DD")
+                endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
+                fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
             service.exportFileCSV(data)
-                .fail(function(result) {
-                    dialog.alertError(result.errorMessage);
+                .fail((error) => {
+                    dialog.alertError(error);
                     dfd.reject();
                 });
         }

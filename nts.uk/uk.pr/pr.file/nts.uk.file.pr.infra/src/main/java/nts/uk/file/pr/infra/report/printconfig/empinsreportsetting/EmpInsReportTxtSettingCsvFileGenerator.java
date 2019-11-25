@@ -1,29 +1,37 @@
 package nts.uk.file.pr.infra.report.printconfig.empinsreportsetting;
 
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
-
-import com.aspose.cells.Cells;
-import com.aspose.cells.Encoding;
-import com.aspose.cells.SaveFormat;
-import com.aspose.cells.TxtSaveOptions;
-import com.aspose.cells.TxtValueQuoteType;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.ExportDataCsv;
+import nts.arc.time.GeneralDate;
+import nts.gul.text.KatakanaConverter;
+import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportSettingExportData;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportTxtSettingCsvGenerator;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
 public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGenerator
 		implements EmpInsReportTxtSettingCsvGenerator {
+	@Inject
+	private JapaneseErasAdapter erasAdapter;
 
 	private static final String REPORT_ID = "CSV_GENERATOR";
 
@@ -65,58 +73,72 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			"在留資格コード", "在留期間（年）", "在留期間（月）", "在留期間（日）", "資格外活動許可の有無", "派遣・請負就労区分", "備考欄（審査者）", "確認通知年月日（元号）",
 			"確認通知年月日（年）", "確認通知年月日（月）", "確認通知年月日（日）");
 
+	private static final String A1_98 = "10191";
+
+	private static final String A1_116 = "2";
+
+	private static final String SEPERATOR = ",";
+
+	private static final String LINE_BREAK = "\r\n";
+
 	@Override
-	public void generate(FileGeneratorContext generatorContext, ExportDataCsv dataSource) {
+	public void generate(FileGeneratorContext generatorContext, EmpInsReportSettingExportData dataSource) {
 		try (val reportContext = this.createEmptyContext(REPORT_ID)) {
-			Workbook workbook = reportContext.getWorkbook();
-			WorksheetCollection worksheets = workbook.getWorksheets();
-			Worksheet worksheet = worksheets.get(0);
-			int row = 0;
-			this.fillFixedRows(worksheet, row);
-			this.fillDataRows(worksheet, row);
-			reportContext.getDesigner().setWorkbook(workbook);
-			reportContext.processDesigner();
-			this.saveAsCSV(this.createNewFile(generatorContext, FILE_NAME), workbook);
+			StringBuilder valueBuilder = new StringBuilder();
+			this.fillData(valueBuilder, dataSource);
+			this.saveAsCSV(this.createNewFile(generatorContext, FILE_NAME), valueBuilder.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void saveAsCSV(OutputStream outputStream, Workbook workbook) {
+	private void saveAsCSV(OutputStream outputStream, String value) {
 		try {
-			TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
-			opts.setSeparator(',');
-			opts.setEncoding(Encoding.getUTF8());
-			opts.setQuoteType(TxtValueQuoteType.NEVER);
-			workbook.save(outputStream, opts);
+			OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+			writer.write("\ufeff"); // write UTF-8-BOM
+			writer.write(value);
+			writer.close();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void fillFixedRows(Worksheet worksheet, int row) {
-		Cells cells = worksheet.getCells();
+	private JapaneseDate toJapaneseDate(GeneralDate date) {
+		Optional<JapaneseEraName> era = this.erasAdapter.getAllEras().eraOf(date);
+		return new JapaneseDate(date, era.get());
+	}
+
+	private void fillData(StringBuilder valueBuilder, EmpInsReportSettingExportData dataSource) {
+		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
+
 		// row 1
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
 			String header = ROW_1_HEADERS.get(c);
-			cells.get(row, c).setValue(header);
+			valueBuilder.append(header);
+			if (c < ROW_1_HEADERS.size() - 1) {
+				valueBuilder.append(SEPERATOR);
+			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				valueBuilder.append(LINE_BREAK);
+			}
+
 		}
-		row++;
 
 		// row 2
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
-			String value = "test";
+			String value = "";
 			if (c == 0) {
-				value = value + c;
+				// LaborInsuranceOffice.EmpInsInfo.cityCode
+				value = "cityCode";
 			}
 			if (c == 1) {
-				value = value + c;
+				// LaborInsuranceOffice.EmpInsInfo.businessSymbol
+				value = "businessSymbol";
 			}
 			if (c == 2) {
-				value = value + c;
+				value = dataSource.getEmpInsReportTxtSetting().getFdNumber() + "";
 			}
 			if (c == 3) {
-				value = value + c;
+				value = dataSource.getCreateDate().toString("yyyyMMdd");
 			}
 			if (c == 4) {
 				value = A1_11;
@@ -124,53 +146,265 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 			if (c == 5) {
 				value = A1_12;
 			}
-			cells.get(row, c).setValue(value);
+			valueBuilder.append(value);
+			if (c < ROW_1_HEADERS.size() - 1) {
+				valueBuilder.append(SEPERATOR);
+			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				valueBuilder.append(LINE_BREAK);
+			}
 		}
-		row++;
 
 		// row 3
-		cells.get(row, 0).setValue(A1_13);
-		row++;
+		valueBuilder.append(A1_13);
+		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			valueBuilder.append(LINE_BREAK);
+		}
 
 		// row 4
-		cells.get(row, 0).setValue(A1_14);
-		cells.get(row, 1).setValue(A1_15);
-		row++;
+		valueBuilder.append(A1_14);
+		valueBuilder.append(SEPERATOR);
+		valueBuilder.append(A1_15);
+		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			valueBuilder.append(LINE_BREAK);
+		}
 
 		// row 5
-		cells.get(row, 0).setValue(A1_16);
-		cells.get(row, 1).setValue(A1_17);
-		row++;
+		valueBuilder.append(A1_16);
+		valueBuilder.append(SEPERATOR);
+		valueBuilder.append(A1_17);
+		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			valueBuilder.append(LINE_BREAK);
+		}
 
 		// row 6
 		for (int c = 0; c < ROW_6_HEADERS.size(); c++) {
 			String header = ROW_6_HEADERS.get(c);
-			cells.get(row, c).setValue(header);
+			valueBuilder.append(header);
+			if (c < ROW_6_HEADERS.size() - 1) {
+				valueBuilder.append(SEPERATOR);
+			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				valueBuilder.append(LINE_BREAK);
+			}
 		}
-		row++;
 
 		// row 7
+		int officeCls = dataSource.getEmpInsReportSetting().getOfficeClsAtr();
+		CompanyInfor companyInfo = dataSource.getCompanyInfo();
 		for (int c = 0; c < ROW_6_HEADERS.size(); c++) {
-			String value = "test";
-			cells.get(row, c).setValue(value);
+			String value = "";
+			if (c == 0) {
+				// LaborInsuranceOffice.EmpInsInfo.cityCode
+				value = "cityCode";
+			}
+			if (c == 1) {
+				// LaborInsuranceOffice.EmpInsInfo.businessSymbol
+				value = "businessSymbol";
+			}
+			if (c == 2) {
+				// LaborInsuranceOffice.code
+				value = "code";
+			}
+			if (c == 3) {
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
+					value = companyInfo.getPostCd();
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
+					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
+			}
+			if (c == 4) {
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
+					value = companyInfo.getPostCd();
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
+					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
+			}
+			if (c == 5) {
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
+					value = companyInfo.getAdd_1() + " - " + companyInfo.getAdd_2();
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
+					value = "Address 1 + 2"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.Address
+												// 1 + 2
+			}
+			if (c == 6) {
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
+					value = companyInfo.getCompanyName();
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
+					value = "Name"; // LaborInsuranceOffice.Name
+			}
+			if (c == 7) {
+				value = "BasicInformation"; // LaborInsuranceOffice.BasicInformation
+			}
+			if (c == 8) {
+				value = "BasicInformationme"; // LaborInsuranceOffice.BasicInformation
+			}
+			if (c == 9) {
+				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			}
+			if (c == 10) {
+				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			}
+			if (c == 11) {
+				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			}
+			valueBuilder.append(value);
+			if (c < ROW_6_HEADERS.size() - 1) {
+				valueBuilder.append(SEPERATOR);
+			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				valueBuilder.append(LINE_BREAK);
+			}
 		}
-		row++;
 
 		// row 8
-		cells.get(row, 0).setValue(A1_42);
-		row++;
+		valueBuilder.append(A1_42);
+		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			valueBuilder.append(LINE_BREAK);
+		}
+
+		// main data
+		this.fillDataRows(valueBuilder, dataSource);
 	}
 
-	private void fillDataRows(Worksheet worksheet, int row) {
-		Cells cells = worksheet.getCells();
+	private void fillDataRows(StringBuilder valueBuilder, EmpInsReportSettingExportData dataSource) {
+		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
+
 		// row 9
 		for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
 			String header = ROW_9_HEADERS.get(c);
-			cells.get(row, c).setValue(header);
+			valueBuilder.append(header);
+			if (c < ROW_9_HEADERS.size() - 1) {
+				valueBuilder.append(SEPERATOR);
+			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				valueBuilder.append(LINE_BREAK);
+			}
 		}
-		row++;
-		
+
 		// data
-		// TODO: add data
+		List<EmpInsLossInfoExportRow> rows = dataSource.getRowsData();
+		EmpInsRptSettingCommand empInsRptSetting = dataSource.getEmpInsReportSetting();
+		for (EmpInsLossInfoExportRow row : rows) {
+			String employeeInsuranceNumber = row.getInsuranceNumber();
+			JapaneseDate empInsHistStart = this.toJapaneseDate(row.getEmployeeInsurancePeriodStart());
+			JapaneseDate empInsHistEnd = this.toJapaneseDate(row.getEmployeeInsurancePeriodEnd());
+			JapaneseDate birthDay = this.toJapaneseDate(row.getPersonBirthDay());
+			for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
+				String value = "";
+				if (c == 0) {
+					value = A1_98;
+				}
+				if (c == 2) {
+					value = "";
+				}
+				if (c == 3) {
+					value = employeeInsuranceNumber.length() > 4 ? employeeInsuranceNumber.substring(0, 4)
+							: employeeInsuranceNumber;
+				}
+				if (c == 4) {
+					if (employeeInsuranceNumber.length() > 10)
+						value = employeeInsuranceNumber.substring(4, 10);
+					if (employeeInsuranceNumber.length() > 4)
+						value = employeeInsuranceNumber.substring(4);
+				}
+				if (c == 5 && employeeInsuranceNumber.length() >= 11) {
+					value = employeeInsuranceNumber.substring(10);
+				}
+				if (c == 6) {
+					value = row.getLaborInsuranceOfficeNumber1();
+				}
+				if (c == 7) {
+					value = row.getLaborInsuranceOfficeNumber2();
+				}
+				if (c == 8) {
+					value = row.getLaborInsuranceOfficeNumber3();
+				}
+				if (c == 9 && empInsHistStart != null) {
+					value = empInsHistStart.era();
+				}
+				if (c == 10 && empInsHistStart != null) {
+					value = empInsHistStart.year() + "";
+				}
+				if (c == 11 && empInsHistStart != null) {
+					value = empInsHistStart.month() + "";
+				}
+				if (c == 12 && empInsHistStart != null) {
+					value = empInsHistStart.day() + "";
+				}
+				if (c == 13 && empInsHistEnd != null) {
+					value = empInsHistEnd.era();
+				}
+				if (c == 14 && empInsHistEnd != null) {
+					value = empInsHistEnd.year() + "";
+				}
+				if (c == 15 && empInsHistEnd != null) {
+					value = empInsHistEnd.month() + "";
+				}
+				if (c == 16 && empInsHistEnd != null) {
+					value = empInsHistEnd.day() + "";
+				}
+				if (c == 17 && row.getCauseOfLossAtr() != null) {
+					value = (row.getCauseOfLossAtr() + 1) + "";
+				}
+				if (c == 18) {
+					value = A1_116;
+				}
+				if (c == 22) {
+					value = row.getScheduleOfReplenishment();
+				}
+				if (c == 23) {
+					value = empInsRptSetting.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value
+							? KatakanaConverter.fullKatakanaToHalf(row.getPersonNameKana())
+							: KatakanaConverter.fullKatakanaToHalf(row.getPersonReportNameKana());
+				}
+				if (c == 24) {
+					value = empInsRptSetting.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value
+							? row.getPersonName() : row.getPersonReportName();
+				}
+				if (c == 25 && row.getPersonGender() != null) {
+					value = (row.getPersonGender() + 1) + "";
+				}
+				if (c == 26 && birthDay != null) {
+					value = birthDay.era();
+				}
+				if (c == 27 && birthDay != null) {
+					value = birthDay.year() + "";
+				}
+				if (c == 28 && birthDay != null) {
+					value = birthDay.month() + "";
+				}
+				if (c == 29 && birthDay != null) {
+					value = birthDay.day() + "";
+				}
+				if (c == 30) {
+					value = row.getPersonCurrentAddress();
+				}
+				if (c == 31) {
+					value = empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value ? row.getCompanyName()
+							: row.getLaborInsuranceOfficeName();
+				}
+				if (c == 36) {
+					value = row.getCauseOfLossInsurance();
+				}
+				if (c == 37 && row.getScheduleWorkingHourPerWeek() != null) {
+					int hour = row.getScheduleWorkingHourPerWeek().hour();
+					value = hour < 10 ? "0" + hour : "" + hour;
+				}
+				if (c == 38 && row.getScheduleWorkingHourPerWeek() != null) {
+					int minute = row.getScheduleWorkingHourPerWeek().minute();
+					value = minute < 10 ? "0" + minute : "" + minute;
+				}
+				if (c == 39) {
+					value = row.getPublicEmploymentSecurityOfficeName();
+				}
+				if (c == 40) {
+					value = row.getPersonNameRomanji();
+				}
+				if (c >= 41 && c <= 49) {
+					value = "dummy foreigner";
+				}
+				valueBuilder.append(value);
+				if (c < ROW_9_HEADERS.size() - 1) {
+					valueBuilder.append(SEPERATOR);
+				} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+					valueBuilder.append(LINE_BREAK);
+				}
+			}
+		}
 	}
 }
