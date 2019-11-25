@@ -5,7 +5,9 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,19 +21,24 @@ import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRp
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportSettingExportData;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportTxtSettingCsvGenerator;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportData;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoCsvGenerator;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGenerator
-		implements EmpInsReportTxtSettingCsvGenerator {
+public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
+		implements EmpInsLossInfoCsvGenerator {
 	@Inject
 	private JapaneseErasAdapter erasAdapter;
+	
+	@Inject
+	private RetirementReasonClsInfoRepository reasonRepo;
 
 	private static final String REPORT_ID = "CSV_GENERATOR";
 
@@ -82,7 +89,7 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 	private static final String LINE_BREAK = "\r\n";
 
 	@Override
-	public void generate(FileGeneratorContext generatorContext, EmpInsReportSettingExportData dataSource) {
+	public void generate(FileGeneratorContext generatorContext, EmpInsLossInfoExportData dataSource) {
 		try (val reportContext = this.createEmptyContext(REPORT_ID)) {
 			StringBuilder valueBuilder = new StringBuilder();
 			this.fillData(valueBuilder, dataSource);
@@ -108,7 +115,7 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 		return new JapaneseDate(date, era.get());
 	}
 
-	private void fillData(StringBuilder valueBuilder, EmpInsReportSettingExportData dataSource) {
+	private void fillData(StringBuilder valueBuilder, EmpInsLossInfoExportData dataSource) {
 		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
 
 		// row 1
@@ -262,8 +269,9 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 		this.fillDataRows(valueBuilder, dataSource);
 	}
 
-	private void fillDataRows(StringBuilder valueBuilder, EmpInsReportSettingExportData dataSource) {
+	private void fillDataRows(StringBuilder valueBuilder, EmpInsLossInfoExportData dataSource) {
 		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
+		Map<String, String> reasonMap = reasonRepo.getRetirementReasonClsInfoById(AppContexts.user().companyId()).stream().collect(Collectors.toMap(i -> i.getRetirementReasonClsCode().v(), i -> i.getRetirementReasonClsName().v()));
 
 		// row 9
 		for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
@@ -379,7 +387,7 @@ public class EmpInsReportTxtSettingCsvFileGenerator extends AsposeCellsReportGen
 							: row.getLaborInsuranceOfficeName();
 				}
 				if (c == 36) {
-					value = row.getCauseOfLossInsurance();
+					value = reasonMap.get(row.getCauseOfLossInsurance());
 				}
 				if (c == 37 && row.getScheduleWorkingHourPerWeek() != null) {
 					int hour = row.getScheduleWorkingHourPerWeek().hour();
