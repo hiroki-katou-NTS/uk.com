@@ -32,17 +32,6 @@ public class JpaEmpNameChangeNotiInforRepository extends JpaRepository implement
         .getSingle(c->c.toDomain());
     }
 
-
-    @Override
-    public void add(EmpNameChangeNotiInfor domain){
-        this.commandProxy().insert(QrsmtEmpNameChange.toEntity(domain));
-    }
-
-    @Override
-    public void update(EmpNameChangeNotiInfor domain){
-        this.commandProxy().update(QrsmtEmpNameChange.toEntity(domain));
-    }
-
     @Override
     public void remove(String employeeId, String cid){
         this.commandProxy().remove(QrsmtEmpNameChange.class, new QrsmtEmpNameChangePk(employeeId, cid));

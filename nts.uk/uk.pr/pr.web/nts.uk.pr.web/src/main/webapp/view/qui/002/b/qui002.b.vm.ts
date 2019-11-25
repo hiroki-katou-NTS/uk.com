@@ -115,7 +115,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
             this.employeeId = employeeId;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
-            this.employeeNameBefore = ko.observable(employeeNameBefore);
+            this.employeeNameBefore = employeeNameBefore;
             this.changeDate = changeDate;
         }
         constructor() {

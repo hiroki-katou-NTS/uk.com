@@ -17,8 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "QRSMT_EMP_NAME_CHANGE")
-public class QrsmtEmpNameChange extends UkJpaEntity implements Serializable
-{
+public class QrsmtEmpNameChange extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
