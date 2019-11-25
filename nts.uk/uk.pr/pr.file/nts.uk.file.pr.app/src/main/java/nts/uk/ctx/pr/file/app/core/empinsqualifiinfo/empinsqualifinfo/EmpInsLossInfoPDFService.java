@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.*;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHistRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportSettingExportQuery;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
@@ -40,7 +40,7 @@ import static java.lang.Enum.valueOf;
 import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
-public class EmpInsLossInfoPDFService extends ExportService<EmpInsReportSettingExportQuery>{
+public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExportQuery>{
 
     @Inject
     private EmpInsReportSettingRepository empInsReportSettingRepository;
@@ -101,7 +101,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsReportSettingE
 
 
     @Override
-    protected void handle(ExportServiceContext<EmpInsReportSettingExportQuery> exportServiceContext) {
+    protected void handle(ExportServiceContext<EmpInsLossInfoExportQuery> exportServiceContext) {
         String cid = AppContexts.user().companyId();
         String userId = AppContexts.user().userId();
         GeneralDate fillingDate = exportServiceContext.getQuery().getFillingDate();

@@ -8,7 +8,7 @@ module nts.uk.pr.view.qui004.a {
             registerReportSetting: " ",
             registerReportTxtSetting: " ",
             exportFilePDF: "ctx/pr/report/printconfig/empinsreportsetting/export-pdf-qui004",
-            exportFileCSV: "ctx/pr/report/printconfig/empinsreportsetting/exportcsv"
+            exportFileCSV: "ctx/pr/report/printconfig/empinsreportsetting/export-csv-qui004"
         };
 
         export function  getReportSetting() : JQueryPromise<any> {
