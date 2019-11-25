@@ -3,10 +3,15 @@ package nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifi
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
 * 社員雇用保険履歴
@@ -79,6 +84,12 @@ public class QqsmtEmpInsHist extends UkJpaEntity implements Serializable{
         return empInsHistPk;
     }
 
-
+    public EmpInsHist toEmploymentHistory() {
+        DateHistoryItem dateItem;
+        dateItem =  new DateHistoryItem(this.empInsHistPk.histId, new DatePeriod(this.startDate, this.endDate));
+        List<DateHistoryItem> dateHistoryItems = new ArrayList<>();
+        dateHistoryItems.add(dateItem);
+        return new EmpInsHist(this.empInsHistPk.sid, dateHistoryItems);
+    }
 
 }

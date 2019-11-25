@@ -10,11 +10,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 社員雇用保険履歴
  */
 public interface EmpInsHistRepository {
+    List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate);
+    List<EmpInsHist> getEmpInsHistById(String cid, List<String> sid, GeneralDate baseDate);
 	List<EmpInsHist> getAllEmpInsHist();
-
-	Optional<EmpInsHist> getEmpInsHistById(String cid, String sid);
-
-	List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate);
 
 	Optional<EmpInsHist> getByEmpIdsAndPeriod(String sId, DatePeriod period);
 	
