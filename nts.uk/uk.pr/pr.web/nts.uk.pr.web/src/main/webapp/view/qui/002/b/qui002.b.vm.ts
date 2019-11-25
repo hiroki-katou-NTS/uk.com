@@ -10,7 +10,10 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
 
         constructor() {
-
+            $('#B_2_container table tr th').attr( 'tabIndex', -1 );
+            $('#B_2').attr( 'tabIndex', -1 );
+            $('#B_2 tr').attr( 'tabIndex', -1 );
+            $('#B_2 tr td').attr( 'tabIndex', -1 );
         }
 
         initScreen(emplist: Array) :JQueryPromise<any>{
