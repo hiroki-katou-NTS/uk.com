@@ -351,8 +351,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                             self.preAppPanelFlg(data.preAppPanelFlg);
                             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                             self.callServiceChangePrePost = false;
                         }).fail((res) => {
                             dfd.reject(res);
