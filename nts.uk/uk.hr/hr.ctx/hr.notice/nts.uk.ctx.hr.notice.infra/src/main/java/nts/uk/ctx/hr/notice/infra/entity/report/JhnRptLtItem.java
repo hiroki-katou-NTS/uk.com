@@ -33,7 +33,7 @@ public class JhnRptLtItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = false)
     @Column(name = "DSP_ORDER")
-	public int displayOrder;
+	public int disOrder;
 	
 	@Basic(optional = false)
     @Column(name = "LAYOUT_ITEM_TYPE")
@@ -45,8 +45,16 @@ public class JhnRptLtItem extends UkJpaEntity implements Serializable{
 	public String contractCd;
 	
 	@Basic(optional = false)
+    @Column(name = "CATEGORY_ID")
+	public String categoryId;
+	
+	@Basic(optional = false)
     @Column(name = "CATEGORY_NAME")
 	public String categoryName;
+	
+	@Basic(optional = false)
+    @Column(name = "ITEM_ID")
+	public String itemId;
 	
 	@Basic(optional = false)
     @Column(name = "ITEM_NAME")
@@ -63,10 +71,14 @@ public class JhnRptLtItem extends UkJpaEntity implements Serializable{
 	@Basic(optional = false)
     @Column(name = "REFLECT_ID")
 	public int reflectId;
+	
+	@Basic(optional = false)
+    @Column(name = "LAYOUT_DISORDER")
+	public int displayOrder;
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.jhnRptLtItemPk;
 	}
 
 }

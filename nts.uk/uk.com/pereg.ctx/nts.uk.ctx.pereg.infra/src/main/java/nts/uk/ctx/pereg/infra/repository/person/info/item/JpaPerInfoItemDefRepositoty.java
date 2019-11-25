@@ -323,6 +323,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
+	private final static String SEL_ITEM_ID_BY_CTG_CD_AND_ITEM_CD = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " FROM PpemtPerInfoItem i"
+			+ " WHERE i.itemCd IN :itemCd"
+			+ " AND i.perInfoCtgId IN (SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId FROM  PpemtPerInfoCtg c WHERE c.cid =:cid  AND  c.categoryCd IN :categoryCd)";
+	
 	private static Comparator<Object[]> SORT_BY_DISPORDER = (o1, o2) -> {
 		return ((int) o1[31]) - ((int) o2[31]); // index 31 for [disporder] 
 	};
@@ -1231,6 +1236,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			return lstItemDf.stream().filter(i -> i.getIsAbolition().value == 0).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public List<String> getAllItemIdsByCtgCodeAndItemCd(String cid, List<String> ctgCodes, List<String> itemCds) {
+		List<String> itemIds = this.getEntityManager()
+				.createQuery(SEL_ITEM_ID_BY_CTG_CD_AND_ITEM_CD, String.class)
+				.setParameter("itemCd", itemCds)
+				.setParameter("cid", cid)
+				.setParameter("categoryCd", ctgCodes)
+				.getResultList();
+		return itemIds;
 	}
 }
 

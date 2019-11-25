@@ -15,8 +15,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaRegisterPersonalReportItemRepository extends JpaRepository implements RegisterPersonalReportItemRepository{
 	
-	private static final String SEL_ALL_ITEM_BY_CID_RPTLAYOUT_ID = "SELECT c FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.cid =:cid AND c.jhnRptLtItemPk.rptLayouId =:rptLayouId";
-	
+	private static final String SEL_ALL_ITEM_BY_CID_RPTLAYOUT_ID = "SELECT c FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.cid =:cid AND c.jhnRptLtItemPk.rptLayouId =:rptLayouId order by c.displayOrder ";
+	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.rptLayouId =:rptLayouId";
 	@Override
 	public List<RegisterPersonalReportItem> getAllItemBy(String cid, int rptLayoutId) {
 		return this.queryProxy().query(SEL_ALL_ITEM_BY_CID_RPTLAYOUT_ID, JhnRptLtItem.class)
@@ -42,20 +42,26 @@ public class JpaRegisterPersonalReportItemRepository extends JpaRepository imple
 				entity.jhnRptLtItemPk.categoryCd, entity.categoryName, 
 				entity.contractCd, entity.fixedAtr,
 				entity.jhnRptLtItemPk.itemCd, entity.itemName,
-				entity.displayOrder, Optional.ofNullable(entity.abolitionAtr == 1? true: false),
-				"", entity.reflectId);
+				entity.disOrder, Optional.ofNullable(entity.abolitionAtr == 1? true: false),
+				"", entity.reflectId,
+				entity.categoryId, entity.itemId, entity.displayOrder);
 	}
 	
 	private JhnRptLtItem toEntity(RegisterPersonalReportItem domain) {
 		
 		JhnRptLtItemPk pk = new JhnRptLtItemPk (domain.getCompanyId(), domain.getPReportClsId(),
 				domain.getCategoryCd(), domain.getItemCd());
-		
-		return new JhnRptLtItem(pk, domain.getPReportCode(), domain.getPReportName(), domain.getDisplayOrder(),
-				domain.getItemType(), AppContexts.user().contractCode(), domain.getCategoryName(), domain.getItemName(),
+		//domain.getLayoutOrder(), domain.getDisplayOrder()domain.getCategoryCd(), domain.getItemCd(),
+		return new JhnRptLtItem(pk, 
+				domain.getPReportCode(), domain.getPReportName(), 
+				domain.getDisplayOrder(),
+				domain.getItemType(), AppContexts.user().contractCode(),
+				domain.getCategoryId(),domain.getCategoryName(), 
+				domain.getItemId(), domain.getItemName(),
 				domain.isFixedAtr(),
 				domain.getIsAbolition().isPresent() == true ? (domain.getIsAbolition().get() == true ? 1 : 0) : 0,
-				domain.getReflectionId());
+				domain.getReflectionId(),
+				domain.getLayoutOrder());
 	}
 
 	@Override
@@ -65,5 +71,18 @@ public class JpaRegisterPersonalReportItemRepository extends JpaRepository imple
 		}).collect(Collectors.toList()));
 		
 	}
+
+	@Override
+	public void removeAllByLayoutId(int rptLayoutId) {
+		// remove all classifications when update or override layout
+		this.getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID, JhnRptLtItem.class).setParameter("rptLayouId", rptLayoutId)
+				.executeUpdate();
+	}
+	
+/*
+ * // remove all classifications when update or override layout
+		getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId).executeUpdate();
+ * 
+ */
 
 }

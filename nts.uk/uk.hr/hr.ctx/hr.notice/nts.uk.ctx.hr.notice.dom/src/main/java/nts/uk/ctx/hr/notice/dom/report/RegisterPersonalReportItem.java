@@ -49,4 +49,11 @@ public class RegisterPersonalReportItem extends AggregateRoot{
 	private String itemNameFormMerge;
 	//反映ID
 	private int reflectionId;
+	
+	private String categoryId;
+	
+	private String itemId;
+	
+	//表示順
+	private int layoutOrder;
 }

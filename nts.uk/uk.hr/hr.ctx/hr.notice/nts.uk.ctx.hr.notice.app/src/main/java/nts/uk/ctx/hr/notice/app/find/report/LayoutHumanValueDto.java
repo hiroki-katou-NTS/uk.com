@@ -5,11 +5,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 @Data
 @AllArgsConstructor
@@ -80,6 +75,7 @@ public class LayoutHumanValueDto {
 	
 	// help button Id
 	private String resourceId;
+	
 
 	public LayoutHumanValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, String itemParentCode, Integer row, Object value) {
@@ -97,81 +93,81 @@ public class LayoutHumanValueDto {
 
 	}
 
-	public static LayoutHumanValueDto cloneFromItemDef(PersonInfoCategory perInfoCategory,
-			PerInfoItemDefDto itemDef) {
-		LayoutHumanValueDto dataObject = new LayoutHumanValueDto();
-
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(perInfoCategory.getCategoryCode().v());
-		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
-		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
-
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setItemParentCode(itemDef.getItemParentCode());
-		dataObject.setRow(0);
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		dataObject.setShowColor(true);
-		
-		//2018/02/11
-		dataObject.setDispOrder(itemDef.getDispOrder());
-
-		dataObject.setType(itemDef.getItemTypeState().getItemType());
-		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
-		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
-			SingleItemReportDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-			dataObject.setItem(sigleItem.getDataTypeState());
-		}
-		dataObject.setResourceId(itemDef.getResourceId());
-		return dataObject;
-	}
-
-	public static LayoutHumanValueDto initData(PerInfoItemDefForLayoutDto itemDef, PersonInfoCategory perInfoCategory) {
-		LayoutHumanValueDto dataObject = new LayoutHumanValueDto();
-		dataObject.setRecordId(itemDef.getRecordId());
-		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
-		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
-		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setItemParentCode(itemDef.getItemParentCode());
-		dataObject.setRow(itemDef.getRow());
-		dataObject.setCtgType(itemDef.getCtgType());
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		dataObject.setResourceId(itemDef.getResourceId());
-
-		dataObject.setType(itemDef.getItemTypeState().getItemType());
-
-		if (itemDef.getItemTypeState().getItemType() == 2) {
-			SingleItemReportDto sigleItem = (SingleItemReportDto) itemDef.getItemTypeState();
-			dataObject.setItem(sigleItem.getDataTypeState());
-		}
-		dataObject.setActionRole(itemDef.getActionRole());
-		return dataObject;
-	}
-	
-	public static LayoutHumanValueDto createFromDefItem(PersonInfoCategory perInfoCategory, PerInfoItemDefDto itemDef) {
-		LayoutHumanValueDto item = new LayoutHumanValueDto();
-		
-		item.setCategoryId(itemDef.getPerInfoCtgId());
-		item.setCtgType(perInfoCategory.getCategoryType().value);
-		item.setCategoryCode(perInfoCategory.getCategoryCode().v());
-		
-		item.setItemDefId(itemDef.getId());
-		item.setItemName(itemDef.getItemName());
-		item.setItemCode(itemDef.getItemCode());
-		item.setItemParentCode(itemDef.getItemParentCode());
-		
-		item.setRow(0);
-		item.setRequired(itemDef.getIsRequired() == 1);
-		item.setType(itemDef.getItemTypeState().getItemType());
-		item.setResourceId(itemDef.getResourceId());
-		return item;
-	}
+//	public static LayoutHumanValueDto cloneFromItemDef(PersonInfoCategory perInfoCategory,
+//			PerInfoItemDefDto itemDef) {
+//		LayoutHumanValueDto dataObject = new LayoutHumanValueDto();
+//
+//		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+//		dataObject.setCategoryCode(perInfoCategory.getCategoryCode().v());
+//		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
+//		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
+//
+//		dataObject.setItemDefId(itemDef.getId());
+//		dataObject.setItemName(itemDef.getItemName());
+//		dataObject.setItemCode(itemDef.getItemCode());
+//		dataObject.setItemParentCode(itemDef.getItemParentCode());
+//		dataObject.setRow(0);
+//		dataObject.setRequired(itemDef.getIsRequired() == 1);
+//		dataObject.setShowColor(true);
+//		
+//		//2018/02/11
+//		dataObject.setDispOrder(itemDef.getDispOrder());
+//
+//		dataObject.setType(itemDef.getItemTypeState().getItemType());
+//		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
+//		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
+//			SingleItemReportDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+//			dataObject.setItem(sigleItem.getDataTypeState());
+//		}
+//		dataObject.setResourceId(itemDef.getResourceId());
+//		return dataObject;
+//	}
+//
+//	public static LayoutHumanValueDto initData(PerInfoItemDefForLayoutDto itemDef, PersonInfoCategory perInfoCategory) {
+//		LayoutHumanValueDto dataObject = new LayoutHumanValueDto();
+//		dataObject.setRecordId(itemDef.getRecordId());
+//		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
+//		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+//		dataObject.setCategoryCode(itemDef.getPerInfoCtgCd());
+//		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
+//		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
+//		dataObject.setItemDefId(itemDef.getId());
+//		dataObject.setItemName(itemDef.getItemName());
+//		dataObject.setItemCode(itemDef.getItemCode());
+//		dataObject.setItemParentCode(itemDef.getItemParentCode());
+//		dataObject.setRow(itemDef.getRow());
+//		dataObject.setCtgType(itemDef.getCtgType());
+//		dataObject.setRequired(itemDef.getIsRequired() == 1);
+//		dataObject.setResourceId(itemDef.getResourceId());
+//
+//		dataObject.setType(itemDef.getItemTypeState().getItemType());
+//
+//		if (itemDef.getItemTypeState().getItemType() == 2) {
+//			SingleItemReportDto sigleItem = (SingleItemReportDto) itemDef.getItemTypeState();
+//			dataObject.setItem(sigleItem.getDataTypeState());
+//		}
+//		dataObject.setActionRole(itemDef.getActionRole());
+//		return dataObject;
+//	}
+//	
+//	public static LayoutHumanValueDto createFromDefItem(PersonInfoCategory perInfoCategory, PerInfoItemDefDto itemDef) {
+//		LayoutHumanValueDto item = new LayoutHumanValueDto();
+//		
+//		item.setCategoryId(itemDef.getPerInfoCtgId());
+//		item.setCtgType(perInfoCategory.getCategoryType().value);
+//		item.setCategoryCode(perInfoCategory.getCategoryCode().v());
+//		
+//		item.setItemDefId(itemDef.getId());
+//		item.setItemName(itemDef.getItemName());
+//		item.setItemCode(itemDef.getItemCode());
+//		item.setItemParentCode(itemDef.getItemParentCode());
+//		
+//		item.setRow(0);
+//		item.setRequired(itemDef.getIsRequired() == 1);
+//		item.setType(itemDef.getItemTypeState().getItemType());
+//		item.setResourceId(itemDef.getResourceId());
+//		return item;
+//	}
 	
 	public void toStringValue() {
 		this.value = this.value.toString();

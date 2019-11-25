@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.notice.app.command.report;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 @Getter
@@ -13,7 +15,7 @@ public class NewLayoutReportCommand {
 	
 	private String reportNameYomi;
 	
-	private boolean isAbolition;
+	private boolean abolition;
 	
 	private int reportType;
 	
@@ -25,7 +27,7 @@ public class NewLayoutReportCommand {
 	
 	private boolean formReport;
 	
-	//private List<?> classifications; 
+	private List<ClassificationCommand> classifications; 
 
 	int action;
 }

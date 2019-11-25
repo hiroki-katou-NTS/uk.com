@@ -14,6 +14,7 @@ import nts.uk.ctx.hr.notice.app.command.report.NewLayoutReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.SaveLayoutReportHandler;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgDataEnumImport;
 
 @Path("hr/notice/report")
 @Produces("application/json")
@@ -50,5 +51,11 @@ public class PersonalReportClassificationWebService  extends WebService {
 	@Path("save")
 	public void save(NewLayoutReportCommand cmd) {
 		this.saveLayoutReportHandler.handle(cmd);
+	}
+	
+	@POST
+	@Path("find")
+	public PerInfoCtgDataEnumImport getAllPerInfoCtgHumanByCompany() {
+		return this.reportClsFinder.getCtg();
 	}
 }

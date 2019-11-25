@@ -68,7 +68,7 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 				entity.rptLayouName, entity.rptLayouNameYomi, 
 				entity.displayOrder, entity.abolition, 
 				entity.rptKind, entity.remark, entity.memo, 
-				entity.message, entity.formPrint == null? false: true, entity.rptAgent == null? false: true);
+				entity.message, entity.formPrint == null? false: entity.formPrint, entity.rptAgent == null? false:  entity.rptAgent);
 	}
 	
 	private JhnmtRptLayout toEntity(PersonalReportClassification domain) {
@@ -80,7 +80,7 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 				domain.getRemark() == null? null: domain.getRemark().v(),
 				domain.getMemo() == null? null: domain.getMemo().v(),
 				domain.getMessage() == null?  null: domain.getMessage().v(),
-				domain.isAbolition(), domain.isAgentReportIsCan());
+				domain.isFormReport(), domain.isAgentReportIsCan());
 	}
 
 	@Override
