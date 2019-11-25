@@ -102,17 +102,21 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     private static final String A1_105 = "";
     private static final String A1_106 = "";
 
+    private int row;
+    private int startColumn;
+    private int lineFeedCode = 0;
+
     @Override
     public void generate(FileGeneratorContext fileContext, ExportDataCsv data) {
         try (val reportContext = this.createEmptyContext(REPORT_ID)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
-            int row = 0;
-            int startColumn = 0;
-            int lineFeedCode = (data.getReportTxtSetting().getLineFeedCode() == LineFeedCode.ADD.value || data.getReportTxtSetting().getLineFeedCode() == LineFeedCode.E_GOV.value) ? 1 : 0;;
-            this.fillFixedRows(worksheet, row, lineFeedCode, startColumn, data);
-            this.fillDataRows(worksheet, row, lineFeedCode, startColumn, data);
+            row = 0;
+            startColumn = 0;
+            lineFeedCode = (data.getReportTxtSetting().getLineFeedCode() == LineFeedCode.ADD.value || data.getReportTxtSetting().getLineFeedCode() == LineFeedCode.E_GOV.value) ? 1 : 0;;
+            fillFixedRows(worksheet, data);
+            fillDataRows(worksheet, data);
             reportContext.getDesigner().setWorkbook(workbook);
             reportContext.processDesigner();
             this.saveAsCSV(this.createNewFile(fileContext, FILE_NAME), workbook);
@@ -133,16 +137,14 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         }
     }
 
-    private void fillFixedRows(Worksheet worksheet, int row, int lineFeedCode, int startColumn, ExportDataCsv data) {
+    private void fillFixedRows(Worksheet worksheet, ExportDataCsv data) {
 
         GeneralDate fillingDate = data.getFillingDate();
         Map<String, LaborInsuranceOffice> laborInsuranceOffices = data.getLaborInsuranceOffices();
         CompanyInfor companyInfo = data.getCompanyInfo();
 
         EmpInsReportSettingExport reportSetting = data.getReportSetting();
-        EmpInsRptTxtSettingExport reportTxtSetting = data.getReportTxtSetting();/*
-        EmpInsReportSetting setting = new EmpInsReportSetting("", "", 0, 0, 0, 0, 0);
-        EmpInsReportTxtSetting txtSetting = new EmpInsReportTxtSetting("", "", 0, "", 0);*/
+        EmpInsRptTxtSettingExport reportTxtSetting = data.getReportTxtSetting();
 
         Cells cells = worksheet.getCells();
 
@@ -157,10 +159,13 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         // row 2
         Map<String, LaborInsuranceOffice> laborInsuranceOfficeMap = laborInsuranceOffices.entrySet().stream().filter(e -> e.getValue().getCompanyId().equals(companyInfo.getCompanyId())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         List<LaborInsuranceOfficeCode> laborInsOfficeCodes = laborInsuranceOfficeMap.values().stream().map(LaborInsuranceOffice::getLaborOfficeCode).collect(Collectors.toList());
-        if (!laborInsOfficeCodes.isEmpty()) {
+        /*if (!laborInsOfficeCodes.isEmpty()) {
             cells.get(row, 0 + startColumn).setValue(laborInsuranceOffices.get(laborInsOfficeCodes.get(0)).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse(null));
             cells.get(row, 1  + startColumn).setValue(laborInsuranceOffices.get(laborInsOfficeCodes.get(0)).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse(null));
-        }
+        }*/
+
+        cells.get(row, 0  + startColumn).setValue("");
+        cells.get(row, 1  + startColumn).setValue("");
         cells.get(row, 2  + startColumn).setValue(reportTxtSetting.getFdNumber());
         cells.get(row, 3  + startColumn).setValue(fillingDate.toString("yyyy/MM/dd").replace("/", ""));
         cells.get(row, 4  + startColumn).setValue(A1_11);
@@ -195,7 +200,10 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         startColumn += row > 0 ? 0 : ROW_6_HEADERS.size();
 
         // row 7
-        if (!laborInsOfficeCodes.isEmpty()) {
+        for (int c = 0; c < 12; c++) {
+            cells.get(row, c + startColumn).setValue("test");
+        }
+        /*if (!laborInsOfficeCodes.isEmpty()) {
             cells.get(row, 0 + startColumn).setValue(laborInsuranceOffices.get(laborInsOfficeCodes.get(0)).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v().substring(0, 2)).orElse(null));
             cells.get(row, 1 + startColumn).setValue(laborInsuranceOffices.get(laborInsOfficeCodes.get(0)).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v().substring(3)).orElse(null));
             cells.get(row, 2 + startColumn).setValue(laborInsuranceOffices.get(laborInsOfficeCodes.get(0)).getLaborOfficeCode());
@@ -223,7 +231,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 9 + startColumn).setValue(laborInsOfficeCodes.get(0).v().substring(0, 4));
             cells.get(row, 10 + startColumn).setValue(laborInsOfficeCodes.get(0).v().substring(5, 10));
             cells.get(row, 11 + startColumn).setValue(laborInsOfficeCodes.get(0).v().substring(10));
-        }
+        }*/
         row += lineFeedCode;
         startColumn += row > 0 ? 0 : ROW_7_SIZE;
 
@@ -233,7 +241,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         startColumn += row > 0 ? 0 : ROW_8_SIZE;
     }
 
-    private void fillDataRows(Worksheet worksheet, int row, int lineFeedCode, int startColumn, ExportDataCsv data) {
+    private void fillDataRows(Worksheet worksheet, ExportDataCsv data) {
         Cells cells = worksheet.getCells();
         // row 9
         for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
@@ -272,9 +280,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 if (empInsNumInfos.containsKey(histId)) {
 
                     String empInsNumber = empInsNumInfos.get(histId).getEmpInsNumber().v();
-                    cells.get(row, 3 + startColumn).setValue(empInsNumber.substring(0, 4));
-                    cells.get(row, 4 + startColumn).setValue(empInsNumber.substring(5, 10));
-                    cells.get(row, 5 + startColumn).setValue(empInsNumber.substring(10));
+                    cells.get(row, 3 + startColumn).setValue(empInsNumber.length() > 4 ? empInsNumber.substring(0, 4) : empInsNumber.substring(0));
+                    cells.get(row, 4 + startColumn).setValue(empInsNumber.length() > 4 ? (empInsNumber.length() > 10 ? empInsNumber.substring(5, 10) : empInsNumber.substring(5)) : "");
+                    cells.get(row, 5 + startColumn).setValue(empInsNumber.length() > 10 ? empInsNumber.substring(10) : "");
                 }
             }
 
@@ -323,12 +331,12 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
-
-                    String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-
-                    cells.get(row, 16 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(0, 4));
-                    cells.get(row, 17 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(4, 10));
-                    cells.get(row, 18 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(10));
+                    if (empInsOffices.get(histId) != null) {
+                        String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
+                        cells.get(row, 16 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(0, 4));
+                        cells.get(row, 17 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(4, 10));
+                        cells.get(row, 18 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(10));
+                    }
                 }
             }
 
@@ -374,14 +382,16 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
-                    String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
+                    if (empInsOffices.get(histId) != null) {
+                        String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
 
-                    if (reportTxtSetting.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value) {
-                        cells.get(row, 43 + startColumn).setValue(companyInfo.getCompanyName());
-                    } else if (reportTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
-                        cells.get(row, 43 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
-                    } else if (reportTxtSetting.getOfficeAtr() == OfficeCls.DO_NOT_OUTPUT.value) {
-                        cells.get(row, 43 + startColumn).setValue("");
+                        if (reportTxtSetting.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value) {
+                            cells.get(row, 43 + startColumn).setValue(companyInfo.getCompanyName());
+                        } else if (reportTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
+                            cells.get(row, 43 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
+                        } else if (reportTxtSetting.getOfficeAtr() == OfficeCls.DO_NOT_OUTPUT.value) {
+                            cells.get(row, 43 + startColumn).setValue("");
+                        }
                     }
                 }
             }
@@ -411,8 +421,12 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
-                    String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-                    cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
+                    if (empInsOffices.get(histId) != null) {
+                        String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
+                        if (pubEmpSecOffices.get(laborCode) != null) {
+                            cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
+                        }
+                    }
                 }
             }
             cells.get(row, 56 + startColumn).setValue("");
@@ -420,6 +434,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 58 + startColumn).setValue("");
             cells.get(row, 59 + startColumn).setValue("");
             cells.get(row, 60 + startColumn).setValue("");
+
+            row += lineFeedCode;
         }
     }
 

@@ -218,7 +218,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         getStyle(){
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
         }
 
         exportPDF() {

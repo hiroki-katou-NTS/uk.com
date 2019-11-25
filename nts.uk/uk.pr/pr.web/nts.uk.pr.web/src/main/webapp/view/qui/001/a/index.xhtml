@@ -28,10 +28,10 @@
                 #{i18n.getText('QUI001_A1_2')}
             </button>
             <button id="A1_4" tabindex="3" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){openCScreen()}">
-                #{i18n.getText('QUI001_A1_3')}
+                #{i18n.getText('QUI001_A1_4')}
             </button>
             <button id="A1_3" tabindex="4" data-bind="enable: false">
-                #{i18n.getText('QUI001_A1_4')}
+                #{i18n.getText('QUI001_A1_3')}
             </button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
@@ -40,7 +40,7 @@
 
                 <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
                     <div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
-                        <div class="valign-center control-group " style="height: 33px !important; padding-top: 0px; !important;">
+                        <div class="valign-center control-group " > <!--style="height: 33px !important; padding-top: 0px; !important;"-->
 							<span class="label with-image">
                                 <img id="img-calendar" class="image image-calendar" src="../resources/QUI001_1.png"/>
 								<span id="A222_3">#{i18n.getText('QUI001_A222_3')}</span>
@@ -64,7 +64,7 @@
 																required: true
 																}" tabindex="6">
                             </div>
-                            <span id="A222_8" class="limited-label" style="width: 140px;"
+                            <span id="A222_8" class="limited-label"
                                   data-bind="attr: {style: getStyle() }, text: endDateJp"></span>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                                 name: '#[QUI001_A222_22]',
                                 options: $vm.outputOrders,
                                 optionsValue: 'code',
-                                visibleItemsCount: 5,
+                                visibleItemsCount: 4,
                                 optionsText: 'name',
                                 value: outputOrderAtr,
                                 editable: false,
@@ -139,7 +139,7 @@
                                 name: '#[QUI001_A222_31]',
                                 options: $vm.officeInformations,
                                 optionsValue: 'code',
-                                visibleItemsCount: 5,
+                                visibleItemsCount: 3,
                                 value: officeClsAtr,
                                 optionsText: 'name',
                                 editable: false,
@@ -177,14 +177,14 @@
 
                             </div>
 
-                            <div class="valign-center control-group A222_46">
+                            <div class="valign-center control-group ">
                                 <div id="A222_46" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_46')}</div>
                                 <div id="A222_47" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
                                 name: '#[QUI001_A222_47]',
                                 options: $vm.officeInformations,
                                 optionsValue: 'code',
                                 value: officeAtr,
-                                visibleItemsCount: 2,
+                                visibleItemsCount: 3,
                                 optionsText: 'name',
                                 enable: true}">
                                 </div>
