@@ -41,6 +41,18 @@ public class JpaDateDisplaySettingRepository extends JpaRepository implements Da
 				.getList(s -> toDomain(s));
 	}
 	
+    @Override
+    public void add(DateDisplaySetting domain) {
+        this.commandProxy().insert(new JdsmtDateDisplaySetting(domain));
+    }
+	
+    @Override
+    public void update(String companyId, List<DateDisplaySetting> domains) {
+        for (DateDisplaySetting domain : domains) {
+            this.commandProxy().update(new JdsmtDateDisplaySetting(companyId, domain));
+        }
+    }
+	
 	private DateDisplaySetting toDomain(JdsmtDateDisplaySetting entity) {
 		
 		DateDisplaySettingValue start = DateDisplaySettingValue.builder()
@@ -67,4 +79,6 @@ public class JpaDateDisplaySettingRepository extends JpaRepository implements Da
 				.endDateSetting(Optional.ofNullable(end))
 				.build();	
 	}
+
+	
 }

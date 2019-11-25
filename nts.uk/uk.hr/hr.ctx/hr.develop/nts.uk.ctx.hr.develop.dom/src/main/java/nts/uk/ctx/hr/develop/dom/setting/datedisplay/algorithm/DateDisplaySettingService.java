@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.setting.datedisplay.service;
+package nts.uk.ctx.hr.develop.dom.setting.datedisplay.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,27 +36,33 @@ public class DateDisplaySettingService {
 			// ドメインモデル [日付表示設定] を取得する(Lấy domain [DateDisplaySetting])
 			results = dateDisplaySettingRepo.getSettingByCompanyIdAndProgramId(programId, companyId);
 		}
-		
-		if(CollectionUtil.isEmpty(results)) {
+
+		if (CollectionUtil.isEmpty(results)) {
 			return Collections.emptyList();
 		}
 
 		return results.stream().map(d -> {
-			
+
 			DateDisplaySettingValue startSet = d.getStartDateSetting();
 			DateDisplaySettingValue endSet = d.getEndDateSetting().isPresent() ? d.getEndDateSetting().get() : null;
-			
-			return PeriodDisplaySettingList.builder()
-					.programId(d.getProgramId())
+
+			return PeriodDisplaySettingList.builder().programId(d.getProgramId())
 					.startDateSettingCategory(startSet.getSettingClass().value)
-					.startDateSettingDate(startSet.getSettingDate())
-					.startDateSettingMonth(startSet.getSettingMonth())
+					.startDateSettingDate(startSet.getSettingDate()).startDateSettingMonth(startSet.getSettingMonth())
 					.startDateSettingNum(startSet.getSettingNum())
-					.endDateSettingCategory(endSet != null ? endSet.getSettingClass().value: null)
+					.endDateSettingCategory(endSet != null ? endSet.getSettingClass().value : null)
 					.endDateSettingDate(endSet != null ? endSet.getSettingDate() : null)
 					.endDateSettingMonth(endSet != null ? endSet.getSettingMonth() : null)
-					.endDateSettingNum(endSet != null ? endSet.getSettingNum() : null)
-					.build();
+					.endDateSettingNum(endSet != null ? endSet.getSettingNum() : null).build();
 		}).collect(Collectors.toList());
+	}
+
+	// 日付表示設定の追加
+	public void add(DateDisplaySetting dateSetting) {
+		this.dateDisplaySettingRepo.add(dateSetting);
+	}
+	// 日付表示設定の更新
+	public void update(String companyId, List<DateDisplaySetting> dateSetting) {
+		this.dateDisplaySettingRepo.update(companyId, dateSetting);
 	}
 }
