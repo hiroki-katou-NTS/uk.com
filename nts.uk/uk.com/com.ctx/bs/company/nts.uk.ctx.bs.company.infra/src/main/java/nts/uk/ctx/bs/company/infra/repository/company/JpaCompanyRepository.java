@@ -71,6 +71,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 			+ " AND c.isAbolition = :isAbolition "
 			+ " ORDER BY c.companyCode ASC ";
 	
+	private static final String GET_NOT_ABOLITION_BY_CID = "SELECT c, d FROM BcmmtCompanyInfor c"
+			+ " LEFT JOIN  BcmmtAddInfor d "
+			+ " ON c.bcmmtCompanyInforPK.companyId = d.bcmmtAddInforPK.companyId"
+			+ " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
 //	/**
 //	 * @param entity
 //	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
@@ -383,6 +387,41 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.setParameter("isAbolition", isAbolition)
 				.getList();
 	 return lstCompanyId;
+	}
+	
+	@Override
+	public Optional<Company> getComanyNotAbolitionByCid(String cid) {
+		Object[] entity = this.queryProxy().query(GET_NOT_ABOLITION_BY_CID, Object[].class)
+				.setParameter("cid", cid).getSingleOrNull();
+
+		Company company = new Company();
+		
+		if (entity != null) {
+			
+			BcmmtCompanyInfor entityCompany = null;
+			
+			if(entity.length > 0) {
+				
+			  entityCompany = (BcmmtCompanyInfor) entity[0];
+			  
+			}
+			
+			if(entity.length > 1) {
+				
+				entityCompany.bcmmtAddInfor = (BcmmtAddInfor) entity[1];
+				
+			}
+			
+			company = toDomainCom(entityCompany);
+			
+			return Optional.of(company);
+			
+
+		} else {
+			
+			return Optional.empty();
+			
+		}
 	}
 }
 
