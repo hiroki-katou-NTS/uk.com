@@ -234,8 +234,8 @@ module nts.uk.at.view.kaf005.b {
                             nts.uk.ui.block.clear();
                         });
                     }else{ 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
                             nts.uk.ui.block.clear();
                         });
                     }
