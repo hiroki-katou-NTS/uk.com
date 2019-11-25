@@ -109,6 +109,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
 				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
 						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
+				if(CollectionUtil.isEmpty(result)) {
+					throw new BusinessException("Msg_1567");
+				}
 				return result;
 			}
 		}
