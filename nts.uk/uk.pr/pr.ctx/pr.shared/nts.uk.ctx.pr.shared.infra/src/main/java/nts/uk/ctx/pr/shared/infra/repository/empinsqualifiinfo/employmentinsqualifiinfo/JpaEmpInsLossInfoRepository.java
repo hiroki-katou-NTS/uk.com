@@ -40,7 +40,6 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
 
 	private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " where l.empInsLossInfoPk.sId = :sId";
 
-
     @Override
     public Optional<EmpInsLossInfo> getEmpInsLossInfoById(String sid) {
         return this.queryProxy().query(SELECT_BY_ID, QqsmtEmpInsLossInfo.class)

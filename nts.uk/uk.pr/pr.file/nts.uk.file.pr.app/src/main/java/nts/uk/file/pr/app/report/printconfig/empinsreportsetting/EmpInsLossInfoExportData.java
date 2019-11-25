@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpIn
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Data
-public class EmpInsReportSettingExportData {
+public class EmpInsLossInfoExportData {
 	
 //	private List<String> employeeIds;
 
