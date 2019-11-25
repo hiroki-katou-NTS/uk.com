@@ -5,10 +5,10 @@ import nts.arc.i18n.I18NText;
 /**
  * 離職票交付希望区分
  */
-public enum RequestForIssuance {
+public enum RequestForInsurance {
 
-    NO(0, I18NText.getText("なし")),
-    YES(1, I18NText.getText("あり"));
+    NO(0, I18NText.getText("QUI004_C222_5")),
+    YES(1, I18NText.getText("QUI004_C222_6"));
 
     /**
      * The value.
@@ -20,7 +20,7 @@ public enum RequestForIssuance {
      */
     public final String nameId;
 
-    RequestForIssuance(int value, String nameId) {
+    RequestForInsurance(int value, String nameId) {
         this.value = value;
         this.nameId = nameId;
     }

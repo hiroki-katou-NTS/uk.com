@@ -1,9 +1,7 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 公共職業安定所
@@ -25,8 +23,8 @@ public class PublicEmploymentSecurityOffice extends AggregateRoot {
      */
     private PublicEmploymentSecurityOfficeName publicEmploymentSecurityOfficeName;
 
-    public PublicEmploymentSecurityOffice(String publicEmploymentSecurityOfficeCode, String publicEmploymentSecurityOfficeName) {
-        this.companyId = AppContexts.user().companyId();
+    public PublicEmploymentSecurityOffice(String cid, String publicEmploymentSecurityOfficeCode, String publicEmploymentSecurityOfficeName) {
+        this.companyId = cid;
         this.publicEmploymentSecurityOfficeCode = new PublicEmploymentSecurityOfficeCode(publicEmploymentSecurityOfficeCode);
         this.publicEmploymentSecurityOfficeName = new PublicEmploymentSecurityOfficeName(publicEmploymentSecurityOfficeName);
     }

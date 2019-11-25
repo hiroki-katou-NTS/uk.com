@@ -17,23 +17,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+public class QqsmtEmpInsLossInfoPk implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-public class QqsmtEmpInsLossInfoPk implements Serializable
-{
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cId;
 
-    /**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cId;
-
-    /**
-     * 社員ID
-     */
-    @Basic(optional = false)
-    @Column(name = "SID")
-    public String sId;
+	/**
+	 * 社員ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "SID")
+	public String sId;
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
 
 /**
  * 雇用保険被保険者資格取得届
@@ -127,7 +128,7 @@ public class EmpInsGetQualifReport {
     /**
      * 被保険者番号
      */
-    private Integer insuredNumber;
+    private String insuredNumber;
 
     /**
      * 賃金（支払の態様）
@@ -149,9 +150,9 @@ public class EmpInsGetQualifReport {
      */
     private Integer employmentStatus;
 
-    private String insuredEnglishName;
+    private String insuredRomanName;
 
-    private String insuredEnglishName2;
+    private String insuredRomanName2;
 
     private String nationalityRegion;
 
@@ -171,9 +172,10 @@ public class EmpInsGetQualifReport {
 
     private String officePhoneNumber;
 
-    private String submissionDateJp;
+    private JapaneseDate submissionDateJp;
 
     private String scd;
 
     private String personalNameKana;
+
 }

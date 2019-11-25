@@ -72,22 +72,14 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
     private PersonExportAdapter personExportAdapter;
 
     @Inject
-    private JapaneseErasAdapter jpErasAdapter;
-
-    @Inject
     private PublicEmploymentSecurityOfficeRepository pubEmpSecOfficeRepository;
-
-    private static final String MEIJI = "明治";
-    private static final String TAISHO = "大正";
-    private static final String SHOWA = "昭和";
-    private static final String HEISEI = "平成";
-    private static final String REIWA = "令和";
 
     @Override
     protected void handle(ExportServiceContext<EmpInsGetQualifReportQuery> exportServiceContext) {
         String userId = AppContexts.user().userId();
         String cid = AppContexts.user().companyId();
         List<String> empIds = exportServiceContext.getQuery().getEmpIds();
+        GeneralDate fillingDate = exportServiceContext.getQuery().getFillingDate();
         GeneralDate startDate = exportServiceContext.getQuery().getStartDate();
         GeneralDate endDate = exportServiceContext.getQuery().getEndDate();
 
@@ -121,9 +113,9 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         }
 
         Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
-        if (empInsHists.isEmpty()) {
+        /*if (empInsHists.isEmpty()) {
             throw new BusinessException("Msg_51");
-        }
+        }*/
 
         // Pending check マイナンバー印字区分
 
@@ -148,17 +140,23 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
                 .stream().collect(Collectors.toMap(PersonExport::getPersonId, Function.identity()));
 
-        JapaneseEras jpEras = this.jpErasAdapter.getAllEras();
 
         ExportDataCsv dataExport = ExportDataCsv.builder()
+                .fillingDate(fillingDate)
+                .empIds(empIds)
                 .empInsHists(empInsHists)
-                .reportSetting(reportSetting)
-                .reportTxtSetting(reportTxtSetting)
+                .reportSetting(reportSettingExport)
+                .reportTxtSetting(rptTxtSettingExport)
                 .empInsNumInfos(empInsNumInfos)
+                .empInsGetInfos(empInsGetInfos)
                 .empInsOffices(empInsOffices)
+                .personExports(personExports)
+                .employeeInfos(employeeInfos)
                 .laborInsuranceOffices(laborInsuranceOffices)
                 .companyInfo(companyInfo)
                 .pubEmpSecOffices(pubEmpSecOffices)
+                .dummyLaborContractHist(dummyLaborContractHist)
+                .dummyForResHistInfo(dummyForResHistInfo)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
@@ -166,25 +164,4 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         generator.generate(exportServiceContext.getGeneratorContext(), dataExport);
     }
 
-    private String toEraNumb(String eraName) {
-        switch(eraName) {
-            case MEIJI:
-                return "1";
-            case TAISHO:
-                return "2";
-            case SHOWA:
-                return "3";
-            case HEISEI:
-                return "4";
-            case REIWA:
-                return "5";
-            default:
-                return "";
-        }
-    }
-
-    private JapaneseDate toJapaneseDate(JapaneseEras jpEras, GeneralDate date) {
-        Optional<JapaneseEraName> eraName = jpEras.eraOf(date);
-        return eraName.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
-    }
 }

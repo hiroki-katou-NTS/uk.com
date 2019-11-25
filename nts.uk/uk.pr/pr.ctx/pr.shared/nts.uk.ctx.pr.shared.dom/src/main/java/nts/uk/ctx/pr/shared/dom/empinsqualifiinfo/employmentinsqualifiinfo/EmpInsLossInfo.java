@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * 雇用保険喪失時情報
  */
-public class EmpInsLossInfo extends AggregateRoot{
+public class EmpInsLossInfo extends AggregateRoot {
 
     /**
      * 会社ID
@@ -34,7 +34,7 @@ public class EmpInsLossInfo extends AggregateRoot{
     /**
      * 離職票交付希望区分
      */
-    private Optional<RequestForIssuance> requestForIssuance;
+    private Optional<RequestForInsurance> requestForIssuance;
 
     /**
      * 補充予定区分
@@ -62,7 +62,7 @@ public class EmpInsLossInfo extends AggregateRoot{
         this.sId = sId;
         this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new CauseOfLossEmpInsurance(causeOfLossEmpInsurance));
         this.causeOfLossAtr = causeOfLossAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLossAtr, CauseOfLossAtr.class));
-        this.requestForIssuance = requestForIssuance == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(requestForIssuance, RequestForIssuance.class));
+        this.requestForIssuance = requestForIssuance == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(requestForIssuance, RequestForInsurance.class));
         this.scheduleForReplenishment = scheduleForReplenishment == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(scheduleForReplenishment, ScheduleForReplenishment.class));
         this.scheduleWorkingHourPerWeek = scheduleWorkingHourPerWeek == null ? Optional.empty() : Optional.of(new WorkingTime(scheduleWorkingHourPerWeek));
 
