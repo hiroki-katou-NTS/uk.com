@@ -52,7 +52,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(318, 718, acquisitionAtr, 16));
                 // A1_3
                 String insuredName = data.getInsuredName() == null ? "" : data.getInsuredName();
-                textBuilder.appendText(setValue(45, 685, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(45, 686, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
                 // A1_4
                 String insuredFullName = data.getInsuredFullName() == null ? "" : data.getInsuredFullName();
                 detachText(182, 682, insuredFullName, 20, textBuilder);
