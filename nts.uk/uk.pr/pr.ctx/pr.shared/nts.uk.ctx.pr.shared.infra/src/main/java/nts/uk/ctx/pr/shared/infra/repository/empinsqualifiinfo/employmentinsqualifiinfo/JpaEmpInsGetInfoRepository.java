@@ -41,10 +41,10 @@ public class JpaEmpInsGetInfoRepository extends JpaRepository implements EmpInsG
     public List<EmpInsGetInfo> getByEmpIds(String cid, List<String> empIds) {
         List<EmpInsGetInfo> result = new ArrayList<>();
         CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList ->
-            this.queryProxy().query(SELECT_BY_EMP_IDS, QqsmtEmpInsGetInfo.class)
+            result.addAll(this.queryProxy().query(SELECT_BY_EMP_IDS, QqsmtEmpInsGetInfo.class)
                     .setParameter("sids", empIds)
                     .setParameter("cid", cid)
-                    .getList(QqsmtEmpInsGetInfo::toDomain)
+                    .getList(QqsmtEmpInsGetInfo::toDomain))
         );
         return result;
     }
