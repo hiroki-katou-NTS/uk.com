@@ -212,14 +212,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				value = "code";
 			}
 			if (c == 3) {
-				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = companyInfo.getPostCd();
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
+					value = companyInfo.getPostCd().substring(0, 3);
 				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
 					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
 			}
 			if (c == 4) {
-				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = companyInfo.getPostCd();
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
+					value = companyInfo.getPostCd().substring(3);
 				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
 					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
 			}
