@@ -18,6 +18,9 @@
         <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.FdNumber
+        </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
@@ -192,10 +195,11 @@
 
                             <div class="control-group ">
                                 <div id="A222_49" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_49')}</div>
-                                <div id="A222_50" style=" width: 50px; height: 18px" tabindex="17" data-bind="ntsTextEditor: {
-                                name: '#{i18n.getText('QUI001_A222_50')}',
-                                value: fdNumber
-                                }"></div>
+                                <input id="A222_50" tabindex="17" data-bind="ntsTextEditor: {
+                                    constraint: 'FdNumber',
+                                    name: '#{i18n.getText('QUI001_A222_50')}',
+                                    value: fdNumber
+                                    }"/> <!--style=" width: 50px; height: 18px"-->
                             </div>
                         </div>
                     </div>

@@ -35,9 +35,9 @@ module nts.uk.pr.view.qui001.share.model {
     // 32: 事業所区分
     export function getOfficeCls(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
             new ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
-            new ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
+            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
+            /*new ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))*/
         ];
     }
 
