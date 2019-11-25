@@ -1795,7 +1795,12 @@ public class AppOvertimeFinder {
 			Optional<TimeWithDayAttr> opStartTime = startTime1==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime1)); 
 			Optional<TimeWithDayAttr> opEndTime = endTime1==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(endTime1)); 
 			// 01-01_休憩時間を取得する
-			List<DeductionTime> breakTimes = this.commonOvertimeHoliday.getBreakTimes(companyID, result.getWorkType().getWorkTypeCode(), result.getSiftType().getSiftCode(), opStartTime, opEndTime);
+			List<DeductionTime> breakTimes = this.commonOvertimeHoliday.getBreakTimes(
+					companyID, 
+					result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
+					result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
+					opStartTime, 
+					opEndTime);
 			List<DeductionTimeDto> timeZones = breakTimes.stream().map(domain->{
 				DeductionTimeDto dto = new DeductionTimeDto();
 				domain.saveToMemento(dto);
