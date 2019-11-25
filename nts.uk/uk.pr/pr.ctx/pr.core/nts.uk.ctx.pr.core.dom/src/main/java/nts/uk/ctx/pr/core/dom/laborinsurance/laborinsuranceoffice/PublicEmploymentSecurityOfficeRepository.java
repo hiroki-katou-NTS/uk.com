@@ -10,7 +10,7 @@ public interface PublicEmploymentSecurityOfficeRepository {
 
     List<PublicEmploymentSecurityOffice> getPublicEmploymentSecurityOfficeByCompany();
 
-    Optional<PublicEmploymentSecurityOffice> getPublicEmploymentSecurityOfficeById(String pubEmpSecOfficeCode);
+    Optional<PublicEmploymentSecurityOffice> getPublicEmploymentSecurityOfficeById(String cid, String pubEmpSecOfficeCode);
 
     void add(PublicEmploymentSecurityOffice domain);
 

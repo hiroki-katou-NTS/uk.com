@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 社員雇用保険事業所情報
@@ -8,5 +9,7 @@ import java.util.List;
 public interface EmpInsOfficeRepository {
 
     List<EmpInsOffice> getAllEmpEmpmInsOffice();
+    
+    Optional<EmpInsOffice> getEmpInsOfficeById(String cid, String sid, String histId);
 
 }

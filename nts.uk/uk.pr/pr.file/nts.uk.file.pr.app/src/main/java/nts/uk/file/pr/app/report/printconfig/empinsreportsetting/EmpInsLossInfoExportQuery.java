@@ -8,10 +8,11 @@ import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRp
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
 
 @Data
-public class EmpInsReportSettingExportQuery {
+public class EmpInsLossInfoExportQuery {
 	private List<String> employeeIds;
     private GeneralDate startDate;
     private GeneralDate endDate;
+    private GeneralDate fillingDate;
     
     private EmpInsRptSettingCommand empInsReportSettingCommand;
     private EmpInsRptTxtSettingCommand empInsReportTxtSettingCommand;
