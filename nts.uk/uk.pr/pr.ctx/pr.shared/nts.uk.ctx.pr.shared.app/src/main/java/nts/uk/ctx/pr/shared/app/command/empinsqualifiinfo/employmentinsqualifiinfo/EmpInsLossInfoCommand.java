@@ -1,13 +1,9 @@
-package nts.uk.ctx.pr.shared.app.find.empinsqualifiinfo.employmentinsqualifiinfo;
+package nts.uk.ctx.pr.shared.app.command.empinsqualifiinfo.employmentinsqualifiinfo;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Value;
 
-@AllArgsConstructor
 @Value
-@Builder
-public class EmpInsLossInfoDto {
+public class EmpInsLossInfoCommand {
     /**
      * 会社ID
      */
@@ -43,4 +39,8 @@ public class EmpInsLossInfoDto {
      */
     private Integer scheduleWorkingHourPerWeek;
 
+    /**
+     * Screen Mode
+     */
+    private Integer screenMode;
 }

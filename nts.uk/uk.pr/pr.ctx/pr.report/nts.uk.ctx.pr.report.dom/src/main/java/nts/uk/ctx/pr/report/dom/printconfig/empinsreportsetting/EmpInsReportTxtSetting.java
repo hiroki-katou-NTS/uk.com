@@ -34,7 +34,7 @@ public class EmpInsReportTxtSetting extends AggregateRoot {
      */
     private LineFeedCode lineFeedCode;
 
-    public EmpInsReportTxtSetting(String cid, String userId, int officeAtr, int fdNumber, int lineFeedCode) {
+    public EmpInsReportTxtSetting(String cid, String userId, int officeAtr, String fdNumber, int lineFeedCode) {
         this.cid = cid;
         this.userId = userId;
         this.officeAtr = EnumAdaptor.valueOf(officeAtr, OfficeCls.class);

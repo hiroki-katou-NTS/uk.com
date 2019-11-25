@@ -28,7 +28,7 @@ public class EmpInsReportTxtSettingDto {
     /**
      * FD番号
      */
-    private int fdNumber;
+    private String fdNumber;
 
     /**
      * 改行コード
