@@ -113,9 +113,9 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         }
 
         Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
-        /*if (empInsHists.isEmpty()) {
-            throw new BusinessException("Msg_51");
-        }*/
+        if (empInsHists.isEmpty()) {
+            throw new BusinessException("MsgQ_51");
+        }
 
         // Pending check マイナンバー印字区分
 
@@ -140,13 +140,22 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
                 .stream().collect(Collectors.toMap(PersonExport::getPersonId, Function.identity()));
 
+        List<SortObject> sortObjects = empInsHists.values().stream().map(e -> new SortObject(
+                empInsNumInfos.containsKey(e.getHistoryItem().get(0).identifier()) ? empInsNumInfos.get(e.getHistoryItem().get(0).identifier()).getEmpInsNumber().v() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeId() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeCode() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeCode() : "",
+                personExports.containsKey(employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getPId() : "") ? personExports.get(employeeInfos.get(e.getSid()).getPId()).getPersonNameGroup().getPersonName().getFullNameKana() : ""
+        )).collect(Collectors.toList());
 
         ExportDataCsv dataExport = ExportDataCsv.builder()
                 .fillingDate(fillingDate)
                 .empIds(empIds)
                 .empInsHists(empInsHists)
-                .reportSetting(reportSettingExport)
-                .reportTxtSetting(rptTxtSettingExport)
+                .reportSetting(reportSetting)
+                .reportTxtSetting(reportTxtSetting)
+                .reportSettingExport(reportSettingExport)
+                .reportTxtSettingExport(rptTxtSettingExport)
                 .empInsNumInfos(empInsNumInfos)
                 .empInsGetInfos(empInsGetInfos)
                 .empInsOffices(empInsOffices)
@@ -159,7 +168,10 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
                 .dummyForResHistInfo(dummyForResHistInfo)
                 .startDate(startDate)
                 .endDate(endDate)
+                .sortObjects(sortObjects)
                 .build();
+
+
 
         generator.generate(exportServiceContext.getGeneratorContext(), dataExport);
     }
