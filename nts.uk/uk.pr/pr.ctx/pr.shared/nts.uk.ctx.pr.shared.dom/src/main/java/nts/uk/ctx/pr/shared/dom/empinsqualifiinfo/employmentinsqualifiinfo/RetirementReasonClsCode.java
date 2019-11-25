@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 退職解雇理由名称
+ * 雇用保険喪失原因
  */
 @StringMaxLength(2)
 public class RetirementReasonClsCode extends StringPrimitiveValue<RetirementReasonClsCode> {
