@@ -22,6 +22,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     private static final int OFFICE_NAME_MAX_BYTE = 40;
     private static final int NATIONALITY_MAX_BYTE = 20;
     private static final int RESIDENT_STATUS_MAX_BYTE = 16;
+    private static final int INSURED_NAME_MAX_BYTE = 22;
+    private static final int INSURED_FULLNAME_MAX_BYTE = 22;
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<EmpInsGetQualifReport> reportData) {
@@ -50,13 +52,13 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(318, 718, acquisitionAtr, 16));
                 // A1_3
                 String insuredName = data.getInsuredName() == null ? "" : data.getAcquisitionAtr().toString();
-                textBuilder.appendText(setValue(45, 682, insuredName, 16));
+                textBuilder.appendText(setValue(45, 685, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
                 // A1_4
                 String insuredFullName = data.getInsuredFullName() == null ? "" : data.getAcquisitionAtr().toString();
                 detachText(182, 682, insuredFullName, 20, textBuilder);
                 // A1_5
                 String nameAfterChange = data.getNameAfterChange() == null ? "" : data.getNameAfterChange();
-                textBuilder.appendText(setValue(45, 647, nameAfterChange, 16));
+                textBuilder.appendText(setValue(45, 650, formatTooLongText(nameAfterChange, INSURED_FULLNAME_MAX_BYTE), 9));
                 // A1_6
                 String fullNameAfterChange = data.getFullNameAfterChange() == null ? "" : data.getFullNameAfterChange();
                 detachText(182, 647, fullNameAfterChange, 20, textBuilder);
