@@ -159,7 +159,16 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
     	List<String> subList = param.keySet().stream().collect(Collectors.toList());
     	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
+    	List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
+		});
+		return result;
+	}
+    
+    @SneakyThrows
+	private List<SpecificDateAttrOfDailyPerfor> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
+
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
 		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAI_SPE_DAY_CLA  ");
@@ -198,7 +207,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 				}).collect(Collectors.toList());
 			}).flatMap(List::stream).collect(Collectors.toList());
 		}
-	}
+    }
 
 	private SpecificDateAttrSheet specificDateAttr(KrcdtDaiSpeDayCla c) {
 		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDaiSpeDayClaPK.speDayItemNo),

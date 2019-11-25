@@ -371,7 +371,16 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	public List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
     	List<String> subList = param.keySet().stream().collect(Collectors.toList());
     	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
+    	List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
+		});
+		return result;
+	}
+
+    @SneakyThrows
+	private List<BreakTimeOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
@@ -419,8 +428,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				}).flatMap(List::stream).collect(Collectors.toList());
 			}).flatMap(List::stream).collect(Collectors.toList());
 		}
-	}
-
+    }
 	@Override
 	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);

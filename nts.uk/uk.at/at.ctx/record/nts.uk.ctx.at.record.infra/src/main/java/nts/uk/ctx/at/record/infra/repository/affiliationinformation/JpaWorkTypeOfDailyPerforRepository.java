@@ -163,7 +163,16 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	public List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
     	List<String> subList = param.keySet().stream().collect(Collectors.toList());
     	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
+    	List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
+		});
+		return result;
+	}
+    
+    @SneakyThrows
+	private List<WorkTypeOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
@@ -184,6 +193,6 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 						rec.getGeneralDate("YMD"), rec.getString("WORKTYPE_CODE"));
 			});
 		}
-	}
+    }
 
 }

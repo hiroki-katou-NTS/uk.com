@@ -190,10 +190,19 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
-    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
-    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
-    	String subEmp = NtsStatement.In.createParamsString(subList);
+		List<String> subList = param.keySet().stream().collect(Collectors.toList());
+		List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
+		});
+		return result;
+	}
+	
+	@SneakyThrows
+	private List<AffiliationInforOfDailyPerfor> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
+		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
 		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE FROM KRCDT_DAI_AFFILIATION_INF");

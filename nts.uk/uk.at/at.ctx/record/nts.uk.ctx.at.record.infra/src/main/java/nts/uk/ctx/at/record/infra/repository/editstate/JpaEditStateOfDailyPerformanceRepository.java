@@ -163,9 +163,18 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<EditStateOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		
-    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
-    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
+		List<String> subList = param.keySet().stream().collect(Collectors.toList());
+		List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+		List<EditStateOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
+		});
+		return result;
+	}
+	
+    @SneakyThrows
+	private List<EditStateOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
 		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAILY_REC_EDIT_SET");
@@ -184,8 +193,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 						rec.getGeneralDate("YMD"), EnumAdaptor.valueOf(rec.getInt("EDIT_STATE"), EditStateSetting.class));
 			});
 		}
-	}
-	
+    }
 	private <T> List<T> internalFinds(Map<String, List<GeneralDate>> param, Function<KrcdtDailyRecEditSet, T> actions) {
 		List<T> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDailyRecEditSet a ");

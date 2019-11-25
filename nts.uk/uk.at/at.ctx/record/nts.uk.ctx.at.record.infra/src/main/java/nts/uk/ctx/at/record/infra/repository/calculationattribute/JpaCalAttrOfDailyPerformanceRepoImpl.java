@@ -309,8 +309,18 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
     @SneakyThrows
 	@Override
 	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-    	List<String> employeeIds = param.keySet().stream().collect(Collectors.toList());
-    	List<GeneralDate> dates = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+		List<String> employeeIds = param.keySet().stream().collect(Collectors.toList());
+		List<GeneralDate> dates = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(dates, empIds));
+		});
+		return result;
+	}
+
+    @SneakyThrows
+    private List<CalAttrOfDailyPerformance> internalQueryMap(List<GeneralDate> dates, List<String> employeeIds){
     	String subEmp = NtsStatement.In.createParamsString(employeeIds);
     	String subDate = NtsStatement.In.createParamsString(dates);
 		StringBuilder query = new StringBuilder("SELECT * FROM KRCST_DAI_CALCULATION_SET c  ");
@@ -350,6 +360,5 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 						new AutoCalcSetOfDivergenceTime(getEnum(rec.getInt("DIVERGENCE_TIME"), DivergenceTimeAttr.class)));
 			});
 		}
-	}
-
+    }
 }

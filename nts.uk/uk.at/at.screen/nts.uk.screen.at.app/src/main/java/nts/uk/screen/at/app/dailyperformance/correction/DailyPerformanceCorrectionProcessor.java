@@ -151,7 +151,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDt
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmployee;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -210,8 +209,8 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
 	
-	@Inject
-	private CheckClosingEmployee checkClosingEmployee;
+//	@Inject
+//	private CheckClosingEmployee checkClosingEmployee;
 	
 	@Inject
 	private RoleRepository roleRepository;

@@ -172,19 +172,19 @@ public class FindDataDCRecord implements IFindDataDCRecord {
 	}
 
 	private String createKey(Object... values) {
-		String result = "";
+		StringBuilder buff = new StringBuilder();
 		for (Object value : values) {
 			if (value instanceof Object[]) {
 				for (Object valueSimple : (Object[]) value) {
-					result = result.concat(valueSimple.toString());
-					result = result.concat(KEY_SIMPLE);
+					buff.append(valueSimple.toString());
+					buff.append(KEY_SIMPLE);
 				}
 			} else {
-				result = result.concat(value.toString());
-				result = result.concat(KEY_SIMPLE);
+				buff.append(value.toString());
+				buff.append(KEY_SIMPLE);
 			}
 		}
-		return result;
+		return buff.toString();
 	}
 
 	@Override
