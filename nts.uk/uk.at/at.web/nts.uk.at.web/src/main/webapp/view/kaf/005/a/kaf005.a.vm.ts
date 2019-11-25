@@ -747,16 +747,25 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.forceInconsistency = true;
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
-            
-            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
-                return;
+            if(_.isEmpty(comboBoxReason)) {
+                if(!appcommon.CommonProcess.checklenghtReason(textAreaReason,"#appReason")){
+                    return;
+                }          
+            } else {
+                if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#appReason")){
+                    return;
+                }    
             }
-            
             let comboDivergenceReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason2(), self.reasonCombo2(), self.displayDivergenceReasonForm());
             let areaDivergenceReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent2(), self.displayDivergenceReasonInput(), true);
-            
-            if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
-                return;
+            if(_.isEmpty(comboDivergenceReason)) {
+                if(!appcommon.CommonProcess.checklenghtReason(areaDivergenceReason,"#divergenceReason")){
+                    return;
+                }          
+            } else {
+                if(!appcommon.CommonProcess.checklenghtReason(comboDivergenceReason+":"+areaDivergenceReason,"#divergenceReason")){
+                    return;
+                } 
             }
             overtime.applicationReason = textAreaReason;
             overtime.divergenceReasonContent = comboDivergenceReason;
