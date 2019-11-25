@@ -166,7 +166,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 7,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
