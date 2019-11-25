@@ -335,47 +335,6 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 break;
         }
 
-        listDataExport.add(new EmpInsGetQualifReport(2400,
-                "会社2名fffffffffffffffffffffffffff被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ ",
-                "1234", "567890",
-                "1",
-                0,
-                "5",
-                1,
-                "変更後氏名",
-                "変更後氏名フリガナ",
-                1,
-                "1",
-                "5111111",
-                "5111111",
-                1,
-                1,
-                "121212",
-                "1",
-                1,
-                1,
-                "被保険者氏名",
-                "被保険者氏名フリガナ",
-                "12345678912",
-                1,
-                1294,
-                "3121212",
-                1,
-                "被保険者氏名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ",
-                "被保険者氏名フリガナ",
-                "ベトナムベトナムベトナム",
-                "高度専門職高ベトナム度専門職高度専門職",
-                "20190101",
-                1,
-                1,
-                "1234567",
-                "78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan78 Duy Tan",
-                "被 保険3434者氏名フリ 氏名フリガナ 被343434保険者氏名フ リガナ被保険者氏 3434534名フリガナ被保険者氏名フリガナ被保険者氏名フリガナ",
-                "0123456789",
-                toJapaneseDate(jpEras, fillingDate),
-                "1",
-                "高度専門職"));
-
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
     }
 
