@@ -135,6 +135,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                     self.requestForIssuance(data.requestForIssuance);
                     self.scheduleWorkingHourPerWeek(data.scheduleWorkingHourPerWeek);
                     self.scheduleForReplenishment(data.scheduleForReplenishment);
+                    self.causeOfLossEmpInsurance(data.causeOfLossEmpInsurance);
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.getDefault();
