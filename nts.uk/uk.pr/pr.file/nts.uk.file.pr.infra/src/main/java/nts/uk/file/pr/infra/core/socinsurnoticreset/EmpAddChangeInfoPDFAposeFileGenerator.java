@@ -277,7 +277,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getShortResidentAtr() == null ? 0 :  empAddChangeInfoExport.getShortResidentAtr(), i, "A4_111" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getResidenceOtherResidentAtr() == null ?  0 : empAddChangeInfoExport.getResidenceOtherResidentAtr(), i, "A4_112" );
             RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getLivingAbroadAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr() , i, "A4_113" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() == null ? 0 : empAddChangeInfoExport.getLivingAbroadAtr(), i, "A4_114" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getOtherAtr() == null ? 0 : empAddChangeInfoExport.getOtherAtr(), i, "A4_114" );
 
             worksheet.get(i).getTextBoxes().get("A1_15").setText(Objects.toString(empAddChangeInfoExport.getOtherAtr()!= null &&
                     empAddChangeInfoExport.getOtherAtr() == 1 && empAddChangeInfoExport.getOtherReason() != null ? "(" + empAddChangeInfoExport.getOtherReason() + ")": "（        ）"));
@@ -323,10 +323,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             worksheet.getRangeByName(i + "!A2_14").setValue(this.fillAddress(empAddChangeInfoExport.getAdd1BeforeChangeF(), empAddChangeInfoExport.getAdd2BeforeChangeF()));
 
             //A2_15 ~ A2_19
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() , i, "A4_221" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() , i, "A4_222" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr() , i, "A4_223" );
-            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr() , i, "A4_224" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseShortResidentAtr() == null ? 0 : empAddChangeInfoExport.getSpouseShortResidentAtr(), i, "A4_221" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() == null ? 0 : empAddChangeInfoExport.getSpouseResidenceOtherResidentAtr() , i, "A4_222" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseLivingAbroadAtr()  == null ? 0 : empAddChangeInfoExport.getSpouseLivingAbroadAtr(), i, "A4_223" );
+            RomajiNameNotiCreSetPDFAposeFileGenerator.selectShapes(worksheet, empAddChangeInfoExport.getSpouseOtherAtr()  == null ? 0 : empAddChangeInfoExport.getSpouseOtherAtr(), i, "A4_224" );
 
             worksheet.get(i).getTextBoxes().get("A2_19").setText(Objects.toString(empAddChangeInfoExport.getSpouseOtherAtr() != null &&
                     empAddChangeInfoExport.getSpouseOtherAtr() == 1 && empAddChangeInfoExport.getSpouseOtherReason() != null ? "("+ empAddChangeInfoExport.getSpouseOtherReason() + ")": "（        ）"));
