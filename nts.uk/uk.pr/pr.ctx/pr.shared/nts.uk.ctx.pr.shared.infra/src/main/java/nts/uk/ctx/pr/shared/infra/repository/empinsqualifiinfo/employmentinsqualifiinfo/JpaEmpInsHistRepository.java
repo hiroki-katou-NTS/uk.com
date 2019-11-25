@@ -80,16 +80,6 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 		return domains;
 	}
 
-    private List<EmpInsHist> toEmpInsHistDomain(List<QqsmtEmpInsHist> listHist) {
-        List<EmpInsHist> domains = new ArrayList<>();
-        listHist.stream().collect(Collectors.groupingBy(e -> e.empInsHistPk.sid, Collectors.toList())).forEach((k, v) ->
-            domains.add(new EmpInsHist(k, v.stream()
-                    .map(e -> new DateHistoryItem(e.empInsHistPk.histId, new DatePeriod(e.startDate, e.endDate)))
-                    .collect(Collectors.toList()))));
-        return domains;
-    }
-
-
     @Override
     public Optional<EmpInsNumInfo> getEmpInsNumInfoById(String cid, String sid, String hisId) {
         return this.queryProxy().query(SELECT_BY_KEY_HIS, QqsmtEmpInsHist.class)
