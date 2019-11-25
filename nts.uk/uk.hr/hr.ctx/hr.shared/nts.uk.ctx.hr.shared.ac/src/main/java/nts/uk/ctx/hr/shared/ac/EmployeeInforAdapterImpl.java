@@ -67,10 +67,16 @@ public class EmployeeInforAdapterImpl implements EmployeeInforAdapter {
 	}
 	
 	private DepartmentImport converToDepartmentExport (DepartmentExport ex){
-		return new DepartmentImport(
+		return new DepartmentImport(ex.getCompanyId(),
+				ex.isDeleteFlag(),
+				ex.getDepartmentHistoryId(),
+				ex.getDepartmentId(),
 				ex.getDepartmentCode(),
 				ex.getDepartmentName(),
-				ex.getDepartmentGenericName());
+				ex.getDepartmentGeneric(),
+				ex.getDepartmentName(),
+				ex.getHierarchyCode(),
+				ex.getDepartmentExternalCode());
 	}
 	
 	private PositionImport converToPositionExport(PositionExport ex){
