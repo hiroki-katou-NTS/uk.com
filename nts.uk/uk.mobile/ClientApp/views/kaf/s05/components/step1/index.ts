@@ -164,7 +164,8 @@ export class KafS05aStep1Component extends Vue {
                     workTypeCode: self.workTypeCd,
                     startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
                     endTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.end),
-                    restTimeDisFlg: self.restTimeDisFlg
+                    restTimeDisFlg: self.restTimeDisFlg,
+                    overtimeSettingDataDto: self.overtimeSettingDataDto
                 }).then((result: { data: any }) => {
                     self.workTimeInput.start = result.data.startTime1 == null ? null : result.data.startTime1;
                     self.workTimeInput.end = result.data.endTime1 == null ? null : result.data.endTime1;
@@ -957,6 +958,7 @@ export class KafS05aStep1Component extends Vue {
             }
         }
         self.performanceExcessAtr = data.performanceExcessAtr;
+        self.overtimeSettingDataDto = data.overtimeSettingDataDto;
     }
 
     public changeAppDateData(data: any) {

@@ -63,8 +63,6 @@ export const MobilePicker = {
     }),
     watch: {
         show: {
-            deep: true,
-            immediate: true,
             handler(show: boolean) {
                 let self = this,
                     opts = self.options,
