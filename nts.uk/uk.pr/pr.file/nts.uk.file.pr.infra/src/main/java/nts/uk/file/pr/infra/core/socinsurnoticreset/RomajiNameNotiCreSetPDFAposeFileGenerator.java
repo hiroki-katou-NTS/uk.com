@@ -81,7 +81,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana(), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? romajiNameNotiCreSetExport.getPersonalOtherReason() : ""));
+                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? "（ " + romajiNameNotiCreSetExport.getPersonalOtherReason() + " ）" : "（           ）"));
 
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getPersonalResidentCard() , i, "A1_5","A1_6" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalShortResident() , i, "A4_1" );
@@ -94,13 +94,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(romajiNameNotiCreSetExport.getFmBsPenNum(), worksheet, i, 11, 1);
                 if ( romajiNameNotiCreSetExport.getFamilyMember() != null ) {
                     this.pushBirthDay(romajiNameNotiCreSetExport.getFamilyMember().getBirthday(), worksheet, i);
+                    this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse(""), worksheet, i, 14, 4);
+                    this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse(""), worksheet, i, 13, 4);
                 }
-
-                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse(""), worksheet, i, 14, 4);
-                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse(""), worksheet, i, 13, 4);
-
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
+                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? "（ "  + romajiNameNotiCreSetExport.getSpouseOtherReason().toString() + " ）": "（           ）"));
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getSpouseResidentCard() , i, "A1_5","A1_6" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );
@@ -111,8 +109,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd()) : " 〒　　　　　－"));
                 worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
-                worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
-                worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
+                worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ? companyInfor.getCompanyName(): ""));
+                worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ? companyInfor.getRepname(): ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum(), 1) + "(" + formatPhone( companyInfor.getPhoneNum(), 2) +")" + formatPhone( companyInfor.getPhoneNum(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
 
             } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)) {
@@ -160,22 +158,22 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value != 1 ? option1 : option2));
     }
 
-    private static String formatPostCode(String pc) {
-        if (pc != null) {
-            String[] list = pc.split("");
+    private static String formatPostCode(String ps) {
+        if (ps != null && ps.length() > 0) {
+            String[] list = ps.split("-");
             StringBuffer st = new StringBuffer("");
             for (int i = 0; i < list.length; i++) {
-                if("-".equals(list[i])){
-                    return pc;
-                }
                 st.append(list[i]);
-                if((i+1)%3==0 && list.length > st.length()) {
-                    st.append("-");
-                }
             }
-            return "〒 " +st.toString();
+
+            if(st.length() > 3) {
+                return "〒 " + st.toString().substring(0, 3) + "-" + st.toString().substring(3);
+            } else {
+                return "〒 " + st.toString();
+            }
+
         } else {
-            return  " 〒　　　　　－";
+            return " 〒　　　　　－";
         }
     }
 

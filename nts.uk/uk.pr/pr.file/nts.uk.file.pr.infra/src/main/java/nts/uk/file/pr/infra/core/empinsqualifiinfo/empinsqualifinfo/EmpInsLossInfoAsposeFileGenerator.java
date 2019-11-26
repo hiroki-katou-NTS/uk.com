@@ -8,8 +8,6 @@ import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
-import nts.gul.text.StringLength;
-import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoExportData;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoFileGenerator;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
@@ -20,9 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.awt.*;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Stateless
@@ -31,7 +27,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格喪失届.pdf";
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
-    private static final String PEACE = "令和";
+    private static final String REIWA = "令和";
     private static final String TAISO = "明治";
     private static final String MEI = "大正";
 
@@ -145,6 +141,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 }
                 //A1_7
                 JapaneseDate empInsHistEndDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).end().toString().substring(0,10), "yyyy/MM/dd"));
+                textBuilder.appendText(setValue(233,677, findEra(empInsHistEndDate.era()), 16));
                 {
                     String value = (empInsHistEndDate.year() + 1 < 10 ? "0" + (empInsHistEndDate.year() + 1) : empInsHistEndDate.year() + 1) + "" + (empInsHistEndDate.month() < 10 ? "0" + empInsHistEndDate.month() : empInsHistEndDate.month()) + "" + (empInsHistEndDate.day() < 10 ? "0" + empInsHistEndDate.day() : empInsHistEndDate.day()) + "";
                     detachText(267, 677, value, 6, textBuilder);
@@ -225,7 +222,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                         rect2 = new Circle(392, 40, 7);
                         break;
                     }
-                    case PEACE: {
+                    case REIWA: {
                         rect2 = new Circle(392, 32, 7);
                         break;
                     }
@@ -339,19 +336,18 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
     private String findEra(String era) {
         if (TAISO.equals(era)) {
-            return "1";
+            return " ";
         }
         if (MEI.equals(era)) {
-            return "2";
+            return " ";
         }
-
         if (SHOWA.equals(era)) {
             return "3";
         }
         if (HEISEI.equals(era)) {
             return "4";
         }
-        if (PEACE.equals(era)) {
+        if (REIWA.equals(era)) {
             return "5";
         }
         return "";

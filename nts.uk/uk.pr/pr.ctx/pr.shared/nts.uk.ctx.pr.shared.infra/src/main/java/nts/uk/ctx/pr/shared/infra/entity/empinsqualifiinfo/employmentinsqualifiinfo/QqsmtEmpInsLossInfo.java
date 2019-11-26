@@ -36,14 +36,14 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
      */
     @Basic(optional = true)
     @Column(name = "WORKING_TIME")
-    public int workingTime;
+    public Integer workingTime;
 
     /**
      * 喪失原因
      */
     @Basic(optional = true)
     @Column(name = "CAUSE_OF_LOSS_ATR")
-    public int causeOfLossAtr;
+    public Integer causeOfLossAtr;
 
     /**
      * 雇用保険喪失原因
@@ -57,14 +57,14 @@ public class QqsmtEmpInsLossInfo extends UkJpaEntity implements Serializable
      */
     @Basic(optional = true)
     @Column(name = "SCHE_REPLEN_ATR")
-    public int scheReplenAtr;
+    public Integer scheReplenAtr;
 
     /**
      * 離職票交付希望
      */
     @Basic(optional = true)
     @Column(name = "REQ_ISSU_ATR")
-    public int requestForIssuance;
+    public Integer requestForIssuance;
 
     @Override
     protected Object getKey()
