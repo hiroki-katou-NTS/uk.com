@@ -10,10 +10,9 @@ import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 社員雇用保険履歴
- */
+* 社員雇用保険履歴
+*/
 @Getter
-
 public class EmpInsHist extends AggregateRoot implements ContinuousResidentHistory<DateHistoryItem,DatePeriod, GeneralDate> {
     
     /**
@@ -31,4 +30,8 @@ public class EmpInsHist extends AggregateRoot implements ContinuousResidentHisto
         this.historyItem = historyItem;
     }
 
+    @Override
+    public List<DateHistoryItem> items() {
+        return historyItem;
+    }
 }
