@@ -101,6 +101,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     private static final String A1_104 = "10101";
     private static final String A1_105 = "";
     private static final String A1_106 = "";
+    private static final int LIMITTED_HOUR = 100;
 
     private int row;
     private int startColumn;
@@ -532,7 +533,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String toHours(int minutes) {
-        return minutes < 60 ? ("00:" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60));
+        return minutes >= LIMITTED_HOUR*60 ? "99:59" : minutes < 60 ? ("00:" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60));
     }
 
     private JapaneseDate toJapaneseDate(JapaneseEras jpEras, GeneralDate date) {
