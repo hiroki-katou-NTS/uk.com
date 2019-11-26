@@ -83,6 +83,20 @@
                 </div>
 
             </div>
+
+            <div data-bind=" if: modeScreen() == nts.uk.com.view.cdl028.a.viewmodel.MODE_SCREEN.YEAR_MONTH">
+                <div id="table-1" class="table table-1">
+                    <div class="cell">
+                        <div id="A1_1" class="lable" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('CDL028_9')}</div>
+                    </div>
+                    <!-- A1_2 -->
+                    <div class="cell">
+                        <div tabindex="1" id="A1_2" data-bind="ntsDatePicker: {required: true, value: standardYearMonth, dateFormat: 'yearmonth', name:'#[CDL028_9]'}"></div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
         <div id="functions-area-bottom" class="btn-click">
             <button tabindex="4" data-bind="click: proceed" class="proceed" id="A10_1" >#{i18n.getText('CDL028_6')}</button>

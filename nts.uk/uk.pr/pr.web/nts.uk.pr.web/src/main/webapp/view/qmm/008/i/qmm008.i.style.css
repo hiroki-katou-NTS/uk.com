@@ -1,0 +1,52 @@
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -10px;
+}
+.inline-element {
+	display: inline-block;
+}
+.right-panel {
+	margin-right: 20px;
+}
+
+#C3 div {
+	display: inline-block;
+}
+
+
+#C3_container tr {
+	height:35px;
+}
+
+#C3_container th {
+	text-align: center;
+}
+
+#C4 div {
+	display: inline-block;
+}
+
+
+#C4_container tr {
+	height:35px;
+}
+
+#C4_container th {
+	text-align: center;
+}
+
+#C5_container tr {
+	height:35px;
+}
+
+#C5_container th {
+	text-align: center;
+}
+
+.table-combobox {
+	margin-left: 10px;
+    vertical-align: middle;
+}
+.td-widget {
+    color: #000;
+    background-color: #CFF1A5;
+}

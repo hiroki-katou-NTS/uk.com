@@ -1,0 +1,16 @@
+.table {
+    margin-top: 10px;
+    width: 400px;
+}
+
+.table .cell:nth-child(1) {
+    width: 140px;
+}
+
+.table .cell:nth-child(2) {
+    width: 260px;
+}
+
+#P1_4{
+    margin-left: 20px;
+}

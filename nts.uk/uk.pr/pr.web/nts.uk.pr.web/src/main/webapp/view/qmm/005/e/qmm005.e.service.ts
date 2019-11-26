@@ -1,22 +1,12 @@
-/// <reference path="../qmm005.ts"/>
-module qmm005.e {
-    // api define in qmm005.ts
-    var webapi = common.webapi();
-    export module services {
-        export function getData(processingNo: number) {
-            let def = $.Deferred();
-            nts.uk.request.ajax(webapi.qmm005d.getdata, { processingNo: processingNo }).done(function(resp) {
-                def.resolve(resp);
-            });
-            return def.promise();
-        }
+module nts.uk.pr.view.qmm005.e.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    let paths = {
+        findReflectSystemReferenceDateInfo: "ctx/pr/processdatecls/findReflectSystemReferenceDateInfo/{0}/{1}",
 
-        export function updateData(model: any) {
-            let def = $.Deferred();
-            nts.uk.request.ajax(webapi.qmm005d.update, model).done(function(resp) {
-                def.resolve(resp);
-            });
-            return def.promise();
-        }
+    };
+    export function findReflectSystemReferenceDateInfo(processingCategoryNo: number, processDate: number): JQueryPromise<any> {
+        let _path = format(paths.findReflectSystemReferenceDateInfo, processingCategoryNo, processDate);
+        return ajax('pr', _path);
     }
 }

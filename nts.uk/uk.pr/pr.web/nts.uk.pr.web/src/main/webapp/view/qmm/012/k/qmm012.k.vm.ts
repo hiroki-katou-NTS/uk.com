@@ -1,50 +1,61 @@
-module qmm012.k.viewmodel {
+module nts.uk.pr.view.qmm012.k.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
-        taxLimitGridColumns: any;
-        taxLimitListItems: KnockoutObservableArray<qmm023.a.service.model.CommuteNoTaxLimitDto> = ko.observableArray([]);
-        taxLimitGridCurrentCode: KnockoutObservable<string> = ko.observable('');
-        GridlistCurrentItem: KnockoutObservable<qmm023.a.service.model.CommuteNoTaxLimitDto> = ko.observable(null);
+        listTaxExemptLimit: KnockoutObservableArray<TaxExemptLimit> = ko.observableArray([]);
+        selectedTaxExemptLimit: KnockoutObservable<TaxExemptLimit> = ko.observable(null);
+        currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
-            self.taxLimitGridColumns = ko.observableArray([
-                { headerText: 'コード', prop: 'commuNoTaxLimitCode', width: 40 },
-                { headerText: '名称', prop: 'commuNoTaxLimitName', width: 110 },
-                { headerText: '限度額', prop: 'commuNoTaxLimitValue', width: 110 }
-            ]);
-            self.LoadData();
-            self.taxLimitGridCurrentCode.subscribe(function(newValue) {
-                var item = _.find(self.taxLimitListItems(), function(ItemModel: qmm023.a.service.model.CommuteNoTaxLimitDto) {
-                    return ItemModel.commuNoTaxLimitCode == newValue;
-                });
-                self.GridlistCurrentItem(item);
-            })
-        }
-
-        LoadData() {
-            let self = this;
-            service.getCommutelimitsByCompanyCode().done(function(CommuteNoTaxLimits: Array<qmm023.a.service.model.CommuteNoTaxLimitDto>) {
-                self.taxLimitListItems(CommuteNoTaxLimits);
-                let selectedCode = nts.uk.ui.windows.getShared('commuNoTaxLimitCode');
-                if (!selectedCode) {
-                    if (CommuteNoTaxLimits.length) {
-                        self.taxLimitGridCurrentCode(CommuteNoTaxLimits[0].commuNoTaxLimitCode);
-                    } else {
-                        nts.uk.ui.dialog.alert("対象データがありません。");
+            let params = getShared("QMM012_B_TO_K_PARAMS");
+            $("#K3_1").focus();
+            self.currentCode.subscribe(taxFreeamountCode => {
+                let getTaxExemptLimit = _.find(self.listTaxExemptLimit(), function(x) { return x.taxFreeamountCode == taxFreeamountCode; });
+                self.selectedTaxExemptLimit(getTaxExemptLimit);
+            });
+            service.getAllTaxAmountByCompanyId().done(function(data: Array<TaxExemptLimit>) {
+                if (data && data.length > 0) {
+                    let dataSort = _.sortBy(data, ["taxFreeamountCode"]);
+                    self.listTaxExemptLimit(dataSort);
+                    if(params) {
+                        self.currentCode(params);
+                    }else{
+                       self.currentCode(self.listTaxExemptLimit()[0].taxFreeamountCode); 
                     }
-                } else
-                    self.taxLimitGridCurrentCode(selectedCode);
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res);
+                }
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
             });
         }
-        SubmitDialog() {
-            let self = this;
-            nts.uk.ui.windows.setShared('CommuteNoTaxLimitDto', self.GridlistCurrentItem());
-            nts.uk.ui.windows.close();
 
-        }
-        CloseDialog() {
+        setTaxExemption() {
+            let self = this;
+            if (self.selectedTaxExemptLimit()) {
+                setShared("QMM012_K_DATA", {code: self.selectedTaxExemptLimit().taxFreeamountCode, name: self.selectedTaxExemptLimit().taxExemptionName});
+            } else {
+                setShared("QMM012_K_DATA", {code: "", name: ""});
+            }
             nts.uk.ui.windows.close();
+        }
+
+        cancelSetting() {
+            setShared("QMM012_K_DATA", {});
+            nts.uk.ui.windows.close();
+        }
+    }
+    class TaxExemptLimit {
+        taxFreeamountCode: string;
+        taxExemptionName: string;
+        taxExemption: number;
+
+        constructor(taxFreeamountCode: string, taxExemptionName: string, taxExemption: number) {
+            this.taxFreeamountCode = taxFreeamountCode;
+            this.taxExemptionName = taxExemptionName;
+            this.taxExemption = taxExemption;
         }
     }
 }

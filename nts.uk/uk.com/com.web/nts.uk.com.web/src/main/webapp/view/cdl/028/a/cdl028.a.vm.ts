@@ -17,12 +17,15 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         startDateFiscalYear: KnockoutObservable<number> =ko.observable(null);
         endDateFiscalYear: KnockoutObservable<number> =ko.observable(null);
         endDateDay: KnockoutObservable<number> =ko.observable(null);
+        standardYearMonth: KnockoutObservable<number> = ko.observable(null);
+
         constructor() {
             var self = this;
             let params: any = nts.uk.ui.windows.getShared("CDL028_INPUT");
             if (params == null || params === undefined) {
                 return;
             }
+            self.standardYearMonth(parseInt(moment(Date.now()).format("YYYYMM")));
             self.modeScreen(params.mode);
             self.standardDate(params.date == null ? parseInt(moment().utc().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(moment(params.date).format("YYYYMMDD")).toValue());
         }
@@ -100,6 +103,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
                     self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
                     break;
+
             }
 
             dfd.resolve();
@@ -143,8 +147,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                    status : true,
                    mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_RANGE : self.modeScreen(),
                    standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? self.convertMonthYearToString(self.standardDate())  : null,
-                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.startDateFiscalYear()),
-                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.endDateFiscalYear())
+                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE || self.modeScreen() == MODE_SCREEN.YEAR_MONTH) ? null : self.convertMonthYearToString(self.startDateFiscalYear()),
+                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE || self.modeScreen() == MODE_SCREEN.YEAR_MONTH) ? null : self.convertMonthYearToString(self.endDateFiscalYear()),
+                   standardYearMonth: self.standardYearMonth()
                };
 
                 $("#A2_2 .ntsDatepicker").trigger("validate");
@@ -212,7 +217,10 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         YEAR_PERIOD = 5,
         
         // YEAR PERIOD MAPPING WITH SERVER
-        YEAR_RANGE = 4
+        YEAR_RANGE = 4,
+
+        //Mode YEARMONTH
+        YEAR_MONTH = 6
     }
     interface IPARAMS_CDL {
         status: boolean;
@@ -220,6 +228,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         standardDate: KnockoutObservable<number>;
         startDateFiscalYear: KnockoutObservable<number>;
         endDateFiscalYear: KnockoutObservable<number>;
+        standardYearMonth: KnockoutObservable<number>;
     }
 
     class PARAMS_CDL {
@@ -228,6 +237,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         standardDate: KnockoutObservable<number>;
         startDateFiscalYear: KnockoutObservable<number>;
         endDateFiscalYear: KnockoutObservable<number>;
+        standardYearMonth: KnockoutObservable<number>;
 
         constructor(paramsCdl: IPARAMS_CDL){
             this.status = paramsCdl.status;
@@ -235,6 +245,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
             this.standardDate = paramsCdl.standardDate;
             this.startDateFiscalYear = paramsCdl.startDateFiscalYear;
             this.endDateFiscalYear = paramsCdl.endDateFiscalYear;
+            this.standardYearMonth = paramsCdl.standardYearMonth;
         }
     }
 

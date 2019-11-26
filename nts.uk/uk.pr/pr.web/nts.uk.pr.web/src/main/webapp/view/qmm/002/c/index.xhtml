@@ -7,105 +7,90 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1200, height: 670 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="qmm002.c.start.js" />
-			<com:scriptfile path="qmm002.c.vm.js" />
-			<com:scriptfile path="qmm002.c.service.js" />
+			<script>var dialogSize = { width: 942, height: 640 };</script>
 			<com:scriptfile set="IGNITE" />
-
+			<com:scriptfile path="qmm002.c.service.js" />
+			<com:scriptfile path="qmm002.c.vm.js" />
+			<com:scriptfile path="qmm002.c.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="contents-area">
-			    <div>
-					<button class="large" id="C_BTN_001" data-bind="click: tranferBranch">実行</button>
-					<button class="large" id="C_BTN_002" data-bind="click: closeDialog">閉じる</button>
-					<br />
-				</div>
-				<hr id ="hr-horizontal"/>
-				<div class="content-1">
-					<div>
-						<label id="C_LBL_001">以下の情報を置換えます。</label><br />
-						<label id="C_LBL_002">-振込元銀行:取引銀行、個人情報</label><br />
-						<label id="C_LBL_003">-振込元銀行:個人情報</label>
+			<div id="functions-area">
+				<button tabindex = "1" data-bind="click: execute, timeClick: 500">#{i18n.getText('QMM002_22')}</button>
+				<button tabindex = "2" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM002_23')}</button>
+			</div>
+			<div id="contents-area" style="padding: 10px 25px">
+				<div style="width: 890px">
+					<div style="margin-bottom: 10px">
+						<span class="label">#{i18n.getText('QMM002_24')}</span><br/>
+						<span class="label">#{i18n.getText('QMM002_25')}</span><br/>
+						<span class="label">#{i18n.getText('QMM002_26')}</span><br/>
 					</div>
-					<br />
 					<div class="cf">
-						<div class="content-left">
-							<div>
-								<label id="C_LBL_002">【統合元情報】</label>
+						<div id="source" style="float: left">
+							<div class="valign-center control-group">
+								<span class="label">#{i18n.getText('QMM002_27')}</span>
 							</div>
-							<br />
-							<div class="cf">
-								<div style="float: left">
-									<div style="width: 515px"
-										data-bind="ntsSearchBox: {
-											comId: 'treegrid1',
-											items: lst_001, 
-											selected: selectedCodes, 
-											selectedKey: 'treeCode', 
-											childField: 'childs', 
-											fields: ['name', 'code']}" />
-									<br />
-									<table id="treegrid1"
-										data-bind="ntsTreeGridView:{
-											width: 515,
-											height: 385,
-											options: lst_001,
-											selectedValues: selectedCodes,								
-											optionsValue: 'treeCode',
-											optionsChild: 'childs',
-											optionsText: 'displayName',
-											multiple: true,
-											enable: true,										
-											showCheckBox: true}"
-										class="cf">
-									</table>
-								</div>
+							<div class="valign-center control-group">
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'id', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
+									selected: selectedSourceBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 							</div>
+							<table id="treegridbankbranchsource" tabindex="4"
+								data-bind="ntsTreeGridView:{
+									width: 400,
+									rows: 15,
+									dataSource: sourceBankBranchList,
+									selectedValues: selectedSourceBranchCodes,
+									headers: headers,
+									primaryKey: 'id',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
+									multiple: true,
+									enable: true,
+									showCheckBox: true}"></table>
 						</div>
-						<hr id="hr-vertical" />
-						<span class="caret-right"></span>
-						<div class="content-right">
-							<div>
-								<label id="C_LBL_002">【統合先情報】</label>
+						<div id="midsec" style="float: left; width: 65px">
+							<hr width="1" size="430"/>
+							<span class="caret-right caret-inline"></span>
+						</div>
+						<div id="destination" style="float: left">
+							<div class="valign-center control-group">
+								<span class="label">#{i18n.getText('QMM002_29')}</span>
 							</div>
-							<br />
-								<div class="cf">
-								<div style="float: left">
-									<div style="width: 515px"
-										data-bind="ntsSearchBox: {
-											comId: 'treegrid2',
-											items: lst_002, 
-											selected: singleSelectedCode, 
-											selectedKey: 'treeCode', 
-											childField: 'childs', 
-											fields: ['name', 'code']}" />
-									<br />
-									<table id="treegrid2"
-										data-bind="ntsTreeGridView:{
-											width: 515,
-											height: 385,
-											options: lst_001,
-											value: singleSelectedCode,								
-											optionsValue: 'treeCode',
-											optionsChild: 'childs',
-											optionsText: 'displayName',
-											multiple: false,
-											enable: true,										
-											showCheckBox: false}"
-										class="cf">
-									</table>
-								</div>
+							<div class="valign-center control-group">
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<div tabindex="5" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'id', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
+									selected: selectedDesBranchCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 							</div>
+							<table id="treegridbankbranchdestination" tabindex="6"
+								data-bind="ntsTreeGridView:{
+									width: 400,
+									rows: 15,
+									dataSource: desBankBranchList,
+									value: selectedDesBranchCode,
+									headers: headers,
+									primaryKey: 'id',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
+									multiple: false,
+									enable: true,
+									showCheckBox: false}"></table>
 						</div>
 					</div>
 				</div>
 			</div>
+			<style>
+				#treegridbankbranchsource_container, #treegridbankbranchdestination_container{clear: both}
+				.caret-right.caret-inline:after {
+				    margin-left: 2.3em;
+				    margin-top: -31.7em;
+				    border-left: 1.7em solid;
+				    border-top: 6.7em solid transparent;
+				    border-bottom: 6.7em solid transparent;
+				}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

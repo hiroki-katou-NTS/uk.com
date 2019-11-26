@@ -1,2 +1,8 @@
-.screen-b {
+#img-calendar{
+    position: absolute;
+    z-index: 1;
+    margin: -14px -11px;
+}
+#B1_5_container {
+    margin: 15px 0px 0px 0px !important;
 }
