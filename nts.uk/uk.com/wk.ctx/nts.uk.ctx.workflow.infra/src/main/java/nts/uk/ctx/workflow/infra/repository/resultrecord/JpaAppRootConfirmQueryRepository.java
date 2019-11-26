@@ -41,7 +41,7 @@ public class JpaAppRootConfirmQueryRepository
 		
 		List<AppRootIntermForQuery> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
-			long startTime = System.currentTimeMillis();
+			//long startTime = System.currentTimeMillis();
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.START_DATE, r.END_DATE, MAX(p.PHASE_ORDER) as FINAL_PHASE_ORDER" 
 					+ " from WWFDT_APP_ROOT_INSTANCE r"
 					+ " inner join WWFDT_APP_PHASE_INSTANCE p"
@@ -80,7 +80,7 @@ public class JpaAppRootConfirmQueryRepository
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
-			System.out.print("\n thoi gian queryInterm:  " +(System.currentTimeMillis() - startTime) + "\n");
+			//System.out.print("\n thoi gian queryInterm:  " +(System.currentTimeMillis() - startTime) + "\n");
 		});
 	
 		return new AppRootIntermForQuery.List(results);
@@ -94,7 +94,7 @@ public class JpaAppRootConfirmQueryRepository
 			RecordRootType rootType) {
 
 		List<AppRootRecordConfirmForQuery> results = new ArrayList<>();
-        long startTime = System.currentTimeMillis();
+        //long startTime = System.currentTimeMillis();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
 			
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.RECORD_DATE, p.PHASE_ORDER, p.APP_PHASE_ATR"
@@ -136,7 +136,7 @@ public class JpaAppRootConfirmQueryRepository
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
-			System.out.print("\n thoi gian queryConfirm:  " +(System.currentTimeMillis() - startTime) + "\n");
+			//System.out.print("\n thoi gian queryConfirm:  " +(System.currentTimeMillis() - startTime) + "\n");
 		});
 		
 		return new AppRootRecordConfirmForQuery.List(results);

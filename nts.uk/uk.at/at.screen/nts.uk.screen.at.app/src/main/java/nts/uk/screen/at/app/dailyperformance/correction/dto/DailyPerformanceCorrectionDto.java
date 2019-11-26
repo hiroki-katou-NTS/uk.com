@@ -143,6 +143,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
 		this.mapCellState = new HashMap<>();
+		this.lstCellState = new ArrayList<>();
 		this.lstControlDisplayItem = new DPControlDisplayItem();
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
@@ -372,11 +373,13 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	public void setCellSate(String rowId, String columnKey, String state) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
-			existedCellState.get().addState(state);
 			List<String> stateCell = existedCellState.get().getState();
 			if(stateCell.contains(DPText.STATE_DISABLE)) {
 				lstCellDisByLock.add(new DPHideControlCell(rowId, columnKey));
 			}
+			if (existedCellState.get().getState().contains(state))
+				return;
+			existedCellState.get().addState(state);
 		} else {
 			List<String> states = new ArrayList<>();
 			states.add(state);
@@ -386,14 +389,14 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				lstCellDisByLock.add(new DPHideControlCell("_" + rowId, columnKey));
 			}
 		}
-		
-
 	}
 	
 	/** Set AlarmCell state for Fixed cell */
 	public void setCellSate(String rowId, String columnKey, String state, boolean lock) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
+			if (existedCellState.get().getState().contains(state))
+				return;
 			existedCellState.get().addState(state);
 		} else {
 			List<String> states = new ArrayList<>();
