@@ -532,13 +532,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String toHours(int minutes) {
-        String hour = "";
-        if (minutes < 60) {
-            hour = "00:" + (minutes < 10 ? "0" + minutes : minutes);
-        } else {
-            hour = (minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +((minutes - 60*(minutes/60)) < 10 ? "0" + (minutes - 60*(minutes/60)) : (minutes - 60*(minutes/60)));
-        }
-        return hour;
+        return minutes < 60 ? ("00:" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60));
     }
 
     private JapaneseDate toJapaneseDate(JapaneseEras jpEras, GeneralDate date) {
