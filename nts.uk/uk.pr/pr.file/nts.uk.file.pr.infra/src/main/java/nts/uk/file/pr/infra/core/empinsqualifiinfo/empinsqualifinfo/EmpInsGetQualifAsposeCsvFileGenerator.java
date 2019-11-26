@@ -380,9 +380,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 if (empInsNumInfos.containsKey(histId)) {
                     if (empInsOffices.get(histId) != null) {
                         String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-                        cells.get(row, 16 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(0, 4));
-                        cells.get(row, 17 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(4, 10));
-                        cells.get(row, 18 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v().substring(10));
+                        cells.get(row, 16 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(null));
+                        cells.get(row, 17 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(null));
+                        cells.get(row, 18 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(null));
                     } else {
                         cells.get(row, 16 + startColumn).setValue("");
                         cells.get(row, 17 + startColumn).setValue("");
