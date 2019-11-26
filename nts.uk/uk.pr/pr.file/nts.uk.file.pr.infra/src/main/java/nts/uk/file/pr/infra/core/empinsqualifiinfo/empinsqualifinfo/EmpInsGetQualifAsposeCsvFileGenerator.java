@@ -101,6 +101,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     private static final String A1_104 = "10101";
     private static final String A1_105 = "";
     private static final String A1_106 = "";
+    private static final int LIMITTED_HOUR = 100;
 
     private int row;
     private int startColumn;
@@ -327,7 +328,6 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-
                     if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                         cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
@@ -336,13 +336,14 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
                     } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
                             && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value) {
-                        cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
-                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
+
+                        cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
+                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
                     }
 
                     if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
                        && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
-                       && !personExports.get(pId).getPersonNameGroup().getOldName().getFullName().equals(null)) {
+                       && personExports.get(pId).getPersonNameGroup().getOldName().getFullName()!=null) {
 
                         if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                             cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
@@ -532,13 +533,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String toHours(int minutes) {
-        String hour = "";
-        if (minutes < 60) {
-            hour = "00:" + (minutes < 10 ? "0" + minutes : minutes);
-        } else {
-            hour = (minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +((minutes - 60*(minutes/60)) < 10 ? "0" + (minutes - 60*(minutes/60)) : (minutes - 60*(minutes/60)));
-        }
-        return hour;
+        return minutes >= LIMITTED_HOUR*60 ? "99:59" : minutes < 60 ? ("00:" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + ":" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60));
     }
 
     private JapaneseDate toJapaneseDate(JapaneseEras jpEras, GeneralDate date) {

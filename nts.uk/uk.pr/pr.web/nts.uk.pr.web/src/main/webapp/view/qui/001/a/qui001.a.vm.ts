@@ -20,7 +20,8 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         fillingDate: KnockoutObservable<string> = ko.observable('');
         fillingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls());
+        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls32());
+        officeInfos: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls47());
         outputOrders: KnockoutObservable<model.ItemModel> = ko.observable(model.getEmpInsOutOrder());
         printPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.isPrintMyNum());
         submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
@@ -30,7 +31,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
-            officeClsAtr: 0,
+            officeClsAtr: 1,
             myNumberClsAtr: 1,
             nameChangeClsAtr: 1
         }));
@@ -103,7 +104,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            $.when(service.getEmpInsReportSetting(), service.getEmpInsReportTxtSetting())
+            $.when(service.getEmpInsRptSetg(), service.getEmpInsReportTxtSetting())
             .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
                 self.screenMode(model.SCREEN_MODE.NEW);
                 if (setting) {
@@ -266,7 +267,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let self = this;
             let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
             if(empIds.length == 0) {
-                dialog.alertError({ messageId: 'Msg_37' });
+                //dialog.alertError({ messageId: 'Msg_37' });
                 return;
             }
             let data = {
@@ -284,7 +285,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
-
         }
 
         validate() {
