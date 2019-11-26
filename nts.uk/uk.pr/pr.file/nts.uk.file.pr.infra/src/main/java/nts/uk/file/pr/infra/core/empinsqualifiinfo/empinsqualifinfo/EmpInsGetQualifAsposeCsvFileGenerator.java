@@ -327,7 +327,6 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-
                     if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                         cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
@@ -336,13 +335,14 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
                     } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
                             && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value) {
-                        cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
-                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
+
+                        cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
+                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());
                     }
 
                     if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
                        && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
-                       && !personExports.get(pId).getPersonNameGroup().getOldName().getFullName().equals(null)) {
+                       && personExports.get(pId).getPersonNameGroup().getOldName().getFullName()!=null) {
 
                         if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                             cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());

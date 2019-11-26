@@ -19,7 +19,7 @@
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
         <com:ValidatorScript>
-            nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.FdNumber
+            nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.FdNumber
         </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
@@ -38,12 +38,12 @@
             </button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
-            <div style="margin-top: 15px; min-width: 1000px; margin-bottom: 20px" class="fixed-flex-layout">
-                <div id="com-ccg001" style="height: 455px !important;"></div>
+            <div style="margin-top: 15px; min-width: 1280px; margin-bottom: 20px; min-height: 570px;" class="fixed-flex-layout">
+                <div id="com-ccg001"></div>
 
                 <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
                     <div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
-                        <div class="valign-center control-group " > <!--style="height: 33px !important; padding-top: 0px; !important;"-->
+                        <div class="valign-center control-group " >
 							<span class="label with-image">
                                 <img id="img-calendar" class="image image-calendar" src="../resources/QUI001_1.png"/>
 								<span id="A222_3">#{i18n.getText('QUI001_A222_3')}</span>
@@ -184,7 +184,7 @@
                                 <div id="A222_46" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_46')}</div>
                                 <div id="A222_47" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
                                 name: '#[QUI001_A222_47]',
-                                options: $vm.officeInformations,
+                                options: $vm.officeInfos,
                                 optionsValue: 'code',
                                 value: officeAtr,
                                 visibleItemsCount: 3,
@@ -199,7 +199,7 @@
                                     constraint: 'FdNumber',
                                     name: '#{i18n.getText('QUI001_A222_50')}',
                                     value: fdNumber
-                                    }"/> <!--style=" width: 50px; height: 18px"-->
+                                    }"/>
                             </div>
                         </div>
                     </div>

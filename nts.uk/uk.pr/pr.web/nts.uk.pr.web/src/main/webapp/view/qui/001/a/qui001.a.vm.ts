@@ -20,7 +20,8 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         fillingDate: KnockoutObservable<string> = ko.observable('');
         fillingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls());
+        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls32());
+        officeInfos: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls47());
         outputOrders: KnockoutObservable<model.ItemModel> = ko.observable(model.getEmpInsOutOrder());
         printPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.isPrintMyNum());
         submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
