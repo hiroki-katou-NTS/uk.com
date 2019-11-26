@@ -10,7 +10,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.DateDisplaySetting;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.DateDisplaySettingRepository;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.DateDisplaySettingValue;
@@ -25,6 +28,9 @@ public class DateDisplaySettingService {
 
 	@Inject
 	private DateDisplaySettingRepository dateDisplaySettingRepo;
+
+	@Inject
+	private IGetYearStartEndDateByDate getYearStartEndSv;
 
 	// 日付表示設定の取得
 	public List<PeriodDisplaySettingList> getDateDisplaySetting(String programId, String companyId) {
@@ -61,8 +67,113 @@ public class DateDisplaySettingService {
 	public void add(DateDisplaySetting dateSetting) {
 		this.dateDisplaySettingRepo.add(dateSetting);
 	}
+
 	// 日付表示設定の更新
 	public void update(String companyId, List<DateDisplaySetting> dateSetting) {
 		this.dateDisplaySettingRepo.update(companyId, dateSetting);
+	}
+
+	public GeneralDate getDisplayDate(String companyId, DateDisplaySettingValue setting) {
+		int settingClass = setting.getSettingClass().value;
+		int settingNum = setting.getSettingNum();
+		int settingDate = setting.getSettingDate();
+		int settingMonth = setting.getSettingMonth();
+		GeneralDate baseDate = GeneralDate.today();
+		GeneralDate displayDate = null;
+		// 期間設定区分 = 0 (PeriodSettingClass=0)
+		if (settingClass == 0) {
+			return null;
+		}
+		// 値を返す(Trả về value) 期間設定区分 = 1～7(PeriodSettingClass = 1～7)
+		if (settingClass >= 1 && settingClass <= 7) {
+			switch (settingClass) {
+			case 1:
+				// （T/H PeriodSettingClass = 1) ・DisplayDate = BaseDate
+				displayDate = baseDate;
+				break;
+			case 2:
+				// ・DisplayDate = BaseDate．add(DATE, -SettingNum) ・DisplayDate =
+				// BaseDate．add(DATE, -SettingNum)
+				displayDate = baseDate.addDays(-settingNum);
+				break;
+			case 3:
+				// （T/H PeriodSettingClass = 3 ） ・DisplayDate =
+				// BaseDate．add(MONTH, -SettingNum）
+				displayDate = baseDate.addMonths(-settingNum);
+				break;
+			case 4:
+				// （T/H PeriodSettingClass = 4） ・DisplayDate =
+				// BaseDate．add(DATE, SettingNum)
+				displayDate = baseDate.addDays(settingNum);
+				break;
+			case 5:
+				// （T/H PeriodSettingClass = 5 ）・DisplayDate =
+				// BaseDate．add(MONTH, SettingNum)
+				displayDate = baseDate.addMonths(settingNum);
+				break;
+			case 6:
+				// （T/H PeriodSettingClass = 6 ）
+				int year6 = baseDate.year();
+				displayDate = GeneralDate.ymd(year6, settingMonth, settingDate);
+				break;
+			case 7:
+				GeneralDate nextYear = baseDate.addYears(1);
+				int year7 = nextYear.addYears(1).year();
+				displayDate = GeneralDate.ymd(year7, settingMonth, settingDate);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (settingClass >= 8 && settingClass <= 11) {
+			GeneralDate inputDate = null;
+			switch (settingClass) {
+			case 8:
+				// (T/H PeriodSettingClass=8)
+				inputDate = baseDate;
+				break;
+			case 9:
+				// (T/H PeriodSettingClass=9)
+				inputDate = baseDate.addYears(1);
+				break;
+			case 10:
+				// (T/H PeriodSettingClass=10)
+				inputDate = baseDate;
+				break;
+			case 11:
+				// (T/H PeriodSettingClass=11)
+				inputDate = baseDate.addYears(1);
+				break;
+			default:
+				break;
+			}
+			// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する
+			YearStartEnd yearStartEnd = getYearStartEndSv.getByDate(companyId, inputDate);
+
+			switch (settingClass) {
+			case 8:
+				// (T/H PeriodSettingClass=8)
+				displayDate = yearStartEnd.getYearStartYMD();
+				break;
+			case 9:
+				// (T/H PeriodSettingClass=9)
+				displayDate = yearStartEnd.getYearStartYMD();
+				break;
+			case 10:
+				// (T/H PeriodSettingClass=10)
+				displayDate = yearStartEnd.getYearEndYMD();
+				break;
+			case 11:
+				// (T/H PeriodSettingClass=11)
+				displayDate = yearStartEnd.getYearEndYMD();
+				break;
+			default:
+				break;
+			}
+
+		}
+
+		return displayDate;
 	}
 }
