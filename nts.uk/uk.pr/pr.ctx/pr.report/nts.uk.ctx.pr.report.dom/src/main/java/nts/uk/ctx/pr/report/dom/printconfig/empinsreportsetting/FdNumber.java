@@ -9,13 +9,13 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * FD番号
  */
-
-@IntegerRange(min = 0, max = 9999)
-public class FdNumber extends IntegerPrimitiveValue<FdNumber> {
+@StringMaxLength(3)
+@ZeroPaddedCode
+public class FdNumber extends CodePrimitiveValue<FdNumber> {
 
     private static final long serialVersionUID = 1L;
 
-    public FdNumber(int rawValue) {
+    public FdNumber(String rawValue) {
         super(rawValue);
     }
 }

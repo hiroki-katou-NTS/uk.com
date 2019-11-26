@@ -36,7 +36,7 @@ public class QrsmtEmpInsRptTxtSetting extends UkJpaEntity implements Serializabl
      */
     @Basic(optional = false)
     @Column(name = "FD_NUMBER")
-    private int fdNumber;
+    private String fdNumber;
 
     /**
      * 改行コード
