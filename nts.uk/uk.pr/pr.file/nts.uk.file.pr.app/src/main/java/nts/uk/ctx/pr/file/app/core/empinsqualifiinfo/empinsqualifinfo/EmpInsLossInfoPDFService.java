@@ -175,8 +175,8 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
             temp.setEmpInsReportSetting(reportSetting);
             temp.setPeriodOfStay("20190101");
             temp.setWorkCategory(1);
-            temp.setNationality("更届雇用保険 更届雇用保険 更届雇用保険 qwerty qwerty qwerty");
-            temp.setResidenceStatus("qwerty qwerty qwerty qwerty 更届雇用保険 更届雇用保険 更届雇用保険");
+            temp.setNationality("ベトナム");
+            temp.setResidenceStatus("高度専門職");
             temp.setFillingDate(fillingDate);
             //社員IDと期間から社員雇用保険履歴IDを取得
             Optional<EmpInsHist> empInsHis = empInsHistRepository.getByEmpIdAndEndDate(e.getEmployeeId(), endDate);

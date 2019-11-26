@@ -10,6 +10,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
         empInsOutOrder: KnockoutObservableArray<model.ItemModel>;
         officeCls: KnockoutObservableArray<model.ItemModel>;
+        officeClsTxt: KnockoutObservableArray<model.ItemModel>;
         submitNameCls: KnockoutObservableArray<model.ItemModel>;
         printCfg: KnockoutObservableArray<model.ItemModel>;
         lineFeedCodeCls: KnockoutObservableArray<model.ItemModel>;
@@ -65,8 +66,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             ]);
 
             self.officeCls = ko.observableArray([
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
                 new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
-                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY'))
+                new model.ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
+            ]);
+
+            self.officeClsTxt = ko.observableArray([
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE'))
             ]);
 
             self.submitNameCls = ko.observableArray([
@@ -327,9 +334,13 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             return listEmpId;
         }
 
-        getStyle() {
+        startDateStyle() {
             let self = this;
             return self.startDateJp().length > 13 ? "width:130px; display: inline-block;" : "width:130px; display:inline";
+        }
+        endDateStyle() {
+            let self = this;
+            return self.endDateJp().length > 13 ? "width:130px; display: inline-block;" : "width:130px; display:inline";
         }
     }
 
