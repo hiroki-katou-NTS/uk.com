@@ -129,6 +129,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             $.when(service.start(sId), service.getRetirement()).done(function (data: any, reason: any) {
+                self.causeOfLossEmpInsurances(reason);
                 if (data) {
                     self.sId(data.sId);
                     self.causeOfLossAtr(data.causeOfLossAtr);
@@ -140,7 +141,6 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                 } else {
                     self.getDefault();
                 }
-                self.causeOfLossEmpInsurances(reason);
             }).fail(error => {
                 dialog.alertError(error);
                 dfd.reject();
