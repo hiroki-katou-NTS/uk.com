@@ -205,14 +205,16 @@ public class FindDataDCRecord implements IFindDataDCRecord {
 	public ApprovalRootOfEmployeeImport getDailyApprovalStatus(String approverId, List<String> targetEmployeeIds,
 			DatePeriod period) {
 		String key = createKey(approverId, targetEmployeeIds.toArray(), period.start(), period.end());
+
 		if (lstApprovalRoot595Map.containsKey(key)) {
 			return lstApprovalRoot595Map.get(key);
-		} else {
-			ApprovalRootOfEmployeeImport result = approvalStatusAdapter.getDailyApprovalStatus(approverId,
-					targetEmployeeIds, period);
-			lstApprovalRoot595Map.put(key, result);
-			return result;
 		}
+		
+		ApprovalRootOfEmployeeImport result = approvalStatusAdapter.getDailyApprovalStatus(approverId,
+				targetEmployeeIds, period);
+		lstApprovalRoot595Map.put(key, result);
+		return result;
+
 	}
 
 	@Override
