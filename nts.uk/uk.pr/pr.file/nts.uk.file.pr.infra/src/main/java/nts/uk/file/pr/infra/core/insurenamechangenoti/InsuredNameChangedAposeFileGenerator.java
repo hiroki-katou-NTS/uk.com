@@ -18,6 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         }
     }
 
-    private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index, CompanyInfor company) {
+    private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index, CompanyInfor company) throws UnsupportedEncodingException {
         
         Worksheet ws = wsc.get(index);
         String oldName = data.getPerson().getPersonNameGroup().getOldName().getFullName();
@@ -141,6 +142,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AF12").putValue(day[0]);
             ws.getCells().get("AG12").putValue(day[1]);
         } else {
+            ws.getCells().get("AF12").putValue("0");
             ws.getCells().get("AG12").putValue(day[0]);
         }
 
@@ -148,6 +150,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AD12").putValue(month[0]);
             ws.getCells().get("AE12").putValue(month[1]);
         } else {
+            ws.getCells().get("AD12").putValue("0");
             ws.getCells().get("AE12").putValue(month[0]);
         }
 
@@ -155,6 +158,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("AB12").putValue(year[0]);
             ws.getCells().get("AC12").putValue(year[1]);
         } else {
+            ws.getCells().get("AB12").putValue("0");
             ws.getCells().get("AC12").putValue(year[0]);
         }
 
@@ -251,7 +255,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         //fill to A2_1
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(company.getAdd_1() + company.getAdd_2());
+            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),40));
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
@@ -263,7 +267,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 }
                 String address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
                 String address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
-                address = address1 + address2;
+                address = formatTooLongText(address1 + address2, 40);
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? this.formatPostalCode(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v()): null);
                 ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
@@ -272,6 +276,17 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             }
 
         }
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        int subLength = 0;
+        int textLength = text.length();
+        for (int i = 0; i < textLength; i++) {
+            subLength++;
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        }
+        return text.substring(0, subLength);
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {
