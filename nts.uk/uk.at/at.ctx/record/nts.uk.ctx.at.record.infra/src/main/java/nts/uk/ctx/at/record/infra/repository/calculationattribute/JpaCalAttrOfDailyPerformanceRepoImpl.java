@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -51,13 +54,79 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		KrcstDaiCalculationSet calc = this.queryProxy()
 				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcstDaiCalculationSet.class).orElse(null);
 		if (calc != null) {
-			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
-			KrcstHolAutoCalSet holidayCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class).orElse(null);
-			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
-			return toDomain(calc, flexCalc, holidayCalc, overtimeCalc);
+			//1
+//			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
+			String sql1 = "select * from KRCST_FLEX_AUTO_CAL_SET "
+					+ " where FLEX_EXCESS_TIME_ID = ?";
+			Optional<KrcstFlexAutoCalSet> flexCalc= Optional.empty();
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql1)) {
+				stmt.setString(1 , StringUtils.rightPad(calc.flexExcessTimeId, 36));
+				flexCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+					KrcstFlexAutoCalSet ent = new KrcstFlexAutoCalSet(
+							rec.getString("FLEX_EXCESS_TIME_ID"),
+							rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"),
+							rec.getInt("FLEX_EXCESS_LIMIT_SET")
+							);
+					return ent;
+				});
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			//2
+//			KrcstHolAutoCalSet holidayCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class).orElse(null);
+			String sql2 = "select * from KRCST_HOL_AUTO_CAL_SET "
+					+ " where HOL_WORK_TIME_ID = ?";
+			Optional<KrcstHolAutoCalSet> holidayCalc= Optional.empty();
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql2)) {
+				stmt.setString(1 , StringUtils.rightPad(calc.holWorkTimeId, 36));
+				holidayCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+					KrcstHolAutoCalSet ent = new KrcstHolAutoCalSet(
+							rec.getString("HOL_WORK_TIME_ID"),
+							rec.getInt("HOL_WORK_TIME_CAL_ATR"),
+							rec.getInt("HOL_WORK_TIME_LIMIT_SET"),
+							rec.getInt("LATE_NIGHT_TIME_CAL_ATR"),
+							rec.getInt("LATE_NIGHT_TIME_LIMIT_SET")
+							);
+					return ent;
+				});
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			//3
+//			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
+			String sql3 = "select * from KRCST_OT_AUTO_CAL_SET "
+					+ " where OVER_TIME_WORK_ID = ?";
+			Optional<KrcstOtAutoCalSet> overtimeCalc= Optional.empty();
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql3)) {
+				stmt.setString(1 , StringUtils.rightPad(calc.overTimeWorkId, 36));
+				overtimeCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+					KrcstOtAutoCalSet ent = new KrcstOtAutoCalSet(
+							rec.getString("OVER_TIME_WORK_ID"),
+							rec.getInt("EARLY_OVER_TIME_CAL_ATR"),
+							rec.getInt("EARLY_OVER_TIME_LIMIT_SET"),
+							rec.getInt("EARLY_MID_OT_CAL_ATR"),
+							rec.getInt("EARLY_MID_OT_LIMIT_SET"),
+							rec.getInt("NORMAL_OVER_TIME_CAL_ATR"),
+							rec.getInt("NORMAL_OVER_TIME_LIMIT_SET"),
+							rec.getInt("NORMAL_MID_OT_CAL_ATR"),
+							rec.getInt("NORMAL_MID_OT_LIMIT_SET"),
+							rec.getInt("LEGAL_OVER_TIME_CAL_ATR"),
+							rec.getInt("LEGAL_OVER_TIME_LIMIT_SET"),
+							rec.getInt("LEGAL_MID_OT_CAL_ATR"),
+							rec.getInt("LEGAL_MID_OT_LIMIT_SET")
+							);
+					return ent;
+				});
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return toDomain(calc, flexCalc.get(), holidayCalc.get(), overtimeCalc.get());
 		}
 		return null;
 	}

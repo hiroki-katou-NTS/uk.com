@@ -143,14 +143,15 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	private List<WorkTypeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
 		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
-		query.append(" WHERE YMD <= ? AND YMD >= ? ");
-		query.append(" AND SID IN (" + subEmp + ")");
+		query.append(" WHERE SID IN ( " + subEmp + ")");
+		query.append(" AND YMD <= ? AND YMD >= ? ");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
-			stmt.setDate(1, Date.valueOf(baseDate.end().localDate()));
-			stmt.setDate(2, Date.valueOf(baseDate.start().localDate()));
-			for (int i = 0; i < empIds.size(); i++) {
-				stmt.setString(i + 3, empIds.get(i));
+			int i = 0;
+			for (; i < empIds.size(); i++) {
+				stmt.setString(i + 1, empIds.get(i));
 			}
+			stmt.setDate(i+1, Date.valueOf(baseDate.end().localDate()));
+			stmt.setDate(i+2, Date.valueOf(baseDate.start().localDate()));
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				return new WorkTypeOfDailyPerformance(rec.getString("SID"), 
 						rec.getGeneralDate("YMD"), rec.getString("WORKTYPE_CODE"));

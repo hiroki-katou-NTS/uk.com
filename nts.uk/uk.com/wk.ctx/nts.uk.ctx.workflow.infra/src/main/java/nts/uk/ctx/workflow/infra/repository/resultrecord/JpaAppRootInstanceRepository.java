@@ -101,9 +101,9 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" WHERE appRoot.ROOT_ID IN (" +
 			" SELECT TOP 1 ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE" +
 			" WHERE EMPLOYEE_ID = 'employeeID'" +
-			" AND CID = 'companyID'" +
 			" AND ROOT_TYPE = rootType " +
 			" AND START_DATE < 'recordDate' " +
+			" AND CID = 'companyID'" +
 			"order by START_DATE desc)";
 	
 	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + 
