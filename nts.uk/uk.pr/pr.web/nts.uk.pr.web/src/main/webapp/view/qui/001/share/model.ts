@@ -90,8 +90,8 @@ module nts.uk.pr.view.qui001.share.model {
 
     export function contrPeriPrintAtr(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_C222_28')),
-            new ItemModel(1, getText('QUI001_C222_29'))
+            new ItemModel(1, getText('QUI001_C222_28')),
+            new ItemModel(0, getText('QUI001_C222_29'))
         ];
     }
 

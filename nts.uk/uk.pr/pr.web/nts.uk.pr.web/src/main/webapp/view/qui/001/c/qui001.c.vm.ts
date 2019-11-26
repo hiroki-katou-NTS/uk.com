@@ -49,7 +49,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         jobPath: KnockoutObservable<number> = ko.observable(0);
         wagePaymentMode: KnockoutObservable<number> = ko.observable(0);
         employmentStatus: KnockoutObservable<number> = ko.observable(0);
-        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(0);
+        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             var self = this;
@@ -180,7 +180,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             self.insCauseAtr(0);
             self.wagePaymentMode(0);
             self.employmentStatus(0);
-            self.contrPeriPrintAtr(0);
+            self.contrPeriPrintAtr(1);
         }
     }
 
