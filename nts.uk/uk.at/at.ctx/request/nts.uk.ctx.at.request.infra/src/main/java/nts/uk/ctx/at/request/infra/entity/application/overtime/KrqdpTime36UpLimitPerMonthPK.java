@@ -31,6 +31,7 @@ public class KrqdpTime36UpLimitPerMonthPK {
 	 */
 	@Column(name = "START_YM")
 	public Integer periodYearStart;
+	
 	@Column(name = "END_YM")
 	public Integer periodYearEnd;
 	
