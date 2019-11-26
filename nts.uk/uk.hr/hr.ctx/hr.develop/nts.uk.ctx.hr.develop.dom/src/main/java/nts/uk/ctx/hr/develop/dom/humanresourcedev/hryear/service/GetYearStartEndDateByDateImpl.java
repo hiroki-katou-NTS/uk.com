@@ -45,10 +45,5 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 				resultEndDate = checkEndDate;
 				YearStartEnd result = new YearStartEnd(resultStartDate, resultEndDate);
 				return result;
-		
-		
-		
-		
 	}
-
 }
