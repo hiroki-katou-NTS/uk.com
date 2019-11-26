@@ -89,13 +89,13 @@ div#tab-panel {
 
 .grant-period {
 	float: left;
-	width: 310px;
+	width: 300px;
 	padding: 42px 0;
-    margin-left: -160px;
+    margin-left: -143px;
 }
 
 .years {
-	padding-right: 35px !important;
+	padding-right: 20px !important;
 }
 
 .years, .days, .year-lbl, .year-inp, .day-lbl, .day-inp {
