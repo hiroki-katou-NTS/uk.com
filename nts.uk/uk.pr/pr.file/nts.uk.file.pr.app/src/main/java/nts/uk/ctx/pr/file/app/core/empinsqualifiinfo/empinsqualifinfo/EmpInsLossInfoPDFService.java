@@ -153,7 +153,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         // 社員雇用保険履歴を取得する
         List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, endDate);
         if (empInsHists.isEmpty()) {
-            throw new BusinessException("Msg_51");
+            throw new BusinessException("MsgQ_51");
         }
         CompanyInfor cInfo = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
