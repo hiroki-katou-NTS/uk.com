@@ -113,9 +113,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 columns: [
                     { headerText: "", key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: text("KAF018_36"), key: 'appName', dataType: 'string', width: 100 },
-                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string',hidden: displayPrePostFlg== false ? true: false, width: 120 },
+                    { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string',hidden: displayPrePostFlg== false ? true: false, width: 80 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
-                    { headerText: text("KAF018_39"), key: 'appContent', dataType: 'string', width: 450 },
+                    { headerText: text("KAF018_39"), key: 'appContent', dataType: 'string', width: 490 },
                     { headerText: text("KAF018_40"), key: 'reflectStateContent', dataType: 'string', width: 70 },
                     { headerText: text("KAF018_41"), key: 'approvalStatus', dataType: 'string', width: 80 },
                     { headerText: text("KAF018_42"), key: 'phase1', dataType: 'string', width: 150 },
