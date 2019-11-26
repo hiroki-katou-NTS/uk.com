@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -21,8 +20,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.collection.ListHashMap;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootIntermForQuery;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootIntermForQuery;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootRecordConfirmForQuery;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -41,31 +40,29 @@ public class JpaAppRootConfirmQueryRepository
 			RecordRootType rootType) {
 		
 		List<AppRootIntermForQuery> results = new ArrayList<>();
-		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
-			
+			//long startTime = System.currentTimeMillis();
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.START_DATE, r.END_DATE, MAX(p.PHASE_ORDER) as FINAL_PHASE_ORDER" 
 					+ " from WWFDT_APP_ROOT_INSTANCE r"
 					+ " inner join WWFDT_APP_PHASE_INSTANCE p"
 					+ " on r.ROOT_ID = p.ROOT_ID"
-					+ " where CID = ?"
-					+ " and r.ROOT_TYPE = ?"
-					+ " and r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
+					+ " where r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
 					+ " and r.START_DATE <= ?"
 					+ " and r.END_DATE >= ?"
+					+ " and r.CID = ?"
+					+ " and r.ROOT_TYPE = ?"
 					+ " group by r.ROOT_ID, r.EMPLOYEE_ID, r.START_DATE, r.END_DATE";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				
-				stmt.setString(1, companyId);
-				stmt.setInt(2, rootType.value);
-				
 				for (int i = 0; i < subEmpIds.size(); i++) {
-					stmt.setString(3 + i, subEmpIds.get(i));
+					stmt.setString(1 + i, subEmpIds.get(i));
 				}
 				
-				stmt.setDate(3 + subEmpIds.size(), Date.valueOf(period.end().localDate()));
-				stmt.setDate(4 + subEmpIds.size(), Date.valueOf(period.start().localDate()));
+				stmt.setDate(1 + subEmpIds.size(), Date.valueOf(period.end().localDate()));
+				stmt.setDate(2 + subEmpIds.size(), Date.valueOf(period.start().localDate()));
+				stmt.setString(3 + subEmpIds.size(), companyId);
+				stmt.setInt(4 + subEmpIds.size(), rootType.value);
 				
 				List<AppRootIntermForQuery> subResults = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					
@@ -83,9 +80,9 @@ public class JpaAppRootConfirmQueryRepository
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
-			
+			//System.out.print("\n thoi gian queryInterm:  " +(System.currentTimeMillis() - startTime) + "\n");
 		});
-		
+	
 		return new AppRootIntermForQuery.List(results);
 	}
 
@@ -97,29 +94,29 @@ public class JpaAppRootConfirmQueryRepository
 			RecordRootType rootType) {
 
 		List<AppRootRecordConfirmForQuery> results = new ArrayList<>();
-
+        //long startTime = System.currentTimeMillis();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
 			
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.RECORD_DATE, p.PHASE_ORDER, p.APP_PHASE_ATR"
 					+ " from WWFDT_APP_ROOT_CONFIRM r"
 					+ " left join WWFDT_APP_PHASE_CONFIRM p"
 					+ " on r.ROOT_ID = p.ROOT_ID"
-					+ " where r.CID = ?"
-					+ " and r.ROOT_TYPE = ?"
-					+ " and r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
-					+ " and r.RECORD_DATE between ? and ?";
+					+ " where r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
+					+ " and r.RECORD_DATE between ? and ?"
+					+ " and r.CID = ?"
+					+ " and r.ROOT_TYPE = ?";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				
-				stmt.setString(1, companyId);
-				stmt.setInt(2, rootType.value);
-
 				for (int i = 0; i < subEmpIds.size(); i++) {
-					stmt.setString(3 + i, subEmpIds.get(i));
+					stmt.setString(i+1, subEmpIds.get(i));
 				}
 				
-				stmt.setDate(3 + subEmpIds.size(), Date.valueOf(period.start().localDate()));
-				stmt.setDate(4 + subEmpIds.size(), Date.valueOf(period.end().localDate()));
+				stmt.setDate(subEmpIds.size() + 1, Date.valueOf(period.start().localDate()));
+				stmt.setDate(subEmpIds.size() + 2, Date.valueOf(period.end().localDate()));
+				
+				stmt.setString(subEmpIds.size() + 3, companyId);
+				stmt.setInt(subEmpIds.size() + 4, rootType.value);
 				
 				List<ConfirmRecord> recordList = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					
@@ -139,6 +136,7 @@ public class JpaAppRootConfirmQueryRepository
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
+			//System.out.print("\n thoi gian queryConfirm:  " +(System.currentTimeMillis() - startTime) + "\n");
 		});
 		
 		return new AppRootRecordConfirmForQuery.List(results);
