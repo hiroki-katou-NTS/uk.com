@@ -1,5 +1,13 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.processdatecls;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYearRepository;
@@ -7,21 +15,13 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmploymentCode;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTiedProYear;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTiedProYearPk;
 
-import javax.ejb.Stateless;
-
-import lombok.val;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Stateless
 public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTiedProYearRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpTiedProYear f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
     private static final String SELECT_BY_EMPLOYMENT = SELECT_ALL_QUERY_STRING + " WHERE f.empTiedProYearPk.cid =:cid AND f.empTiedProYearPk.employmentCode =:employmentCode";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.empTiedProYearPk.cid =:cid ";
 
     private static final String DELETE_BY_PROCESSCATENO = "DELETE FROM QpbmtEmpTiedProYear f WHERE f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
 
@@ -76,6 +76,47 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
 			if (data.isPresent())
 				result.add(data.get());
 		}
+		return result;
+	}
+
+	@Override
+	public List<EmpTiedProYear> getByCid(String cId) {
+		
+		List<QpbmtEmpTiedProYear> items = this.queryProxy().query(SELECT_BY_CID, QpbmtEmpTiedProYear.class)
+				.setParameter("cid", cId).getList();
+		
+		return mapByProcessCateNo(items);
+	}
+
+	private List<EmpTiedProYear> mapByProcessCateNo(List<QpbmtEmpTiedProYear> items) {
+		
+		List<EmpTiedProYear>  result = new ArrayList<EmpTiedProYear>();
+		
+		if (items.isEmpty()){
+			return result;
+		}
+		
+		
+		items.stream().forEach(item->{
+			
+			Optional<EmpTiedProYear> categoryOpt =  result.stream().filter(x -> x.getProcessCateNo() == item.empTiedProYearPk.processCateNo).findFirst();
+			
+			if(!categoryOpt.isPresent()){
+				
+				List<EmploymentCode> employmentCodes = new ArrayList<EmploymentCode>();
+				employmentCodes.add(new EmploymentCode(item.empTiedProYearPk.employmentCode));
+				result.add(new EmpTiedProYear(item.empTiedProYearPk.cid, item.empTiedProYearPk.processCateNo,
+						employmentCodes));
+				
+			}else{
+				
+				EmpTiedProYear  category =   categoryOpt.get();
+				category.getEmploymentCodes().add(new EmploymentCode(item.empTiedProYearPk.employmentCode));
+				
+			}
+		});
+		
+		
 		return result;
 	}
 

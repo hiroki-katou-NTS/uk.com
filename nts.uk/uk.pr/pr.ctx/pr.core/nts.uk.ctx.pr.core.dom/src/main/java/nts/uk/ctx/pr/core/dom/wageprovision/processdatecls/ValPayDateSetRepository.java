@@ -18,5 +18,7 @@ public interface ValPayDateSetRepository
     void update(ValPayDateSet domain);
 
     void remove(String cid, int processCateNo);
+    
+    List<ValPayDateSet> getById(String cId);
 
 }

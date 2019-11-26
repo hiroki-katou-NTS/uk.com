@@ -19,5 +19,7 @@ public interface EmpTiedProYearRepository {
     void remove(String cid,int processCateNo);
     
     List<EmpTiedProYear> getEmpTiedProYearById(String cid, List<Integer> processCateNo);
+    
+    List<EmpTiedProYear> getByCid(String cId);
 
 }

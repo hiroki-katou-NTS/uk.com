@@ -18,6 +18,7 @@ public class JpaValPayDateSetRepository extends JpaRepository implements ValPayD
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtValPayDateSet f ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.valPayDateSetPk.cid =:cid AND  f.valPayDateSetPk.processCateNo =:processCateNo ";
+	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.valPayDateSetPk.cid =:cid";
 
     @Override
     public List<ValPayDateSet> getAllValPayDateSet(){
@@ -48,4 +49,9 @@ public class JpaValPayDateSetRepository extends JpaRepository implements ValPayD
     public void remove(String cid, int processCateNo){
         this.commandProxy().remove(QpbmtValPayDateSet.class, new QpbmtValPayDateSetPk(cid, processCateNo)); 
     }
+
+	@Override
+	public List<ValPayDateSet> getById(String cId) {
+		return this.queryProxy().query(SELECT_BY_CID, QpbmtValPayDateSet.class).getList(item -> item.toDomain());
+	}
 }
