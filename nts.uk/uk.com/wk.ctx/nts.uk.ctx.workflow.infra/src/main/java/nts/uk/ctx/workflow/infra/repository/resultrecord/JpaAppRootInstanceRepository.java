@@ -354,14 +354,16 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@SneakyThrows
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
-		String query = FIND_BY_APPROVER_PERIOD;
-		query = query.replaceAll("companyID", companyID);
-		query = query.replaceAll("approverID", approverID);
-		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
-		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
-		query = query.replaceAll("rootType", String.valueOf(rootType.value));
-		
+		String query = BASIC_SELECT + " WHERE appApprover.APPROVER_CHILD_ID = ?" + " AND appRoot.END_DATE >= ?"
+				+ " AND appRoot.START_DATE <= ?" + " AND appRoot.ROOT_TYPE = ?" + " AND appRoot.CID = ?";
+				
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			pstatement.setString(1, approverID);
+			pstatement.setString(2, period.start().toString("yyyy-MM-dd"));
+			pstatement.setString(3, period.end().toString("yyyy-MM-dd"));
+			pstatement.setInt(4, rootType.value);
+			pstatement.setString(5, companyID);
+		
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			
