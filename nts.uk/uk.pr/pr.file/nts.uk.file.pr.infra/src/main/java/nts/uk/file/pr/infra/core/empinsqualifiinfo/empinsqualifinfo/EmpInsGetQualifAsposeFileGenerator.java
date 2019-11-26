@@ -51,10 +51,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String acquisitionAtr = data.getAcquisitionAtr() == null ? "" : data.getAcquisitionAtr().toString();
                 textBuilder.appendText(setValue(318, 718, acquisitionAtr, 16));
                 // A1_3
-                String insuredName = data.getInsuredName() == null ? "" : data.getAcquisitionAtr().toString();
-                textBuilder.appendText(setValue(45, 685, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
+                String insuredName = data.getInsuredName() == null ? "" : data.getInsuredName();
+                textBuilder.appendText(setValue(45, 686, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
                 // A1_4
-                String insuredFullName = data.getInsuredFullName() == null ? "" : data.getAcquisitionAtr().toString();
+                String insuredFullName = data.getInsuredFullName() == null ? "" : data.getInsuredFullName();
                 detachText(182, 682, insuredFullName, 20, textBuilder);
                 // A1_5
                 String nameAfterChange = data.getNameAfterChange() == null ? "" : data.getNameAfterChange();
@@ -101,7 +101,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String workingTime = formatWorkingTime(data.getScheduleWorkingTimePerWeek());
                 detachText(402, 516, workingTime, 4, textBuilder);
                 // A1_19
-                String estContractPeriod = data.getEstContractPeriod() == null ? "" : data.getEstContractPeriod();
+                String estContractPeriod = data.getSetContractPeriod() == null ? "" : data.getSetContractPeriod().toString();
                 textBuilder.appendText(setValue(119, 464, estContractPeriod, 16));
                 // A1_20
                 String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();

@@ -310,7 +310,7 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
                 }
 
             }
-            if(Integer.valueOf(element[14].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
+            if(Integer.valueOf(element[8].toString()) == Enum_BussEsimateClass_HEAL_INSUR_OFF_ARR_SYMBOL){
                 //C1_1
                 temp.setBusinessstablishmentbCode1(element[9] != null ? element[9].toString() : "");
                 //C1_2
