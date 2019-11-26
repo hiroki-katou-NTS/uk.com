@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
@@ -115,8 +117,32 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", employeeId)
+    	Optional<AffiliationInforOfDailyPerfor> result =  this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
+    			.setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
+		Optional<AffiliationInforOfDailyPerfor> data = Optional.empty();
+		String sql = "select * from KRCDT_DAI_AFFILIATION_INF"
+				+ " where SID = ?"
+				+ " and YMD = ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, employeeId);
+			stmt.setDate(2, Date.valueOf(ymd.localDate()));
+			data = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+				AffiliationInforOfDailyPerfor ent = new AffiliationInforOfDailyPerfor(
+						new EmploymentCode(rec.getString("EMP_CODE")), 
+						employeeId, 
+						rec.getString("JOB_ID"), 
+						rec.getString("WKP_ID"), 
+						ymd, 
+						new ClassificationCode(rec.getString("CLS_CODE")), 
+						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+				return ent;
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
 	@Override
@@ -169,21 +195,33 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	@SneakyThrows
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE FROM KRCDT_DAI_AFFILIATION_INF");
-		query.append(" WHERE YMD <= ? AND YMD >= ? ");
-		query.append(" AND SID IN (" + subEmp + ")");
-		try (val stmt = this.connection().prepareStatement(query.toString())){
-			stmt.setDate(1, Date.valueOf(baseDate.end().localDate()));
-			stmt.setDate(2, Date.valueOf(baseDate.start().localDate()));
-			for (int i = 0; i < empIds.size(); i++) {
-				stmt.setString(i + 3, empIds.get(i));
+		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE from KRCDT_DAI_AFFILIATION_INF "
+				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"
+				+ " and YMD <= ?"
+				+ " and YMD >= ?";
+		
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			
+			int i = 0;
+			for (; i < empIds.size(); i++) {
+				stmt.setString(1 + i, empIds.get(i));
 			}
-			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				return new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
+
+			stmt.setDate(1 + i, Date.valueOf(baseDate.end().localDate()));
+			stmt.setDate(2 + i, Date.valueOf(baseDate.start().localDate()));
+			
+			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				AffiliationInforOfDailyPerfor ent = new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
 						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+				return ent;
 			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+		
+		return result;
 	}
 
 	@SneakyThrows

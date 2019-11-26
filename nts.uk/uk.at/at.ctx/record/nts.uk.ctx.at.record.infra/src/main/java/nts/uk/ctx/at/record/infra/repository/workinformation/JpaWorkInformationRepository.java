@@ -38,7 +38,7 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+	import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -112,8 +112,24 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId) {
-		return this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", employeeId).getList(c -> c.toDomain());
+    	List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
+    	
+    	String sql = "select * from KRCDT_DAI_PER_WORK_INFO h"
+				+ " where h.SID = ? ";
+		
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, employeeId);
+			
+			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				WorkInfoOfDailyPerformance ent = new WorkInfoOfDailyPerformance(rec.getString("SID"),rec.getGeneralDate("YMD"));
+				return ent;
+			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+//		List<WorkInfoOfDailyPerformance> data =  this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
+//				.setParameter("employeeId", employeeId).getList(c -> c.toDomain());
+		return result;
 	}
 
 	@Override
