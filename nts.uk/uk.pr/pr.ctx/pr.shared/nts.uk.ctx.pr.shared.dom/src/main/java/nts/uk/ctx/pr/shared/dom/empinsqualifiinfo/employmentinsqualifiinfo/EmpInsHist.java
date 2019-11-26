@@ -25,7 +25,7 @@ public class EmpInsHist extends AggregateRoot implements ContinuousResidentHisto
     */
     private List<DateHistoryItem> historyItem;
     
-    public EmpInsHist(String cid,List<DateHistoryItem> historyItem) {
+    public EmpInsHist(String sid, List<DateHistoryItem> historyItem) {
         this.sid = sid;
         this.historyItem = historyItem;
     }
