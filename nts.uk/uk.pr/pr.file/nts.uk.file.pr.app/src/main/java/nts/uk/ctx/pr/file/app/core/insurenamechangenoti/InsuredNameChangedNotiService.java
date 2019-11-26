@@ -122,7 +122,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
 
     }
 
-    public PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+    private PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
         PersonExport person = new PersonExport();
         Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
         if(employeeInfoEx.isPresent()) {
