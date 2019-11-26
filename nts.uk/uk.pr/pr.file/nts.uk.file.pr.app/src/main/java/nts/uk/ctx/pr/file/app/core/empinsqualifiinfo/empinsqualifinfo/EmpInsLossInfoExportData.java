@@ -19,10 +19,6 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 public class EmpInsLossInfoExportData {
 
     /**
-     * 帳票種別
-     */
-    private Integer formType;
-    /**
      * 会社情報
      */
     private CompanyInfor companyInfor;

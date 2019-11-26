@@ -21,6 +21,7 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.awt.*;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,14 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final String PEACE = "令和";
     private static final String TAISO = "明治";
     private static final String MEI = "大正";
+
+    private static final int NATIONALITY_MAX_BYTE = 22;
+    private static final int RESIDENT_STATUS_MAX_BYTE = 18;
+    private static final int INSURED_NAME_MAX_BYTE = 22;
+    private static final int INSURED_PERSON_ADDRESS = 46;
+    private static final int BUSINESS_NAME = 31;
+    private static final int CAUSE_OF_LOSS_INS = 46;
+    private static final int COMPANY_ADDRESS = 46;
 
     @Inject
     private JapaneseErasAdapter jpErasAdapter;
@@ -74,15 +83,14 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                             detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, textBuilder);
                             detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, textBuilder);
                             //A2_7
-                            textBuilder.appendText(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
+                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getCompanyInfor().getCompanyName(), BUSINESS_NAME), 9));
                             //A3_1
                             String postCd = element.getCompanyInfor().getPostCd();
                             textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
                             //A3_2
                             String address = element.getCompanyInfor().getAdd_1() + " " + element.getCompanyInfor().getAdd_2();
-                            address = address.length() > 41 ? address.substring(0,40) : address;
 
-                            textBuilder.appendText(setValue(210, 190, address, 9));
+                            textBuilder.appendText(setValue(210, 190, formatTooLongText(address, COMPANY_ADDRESS), 9));
                             //A3_3
                             textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                             //A3_4
@@ -98,7 +106,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                             detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, textBuilder);
 
                             //A2_7
-                            textBuilder.appendText(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
+                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getLaborInsuranceOffice().getLaborOfficeName().v(), BUSINESS_NAME), 9));
 
                             if (element.getLaborInsuranceOffice().getBasicInformation() != null) {
                                 //A3_1
@@ -115,8 +123,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                                         addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                     }
                                 }
-                                addressLabor = addressLabor.length() > 41 ? addressLabor.substring(0,40) : addressLabor;
-                                textBuilder.appendText(setValue(210, 190, addressLabor, 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor, COMPANY_ADDRESS), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                 //A3_4
@@ -151,15 +158,15 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     String reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getRequestForIssuance().get().value) : "";
                     textBuilder.appendText(setValue(45, 629, reqIssuAtr, 16));
                     //A1_10 workingTime
-                    String workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v().toString()) : "";
-                    detachText(135, 629, workingTime, 4, textBuilder);
+                    Integer workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v() : null;
+                    detachText(135, 629, formatWorkingTime(workingTime), 4, textBuilder);
                     //A1_11 scheForRep
                     String scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleForReplenishment().get().value) : "";
                     textBuilder.appendText(setValue(248, 629, scheForRep.toString(), 16));
                     //A2_8
                     if(element.getRetirementReasonClsInfo() != null) {
                         String causeOfLossIns = element.getRetirementReasonClsInfo().getRetirementReasonClsName().v().toString();
-                        textBuilder.appendText(setValue(112, 255, causeOfLossIns, 9));
+                        textBuilder.appendText(setValue(112, 255, formatTooLongText(causeOfLoss, CAUSE_OF_LOSS_INS), 9));
                     }
                 }
                 //A1_12
@@ -177,14 +184,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16));
                 //A1_16
                 String nationaly = element.getNationality().toString();
-                int a = nationaly.getBytes().length;
-                nationaly = nationaly.length() > 24 ? nationaly.substring(0,24) : nationaly;
-                textBuilder.appendText(setValue(233, 402, nationaly, 9));
+                textBuilder.appendText(setValue(233, 402, formatTooLongText(nationaly, NATIONALITY_MAX_BYTE), 9));
                 //A1_17
                 String residence = element.getResidenceStatus().toString();
-                int b = residence.getBytes().length;
-                residence = residence.length() > 19 ? residence.substring(0,19) : residence;
-                textBuilder.appendText(setValue(366, 402, residence, 9));
+                textBuilder.appendText(setValue(366, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9));
                 //A2_1
                 textBuilder.appendText(setValue(112, 362, element.getName() != null ?  element.getName().length() > 23 ? element.getName().substring(0,22) : element.getName() : "", 9));
                 //A2_2
@@ -247,7 +250,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 //A2_6
                 if (element.getCurrentPersonResidence() != null){
                     String currentAddress = element.getCurrentPersonResidence().getAddress1() + " " + element.getCurrentPersonResidence().getAddress2();
-                    textBuilder.appendText(setValue(112, 328, currentAddress, 9));
+                    textBuilder.appendText(setValue(112, 328, formatTooLongText(currentAddress, INSURED_PERSON_ADDRESS), 9));
                 }
 
                 //A3_5
@@ -376,5 +379,27 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         textBuilder.appendText(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
     }
 
+    private String formatWorkingTime(Integer workingTime) {
+        if (workingTime == null) {
+            return "";
+        }
+        if (workingTime > 5999) {
+            return "9959";
+        }
+        String workingHours = (workingTime / 60) < 10 ? "0" + (workingTime / 60) : String.valueOf(workingTime / 60);
+        String workingMinutes = (workingTime % 60) < 10 ? "0" + (workingTime % 60) : String.valueOf(workingTime % 60);
+        return workingHours + workingMinutes;
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        int textLength = text.length();
+        int subLength = 0;
+        for (int i = 0; i < textLength; i++) {
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            subLength++;
+        }
+        return text.substring(0, subLength);
+    }
 
 }

@@ -105,13 +105,14 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             block.invisible();
             $.when(service.getEmpInsReportSetting(), service.getEmpInsReportTxtSetting())
             .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
-                if (setting && txtSetting) {
+                self.screenMode(model.SCREEN_MODE.NEW);
+                if (setting) {
                     self.empInsReportSetting(new EmpInsReportSetting(setting));
-                    self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 }
-                self.screenMode(model.SCREEN_MODE.NEW);
-
+                if (txtSetting) {
+                    self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+                }
                 dfd.resolve();
             }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
