@@ -255,7 +255,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         //fill to A2_1
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(company.getAdd_1() + company.getAdd_2());
+            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),40));
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
@@ -267,7 +267,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 }
                 String address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
                 String address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
-                address = formatTooLongText(address1 + address2, 60);
+                address = formatTooLongText(address1 + address2, 40);
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? this.formatPostalCode(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v()): null);
                 ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
@@ -280,8 +280,8 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
         if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        int textLength = text.length();
         int subLength = 0;
+        int textLength = text.length();
         for (int i = 0; i < textLength; i++) {
             subLength++;
             if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
