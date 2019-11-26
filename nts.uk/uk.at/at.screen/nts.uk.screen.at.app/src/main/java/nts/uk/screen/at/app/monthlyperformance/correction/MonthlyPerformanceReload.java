@@ -798,16 +798,15 @@ public class MonthlyPerformanceReload {
 			}
 			
 			boolean checkExistRecordErrorListDate = false;
-			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
-				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
-					//対応するドメインモデル「勤務実績のエラーアラーム」を取得する
-					List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
-							cid, Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
-					if(!errorAlarmWorkRecordLst.isEmpty()) {
-						checkExistRecordErrorListDate = true;	
-						break;
-					}
-				}
+
+			List<String> listCode = listEmployeeDailyPerError.stream()
+					.filter(x -> x.getEmployeeID().equals(affWorkplaceImport.getEmployeeId()))
+					.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
+			// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository
+					.getListErAlByListCodeError(cid, listCode);
+			if (!errorAlarmWorkRecordLst.isEmpty()) {
+				checkExistRecordErrorListDate = true;
 			}
 			
 			// 月の実績の状況を取得する
