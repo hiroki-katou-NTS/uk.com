@@ -247,11 +247,11 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
             return number;
         }
         if (numberSplit.length > 1) {
-            postalCode = "〒" + numberSplit[0] + "－" + numberSplit[1];
+            postalCode = numberSplit[0] + "－" + numberSplit[1];
         } else {
             temp[0] = number.length() > 2 ? number.substring(0, 3) : number;
             temp[1] = number.length() > 3 ? number.substring(3) : "";
-            postalCode = "〒" + temp[0] + "－" + temp[1];
+            postalCode = temp[0] + "－" + temp[1];
         }
         return postalCode;
     }
