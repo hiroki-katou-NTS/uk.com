@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
@@ -191,6 +192,9 @@ public class MonthlyPerformanceReload {
 	@Inject
 	private CheckDailyPerError checkDailyPerError;
 	
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
+	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
 		String companyId = AppContexts.user().companyId();
@@ -351,12 +355,13 @@ public class MonthlyPerformanceReload {
 		/**
 		 * Get Data
 		 */
+		iFindDataDCRecord.clearAllStateless();
 		//[No.586]月の実績の確認状況を取得する
-		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId);
+		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId, false);
 
 		//[No.587]月の実績の承認状況を取得する
-		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth),monthlyResults);
-		
+		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth),monthlyResults, false);
+		iFindDataDCRecord.clearAllStateless();
 		List<MPDataDto> lstData = new ArrayList<>(); // List all data
 		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell state
 		screenDto.setLstData(lstData);

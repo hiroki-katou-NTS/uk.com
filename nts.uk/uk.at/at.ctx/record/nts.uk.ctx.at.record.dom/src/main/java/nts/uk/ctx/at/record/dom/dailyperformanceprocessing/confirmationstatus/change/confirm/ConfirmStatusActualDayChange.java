@@ -67,6 +67,9 @@ public class ConfirmStatusActualDayChange {
 		// 確認情報取得処理
 		List<ConfirmInfoResult> confirmInfoResults = confirmInfoAcqProcess.getConfirmInfoAcp(companyId, employeeIds, periodOpt,
 				yearMonthOpt);
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		if (confirmInfoResults.isEmpty())
 			return Collections.emptyList();
 		return checkProcess(companyId, empTarget, employeeIds, confirmInfoResults, optIndentity, approvalUseSettingOpt);
