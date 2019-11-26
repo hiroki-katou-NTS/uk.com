@@ -32,13 +32,13 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             outputOrderAtr: 0,
             officeClsAtr: 0,
             myNumberClsAtr: 1,
-            nameChangeClsAtr: 0
+            nameChangeClsAtr: 1
         }));
 
         empInsRptTxtSetting: KnockoutObservable<EmpInsRptTxtSetting> = ko.observable(new EmpInsRptTxtSetting({
             lineFeedCode: 0,
             officeAtr: 1,
-            fdNumber: ""
+            fdNumber: null
         }));
 
         /* kcp005 */
@@ -166,7 +166,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 7,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),

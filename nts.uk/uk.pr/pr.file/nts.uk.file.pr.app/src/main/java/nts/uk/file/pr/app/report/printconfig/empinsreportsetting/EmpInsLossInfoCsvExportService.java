@@ -44,10 +44,10 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
-public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpInsLossInfoExportQuery> {
+public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfoExportQuery> {
 
 	@Inject
-	private EmpInsReportTxtSettingCsvGenerator csvGenerator;
+	private EmpInsLossInfoCsvGenerator csvGenerator;
 
 	@Inject
 	private EmpInsReportSettingRepository empInsReportSettingRepo;
@@ -115,7 +115,7 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 		}
 
 		// 雇用保険被保険者資格喪失届テキスト出力処理
-		EmpInsReportSettingExportData exportData = new EmpInsReportSettingExportData();
+		EmpInsLossInfoExportData exportData = new EmpInsLossInfoExportData();
 		exportData.setCreateDate(query.getFillingDate());
 		CompanyInfor company = companyInforAdapter.getCompanyNotAbolitionByCid(companyId);
 		exportData.setCompanyInfo(company);
@@ -132,7 +132,6 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 					.collect(Collectors.toList());
 			break;
 		case DEPARTMENT_EMPLOYEE:
-			break;
 		case EMPLOYEE_CODE:
 			exportData.getRowsData().stream().sorted((r1, r2) -> r1.getEmployeeCode().compareTo(r2.getEmployeeCode()))
 					.collect(Collectors.toList());
@@ -146,7 +145,7 @@ public class EmpInsReportTxtSettingCsvExportService extends ExportService<EmpIns
 		csvGenerator.generate(context.getGeneratorContext(), exportData);
 	}
 
-	private void getLossEmpInsuranceInfo(EmpInsReportSettingExportData exportData, String companyId,
+	private void getLossEmpInsuranceInfo(EmpInsLossInfoExportData exportData, String companyId,
 			List<String> employeeIds, GeneralDate startDate, GeneralDate endDate, int officeCls) {
 		if (startDate.after(endDate)) {
 			throw new BusinessException("Msg_812");

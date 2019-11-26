@@ -49,7 +49,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         empInsReportTxtSetting: KnockoutObservable<EmpInsReportTxtSetting> = ko.observable(new EmpInsReportTxtSetting({
             lineFeedCode: 0,
             officeAtr: 0,
-            fdNumber: 0
+            fdNumber: null
         }));
 
 
@@ -66,8 +66,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
             self.officeCls = ko.observableArray([
                 new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
-                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
-                new model.ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY'))
             ]);
 
             self.submitNameCls = ko.observableArray([
@@ -264,7 +263,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 7,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
@@ -320,14 +319,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 let emp = _.find(listEmp, function (itemEmp) {
                     return itemEmp.code == item;
                 });
-                listEmpId.push(emp.id);
+                listEmpId.push(emp);
             });
             return listEmpId;
         }
 
         getStyle(){
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 13 ?  "width:130px; display: inline-block;" : "width:130px; display:inline";
         }
     }
 

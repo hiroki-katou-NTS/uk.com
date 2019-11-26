@@ -10,10 +10,7 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.employee.ForeignerResHistInfo;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumber;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 
 @Getter
 @Setter
@@ -86,10 +83,6 @@ public class EmpInsLossInfoExportData {
      */
     private CurrentPersonResidence currentPersonResidence;
     /**
-     * 社員ID
-     */
-    private String sid;
-    /**
      * 社員雇用保険履歴
      */
     private EmpInsHist empInsHist;
@@ -100,6 +93,10 @@ public class EmpInsLossInfoExportData {
     /**
      * 雇用保険番号情報
      */
+    private String employeeCode;
+
+    private RetirementReasonClsInfo retirementReasonClsInfo;
+
     private EmpInsNumInfo empInsNumInfo;
 
     private EmpInsReportSetting empInsReportSetting;

@@ -14,7 +14,7 @@ public interface EmpInsHistRepository {
     List<EmpInsHist> getEmpInsHistById(String cid, List<String> sid, GeneralDate baseDate);
 	List<EmpInsHist> getAllEmpInsHist();
 
-	Optional<EmpInsHist> getByEmpIdsAndPeriod(String sId, DatePeriod period);
+	Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate endDate);
 	
 	List<EmpInsHist> getByEmpIdsAndStartDateInPeriod(String companyId, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
 	

@@ -1,12 +1,14 @@
 package nts.uk.file.pr.infra.core.empinsqualifiinfo.empinsqualifinfo;
 
 import com.aspose.pdf.*;
+import com.aspose.pdf.Color;
 import com.aspose.pdf.drawing.Circle;
 import com.aspose.pdf.drawing.Graph;
 import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
+import nts.gul.text.StringLength;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoExportData;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoFileGenerator;
@@ -18,6 +20,7 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,11 +37,12 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     @Inject
     private JapaneseErasAdapter jpErasAdapter;
 
+
     @Override
     public void generate(FileGeneratorContext fileContext, List<EmpInsLossInfoExportData> data) {
         try(AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
-            Page[] curPage = {doc.getPages().get_Item(1), doc.getPages().get_Item(2)};
+            Page[] curPage = {doc.getPages().get_Item(1)};
             for (int i = 0; i < data.size(); i++) {
                 if (i != 0) {
                     doc.getPages().add(curPage);
@@ -75,7 +79,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                             String postCd = element.getCompanyInfor().getPostCd();
                             textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
                             //A3_2
-                            textBuilder.appendText(setValue(210, 190, element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(), 9));
+                            String address = element.getCompanyInfor().getAdd_1() + " " + element.getCompanyInfor().getAdd_2();
+                            address = address.length() > 41 ? address.substring(0,40) : address;
+
+                            textBuilder.appendText(setValue(210, 190, address, 9));
                             //A3_3
                             textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                             //A3_4
@@ -100,10 +107,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                                 //A3_2
                                 String addressLabor;
                                 if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
-                                    addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
+                                    addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + " " + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                 } else {
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent()) {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
+                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + " " + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
                                     } else {
                                         addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                     }
@@ -150,8 +157,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     String scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleForReplenishment().get().value) : "";
                     textBuilder.appendText(setValue(248, 629, scheForRep.toString(), 16));
                     //A2_8
-                    String causeOfLossIns = element.getEmpInsLossInfo().getCauseOfLossEmpInsurance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossEmpInsurance().get().v().toString()) : "";
-                    textBuilder.appendText(setValue(112, 250, causeOfLossIns, 16));
+                    if(element.getRetirementReasonClsInfo() != null) {
+                        String causeOfLossIns = element.getRetirementReasonClsInfo().getRetirementReasonClsName().v().toString();
+                        textBuilder.appendText(setValue(112, 255, causeOfLossIns, 9));
+                    }
                 }
                 //A1_12
                 String fullName = element.getFullName() != null ? element.getFullName() : "";
@@ -167,9 +176,15 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 //A1_15
                 textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16));
                 //A1_16
-                textBuilder.appendText(setValue(237, 400, element.getNationality().toString(), 9));
+                String nationaly = element.getNationality().toString();
+                int a = nationaly.getBytes().length;
+                nationaly = nationaly.length() > 24 ? nationaly.substring(0,24) : nationaly;
+                textBuilder.appendText(setValue(233, 402, nationaly, 9));
                 //A1_17
-                textBuilder.appendText(setValue(370, 400, element.getResidenceStatus().toString(), 9));
+                String residence = element.getResidenceStatus().toString();
+                int b = residence.getBytes().length;
+                residence = residence.length() > 19 ? residence.substring(0,19) : residence;
+                textBuilder.appendText(setValue(366, 402, residence, 9));
                 //A2_1
                 textBuilder.appendText(setValue(112, 362, element.getName() != null ?  element.getName().length() > 23 ? element.getName().substring(0,22) : element.getName() : "", 9));
                 //A2_2
@@ -200,15 +215,19 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 Circle rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Circle(378, 45, 4);
+                        rect2 = new Circle(370, 40, 7);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Circle(378, 38, 4);
+                        rect2 = new Circle(392, 40, 7);
+                        break;
+                    }
+                    case PEACE: {
+                        rect2 = new Circle(392, 32, 7);
                         break;
                     }
                     case HEISEI: {
-                        rect2 = new Circle(378, 30, 4);
+                        rect2 = new Circle(370, 32, 7);
                         break;
                     }
                     default: {
@@ -231,13 +250,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     textBuilder.appendText(setValue(112, 328, currentAddress, 9));
                 }
 
-
-
                 //A3_5
                 JapaneseDate fillingDate = toJapaneseDate(element.getFillingDate());
                 detachDate(486, 206, fillingDate, textBuilder);
                 //index page
-                indexPage = indexPage + 2;
+                indexPage = indexPage + 1;
             }
             report.saveAsPdf(this.createNewFile(fileContext, "雇用保険被保険者資格喪失届.pdf"));
         } catch (Exception e) {
@@ -269,6 +286,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         textFragmentState.setForegroundColor(Color.getBlack());
     }
     private void detachText(int xRoot, int yRoot, String value, int numCells,TextBuilder textBuilder) {
+        value = KatakanaConverter.hiraganaToKatakana(value);
         value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
@@ -288,15 +306,15 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
             if(numberSplit[1].length() <= 3){
                 temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（  " + temp[0] + "  ）";
+                numberPhone = numberSplit[0] + "  -" + temp[0] + "  -";
             }else{
                 temp[0] = numberSplit[1].substring(0,3);
                 temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "（  " + temp[0] + "  ）" + temp[1];
+                numberPhone = numberSplit[0] + "  -" + temp[0] + "  -" + temp[1];
             }
 
         }else if(numberSplit.length >= 3){
-            numberPhone = numberSplit[0] + "（ 　" + numberSplit[1] + "  ）" + numberSplit[2];
+            numberPhone = numberSplit[0] + "  -" + numberSplit[1] + "  -" + numberSplit[2];
         }else if(numberSplit.length == 1){
             if(number.length() <= 3){
                 temp[0] = number.substring(0,number.length());
@@ -304,12 +322,12 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             }else if( number.length() <=6){
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,number.length());
-                numberPhone = temp[0] + "（  " + temp[1] + "  ）";
+                numberPhone = temp[0] + "  -" + temp[1] + "  -";
             }else{
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,6);
                 temp[2] = number.substring(6,number.length());
-                numberPhone = temp[0] + "（  " + temp[1] + "  ）" + temp[2];
+                numberPhone = temp[0] + "  -" + temp[1] + "  -" + temp[2];
             }
 
         }
@@ -357,4 +375,6 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         textBuilder.appendText(setValue(xRoot + 30, yRoot, value.month() + "", 9));
         textBuilder.appendText(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
     }
+
+
 }
