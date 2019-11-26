@@ -279,9 +279,15 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        int subLength = 0;
         int textLength = text.length();
+        String add1 = textLength > 40 ? text.substring(0, 40) : text.substring(0,textLength);
+        int engChar = add1.replaceAll("[^a-z0-9]+", "").length();
+        int engNChar = add1.replaceAll("[^A-Z]+", "").length();
+
+        int subLength = 0;
+        maxByteAllowed = maxByteAllowed + engChar/8;
+        maxByteAllowed = maxByteAllowed - engNChar/5;
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
         for (int i = 0; i < textLength; i++) {
             subLength++;
             if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
