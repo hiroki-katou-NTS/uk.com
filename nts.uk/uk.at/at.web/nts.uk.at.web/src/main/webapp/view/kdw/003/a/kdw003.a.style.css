@@ -436,6 +436,7 @@ table#employ_view tr{
 #cbDisplayFormat{
 	height: 27px;
 	bottom: -7px;
+	width: 150px;
 }
 /* #dislayFormatLbl{
 	height: 25px;
