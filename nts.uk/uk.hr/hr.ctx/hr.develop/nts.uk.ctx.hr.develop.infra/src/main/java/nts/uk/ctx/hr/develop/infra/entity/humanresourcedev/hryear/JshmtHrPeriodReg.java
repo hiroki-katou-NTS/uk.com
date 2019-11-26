@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 
-@Table(name = "JSHMT_EMP_REG_HISTORY")
+@Table(name = "JSHMT_HR_PERIOD_REG")
 public class JshmtHrPeriodReg extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,19 +36,15 @@ public class JshmtHrPeriodReg extends UkJpaEntity implements Serializable {
 	public String historyId;
 	
 	@Column(name = "YEAR_START_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
 	public int yearStartDate;
 	
 	@Column(name = "YEAR_END_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
 	public int yearEndDate;
 	
 	@Column(name = "YEAR_START_MONTH")
-	@Convert(converter = GeneralDateToDBConverter.class)
 	public int yearStartMonth;
 	
 	@Column(name = "YEAR_END_MONTH")
-	@Convert(converter = GeneralDateToDBConverter.class)
 	public int yearEndMonth;
 	
 	@Override
