@@ -67,10 +67,6 @@ public class DepartmentModel {
 	 */
 	private String departmentExternalCode;
 	
-	
-	
-	
-	
-	
+
 	
 }
