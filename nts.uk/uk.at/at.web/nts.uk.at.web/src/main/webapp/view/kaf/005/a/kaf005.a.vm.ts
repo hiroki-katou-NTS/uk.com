@@ -135,6 +135,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         beforeAppStatus: boolean = true;
         actualStatus: number = 0;
         actualLst: any = [];
+        resultLst: any = [];
         tmpOverTime: any;
         overtimeSettingDataDto: any;
         forceYearConfirm: boolean = false;
@@ -296,7 +297,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 self.prePostSelected.subscribe(function(value) {
                     $('#kaf005-pre-post-select').ntsError('clear');
-                    let dfd = $.Deferred();
                     self.clearErrorA6_8();
                     
                     $("#fixed-overtime-hour-table").parents('div')[2].remove();
@@ -305,7 +305,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
 
-                    if (!nts.uk.util.isNullOrEmpty(self.appDate())) {
+                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
                         if (nts.uk.ui.errors.hasError()) {
@@ -328,36 +328,44 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     } else {
                         self.isRightContent(self.allPreAppPanelFlg || self.referencePanelFlg);
                     }
-                    if (self.callServiceChangePrePost) {
-                        service.checkConvertPrePost({
-                            prePostAtr: value,
-                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                            siftCD: self.siftCD(),
-                            overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => { return self.initCalculateData(item); }),
-                            workTypeCode: self.workTypeCd(),
-                            startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.startTime() }),
-                            endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.endTime() }),
-                            startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
-                            endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
-                        }).done((data) => {
-                            self.resetForceAction();
-                            self.opAppBefore = data.opAppBefore;
-                            self.beforeAppStatus = data.beforeAppStatus;
-                            self.actualStatus = data.actualStatus;
-                            self.actualLst = data.actualLst;
-                            self.convertpreAppOvertimeDto(data);
-                            self.convertAppOvertimeReferDto(data);
-                            self.referencePanelFlg(data.referencePanelFlg);
-                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                            self.preAppPanelFlg(data.preAppPanelFlg);
-                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-                            self.callServiceChangePrePost = false;
-                        }).fail((res) => {
-                            dfd.reject(res);
-                        });
-                    }
-                    
-                    return dfd.promise();
+                    service.checkConvertPrePost({
+                        prePostAtr: value,
+                        appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                        siftCD: self.siftCD(),
+                        overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => { return self.initCalculateData(item); }),
+                        workTypeCode: self.workTypeCd(),
+                        startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.startTime() }),
+                        endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), x => { return x.endTime() }),
+                        startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
+                        endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
+                        overtimeSettingDataDto: self.overtimeSettingDataDto,
+                        opAppBefore: self.opAppBefore,
+                        beforeAppStatus: self.beforeAppStatus,
+                        actualStatus: self.actualStatus,
+                        actualLst: self.actualLst
+                    }).done((data) => {
+                        self.resetForceAction();
+                        self.opAppBefore = data.opAppBefore;
+                        self.preAppOvertimeDto = data.preAppOvertimeDto;
+                        self.beforeAppStatus = data.beforeAppStatus;
+                        self.actualStatus = data.actualStatus;
+                        self.actualLst = data.actualLst;
+                        self.resultLst = data.resultLst;
+                        self.fillColor(data);
+                        self.convertpreAppOvertimeDto(data);
+                        self.convertAppOvertimeReferDto(data);
+                        self.referencePanelFlg(data.referencePanelFlg);
+                        self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+                        self.preAppPanelFlg(data.preAppPanelFlg);
+                        self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+                        $("#fixed-overtime-hour-table").parents('div')[2].remove();
+                        self.timeTableEdit(value);
+                        ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
+                        ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
+                        $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
+                    }).fail((res) => {
+                        dfd.reject(res);
+                    });
                 });
                 
                 //Check work content Changed
@@ -927,6 +935,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getCalculateValue(param1).done((data: any) => {
                 self.resetForceAction();
                 self.overtimeHoursOld = ko.toJS(self.overtimeHours());
+                self.resultLst = data.resultLst;
                 self.fillColor(data);
                 nts.uk.ui.block.clear();
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
@@ -940,7 +949,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let self = this;
             let beforeAppStatus = calcData.beforeAppStatus;
             let actualStatus = calcData.actualStatus;
-            let resultLst = calcData.resultLst;
+            let resultLst = _.isEmpty(calcData.resultLst) ? self.resultLst : calcData.resultLst;
             _.forEach(self.overtimeHours(), overtimeHour => {
                 let calcOT = _.find(resultLst, item => {
                     return item.attendanceID == 1 &&
@@ -964,10 +973,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     if(!nts.uk.util.isNullOrUndefined(newColor)){
                         overtimeHour.color(newColor);
                     }
-                     
+                } else {
+                    let newColor = self.changeColor(1, overtimeHour.frameNo(), self.getErrorCode(0, 0, 0), beforeAppStatus, actualStatus, false);
+                    if(!nts.uk.util.isNullOrUndefined(newColor)){
+                        overtimeHour.color(newColor);
+                    }        
                 }
             });           
-        }
+        } 
         
         getReasonName(reasonCombo: common.ComboReason, reasonId: string): string{  
             let self = this;
@@ -1390,6 +1403,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.beforeRegisterProcess(overtime);    
             } else {
                 self.overtimeHoursOld = ko.toJS(self.overtimeHours());
+                self.resultLst = data2.resultLst;
                 self.fillColor(data2.preActualColorResult);
                 self.checkPreApp(overtime, data2);        
             }

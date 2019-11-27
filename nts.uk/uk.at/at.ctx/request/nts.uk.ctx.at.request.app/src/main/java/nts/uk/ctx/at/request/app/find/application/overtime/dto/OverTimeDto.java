@@ -289,6 +289,11 @@ public class OverTimeDto {
 	 */
 	private OvertimeSettingDataDto overtimeSettingDataDto;
 	
+	/**
+	 * List<勤怠種類, 枠NO, 計算入力差異, 事前申請超過, 実績超過>
+	 */
+	public List<OvertimeColorCheck> resultLst;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -364,8 +369,8 @@ public class OverTimeDto {
 				null, 
 				null,
 				Collections.emptyList(),
-				null
-				);
+				null,
+				Collections.emptyList());
 	}
 	
 }
