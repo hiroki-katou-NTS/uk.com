@@ -12,5 +12,5 @@ public interface EmpEstabInsHistRepository {
 
     Optional<EmpEstabInsHist> getEmpInsHistById(String cid, String sid, String histId);
     Optional<EmpEstabInsHist> getListEmpInsHistByDate(String cid, String sid, GeneralDate fillingDate);
-    List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate endDate);
+    List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate startDate, GeneralDate endDate);
 }
