@@ -132,6 +132,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             service.register(empInsGetInfo).done(function () {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
+                    $('#emp-component').focus();
                 });
             }).fail(error => {
                 dialog.alertError(error);

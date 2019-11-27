@@ -120,6 +120,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             service.register(empInsLossInfo).done(function () {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
+                    $('#emp-component').focus();
                 });
             }).fail(error => {
                 dialog.alertError(error);
