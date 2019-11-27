@@ -126,14 +126,14 @@ export interface IOvertime {
 }
 
 export interface IOvertimeColor {
-    actualError: boolean;
+    actualError: number;
     actualTime: number;
     appTime: number;
     attendanceID: number;
-    calcError: boolean;
+    calcError: number;
     calcTime: number;
     frameNo: number;
-    preAppError: boolean;
+    preAppError: number;
     preAppTime: number;
 }
 
@@ -153,12 +153,12 @@ export class OvertimeFrame {
     public attendanceID: number = 0;
     public frameNo: number = 0;
     public frameName: string = '';
-    public actualError: boolean = false;
+    public actualError: number = 0;
     public actualTime: number = null;
     public appTime: number = null;
-    public calcError: boolean = false;
+    public calcError: number = 0;
     public calcTime: number = null;
-    public preAppError: boolean = false;
+    public preAppError: number = 0;
     public preAppTime: number = null;
     public appOvertimeNightFlg?: boolean = false;
     public flexFLag?: boolean = false;

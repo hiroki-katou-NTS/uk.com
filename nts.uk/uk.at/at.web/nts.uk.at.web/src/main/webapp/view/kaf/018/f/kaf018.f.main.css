@@ -8,6 +8,7 @@
 
 .tbl-control {
 	margin-bottom: 5px;
+	min-width: 1230px;
 }
 
 .tbl-control td {
@@ -53,4 +54,7 @@
 
 .legend-item .legend-item-symbol{
 	border: solid 1px gray;	
+}
+html {
+	overflow: hidden;
 }

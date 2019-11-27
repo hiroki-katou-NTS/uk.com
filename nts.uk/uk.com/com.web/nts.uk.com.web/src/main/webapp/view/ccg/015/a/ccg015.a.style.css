@@ -157,3 +157,6 @@ button.nts-switch-button {
 .float_left {
 	float: left;
 }
+html {
+	overflow: hidden;
+}

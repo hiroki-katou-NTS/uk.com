@@ -39,7 +39,7 @@ export class CdlS03AComponent extends Vue {
                 self.allData = _.sortBy(result.data,['code']);
                 self.data = self.allData;
 
-                if (_.find(self.allData, (item) => item.code == self.params.selectedCode) != undefined) {
+                if (!_.isEmpty(self.params.selectedCode) || _.find(self.allData, (item) => item.code == self.params.selectedCode) != undefined) {
                     self.activeNoSelect = false;
                 } else {
                     self.activeNoSelect = true;

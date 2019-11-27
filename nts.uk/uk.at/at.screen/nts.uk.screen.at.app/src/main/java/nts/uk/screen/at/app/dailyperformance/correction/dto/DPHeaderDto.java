@@ -228,13 +228,13 @@ public class DPHeaderDto {
 		lstHeader.add(new DPHeaderDto("ID", "id", "String", "30px", "", true, "Label", true, true, "center-align", null));
 		lstHeader.add(new DPHeaderDto("状<br/>態", "state", "String", "30px", "", false, "FlexImage", true, true, "center-align", null));
 		lstHeader.add(new DPHeaderDto("ER/AL", "error", "String", "60px", "", false, "Label", true, true, "center-align", null));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), "date", "String", "90px", "", false, "Label",
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), "date", "String", "70px", "", false, "Label",
 				true, true, "center-align", null));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), "sign", "boolean", "35px", "", false,
 				"Checkbox", true, true, "center-align", null));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), "employeeCode", "String", "120px", "", false,
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), "employeeCode", "String", "87px", "", false,
 				"Label", true, true, "center-align", null));
-		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "190px", "", false,
+		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "162px", "", false,
 				"Label", true, true, "center-align", null));
 		lstHeader.add(new DPHeaderDto("", "picture-person", "String", "35px", "", false, "Image", true, true, "center-align", null));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false, "Checkbox",

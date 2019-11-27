@@ -7,14 +7,21 @@
 	width : 320px;
 }
 
-#screen-e #left-panel {
-	margin-top : -48px;
-}
-
 #screen-e .ntsCheckBox{
 	margin-left: 20px;
 }
 #left-panel{
-	width: 310px !important;
+	width: 330px !important;
 	height: 400px !important;
+}
+caption, th, td{
+	vertical-align: top;
+}
+#grid2_virtualContainer {
+	border-bottom: 1px solid #AAB7B8;
+	border-right: 1px solid #AAB7B8;
+	border-top: 1px solid #AAB7B8;
+}
+html {
+    overflow: hidden;
 }

@@ -1,6 +1,6 @@
 #contents-area{
 	margin: 20px;
-	height: auto !important;
+	height: calc(100vh - 181px) !important;
 	margin-bottom: 0px !important;
 }
 #tbl-control{
@@ -34,4 +34,16 @@
 }
 #gridE tbody tr td:NTH-CHILD(7){
 	text-align: center;
+}
+#gridE_headers thead th:NTH-CHILD(6){
+	display: none;
+}
+#gridE tbody tr td:NTH-CHILD(8){
+	display: none;
+}
+#gridE_container {
+	border: 1px solid #AAB7B8 !important;
+}
+html {
+	overflow: hidden;
 }

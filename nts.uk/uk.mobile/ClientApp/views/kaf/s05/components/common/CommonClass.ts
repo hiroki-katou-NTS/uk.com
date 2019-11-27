@@ -205,4 +205,5 @@ export interface Kafs05Model {
     actualStatus: number;
     performanceExcessAtr: number;
     preExcessDisplaySetting?: number;
+    overtimeSettingDataDto: any;
 }

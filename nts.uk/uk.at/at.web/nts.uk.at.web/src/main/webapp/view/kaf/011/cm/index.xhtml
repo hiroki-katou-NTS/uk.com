@@ -1,28 +1,5 @@
 <div id="container" data-bind="let: { $vm: $data }">
 	<div id="content_left">
-		<div class="div_line" id='number_Info'>
-			<div class="div_line_col_1">
-				<label data-bind="text : '#{i18n.getText('KAF011_64')}'"></label>
-			</div>
-			<div class="div_line_col_2">
-				<table id="fixed-table">
-					<colgroup>
-						<col width="100px" />
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td data-bind="text:remainDays() +'日'"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
 		<div class="div_line">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
@@ -34,6 +11,23 @@
 			<div class="div_line_col_2" data-bind="if:screenModeNew()==true">
 				<label data-bind="text:employeeName,visible:!employeeList().length"
 					class="text_line"></label>
+				<div style="display: inline-block; margin-left: 300px;">
+					<table id="fixed-table">
+						<colgroup>
+							<col width="100px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td data-bind="text:remainDays() +'譌'"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<div data-bind="if:employeeList().length">
 					<div id="list-box"
 						data-bind="ntsListBox: {
@@ -47,7 +41,6 @@
 					<div class="div_line" data-bind="text:totalEmployeeText"></div>
 				</div>
 			</div>
-
 		</div>
 		<div class="div_line" data-bind="if:displayPrePostFlg()!=0">
 			<div class="div_line_col_1">
@@ -87,6 +80,7 @@
 							enable: true ,
 							required:true
 							}"></div>
+				
 			</div>
 		</div>
 		<!-- app rec -->

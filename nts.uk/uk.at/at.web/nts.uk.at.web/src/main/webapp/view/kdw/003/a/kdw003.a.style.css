@@ -39,13 +39,13 @@
 #btn-saveColumnWidth {
 	/* float: right; */
 	margin-top: 3px;
-	margin-left: 20px;
+	margin-left: 15px;
 }
 
 #btn-legend {
 	/* float: left; */
 	margin-top: 3px;
-	margin-left: 20px;
+	margin-left: 15px;
 }
 #btnExtraction{
 	font-size: 15px !IMPORTANT;
@@ -66,7 +66,7 @@
 	display: inline-block;
 	margin: 3px ;
 	/* position: relative; */
-	margin-left: 20px;
+	margin-left: 15px;
 }
 
 #setting-content {
@@ -153,8 +153,8 @@
 	text-align: center;
 	height: 29px;
 	width: auto;
-	padding-left: 5px;
-	padding-right: 5px
+	padding-left: 2px;
+	padding-right: 2px
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
@@ -209,7 +209,7 @@
 	bottom: -30px;
 	margin-right: 300px; */
 	margin-top: -3px;
-	width: 1200px;
+	width: 1175px;
 }
 .ui-iggrid-results{
 	background-color: #e9e9e9;
@@ -347,7 +347,7 @@
 }
 
 .agree-column {
-	min-width: 235px;
+	min-width: 145px;
     position: absolute;
     display: inline-block;
 }
@@ -436,6 +436,7 @@ table#employ_view tr{
 #cbDisplayFormat{
 	height: 27px;
 	bottom: -7px;
+	width: 150px;
 }
 /* #dislayFormatLbl{
 	height: 25px;
@@ -469,4 +470,7 @@ table#employ_view tr{
 #date-extract{
 	padding-top: 0px;
     height: 42px;
+}
+body {
+	-ms-overflow-x: hidden;
 }

@@ -37,7 +37,7 @@
 				<div id="content-left"
 					data-bind="ntsPanel:{
 					width: '290px', 
-					height: (window.screen.height - 325) >= 555 ? 555 : (window.screen.height - 325),
+					height: (window.screen.height - 345) >= 535 ? 535 : (window.screen.height - 345),
 					direction: 'right', 
 					showIcon: false, 
 					visible: true}">
@@ -62,7 +62,7 @@
 						multiple: false,
 						value: id ,
 						columnResize: true,
-						rows: Math.round((window.screen.height - 414)/23) >= 20 ? 20 : Math.round((window.screen.height - 414)/23),
+						rows: Math.round((window.screen.height - 414)/23) >= 20 ? 19 : Math.round((window.screen.height - 414)/23) - 1,
 						width: '300', }">
 					</table>
 				</div>
@@ -162,7 +162,7 @@
 							multiple: false,
 							value: ko.observable(),
 							columnResize: true,
-							rows:10 }">
+							rows:9 }">
 						</table>
 					</div>
 				</div>

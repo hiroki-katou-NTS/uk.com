@@ -7,6 +7,7 @@ import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
 import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
 import { KdwS03CComponent } from 'views/kdw/s03/c';
+import { KdwS03DComponent } from 'views/kdw/s03/d';
 
 @component({
     name: 'kdws03a',
@@ -19,7 +20,8 @@ import { KdwS03CComponent } from 'views/kdw/s03/c';
         'fix-table': FixTableComponent,
         'kdws03b': KdwS03BComponent,
         'kdws03amenu': KdwS03AMenuComponent,
-        'kdws03c': KdwS03CComponent
+        'kdws03c': KdwS03CComponent,
+        'kdws03d': KdwS03DComponent
     },
     validations: {
         yearMonth: {
@@ -31,8 +33,20 @@ import { KdwS03CComponent } from 'views/kdw/s03/c';
     }
 })
 export class Kdws03AComponent extends Vue {
-    @Prop({ default: 0 })
-    public screenMode: number;
+
+    @Prop({ default: () => ({
+        screenMode: 0,
+        closureID: null,
+        changePeriodAtr: true,
+        displayFormat: 0,
+        targetEmployee: '',
+        closureYM: 0,
+        dateTarget: null,
+        initClock: null,
+        transitionDesScreen: null,
+        errorRefStartAtr: false
+    }) })
+    public readonly params: Params;
 
     public title: string = 'Kdws03A';
     public isFirstLoad: boolean = true;
@@ -115,7 +129,7 @@ export class Kdws03AComponent extends Vue {
 
     @Watch('dateRanger', { deep: true })
     public changeDateRange(value: any, valueOld: any) {
-        if (_.isNil(value) || _.isNil(valueOld) || this.displayFormat == '1' || this.isFirstLoad) {
+        if (_.isNil(value) || this.displayFormat == '1' || this.isFirstLoad) {
             this.isFirstLoad = false;
             
             return;
@@ -155,6 +169,8 @@ export class Kdws03AComponent extends Vue {
     public created() {
         if (this.$route.query.displayformat == '0' || this.$route.query.displayformat == '1') {
             this.displayFormat = this.$route.query.displayformat;
+        } else {
+            this.displayFormat = this.params.displayFormat;
         }
 
         if (this.displayFormat == '0') {
@@ -165,7 +181,7 @@ export class Kdws03AComponent extends Vue {
             this.rowHeight = 42 + (window.innerHeight - 140 -  (this.rownum + 1) * 42) / (this.rownum + 1);
         }
         
-        if (this.screenMode == 0) {
+        if (this.params.screenMode == 0) {
             this.pgName = this.displayFormat == '0' ? 'name1' : 'name2';
         } else {
             this.pgName = this.displayFormat == '0' ? 'name3' : 'name4';
@@ -214,19 +230,20 @@ export class Kdws03AComponent extends Vue {
         self.$mask('show', { message: true });
 
         let param = {
-            changePeriodAtr: false,
-            screenMode: self.screenMode,
-            errorRefStartAtr: false,
+            changePeriodAtr: self.params.changePeriodAtr,
+            screenMode: self.params.screenMode,
+            errorRefStartAtr: self.params.errorRefStartAtr,
             initDisplayDate: null,
-            employeeID: self.selectedEmployee,
+            employeeID: self.selectedEmployee == '' ? self.params.targetEmployee : self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
                 (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
-            initClock: null,
+            initClock: self.params.initClock,
             displayFormat: self.displayFormat,
             displayDateRange: null,
-            transitionDesScreen: null,
+            transitionDesScreen: self.params.transitionDesScreen,
+            closureId: self.params.closureID,
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -281,14 +298,15 @@ export class Kdws03AComponent extends Vue {
                     self.processMapData(result.data);
                     next();
                 });
+                let dateR: any = self.displayFormat == '0' ?
+                    (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                    { startDate: self.selectedDate, endDate: self.selectedDate };
                 storage.session.setItem('dailyCorrectionState', {
-                    screenMode: self.screenMode,
+                    screenMode: self.params.screenMode,
                     displayFormat: self.displayFormat,
                     selectedEmployee: self.selectedEmployee,
                     lstEmployee: self.lstEmployee,
-                    dateRange: self.displayFormat == '0' ?
-                        (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                        { startDate: self.selectedDate, endDate: self.selectedDate },
+                    dateRange: dateR,
                     cellDataLst: self.displayDataLst,
                     headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
@@ -296,6 +314,43 @@ export class Kdws03AComponent extends Vue {
                     paramData: self.paramData,
                     dPCorrectionMenuDto: self.dPCorrectionMenuDto
                 });
+                
+                //パラメータ「日別実績の修正の状態．表示形式」をチェックする
+                //パラメータ「日別実績の修正の起動．エラー参照を起動する」をチェックする
+                if (self.displayFormat == 0 && self.params.errorRefStartAtr && !_.isNil(dateR)) {//表示形式　＝　個人別 && エラー参照を起動する = TRUE
+                    self.params.errorRefStartAtr = false;
+                    //D：エラー参照（個人）を起動する
+                    this.$modal('kdws03d', {
+                        employeeID: self.selectedEmployee,
+                        employeeName: (_.find(self.lstEmployee, (x) => x.id == self.selectedEmployee)).businessName,
+                        startDate: dateR.startDate,
+                        endDate: dateR.endDate
+                    }).then((param: any) => {
+                        if (param != undefined && param.openB) {
+                            //open B
+                            let rowData = null;
+                            if (self.displayFormat == '0') {
+                                rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
+                            } else {
+                                rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                            }
+
+                            self.$modal('kdws03b', {
+                                'employeeID': param.employeeId,
+                                'employeeName': param.employeeName,
+                                'date': param.date,
+                                'rowData': rowData,
+                                'paramData': self.paramData
+                            }).then((v: any) => {
+                                if (v.reload) {
+                                    this.startPage();
+                                } else {
+                                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                                }
+                            });
+                        }
+                    });
+                }
                 self.$mask('hide');
             }
         }).catch((res: any) => {
@@ -342,6 +397,9 @@ export class Kdws03AComponent extends Vue {
         if (self.isFirstLoad) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
+            if (self.params.closureYM != 0) {
+                self.yearMonth = self.params.closureYM;
+            }
         }
 
         if (self.displayFormat == 1 && self.isFirstLoad) {
@@ -816,4 +874,27 @@ enum ClosureId {
     ClosureThree = 3,
     ClosureFour = 4,
     ClosureFive = 5,
+}
+
+interface Params {
+    // 画面モード
+    screenMode: number;
+    // 対象締め
+    closureID: number;
+    // 期間を変更する
+    changePeriodAtr: boolean;
+    // 表示形式
+    displayFormat: number;
+    // 対象社員
+    targetEmployee: string;
+    // 対象年月
+    closureYM: number;
+    // 対象年月日
+    dateTarget: Date;
+    // 打刻初期値
+    initClock: any;
+    // 遷移元の画面
+    transitionDesScreen: any;
+    // エラー参照を起動する
+    errorRefStartAtr: boolean;
 }
