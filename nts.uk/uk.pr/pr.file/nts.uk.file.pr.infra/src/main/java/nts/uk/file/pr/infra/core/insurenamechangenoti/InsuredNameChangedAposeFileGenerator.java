@@ -18,6 +18,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         }
     }
 
-    private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index, CompanyInfor company) {
+    private void writePDF(WorksheetCollection wsc, InsuredNameChangedNotiExportData data, SocialInsurNotiCreateSet socialInsurNotiCreateSet, int index, CompanyInfor company) throws UnsupportedEncodingException {
         
         Worksheet ws = wsc.get(index);
         String oldName = data.getPerson().getPersonNameGroup().getOldName().getFullName();
@@ -254,7 +255,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         //fill to A2_1
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(company.getAdd_1() + company.getAdd_2());
+            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),40));
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
@@ -266,7 +267,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 }
                 String address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
                 String address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
-                address = address1 + address2;
+                address = formatTooLongText(address1 + address2, 40);
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? this.formatPostalCode(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v()): null);
                 ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
@@ -275,6 +276,23 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             }
 
         }
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        int textLength = text.length();
+        String add1 = textLength > 40 ? text.substring(0, 40) : text.substring(0,textLength);
+        int engChar = add1.replaceAll("[^a-z0-9]+", "").length();
+        int engNChar = add1.replaceAll("[^A-Z]+", "").length();
+
+        int subLength = 0;
+        maxByteAllowed = maxByteAllowed + engChar/8;
+        maxByteAllowed = maxByteAllowed - engNChar/5;
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        for (int i = 0; i < textLength; i++) {
+            subLength++;
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        }
+        return text.substring(0, subLength);
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {

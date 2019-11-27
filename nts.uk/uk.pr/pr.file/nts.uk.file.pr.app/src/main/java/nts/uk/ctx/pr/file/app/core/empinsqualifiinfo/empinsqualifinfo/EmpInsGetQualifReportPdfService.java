@@ -117,7 +117,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
         List<EmpInsGetQualifReport> listDataExport = new ArrayList<>();
 
-        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
@@ -130,7 +130,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
         Map<String, EmpInsNumInfo> empInsNumInfos = empInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
 
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
         List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
         Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
         CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
@@ -167,7 +167,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 // A1_16
                 tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
                 // A1_19
-                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x.value + 1).orElse(null));
+                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x == ContractPeriodPrintAtr.PRINT ? 1 : 2).orElse(null));
             }
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
@@ -204,7 +204,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         val address1 = streetAddress.getAddress1().map(PrimitiveValueBase::v).orElse("");
                         val address2 = streetAddress.getAddress1().map(PrimitiveValueBase::v).orElse("");
                         // A3_2
-                        tempReport.setOfficeLocation(address1 + " " + address2);
+                        tempReport.setOfficeLocation(address1 + address2);
                         // A3_3
                         tempReport.setBusinessOwnerName(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(""));
                         // A3_4
@@ -242,7 +242,10 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A1_4
                         tempReport.setInsuredFullName(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value && tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                            && tempReport.getAcquisitionAtr() != null
+                            && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value
+                            && reportSettingExport.getSubmitNameAtr() == SubNameClass.PERSONAL_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
@@ -252,7 +255,10 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A1_6
                         tempReport.setFullNameAfterChange(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());
                     }
-                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value &&  tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
+                    if (reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                            && tempReport.getAcquisitionAtr() != null
+                            && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value
+                            && reportSettingExport.getSubmitNameAtr() == SubNameClass.REPORTED_NAME.value) {
                         // A1_3
                         tempReport.setInsuredName(personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
                         // A1_4
@@ -290,7 +296,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             // dummy
             {
                 // TODO check existence of data
-                if (tempReport.getSetContractPeriod() != null && (tempReport.getSetContractPeriod() - 1) == ContractPeriodPrintAtr.PRINT.value) {
+                if (tempReport.getSetContractPeriod() != null && tempReport.getSetContractPeriod() == ContractPeriodPrintAtr.PRINT.value) {
                     val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
                     // A1_20
                     tempReport.setContractStartDateJp(toEraDate(contractStartDateJp, OTHER_DATE));
@@ -324,14 +330,17 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
         switch (reportSetting.getOutputOrderAtr()) {
             case INSURANCE_NUMBER:
-                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getInsuredNumber, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getInsuredNumber, Comparator.nullsFirst(Comparator.naturalOrder()))
+                        .thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
                 break;
             case DEPARTMENT_EMPLOYEE:
             case EMPLOYEE_CODE:
-                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder()))
+                        .thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
                 break;
             case EMPLOYEE:
-                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getPersonalNameKana, Comparator.nullsFirst(Comparator.naturalOrder())).thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getPersonalNameKana, Comparator.nullsFirst(Comparator.naturalOrder()))
+                        .thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
                 break;
             default:
                 break;
