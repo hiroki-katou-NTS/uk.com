@@ -167,7 +167,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 // A1_16
                 tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
                 // A1_19
-                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x.value + 1).orElse(null));
+                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x == ContractPeriodPrintAtr.PRINT ? 1 : 2).orElse(null));
             }
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
@@ -290,7 +290,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             // dummy
             {
                 // TODO check existence of data
-                if (tempReport.getSetContractPeriod() != null && (tempReport.getSetContractPeriod() - 1) == ContractPeriodPrintAtr.PRINT.value) {
+                if (tempReport.getSetContractPeriod() == ContractPeriodPrintAtr.PRINT.value) {
                     val contractStartDateJp = toJapaneseDate(jpEras, dummyLaborContractHist.getStartDate());
                     // A1_20
                     tempReport.setContractStartDateJp(toEraDate(contractStartDateJp, OTHER_DATE));

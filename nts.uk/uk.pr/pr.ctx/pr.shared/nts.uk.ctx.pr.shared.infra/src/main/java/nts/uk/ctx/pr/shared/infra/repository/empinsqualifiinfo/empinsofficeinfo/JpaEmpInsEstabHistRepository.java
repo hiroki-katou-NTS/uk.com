@@ -40,19 +40,12 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
     public List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate endDate) {
         List<EmpInsOffice> result = new ArrayList<>();
         CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
-            result.addAll(toEmpInsOfficeDomain(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
+            result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
                     .setParameter("histIds", histIds)
                     .setParameter("endDate", endDate)
-                    .getList()))
+                    .getList(e -> new EmpInsOffice(e.empInsEsmHistPk.histId, e.laborInsCd)))
         );
          return result;
-    }
-
-    private List<EmpInsOffice> toEmpInsOfficeDomain(List<QqsmtEmpInsEsmHist> listHist) {
-        List<EmpInsOffice> domains = new ArrayList<>();
-        listHist.stream().collect(Collectors.groupingBy(e -> e.empInsEsmHistPk.sid, Collectors.toList())).forEach((k, v) ->
-                domains.add(new EmpInsOffice(k, v.get(0).laborInsCd)));
-        return domains;
     }
 
     private EmpEstabInsHist toEmploymentHistory(List<QqsmtEmpInsEsmHist> listHist) {
