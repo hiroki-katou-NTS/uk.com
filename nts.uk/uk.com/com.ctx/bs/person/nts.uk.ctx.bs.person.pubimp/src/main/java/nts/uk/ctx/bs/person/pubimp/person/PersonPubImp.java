@@ -100,7 +100,7 @@ public class PersonPubImp implements PersonPub {
 										group.getTodokedeFullName() == null ? null
 												: group.getTodokedeFullName().getFullNameKana().v());
 				FullNameSetExport  oldName = new FullNameSetExport(group.getOldName() == null ? null : group.getOldName().getFullName().v(),
-										group.getOldName() == null ? null : group.getOldName().getFullNameKana().v()));
+										group.getOldName() == null ? null : group.getOldName().getFullNameKana().v());
 				
 				PersonNameGroupExport groupExport = new PersonNameGroupExport(group.getBusinessName().v(),
 																			group.getBusinessNameKana().v(), 
