@@ -429,37 +429,6 @@ export class KafS05aStep1Component extends Vue {
                 this.$modal.error({ messageId: res.messageId });
             });
         });
-        this.$watch('kafs05ModelStep1.prePostSelected', function (value: number) {
-            let self = this.kafs05ModelStep1;
-            this.$mask('show', { message: true });
-            if (value == 1) {
-                // edit ui
-            } else if (value == 0) {
-
-            }
-            if (!_.isNil(self.appDate)) {
-
-            }
-            this.$http.post('at', servicePath.checkConvertPrePost, {
-                prePostAtr: value,
-                appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
-                siftCD: self.siftCD,
-                overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
-                workTypeCode: self.workTypeCd,
-                startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
-                endTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.end),
-                startTime: _.isEmpty(self.workTimeInput.start) ? null : self.workTimeInput.start,
-                endTime: _.isEmpty(self.workTimeInput.end) ? null : self.workTimeInput.end
-            }).then((result: { data: any }) => {
-                self.displayDivergenceReasonForm = result.data.displayDivergenceReasonForm;
-                self.displayDivergenceReasonInput = result.data.displayDivergenceReasonInput;
-                this.$mask('hide');
-
-            }).catch((res: any) => {
-                this.$mask('hide');
-                this.$modal.error({ messageId: res.messageId });
-            });
-        });
     }
 
     public checkAppDate(appType: number, appDate: string, isStartup: boolean, employeeID: string, overtimeAtr: any) {
