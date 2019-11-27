@@ -25,14 +25,17 @@ export class KafS05aStep3Component extends Vue {
     public created() {
         this.convertDisplayItem();
 
-        this.kafs05ModelStep3.overtimeHours.forEach((overtimeHour) => {
-            if (overtimeHour.preAppExceedState) {
-                this.hasPreAppError = true;
-            }
-            if (overtimeHour.actualExceedState != 0) {
-                this.hasActualError = true;
-            }
-        });
+        if (this.kafs05ModelStep3.displayCaculationTime) {
+            this.kafs05ModelStep3.overtimeHours.forEach((overtimeHour) => {
+                if (overtimeHour.preAppExceedState) {
+                    this.hasPreAppError = true;
+                }
+                if (overtimeHour.actualExceedState != 0) {
+                    this.hasActualError = true;
+                }
+            });
+        }
+        
     }
 
     public mounted() {
