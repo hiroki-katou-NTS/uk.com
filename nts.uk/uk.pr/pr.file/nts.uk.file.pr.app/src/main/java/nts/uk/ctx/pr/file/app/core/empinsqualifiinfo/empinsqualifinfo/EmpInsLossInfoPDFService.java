@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo;
 
-import lombok.experimental.var;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
@@ -14,8 +13,6 @@ import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeRepository;
-import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExRepository;
-import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.*;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.*;
@@ -27,7 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
-import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
@@ -36,7 +32,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.Enum.valueOf;
 import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
@@ -70,16 +65,10 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
     private JapaneseErasAdapter jpErasAdapter;
 
     @Inject
-    private EmpInsGetInfoRepository empInsGetInfoRepository;
-
-    @Inject
     private CompanyInforAdapter mCompanyInforAdapter;
 
     @Inject
     private EmpEstabInsHistRepository empEstabInsHistRepository;
-
-    @Inject
-    private NotifiOfChangInNameInsPerExRepository empInsReportSettingExRepository;
 
     @Inject
     private EmpInsNumInfoRepository mEmpInsNumInfoRepository;
@@ -110,7 +99,6 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         GeneralDate fillingDate = exportServiceContext.getQuery().getFillingDate();
         GeneralDate startDate = exportServiceContext.getQuery().getStartDate();
         GeneralDate endDate = exportServiceContext.getQuery().getEndDate();
-        DatePeriod period = new DatePeriod(startDate, endDate);
         List<String> listEmpId = exportServiceContext.getQuery().getEmployeeIds();
         EmpInsRptSettingCommand reportSettingExport = exportServiceContext.getQuery().getEmpInsReportSettingCommand();
         EmpInsRptTxtSettingCommand reportTxtSettingExport = exportServiceContext.getQuery().getEmpInsReportTxtSettingCommand();
@@ -123,13 +111,6 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 reportSettingExport.getOfficeClsAtr(),
                 reportSettingExport.getMyNumberClsAtr(),
                 reportSettingExport.getNameChangeClsAtr()
-        );
-        EmpInsReportTxtSetting reportTxtSetting = new EmpInsReportTxtSetting(
-                cid,
-                userId,
-                reportTxtSettingExport.getOfficeAtr(),
-                reportTxtSettingExport.getFdNumber(),
-                reportTxtSettingExport.getLineFeedCode()
         );
         // 雇用保険届設定更新処理
         if (empInsReportSettingRepository.getEmpInsReportSettingById(cid, userId).isPresent()) {
@@ -277,11 +258,5 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
-    }
-
-
-    private JapaneseDate toJapaneseDate(GeneralDate date) {
-        Optional<JapaneseEraName> era = this.jpErasAdapter.getAllEras().eraOf(date);
-        return era.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
     }
 }
