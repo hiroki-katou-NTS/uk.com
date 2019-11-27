@@ -2,6 +2,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
     import model = nts.uk.pr.view.qui004.share.model;
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
         screenMode: KnockoutObservable<model.SCREEN_MODE> = ko.observable(null);
         selectedItem: KnockoutObservable<string> = ko.observable(null);
@@ -110,17 +111,20 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                 sId: self.selectedItem(),
                 causeOfLossAtr: self.causeOfLossAtr(),
                 requestForIssuance: self.requestForIssuance(),
-                scheduleWorkingHourPerWeek: self.scheduleWorkingHourPerWeek() > 0 ? self.scheduleWorkingHourPerWeek() : null,
+                scheduleWorkingHourPerWeek: self.scheduleWorkingHourPerWeek() >= 0 ? self.scheduleWorkingHourPerWeek() : null,
                 scheduleForReplenishment: self.scheduleForReplenishment(),
                 causeOfLossEmpInsurance: self.causeOfLossEmpInsurance().length > 0 ? self.causeOfLossEmpInsurance() : null,
                 screenMode: self.screenMode()
             };
+            nts.uk.ui.block.grayout();
             service.register(empInsLossInfo).done(function () {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 });
             }).fail(error => {
                 dialog.alertError(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
             $('#emp-component').focus();
         }
@@ -158,8 +162,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             let self = this;
             self.causeOfLossAtr(0);
             self.requestForIssuance(0);
-            self.scheduleWorkingHourPerWeek(null);
             self.scheduleForReplenishment(0);
+            self.scheduleWorkingHourPerWeek(null);
             self.causeOfLossEmpInsurance('');
         }
     }

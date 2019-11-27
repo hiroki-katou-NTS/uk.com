@@ -119,21 +119,24 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 sId: self.selectedItem(),
                 acquiAtr: self.acquiAtr(),
                 jobPath: self.jobPath(),
-                workingTime: self.workingTime() > 0 ? self.workingTime() : null,
+                workingTime: self.workingTime() >= 0 ? self.workingTime() : null,
                 jobAtr: self.jobAtr(),
-                payWage: self.payWage() > 0 ? self.payWage() : null,
+                payWage: self.payWage() >= 0 ? self.payWage() : null,
                 insCauseAtr: self.insCauseAtr(),
                 wagePaymentMode: self.wagePaymentMode(),
                 employmentStatus: self.employmentStatus(),
                 contrPeriPrintAtr: self.contrPeriPrintAtr(),
                 screenMode: self.screenMode()
             };
+            nts.uk.ui.block.grayout();
             service.register(empInsGetInfo).done(function () {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 });
             }).fail(error => {
                 dialog.alertError(error);
+            }).always(()=>{
+                nts.uk.ui.block.clear();
             });
             $('#emp-component').focus();
         }
@@ -142,6 +145,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.start(sId).done(function (data: any) {
+                self.screenMode(model.SCREEN_MODE.NEW);
                 if (data) {
                     self.sId(data.sId);
                     self.acquiAtr(data.acquiAtr);
