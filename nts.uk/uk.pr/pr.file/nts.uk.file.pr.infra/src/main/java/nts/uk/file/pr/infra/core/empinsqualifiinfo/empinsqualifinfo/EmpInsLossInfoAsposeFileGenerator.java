@@ -181,10 +181,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16));
                 //A1_16
                 String nationaly = element.getNationality().toString();
-                textBuilder.appendText(setValue(233, 402, formatTooLongText(nationaly, NATIONALITY_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(235, 402, formatTooLongText(nationaly, NATIONALITY_MAX_BYTE), 9));
                 //A1_17
                 String residence = element.getResidenceStatus().toString();
-                textBuilder.appendText(setValue(366, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(368, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9));
                 //A2_1
                 textBuilder.appendText(setValue(112, 362, element.getName() != null ?  element.getName().length() > 23 ? element.getName().substring(0,22) : element.getName() : "", 9));
                 //A2_2
