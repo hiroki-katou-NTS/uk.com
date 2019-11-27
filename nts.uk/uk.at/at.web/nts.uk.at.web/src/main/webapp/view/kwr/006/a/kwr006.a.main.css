@@ -7,7 +7,6 @@
 
 .A1_5, .A1_6 {
 	display: inline-block;
-	margin-left: 20px;
 }
 
 .A1_6 {
@@ -27,7 +26,7 @@
 }
 
 .table1 {
-	width: 1200px;
+	width: 1190px;
 	margin-left: 5%;
 }
 
@@ -54,11 +53,11 @@
 	align-items: center;
 	margin-top:  5px;
 	margin-bottom:  5px;
-	margin-left: 25px;
+	margin-left: 15px;
 }
 
 #combo-box{
-	margin: 10px;
+	margin-right: 5px;
 }
 
 .A7_2 {
@@ -84,7 +83,7 @@ label {
 }
 
 .table2 {
-	margin-left: 7%;
+	margin-left: 44px;
 }
 
 hr {
@@ -121,7 +120,6 @@ hr {
 }
 
 #output-format {
-	margin-left: 43px;
 }
 
 #nts-component-list {
@@ -136,4 +134,13 @@ hr {
 }
 .A10-left label{
 	width:105px;
+}
+.form-label {
+	width: 150px;
+}
+#contents-area {
+	height: calc(100vh - 161px) !important;
+}
+html {
+	overflow: hidden;
 }

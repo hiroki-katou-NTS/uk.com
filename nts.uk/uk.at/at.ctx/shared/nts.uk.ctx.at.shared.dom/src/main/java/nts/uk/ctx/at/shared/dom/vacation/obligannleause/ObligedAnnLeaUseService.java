@@ -33,9 +33,9 @@ public interface ObligedAnnLeaUseService {
 	 * @param referenceAtr 参照先区分
 	 * @param distributeAtr 期間按分使用区分
 	 * @param obligedAnnualLeaveUse 年休使用義務日数
-	 * @return 年休使用数
+	 * @return 年休使用数Output
 	 */
-	Optional<AnnualLeaveUsedDayNumber> getAnnualLeaveUsedDays(String companyId, String employeeId,
+	AnnLeaUsedDaysOutput getAnnualLeaveUsedDays(String companyId, String employeeId,
 			GeneralDate criteria, ReferenceAtr referenceAtr, boolean distributeAtr,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse);
 	

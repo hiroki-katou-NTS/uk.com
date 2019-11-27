@@ -36,4 +36,5 @@ public class PersonNameGroupExport {
 
 	/** 個人旧氏名 - OldName */
 	private FullNameSetExport oldName;
+
 }

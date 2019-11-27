@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -77,6 +79,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#find(java.lang.
 	 * String, java.lang.String)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public OptionalItem find(String companyId, Integer optionalItemNo) {
 		KrcstOptionalItem entity = this.queryProxy()
@@ -93,6 +96,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findAll(java.lang
 	 * .String)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<OptionalItem> findAll(String companyId) {
@@ -128,6 +132,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OptionalItem> findByAtr(String companyId, int atr) {
 		// Get entity manager
@@ -176,6 +181,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByListNos(
 	 * java.lang.String, java.util.List)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos) {
@@ -228,6 +234,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByAtr(java.
 	 * lang.String, nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OptionalItem> findByAtr(String companyId, OptionalItemAtr atr) {
 		// Get entity manager
@@ -276,6 +283,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * findByPerformanceAtr(java.lang.String,
 	 * nts.uk.ctx.at.record.dom.optitem.PerformanceAtr)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OptionalItem> findByPerformanceAtr(String companyId, PerformanceAtr atr) {
 		// Get entity manager
@@ -324,6 +332,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * findByPerformanceAtr(java.lang.String,
 	 * nts.uk.ctx.at.record.dom.optitem.PerformanceAtr)
 	 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<OptionalItem> findUsedByPerformanceAtr(String companyId, PerformanceAtr atr) {
 		// Get entity manager
@@ -359,6 +368,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				.collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr) {
 		// Get entity manager
@@ -404,6 +414,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		return null;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId) {
@@ -434,6 +445,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	}
 
 	// Export Data table
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
 	public List<CalFormulasItemTableExportData> findAllCalFormulasTableItem(String companyId, String languageId) {

@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1000, height: 600 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qsi013.b.vm.js" />
+        <com:scriptfile path="qsi013.b.start.js" />
+        <com:scriptfile path="qsi013.b.service.js" />
+        <com:stylefile path="qsi013.b.style.css" />
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.NumInsCards
+            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.RemarkForQuaCompany
+            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.BasicPenNumber
+        </com:ValidatorScript>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="B1_1" tabindex="1" class="proceed"
+                    data-bind="click:registerLossInfo,enable: $root.errors.isEmpty()">#{i18n.getText('QSI013_B1_1')}</button>
+            <button id="B1_2" tabindex="2"
+                    data-bind="click:cancel">#{i18n.getText('QSI013_B1_2')}</button>
+        </div>
+       <div id="contents-area">
+           <div id="B222_2"  style="width: 700px;">
+               <div id="emp-component" tabindex="4"></div>
+           </div>
+           <div style="margin-left : 30px;">
+               <div class="valign-center control-group">
+                   <div id="B222_3" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_3')}</div>
+                   <input id="B222_4" tabindex="5" style="margin-left: 100px;" data-bind="ntsTextEditor: {
+                                                                            value: basicPenNumber,
+                                                                            name: '#{i18n.getText('QSI013_B222_4')}',
+                                                                            constraint: 'BasicPenNumber'}" />
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_5" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_5')}</div>
+                   <div id="B222_6" tabindex="6" style="margin-left: 155px;" data-bind="ntsCheckBox: {checked: isMoreEmp}">#{i18n.getText('QSI013_B222_6')}</div>
+                   <div id="B3_32" tabindex="7" style="margin-left: 155px;" data-bind="ntsCheckBox: {checked: continReemAfterRetirement}">#{i18n.getText('QSI013_B222_32')}</div>
+               </div>
+               <div class="valign-center control-group">
+                   <label id="B222_7">#{i18n.getText('QSI013_B222_7')}</label>
+               </div>
+               <hr id="B222_8   " ></hr>
+               <div class="valign-center control-group">
+                   <div id="B222_9" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_9')}</div>
+                   <div id="B222_10" style="margin-left: 100px;" tabindex="7" data-bind="ntsComboBox: {
+                name: '#{i18n.getText('QSI013_B222_10')}',
+                width: '250px',
+                options: itemListHealth,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: hCause,
+                optionsText: 'name',
+                required: true,
+                selectFirstIfNull: true,
+                columns: [
+                    { prop: 'name', length: 5 }
+                ]}"></div>
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_12" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_12')}</div>
+                   <input id="B222_13" style="width: 227px;margin-left: 60px;" tabindex="8" data-bind="ntsNumberEditor: {
+                                                                         name: '#{i18n.getText('QSI013_B222_13')}',
+                                                                         value: hCaInsurance,
+                                                                         constraint: 'NumInsCards'}" />
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_14" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_14')}</div>
+                   <input id="B222_15" style="width: 227px;margin-left: 45px;" tabindex="9" data-bind="
+                                                                    ntsNumberEditor: {
+                                                                    name: '#{i18n.getText('QSI013_B222_15')}',
+                                                                    value: hNumRecoved,
+                                                                    constraint: 'NumInsCards'}" />
+               </div>
+               <div class=" control-group_">
+                   <div id="B222_16" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_16')}</div>
+                   <div id="B222_17" style="margin-left: 152px;" tabindex="10" data-bind="ntsCheckBox: {checked: hOther}">#{i18n.getText('QSI013_B222_17')}</div>
+                   <input id="B222_18" style="width: 227px; margin-left: 48px;" tabindex="11" data-bind="ntsTextEditor: {
+                                                                            name: '#{i18n.getText('QSI013_B222_18')}',
+                                                                            value: hOtherReason,
+                                                                            enable: hOther,
+                                                                            width: '250px',
+                                                                            constraint: 'RemarkForQuaCompany'}" />
+               </div>
+               <div class="valign-center control-group" style="margin-top : 10px;">
+                   <label id="B222_19">#{i18n.getText('QSI013_B222_19')}</label>
+                   <label id="B222_20" style="width: 227px; margin-left: 125px;" >#{i18n.getText('QSI013_B222_20')}</label>
+               </div>
+               <hr id="B222_21"></hr>
+               <div class="valign-center control-group">
+                   <div id="B222_22" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_22')}</div>
+                   <div id="B222_23" style="margin-left: 100px;" tabindex="12" data-bind="ntsComboBox: {
+                name: '#{i18n.getText('QSI013_B222_23')}',
+                width: '250px',
+                options: itemListPension,
+                optionsValue: 'code',
+                visibleItemsCount: 5,
+                value: pCause,
+                optionsText: 'name',
+                required: true,
+                selectFirstIfNull: true,
+                columns: [
+                    { prop: 'name', length: 7 },
+                ]}"></div>
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_25" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_25')}</div>
+                   <input id="B222_26" style="width: 227px; margin-left: 60px;" tabindex="13" data-bind="ntsNumberEditor: {
+                                                                                     name: '#{i18n.getText('QSI013_B222_26')}',
+                                                                                     value: pCaInsurance,
+                                                                                     constraint: 'NumInsCards'}" />
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_27" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_27')}</div>
+                   <input id="B222_28" style="width: 227px;margin-left: 45px;" tabindex="14" data-bind="ntsNumberEditor: {
+                                                                                       name: '#{i18n.getText('QSI013_B222_28')}',
+                                                                                       value: pNumRecoved,
+                                                                                       constraint: 'NumInsCards'
+                                                                                       }" />
+               </div>
+               <div class="valign-center control-group">
+                   <div id="B222_29" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QSI013_B222_29')}</div>
+                   <div id="B222_30" style="margin-left: 152px;" tabindex="15" data-bind="ntsCheckBox: {checked: pOther}">#{i18n.getText('QSI013_B222_30')}</div>
+                   <input id="B222_31" style="width: 227px;margin-left: 20px;" tabindex="16" data-bind="ntsTextEditor: {
+                                                                           name: '#{i18n.getText('QSI013_B222_31')}',
+                                                                           value: pOtherReason,
+                                                                           enable: pOther,
+                                                                           constraint: 'RemarkForQuaCompany'}" />
+               </div>
+           </div>
+       </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

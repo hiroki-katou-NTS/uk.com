@@ -315,10 +315,10 @@ $material-colors: (
 @each $color-name, $color-variants in $material-colors {
     @each $color-variant, $hex-value in $color-variants {
         .text-#{$color-name}-#{$color-variant} {
-            color: #{$hex-value};
+            color: #{$hex-value} !important;
         }
         .bg-#{$color-name}-#{$color-variant} {
-            background-color: #{$hex-value};
+            background-color: #{$hex-value} !important;
 
             &.swatch-title,
             &.color-swatch {
@@ -333,10 +333,16 @@ $material-colors: (
                 }
             }
         }
+        .border-#{$color-name}-#{$color-variant} {
+          border-color: #{$hex-value} !important;
+        }
 
         @if $color-variant == '500' {
           .text-#{$color-name} {
               color: #{$hex-value};
+          }
+          .border-#{$color-name} {
+            border-color: #{$hex-value} !important;
           }
           .bg-#{$color-name} {
               background-color: #{$hex-value};

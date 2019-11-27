@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class FullNameSetExport {
 	/** 氏名 - FullName */
 	private String fullName;

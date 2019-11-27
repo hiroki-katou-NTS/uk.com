@@ -106,7 +106,7 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 				return value;
 			case TIME:
 			case TIMEPOINT:
-				return new Integer(value);
+				return new Integer(new BigDecimal(value).intValue());
 			case NUMBERIC_BUTTON:
 			case NUMERIC:
 				if(value.equals("")) return new BigDecimal(0);

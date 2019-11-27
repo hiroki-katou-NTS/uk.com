@@ -28,7 +28,7 @@ span.text {
 }
 
 .container {
-	width: 1300px;
+	width: auto;
 }
 
 #functions-area p.halign-right {

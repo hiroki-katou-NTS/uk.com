@@ -1,66 +1,30 @@
-module qmm023.a.service {
-    var paths: any = {
-        getListByCompanyCode: "core/commutelimit/find/bycompanycode",
-        insertData: "core/commutelimit/insert",
-        updateData: "core/commutelimit/update",
-        deleteData: "core/commutelimit/delete"
+module nts.uk.pr.view.qmm023.a.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
+
+    var paths = {
+        getAllTaxAmountByCompanyId: "ctx/pr/core/taxamount/getAllTaxAmountByCompanyId",
+        addTaxExemptLimit: "ctx/pr/core/taxamount/addTaxExemptLimit",
+        updateTaxExemptLimit: "ctx/pr/core/taxamount/updateTaxExemptLimit",
+        removeTaxExemptLimit: "ctx/pr/core/taxamount/removeTaxExemptLimit",
+        exportExcel: "file/core/wageprovision/taxexemptionlimit/exportExcel"
     }
 
-    export function getCommutelimitsByCompanyCode(): JQueryPromise<Array<model.CommuteNoTaxLimitDto>> {
-        let dfd = $.Deferred<Array<any>>();
-        let _path = paths.getListByCompanyCode;
-        nts.uk.request.ajax(_path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            }).fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getAllTaxAmountByCompanyId(): JQueryPromise<any> {
+        return ajax("pr", paths.getAllTaxAmountByCompanyId);
+    };
+    export function addTaxExemptLimit(TaxExemptLimit: any): JQueryPromise<any> {
+        return ajax('pr', paths.addTaxExemptLimit, TaxExemptLimit);
+    };
+    export function updateTaxExemptLimit(TaxExemptLimit: any): JQueryPromise<any> {
+        return ajax('pr', paths.updateTaxExemptLimit, TaxExemptLimit);
+    };
+    export function removeTaxExemptLimit(TaxExemptLimit: any): JQueryPromise<any> {
+        return ajax('pr', paths.removeTaxExemptLimit, TaxExemptLimit);
+    };
+    export function exportExcel(): JQueryPromise<any> {
+        let _path = format(paths.exportExcel);
+        return exportFile(_path);
     }
-
-    export function insertUpdateData(isUpdate: any, commuteNoTaxLimitCommand: any): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
-        let _path = isUpdate ? paths.updateData : paths.insertData;
-        let command = ko.toJS(commuteNoTaxLimitCommand);
-        nts.uk.request.ajax(_path, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    export function deleteData(deleteCode: any): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.deleteData, ko.toJS(deleteCode))
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    export module model {
-        // layout
-        export class CommuteNoTaxLimitDto {
-            companyCode: string;
-            commuNoTaxLimitCode: string;
-            commuNoTaxLimitName: string;
-            commuNoTaxLimitValue: number;
-
-            constructor(companyCode: string, commuNoTaxLimitCode: string, commuNoTaxLimitName: string,
-                commuNoTaxLimitValue: number) {
-                this.companyCode = companyCode;
-                this.commuNoTaxLimitCode = commuNoTaxLimitCode;
-                this.commuNoTaxLimitName = commuNoTaxLimitName;
-                this.commuNoTaxLimitValue = commuNoTaxLimitValue;
-            }
-        }
-
-    }
-
 }

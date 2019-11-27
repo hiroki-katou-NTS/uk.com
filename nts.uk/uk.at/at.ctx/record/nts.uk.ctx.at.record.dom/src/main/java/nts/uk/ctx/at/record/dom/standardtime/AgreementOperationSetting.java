@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -12,6 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -84,22 +86,33 @@ public class AgreementOperationSetting extends AggregateRoot {
 
 		AggregatePeriod aggrPeriod = new AggregatePeriod();
 		
-		// 集計期間を取得
-		val endYMStart = GeneralDate.ymd(period.end().year(), period.end().month(), 1);
-		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
-		if (this.closingDateType == ClosingDateType.LASTDAY){
-			// 終了月の末締め
-			aggrPeriod.setPeriod(new DatePeriod(endYMStart, endYMEnd));
+		// 「締め日区分」を取得
+		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE) {
+			// 勤怠の締め日と同じ　→　「集計期間」と同じ期間とする
+			aggrPeriod.setPeriod(new DatePeriod(period.start(), period.end()));
 		}
 		else {
-			// 集計期間の終了月の締め期間を求める
-			int closureDay = this.closingDateType.value + 1;
-			GeneralDate closingEnd = endYMEnd;
-			if (closureDay < closingEnd.day()){
-				closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
+			// 締め日を指定
+			
+			// 末締めの期間を計算
+			val endYMStart = GeneralDate.ymd(period.end().year(), period.end().month(), 1);
+			val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
+			
+			// 「締め日」を取得
+			if (this.closingDateType == ClosingDateType.LASTDAY){
+				// 終了期間の終了月の1日～末日とする（末締め）
+				aggrPeriod.setPeriod(new DatePeriod(endYMStart, endYMEnd));
 			}
-			GeneralDate closingStart = closingEnd.addMonths(-1).addDays(1);
-			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
+			else {
+				// 期間を計算（集計期間の終了月の締め期間を求める）
+				int closureDay = this.closingDateType.value + 1;
+				GeneralDate closingEnd = endYMEnd;
+				if (closureDay < closingEnd.day()){
+					closingEnd = GeneralDate.ymd(endYMEnd.year(), endYMEnd.month(), closureDay);
+				}
+				GeneralDate closingStart = closingEnd.addMonths(-1).addDays(1);
+				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
+			}
 		}
 		
 		// 年度・年月の取得
@@ -109,18 +122,20 @@ public class AgreementOperationSetting extends AggregateRoot {
 		if (aggrPeriodEnd.month() < this.startingMonth.value + 1) year--;
 		aggrPeriod.setYear(new Year(year));
 		
+		// 期間を返す
 		return aggrPeriod;
 	}
-	
-	/**
-	 * 年月から集計期間を取得
-	 * @param yearMonth 年月
-	 * @return 集計期間
-	 */
-	// 2019.2.14 ADD shuichi_ishida
-	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth){
-		return this.getAggregatePeriodByYearMonth(yearMonth, null);
-	}
+
+// 2019.5.28 DEL shuichi_ishida Redmine #107909　（「勤怠の締め日と同じ」復活により、期間計算に締めが必須になったため、廃止）
+//	/**
+//	 * 年月から集計期間を取得
+//	 * @param yearMonth 年月
+//	 * @return 集計期間
+//	 */
+//	// 2019.2.14 ADD shuichi_ishida
+//	public Optional<AggregatePeriod> getAggregatePeriodByYearMonth(YearMonth yearMonth){
+//		return this.getAggregatePeriodByYearMonth(yearMonth, null);
+//	}
 	
 	/**
 	 * 年月から集計期間を取得
@@ -135,28 +150,42 @@ public class AgreementOperationSetting extends AggregateRoot {
 		aggrPeriod.setYearMonth(yearMonth);
 		aggrPeriod.setYear(new Year(yearMonth.year()));	// 期首月　未配慮
 		
-		// 締め日を指定する場合の集計期間を取得
-		val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
-		val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
-		val prevEnd = currentStart.addDays(-1);
-		if (this.closingDateType == ClosingDateType.LASTDAY){
-			// 年月の末締め
-			aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
+		// 「締め日区分」を取得
+		if (this.closingDateAtr == ClosingDateAtr.SAMEDATE) {
+			// 勤怠の締め日と同じ　→　締め期間と同じ集計期間を取得
+			
+			// 指定した年月の期間をすべて取得する
+			List<DatePeriod> periodList = closure.getPeriodByYearMonth(yearMonth);
+			if (periodList.size() <= 0) return Optional.empty();
+			
+			// 取得した「開始年月日1」「終了年月日1」を返す
+			aggrPeriod.setPeriod(new DatePeriod(periodList.get(0).start(), periodList.get(0).end()));
 		}
 		else {
-			// 年月の締め開始日～締め終了日
-			int closureDay = this.closingDateType.value + 1;
-			GeneralDate closingStart = currentStart;
-			if (closureDay + 1 <= prevEnd.day()){
-				closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
+			
+			// 締め日を指定する場合の集計期間を取得
+			val currentStart = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
+			val currentEnd = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addMonths(1).addDays(-1);
+			val prevEnd = currentStart.addDays(-1);
+			if (this.closingDateType == ClosingDateType.LASTDAY){
+				// 年月の末締め
+				aggrPeriod.setPeriod(new DatePeriod(currentStart, currentEnd));
 			}
-			GeneralDate closingEnd = currentEnd;
-			if (closureDay <= currentEnd.day()){
-				closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
+			else {
+				// 年月の締め開始日～締め終了日
+				int closureDay = this.closingDateType.value + 1;
+				GeneralDate closingStart = currentStart;
+				if (closureDay + 1 <= prevEnd.day()){
+					closingStart = GeneralDate.ymd(prevEnd.year(), prevEnd.month(), closureDay + 1);
+				}
+				GeneralDate closingEnd = currentEnd;
+				if (closureDay <= currentEnd.day()){
+					closingEnd = GeneralDate.ymd(currentEnd.year(), currentEnd.month(), closureDay);
+				}
+				aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
 			}
-			aggrPeriod.setPeriod(new DatePeriod(closingStart, closingEnd));
 		}
-		return Optional.of(aggrPeriod);
+		return Optional.ofNullable(aggrPeriod);
 	}
 	
 	/**
@@ -186,17 +215,18 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 年月期間から36協定期間を取得する
 	 * @param yearMonthPeriod 年月期間
+	 * @param closure 締め
 	 * @return 期間
 	 */
 	// 2019.2.14 ADD shuichi_ishida
-	public Optional<DatePeriod> getAgreementPeriodByYMPeriod(YearMonthPeriod yearMonthPeriod) {
+	public Optional<DatePeriod> getAgreementPeriodByYMPeriod(YearMonthPeriod yearMonthPeriod, Closure closure) {
 		
 		// 年月から集計期間を取得　（開始年月）
-		val startAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.start());
+		val startAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.start(), closure);
 		if (!startAggrPeriodOpt.isPresent()) return Optional.empty();
 		
 		// 年月から集計期間を取得　（終了年月）
-		val endAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.end());
+		val endAggrPeriodOpt = this.getAggregatePeriodByYearMonth(yearMonthPeriod.end(), closure);
 		if (!endAggrPeriodOpt.isPresent()) return Optional.empty();
 		
 		// 期間を返す
@@ -207,13 +237,25 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 年度から36協定の年月期間を取得する
 	 * @param year 年度
+	 * @param closure 締め
+	 * @param getAgreementPeriodFromYear 年度から集計期間を取得
 	 * @return 年月期間
 	 */
 	// 2019.2.15 ADD shuichi_ishida
-	public YearMonthPeriod getYearMonthPeriod(Year year){
-		return new YearMonthPeriod(
-				YearMonth.of(year.v(), this.startingMonth.value + 1),
-				YearMonth.of(year.v() + 1, this.startingMonth.value + 1).previousMonth());
+	public YearMonthPeriod getYearMonthPeriod(Year year, Closure closure,
+			GetAgreementPeriodFromYear getAgreementPeriodFromYear){
+		
+		// 年度から集計期間を取得
+		Optional<DatePeriod> yearPeriodOpt = getAgreementPeriodFromYear.algorithm(year, closure);
+		if (!yearPeriodOpt.isPresent()) {
+			return new YearMonthPeriod(
+					YearMonth.of(year.v(), this.startingMonth.value + 1),
+					YearMonth.of(year.v() + 1, this.startingMonth.value + 1).previousMonth());
+		}
+		
+		// 取得した期間の年と月を移送　→　年月期間を返す
+		DatePeriod yearPeriod = yearPeriodOpt.get();
+		return new YearMonthPeriod(yearPeriod.start().yearMonth(), yearPeriod.end().yearMonth());
 	}
 	
 	/**
@@ -253,18 +295,21 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 指定日を含む年期間を取得
 	 * @param criteria 指定年月日
+	 * @param closure 締め
+	 * @param getAgreementPeriodFromYear 年度から集計期間を取得
 	 * @return 年月期間
 	 */
 	// 2019.2.28 ADD shuichi_ishida
-	public YearMonthPeriod getPeriodYear(GeneralDate criteria){
+	public YearMonthPeriod getPeriodYear(GeneralDate criteria, Closure closure,
+			GetAgreementPeriodFromYear getAgreementPeriodFromYear){
 		
 		// 計算当年度を確認　（締め日未考慮の単純な年月計算）
 		int year = criteria.year();
 		if (criteria.month() < this.startingMonth.value + 1) year--;
 		
 		// 計算当年度について、年度から36協定の年月期間を取得する　→　年月期間から36協定期間を取得する
-		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(new Year(year));
-		Optional<DatePeriod> currentPeriodOpt = this.getAgreementPeriodByYMPeriod(currentYmPeriod);
+		YearMonthPeriod currentYmPeriod = this.getYearMonthPeriod(new Year(year), closure, getAgreementPeriodFromYear);
+		Optional<DatePeriod> currentPeriodOpt = this.getAgreementPeriodByYMPeriod(currentYmPeriod, closure);
 		
 		// 計算当年度期間が確認できないか、計算当年度期間に指定年月日が含まれていれば、計算当年度期間を返す
 		if (!currentPeriodOpt.isPresent()) return currentYmPeriod;
@@ -273,10 +318,31 @@ public class AgreementOperationSetting extends AggregateRoot {
 		
 		// 指定年月日が計算当年度期間より前なら、前年度期間を返す
 		if (criteria.before(currentPeriod.start())) {
-			return this.getYearMonthPeriod(new Year(year - 1));
+			return this.getYearMonthPeriod(new Year(year - 1), closure, getAgreementPeriodFromYear);
 		}
 		
 		// 指定年月日が計算当年度より後なら、次年度期間を返す
-		return this.getYearMonthPeriod(new Year(year + 1));
+		return this.getYearMonthPeriod(new Year(year + 1), closure, getAgreementPeriodFromYear);
+	}
+	
+	 /*
+	 * 日から36協定の集計年月を取得
+	 * @return 年月
+	 */
+	public YearMonth getAgreementYMBytargetDay(GeneralDate targetTime) {
+		if(this.getClosingDateType().isLastDay()) {
+			return targetTime.yearMonth();
+		}
+		else {
+			//*this.getClosingDateType.valueは1日が０で始まっている。
+			//日と日の比較を行うために、「あえて　＋１」　する
+			if(targetTime.day() > (this.getClosingDateType().value + 1) ) {
+				return targetTime.yearMonth();
+			}
+			else {
+				GeneralDate afterOneMonth = targetTime.addMonths(1);
+				return afterOneMonth.yearMonth();
+			}
+		}
 	}
 }

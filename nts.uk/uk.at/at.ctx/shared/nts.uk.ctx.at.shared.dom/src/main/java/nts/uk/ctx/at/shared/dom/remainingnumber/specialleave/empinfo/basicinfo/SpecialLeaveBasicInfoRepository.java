@@ -12,7 +12,11 @@ public interface SpecialLeaveBasicInfoRepository {
 	
 	void add(SpecialLeaveBasicInfo domain);
 	
+	void addAll(List<SpecialLeaveBasicInfo> domains);
+	
 	void update(SpecialLeaveBasicInfo domain);
+	
+	void updateAll(List<SpecialLeaveBasicInfo> domains);
 	
 	void delete(String sID, int spLeavCD);
 	/**
@@ -23,4 +27,25 @@ public interface SpecialLeaveBasicInfoRepository {
 	 * @return
 	 */
 	Optional<SpecialLeaveBasicInfo> getBySidLeaveCdUser(String sid, int spLeaveCD, UseAtr use);
+	
+	/**
+	 * 特別休暇基本情報
+	 * getBySidsLeaveCd
+	 * @param cid
+	 * @param sids
+	 * @param spLeaveCD
+	 * @return
+	 */
+	List<SpecialLeaveBasicInfo> getAllBySidsLeaveCd(String cid, List<String> sids, int spLeaveCD);
+	
+	/**
+	 * for cps013
+	 * 特別休暇基本情報
+	 * getBySidsLeaveCd
+	 * @param cid
+	 * @param sids
+	 * @param spLeaveCD
+	 * @return
+	 */
+	List<Object[]> getAllBySidsAndLeaveCd(String cid, List<String> sids, int spLeaveCD);
 }

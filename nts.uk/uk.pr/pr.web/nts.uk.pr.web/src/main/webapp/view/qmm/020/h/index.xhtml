@@ -1,0 +1,80 @@
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:com="http://xmlns.jcp.org/jsf/component">
+    <div class="sidebar-content-header" style = "min-width: 1000px;">
+
+            <span class = "title">#{i18n.getText('QMM020_11')}</span>
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="click: registerHisIndividual, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+
+        <button id="A1_3" tabindex="2"
+                data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
+
+            <button id="A1_4" tabindex="3"
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
+
+    </div>
+
+    <div style="margin-top: 15px; min-width: 1000px;" class="contents-area" id ="H_CCG" >
+        <com:ko-if bind="$vm.viewmodelA.selectedH()">
+            <div id="com-ccg001" ></div>
+        </com:ko-if>
+            <div id = "H1_1" style="margin-left: 70px; ">
+                <div  tabindex = "4" id="emp-component" style="margin-left: 10px;"></div>
+        </div>
+  <!--      <div id="H1_2">
+
+        </div>-->
+        <div class="fixed-flex-layout-left" style="margin-left: 90px;margin-top: 20px; float: left;">
+            <div >
+                <i id="img-calendar" class="image image-calendar"/>
+            </div>
+            <div data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="H2_3" tabindex="6" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
+
+                    <button id="H2_4" tabindex="7" data-bind="click: openKScreen, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table id="H1_5"  tabindex="8" data-bind="ntsGridList: {
+                                            height: 165,
+                                            rows:6,
+                                            dataSource: listStateCorrelationHis,
+                                            primaryKey: 'hisId',
+                                            columns: [
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: hisIdSelected
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right" id="group_h_right" style="margin-top: 29px; min-width:400px;">
+            <span id = "H3_1" style="margin-bottom: 15px;">#{i18n.getText('QMM020_46')}</span>
+            <div id="text_Salary" class="control-group flex valign-center" style="min-width: 500px;">
+                <pre tabindex="-1" style="line-height: 1.8;">#{i18n.getText('QMM020_18')}</pre>
+                <span id="H3_3" style="padding-left: 30px">#{i18n.getText('QMM020_19')}</span>
+            </div>
+            <hr></hr>
+            <div class="control-group" id="label_H3_4" style="margin-top: 20px;">
+                <div data-bind="ntsFormLabel: {}">
+                    <span class="label">#{i18n.getText('QMM020_20')}</span>
+                    <button id="H3_4" tabindex="9" data-bind="click: selectSalary, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
+                    <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
+                    <span style="margin-left: 10px;" data-bind="text: salaryName"></span>
+                </div>
+            </div>
+
+            <div id="label_H3_5" class="control-group" style="margin-top: 15px;">
+                <div data-bind="ntsFormLabel: {}" >
+                    <span class="label">#{i18n.getText('QMM020_22')}</span>
+                    <button id="H3_5" tabindex="10" data-bind=" click: selectBonus, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
+                    <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
+                    <span style="margin-left: 10px;" data-bind="text: bonusName"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

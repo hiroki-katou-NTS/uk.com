@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -35,6 +35,7 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 	private AgreementOperationSettingRepository agreementOpeSetRepo;
 	
 	/** 年間超過回数の取得 */
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public AgreementExcessInfo algorithm(String employeeId, Year year) {
 

@@ -53,6 +53,7 @@ import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -125,11 +126,93 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	private EmployeeAdapter employeeAdapter;
 	
 	@Inject
-	private EmployeeService employeeService;
+	private WorkplaceListPub workplaceListPub;
 
 	@Override
-	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
-		List<String> result = employeeService.findByEmpId(sID, roleType);
+	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType, GeneralDate referenceDate) {
+		// imported（権限管理）「社員」を取得する Request No1
+		// employeeID = employeeID login
+		String employeeIDLogin = AppContexts.user().employeeId();
+		List<String> result = new ArrayList<>();
+		Optional<EmployeeBasicInforAuthImport> employeeImport = personAdapter.getPersonInfor(employeeIDLogin);
+		// List<String> listEmployeeID = listEmployeeImport.stream().map(c ->
+		// c.getEmployeeId()).collect(Collectors.toList());
+		if (!employeeImport.isPresent()) {
+			return Optional.empty();
+		} else {
+			// アルゴリズム「紐付け先個人IDからユーザを取得する」を実行する
+			// Execute algorithm "Acquire user from tied personal ID"
+			Optional<UserExport> useExport = userPublisher.getUserByAssociateId(employeeImport.get().getPid());
+			if (!useExport.isPresent()) {
+				return Optional.empty();
+			} else {
+				Optional<Role> role = empReferenceRangeService.getByUserIDAndReferenceDate(useExport.get().getUserID(),
+						roleType, referenceDate);
+				if (!role.isPresent()) {
+					if (sID.contains(employeeIDLogin)) {
+						result.add(employeeIDLogin);
+					}
+					return Optional.of(new NarrowEmpByReferenceRange(result));
+				}
+
+				EmployeeReferenceRange referenceRange = role.get().getEmployeeReferenceRange();
+				if (referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
+					return Optional.of(new NarrowEmpByReferenceRange(sID));
+				} else if (referenceRange == EmployeeReferenceRange.ONLY_MYSELF && roleType == RoleType.EMPLOYMENT.value) {
+					
+					//指定社員の職場管理者の職場リストを取得する（配下含む）
+					//[RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
+					List<String> subListWorkPlace = workplaceListPub.getWorkplaceId(GeneralDate.today(), employeeIDLogin);
+					
+					// 社員ID（List）と基準日から所属職場IDを取得 Lay request 227
+					List<AffiliationWorkplace> lisAfiliationWorkplace = workplaceAdapter.findByListEmpIDAndDate(sID, GeneralDate.today());
+					
+					// 取得した所属職場履歴項目（List）を参照可能職場ID（List）で絞り込む
+					result = lisAfiliationWorkplace.stream().filter(c -> {
+						return subListWorkPlace.contains(c.getWorkplaceId()) || employeeIDLogin.equals(c.getEmployeeId());
+					}).map(x -> x.getEmployeeId()).collect(Collectors.toList());
+					
+					return Optional.of(new NarrowEmpByReferenceRange(result));
+				} else if (referenceRange == EmployeeReferenceRange.ONLY_MYSELF && roleType != RoleType.EMPLOYMENT.value) {
+					if (sID.contains(employeeIDLogin)) {
+						result.add(employeeIDLogin);
+					}
+					return Optional.of(new NarrowEmpByReferenceRange(result));
+				}else {
+					List<String> subListWorkPlace = new ArrayList<>();
+					if (roleType == RoleType.EMPLOYMENT.value) {
+						// 指定社員の職場管理者の職場リストを取得する（配下含む）
+						// [RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
+						subListWorkPlace.addAll(workplaceListPub.getWorkplaceId(GeneralDate.today(), employeeIDLogin));
+					}
+					// imported（権限管理）「所属職場履歴」を取得する
+					// (Lấy imported（権限管理）「所属職場履歴」) Lay RequestList No.30
+					Optional<AffWorkplaceHistImport> workPlace = workplaceAdapter
+							.findWkpByBaseDateAndEmployeeId(referenceDate, employeeIDLogin);
+					String workPlaceID1 = workPlace.get().getWorkplaceId();
+					List<String> listWorkPlaceID3 = new ArrayList<>();
+					if (referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+						// 配下の職場をすべて取得する
+						// Lay RequestList No.154
+						listWorkPlaceID3 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(
+								AppContexts.user().companyId(), workPlaceID1, referenceDate);
+					}
+					// 社員ID（List）と基準日から所属職場IDを取得 Lay request 227
+					List<AffiliationWorkplace> lisAfiliationWorkplace = workplaceAdapter.findByListEmpIDAndDate(sID,
+							referenceDate);
+					// 取得した所属職場履歴項目（List）を参照可能職場ID（List）で絞り込む
+					List<String> listtWorkID = new ArrayList<>();
+					listtWorkID.add(workPlaceID1);
+					listtWorkID.addAll(subListWorkPlace);
+					listtWorkID.addAll(listWorkPlaceID3);
+					// 取得した所属職場履歴項目（List）を参照可能職場ID（List）で絞り込む
+					result = lisAfiliationWorkplace.stream().filter(c -> listtWorkID.contains(c.getWorkplaceId()))
+							.map(x -> x.getEmployeeId()).collect(Collectors.toList());
+
+				}
+			}
+
+		}
 		return Optional.of(new NarrowEmpByReferenceRange(result));
 	}
 
@@ -309,15 +392,17 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// ②ユーザID（List） をLoopする
 		for (String userID : listUserID) {
 			Optional<User> user = userRepository.getByUserID(userID);
-			if (user.get().getAssociatedPersonID().isPresent()) {
-				String personalID = user.get().getAssociatedPersonID().get();
-				// Lay thong tin Request 101
-				Optional<EmployeeImport> empImport = employeeAdapter.getEmpInfo(companyID, personalID);
-				if (empImport.isPresent()) {
-					// OUTPUT 社員ID（List）に③社員.社員IDを追加する
-					listEmpID.add(empImport.get().getEmployeeId());
+			if(user.isPresent()) {
+				if (user.get().getAssociatedPersonID().isPresent()) {
+					String personalID = user.get().getAssociatedPersonID().get();
+					// Lay thong tin Request 101
+					Optional<EmployeeImport> empImport = employeeAdapter.getEmpInfo(companyID, personalID);
+					if (empImport.isPresent()) {
+						// OUTPUT 社員ID（List）に③社員.社員IDを追加する
+						listEmpID.add(empImport.get().getEmployeeId());
+					}
+	
 				}
-
 			}
 		}
 

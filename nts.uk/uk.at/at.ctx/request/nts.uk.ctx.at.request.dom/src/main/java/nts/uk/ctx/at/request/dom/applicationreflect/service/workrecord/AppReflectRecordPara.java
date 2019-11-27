@@ -1,18 +1,23 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 @AllArgsConstructor
 @Setter
 @Getter
 public class AppReflectRecordPara {
-	/**
-	 * 
-	 */
-	private ReflectRecordInfor recordInfor;
+	// 申請種類
+	private ApplicationType appType;
+	
+	private PrePostAtr prePosAtr;
 	/**
 	 * 直行直帰申請
 	 */
@@ -41,5 +46,8 @@ public class AppReflectRecordPara {
 	 * 振出申請
 	 */
 	private CommonReflectPara recruitmentInfor;
-
+	/**
+	 * 実行種別
+	 */
+	private ExecutionTypeExImport execuTionType;
 }

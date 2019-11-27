@@ -8,12 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
-import nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
-import nts.uk.ctx.hr.develop.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
-import nts.uk.ctx.hr.develop.dom.personalinfo.stresscheck.StressCheck;
-import nts.uk.ctx.hr.develop.dom.personalinfo.stresscheck.StressCheckManagement;
-import nts.uk.ctx.hr.develop.dom.personalinfo.stresscheck.StressCheckService;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheck;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 
 @Path("hrtest")
 @Produces(MediaType.APPLICATION_JSON)

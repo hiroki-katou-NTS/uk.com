@@ -38,7 +38,7 @@ ko.components.register('kaf022-d', {
         }
     }, template: `
     <!-- ko let: { $dv: $data, text: nts.uk.resource.getText } -->
-    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+    <div class="fixed-table-container" style="width: 900px;">
         <table id="fixed-table-d1">
             <thead>
                 <tr>

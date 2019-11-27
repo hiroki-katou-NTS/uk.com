@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 @Stateless
 public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData {
 	@Inject
@@ -48,6 +49,8 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
+	@Inject
+	private WorkTypeIsClosedService workTypeRepo;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
 			InterimRemainCreateDataInputPara inputParam, CompanyHolidayMngSetting comHolidaySetting) {
@@ -83,7 +86,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 					&& inputParam.getAppData().get(0).getLstAppDate().contains(loopDate)) {
 				continue;
 			}
-			if(employmentHolidaySetting.getEmploymentCode() == null) {
+			if(employmentHolidaySetting == null || employmentHolidaySetting.getEmploymentCode() == null) {
 				lstDateEmployment = lstEmployment.stream()
 						.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
 						.collect(Collectors.toList());			
@@ -98,7 +101,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 				}
 			}
 			//対象日のデータを抽出する
-			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(loopDate, inputParam);
+			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(inputParam.getCid(),loopDate, inputParam);
 			
 			
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
@@ -118,7 +121,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	}
 
 	@Override
-	public InterimRemainCreateInfor extractDataOfDate(GeneralDate baseDate,
+	public InterimRemainCreateInfor extractDataOfDate(String cid,GeneralDate baseDate,
 			InterimRemainCreateDataInputPara inputInfor) {
 		InterimRemainCreateInfor detailData = new InterimRemainCreateInfor(Optional.empty(), Optional.empty(), Collections.emptyList());
 		//実績を抽出する
@@ -128,6 +131,14 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 				.collect(Collectors.toList());
 		if(!recordData.isEmpty()) {
 			detailData.setRecordData(Optional.of(recordData.get(0)));
+		}
+		
+		//対象日の予定を抽出する
+		List<ScheRemainCreateInfor> scheData = inputInfor.getScheData().stream()
+				.filter(z -> z.getSid().equals(inputInfor.getSid()) && z.getYmd().equals(baseDate))
+				.collect(Collectors.toList());
+		if(!scheData.isEmpty()) {
+			detailData.setScheData(Optional.of(scheData.get(0)));
 		}
 		//対象日の申請を抽出する
 		List<AppRemainCreateInfor> appData = inputInfor.getAppData().stream()
@@ -140,15 +151,22 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 								)
 						)
 				.collect(Collectors.toList());
-		detailData.setAppData(appData);
-		//対象日の予定を抽出する
-		List<ScheRemainCreateInfor> scheData = inputInfor.getScheData().stream()
-				.filter(z -> z.getSid().equals(inputInfor.getSid()) && z.getYmd().equals(baseDate))
-				.collect(Collectors.toList());
-		if(!scheData.isEmpty()) {
-			detailData.setScheData(Optional.of(scheData.get(0)));
+		appData = appData.stream().sorted((a,b) -> b.getInputDate().compareTo(a.getInputDate())).collect(Collectors.toList());
+		Integer excludeHolidayAtr = null;
+		if(!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
+			excludeHolidayAtr = remainAppData.excludeHolidayAtr(cid, appData.get(0).getAppId());
 		}
-	
+		//申請：　勤務変更申請、休日を除外する		
+		//又は　休暇申請
+		if((excludeHolidayAtr != null && excludeHolidayAtr == 1)
+				|| (!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.ABSENCE_APPLICATION)) {
+			//申請日は休日かチェック、休日なら申請データをセットしない
+			if((detailData.getRecordData().isPresent() && workTypeRepo.checkHoliday(detailData.getRecordData().get().getWorkTypeCode()))
+					|| (detailData.getScheData().isPresent() && workTypeRepo.checkHoliday(detailData.getScheData().get().getWorkTypeCode()))) {
+				return detailData;
+			}
+		}
+		detailData.setAppData(appData);
 		return detailData;
 		
 	}
@@ -157,14 +175,14 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment) {
 		List<EmploymentHolidayMngSetting> lstEmplSetting = new ArrayList<>();
 		//雇用別休暇管理設定(List)を作成する
-		for (AffPeriodEmpCodeImport emplData : lstEmployment) {
+		lstEmployment.stream().forEach(emplData -> {
 			//ドメインモデル「雇用振休管理設定」を取得する
 			Optional<EmpSubstVacation> optEmpSubData = empSubsRepos.findById(cid, emplData.getEmploymentCode());
 			//ドメインモデル「雇用代休管理設定」を取得する
 			CompensatoryLeaveEmSetting empSetting = empLeaveSetRepos.find(cid, emplData.getEmploymentCode());
 			EmploymentHolidayMngSetting employmentSetting = new EmploymentHolidayMngSetting(emplData.getEmploymentCode(), optEmpSubData, empSetting);
 			lstEmplSetting.add(employmentSetting);
-		}
+		});
 		return lstEmplSetting;
 	}
 

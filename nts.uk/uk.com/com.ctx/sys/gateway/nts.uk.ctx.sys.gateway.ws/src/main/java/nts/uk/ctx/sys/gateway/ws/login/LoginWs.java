@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,9 +19,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.security.csrf.CsrfToken;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginWithNoChangePassCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
@@ -170,17 +173,6 @@ public class LoginWs extends WebService {
 	 * @return the all company
 	 */
 	@POST
-	@Path("getcompany")
-	public List<CompanyInformationImport> getAllCompany() {
-		return companyInformationFinder.findAll();
-	}
-
-	/**
-	 * Gets the all company.
-	 *
-	 * @return the all company
-	 */
-	@POST
 	@Path("getcompany/{contractCode}")
 	public List<CompanyInformationImport> getAllCompany(@PathParam("contractCode") String contractCode) {
 		return companyInformationFinder.findAll(contractCode);
@@ -215,9 +207,15 @@ public class LoginWs extends WebService {
 		return this.submitForm3.handle(command);
 	}
 	
+	@GET
+	@Path("mobile/token")
+	public String getToken() {
+		return CsrfToken.getFromSession();
+	}
+	
 	@POST
 	@Path("submit/mobile")
-	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
 		command.setSignOn(false);
 		command.setRequest(request);
 		return this.mobileLoginHandler.handle(command);
@@ -225,7 +223,7 @@ public class LoginWs extends WebService {
 	
 	@POST
 	@Path("submit/mobile/nochangepass")
-	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, SubmitLoginFormThreeCommand command) {
+	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
 		command.setSignOn(false);
 		command.setRequest(request);
 		return this.mobileLoginNoChangePassHandler.handle(command);

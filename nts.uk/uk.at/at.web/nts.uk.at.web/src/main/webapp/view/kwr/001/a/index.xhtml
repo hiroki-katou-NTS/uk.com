@@ -35,24 +35,6 @@
 				<table class="table1">
 					<tr>
 						<td class="td-left">
-							<!-- A1_4 -->
-							<div class="panel panel-frame row left">
-								<!-- A1_5 -->
-								<span class="label with-image A1_5">
-									<i class="image image-calendar"/>
-									<span>#{i18n.getText('KWR001_7')}</span>
-								</span> 
-								<!--A1_6-->
-								<!--A1_7-->
-								<!--A1_8-->
-								<div tabindex="3" class="A1_6" id="daterangepicker" data-bind="ntsDateRangePicker: {
-										required: requiredDatePicker, 
-										enable: enableDatePicker, 
-										showNextPrevious: true, 
-										value: datepickerValue, 
-										maxRange: 'oneMonth',
-										name: '#[KWR001_7]' }"/>
-								</div>
 							
 							<!-- A3_1 -->
 							<div class="panel panel-frame row">
@@ -61,11 +43,9 @@
 						</td>
 						
 						<td class="td-right">
-							<div class="right">
+							<div class="right" style="width:600px;">
 								<!-- A4_1 -->
 								<div class="panel panel-frame" id="output-setting-content">
-									<!-- A5_1 -->
-									<div class="label A5_1">#{i18n.getText('KWR001_8')}</div>
 									<div class="row">
 										<!-- A6_1 -->
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_9')}</div>
@@ -79,15 +59,20 @@
 											required: true,
 											enable: true }"></div>
 									</div>
-									
 									<div class="row">
-										<!-- A7_1 -->
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_12')}</div>
+	   									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_7')}</div>
+										<div tabindex="3" class="A1_6" id="daterangepicker" data-bind="ntsDateRangePicker: {
+											required: requiredDatePicker, 
+											enable: enableDatePicker, 
+											showNextPrevious: true, 
+											value: datepickerValue, 
+											maxRange: 'oneMonth',
+											name: '#[KWR001_7]' }"></div>
 									</div>
 									
 									<div class="row">
 										<!-- A7_2 -->
-										<span class="label A7_2">#{i18n.getText('KWR001_13')}</span>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_12')}</div>
 										<!-- A7_3 -->
 										<div tabindex="7" id="combo-box" data-bind="ntsComboBox: {
 											name: '#{i18n.getText('KWR001_13')}',
@@ -146,7 +131,7 @@
 												<!-- A10_7 -->
 												<div tabindex="15" id="checkedA10_7" data-bind="ntsCheckBox: { checked: checkedA10_7 }">#{i18n.getText('KWR001_25')}</div>
 												<!-- A10_8 -->
-												<div class="panel panel-frame">
+												<div class="panel panel-frame work-place-accum">
 													<!-- A10_9 -->
 													<div tabindex="" class="label">#{i18n.getText('KWR001_26')}</div>
 													<!-- A10_10 -->

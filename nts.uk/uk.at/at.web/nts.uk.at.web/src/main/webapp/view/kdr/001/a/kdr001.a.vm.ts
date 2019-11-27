@@ -52,9 +52,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
         periodDate: KnockoutObservable<any>;
         copyStartDate: KnockoutObservable<Date>;
+        dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
-
+        
         lstLabelInfomation: KnockoutObservableArray<string>;
         infoPeriodDate: KnockoutObservable<string>;
         lengthEmployeeSelected: KnockoutObservable<string>;
@@ -73,7 +74,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         selectedCode: KnockoutObservable<string> = ko.observable('0');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
-        isEmployeeCharge: KnockoutObservable<boolean> =  ko.observableArray(false);
+        isEmployeeCharge: KnockoutObservable<boolean> =  ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
@@ -90,13 +91,23 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.showClosure(true);
                 }
             });
-            self.startDateString = ko.observable(moment());
-            self.endDateString = ko.observable(moment());
+            self.dateValue = ko.observable("");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.periodDate = ko.observable({
-                startDate: self.startDateString(),
-                endDate: self.endDateString()
+                startDate: self.dateValue().startDate,
+                endDate: self.dateValue().endDate
+            });
+            self.startDateString = ko.observable("");
+            self.endDateString = ko.observable("");
+            self.startDateString.subscribe(function(value) {
+                self.dateValue().startDate = value;
+                self.dateValue.valueHasMutated();
+            });
+
+            self.endDateString.subscribe(function(value) {
+                self.dateValue().endDate = value;
+                self.dateValue.valueHasMutated();
             });
 
             self.resetWorkingHours = ko.observable(false);
@@ -109,8 +120,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             
             ko.computed({
                 read: () => {
-                    let start = ko.toJS(self.startDateString),
-                        end = ko.toJS(self.endDateString),
+                    let start = ko.toJS(self.dateValue().startDate),
+                        end = ko.toJS(self.dateValue().endDate),
                         elm = document.querySelector('#ccg001-search-period'),
                         ccgVM = elm && ko.dataFor(elm);
                     
@@ -161,11 +172,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var self = this;
             var periodStartDate, periodEndDate: string;
             if (self.showBaseDate()) {
-                periodStartDate = moment(self.startDateString()).format("YYYY-MM-DD");
-                periodEndDate = moment(self.endDateString()).format("YYYY-MM-DD");
+                periodStartDate = moment(self.dateValue().startDate).format("YYYY-MM-DD");
+                periodEndDate = moment(self.dateValue().endDate).format("YYYY-MM-DD");
             } else {
-                periodStartDate = moment(self.startDateString()).format("YYYY-MM");
-                periodEndDate = moment(self.endDateString()).format("YYYY-MM"); // 対象期間終了日
+                periodStartDate = moment(self.dateValue().startDate).format("YYYY-MM");
+                periodEndDate = moment(self.dateValue().endDate).format("YYYY-MM"); // 対象期間終了日
             }
 
             if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
@@ -186,8 +197,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
                 /** Required parameter */
                 baseDate: moment(self.baseDate()).format("YYYY-MM-DD"), // 基準日
-                periodStartDate: periodStartDate, // 対象期間開始日
-                periodEndDate: periodEndDate, // 対象期間終了日
+                dateRangePickerValue: self.dateValue,
                 inService: self.inService(), // 在職区分
                 leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
                 closed: self.closed(), // 休業区分
@@ -210,9 +220,14 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
+                    self.dateValue().startDate = moment(data.periodStart).format("YYYY/MM/DD");
+                    self.dateValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
+                    self.dateValue.valueHasMutated();
                     self.applyKCP005ContentSearch(data.listEmployee);
+                    /*
                     self.startDateString(data.periodStart);
                     self.endDateString(data.periodEnd);
+                    */
                     self.closureId(data.closureId);
                 }
             }
@@ -251,8 +266,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
                     //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
                     let preYear = moment(nextMonth).add(-1, 'Y');
-                    self.startDateString(moment.utc(preYear).format("YYYY/MM/DD"));
-                    self.endDateString(moment.utc(nextMonth).format("YYYY/MM/DD"));
+                    self.dateValue({
+                        startDate: moment(startDate).add(1, 'M').format("YYYY/MM"),
+                        endDate: moment(endDate).format("YYYY/MM")
+                    });
+                    self.dateValue.valueHasMutated();
                         
                     self.isEmployeeCharge(role.employeeCharge);
                     if (userSpecific) {
@@ -321,7 +339,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
-                maxWidth: 550,
+                maxWidth: 480,
                 maxRows: 15
             };
         }
@@ -336,8 +354,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 return;
             }
             nts.uk.ui.block.invisible();
-            let startMonth = moment(self.startDateString(), 'YYYY/MM');
-            let endMonth = moment(self.endDateString(), 'YYYY/MM');
+            let startMonth = moment(self.dateValue().startDate, 'YYYY/MM');
+            let endMonth = moment(self.dateValue().endDate, 'YYYY/MM');
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
             if (totalMonths < 0){

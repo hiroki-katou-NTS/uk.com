@@ -1,0 +1,14 @@
+.column-first {
+    width: 125px;
+}
+
+body{
+    overflow-x: hidden;
+}
+
+div.form-label.required {
+    margin-left: 10px;
+    height: 27px !important;
+    margin-top: 10px;
+    margin-right: 20px;
+}

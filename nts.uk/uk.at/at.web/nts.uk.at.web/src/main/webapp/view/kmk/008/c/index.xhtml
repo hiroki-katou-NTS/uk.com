@@ -8,7 +8,7 @@
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button class="proceed" tabindex="3" data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 	</div>
-	<div class="contents-area">
+	<div class="contents-area" data-bind="style:{height: nts.uk.util.browser.version.slice(0,2) == 'IE' ? '475px' : '495px'}">
 		<div class="tabpanel-1-contents-area-right-screen-c" data-bind="with: timeOfCompany">
 			<div class="label">#{i18n.getText('KMK008_6')}</div>
 			<HR />

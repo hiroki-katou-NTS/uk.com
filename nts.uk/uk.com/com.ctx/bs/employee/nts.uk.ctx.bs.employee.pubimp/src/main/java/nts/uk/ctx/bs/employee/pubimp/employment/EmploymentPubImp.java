@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ParallelExceptions.Item;
@@ -88,6 +90,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
 
 		// Query
@@ -180,6 +183,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids,
 			DatePeriod datePeriod) {
 

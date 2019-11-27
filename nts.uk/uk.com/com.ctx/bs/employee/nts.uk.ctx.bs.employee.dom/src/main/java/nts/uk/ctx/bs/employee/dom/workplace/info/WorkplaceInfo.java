@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class WorkplaceInfo.
  */
+@AllArgsConstructor
 @Getter
 //職場情報
 public class WorkplaceInfo extends AggregateRoot {
@@ -145,6 +147,13 @@ public class WorkplaceInfo extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+	public WorkplaceInfo (String workplaceId,String workplaceCode , String wkpDisplayName){
+		this.workplaceId = workplaceId;
+		if(!workplaceId.isEmpty())
+			wkpDisplayName = workplaceCode +" "+wkpDisplayName ;
+		else{
+			wkpDisplayName = " #CPS001_107";
+		} 
+	}
 	
 }

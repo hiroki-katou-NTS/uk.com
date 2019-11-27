@@ -26,9 +26,9 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" data-bind = "visible: mode()==1">
 				<!-- A1_1: Button 承認 -->
-				<div data-bind = "visible: mode()==1"><button tabindex = "1" data-bind = "click: approval">#{i18n.getText('CMM045_3')}</button></div>
+				<div><button tabindex = "1" data-bind = "click: approval">#{i18n.getText('CMM045_3')}</button></div>
 				<!-- A1_2: Button 印刷 -->
 				<!-- <button tabindex = "2">#{i18n.getText('CMM045_4')}</button> -->
 			</div>
@@ -36,52 +36,50 @@
 				<!-- Mode Application -->
 				<!-- CCG_001 -->
 				<div id="ccgcomponent"></div>
-				    <div class="control-group table" style ="margin-top: 10px; margin-left: 20px; display:none" data-bind = "visible: true">
-					<!-- A3 -->
-					<div class = "cell" style = "width: 150px;">
-						<div data-bind = "visible: mode()==1">
-							<div data-bind="with: approvalCount">
-								<table>
-									<colgroup>
-										<col width="100px" />
-										<col width="*" />
-									</colgroup>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_12')}</div></td>
-										<!-- A3_1 -->
-										<td><div data-bind="text: unApprovalNumber"></div></td>
-									</tr>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_13')}</div></td>
-										<!-- A3_2 -->
-										<td><div data-bind="text: approvalNumber"></div></td>
-									</tr>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_14')}</div></td>
-										<!-- A3_3 -->
-										<td><div data-bind="text: approvalAgentNumber"></div></td>
-									</tr>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_15')}</div></td>
-										<!-- A3_4 -->
-										<td><div data-bind="text: cancelNumber"></div></td>
-									</tr>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_16')}</div></td>
-										<!-- A3_5 -->
-										<td><div data-bind="text: remandNumner"></div></td>
-									</tr>
-									<tr>
-										<td><div>#{i18n.getText('CMM045_17')}</div></td>
-										<!-- A3_6 -->
-										<td><div data-bind="text: denialNumber"></div></td>
-									</tr>
-								</table>
-							</div>
-						</div>
+			    <div style="width:850px; margin-top: 12px; margin-left: 20px; display:none" data-bind = "visible: true">
+				<!-- A3 -->
+				<div style = "width: 150px; display: inline-block; float: left" data-bind = "visible: mode()==1">
+					<div data-bind="with: approvalCount" class="table-number">
+						<table>
+							<colgroup>
+								<col width="100px" />
+								<col width="*" />
+							</colgroup>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_12')}</div></td>
+								<!-- A3_1 -->
+								<td><div data-bind="text: unApprovalNumber"></div></td>
+							</tr>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_13')}</div></td>
+								<!-- A3_2 -->
+								<td><div data-bind="text: approvalNumber"></div></td>
+							</tr>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_14')}</div></td>
+								<!-- A3_3 -->
+								<td><div data-bind="text: approvalAgentNumber"></div></td>
+							</tr>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_15')}</div></td>
+								<!-- A3_4 -->
+								<td><div data-bind="text: cancelNumber"></div></td>
+							</tr>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_16')}</div></td>
+								<!-- A3_5 -->
+								<td><div data-bind="text: remandNumner"></div></td>
+							</tr>
+							<tr>
+								<td><div>#{i18n.getText('CMM045_17')}</div></td>
+								<!-- A3_6 -->
+								<td><div data-bind="text: denialNumber"></div></td>
+							</tr>
+						</table>
 					</div>
-					
-					<div class = "cell" style ="padding: 20px; border:1px solid #AAAAAA;">
+				</div>
+				<div style ="width: 625px; padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
+					data-bind="css: {'app-left': mode()==0}">
 						<!-- A2: Switch button -->
 						<!-- delete - ver35 -->
 						<!-- <div data-bind = "visible: mode()==1">
@@ -93,65 +91,61 @@
 								enable: true }"></div>
 						</div> -->
 						<!-- A4_1 -->
-						<div>
-							<table>
-								<colgroup>
-									<col width="100px" />
-									<col width="*" />
-								</colgroup>
-								<tr data-bind = "visible: mode()==1">
-									<td><div>#{i18n.getText('CMM045_19')}</div></td>
-									<td>
-										<!-- A4_1 -->
-										<div tabindex="4" data-bind="ntsMultiCheckBox: {
-											options: itemList,
-											optionsValue: 'id',
-											optionsText: 'name',
-											value: selectedIds,
-											enable: true}"></div>
-										</td>
-								</tr>
-								<tr>
-									<td><div>#{i18n.getText('CMM045_29')}</div></td>
-									<td><div id="daterangepicker" tabindex="5"
-											data-bind="ntsDateRangePicker:
-											{required: false,
-											enable: true,
-											showNextPrevious: false,
-											value: dateValue}"></div>
-										<!-- A4_3_4: button 検索 -->
-										<button tabindex="6" data-bind = "click: filter" 
-											style = "margin-left: 20px">#{i18n.getText('CMM045_32')}</button>
-									</td>
-								</tr>
-								<tr>
-									<!-- A4_4: label 申請種類 -->
-									<td><div>#{i18n.getText('CMM045_33')}</div></td>
-									<td>
-										<div id="combo-box" style = "display: inline-block;"
-											tabindex="7"  data-bind="ntsComboBox: {
-												options: itemApplication,
-												optionsValue: 'appId',
-												value: selectedCode,
-												optionsText: 'appName',
-												enable: true,
-												columns: [{ prop: 'appName'}]}"></div>
-										
-										<!-- A4_4_2 -->
-										<div id = "A4_4_2">#{i18n.getText('CMM045_35')}</div>
-									</td>
-								</tr>
-							</table>
-						</div>
+					<table>
+						<colgroup>
+							<col width="100px" />
+							<col width="*" />
+						</colgroup>
+						<tr data-bind = "visible: mode()==1">
+							<td><div>#{i18n.getText('CMM045_19')}</div></td>
+							<td>
+								<!-- A4_1 -->
+								<div tabindex="4" data-bind="ntsMultiCheckBox: {
+									options: itemList,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: selectedIds,
+									enable: true}"></div>
+								</td>
+						</tr>
+						<tr>
+							<td><div>#{i18n.getText('CMM045_29')}</div></td>
+							<td><div id="daterangepicker" tabindex="5"
+									data-bind="ntsDateRangePicker:
+									{required: false,
+									enable: true,
+									showNextPrevious: false,
+									value: dateValue}"></div>
+								<!-- A4_3_4: button 検索 -->
+								<button tabindex="6" data-bind = "click: filter" 
+									style = "margin-left: 20px">#{i18n.getText('CMM045_32')}</button>
+							</td>
+						</tr>
+						<tr>
+							<!-- A4_4: label 申請種類 -->
+							<td><div>#{i18n.getText('CMM045_33')}</div></td>
+							<td>
+								<div id="combo-box" style = "display: inline-block;"
+									tabindex="7"  data-bind="ntsComboBox: {
+										options: itemApplication,
+										optionsValue: 'appId',
+										value: selectedCode,
+										optionsText: 'appName',
+										enable: true,
+										columns: [{ prop: 'appName'}]}"></div>
+								
+								<!-- A4_4_2 -->
+								<div id = "A4_4_2">#{i18n.getText('CMM045_35')}</div>
+							</td>
+						</tr>
+					</table>
 					</div>
 				</div>
-				<div style="margin-left: 20px;"
-					class="compact-grid">
+				<div style="margin-left: 20px; margin-top: 10px" data-bind="if: mode()==1">
 					<!-- Mode Approval -->
 					<table tabindex="8" id="grid1"></table>
 				</div>
-				<div style="margin-left: 20px;"
-					class="compact-grid">
+				<div style="margin-left: 20px;" data-bind="if: mode()==0" >
 					<div style = "margin-left: 70px;, display: inline-block;">
 						<table tabindex="9" id="grid2"></table>
 					</div>

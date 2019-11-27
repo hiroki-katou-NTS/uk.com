@@ -43,10 +43,13 @@
 #morning, #afternoon {
 	display: inline-table;
 	height: 250px;
-	width: 440px;
+	width: 380px;
 	background: beige;
 	border: 1px solid;
 	margin-top: 15px;
+}
+#morning {
+	margin-right: 20px;
 }
 
 #oneday-set-1, #oneday-set-5, #oneday-set-6, #oneday-set-7,

@@ -1,9 +1,6 @@
-module qmm023.a.start {
+module nts.uk.pr.view.qmm023.a {
     __viewContext.ready(function() {
-        let screenModel = new qmm023.a.viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            nts.uk.ui.confirmSave(screenModel.currentTaxDirty);
+        var screenModel = new viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
-        });
     });
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.person.pub.person.FullNameSetExport;
 import nts.uk.ctx.bs.person.pub.person.FullPersonInfoExport;
 import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.pub.person.PersonNameGroupExport;
+import nts.uk.ctx.bs.person.pub.person.PersonExport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 import nts.uk.ctx.bs.person.pub.person.PubPersonDto;
 
@@ -73,42 +74,53 @@ public class PersonPubImp implements PersonPub {
 	}
 
 	@Override
-	public List<FullPersonInfoExport> getPersonInfoFromListId(List<String> personIds) {
-		return this.personRepository.getPersonByPersonIds(personIds).stream().map(p -> fromDomain(p))
-				.collect(Collectors.toList());
+	public List<PersonExport> findByPids(List<String> personIds) {
+		//アルゴリズム「個人を取得する」を実行する
+		return personRepository.getAllPersonByPids(personIds).stream().map(c -> {
+
+			PersonNameGroup group = c.getPersonNameGroup();
+			
+			if (group != null) {
 				
-	}
-	
-	private  FullPersonInfoExport fromDomain(Person p) {
-		
-		PersonNameGroup pName = p.getPersonNameGroup();
-		
-		FullNameSetExport  personName = new FullNameSetExport(pName.getPersonName().getFullName().v(), pName.getPersonName().getFullNameKana().v());
-		FullNameSetExport  personalNameMultilingual = new FullNameSetExport(pName.getPersonalNameMultilingual().getFullName().v(), pName.getPersonalNameMultilingual().getFullNameKana().v());
-		FullNameSetExport  personRomanji = new FullNameSetExport(pName.getPersonRomanji().getFullName().v(), pName.getPersonRomanji().getFullNameKana().v());
-		FullNameSetExport  todokedeFullName = new FullNameSetExport(pName.getTodokedeFullName().getFullName().v(), pName.getTodokedeFullName().getFullNameKana().v());
-		FullNameSetExport  oldName = new FullNameSetExport(pName.getOldName().getFullName().v(), pName.getOldName().getFullNameKana().v());
-		
-		PersonNameGroupExport personNameGroup = 
-				PersonNameGroupExport.builder()
-				.businessName(pName.getBusinessName().v())
-				.businessNameKana(pName.getBusinessNameKana().v())
-				.businessOtherName(pName.getBusinessOtherName().v())
-				.businessEnglishName(pName.getBusinessEnglishName().v())
-				.personName(personName)
-				.PersonalNameMultilingual(personalNameMultilingual)
-				.personRomanji(personRomanji)
-				.todokedeFullName(todokedeFullName)
-				.oldName(oldName)
-				.build();
-		
-		return FullPersonInfoExport.builder()
-				.birthDate(p.getBirthDate())
-				.bloodType(p.getBloodType().value)
-				.gender(p.getGender().value)
-				.personId(p.getPersonId())
-				.personNameGroup(personNameGroup)
-				.build();
+				FullNameSetExport  personName = new FullNameSetExport(
+										group.getPersonName() == null ? null : group.getPersonName().getFullName().v(),
+										group.getPersonName() == null ? null : group.getPersonName().getFullNameKana().v());
+				FullNameSetExport  personalNameMultilingual = new FullNameSetExport(
+										group.getPersonalNameMultilingual() == null ? null
+												: group.getPersonalNameMultilingual().getFullName().v(),
+										group.getPersonalNameMultilingual() == null ? null
+												: group.getPersonalNameMultilingual().getFullNameKana().v());
+				FullNameSetExport  personRomanji = new FullNameSetExport(
+										group.getPersonRomanji() == null ? null : group.getPersonRomanji().getFullName().v(),
+										group.getPersonRomanji() == null ? null
+												: group.getPersonRomanji().getFullNameKana().v());
+				FullNameSetExport  todokedeFullName = new FullNameSetExport(
+										group.getTodokedeFullName() == null ? null
+												: group.getTodokedeFullName().getFullName().v(),
+										group.getTodokedeFullName() == null ? null
+												: group.getTodokedeFullName().getFullNameKana().v());
+				FullNameSetExport  oldName = new FullNameSetExport(group.getOldName() == null ? null : group.getOldName().getFullName().v(),
+										group.getOldName() == null ? null : group.getOldName().getFullNameKana().v()));
+				
+				PersonNameGroupExport groupExport = new PersonNameGroupExport(group.getBusinessName().v(),
+																			group.getBusinessNameKana().v(), 
+																			group.getBusinessOtherName().v(),
+																			group.getBusinessEnglishName().v(),
+																			personName,
+																			personalNameMultilingual,
+																			personRomanji,
+																			todokedeFullName,
+																			oldName);
+				
+				return new PersonExport(c.getBirthDate(), c.getGender() == null ? 1 : c.getGender().value,
+						c.getPersonId(), groupExport);
+			}
+			
+			return new PersonExport(c.getBirthDate(), c.getGender() == null ? 1 : c.getGender().value,
+					c.getPersonId(), null);
+			
+		}).collect(Collectors.toList());
+
 	}
 
 }

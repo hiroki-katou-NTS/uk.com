@@ -6,7 +6,7 @@ module nts.uk.pr.view.ccg007.d {
         var servicePath = {
             checkContract: "ctx/sys/gateway/login/checkcontract",
             submitLogin: "ctx/sys/gateway/login/submit/form3",
-            getAllCompany: "ctx/sys/gateway/login/getcompany",
+            getAllCompany: "ctx/sys/gateway/login/getcompany/",
             getEmployeeLoginSetting: "ctx/sys/gateway/login/emlogsettingform3",
             account: "ctx/sys/gateway/login/account",
             ver: "ctx/sys/gateway/login/build_info_time"
@@ -41,8 +41,8 @@ module nts.uk.pr.view.ccg007.d {
         /**
           * Function is used to copy new Top Page.
           */
-        export function getAllCompany(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllCompany);
+        export function getAllCompany(contractCode : string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllCompany + contractCode);
         }
 
         export interface SystemConfigDto {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
+import java.util.List;
+import java.util.Map;
 //import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +14,14 @@ public interface SpecialLeaveGrantNextDateService {
 	 * @return
 	 */
 	Optional<GrantDaysInfor> getNumberOfGrantDays(SpecialLeaveGrantNextDateInput param);
+	
+	/**
+	 * đối ứng cho màn cps003
+	 * 次回特別休暇付与日を取得する
+	 * @param param
+	 * @return
+	 */
+	Map<String, GrantDaysInfor> getNumberOfGrantDays(List<SpecialLeaveGrantNextDateInputExtend> params);
 	/**
 	 * 次回特休付与計算開始日を計算する
 	 * @param closureDate 締め開始日
@@ -25,4 +35,12 @@ public interface SpecialLeaveGrantNextDateService {
 	 * @return
 	 */
 	Optional<GrantDaysInfor> getGrantDataOfNextDay(SpeGrantNextDateByGetInput param);
+	
+	/**
+	 * đối ứng cho màn cps003
+	 * 次回特別休暇付与日を取得
+	 * @param param
+	 * @return
+	 */
+	Map<String, GrantDaysInfor> getGrantDataOfNextDay(List<SpeGrantNextDateByGetInputExtend> params);
 }

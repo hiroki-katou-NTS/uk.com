@@ -27,12 +27,12 @@ public interface PersonPub {
 	 * @return
 	 */
 	List<PersonInfoExport> findByListId(List<String> personIds);
-
+	
 	/**
 	 * [RQ621]個人ID(List)から個人基本情報を取得する
-	 * 
 	 * @param personIds
 	 * @return
 	 */
-	List<FullPersonInfoExport> getPersonInfoFromListId(List<String> personIds);
+	List<PersonExport> findByPids(List<String> personIds);
+
 }
