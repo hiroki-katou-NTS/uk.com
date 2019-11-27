@@ -3,7 +3,7 @@ module jhn011.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    import Text = nts.uk.resource.getText;
+    import text = nts.uk.resource.getText;
     import lv = nts.layout.validate;
 
     let __viewContext: any = window['__viewContext'] || {},
@@ -19,17 +19,21 @@ module jhn011.b.viewmodel {
         enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
         checkAbolition: KnockoutObservable<boolean> = ko.observable(true);
+        
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: Text('JHN011_B221_4_1'), key: 'reportCode', width: 60, hidden: false },
-            { headerText: Text('JHN011_B221_4_2'), key: 'reportName', width: 230, hidden: false, formatter: _.escape },
-            { headerText: Text('JHN011_B221_4_3'), key: 'isAbolition', width: 50, hidden: false, formatter: makeIcon }
+            { headerText: text('JHN011_B221_4_1'), key: 'reportCode', width: 60, hidden: false },
+            { headerText: text('JHN011_B221_4_2'), key: 'reportName', width: 230, hidden: false, formatter: _.escape },
+            { headerText: text('JHN011_B221_4_3'), key: 'isAbolition', width: 50, hidden: false, formatter: makeIcon }
         ]);
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
-
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN011', screenId: 'B' }] },
+                Page.NORMAL);
+            
             self.start();
 
             layout.id.subscribe(id => {
@@ -202,7 +206,8 @@ module jhn011.b.viewmodel {
             data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
 
             data.action = LAYOUT_ACTION.REMOVE;
-            let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; });
+            let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; }),
+                layouts: Array<ILayout> = ko.toJS(self.layouts);
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 var command: any = {
@@ -322,13 +327,13 @@ module jhn011.b.viewmodel {
         agentReportIsCan: KnockoutObservable<string> = ko.observable(null);
     
         comboxReportType: KnockoutObservableArray < any > = ko.observableArray([
-            { code: "0", name: Text("JHN011_B222_2_1_1") },
-            { code: "1", name: Text("JHN011_B222_2_1_2") },
-            { code: "2", name: Text("JHN011_B222_2_1_3") }]);
+            { code: "0", name: text("JHN011_B222_2_1_1") },
+            { code: "1", name: text("JHN011_B222_2_1_2") },
+            { code: "2", name: text("JHN011_B222_2_1_3") }]);
     
         roundingRules: KnockoutObservableArray < any > = ko.observableArray([
-            { code: "0", name: Text("JHN011_B222_6_1_1") },
-            { code: "1", name: Text("JHN011_B222_6_1_2") }]);
+            { code: "0", name: text("JHN011_B222_6_1_1") },
+            { code: "1", name: text("JHN011_B222_6_1_2") }]);
         
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
         
@@ -368,6 +373,12 @@ module jhn011.b.viewmodel {
         ITEM = <any>"ITEM", // single item
         LIST = <any>"LIST", // list item
         SPER = <any>"SeparatorLine" // line item
+    }
+    
+    enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
     }
     
     function makeIcon(value, row) {

@@ -15,12 +15,14 @@
 		
 	}
 }
+#master-wrapper{
+	overflow-y: hidden;
+}
 
 #contents-area {
 	overflow-x: auto;
 	overflow-y: auto;
 }
-
 .valign-center {
 	vertical-align: middle !important;
 }
@@ -42,6 +44,15 @@
 	width: 20%;
 }
 
+#B221_3{
+	width: 100% !important;
+}
+
+#B221_2{
+	padding-left: 0px !important;
+	padding-bottom: 5px !important;
+}
+
 button.search-btn {
 	/* margin: 5px; */
 	margin-left: 23px;
@@ -53,7 +64,7 @@ button.search-btn {
 	margin-top: 14px;
 	float: left;
 	min-height: 600px;
-	width: 65%;
+	width: 60%;
 	position: relative;
 }
 
@@ -89,7 +100,7 @@ button.search-btn {
 }
 
 div#B221.relative.bg-green.caret-right.caret-background {
-	width: 300px;
+	width: 25%;
 }
 
 /* i.icon.icon-searchbox {

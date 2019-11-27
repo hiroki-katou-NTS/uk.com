@@ -30,25 +30,25 @@
 			</div>
 			<div id="contents-area">
 				<div id="B221"
-					data-bind="ntsPanel:{width: '25%',direction: 'right', showIcon: true, visible: true}">
+					data-bind="ntsPanel:{width: '28%',direction: 'right', showIcon: true, visible: true}">
 					
 					<div id="B221_2"
-							data-bind="ntsCheckBox: { checked: checkAbolition }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
+							data-bind="ntsCheckBox: { checked: checkAbolition }" tabindex="-1">#{i18n.getText('JHN011_B221_2')}</div>
 					<div class="cf">
-						<div style="float: left">
-							<div  id="B221_3" style="width: 300px"
+						<div >
+							<div  id="B221_3"
 								data-bind="ntsSearchBox: {
 									searchMode :'highlight',
 									targetKey: 'id', 
 									mode: 'igGrid',
-									comId: 'multi-list',
+									comId: 'B221_4',
 									items: layouts, 
 									selected: 'id',
 									selectedKey: 'id', 
-									fields: ['reportName', 'reportCode'] }" />
+									fields: ['reportCode', 'reportName'] }" />
 							<table id="B221_4"
 								data-bind="ntsGridList: {
-									height: 535,
+									height: 604,
 									options: layouts,
 									optionsValue: 'id',
 									columns: reportColums,
@@ -93,7 +93,7 @@
 															enable: true
 											}" />
 											
-										<div id="B222_1_3" data-bind="ntsCheckBox: { checked: isAbolition }" tabindex="5">#{i18n.getText('JHN011_B221_2')}</div>
+										<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('JHN011_B221_2')}</div>
 										
 										</div>
 									</div>

@@ -2243,6 +2243,14 @@ public class ProgramsManager {
 			"/ccg/007/e", ProgramIdConsts.CCG007H);
 	
 	/**
+	 * JHN011
+	 */
+	public static final Program JHN011B = new Program(WebAppId.HR, ProgramIdConsts.JHN011B, "JHN011B",
+			"/view/jhn/011/b/index.xhtml");
+	public static final Program JHN011C = new Program(WebAppId.HR, ProgramIdConsts.JHN011C, "JHN011C",
+			"/view/jhn/011/c/index.xhtml");
+	
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;
