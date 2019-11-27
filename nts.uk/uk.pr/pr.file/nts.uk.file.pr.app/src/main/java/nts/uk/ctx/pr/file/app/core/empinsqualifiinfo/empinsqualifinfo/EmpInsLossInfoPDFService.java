@@ -132,7 +132,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         // 社員雇用保険履歴を取得する
-        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, endDate);
+        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, startDate, endDate);
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
@@ -146,7 +146,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
 
         List<String> empInsHistIds = empInsHists.stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
 
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
         Map<String, CurrentPersonResidence> currentPersonResidence = CurrentPersonResidence
                 .createListPerson(personExportAdapter.findByPids(pIds)).stream().collect(Collectors.toMap(CurrentPersonResidence::getPId, Function.identity()));
 
