@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf005.b {
             forceOvertimeDetail: boolean = false;
             appOvertimeDetail: any = null;
             tmpOverTime: any;
+            isNotAgentMode: KnockoutObservable<boolean> = ko.observable(true);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata, rebind?: boolean) {
                 super(listAppMetadata, currentApp);
                 var self = this;

@@ -144,6 +144,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         forceOvertimeDetail: boolean = false;
         forceInconsistency: boolean = false;
         appOvertimeDetail: any = null;
+        isNotAgentMode: KnockoutObservable<boolean> = ko.observable(true);
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -157,6 +158,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
                     self.isSpr = true;
                     self.targetDate = transferData.appDate;        
+                }
+                if(_.isEmpty(transferData.employeeIDs)) {
+                    self.isNotAgentMode(true);    
+                } else {
+                    if(transferData.employeeIDs.length > 1) {
+                        self.isNotAgentMode(false);         
+                    } else {
+                        self.isNotAgentMode(true);     
+                    }    
                 }
             }
                     
