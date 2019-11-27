@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
-    private static final int LOCATION_MAX_BYTE = 46;
+    private static final int LOCATION_MAX_BYTE = 54;
     private static final int BUSINESS_NAME_MAX_BYTE = 46;
     private static final int OFFICE_NAME_MAX_BYTE = 40;
     private static final int NATIONALITY_MAX_BYTE = 20;
@@ -145,7 +145,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9));
                 // A3_2
                 String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(176, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(160, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
                 textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9));
@@ -154,7 +154,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9));
 
                 // A3_5
-                detachDate(467, 180, data.getSubmissionDateJp(), textBuilder);
+                detachDate(460, 180, data.getSubmissionDateJp(), textBuilder);
                 // index page
                 indexPage++;
             }
@@ -201,8 +201,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
         textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
-        textBuilder.appendText(setValue(xRoot + 36, yRoot, value.month() + "", 9));
-        textBuilder.appendText(setValue(xRoot + 72, yRoot, value.day() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 43, yRoot, value.month() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 79, yRoot, value.day() + "", 9));
     }
 
     private String formatPhoneNumber(String number) {
