@@ -57,7 +57,7 @@
                         }"></div>
                         </div>
                         <div class="control-group">
-                            <div id="C222_11" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_11')}</div>
+                            <div id="C222_11" class="column-first" data-bind="ntsFormLabel:{ constraint: 'WorkingTime' }">#{i18n.getText('QUI004_C222_11')}</div>
                             <input id="C222_12" tabindex="7" data-bind="ntsTimeEditor: {value: scheduleWorkingHourPerWeek, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
                         </div>
                         <div class="control-group valign-center">
@@ -73,7 +73,7 @@
                         }"></div>
                         </div>
                         <div class="control-group valign-center">
-                            <div id="C222_16" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_16')}</div>
+                            <div id="C222_16" class="column-first" data-bind="ntsFormLabel:{ constraint: 'CauseOfLossEmpInsurance' }">#{i18n.getText('QUI004_C222_16')}</div>
                             <div id="C222_17" tabindex="9" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI004_C222_16')}',
                         options: causeOfLossEmpInsurances,
