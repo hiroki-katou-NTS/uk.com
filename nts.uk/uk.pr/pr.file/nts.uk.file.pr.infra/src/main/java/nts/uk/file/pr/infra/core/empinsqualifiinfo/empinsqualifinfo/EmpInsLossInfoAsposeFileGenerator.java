@@ -70,10 +70,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,textBuilder);
                     detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,textBuilder);
                 }
-                //A1_4
+
                 switch (element.getEmpInsReportSetting().getOfficeClsAtr()){
                     case OUTPUT_COMPANY: {
                         if (element.getCompanyInfor() != null) {
+                            //A1_4
                             String companyCode = element.getCompanyInfor().getCompanyCode();
                             detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, textBuilder);
                             detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, textBuilder);
@@ -96,10 +97,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     }
                     case OUPUT_LABOR_OFFICE: {
                         if (element.getLaborInsuranceOffice() != null) {
-                            String laborOfficeCode =  element.getLaborInsuranceOffice().getLaborOfficeCode().v();
-                            detachText(276, 711,laborOfficeCode.length() > 4 ? laborOfficeCode.substring(0,4) : laborOfficeCode, 4, textBuilder);
-                            detachText(362, 711, laborOfficeCode.length() > 4 ? laborOfficeCode.substring(4,laborOfficeCode.length()) : "", 6, textBuilder);
-                            detachText(481, 711, laborOfficeCode.length() > 11 ? laborOfficeCode.substring(10,laborOfficeCode.length()) : "", 1, textBuilder);
+                            //A1_4
+                            detachText(276, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().get().v() : "", 4, textBuilder);
+                            detachText(362, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().get().v() : "", 6, textBuilder);
+                            detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
 
                             //A2_7
                             textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getLaborInsuranceOffice().getLaborOfficeName().v(), BUSINESS_NAME), 9));
@@ -306,15 +307,15 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
             if(numberSplit[1].length() <= 3){
                 temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "  -" + temp[0] + "  -";
+                numberPhone = numberSplit[0] + "  -" + temp[0] + " -";
             }else{
                 temp[0] = numberSplit[1].substring(0,3);
                 temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "  -" + temp[0] + "  -" + temp[1];
+                numberPhone = numberSplit[0] + "  -" + temp[0] + " -" + temp[1];
             }
 
         }else if(numberSplit.length >= 3){
-            numberPhone = numberSplit[0] + "  -" + numberSplit[1] + "  -" + numberSplit[2];
+            numberPhone = numberSplit[0] + "  -" + numberSplit[1] + " -" + numberSplit[2];
         }else if(numberSplit.length == 1){
             if(number.length() <= 3){
                 temp[0] = number.substring(0,number.length());
@@ -322,12 +323,12 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             }else if( number.length() <=6){
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,number.length());
-                numberPhone = temp[0] + "  -" + temp[1] + "  -";
+                numberPhone = temp[0] + "  -" + temp[1] + " -";
             }else{
                 temp[0] = number.substring(0,3);
                 temp[1] = number.substring(3,6);
                 temp[2] = number.substring(6,number.length());
-                numberPhone = temp[0] + "  -" + temp[1] + "  -" + temp[2];
+                numberPhone = temp[0] + "  -" + temp[1] + " -" + temp[2];
             }
 
         }
