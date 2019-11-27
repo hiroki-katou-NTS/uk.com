@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
-public class CommonMasterItem {
+public class GroupCommonMasterItem {
 
 	// 共通項目ID
 	private String commonMasterItemId;
@@ -33,9 +33,9 @@ public class CommonMasterItem {
 	private GeneralDate usageEndDate;
 
 	// 会社別使用状態
-	private List<NotUseCompany> notUseCompanyList;
+	private List<NotUseCompanyList> notUseCompanyList;
 
-	public CommonMasterItem(String commonMasterItemId, CommonMasterItemCode commonMasterItemCode,
+	public GroupCommonMasterItem(String commonMasterItemId, CommonMasterItemCode commonMasterItemCode,
 			CommonMasterItemName commonMasterItemName, int displayNumber, GeneralDate usageStartDate,
 			GeneralDate usageEndDate) {
 		super();

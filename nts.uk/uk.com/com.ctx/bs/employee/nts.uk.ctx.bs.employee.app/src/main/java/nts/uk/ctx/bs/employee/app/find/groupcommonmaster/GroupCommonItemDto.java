@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItem;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class GroupCommonItemDto {
 	// 使用設定
 	private int useSetting;
 
-	public GroupCommonItemDto(CommonMasterItem domain) {
+	public GroupCommonItemDto(GroupCommonMasterItem domain) {
 		this.commonMasterItemId = domain.getCommonMasterItemId();
 		this.commonMasterItemCode = domain.getCommonMasterItemCode().v();
 		this.commonMasterItemName = domain.getCommonMasterItemName().v();
