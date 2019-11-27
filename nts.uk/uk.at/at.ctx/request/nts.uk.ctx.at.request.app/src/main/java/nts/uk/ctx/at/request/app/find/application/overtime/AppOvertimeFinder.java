@@ -565,6 +565,7 @@ public class AppOvertimeFinder {
 		Integer startTime = appOverTime.getWorkClockFrom1();
 		Integer endTime = appOverTime.getWorkClockTo1();
 		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);
+		overTimeDto.setOvertimeAtr(appOverTime.getOverTimeAtr().value);
 		String employeeName = employeeAdapter.getEmployeeName(appOverTime.getApplication().getEmployeeID());
 		overTimeDto.setEmployeeName(employeeName);
 		overTimeDto.setEnteredPersonName(appOverTime.getApplication().getEnteredPersonID() == null ? null : employeeAdapter.getEmployeeName(appOverTime.getApplication().getEnteredPersonID()));
@@ -636,7 +637,7 @@ public class AppOvertimeFinder {
 		overTimeDto.setOverTimeInputs(overTimeInputs);
 		
 		//01-08_乖離定型理由を取得
-		if(overTimeDto.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+		if(overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 			overTimeDto.setDisplayDivergenceReasonForm(true);
 			List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 					.getDivergenceReasonForm(
@@ -645,8 +646,6 @@ public class AppOvertimeFinder {
 							overtimeRestAppCommonSet.getDivergenceReasonFormAtr(),
 							ApplicationType.OVER_TIME_APPLICATION);
 			convertToDivergenceReasonDto(divergenceReasons,overTimeDto);
-		}else{
-			overTimeDto.setDisplayDivergenceReasonForm(false);
 		}
 		
 		// 勤務種類の名称を取得する
@@ -1176,10 +1175,8 @@ public class AppOvertimeFinder {
 			applicationDto.setApplicationReason(reasonContent);
 		}
 		
-		result.setDisplayDivergenceReasonForm(false);
-		
 		//01-08_乖離定型理由を取得
-		if(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
+		if(overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 			result.setDisplayDivergenceReasonForm(true);
 			List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
 					.getDivergenceReasonForm(
@@ -1798,7 +1795,12 @@ public class AppOvertimeFinder {
 			Optional<TimeWithDayAttr> opStartTime = startTime1==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime1)); 
 			Optional<TimeWithDayAttr> opEndTime = endTime1==null ? Optional.empty() : Optional.of(new TimeWithDayAttr(endTime1)); 
 			// 01-01_休憩時間を取得する
-			List<DeductionTime> breakTimes = this.commonOvertimeHoliday.getBreakTimes(companyID, result.getWorkType().getWorkTypeCode(), result.getSiftType().getSiftCode(), opStartTime, opEndTime);
+			List<DeductionTime> breakTimes = this.commonOvertimeHoliday.getBreakTimes(
+					companyID, 
+					result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
+					result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
+					opStartTime, 
+					opEndTime);
 			List<DeductionTimeDto> timeZones = breakTimes.stream().map(domain->{
 				DeductionTimeDto dto = new DeductionTimeDto();
 				domain.saveToMemento(dto);

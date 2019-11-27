@@ -109,6 +109,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
 				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
 						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
+				if(CollectionUtil.isEmpty(result)) {
+					throw new BusinessException("Msg_1567");
+				}
 				return result;
 			}
 		}
@@ -262,7 +265,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeAndSiftType.setWorkType(workTypeOvertime);
 			} else {
 				//先頭の勤務種類を選択する
-				workTypeAndSiftType.setWorkType(workTypes.get(0));
+				if(!CollectionUtil.isEmpty(workTypes)){
+					workTypeAndSiftType.setWorkType(workTypes.get(0));
+				}
 			}
 			
 			//ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
@@ -272,7 +277,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				siftType = siftTypes.stream().filter(x -> x.getSiftCode().equals(wkTimeCd)).findAny().get();
 				workTypeAndSiftType.setSiftType(siftType);
 			} else {
-				workTypeAndSiftType.setSiftType(siftTypes.get(0));
+				if(!CollectionUtil.isEmpty(siftTypes)){
+					workTypeAndSiftType.setSiftType(siftTypes.get(0));
+				}
 			}
 		}
 		return workTypeAndSiftType;

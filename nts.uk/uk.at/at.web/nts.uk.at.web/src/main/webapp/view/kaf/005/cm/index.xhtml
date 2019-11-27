@@ -351,7 +351,7 @@
 				</div>
 				<!-- 乖離定型理由 -->
 				<div class="valign-center control-group overlay-reason"
-					data-bind="if: displayDivergenceReasonForm">
+					data-bind="if: displayDivergenceReasonForm() &amp;&amp; prePostSelected()==1">
 					<!--A9_5 乖離定型理由ラベル-->
 					<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_90')}</div>
 					<!--A9_6 乖離定型理由選択-->
@@ -368,7 +368,7 @@
 				</div>
 				<!--  乖離理由（ラベル) -->
 				<div class="cf valign-top control-group"
-					data-bind="if: displayDivergenceReasonInput">
+					data-bind="if: displayDivergenceReasonInput() &amp;&amp; prePostSelected()==1">
 					<!--A9_7 乖離理由ラベル-->
 					<div class="lblTitle cm-column" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_92')}</div>
 					<!--A9_8 乖離理由入力-->
