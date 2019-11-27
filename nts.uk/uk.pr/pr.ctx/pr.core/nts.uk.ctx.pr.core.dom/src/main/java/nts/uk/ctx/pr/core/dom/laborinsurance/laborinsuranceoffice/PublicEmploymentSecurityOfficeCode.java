@@ -9,7 +9,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * 公共職業安定所コード
  */
-@StringMaxLength(5)
+@StringMaxLength(4)
 @ZeroPaddedCode
 @StringCharType(CharType.NUMERIC)
 public class PublicEmploymentSecurityOfficeCode extends CodePrimitiveValue<PublicEmploymentSecurityOfficeCode> {

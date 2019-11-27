@@ -13,7 +13,7 @@ import java.util.Optional;
 public class JpaRetiReaClsInfoRepository extends JpaRepository implements RetirementReasonClsInfoRepository{
     private static final String SELECT_QUERY_STRING = "SELECT r FROM QqsmtRetiReaClsInfo r";
     private static final String SELECT_BY_KEY_STRING = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cId";
-    private static final String SELECT_BY_CID_AND_CODE = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cid AND r.retirementReasonClsCode = :code";
+    private static final String SELECT_BY_CID_AND_CODE = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cid AND r.qqsmtRetiReaClsInfoPk.retirementReasonClsCode = :code";
 
     @Override
     public List<RetirementReasonClsInfo> getRetirementReasonClsInfoById(String cId){
