@@ -192,7 +192,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 //A2_3
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
-                Line line = new Line(new float[]{295, 495, 357, 495});
+                Line line = new Line(new float[]{295, 482, 358, 482});
                 Line line2 = new Line(new float[]{125, -101, 180, -101});
                 line.getGraphInfo().setLineWidth(5f);
                 line2.getGraphInfo().setLineWidth(5f);
@@ -215,11 +215,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 Circle rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Circle(370, 40, 7);
+                        rect2 = new Circle(370, 42, 7);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Circle(392, 40, 7);
+                        rect2 = new Circle(392, 42, 7);
                         break;
                     }
                     case REIWA: {
