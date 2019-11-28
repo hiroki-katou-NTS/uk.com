@@ -152,14 +152,19 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("getCalculationResultMob")
-	public OverTimeDto getCalculationResultMob(ParamCaculationOvertime param){
+	public PreActualColorResult getCalculationResultMob(ParamCaculationOvertime param){
 		return this.overtimeFinder.getCalculationResultMob(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD(),param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
 				param.isDisplayCaculationTime(),
-				param.isFromStepOne());
+				param.isFromStepOne(),
+				param.opAppBefore,
+				param.beforeAppStatus,
+				param.actualStatus,
+				param.actualLst,
+				param.overtimeSettingDataDto);
 	}
 	
 	@POST

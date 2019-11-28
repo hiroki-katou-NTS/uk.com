@@ -1157,22 +1157,31 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 for (let i = 0; i < data.preAppOvertimeDto.overTimeInputsPre.length; i++) {
                     if(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime != -1){
                         if(data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 11 && data.preAppOvertimeDto.overTimeInputsPre[i].frameNo != 12){
+                            let preAppTime = data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime);
                             self.overtimeHoursPre.push(new common.AppOvertimePre("", "", 
-                        data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
-                        "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
-                        0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
-                        data.preAppOvertimeDto.overTimeInputsPre[i].startTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].startTime),
-                        data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                        data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
+                            data.preAppOvertimeDto.overTimeInputsPre[i].attendanceID,
+                            "", data.preAppOvertimeDto.overTimeInputsPre[i].frameNo,
+                            0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
+                            data.preAppOvertimeDto.overTimeInputsPre[i].startTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].startTime),
+                            data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
+                            preAppTime,null));
+                            self.overtimeHours()[i].preAppTime(preAppTime);
                         }
                     }else{
                         continue;    
                     } 
-                    
                 }
             }
-             self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
-             self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+            let flexPreApp = _.find(self.overtimeHours(), item => item.frameNo()==11);
+            if(!nts.uk.util.isNullOrUndefined(flexPreApp)) {
+                flexPreApp.preAppTime(data.preAppOvertimeDto.flexExessTimePre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));    
+            }
+            let nightTimePreApp = _.find(self.overtimeHours(), item => item.frameNo()==12);
+            if(!nts.uk.util.isNullOrUndefined(nightTimePreApp)) {
+                nightTimePreApp.preAppTime(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));    
+            }
+            self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
+            self.flexExessTimePre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
             }
         }
         

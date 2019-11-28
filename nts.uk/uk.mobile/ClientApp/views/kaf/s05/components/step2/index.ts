@@ -220,7 +220,12 @@ export class KafS05aStep2Component extends Vue {
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
             displayCaculationTime: self.displayCaculationTime,
-            isFromStepOne: false
+            isFromStepOne: false,
+            opAppBefore: self.opAppBefore,
+            beforeAppStatus: self.beforeAppStatus,
+            actualStatus: self.actualStatus,
+            actualLst: self.actualLst,
+            overtimeSettingDataDto: self.overtimeSettingDataDto
         };
 
         let overtimeHoursResult: Array<any>;

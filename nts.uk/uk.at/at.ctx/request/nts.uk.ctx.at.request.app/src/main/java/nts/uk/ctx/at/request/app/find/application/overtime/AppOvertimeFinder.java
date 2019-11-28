@@ -21,10 +21,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppCommonSettingOutputDto;
@@ -56,10 +56,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter.MailDestinationCache;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
@@ -176,9 +172,6 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
-
-	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
@@ -311,149 +304,41 @@ public class AppOvertimeFinder {
 		return result;
 	}
 	
-	public OverTimeDto getCalculationResultMob(List<CaculationTime> overtimeHours,
+	public PreActualColorResult getCalculationResultMob(List<CaculationTime> overtimeHours,
 			List<CaculationTime> bonusTimes, int prePostAtr, String appDate, String siftCD, String workTypeCode,
-			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime, boolean isFromStepOne) {
-
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		GeneralDate generalAppDate = appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
-		OverTimeDto result = new OverTimeDto();
-		
-		int rootAtr = 1;
-		// 1-1.新規画面起動前申請共通設定を取得する
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
-				companyID, employeeID, rootAtr,
-				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),
-				generalAppDate);
-		// 承認ルートを取得する
-		MailDestinationCache mailDestCache = this.approvalRootStateAdapter
-				.createMailDestinationCache(AppContexts.user().companyId());
-		ApprovalRootContentImport_New approvalRootContentImport = this.approvalRootStateAdapter.getApprovalRootContent(
-				companyID, employeeID, ApplicationType.OVER_TIME_APPLICATION.value, appCommonSettingOutput.generalDate,
-				"", true, mailDestCache);
-
-		int errorFlag = approvalRootContentImport.getErrorFlag().value;
-		if (errorFlag == ErrorFlagImport.NO_APPROVER.value) {
-			throw new BusinessException("Msg_324");
-		} else if (errorFlag == ErrorFlagImport.NO_CONFIRM_PERSON.value) {
-			throw new BusinessException("Msg_238");
-		} else if (errorFlag == ErrorFlagImport.APPROVER_UP_10.value) {
-			throw new BusinessException("Msg_237");
-		}
-
-		// 事前事後区分を取得する
-		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
-			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
-					EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class),
-					appCommonSettingOutput.generalDate, 0);
-			if (prePostAtrJudgment != null) {
-				prePostAtr = prePostAtrJudgment.value;
-			}
-		}
-
-		// 勤務情報から残業時間を計算する
-		//List<CaculationTime> caculationTimeHours = new ArrayList<CaculationTime>();
-		AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
-		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
-		ActualStatusCheckResult actualStatusCheckResult = new ActualStatusCheckResult();
-		if (prePostAtr == PrePostAtr.POSTERIOR.value) {
-			// 07-01_事前申請状態チェック
-			preAppCheckResult = preActualColorCheck.preAppStatusCheck(companyID,
-					employeeID, generalAppDate, ApplicationType.OVER_TIME_APPLICATION);
-			// 07-02_実績取得・状態チェック
-			actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID,
-					employeeID, generalAppDate, ApplicationType.OVER_TIME_APPLICATION,
-					workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(),
-					Optional.empty());
-		}
-
+			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime, boolean isFromStepOne,
+			ApplicationDto_New opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst, OvertimeSettingDataDto overtimeSettingDataDto) {
 		if (displayCaculationTime == false) {
 			return null;
-		} else {
-			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();// 事前申請超過チェック
-			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();// 実績超過チェック
-			// 6.計算処理 :
-			List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-			if (isFromStepOne) {
-				overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
-						workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
-			}			
-					
-			// caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value, overtimeHours, overtimeInputCaculations);
-			/*caculationTimeHours = commonOvertimeHoliday.preActualExceededCheckMob(companyID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT),
-					inputDate, prePostAtr, employeeID, siftCD, overtimeInputCaculations, caculationTimeHours);*/
-			//事前申請・実績超過チェック
-			List<OvertimeColorCheck> overTimeLst  = overtimeHours.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
-			List<OvertimeColorCheck> bonusTimeLst  = bonusTimes.stream().map(item -> OvertimeColorCheck.createFromOverTimeInput(item)).collect(Collectors.toList());
-			overTimeLst.addAll(bonusTimeLst);
-			
-			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(preExcessDisplaySetting,
-					performanceExcessAtr, ApplicationType.OVER_TIME_APPLICATION, PrePostAtr.values()[prePostAtr],
-					overtimeInputCaculations, overTimeLst,
-					preAppCheckResult.opAppBefore, preAppCheckResult.beforeAppStatus, actualStatusCheckResult.actualLst,
-					actualStatusCheckResult.actualStatus);
-			result.setPreActualColorResult(preActualColorResult);			
-
-			result.setPerformanceExcessAtr(performanceExcessAtr.value);
-			result.setPreExcessDisplaySetting(preExcessDisplaySetting.value);
 		}
-		
-		// 勤務情報確定後のデータを取得する
-		// 社員の労働条件を取得する
-		// Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(employeeID, baseDate);
-		
-		// 残業枠を取得
-		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
-		List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
-
-		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
-			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
-			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue());
-			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
-			overTimeInputs.add(overtimeInputDto);
-		}
-		result.setOverTimeInputs(overTimeInputs);
-
-		if(appTypeDiscreteSetting.isPresent()){
-			result.setTypicalReasonDisplayFlg(false);
-			// 申請定型理由を取得
-			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
-				result.setTypicalReasonDisplayFlg(true);
-				List<ApplicationReason> applicationReasons = otherCommonAlgorithm.getApplicationReasonType(
-						companyID,
-						appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg(),
-						ApplicationType.OVER_TIME_APPLICATION);
-				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
-				for (ApplicationReason applicationReason : applicationReasons) {
-					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-							applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
-					applicationReasonDtos.add(applicationReasonDto);
-				}
-				result.setApplicationReasonDtos(applicationReasonDtos);
-			}
-		}
-		
-		if(overtimeRestAppCommonSet.isPresent()){
-			result.setDisplayDivergenceReasonForm(false);
-			// 乖離定型理由を取得
-			if(prePostAtr != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
-				result.setDisplayDivergenceReasonForm(true);
-				List<DivergenceReason> divergenceReasons = commonOvertimeHoliday
-						.getDivergenceReasonForm(
-								companyID,
-								EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-								overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(),
-								ApplicationType.OVER_TIME_APPLICATION);
-				convertToDivergenceReasonDto(divergenceReasons,result);
-			}
-		}
-		return result;
+		OvertimeSettingData overtimeSettingData = overtimeSettingDataDto.toDomain();
+		//1-1.新規画面起動前申請共通設定を取得する
+		AppCommonSettingOutput appCommonSettingOutput = overtimeSettingData.appCommonSettingOutput;
+		// 6.計算処理 :
+		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
+		if (isFromStepOne) {
+			overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
+					workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
+		}	
+		List<OvertimeColorCheck> otTimeLst = overtimeHours.stream()
+				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceID(), x.getFrameNo(), x.getApplicationTime()))
+				.collect(Collectors.toList());
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
+		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
+		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
+		// 07_事前申請・実績超過チェック
+		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
+				preExcessDisplaySetting, 
+				performanceExcessAtr, 
+				ApplicationType.OVER_TIME_APPLICATION, 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+				overtimeInputCaculations, 
+				otTimeLst, 
+				opAppBefore == null ? Optional.empty() : Optional.of(ApplicationDto_New.toEntity(opAppBefore)), 
+				beforeAppStatus, 
+				actualLst, 
+				EnumAdaptor.valueOf(actualStatus, ActualStatus.class));
+		return preActualColorResult;
 	}
 	
 	/**

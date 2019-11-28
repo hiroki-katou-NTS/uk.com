@@ -213,7 +213,12 @@ export class KafS05aStep1Component extends Vue {
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
             displayCaculationTime: self.displayCaculationTime,
-            isFromStepOne: true
+            isFromStepOne: true,
+            opAppBefore: self.opAppBefore,
+            beforeAppStatus: self.beforeAppStatus,
+            actualStatus: self.actualStatus,
+            actualLst: self.actualLst,
+            overtimeSettingDataDto: self.overtimeSettingDataDto
         };
 
         let overtimeHoursResult: Array<any>;
@@ -222,10 +227,7 @@ export class KafS05aStep1Component extends Vue {
         this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
-            self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
-            self.actualStatus = result.data.preActualColorResult.actualStatus;
-            self.preExcessDisplaySetting = result.data.preExcessDisplaySetting;
-            overtimeHoursResult = result.data.preActualColorResult.resultLst;
+            overtimeHoursResult = result.data.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
                     //残業時間
@@ -928,6 +930,10 @@ export class KafS05aStep1Component extends Vue {
         }
         self.performanceExcessAtr = data.performanceExcessAtr;
         self.overtimeSettingDataDto = data.overtimeSettingDataDto;
+        self.opAppBefore = data.opAppBefore;
+        self.beforeAppStatus = data.beforeAppStatus;
+        self.actualStatus = data.actualStatus;
+        self.actualLst = data.actualLst;
     }
 
     public changeAppDateData(data: any) {
@@ -1030,6 +1036,12 @@ export class KafS05aStep1Component extends Vue {
                 }
             }
         }
+
+        self.opAppBefore = data.opAppBefore;
+        self.beforeAppStatus = data.beforeAppStatus;
+        self.actualStatus = data.actualStatus;
+        self.actualLst = data.actualLst;
+
         // 休憩時間
         this.setTimeZones(data.timezones);
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {
