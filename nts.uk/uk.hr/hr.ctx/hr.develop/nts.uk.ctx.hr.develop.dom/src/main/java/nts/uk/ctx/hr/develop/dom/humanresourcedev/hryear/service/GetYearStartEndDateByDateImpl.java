@@ -4,13 +4,14 @@ package nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.HrPeriodRegulation;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.HrPeriodRegulationRepository;
-
+@Stateless
 public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate{
 
 	@Inject
@@ -19,6 +20,8 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 	@Inject
 	private EmploymentRegulationHistoryInterface histInterface;
 	@Override
+	
+	
 	public YearStartEnd getByDate(String companyId, GeneralDate baseDate) {
 		GeneralDate resultStartDate = null;
 		GeneralDate resultEndDate = null;
@@ -45,5 +48,7 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 				resultEndDate = checkEndDate;
 				YearStartEnd result = new YearStartEnd(resultStartDate, resultEndDate);
 				return result;
+				
+				
 	}
 }
