@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Value
@@ -33,6 +35,12 @@ public class ParamChangeAppDate {
 	private String changeEmployee;
 	
 	private int overtimeAtr;
+	
+	private OvertimeSettingDataDto overtimeSettingDataDto;
+	private ApplicationDto_New opAppBefore; 
+	private boolean beforeAppStatus; 
+	private int actualStatus; 
+	private List<OvertimeColorCheck> actualLst; 
 	
 	public List<Integer> getStartTimeRests() {
 
