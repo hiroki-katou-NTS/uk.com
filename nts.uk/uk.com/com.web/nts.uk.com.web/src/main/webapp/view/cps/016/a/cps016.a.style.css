@@ -55,7 +55,7 @@ body {
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 423px;
+	min-height: 403px;
 	min-width: 200px !important;
 	/* 	width: 15%; */
 }
@@ -70,7 +70,7 @@ button.search-btn {
 	margin-left: 30px;
 	margin-top: 14px;
 	float: left;
-	min-height: 428px;
+	min-height: 408px;
 	width: 560px;
 }
 

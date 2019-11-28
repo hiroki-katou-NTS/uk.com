@@ -144,6 +144,7 @@ public class InitScreenMob {
 		Integer displayFormat = param.displayFormat;
 		DateRange dateRange = param.objectDateRange;
 		String employeeID = param.employeeID;
+		Integer closureId = param.closureId;
 
 		// 起動に必要な情報の取得
 		// アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する
@@ -158,7 +159,7 @@ public class InitScreenMob {
 		processor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, screenMode);
 
 		// 保持パラメータを生成する
-		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(null, screenMode, dateRange);
+		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(closureId, screenMode, dateRange);
 		screenDto.setClosureId(resultIndentityPeriod.getLeft());
 		DateRange rangeInit = resultIndentityPeriod.getRight();
 
