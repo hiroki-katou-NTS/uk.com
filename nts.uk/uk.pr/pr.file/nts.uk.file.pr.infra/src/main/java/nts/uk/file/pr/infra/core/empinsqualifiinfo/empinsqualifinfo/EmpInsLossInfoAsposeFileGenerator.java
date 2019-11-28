@@ -150,7 +150,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
                 if (element.getEmpInsLossInfo() != null) {
                     //A1_8 Cause of loss
-                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value) : "";
+                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value + 1) : "";
                     textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
                     //A1_9 reqIssuAtr
                     String reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getRequestForIssuance().get().value) : "";
