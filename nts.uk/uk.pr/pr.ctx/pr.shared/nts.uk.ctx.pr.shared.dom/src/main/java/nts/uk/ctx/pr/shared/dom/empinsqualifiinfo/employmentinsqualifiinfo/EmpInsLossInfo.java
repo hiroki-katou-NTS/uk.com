@@ -42,7 +42,7 @@ public class EmpInsLossInfo extends AggregateRoot {
     private Optional<ScheduleForReplenishment> scheduleForReplenishment;
 
     /**
-     * 喪失原因
+     * 被保険者でなくなったことの原因
      */
     private Optional<RetirementReasonClsCode> causeOfLossEmpInsurance;
 
