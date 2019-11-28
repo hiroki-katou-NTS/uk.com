@@ -450,6 +450,16 @@ module nts.uk.at.view.kaf005.b {
                 if(item.frameNo==12){
                     frameName = nts.uk.resource.getText("KAF005_65");     
                 }
+                let color = '';
+                if(nts.uk.util.isNullOrUndefined(calcValue.applicationTime)){
+                    if(self.editable()&& self.enableOvertimeInput()){
+                        color = 'none';
+                    } else {
+                        color = '#ebebe4';
+                    }  
+                } else {
+                    color = self.getColorInit(item.attendanceID, item.frameNo, calcValue.errorCode, calcValue.preAppExceedState, calcValue.actualExceedState);            
+                }
                 return new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
@@ -463,7 +473,7 @@ module nts.uk.at.view.kaf005.b {
                         nts.uk.util.isNullOrUndefined(calcValue.caculationTime) ? null : self.convertIntToTime(parseInt(calcValue.caculationTime)),
                         "",
                         "", 
-                        self.getColorInit(item.attendanceID, item.frameNo, calcValue.errorCode, calcValue.preAppExceedState, calcValue.actualExceedState));        
+                        color);        
             }
             
             getColorInit(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus){
@@ -869,6 +879,19 @@ module nts.uk.at.view.kaf005.b {
                 let actualStatus = calcData.actualStatus;
                 let resultLst = calcData.resultLst;
                 _.forEach(self.overtimeHours(), overtimeHour => {
+                    if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
+                        if(self.editable()&& self.enableOvertimeInput()){
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            overtimeHour.color('none');
+                            return; 
+                        } else {
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            overtimeHour.color('#ebebe4');
+                            return; 
+                        }  
+                    }
                     let calcOT = _.find(resultLst, item => {
                         return item.attendanceID == 1 &&
                             item.frameNo == overtimeHour.frameNo();    

@@ -961,6 +961,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let actualStatus = calcData.actualStatus;
             let resultLst = _.isEmpty(calcData.resultLst) ? self.resultLst : calcData.resultLst;
             _.forEach(self.overtimeHours(), overtimeHour => {
+                if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
+                    if(self.editable()&& self.enableOvertimeInput()){
+                        $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                        $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                        overtimeHour.color('none');
+                        return; 
+                    } else {
+                        $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                        $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                        overtimeHour.color('#ebebe4');
+                        return; 
+                    }  
+                }
                 let calcOT = _.find(resultLst, item => {
                     return item.attendanceID == 1 &&
                         item.frameNo == overtimeHour.frameNo();    
