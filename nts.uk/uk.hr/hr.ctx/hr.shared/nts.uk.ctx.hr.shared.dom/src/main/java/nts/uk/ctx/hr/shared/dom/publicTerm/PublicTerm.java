@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement;
+package nts.uk.ctx.hr.shared.dom.publicTerm;
 
 import java.util.Optional;
 
@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.DateSelectItem;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.PublicDateRule;
+import nts.uk.ctx.hr.shared.dom.enumeration.DateSelectItem;
 
 /**
  * @author thanhpv

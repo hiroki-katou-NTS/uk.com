@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums;
+package nts.uk.ctx.hr.shared.dom.enumeration;
 
 /**
  * @author thanhpv

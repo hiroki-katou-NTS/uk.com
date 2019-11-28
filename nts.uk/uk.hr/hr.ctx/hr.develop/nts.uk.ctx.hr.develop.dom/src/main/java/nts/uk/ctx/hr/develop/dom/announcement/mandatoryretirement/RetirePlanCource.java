@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetirePlanCourseClass;
-import nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_60_99;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 
 /**
  * @author thanhpv
@@ -34,7 +34,7 @@ public class RetirePlanCource extends AggregateRoot{
 	private RetirePlanCourseClass retirePlanCourseClass;
 	
 	/** 定年年齢 */
-	private Integer_60_99 retirementAge;
+	private RetirementAge retirementAge;
 	
 	/** 継続区分 */
 	private boolean durationFlg;
@@ -62,7 +62,7 @@ public class RetirePlanCource extends AggregateRoot{
 				retirePlanCourseCode,
 				retirePlanCourseName,
 				EnumAdaptor.valueOf(retirePlanCourseClass, RetirePlanCourseClass.class),
-				new Integer_60_99(retirementAge),
+				new RetirementAge(retirementAge),
 				durationFlg,
 				resignmentReason1Id,
 				notUsageFlg,

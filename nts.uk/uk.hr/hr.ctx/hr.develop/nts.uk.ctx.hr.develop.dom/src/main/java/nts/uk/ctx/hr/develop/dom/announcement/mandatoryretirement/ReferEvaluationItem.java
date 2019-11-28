@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.EvaluationItem;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 
 /**
  * @author thanhpv
