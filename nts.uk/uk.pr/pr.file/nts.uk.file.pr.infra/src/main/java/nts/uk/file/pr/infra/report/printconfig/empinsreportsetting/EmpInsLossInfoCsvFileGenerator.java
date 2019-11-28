@@ -29,6 +29,7 @@ import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoC
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -111,8 +112,8 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		}
 	}
 
-	private JapaneseDate toJapaneseDate(GeneralDate date) {
-		Optional<JapaneseEraName> era = this.erasAdapter.getAllEras().eraOf(date);
+	private JapaneseDate toJapaneseDate(GeneralDate date, JapaneseEras eras) {
+		Optional<JapaneseEraName> era = eras.eraOf(date);
 		return new JapaneseDate(date, era.get());
 	}
 
@@ -282,13 +283,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		}
 
 		// data
+		JapaneseEras eras = this.erasAdapter.getAllEras();
 		List<EmpInsLossInfoExportRow> rows = dataSource.getRowsData();
 		EmpInsRptSettingCommand empInsRptSetting = dataSource.getEmpInsReportSetting();
 		for (EmpInsLossInfoExportRow row : rows) {
 			String employeeInsuranceNumber = row.getInsuranceNumber();
-			JapaneseDate empInsHistStart = this.toJapaneseDate(row.getEmployeeInsurancePeriodStart());
-			JapaneseDate empInsHistEnd = this.toJapaneseDate(row.getEmployeeInsurancePeriodEnd());
-			JapaneseDate birthDay = this.toJapaneseDate(row.getPersonBirthDay());
+			JapaneseDate empInsHistStart = this.toJapaneseDate(row.getEmployeeInsurancePeriodStart(), eras);
+			JapaneseDate empInsHistEnd = this.toJapaneseDate(row.getEmployeeInsurancePeriodEnd(), eras);
+			JapaneseDate birthDay = this.toJapaneseDate(row.getPersonBirthDay(), eras);
 			for (int c = 0; c < ROW_9_HEADERS.size(); c++) {
 				String value = "";
 				if (c == 0) {
