@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInforAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.ForeignerResHistInfo;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
@@ -142,6 +143,7 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 					.collect(Collectors.toList());
 			break;
 		}
+		exportData.setLaborInsuranceOffice(exportData.getRowsData().get(0).getLaborInsuranceOffice());
 		csvGenerator.generate(context.getGeneratorContext(), exportData);
 	}
 
@@ -191,17 +193,14 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 				pubEmpSecOffice = pubEmpSecurityOfficeRepo.getPublicEmploymentSecurityOfficeById(companyId,
 						laborInsuranceOffice.getLaborOfficeCode().v().substring(0, 4)).orElse(null);
 			}
-			// ForeignerResHistInfo dummyForResHistInfo = new
-			// ForeignerResHistInfo("", 1, 1,
-			// GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
-			// GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職",
-			// "ベトナム");
-			// foreignerResHistInfors.put(employeeId, dummyForResHistInfo);
+			ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
+					GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+					GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
 			EmployeeInfoEx employee = employeeInfos.get(employeeId);
 			rowsData.add(new EmpInsLossInfoExportRow(employeeId, employeeInfos.get(employeeId), history,
 					exportData.getCompanyInfo(), empInsNumInfo, laborInsuranceOffice, empInsLossInfos.get(employeeId),
 					pubEmpSecOffice, personInfos.get(employee.getPId()),
-					currentPersonAddressList.get(employee.getPId())));
+					currentPersonAddressList.get(employee.getPId()), dummyForResHistInfo));
 		}
 		exportData.setRowsData(rowsData);
 	}
