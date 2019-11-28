@@ -304,7 +304,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 4) {
 					if (employeeInsuranceNumber.length() > 10)
 						value = employeeInsuranceNumber.substring(4, 10);
-					if (employeeInsuranceNumber.length() > 4)
+					else if (employeeInsuranceNumber.length() > 4)
 						value = employeeInsuranceNumber.substring(4);
 				}
 				if (c == 5 && employeeInsuranceNumber.length() >= 11) {
