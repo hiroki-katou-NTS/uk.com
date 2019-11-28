@@ -34,8 +34,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 doc.getPages().add(curPage);
             }
             stylePage(doc);
-            int indexPage = 1;
 
+            int indexPage = 1;
             for (EmpInsGetQualifReport data : reportData) {
                 Page pdfPage = doc.getPages().get_Item(indexPage);
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
@@ -176,15 +176,14 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells, TextBuilder textBuilder) {
-//        value = KatakanaConverter.hiraganaToKatakana(value);
-//        value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        for (int i = 0; i < lstValue.size(); i++) {
+        value = KatakanaConverter.hiraganaToKatakana(value);
+        value = KatakanaConverter.fullKatakanaToHalf(value);
+        for (int i = 0; i < value.length(); i++) {
             int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
+            textBuilder.appendText(setValue(pixel, yRoot, value.charAt(i) + "", 16));
         }
     }
 
