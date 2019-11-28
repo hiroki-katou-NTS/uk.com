@@ -222,7 +222,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			}
 			if (c == 5) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = companyInfo.getAdd_1() + " - " + companyInfo.getAdd_2();
+					value = companyInfo.getAdd_1() + companyInfo.getAdd_2();
 				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
 					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getAddress1().map(i -> i.v()).orElse("")
 							+ laborInsuranceOffice.getBasicInformation().getStreetAddress().getAddress2().map(i -> i.v()).orElse("");
