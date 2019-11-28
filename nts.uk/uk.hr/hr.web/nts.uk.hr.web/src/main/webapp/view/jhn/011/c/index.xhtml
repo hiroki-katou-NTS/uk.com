@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 1275,
-					height : 748
+					height : 600
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -31,8 +31,8 @@
 									 callback: nts.uk.ui.windows.close }"></div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS008_39')}</button>
-				<button data-bind="click: close">#{i18n.getText('CPS008_40')}</button>
+				<button id="C1_1" class="proceed x-large" tabindex="7" data-bind="click: pushData">#{i18n.getText('JHN011_C1_1')}</button>
+				<button id="C1_2" tabindex="8" data-bind="click: close">#{i18n.getText('JHN011_C1_2')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

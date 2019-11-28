@@ -8,8 +8,8 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.hr.shared.dom.primitiveValue.Code_AlphaNumeric_3
-					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20
+					nts.uk.ctx.hr.notice.dom.report.Code_AlphaNumeric_3
+					nts.uk.ctx.hr.notice.dom.report.String_Any_20
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/jhn/011/shr/layout-control-validation.js" />
@@ -80,7 +80,8 @@
 															name: '#[JHN011_B222_1_1]',
 															constraint: 'Code_AlphaNumeric_3',
 															required:true,
-															enable: $parent.layout().id() == undefined }" />
+															enable: $parent.layout().id() == undefined },
+															attr: { id: 'B222_1_1', NameID: 'JHN011_B222_1_1'} " />
 										</div>
 
 										<div class="input_002 input_name">
@@ -90,8 +91,8 @@
 															name: '#[JHN011_B222_1_2]',
 															constraint: 'String_Any_20',
 															required:true,
-															enable: true
-											}" />
+															enable: true},
+															attr: { id: 'B222_1_2', NameID: 'JHN011_B222_1_2'}" />
 											
 										<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('JHN011_B221_2')}</div>
 										
@@ -119,16 +120,18 @@
 									</div>
 								</td>
 							</tr>
-							<!-- line 3 combox -->
+							<!-- line 3 combox　届出種類 -->
 							<tr>
+								<!-- 届出種類 -->
 								<td class="row_1">
 									<div id="B222_2"
-										data-bind="ntsFormLabel: { constraint: ['String_Any_20'], required: true }">
+										data-bind="ntsFormLabel: { required: false }">
 										#{i18n.getText('JHN011_B222_2')}</div>
 								</td>
+								<!-- 届出種類選択 -->
 								<td class="valign-center">
 									<div>
-										<div class="input_002 input_code"
+										<div id="B222_2_1" class="input_002 input_code" tabindex="9"
 											data-bind="ntsComboBox: {
 													options: comboxReportType,
 													optionsValue: 'code',
@@ -138,11 +141,11 @@
 													editable: true,
 													enable: true,
 													dropDownAttachedToBody:true,
-													selectFirstIfNull: true,
+													selectFirstIfNull: false,
 													required: false,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
+													]},attr: { name: nts.uk.resource.getText('JHN011_B222_1_2')}" >
 										</div>															
 									</div>
 								</td>
@@ -201,7 +204,7 @@
 								<td class="valign-center">
 									<div>
 										<div class="input_002 input_code">
-											<input id="B222_5_1" tabindex="11"
+											<input id="B222_5_1" tabindex="12"
 												data-bind="ntsTextEditor: {
 															value: message,
 															name: '#[JHN011_B222_5_1]',
@@ -216,12 +219,12 @@
 							<tr>
 								<td class="row_1">
 									<div id="B222_6"
-										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										data-bind="ntsFormLabel: {required: true}">
 										#{i18n.getText('JHN011_B222_6')}</div>
 								</td>
 								<td class="valign-center">
 									<div>
-										<div id='B222_6_1' class="cf input_002 input_code"  data-bind="ntsSwitchButton: {
+										<div id="B222_6_1" tabindex="13" class="cf input_002 input_code"  data-bind="ntsSwitchButton: {
 											name: '#[JHN011_B222_6_1]',
 											options: roundingRules,
 											optionsValue: 'code',
@@ -236,7 +239,7 @@
 																																										
 						</table>
 						<div>
-							<button class="x-large"
+							<button class="x-large" tabindex="14"
 								data-bind="click: $parent.showDialogC.bind($parent), enable: !!id()">#{i18n.getText('JHN011_B222_101')}</button>
 						</div>
 						<div

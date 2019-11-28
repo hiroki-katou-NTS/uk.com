@@ -139,8 +139,8 @@ module jhn011.b.viewmodel {
                 };
 
             // validate
-            $("#A_INP_CODE").trigger("validate");
-            $("#A_INP_NAME").trigger("validate");
+            $("#B222_1_1").trigger("validate");
+            $("#B222_1_2").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -158,14 +158,9 @@ module jhn011.b.viewmodel {
 
 
             }).fail((error: any) => {
-                unblock();
+                
                 nts.uk.ui.dialog.bundledErrors(error);
-//                _.each(error.errors, c=>{
-//                    if(c
-//                
-//                })
-//                block.clear();
-
+                unblock();
 
             });
         }
@@ -191,7 +186,7 @@ module jhn011.b.viewmodel {
             layout.reportName(param.reportName || null);
             layout.reportNameYomi(param.reportNameYomi || null);
             layout.isAbolition(param.isAbolition || null);
-            layout.reportType(param.reportType || "0");
+            layout.reportType(param.reportType ==0? "0":( param.reportType|| null));
             layout.remark(param.remark || null);
             layout.memo(param.memo || null);
             layout.message(param.message || null);
@@ -249,9 +244,9 @@ module jhn011.b.viewmodel {
 
             data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
 
-            setShared('CPS008B_PARAM', data);
+            setShared('JHN011C_PARAM', data);
             modal('../c/index.xhtml').onClosed(() => {
-                let dto: Array<any> = getShared('CPS008B_VALUE');
+                let dto: Array<any> = getShared('JHN011C_VALUE');
 
                 if (dto && dto.length) {
                     layout.classifications(_.map(dto, x => _.omit(x, ["items", "renders"])));
@@ -327,6 +322,7 @@ module jhn011.b.viewmodel {
         agentReportIsCan: KnockoutObservable<string> = ko.observable(null);
     
         comboxReportType: KnockoutObservableArray < any > = ko.observableArray([
+            { code: "", name: ""},
             { code: "0", name: text("JHN011_B222_2_1_1") },
             { code: "1", name: text("JHN011_B222_2_1_2") },
             { code: "2", name: text("JHN011_B222_2_1_3") }]);
@@ -349,7 +345,7 @@ module jhn011.b.viewmodel {
                 self.reportName(param.reportName || null);
                 self.reportNameYomi(param.reportNameYomi || null);
                 self.isAbolition(param.isAbolition || null);
-                self.reportType(param.reportType || null);
+                self.reportType(param.reportType ==0? 0: (param.reportType || null));
                 self.remark(param.remark || null);
                 self.memo(param.memo || null);
                 self.message(param.message || null);

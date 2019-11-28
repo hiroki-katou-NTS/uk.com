@@ -76,7 +76,7 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 		return new JhnmtRptLayout(primaryKey, domain.getCompanyId(), 
 				domain.getPReportCode().v(), domain.getPReportName().v(),
 				domain.getPReportNameYomi().v(), domain.getDisplayOrder(),
-				domain.isAbolition(), domain.getReportType().value,
+				domain.isAbolition(), domain.getReportType() == null? null: domain.getReportType().value,
 				domain.getRemark() == null? null: domain.getRemark().v(),
 				domain.getMemo() == null? null: domain.getMemo().v(),
 				domain.getMessage() == null?  null: domain.getMessage().v(),

@@ -31,6 +31,13 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 	private static String itemCodeLatest;
 	
 	private static String ctgCodeLatest;
+	
+	private final static int ITEM_CODE_DEFAUT_NUMBER = 0;
+	
+	private final static String SPECIAL_ITEM_CODE = "SEPA";
+	
+	private final static String SPECIAL_CTG_CODE = "SEPA";
+	
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutReportCommand> context) {
 		NewLayoutReportCommand cmd = context.getCommand();
@@ -75,7 +82,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 			if (name != null) {
 				BusinessException nameMessage = new BusinessException("Msgj_42",
 						TextResource.localize("JHN011_B222_1_2"));
-				nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_1"));
+				nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_2"));
 				exceptions.addMessage(nameMessage);
 
 			}
@@ -193,11 +200,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 		}
 	}
 	
-	private final static int ITEM_CODE_DEFAUT_NUMBER = 0;
-	private final static String SPECIAL_ITEM_CODE = "SEPA";
-	
-	private final static int CTG_CODE_DEFAUT_NUMBER = 0;
-	private final static String SPECIAL_CTG_CODE = "SEPA";
+
 	private String createNewCode(String codeLastest, String strSpecial) {
 		String numberCode = String.valueOf(ITEM_CODE_DEFAUT_NUMBER + 1);
 		if (codeLastest != null) {

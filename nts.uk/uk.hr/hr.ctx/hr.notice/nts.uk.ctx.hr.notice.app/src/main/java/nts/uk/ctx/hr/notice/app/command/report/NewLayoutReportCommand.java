@@ -17,7 +17,7 @@ public class NewLayoutReportCommand {
 	
 	private boolean abolition;
 	
-	private int reportType;
+	private Integer reportType;
 	
 	private String remark;
 	

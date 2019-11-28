@@ -46,7 +46,7 @@ module jhn011.c.vm {
         start() {
             let self = this,
                 layout = self.layout(),
-                dto: any = getShared('CPS008B_PARAM');
+                dto: any = getShared('JHN011C_PARAM');
 
             layout.id = dto.id;
             layout.code = dto.reportCode;
@@ -88,7 +88,7 @@ module jhn011.c.vm {
                 return;
             }
 
-            setShared("CPS008B_VALUE", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
+            setShared("JHN011C_PARAM", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
 
             close();
 

@@ -29,7 +29,7 @@ public class PersonalReportClassificationDto {
 	//廃止区分
 	private int isAbolition;
 	//届出種類
-	private int reportType;
+	private Integer reportType;
 	//備考
 	private String remark;
 	//メモ
@@ -49,7 +49,7 @@ public class PersonalReportClassificationDto {
 				domain.getPReportNameYomi() == null? null: domain.getPReportNameYomi().v(),
 				domain.getDisplayOrder(), 
 				domain.isAbolition() == true? 1: 0,
-				domain.getReportType().value, 
+				domain.getReportType() == null? null: domain.getReportType().value, 
 				domain.getRemark() == null? null: domain.getRemark().v(),
 				domain.getMemo() == null? null: domain.getMemo().v(),
 				domain.getMessage() == null? null: domain.getMessage().v(),
@@ -64,7 +64,7 @@ public class PersonalReportClassificationDto {
 				domain.getPReportNameYomi() == null? null: domain.getPReportNameYomi().v(),
 				domain.getDisplayOrder(), 
 				domain.isAbolition() == true? 1: 0,
-				domain.getReportType().value, 
+				domain.getReportType() == null? null: domain.getReportType().value, 
 				domain.getRemark() == null? null: domain.getRemark().v(),
 				domain.getMemo() == null? null: domain.getMemo().v(),
 				domain.getMessage() == null? null: domain.getMessage().v(),
@@ -73,7 +73,7 @@ public class PersonalReportClassificationDto {
 	}
 
 	public PersonalReportClassificationDto(String companyId, int reportClsId, String reportCode, String reportName,
-			String reportNameYomi, int displayOrder, int isAbolition, int reportType, String remark, String memo,
+			String reportNameYomi, int displayOrder, int isAbolition, Integer reportType, String remark, String memo,
 			String message, int formReport, int agentReportIsCan) {
 		super();
 		this.companyId = companyId;

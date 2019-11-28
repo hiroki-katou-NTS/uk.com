@@ -120,7 +120,7 @@ module nts.custombinding {
                         padding-left: 10px;
                     }
 
-                    .layout-control #cps007_cbx_control {
+                    .layout-control #jhn011_cbx_control {
                         min-width: 248px;
                     }
 
@@ -143,7 +143,7 @@ module nts.custombinding {
                         background-color: #fff;
                     }
 
-                    .layout-control #cps007_lst_header {
+                    .layout-control #jhn011_lst_header {
                         display: block;
                         line-height: 23px;
                         background-color: #CFF1A5;
@@ -156,7 +156,6 @@ module nts.custombinding {
 
                     .layout-control .add-buttons {
                         margin-right: 15px;
-                        padding-top: 220px;
                     }
 
                     .layout-control .drag-panel {
@@ -643,29 +642,30 @@ module nts.custombinding {
                 </style>`;
 
         private tmp = `<div class="left-area">
-                    <div id="cps007_lbl_control"></div>
+                    <div id="jhn011_lbl_control"></div>
                     <div class="control-group">
                         <div class="form-group">
-                            <div id="cps007_rdg_control" class="radio-control ntsControl"></div>
+                            <div id="jhn011_rdg_control" class="radio-control ntsControl"></div>
                         </div>
                         <div class="form-group">
-                            <div id="cps007_cbx_control" class="combobox-control ntsControl"></div>
+                            <div id="jhn011_cbx_control" class="combobox-control ntsControl"></div>
                         </div>
                         <div class="form-group">
-                            <div id="cps007_sch_control" class="search-control ntsControl"></div>
+                            <div id="jhn011_sch_control" class="search-control ntsControl"></div>
                         </div>
                         <div class="form-group">
-                            <div id="cps007_lst_header"></div>
-                            <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
+                            <div id="jhn011_lst_header"></div>
+                            <div id="jhn011_lst_control" class="listbox-control ntsControl"></div>
+                        </div>
+                        <div class="form-group add-buttons">
+                            <button id="jhn011_btn_add"></button>
                         </div>
                     </div>
                 </div>
                 <div class="right-area cf">
-                    <div class="add-buttons">
-                        <button id="cps007_btn_add"></button>
-                    </div>
+
                     <div class="drag-panel">
-                        <div id="cps007_srt_control">
+                        <div id="jhn011_srt_control">
                             <div class="form-group item-classification" 
                                     data-bind="let: {
                                         text: nts.uk.resource.getText,
@@ -845,7 +845,7 @@ module nts.custombinding {
                                 <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove($data, event); }">✖</span>
                             </div>
                         </div>
-                        <button id="cps007_btn_line"></button>
+                        <button id="jhn011_btn_line"></button>
                     </div>
                 </div>
                 <script type="text/html" id="set_table_template">
@@ -1281,11 +1281,11 @@ module nts.custombinding {
                         value: ko.observable(0),
                         options: ko.observableArray([{
                             id: CAT_OR_GROUP.CATEGORY,
-                            name: text('CPS007_6'),
+                            name: text('JHN011_C2_2_1'),
                             enable: ko.observable(true)
                         }, {
                                 id: CAT_OR_GROUP.GROUP,
-                                name: text('CPS007_7'),
+                                name: text('JHN011_C2_2_2'),
                                 enable: ko.observable(true)
                             }]),
                         optionsValue: 'id',
@@ -1306,7 +1306,7 @@ module nts.custombinding {
                     },
                     searchbox: {
                         mode: 'listbox',
-                        comId: 'cps007_lst_control',
+                        comId: 'jhn011_lst_control',
                         items: ko.observableArray([]),
                         selected: ko.observableArray([]),
                         targetKey: 'id',
@@ -2526,13 +2526,13 @@ module nts.custombinding {
                         .addClass('readonly')
                         .removeClass('dragable');
 
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
+                    $element.find('.left-area, .add-buttons, #jhn011_btn_line').hide();
                 } else {
                     $element
                         .addClass('dragable')
                         .removeClass('readonly');
 
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').show();
+                    $element.find('.left-area, .add-buttons, #jhn011_btn_line').show();
                 }
             });
             opts.sortable.isEnabled.valueHasMutated();
@@ -2691,23 +2691,24 @@ module nts.custombinding {
 
             // get all id of controls
             $.extend(ctrls, {
-                label: $element.find('#cps007_lbl_control')[0],
-                radios: $element.find('#cps007_rdg_control')[0],
-                combobox: $element.find('#cps007_cbx_control')[0],
-                searchbox: $element.find('#cps007_sch_control')[0],
-                listbox: $element.find('#cps007_lst_control')[0],
-                button: $element.find('#cps007_btn_add')[0],
-                sortable: $element.find('#cps007_srt_control')[0],
-                line: $element.find('#cps007_btn_line')[0]
+                label: $element.find('#jhn011_lbl_control')[0],
+                radios: $element.find('#jhn011_rdg_control')[0],
+                combobox: $element.find('#jhn011_cbx_control')[0],
+                searchbox: $element.find('#jhn011_sch_control')[0],
+                listbox: $element.find('#jhn011_lst_control')[0],
+                button: $element.find('#jhn011_btn_add')[0],
+                sortable: $element.find('#jhn011_srt_control')[0],
+                line: $element.find('#jhn011_btn_line')[0]
             });
 
             if (typeof $editable == 'boolean' ? $editable === true : $editable === 0) {
                 // change text of label
-                $(ctrls.label).text(text('CPS007_5'));
+                $(ctrls.label).text(text('JHN011_C2_1'));
                 $(ctrls.line).text(text('CPS007_19'));
                 $(ctrls.button).text(text('CPS007_11'));
 
 
+                
                 // subscribe handle
                 // load combobox data
                 opts.radios.value.subscribe(mode => {
@@ -3100,7 +3101,7 @@ module nts.custombinding {
                 ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
                 // fix header off listbox
-                $('#cps007_lst_header').text(text('CPS007_9'));
+                $('#jhn011_lst_header').text(text('CPS007_9'));
             }
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);

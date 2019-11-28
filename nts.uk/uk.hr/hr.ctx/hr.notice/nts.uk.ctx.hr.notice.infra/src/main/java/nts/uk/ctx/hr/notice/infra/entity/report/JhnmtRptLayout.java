@@ -39,7 +39,7 @@ public class JhnmtRptLayout extends UkJpaEntity implements Serializable {
 	public boolean abolition;
 	
 	@Column(name = "RPT_KIND")
-	public int rptKind;
+	public Integer rptKind;
 	
 	@Column(name = "REMARK")
 	public String remark;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.primitiveValue;
+package nts.uk.ctx.hr.notice.dom.report;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

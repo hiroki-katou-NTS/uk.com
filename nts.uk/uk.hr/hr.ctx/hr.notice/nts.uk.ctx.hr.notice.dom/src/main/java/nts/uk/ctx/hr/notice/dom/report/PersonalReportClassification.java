@@ -47,7 +47,7 @@ public class PersonalReportClassification  extends AggregateRoot {
 	
 	public static PersonalReportClassification createFromJavaType(String cid, int pReportClsId,
 			String pReportCode, String pReportName, String pReportNameReadWay,
-			int displayOrder, boolean isAbolition, int reportType, 
+			int displayOrder, boolean isAbolition, Integer reportType, 
 			String remark, String memo, String message, 
 			boolean formReport, boolean agentReportIsCan) {
 		return new PersonalReportClassification(cid, pReportClsId, 
@@ -55,7 +55,7 @@ public class PersonalReportClassification  extends AggregateRoot {
 				new String_Any_20(pReportName),
 				new String_Any_20(pReportNameReadWay),
 				displayOrder, isAbolition,
-				EnumAdaptor.valueOf(reportType, ReportType.class),
+				reportType == null? null: EnumAdaptor.valueOf(reportType.intValue(), ReportType.class),
 				new String_Any_20(remark),
 				new String_Any_20(memo),
 				new String_Any_20(message),
