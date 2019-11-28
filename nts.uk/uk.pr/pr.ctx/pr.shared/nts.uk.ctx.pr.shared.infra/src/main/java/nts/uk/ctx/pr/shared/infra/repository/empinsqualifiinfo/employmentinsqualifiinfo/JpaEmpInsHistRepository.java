@@ -38,11 +38,11 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 
 
 	@Override
-	public List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
+	public List<EmpInsHist> getByEmpIdsAndDate(String cid, List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
 		List<EmpInsHist> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList -> {
 			result.addAll(toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_DATE, QqsmtEmpInsHist.class)
-					.setParameter("cid", AppContexts.user().companyId())
+					.setParameter("cid", cid)
 					.setParameter("sids", splitIdList)
 					.setParameter("startDate", startDate)
 					.setParameter("endDate", endDate)
@@ -104,7 +104,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 	}
 
 	@Override
-	public Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate endDate) {
+	public Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate startDate, GeneralDate endDate) {
 		List<QqsmtEmpInsHist> empInsHists = this.queryProxy().query(SELECT_BY_EMP_AND_PERIOD, QqsmtEmpInsHist.class)
 				.setParameter("sid", sId)
 				.setParameter("endDate", endDate).getList();

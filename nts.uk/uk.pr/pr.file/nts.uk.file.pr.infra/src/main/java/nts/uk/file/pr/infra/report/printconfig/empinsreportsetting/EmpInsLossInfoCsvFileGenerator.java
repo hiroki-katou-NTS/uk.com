@@ -17,6 +17,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
+import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
@@ -117,6 +118,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 
 	private void fillData(StringBuilder valueBuilder, EmpInsLossInfoExportData dataSource) {
 		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
+		LaborInsuranceOffice laborInsuranceOffice = dataSource.getLaborInsuranceOffice();
 
 		// row 1
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
@@ -133,13 +135,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		// row 2
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
 			String value = "";
-			if (c == 0) {
-				// LaborInsuranceOffice.EmpInsInfo.cityCode
-				value = "cityCode";
+			if (c == 0 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 1) {
-				// LaborInsuranceOffice.EmpInsInfo.businessSymbol
-				value = "businessSymbol";
+			if (c == 1 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 2) {
 				value = dataSource.getEmpInsReportTxtSetting().getFdNumber() + "";
@@ -199,57 +199,54 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		CompanyInfor companyInfo = dataSource.getCompanyInfo();
 		for (int c = 0; c < ROW_6_HEADERS.size(); c++) {
 			String value = "";
-			if (c == 0) {
-				// LaborInsuranceOffice.EmpInsInfo.cityCode
-				value = "cityCode";
+			if (c == 0 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 1) {
-				// LaborInsuranceOffice.EmpInsInfo.businessSymbol
-				value = "businessSymbol";
+			if (c == 1 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 2) {
-				// LaborInsuranceOffice.code
-				value = "code";
+			if (c == 2 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getLaborOfficeCode().v();
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
 					value = companyInfo.getPostCd().substring(0, 3);
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
-					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
+					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPostalCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 4) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
 					value = companyInfo.getPostCd().substring(3);
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
-					value = "ZipCode"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.ZipCode
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
+					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPostalCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 5) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = companyInfo.getAdd_1() + " - " + companyInfo.getAdd_2();
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
-					value = "Address 1 + 2"; // LaborInsuranceOffice.BasicInformation.LaborInsuranceOfficeAddress.Address
-												// 1 + 2
+					value = companyInfo.getAdd_1() + companyInfo.getAdd_2();
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
+					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getAddress1().map(i -> i.v()).orElse("")
+							+ laborInsuranceOffice.getBasicInformation().getStreetAddress().getAddress2().map(i -> i.v()).orElse("");
 			}
 			if (c == 6) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
 					value = companyInfo.getCompanyName();
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value)
-					value = "Name"; // LaborInsuranceOffice.Name
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
+					value = laborInsuranceOffice.getLaborOfficeName().v();
 			}
-			if (c == 7) {
-				value = "BasicInformation"; // LaborInsuranceOffice.BasicInformation
+			if (c == 7 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getBasicInformation().getRepresentativeName().map(i -> i.v()).orElse("");
 			}
-			if (c == 8) {
-				value = "BasicInformationme"; // LaborInsuranceOffice.BasicInformation
+			if (c == 8 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse("");
 			}
-			if (c == 9) {
-				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			if (c == 9 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse("");
 			}
-			if (c == 10) {
-				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			if (c == 10 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(i -> i.v()).orElse("");
 			}
-			if (c == 11) {
-				value = "EmploymentInsuranceInformation"; // LaborInsuranceOffice.EmploymentInsuranceInformation
+			if (c == 11 && laborInsuranceOffice != null) {
+				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(i -> i.v()).orElse("");
 			}
 			valueBuilder.append(value);
 			if (c < ROW_6_HEADERS.size() - 1) {
@@ -307,7 +304,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 4) {
 					if (employeeInsuranceNumber.length() > 10)
 						value = employeeInsuranceNumber.substring(4, 10);
-					if (employeeInsuranceNumber.length() > 4)
+					else if (employeeInsuranceNumber.length() > 4)
 						value = employeeInsuranceNumber.substring(4);
 				}
 				if (c == 5 && employeeInsuranceNumber.length() >= 11) {
@@ -404,7 +401,8 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPersonNameRomanji();
 				}
 				if (c >= 41 && c <= 49) {
-					value = "dummy foreigner";
+					// dummy foreigner
+					value = "";
 				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {

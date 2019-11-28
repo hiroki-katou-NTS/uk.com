@@ -150,17 +150,17 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
                 if (element.getEmpInsLossInfo() != null) {
                     //A1_8 Cause of loss
-                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value) : "";
+                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value + 1) : "";
                     textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
                     //A1_9 reqIssuAtr
-                    String reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getRequestForIssuance().get().value) : "";
+                    String reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getRequestForIssuance().get().value + 1) : "";
                     textBuilder.appendText(setValue(45, 629, reqIssuAtr, 16));
                     //A1_10 workingTime
                     Integer workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v() : null;
                     detachText(135, 629, formatWorkingTime(workingTime), 4, textBuilder);
                     //A1_11 scheForRep
-                    String scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleForReplenishment().get().value) : "";
-                    textBuilder.appendText(setValue(248, 629, scheForRep.toString(), 16));
+                    String scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleForReplenishment().get().value + 1) : "";
+                    textBuilder.appendText(setValue(248, 629, scheForRep.equals("2") ? " " : scheForRep, 16));
                     //A2_8
                     if(element.getRetirementReasonClsInfo() != null) {
                         String causeOfLossIns = element.getRetirementReasonClsInfo().getRetirementReasonClsName().v().toString();
