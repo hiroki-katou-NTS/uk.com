@@ -4,6 +4,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.ForeignerResHistInfo;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PublicEmploymentSecurityOffice;
@@ -124,11 +125,13 @@ public class EmpInsLossInfoExportRow {
 	 * 公共職業安定所.名称
 	 */
 	private String publicEmploymentSecurityOfficeName;
+	
+	private LaborInsuranceOffice laborInsuranceOffice;
 
 	public EmpInsLossInfoExportRow(String employeeId, EmployeeInfoEx employeeInfo, DateHistoryItem empInsHist,
 			CompanyInfor companyInfo, EmpInsNumInfo empInsNumInfo, LaborInsuranceOffice laborInsuranceOffice,
 			EmpInsLossInfo empInsLossInfo, PublicEmploymentSecurityOffice pubEmpSecOffice, PersonExport personInfo,
-			CurrentPersonResidence currentAddressInfo) {
+			CurrentPersonResidence currentAddressInfo, ForeignerResHistInfo forResHistInfo) {
 		super();
 		this.employeeId = employeeId;
 		this.employeeCode = employeeInfo.getEmployeeCode();
@@ -157,5 +160,6 @@ public class EmpInsLossInfoExportRow {
 		this.causeOfLossInsurance = empInsLossInfo != null ? empInsLossInfo.getCauseOfLossEmpInsurance().map(c -> c.v()).orElse("") : "";
 		this.scheduleWorkingHourPerWeek = empInsLossInfo != null ? empInsLossInfo.getScheduleWorkingHourPerWeek().orElse(null) : null;
 		this.publicEmploymentSecurityOfficeName = pubEmpSecOffice != null ? pubEmpSecOffice.getPublicEmploymentSecurityOfficeName().v() : "";
+		this.laborInsuranceOffice = laborInsuranceOffice;
 	}
 }
