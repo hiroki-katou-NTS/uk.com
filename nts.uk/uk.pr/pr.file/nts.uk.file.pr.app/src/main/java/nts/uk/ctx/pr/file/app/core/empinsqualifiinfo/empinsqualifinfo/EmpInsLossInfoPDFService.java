@@ -132,21 +132,17 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         // 社員雇用保険履歴を取得する
-        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, startDate, endDate);
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndEndDateInPeriod(cid, listEmpId, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
         CompanyInfor cInfo = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
-        //Loop Employee
-        List<String> empInsHistEmpIds = empInsHists.stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empInsHistEmpIds);
+        List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
+        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empInsHistIds);
         List<String> pIds = employee.stream().map( e -> e.getPId()).collect(Collectors.toList());
         List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
-
-        List<String> empInsHistIds = empInsHists.stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
-
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndEndDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
         Map<String, CurrentPersonResidence> currentPersonResidence = CurrentPersonResidence
                 .createListPerson(personExportAdapter.findByPids(pIds)).stream().collect(Collectors.toMap(CurrentPersonResidence::getPId, Function.identity()));
 
@@ -159,12 +155,11 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
             temp.setNationality("ベトナム");
             temp.setResidenceStatus("高度専門職");
             temp.setFillingDate(fillingDate);
+
             //社員IDと期間から社員雇用保険履歴IDを取得
-            Optional<EmpInsHist> empInsHis = empInsHistRepository.getByEmpIdAndEndDate(e.getEmployeeId(), endDate);
-            if (!empInsHis.isPresent()) {
-                return;
+            if (empInsHists.containsKey(e.getEmployeeId())) {
+                temp.setEmpInsHist(empInsHists.get(e.getEmployeeId()));
             }
-            temp.setEmpInsHist(empInsHis.get());
 
             //社員IDから雇用保険喪失時情報を取得する
             Optional<EmpInsLossInfo> lossInfo = empInsLossInfoRepository.getEmpInsLossInfoById(e.getEmployeeId());
@@ -177,7 +172,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
             }
 
             //社員雇用保険履歴IDから雇用保険番号情報を取得する
-            String insHisId = empInsHis.get().getHistoryItem().get(0).identifier();
+            String insHisId = empInsHists.get(e.getEmployeeId()).getHistoryItem().get(0).identifier();
             Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),insHisId);
             temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : null);
 

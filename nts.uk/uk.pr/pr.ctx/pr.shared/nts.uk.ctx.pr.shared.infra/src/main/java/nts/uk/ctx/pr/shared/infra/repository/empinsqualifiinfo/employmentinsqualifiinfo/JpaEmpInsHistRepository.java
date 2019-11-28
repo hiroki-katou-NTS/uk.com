@@ -104,7 +104,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 	}
 
 	@Override
-	public Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate endDate) {
+	public Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate startDate, GeneralDate endDate) {
 		List<QqsmtEmpInsHist> empInsHists = this.queryProxy().query(SELECT_BY_EMP_AND_PERIOD, QqsmtEmpInsHist.class)
 				.setParameter("sid", sId)
 				.setParameter("endDate", endDate).getList();
