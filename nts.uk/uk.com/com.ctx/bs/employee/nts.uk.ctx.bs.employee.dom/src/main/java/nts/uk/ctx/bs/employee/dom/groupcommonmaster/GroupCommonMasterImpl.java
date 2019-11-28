@@ -38,7 +38,7 @@ public class GroupCommonMasterImpl implements IGroupCommonMaster {
 
 		result.setCommonMasterItems(this.groupMasterRepo
 				.getGroupCommonMasterEnableItem(contractCode, commonMasterId, companyId, baseDate).stream()
-				.sorted(Comparator.comparing(CommonMasterItem::getDisplayNumber)).collect(Collectors.toList()));
+				.sorted(Comparator.comparing(GroupCommonMasterItem::getDisplayNumber)).collect(Collectors.toList()));
 
 		return result;
 	}

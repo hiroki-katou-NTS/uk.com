@@ -39,7 +39,7 @@ public class GroupCommonMaster extends AggregateRoot {
 
 	// 共通マスタ項目
 
-	private List<CommonMasterItem> commonMasterItems;
+	private List<GroupCommonMasterItem> commonMasterItems;
 
 	public GroupCommonMaster(ContractCode contractCode, String commonMasterId, CommonMasterCode commonMasterCode,
 			CommonMasterName commonMasterName, String commonMasterMemo) {

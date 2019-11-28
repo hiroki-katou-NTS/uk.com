@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class NotUseCompany {
+public class NotUseCompanyList {
 
 	// 会社ID
 	private String companyId;

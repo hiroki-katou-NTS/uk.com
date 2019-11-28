@@ -18,7 +18,7 @@ public class GroupCommonMasterExportDto {
 
 	// 共通マスタ項目
 
-	private List<CommonMasterItem> commonMasterItems;
+	private List<GroupCommonMasterItem> commonMasterItems;
 
 	public GroupCommonMasterExportDto(String commonMasterName) {
 		this.commonMasterName = commonMasterName;
