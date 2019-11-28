@@ -136,10 +136,11 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
+        List<String> insHistEmpIds = new ArrayList<>(empInsHists.keySet());
         CompanyInfor cInfo = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
-        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empInsHistIds);
+        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(insHistEmpIds);
         List<String> pIds = employee.stream().map( e -> e.getPId()).collect(Collectors.toList());
         List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
         Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndEndDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
