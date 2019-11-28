@@ -305,7 +305,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                     String empInsNumber = empInsNumInfos.get(histId).getEmpInsNumber().v();
                     cells.get(row, 3 + startColumn).setValue(empInsNumber.length() > 4 ? empInsNumber.substring(0, 4) : empInsNumber.substring(0));
-                    cells.get(row, 4 + startColumn).setValue(empInsNumber.length() > 4 ? (empInsNumber.length() > 10 ? empInsNumber.substring(5, 10) : empInsNumber.substring(5)) : "");
+                    cells.get(row, 4 + startColumn).setValue(empInsNumber.length() > 4 ? (empInsNumber.length() > 10 ? empInsNumber.substring(4, 10) : empInsNumber.substring(4)) : "");
                     cells.get(row, 5 + startColumn).setValue(empInsNumber.length() > 10 ? empInsNumber.substring(10) : "");
                 } else {
                     cells.get(row, 3 + startColumn).setValue("");
