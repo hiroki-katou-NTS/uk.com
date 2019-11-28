@@ -108,7 +108,7 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
             throw new BusinessException("Msg_812");
         }
 
-        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndDate(empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndDate(cid, empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
