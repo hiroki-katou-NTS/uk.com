@@ -444,9 +444,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                     value += personExports.get(pId).getGender() + ","
                            + birthDateJp.era() + ","
-                           + birthDateJp.year() + ","
-                           + birthDateJp.month() + ","
-                           + birthDateJp.day() + ",";
+                           + (String.valueOf(birthDateJp.year()).length() < 2 ? "0" + birthDateJp.year() : birthDateJp.year()) + ","
+                           + (String.valueOf(birthDateJp.month()).length() < 2 ? "0" + birthDateJp.month() : birthDateJp.month()) + ","
+                           + (String.valueOf(birthDateJp.day()).length() < 2 ? "0" + birthDateJp.day() : birthDateJp.day()) + ",";
                 }
             } else {
                 /*cells.get(row, 7 + startColumn).setValue("");
@@ -500,9 +500,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 22 + startColumn).setValue(qualificationDateJp.day());*/
 
                 value += qualificationDateJp.era() + ","
-                       + qualificationDateJp.year() + ","
-                       + qualificationDateJp.month() + ","
-                       + qualificationDateJp.day() + ",";
+                       + (String.valueOf(qualificationDateJp.year()).length() < 2 ? "0" + qualificationDateJp.year() : qualificationDateJp.year()) + ","
+                       + (String.valueOf(qualificationDateJp.month()).length() < 2 ? "0" + qualificationDateJp.month() : qualificationDateJp.month()) + ","
+                       + (String.valueOf(qualificationDateJp.day()).length() < 2 ? "0" + qualificationDateJp.day() : qualificationDateJp.day()) + ",";
             } else {
                 /*cells.get(row, 19 + startColumn).setValue("");
                 cells.get(row, 20 + startColumn).setValue("");
@@ -571,9 +571,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                    + (String.valueOf(startDateJP.month()).length() < 2 ? "0" + startDateJP.month() : String.valueOf(startDateJP.month())) + ","
                    + (String.valueOf(startDateJP.day()).length() < 2 ? "0" + startDateJP.day() : String.valueOf(startDateJP.day())) + ","
                    + endDateJP.era() + ","
-                   + String.valueOf(endDateJP.year()) + ","
-                   + String.valueOf(endDateJP.month()) + ","
-                   + String.valueOf(endDateJP.day()) + ","
+                   + (String.valueOf(endDateJP.year()).length() < 2 ? "0" + endDateJP.year() : endDateJP.year() ) + ","
+                   + (String.valueOf(endDateJP.month()).length() < 2 ? "0" + endDateJP.month() : endDateJP.month()) + ","
+                   + (String.valueOf(endDateJP.day()).length() < 2 ? "0" + endDateJP.day() : endDateJP.day()) + ","
                    + dummyLaborContractHist.getWorkingSystem() + ",";
 
             if (empInsHists.containsKey(e)) {
@@ -644,9 +644,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                    + ","
                    + dummyForResHistInfo.getResidenceStatus() + ","
                    + ","
-                   + periodOfStay.year() + ","
-                   + periodOfStay.month() + ","
-                   + periodOfStay.day() + ","
+                   + (String.valueOf(periodOfStay.year()).length() < 2 ? "0" + periodOfStay.year() : periodOfStay.year()) + ","
+                   + (String.valueOf(periodOfStay.month()).length() < 2 ? "0" + periodOfStay.month() : periodOfStay.month()) + ","
+                   + (String.valueOf(periodOfStay.day()).length() < 2 ? "0" + periodOfStay.day() : periodOfStay.day()) + ","
                    + dummyForResHistInfo.getNonQualifPermission() + ","
                    + dummyForResHistInfo.getContractWorkAtr() + ","
                    + ",";
