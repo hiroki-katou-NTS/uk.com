@@ -24,10 +24,6 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHi
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.japanese.JapaneseDate;
-import nts.uk.shr.com.time.japanese.JapaneseEraName;
-import nts.uk.shr.com.time.japanese.JapaneseEras;
-import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -112,7 +108,7 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
             throw new BusinessException("Msg_812");
         }
 
-        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndDate(empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }

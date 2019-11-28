@@ -38,7 +38,7 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 
 
 	@Override
-	public List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
+	public List<EmpInsHist> getByEmpIdsAndDate(List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
 		List<EmpInsHist> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList -> {
 			result.addAll(toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_DATE, QqsmtEmpInsHist.class)

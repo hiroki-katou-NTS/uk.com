@@ -21,9 +21,6 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.japanese.JapaneseDate;
-import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
@@ -132,7 +129,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         // 社員雇用保険履歴を取得する
-        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, startDate, endDate);
+        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndDate(listEmpId, startDate, endDate);
         if (empInsHists.isEmpty()) {
             throw new BusinessException("MsgQ_51");
         }
