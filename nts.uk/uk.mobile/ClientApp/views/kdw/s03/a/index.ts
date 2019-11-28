@@ -7,6 +7,7 @@ import { storage } from '@app/utils';
 import { KdwS03BComponent } from 'views/kdw/s03/b';
 import { KdwS03AMenuComponent } from 'views/kdw/s03/a/menu';
 import { KdwS03CComponent } from 'views/kdw/s03/c';
+import { KdwS03DComponent } from 'views/kdw/s03/d';
 
 @component({
     name: 'kdws03a',
@@ -19,7 +20,8 @@ import { KdwS03CComponent } from 'views/kdw/s03/c';
         'fix-table': FixTableComponent,
         'kdws03b': KdwS03BComponent,
         'kdws03amenu': KdwS03AMenuComponent,
-        'kdws03c': KdwS03CComponent
+        'kdws03c': KdwS03CComponent,
+        'kdws03d': KdwS03DComponent
     },
     validations: {
         yearMonth: {
@@ -34,7 +36,7 @@ export class Kdws03AComponent extends Vue {
 
     @Prop({ default: () => ({
         screenMode: 0,
-        closureID: 0,
+        closureID: null,
         changePeriodAtr: true,
         displayFormat: 0,
         targetEmployee: '',
@@ -42,7 +44,7 @@ export class Kdws03AComponent extends Vue {
         dateTarget: null,
         initClock: null,
         transitionDesScreen: null,
-        errorRefStartAtr: true
+        errorRefStartAtr: false
     }) })
     public readonly params: Params;
 
@@ -235,13 +237,13 @@ export class Kdws03AComponent extends Vue {
             employeeID: self.selectedEmployee == '' ? self.params.targetEmployee : self.selectedEmployee,
             objectDateRange: self.displayFormat == '0' ?
                 (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } :
-                (!_.isNil(self.params.dateTarget) ? { startDate: self.params.dateTarget, endDate: self.params.dateTarget } : null)),
+                (!_.isNil(self.selectedDate) ? { startDate: self.selectedDate, endDate: self.selectedDate } : null),
             lstEmployee: [],
             initClock: self.params.initClock,
             displayFormat: self.displayFormat,
             displayDateRange: null,
             transitionDesScreen: self.params.transitionDesScreen,
+            closureId: self.params.closureID,
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -296,14 +298,15 @@ export class Kdws03AComponent extends Vue {
                     self.processMapData(result.data);
                     next();
                 });
+                let dateR: any = self.displayFormat == '0' ?
+                    (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
+                    { startDate: self.selectedDate, endDate: self.selectedDate };
                 storage.session.setItem('dailyCorrectionState', {
                     screenMode: self.params.screenMode,
                     displayFormat: self.displayFormat,
                     selectedEmployee: self.selectedEmployee,
                     lstEmployee: self.lstEmployee,
-                    dateRange: self.displayFormat == '0' ?
-                        (!_.isNil(self.dateRanger) ? { startDate: self.$dt.fromString(self.dateRanger.startDate), endDate: self.$dt.fromString(self.dateRanger.endDate) } : null) :
-                        { startDate: self.selectedDate, endDate: self.selectedDate },
+                    dateRange: dateR,
                     cellDataLst: self.displayDataLst,
                     headerLst: self.displayHeaderLst,
                     timePeriodAllInfo: _.assign({}, self.timePeriodAllInfo, { closureId: ClosureId[self.timePeriodAllInfo.closureId] }),
@@ -311,6 +314,43 @@ export class Kdws03AComponent extends Vue {
                     paramData: self.paramData,
                     dPCorrectionMenuDto: self.dPCorrectionMenuDto
                 });
+                
+                //パラメータ「日別実績の修正の状態．表示形式」をチェックする
+                //パラメータ「日別実績の修正の起動．エラー参照を起動する」をチェックする
+                if (self.displayFormat == 0 && self.params.errorRefStartAtr && !_.isNil(dateR)) {//表示形式　＝　個人別 && エラー参照を起動する = TRUE
+                    self.params.errorRefStartAtr = false;
+                    //D：エラー参照（個人）を起動する
+                    this.$modal('kdws03d', {
+                        employeeID: self.selectedEmployee,
+                        employeeName: (_.find(self.lstEmployee, (x) => x.id == self.selectedEmployee)).businessName,
+                        startDate: dateR.startDate,
+                        endDate: dateR.endDate
+                    }).then((param: any) => {
+                        if (param != undefined && param.openB) {
+                            //open B
+                            let rowData = null;
+                            if (self.displayFormat == '0') {
+                                rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
+                            } else {
+                                rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
+                            }
+
+                            self.$modal('kdws03b', {
+                                'employeeID': param.employeeId,
+                                'employeeName': param.employeeName,
+                                'date': param.date,
+                                'rowData': rowData,
+                                'paramData': self.paramData
+                            }).then((v: any) => {
+                                if (v.reload) {
+                                    this.startPage();
+                                } else {
+                                    self.$http.post('at', servicePath.resetCacheDomain).then((result: { data: any }) => { });
+                                }
+                            });
+                        }
+                    });
+                }
                 self.$mask('hide');
             }
         }).catch((res: any) => {
@@ -357,6 +397,9 @@ export class Kdws03AComponent extends Vue {
         if (self.isFirstLoad) {
             self.timePeriodAllInfo = data.periodInfo;
             self.yearMonth = data.periodInfo.yearMonth;
+            if (self.params.closureYM != 0) {
+                self.yearMonth = self.params.closureYM;
+            }
         }
 
         if (self.displayFormat == 1 && self.isFirstLoad) {

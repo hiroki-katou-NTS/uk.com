@@ -33,4 +33,5 @@ public class DPCorrectionInitParam {
 	// 遷移先の画面
 	public String transitionDesScreen;
 	public DPCorrectionStateParam dpStateParam;
+	public Integer closureId;
 }
