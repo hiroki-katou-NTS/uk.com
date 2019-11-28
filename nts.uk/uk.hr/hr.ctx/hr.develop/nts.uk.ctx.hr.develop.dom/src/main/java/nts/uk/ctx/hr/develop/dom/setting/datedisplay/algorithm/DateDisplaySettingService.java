@@ -64,8 +64,8 @@ public class DateDisplaySettingService {
 	}
 
 	// 日付表示設定の追加
-	public void add(DateDisplaySetting dateSetting) {
-		this.dateDisplaySettingRepo.add(dateSetting);
+	public void add(String companyId, List<DateDisplaySetting> dateSetting) {
+		this.dateDisplaySettingRepo.add(companyId, dateSetting);
 	}
 
 	// 日付表示設定の更新

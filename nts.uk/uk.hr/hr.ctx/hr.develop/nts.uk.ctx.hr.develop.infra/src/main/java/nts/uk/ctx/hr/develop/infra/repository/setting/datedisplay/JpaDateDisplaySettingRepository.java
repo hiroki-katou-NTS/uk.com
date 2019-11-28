@@ -42,8 +42,11 @@ public class JpaDateDisplaySettingRepository extends JpaRepository implements Da
 	}
 	
     @Override
-    public void add(DateDisplaySetting domain) {
-        this.commandProxy().insert(new JdsmtDateDisplaySetting(domain));
+    public void add(String companyId, List<DateDisplaySetting> domains) {
+        // this.commandProxy().insert(new JdsmtDateDisplaySetting(domain));
+        for (DateDisplaySetting domain : domains) {
+            this.commandProxy().insert(new JdsmtDateDisplaySetting(companyId, domain));
+        }
     }
 	
     @Override

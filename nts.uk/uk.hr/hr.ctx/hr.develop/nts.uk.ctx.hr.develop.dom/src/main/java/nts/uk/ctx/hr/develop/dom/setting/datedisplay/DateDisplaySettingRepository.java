@@ -11,7 +11,7 @@ public interface DateDisplaySettingRepository {
 
 	List<DateDisplaySetting> getSettingByCompanyIdAndProgramId(String programId, String companyId);
 
-	void add(DateDisplaySetting domain);
-
 	void update(String companyId, List<DateDisplaySetting> domain);
+
+	void add(String companyId, List<DateDisplaySetting> dateSetting);
 }
