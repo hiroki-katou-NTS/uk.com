@@ -30,10 +30,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1)};
-            for (int i = 0; i < reportData.size(); i++) {
-                if (i != 0) {
-                    doc.getPages().add(curPage);
-                }
+            for (int i = 1; i < reportData.size(); i++) {
+                doc.getPages().add(curPage);
             }
             stylePage(doc);
             int indexPage = 1;
@@ -178,8 +176,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     }
 
     private void detachText(int xRoot, int yRoot, String value, int numCells, TextBuilder textBuilder) {
-        value = KatakanaConverter.hiraganaToKatakana(value);
-        value = KatakanaConverter.fullKatakanaToHalf(value);
+//        value = KatakanaConverter.hiraganaToKatakana(value);
+//        value = KatakanaConverter.fullKatakanaToHalf(value);
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
