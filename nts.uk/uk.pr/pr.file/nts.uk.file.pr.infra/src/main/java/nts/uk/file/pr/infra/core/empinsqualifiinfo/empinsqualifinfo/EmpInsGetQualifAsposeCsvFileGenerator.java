@@ -390,49 +390,44 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-                    if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
+
+                    if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
+                       && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                       && reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
+                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
+                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());*/
+
+                            value += personExports.get(pId).getPersonNameGroup().getOldName().getFullName() + ","
+                                   + personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() + ",";
+                            value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
+                                   + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",";
+
+                    } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
+                        && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                        && reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
+
+                        value += personExports.get(pId).getPersonNameGroup().getOldName().getFullName() + ","
+                                + personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() + ",";
+                        value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
+                                + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",";
+
+
+                    } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                         /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());*/
 
                         value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
-                               + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",";
+                                + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",,,";
                     } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
                         /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());*/
 
                         value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
-                               + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",";
-                    } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
-                            && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value) {
-
-                        /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
-                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());*/
-
-                        value += (personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName()) + ","
-                               + (personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana()) + ",";
-                    }
-
-                    if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
-                       && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
-                       && personExports.get(pId).getPersonNameGroup().getOldName().getFullName()!=null) {
-
-                        if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
-                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
-                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());*/
-
-                            value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
-                                   + personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ",";
-                        } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
-                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
-                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());*/
-
-                            value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
-                                   + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ",";
-                        }
+                                + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",,,";
                     } else {
                         /*cells.get(row, 9 + startColumn).setValue("");
                         cells.get(row, 10 + startColumn).setValue("");*/
-                        value += ",,";
+                        value += ",,,,";
                     }
 
                     //cells.get(row, 11 + startColumn).setValue(personExports.get(pId).getGender());
@@ -532,8 +527,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                        + empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null) + ","
                        + empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null) + ","
                        + ",,"
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v())).orElse(null) + ","
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null) + ",";
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()/60).orElse(null) + ","
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()%60).orElse(null) + ",";
             } else {
                 /*cells.get(row, 23 + startColumn).setValue("");
                 cells.get(row, 24 + startColumn).setValue("");
@@ -631,6 +626,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 48 + startColumn).setValue("");*/
 
             val periodOfStay = toJapaneseDate(jpEras, dummyForResHistInfo.getEndDate());
+            val periodStay = dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").split("/");
+
             /*cells.get(row, 49 + startColumn).setValue(periodOfStay.year());
             cells.get(row, 50 + startColumn).setValue(periodOfStay.month());
             cells.get(row, 51 + startColumn).setValue(periodOfStay.day());
@@ -644,9 +641,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                    + ","
                    + dummyForResHistInfo.getResidenceStatus() + ","
                    + ","
-                   + (String.valueOf(periodOfStay.year()).length() < 2 ? "0" + periodOfStay.year() : periodOfStay.year()) + ","
-                   + (String.valueOf(periodOfStay.month()).length() < 2 ? "0" + periodOfStay.month() : periodOfStay.month()) + ","
-                   + (String.valueOf(periodOfStay.day()).length() < 2 ? "0" + periodOfStay.day() : periodOfStay.day()) + ","
+                   + (periodStay[0].length() < 2 ? "0" + periodStay[0] : periodStay[0]) + ","
+                   + (periodStay[1].length() < 2 ? "0" + periodStay[1] : periodStay[1]) + ","
+                   + (periodStay[2].length() < 2 ? "0" + periodStay[2] : periodStay[2]) + ","
                    + dummyForResHistInfo.getNonQualifPermission() + ","
                    + dummyForResHistInfo.getContractWorkAtr() + ","
                    + ",";
@@ -717,6 +714,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         }
         return sortObjects;
     }
+
     private String toHours(Integer minutes) {
         return minutes == null ? "" : (minutes >= LIMITTED_HOUR*60 ? "9959" : minutes < 60 ? ("00" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + "" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60)));
     }

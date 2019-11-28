@@ -39,7 +39,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int INSURED_PERSON_ADDRESS = 46;
     private static final int BUSINESS_NAME = 31;
     private static final int CAUSE_OF_LOSS_INS = 46;
-    private static final int COMPANY_ADDRESS = 46;
+    private static final int COMPANY_ADDRESS = 75;
 
 
     @Inject
@@ -200,7 +200,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
                 Line line = new Line(new float[]{295, 482, 358, 482});
-                Line line2 = new Line(new float[]{125, -101, 180, -101});
+                Line line2 = new Line(new float[]{185, -101, 240, -101});
                 line.getGraphInfo().setLineWidth(5f);
                 line2.getGraphInfo().setLineWidth(5f);
                 graph.getShapes().add(line);
