@@ -5,7 +5,7 @@
 
 .infoDetail {
 	overflow-y: auto;
-	height: 600px !important;
+	height: calc(100vh - 350px) !important;
     margin-top: 10px;
     width: 545px;
 }
