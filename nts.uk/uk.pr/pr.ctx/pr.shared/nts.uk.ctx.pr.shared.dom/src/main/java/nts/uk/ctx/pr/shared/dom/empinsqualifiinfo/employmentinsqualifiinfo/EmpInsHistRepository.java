@@ -11,12 +11,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface EmpInsHistRepository {
     List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate, GeneralDate endDate);
+
     List<EmpInsHist> getEmpInsHistById(String cid, List<String> sid, GeneralDate baseDate);
+
 	List<EmpInsHist> getAllEmpInsHist();
 
-	Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate endDate);
-	
+	Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate startDate, GeneralDate endDate);
+
 	List<EmpInsHist> getByEmpIdsAndStartDateInPeriod(String companyId, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
-	
+
 	List<EmpInsHist> getByEmpIdsAndEndDateInPeriod(String companyId, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
+
 }

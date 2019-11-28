@@ -25,6 +25,7 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
     private static final String SELECT_BY_HIST_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.cid = :cid AND f.empInsEsmHistPk.histId IN :histIds AND f.startDate <= :endDate AND f.startDate >= :startDate";
+    private static final String SELECT_BY_HIST_IDS_AND_END_DATE_IN_PERIOD = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.cid = :cid AND f.empInsEsmHistPk.histId IN :histIds AND f.endDate <= :endDate AND f.endDate >= :startDate";
 
 
     @Override
@@ -51,6 +52,20 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
          return result;
     }
 
+    @Override
+    public List<EmpInsOffice> getByHistIdsAndEndDateInPeriod(List<String> hisIds, GeneralDate startDate, GeneralDate endDate){
+        List<EmpInsOffice> result = new ArrayList<>();
+        CollectionUtil.split(hisIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
+                result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_END_DATE_IN_PERIOD, QqsmtEmpInsEsmHist.class)
+                        .setParameter("cid", AppContexts.user().companyId())
+                        .setParameter("histIds", hisIds)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .getList(e -> new EmpInsOffice(e.empInsEsmHistPk.histId, e.laborInsCd)))
+        );
+        return result;
+    }
+
     private EmpEstabInsHist toEmploymentHistory(List<QqsmtEmpInsEsmHist> listHist) {
         EmpEstabInsHist empment = new EmpEstabInsHist(listHist.get(0).empInsEsmHistPk.sid,
                 new ArrayList<>());
@@ -72,4 +87,5 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
 		Optional<QqsmtEmpInsEsmHist> entity = this.queryProxy().find(new QqsmtEmpInsEsmHistPk(cid, sid, histId), QqsmtEmpInsEsmHist.class);
 		return entity.map(r -> new EmpInsOffice(r.empInsEsmHistPk.histId, r.laborInsCd));
 	}
+
 }
