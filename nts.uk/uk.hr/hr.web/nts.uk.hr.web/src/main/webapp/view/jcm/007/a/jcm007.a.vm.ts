@@ -460,6 +460,22 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             let empCurrent = ko.toJS(self.currentEmployee());
+            // format lại date
+            let releaseDate = new Date(empCurrent.releaseDate);
+            let retirementDate = new Date(empCurrent.retirementDate);
+            command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            
+            if (self.currentEmployee().dismissalNoticeDate()) {
+                let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
+                command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
+            if (self.currentEmployee().dismissalNoticeDateAllow()){
+                let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
+                command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
@@ -469,6 +485,7 @@ module jcm007.a {
                     // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
                     let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+                    
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
@@ -514,6 +531,22 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             let empCurrent = ko.toJS(self.currentEmployee());
+            // format lại date
+            let releaseDate = new Date(empCurrent.releaseDate);
+            let retirementDate = new Date(empCurrent.retirementDate);
+            command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            
+            if (self.currentEmployee().dismissalNoticeDate()) {
+                let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
+                command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
+            if (self.currentEmployee().dismissalNoticeDateAllow()){
+                let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
+                command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
@@ -523,6 +556,7 @@ module jcm007.a {
                     // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
                     let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+                    
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
@@ -591,6 +625,22 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             let empCurrent = ko.toJS(self.currentEmployee());
+            // format lại date
+            let releaseDate = new Date(empCurrent.releaseDate);
+            let retirementDate = new Date(empCurrent.retirementDate);
+            command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            
+            if (self.currentEmployee().dismissalNoticeDate()) {
+                let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
+                command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
+            if (self.currentEmployee().dismissalNoticeDateAllow()){
+                let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
+                command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
+            }
+            
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
@@ -600,6 +650,7 @@ module jcm007.a {
                     // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
                     let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
                     let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+                    
                     let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
@@ -733,16 +784,14 @@ module jcm007.a {
             let self = this;
             let departmentCode = data.departmentCode == null ? '' : data.departmentCode;
             let departmentName = data.departmentName == null ? '' : data.departmentName;
-            let positionCode   = data.positionCode == null ? '' : data.positionCode;
             let positionName   = data.positionName == null ? '' : data.positionName;
-            let workplaceCode  = data.workplaceCode == null ? '' : data.workplaceCode;
-            let workplaceName  = data.workplaceName == null ? '' : data.workplaceName;
+            let employmentName  = data.employmentName == null ? '' : data.employmentName;
                 
             self.currentEmployee().avatarPerson( data.avartaFileId ? liveView(data.avartaFileId) : 'images/avatar.png');
             self.currentEmployee().codeNameEmp( data.employeeCode + ' ' + data.businessName);
             self.currentEmployee().department( departmentCode + ' ' + departmentName );
-            self.currentEmployee().position( positionCode + ' ' + positionName );
-            self.currentEmployee().employmentCls( workplaceCode + ' ' + workplaceName);
+            self.currentEmployee().position( positionName );
+            self.currentEmployee().employmentCls( employmentName);
             self.currentEmployee().sid = data.employeeId;
         }
         
@@ -799,6 +848,7 @@ module jcm007.a {
             $("#gridListEmployees").igGridSelection("clearSelection");
             $("#gridListEmployeesJcm007").igGridSelection("clearSelection");
             self.itemSelectedTab2(null);
+            self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
         }
         
