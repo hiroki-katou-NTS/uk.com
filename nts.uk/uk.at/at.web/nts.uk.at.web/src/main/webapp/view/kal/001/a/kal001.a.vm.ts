@@ -108,7 +108,8 @@ module nts.uk.at.view.kal001.a.model {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(), 
                 isSelectAllAfterReload: true,
-                maxRows  : 16
+                maxRows  : 16,
+                maxWidth: 420
             };
             self.empCount = ko.observable(0);
             self.currentAlarmCode.subscribe((newCode) => {
