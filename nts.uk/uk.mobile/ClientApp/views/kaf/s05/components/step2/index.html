@@ -73,7 +73,7 @@
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
                         <div class="col-4 uk-text-excess-time-none font-time"
-                            v-if="kafs05ModelStep2.prePostSelected == 1 && (item.actualExceedState == 0 || item.actualExceedState == undefined)">
+                            v-if="kafs05ModelStep2.prePostSelected == 1 && item.actualExceedState == 0">
                             <span class="far fa-clock"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.caculationTime">実績[--:--]</span>

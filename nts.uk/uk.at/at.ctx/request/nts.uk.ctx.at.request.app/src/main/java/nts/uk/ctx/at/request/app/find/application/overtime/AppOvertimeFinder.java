@@ -308,15 +308,12 @@ public class AppOvertimeFinder {
 			List<CaculationTime> bonusTimes, int prePostAtr, String appDate, String siftCD, String workTypeCode,
 			Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests, boolean displayCaculationTime, boolean isFromStepOne,
 			ApplicationDto_New opAppBefore, boolean beforeAppStatus, int actualStatus, List<OvertimeColorCheck> actualLst, OvertimeSettingDataDto overtimeSettingDataDto) {
-		if (displayCaculationTime == false) {
-			return null;
-		}
 		OvertimeSettingData overtimeSettingData = overtimeSettingDataDto.toDomain();
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = overtimeSettingData.appCommonSettingOutput;
 		// 6.計算処理 :
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		if (isFromStepOne) {
+		if (isFromStepOne && displayCaculationTime) {
 			overtimeInputCaculations = commonOvertimeHoliday.calculator(appCommonSettingOutput, appDate, siftCD, 
 					workTypeCode, startTime, endTime, startTimeRests, endTimeRests);
 		}	

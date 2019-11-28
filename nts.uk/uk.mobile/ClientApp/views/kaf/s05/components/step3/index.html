@@ -174,7 +174,7 @@
                                 v-if="null != item.preAppTime">事前[{{item.preAppTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.preAppTime">事前[--:--]</span>
                         </div>
-                        <div class="col-8 uk-text-excess-time-none font-time" v-show="item.actualExceedState == 0  || item.actualExceedState == undefined">
+                        <div class="col-8 uk-text-excess-time-none font-time" v-show="item.actualExceedState == 0">
                             <span class="far fa-clock"
                                 v-if="null != item.caculationTime">実績[{{item.caculationTime | timedr}}]</span>
                             <span class="far fa-clock" v-if="null == item.caculationTime">実績[--:--]</span>

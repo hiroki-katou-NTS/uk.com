@@ -195,12 +195,6 @@ export class KafS05aStep2Component extends Vue {
             return;
         }
 
-        if (!self.displayCaculationTime) {
-            this.$emit('toStep3', self);
-
-            return;
-        }
-
         this.calculate();
     }
 
@@ -234,10 +228,9 @@ export class KafS05aStep2Component extends Vue {
         self2.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
-            self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
-            self.actualStatus = result.data.preActualColorResult.actualStatus;
-            self.preExcessDisplaySetting = result.data.preExcessDisplaySetting;
-            overtimeHoursResult = result.data.preActualColorResult.resultLst;
+            self.beforeAppStatus = result.data.beforeAppStatus;
+            self.actualStatus = result.data.actualStatus;
+            overtimeHoursResult = result.data.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
                     //残業時間

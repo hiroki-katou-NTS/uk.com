@@ -194,12 +194,6 @@ export class KafS05aStep1Component extends Vue {
             return;
         }
 
-        if (!self.displayCaculationTime) {
-            this.$emit('toStep2', this.kafs05ModelStep1);
-
-            return;
-        }
-
         this.$mask('show', { message: true });
         let param: any = {
             overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
@@ -934,6 +928,7 @@ export class KafS05aStep1Component extends Vue {
         self.beforeAppStatus = data.beforeAppStatus;
         self.actualStatus = data.actualStatus;
         self.actualLst = data.actualLst;
+        self.preExcessDisplaySetting = data.overtimeSettingDataDto.overtimeRestAppCommonSet.preExcessDisplaySetting;
     }
 
     public changeAppDateData(data: any) {
