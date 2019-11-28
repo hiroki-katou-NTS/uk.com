@@ -961,19 +961,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let actualStatus = calcData.actualStatus;
             let resultLst = _.isEmpty(calcData.resultLst) ? self.resultLst : calcData.resultLst;
             _.forEach(self.overtimeHours(), overtimeHour => {
-                if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
-                    if(self.editable()&& self.enableOvertimeInput()){
-                        $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                        $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                        overtimeHour.color('none');
-                        return; 
-                    } else {
-                        $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
-                        $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
-                        overtimeHour.color('#ebebe4');
-                        return; 
-                    }  
-                }
                 let calcOT = _.find(resultLst, item => {
                     return item.attendanceID == 1 &&
                         item.frameNo == overtimeHour.frameNo();    
@@ -982,6 +969,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     overtimeHour.applicationTime(calcOT.appTime);
                     overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
                     overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
+                    if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
+                        if(self.editable()&& self.enableOvertimeInput()){
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            overtimeHour.color('none');
+                            return; 
+                        } else {
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            overtimeHour.color('#ebebe4');
+                            return; 
+                        }  
+                    }
                     let oldValue = _.find(self.overtimeHoursOld, item => {
                         return item.attendanceID == 1 &&
                             item.frameNo == overtimeHour.frameNo();    
@@ -997,6 +997,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         overtimeHour.color(newColor);
                     }
                 } else {
+                    if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
+                        if(self.editable()&& self.enableOvertimeInput()){
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
+                            overtimeHour.color('none');
+                            return; 
+                        } else {
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
+                            overtimeHour.color('#ebebe4');
+                            return; 
+                        }  
+                    }
                     let newColor = self.changeColor(1, overtimeHour.frameNo(), self.getErrorCode(0, 0, 0), beforeAppStatus, actualStatus, false);
                     if(!nts.uk.util.isNullOrUndefined(newColor)){
                         overtimeHour.color(newColor);
@@ -1178,20 +1191,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             data.preAppOvertimeDto.overTimeInputsPre[i].startTime == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].startTime),
                             data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
                             preAppTime,null));
-                            self.overtimeHours()[i].preAppTime(preAppTime);
                         }
                     }else{
                         continue;    
                     } 
                 }
-            }
-            let flexPreApp = _.find(self.overtimeHours(), item => item.frameNo()==11);
-            if(!nts.uk.util.isNullOrUndefined(flexPreApp)) {
-                flexPreApp.preAppTime(data.preAppOvertimeDto.flexExessTimePre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));    
-            }
-            let nightTimePreApp = _.find(self.overtimeHours(), item => item.frameNo()==12);
-            if(!nts.uk.util.isNullOrUndefined(nightTimePreApp)) {
-                nightTimePreApp.preAppTime(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));    
             }
             self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
             self.flexExessTimePre(data.preAppOvertimeDto.overTimeShiftNightPre == null ? self.convertIntToTime(0) : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
