@@ -275,16 +275,16 @@ module jcm007.a {
                         headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '120px'
                     },
                     {
-                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '100px'
+                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
-                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '100px'
+                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
                         headerText: getText('JCM007_A221_10') , key: 'notificationCategory', dataType: 'string', width: '80px'
                     },
                     {
-                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px'
+                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
                     }
                 ],
                 dataSource: self.employeeListTab2,
@@ -310,7 +310,7 @@ module jcm007.a {
                         type: 'local',
                         mode: 'simple',
                         dataFiltered: function (evt, ui) {
-                           $('#gridListEmployeesJcm007_scroll').css('height', '432px');
+                           $('#gridListEmployeesJcm007_scroll').css('height', '425px');
                         }
                     },
                     {
@@ -424,7 +424,7 @@ module jcm007.a {
                 self.preCheckAndRegisterNewEmp(command);
                 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
-                       && itemSelectedTab2.notificationCategory == "有" 
+                       && itemSelectedTab2.notificationCategory == "" 
                        && itemSelectedTab2.status == self.status_Unregistered) {
                         // 3.届出承認済みの退職者を新規登録する 
                         //(Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
