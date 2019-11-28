@@ -122,7 +122,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             var self = this;
             let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
             let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
-            return self.processingYm + "(" + startDate + " ～ " + endDate + ")";
+            return self.processingYm + " (" + startDate + " ～ " + endDate + ")";
         }
 
         goBackA() {
