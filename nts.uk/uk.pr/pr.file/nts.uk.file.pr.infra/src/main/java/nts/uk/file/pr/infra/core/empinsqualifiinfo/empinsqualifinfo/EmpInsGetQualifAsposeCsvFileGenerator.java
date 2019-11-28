@@ -264,7 +264,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                        + companyInfo.getCompanyName() + ","
                        + companyInfo.getRepname() + ","
                        + companyInfo.getPhoneNum() + ",";
-            } else if (reportSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE) {
+            } else if (reportTxtSettingExport.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
                 /*cells.get(row, 3 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse(null));
                 cells.get(row, 4 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse(null));
                 cells.get(row, 5 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse(null)
@@ -527,8 +527,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                        + empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null) + ","
                        + empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null) + ","
                        + ",,"
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()/60).orElse(null) + ","
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()%60).orElse(null) + ",";
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> (x.v()/60)).orElse(null) + ","
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> (x.v()%60)).orElse(null) + ",";
             } else {
                 /*cells.get(row, 23 + startColumn).setValue("");
                 cells.get(row, 24 + startColumn).setValue("");
