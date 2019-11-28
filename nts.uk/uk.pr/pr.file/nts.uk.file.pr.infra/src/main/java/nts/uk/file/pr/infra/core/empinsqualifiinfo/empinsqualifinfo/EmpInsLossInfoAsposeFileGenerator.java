@@ -3,6 +3,7 @@ package nts.uk.file.pr.infra.core.empinsqualifiinfo.empinsqualifinfo;
 import com.aspose.pdf.*;
 import com.aspose.pdf.Color;
 import com.aspose.pdf.drawing.Circle;
+import com.aspose.pdf.drawing.Ellipse;
 import com.aspose.pdf.drawing.Graph;
 import com.aspose.pdf.drawing.Line;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLoss
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoFileGenerator;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsLossInfoFileGenerator{
 
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格喪失届.pdf";
+
     private static final String SHOWA = "昭和";
     private static final String HEISEI = "平成";
     private static final String REIWA = "令和";
@@ -39,8 +42,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int CAUSE_OF_LOSS_INS = 46;
     private static final int COMPANY_ADDRESS = 46;
 
+
     @Inject
     private JapaneseErasAdapter jpErasAdapter;
+    private final JapaneseEras JAPANESE_ERAS = jpErasAdapter.getAllEras();
 
 
     @Override
@@ -187,9 +192,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 String residence = element.getResidenceStatus().toString();
                 textBuilder.appendText(setValue(368, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9));
                 //A2_1
-                textBuilder.appendText(setValue(112, 362, element.getName() != null ?  element.getName().length() > 23 ? element.getName().substring(0,22) : element.getName() : "", 9));
+                String insuredName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getName() : element.getReportFullName();
+                textBuilder.appendText(setValue(112, 362, insuredName != null ?  insuredName.length() > 23 ? insuredName.substring(0,22) : insuredName : "", 9));
                 //A2_2
-                textBuilder.appendText(setValue(112, 375, element.getNameKana() != null ? element.getNameKana().length() > 23 ? element.getNameKana().substring(0,22) :element.getNameKana() : "", 9));
+                String insuredPersonName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getNameKana() : element.getReportFullNameKana();
+                textBuilder.appendText(setValue(112, 375, insuredPersonName != null ? insuredPersonName.length() > 23 ? insuredPersonName.substring(0,22) :insuredPersonName : "", 9));
                 //A2_3
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
@@ -213,26 +220,26 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 graph.getShapes().add(rect);
                 //A2_4
                 JapaneseDate birthDay = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-                Circle rect2 = null;
+                Ellipse rect2 = null;
                 switch (birthDay.era()) {
                     case MEI: {
-                        rect2 = new Circle(370, 42, 7);
+                        rect2 = new Ellipse(363, 36, 16.5, 11);
                         break;
                     }
                     case SHOWA: {
-                        rect2 = new Circle(392, 42, 7);
+                        rect2 = new Ellipse(384, 36, 16.5, 11);
                         break;
                     }
                     case REIWA: {
-                        rect2 = new Circle(392, 32, 7);
+                        rect2 = new Ellipse(384, 26.5, 16.5, 11);
                         break;
                     }
                     case HEISEI: {
-                        rect2 = new Circle(370, 32, 7);
+                        rect2 = new Ellipse(363, 26.5, 16.5, 11);
                         break;
                     }
                     default: {
-                        rect2 = new Circle(370, 40, 0);
+                        rect2 = new Ellipse(370, 40, 0, 0);
                     }
                 }
                 rect2.getGraphInfo().setLineWidth(1f);
@@ -264,9 +271,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {
-        Optional<JapaneseEraName> era = this.jpErasAdapter.getAllEras().eraOf(date);
+        Optional<JapaneseEraName> era = this.JAPANESE_ERAS.eraOf(date);
         return new JapaneseDate(date, era.get());
     }
+
     private void stylePage(Document doc) {
         PageInfo pageInfo = doc.getPageInfo();
         MarginInfo marginInfo = pageInfo.getMargin();
