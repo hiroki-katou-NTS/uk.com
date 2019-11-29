@@ -341,9 +341,9 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
     private String toEraNumber(String eraName, int dateType) {
         switch (eraName) {
             case TAISHO:
-                return dateType == 0 ? "2" : " ";
+                return dateType == DATE_OF_BIRTH ? "2" : " ";
             case SHOWA:
-                return dateType == 0 ? "3" : " ";
+                return dateType == DATE_OF_BIRTH ? "3" : " ";
             case HEISEI:
                 return "4";
             case REIWA:
