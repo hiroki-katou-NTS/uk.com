@@ -208,7 +208,18 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 2 && laborInsuranceOffice != null) {
-				value = laborInsuranceOffice.getLaborOfficeCode().v();
+				String officeNumber = " ";
+				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent()) {
+					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().get().toString();
+				}
+				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent()) {
+					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().get().toString();
+				}
+				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent()) {
+					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().get().toString();
+				}
+//				value = laborInsuranceOffice.getLaborOfficeCode().v();
+				value = officeNumber;
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
