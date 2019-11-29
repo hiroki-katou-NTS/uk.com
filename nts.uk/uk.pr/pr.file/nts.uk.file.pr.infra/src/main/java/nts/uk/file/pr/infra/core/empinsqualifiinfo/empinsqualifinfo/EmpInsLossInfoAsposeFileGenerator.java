@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoExportData;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoFileGenerator;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RequestForInsurance;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
@@ -19,6 +20,8 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -39,7 +42,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int INSURED_PERSON_ADDRESS = 46;
     private static final int BUSINESS_NAME = 31;
     private static final int CAUSE_OF_LOSS_INS = 46;
-    private static final int COMPANY_ADDRESS = 75;
+    private static final int COMPANY_ADDRESS = 80;
 
 
     @Inject
@@ -157,17 +160,21 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value + 1) : "";
                     textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
                     //A1_9 reqIssuAtr
-                    String reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getRequestForIssuance().get().value + 1) : "";
-                    textBuilder.appendText(setValue(45, 629, reqIssuAtr, 16));
+                    if (element.getEmpInsLossInfo().getRequestForIssuance().isPresent()) {
+                        Integer reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().get().value;
+                        textBuilder.appendText(setValue(45, 629, reqIssuAtr.intValue() == RequestForInsurance.NO.value ? String.valueOf(reqIssuAtr + 2) : String.valueOf(reqIssuAtr) , 16));
+                    }
                     //A1_10 workingTime
                     Integer workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v() : null;
                     detachText(135, 629, formatWorkingTime(workingTime), 4, textBuilder);
                     //A1_11 scheForRep
-                    String scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getScheduleForReplenishment().get().value + 1) : "";
-                    textBuilder.appendText(setValue(248, 629, scheForRep.equals("2") ? " " : scheForRep, 16));
+                    if (element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent()) {
+                        Integer scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().get().value;
+                        textBuilder.appendText(setValue(248, 629, scheForRep.intValue() == RequestForInsurance.NO.value ? " " : String.valueOf(scheForRep), 16));
+                    }
                     //A2_8
                     if(element.getRetirementReasonClsInfo() != null) {
-                        String causeOfLossIns = element.getRetirementReasonClsInfo().getRetirementReasonClsName().v();
+                        String causeOfLossIns = element.getRetirementReasonClsInfo();
                         textBuilder.appendText(setValue(112, 255, formatTooLongText(causeOfLossIns, CAUSE_OF_LOSS_INS), 9));
                     }
                 }
@@ -180,7 +187,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 }
                 //A1_14
                 {
-                    detachText(335, 432, element.getPeriodOfStay(), 8, textBuilder);
+                    detachText(334, 433, element.getPeriodOfStay(), 8, textBuilder);
                 }
                 //A1_15
                 textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16));
@@ -282,17 +289,20 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         marginInfo.setTop(0);
         marginInfo.setBottom(0);
     }
+
     private TextFragment setValue(int x, int y, String value, int textSize) {
         TextFragment textFragment = new TextFragment(value);
         textFragment.setPosition(new Position(x, y));
         styleText(textFragment.getTextState(), textSize);
         return textFragment;
     }
+
     private void styleText(TextFragmentState textFragmentState, int textSize) {
         textFragmentState.setFont(FontRepository.findFont("MS-Gothic"));
         textFragmentState.setFontSize(textSize);
         textFragmentState.setForegroundColor(Color.getBlack());
     }
+
     private void detachText(int xRoot, int yRoot, String value, int numCells,TextBuilder textBuilder) {
         value = KatakanaConverter.hiraganaToKatakana(value);
         value = KatakanaConverter.fullKatakanaToHalf(value);
@@ -342,6 +352,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
         return numberPhone;
     }
+
     private String findEra(String era) {
         if (TAISO.equals(era)) {
             return " ";
@@ -360,6 +371,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         }
         return "";
     }
+
     private String formatPostalCode(String number){
         String postalCode = "";
         String[] numberSplit = number.split("-");

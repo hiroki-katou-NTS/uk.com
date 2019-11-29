@@ -91,7 +91,7 @@ public class EmpInsLossInfoExportData {
      */
     private String employeeCode;
 
-    private RetirementReasonClsInfo retirementReasonClsInfo;
+    private String retirementReasonClsInfo;
 
     private EmpInsNumInfo empInsNumInfo;
 
