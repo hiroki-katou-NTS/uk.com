@@ -59,8 +59,11 @@ public interface EmploymentHistoryRepository {
 	 */
 	void delete(String histId);
 	
-	// query from RequetsList 264
+	// query from RequestList 264
 	List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
+	
+	// RequestList 640
+	List<EmploymentHistory> getByListHistId(List<String> histIds);
 	
 	
 	/**
@@ -81,6 +84,12 @@ public interface EmploymentHistoryRepository {
 	 */
 	Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate standardDate);
 	
+	List<Object[]>  getEmploymentBasicInfo(String employmentCode, DatePeriod birthdayPeriod, GeneralDate baseDate,
+			String cid);
+	
+	// query from RequestList 640
+	List<EmploymentHistoryItem> getEmploymentHisItem(List<String> employeeIds, DatePeriod baseDatePeriod);
+
 	/**
 	 * @author lanlt
 	 * get list Employee by sids, cid, standar
@@ -89,7 +98,7 @@ public interface EmploymentHistoryRepository {
 	 * @param standardDate
 	 * @return
 	 */
-	List<DateHistoryItem>  getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
+	List<DateHistoryItem> getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate);
 	/**
 	 * @author lanlt
 	 * get list Employee by sids, cid, standar
@@ -98,7 +107,7 @@ public interface EmploymentHistoryRepository {
 	 * @param standardDate
 	 * @return
 	 */
-	List<DateHistoryItem>  getByEmployeeIdAndNoStandardDate(String cid, List<String> sids );
+	List<DateHistoryItem> getByEmployeeIdAndNoStandardDate(String cid, List<String> sids );
 	
 
 	/**
@@ -128,4 +137,5 @@ public interface EmploymentHistoryRepository {
 	 * @param itemToBeUpdateds
 	 */
 	void updateAll(List<DateHistoryItem> itemToBeUpdateds);
+
 }
