@@ -28,6 +28,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -247,9 +248,10 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 1 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse(null));
             cells.get(row, 2 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v());*/
             value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse("") + ","
-                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("") + ","
-                   + laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v() + ",";
+                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("") + ",";
 
+
+            //laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v() + ","
             if (reportTxtSettingExport.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value) {
                 /*cells.get(row, 3 + startColumn).setValue(companyInfo.getPostCd().substring(0, 3));
                 cells.get(row, 4 + startColumn).setValue(companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4));
@@ -258,13 +260,19 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 7 + startColumn).setValue(companyInfo.getRepname());
                 cells.get(row, 8 + startColumn).setValue(companyInfo.getPhoneNum());*/
 
-                value += companyInfo.getPostCd().substring(0, 3) + ","
-                       + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4) + ","
-                       + companyInfo.getAdd_1() + companyInfo.getAdd_2() + ","
-                       + companyInfo.getCompanyName() + ","
-                       + companyInfo.getRepname() + ","
-                       + companyInfo.getPhoneNum() + ",";
-            } else if (reportSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE) {
+                try {
+                    value += companyInfo.getCompanyCode() + ",";
+                    value += companyInfo.getPostCd().substring(0, 3) + ","
+                           + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4) + ","
+                           + formatTooLongText(companyInfo.getAdd_1() + companyInfo.getAdd_2(), 75) + ","
+                           + formatTooLongText(companyInfo.getCompanyName(), 50) + ","
+                           + formatTooLongText(companyInfo.getRepname(), 25) + ","
+
+                           + companyInfo.getPhoneNum() + ",";
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            } else if (reportTxtSettingExport.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
                 /*cells.get(row, 3 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse(null));
                 cells.get(row, 4 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse(null));
                 cells.get(row, 5 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse(null)
@@ -273,13 +281,21 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 7 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(null));
                 cells.get(row, 8 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse(null));*/
 
-                value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse(null) + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse(null) + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse(null)
-                        + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(null) + ","
-                       + laborInsuranceOffices.get(laborCode).getLaborOfficeName() + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(null) + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse(null) + ",";
+                try {
+                    value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                           + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                           + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")
+                           + ",";
+                    value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse("") + ","
+                           + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse("") + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse("")
+                            + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
+                           + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("") + ",";
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             } else if (reportSetting.getOfficeClsAtr() == OfficeCls.DO_NOT_OUTPUT) {
 
             }
@@ -287,9 +303,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             /*cells.get(row, 9 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(null));
             cells.get(row, 10 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(null));
             cells.get(row, 11 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(null));*/
-            value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(null) + ","
-                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(null) + ","
-                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(null);
+            value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("") + ","
+                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("") + ","
+                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("");
         } else {
             for (int i = 0; i < ROW_7_SIZE; i++) {
                 value += ",";
@@ -390,49 +406,44 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             if (employeeInfos.containsKey(e)) {
                 val pId = employeeInfos.get(e).getPId();
                 if (personExports.containsKey(pId)) {
-                    if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
+
+                    if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value).orElse(null)) == AcquisitionAtr.REHIRE.value))
+                       && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                       && reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
+                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
+                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());*/
+
+                            value += personExports.get(pId).getPersonNameGroup().getOldName().getFullName() + ","
+                                   + personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() + ",";
+                            value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
+                                   + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",";
+
+                    } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value).orElse(null)) == AcquisitionAtr.REHIRE.value))
+                        && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
+                        && reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
+
+                        value += personExports.get(pId).getPersonNameGroup().getOldName().getFullName() + ","
+                                + personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() + ",";
+                        value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
+                                + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",";
+
+
+                    } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
                         /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana());*/
 
                         value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
-                               + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",";
+                                + personExports.get(pId).getPersonNameGroup().getPersonName().getFullNameKana() + ",,,";
                     } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
                         /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
                         cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana());*/
 
                         value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
-                               + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",";
-                    } else if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
-                            && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value) {
-
-                        /*cells.get(row, 7 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName());
-                        cells.get(row, 8 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana());*/
-
-                        value += (personExports.get(pId).getPersonNameGroup().getOldName().getFullName() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullName()) + ","
-                               + (personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana() == null ? "" : personExports.get(pId).getPersonNameGroup().getOldName().getFullNameKana()) + ",";
-                    }
-
-                    if (((empInsGetInfos.containsKey(e) && (empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null)) == AcquisitionAtr.REHIRE.value))
-                       && reportSettingExport.getNameChangeClsAtr() == PrinfCtg.PRINT.value
-                       && personExports.get(pId).getPersonNameGroup().getOldName().getFullName()!=null) {
-
-                        if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value) {
-                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());
-                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getPersonName().getFullName());*/
-
-                            value += personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ","
-                                   + personExports.get(pId).getPersonNameGroup().getPersonName().getFullName() + ",";
-                        } else if (reportSettingExport.getSubmitNameAtr() == EmpSubNameClass.REPORTED_NAME.value) {
-                            /*cells.get(row, 9 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());
-                            cells.get(row, 10 + startColumn).setValue(personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName());*/
-
-                            value += personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ","
-                                   + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullName() + ",";
-                        }
+                                + personExports.get(pId).getPersonNameGroup().getTodokedeFullName().getFullNameKana() + ",,,";
                     } else {
                         /*cells.get(row, 9 + startColumn).setValue("");
                         cells.get(row, 10 + startColumn).setValue("");*/
-                        value += ",,";
+                        value += ",,,,";
                     }
 
                     //cells.get(row, 11 + startColumn).setValue(personExports.get(pId).getGender());
@@ -444,9 +455,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                     value += personExports.get(pId).getGender() + ","
                            + birthDateJp.era() + ","
-                           + birthDateJp.year() + ","
-                           + birthDateJp.month() + ","
-                           + birthDateJp.day() + ",";
+                           + (String.valueOf(birthDateJp.year()).length() < 2 ? "0" + birthDateJp.year() : birthDateJp.year()) + ","
+                           + (String.valueOf(birthDateJp.month()).length() < 2 ? "0" + birthDateJp.month() : birthDateJp.month()) + ","
+                           + (String.valueOf(birthDateJp.day()).length() < 2 ? "0" + birthDateJp.day() : birthDateJp.day()) + ",";
                 }
             } else {
                 /*cells.get(row, 7 + startColumn).setValue("");
@@ -471,9 +482,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                         cells.get(row, 17 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(null));
                         cells.get(row, 18 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(null));*/
 
-                        value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(null) + ","
-                               + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(null) + ","
-                               + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(null) + ",";
+                        value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("") + ","
+                               + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("") + ","
+                               + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("") + ",";
                     } else {
                         /*cells.get(row, 16 + startColumn).setValue("");
                         cells.get(row, 17 + startColumn).setValue("");
@@ -500,9 +511,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 22 + startColumn).setValue(qualificationDateJp.day());*/
 
                 value += qualificationDateJp.era() + ","
-                       + qualificationDateJp.year() + ","
-                       + qualificationDateJp.month() + ","
-                       + qualificationDateJp.day() + ",";
+                       + (String.valueOf(qualificationDateJp.year()).length() < 2 ? "0" + qualificationDateJp.year() : qualificationDateJp.year()) + ","
+                       + (String.valueOf(qualificationDateJp.month()).length() < 2 ? "0" + qualificationDateJp.month() : qualificationDateJp.month()) + ","
+                       + (String.valueOf(qualificationDateJp.day()).length() < 2 ? "0" + qualificationDateJp.day() : qualificationDateJp.day()) + ",";
             } else {
                 /*cells.get(row, 19 + startColumn).setValue("");
                 cells.get(row, 20 + startColumn).setValue("");
@@ -525,15 +536,15 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 31 + startColumn).setValue(empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v())).orElse(null));
                 cells.get(row, 32 + startColumn).setValue(empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null));*/
 
-                value += empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value).orElse(null) + ","
-                       + empInsGetInfos.get(e).getPaymentMode().map(x -> x.value).orElse(null) + ","
-                       + empInsGetInfos.get(e).getPayWage().map(x -> x.v()).orElse(null) + ","
-                       + empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value).orElse(null) + ","
-                       + empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null) + ","
-                       + empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null) + ","
+                value += empInsGetInfos.get(e).getInsCauseAtr().map(x -> String.valueOf(x.value)).orElse("") + ","
+                       + empInsGetInfos.get(e).getPaymentMode().map(x -> String.valueOf(x.value)).orElse("") + ","
+                       + empInsGetInfos.get(e).getPayWage().map(x -> String.valueOf(x.v())).orElse("") + ","
+                       + empInsGetInfos.get(e).getEmploymentStatus().map(x -> String.valueOf(x.value)).orElse("") + ","
+                       + empInsGetInfos.get(e).getJobAtr().map(x -> String.valueOf(x.value)).orElse("") + ","
+                       + empInsGetInfos.get(e).getJobPath().map(x -> String.valueOf(x.value)).orElse("") + ","
                        + ",,"
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v())).orElse(null) + ","
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null) + ",";
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> String.valueOf(x.v()/60)).orElse("") + ","
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> String.valueOf(x.v()%60)).orElse("") + ",";
             } else {
                 /*cells.get(row, 23 + startColumn).setValue("");
                 cells.get(row, 24 + startColumn).setValue("");
@@ -565,15 +576,15 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
             cells.get(row, 42 + startColumn).setValue(dummyLaborContractHist.getWorkingSystem());*/
 
-            value += ","
+            value +=  (empInsGetInfos.containsKey(e) ? empInsGetInfos.get(e).getPrintAtr().map(x -> (x.value == 0 ? 2 : String.valueOf(x.value))).orElse("") : "") + ","
                    + startDateJP.era() + ","
                    + (String.valueOf(startDateJP.year()).length() < 2 ? "0" + startDateJP.year() : String.valueOf(startDateJP.year())) + ","
                    + (String.valueOf(startDateJP.month()).length() < 2 ? "0" + startDateJP.month() : String.valueOf(startDateJP.month())) + ","
                    + (String.valueOf(startDateJP.day()).length() < 2 ? "0" + startDateJP.day() : String.valueOf(startDateJP.day())) + ","
                    + endDateJP.era() + ","
-                   + String.valueOf(endDateJP.year()) + ","
-                   + String.valueOf(endDateJP.month()) + ","
-                   + String.valueOf(endDateJP.day()) + ","
+                   + (String.valueOf(endDateJP.year()).length() < 2 ? "0" + endDateJP.year() : endDateJP.year() ) + ","
+                   + (String.valueOf(endDateJP.month()).length() < 2 ? "0" + endDateJP.month() : endDateJP.month()) + ","
+                   + (String.valueOf(endDateJP.day()).length() < 2 ? "0" + endDateJP.day() : endDateJP.day()) + ","
                    + dummyLaborContractHist.getWorkingSystem() + ",";
 
             if (empInsHists.containsKey(e)) {
@@ -631,6 +642,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 48 + startColumn).setValue("");*/
 
             val periodOfStay = toJapaneseDate(jpEras, dummyForResHistInfo.getEndDate());
+            val periodStay = dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").split("/");
+
             /*cells.get(row, 49 + startColumn).setValue(periodOfStay.year());
             cells.get(row, 50 + startColumn).setValue(periodOfStay.month());
             cells.get(row, 51 + startColumn).setValue(periodOfStay.day());
@@ -644,9 +657,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                    + ","
                    + dummyForResHistInfo.getResidenceStatus() + ","
                    + ","
-                   + periodOfStay.year() + ","
-                   + periodOfStay.month() + ","
-                   + periodOfStay.day() + ","
+                   + (periodStay[0].length() < 2 ? "0" + periodStay[0] : periodStay[0]) + ","
+                   + (periodStay[1].length() < 2 ? "0" + periodStay[1] : periodStay[1]) + ","
+                   + (periodStay[2].length() < 2 ? "0" + periodStay[2] : periodStay[2]) + ","
                    + dummyForResHistInfo.getNonQualifPermission() + ","
                    + dummyForResHistInfo.getContractWorkAtr() + ","
                    + ",";
@@ -655,13 +668,12 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 if (empInsNumInfos.containsKey(histId)) {
                     if (empInsOffices.get(histId) != null) {
                         String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-                        if (pubEmpSecOffices.get(laborCode) != null) {
+                        if (pubEmpSecOffices.get(laborCode.substring(0, 4)) != null) {
                             //cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
 
-                            value += pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v() + ",";
+                            value += pubEmpSecOffices.get(laborCode.substring(0, 4)).getPublicEmploymentSecurityOfficeName().v() + ",";
                         } else {
                             //cells.get(row, 55 + startColumn).setValue("");
-
                             value += ",";
                         }
                     } else {
@@ -717,6 +729,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         }
         return sortObjects;
     }
+
     private String toHours(Integer minutes) {
         return minutes == null ? "" : (minutes >= LIMITTED_HOUR*60 ? "9959" : minutes < 60 ? ("00" + (minutes < 10 ? "0" + minutes : minutes)) : ((minutes/60 < 10 ? "0" + minutes/60 : minutes/60) + "" +(minutes%60 < 10 ? "0" + minutes%60 : minutes%60)));
     }
@@ -725,4 +738,14 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         Optional<JapaneseEraName> eraName = jpEras.eraOf(date);
         return eraName.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
     }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        int textLength = text.length();
+        int subLength = 0;
+        for (int i = 0; i < textLength; i++) {
+            subLength++;
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        }
+        return text.substring(0, subLength);    }
 }
