@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
     private static final int LOCATION_MAX_BYTE = 54;
-    private static final int BUSINESS_NAME_MAX_BYTE = 46;
-    private static final int OFFICE_NAME_MAX_BYTE = 40;
-    private static final int NATIONALITY_MAX_BYTE = 20;
-    private static final int RESIDENT_STATUS_MAX_BYTE = 16;
-    private static final int INSURED_NAME_MAX_BYTE = 22;
-    private static final int INSURED_FULLNAME_MAX_BYTE = 22;
+    private static final int BUSINESS_NAME_MAX_BYTE = 48;
+    private static final int OFFICE_NAME_MAX_BYTE = 41;
+    private static final int NATIONALITY_MAX_BYTE = 21;
+    private static final int RESIDENT_STATUS_MAX_BYTE = 17;
+    private static final int INSURED_NAME_MAX_BYTE = 23;
+    private static final int INSURED_FULLNAME_MAX_BYTE = 23;
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<EmpInsGetQualifReport> reportData) {
@@ -271,7 +271,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            if (text.substring(0, subLength).getBytes("Shift_JIS").length >= maxByteAllowed) break;
             subLength++;
         }
         return text.substring(0, subLength);
