@@ -138,10 +138,10 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		// row 2
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
 			String value = "";
-			if (c == 0 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 0 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 1 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 1 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 2) {
@@ -201,13 +201,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		CompanyInfor companyInfo = dataSource.getCompanyInfo();
 		for (int c = 0; c < ROW_6_HEADERS.size(); c++) {
 			String value = "";
-			if (c == 0 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 0 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 1 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 1 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 2 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 2 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getLaborOfficeCode().v();
 			}
 			if (c == 3) {
@@ -247,13 +247,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
 					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse("");
 			}
-			if (c == 9 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 9 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse("");
 			}
-			if (c == 10 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 10 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(i -> i.v()).orElse("");
 			}
-			if (c == 11 && officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+			if (c == 11 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(i -> i.v()).orElse("");
 			}
 			valueBuilder.append(value);
@@ -320,13 +320,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 5 && employeeInsuranceNumber.length() >= 11) {
 					value = employeeInsuranceNumber.substring(10);
 				}
-				if (c == 6 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 6) {
 					value = row.getLaborInsuranceOfficeNumber1();
 				}
-				if (c == 7 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 7) {
 					value = row.getLaborInsuranceOfficeNumber2();
 				}
-				if (c == 8 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 8) {
 					value = row.getLaborInsuranceOfficeNumber3();
 				}
 				if (c == 9 && empInsHistStart != null) {
