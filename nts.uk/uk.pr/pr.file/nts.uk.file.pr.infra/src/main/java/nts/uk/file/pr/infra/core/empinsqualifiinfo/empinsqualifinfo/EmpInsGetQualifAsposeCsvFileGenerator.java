@@ -292,6 +292,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
+
                            + formatPhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("")) + ",";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -753,14 +754,14 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
             subLength++;
             if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
         }
-        return text.substring(0, subLength);
+        return text.substring(0, subLength-1);
     }
 
     private String formatPhoneNumber(String number) {
