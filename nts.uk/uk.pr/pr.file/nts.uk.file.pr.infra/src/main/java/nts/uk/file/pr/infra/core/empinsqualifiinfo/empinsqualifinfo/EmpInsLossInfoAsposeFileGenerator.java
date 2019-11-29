@@ -92,7 +92,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                             String postCd = element.getCompanyInfor().getPostCd();
                             textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
                             //A3_2
-                            String address = element.getCompanyInfor().getAdd_1() + " " + element.getCompanyInfor().getAdd_2();
+                            String address = element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2();
 
                             textBuilder.appendText(setValue(210, 190, formatTooLongText(address, COMPANY_ADDRESS), 9));
                             //A3_3
@@ -119,10 +119,10 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                                 //A3_2
                                 String addressLabor;
                                 if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
-                                    addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + " " + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
+                                    addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                 } else {
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent()) {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + " " + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
+                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
                                     } else {
                                         addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                     }
@@ -260,7 +260,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 }
                 //A2_6
                 if (element.getCurrentPersonResidence() != null){
-                    String currentAddress = element.getCurrentPersonResidence().getAddress1() + " " + element.getCurrentPersonResidence().getAddress2();
+                    String currentAddress = element.getCurrentPersonResidence().getAddress1() + element.getCurrentPersonResidence().getAddress2();
                     textBuilder.appendText(setValue(112, 328, formatTooLongText(currentAddress, INSURED_PERSON_ADDRESS), 9));
                 }
 
