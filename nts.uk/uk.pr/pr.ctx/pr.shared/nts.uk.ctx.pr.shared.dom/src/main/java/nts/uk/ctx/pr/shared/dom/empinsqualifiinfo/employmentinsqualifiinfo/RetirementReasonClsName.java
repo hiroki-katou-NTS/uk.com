@@ -5,10 +5,13 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * 退職解雇理由名称
+ */
 @StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(2)
-public class CauseOfLossEmpInsurance extends StringPrimitiveValue <CauseOfLossEmpInsurance> {
-    public CauseOfLossEmpInsurance(String rawValue) {
+@StringMaxLength(40)
+public class RetirementReasonClsName extends StringPrimitiveValue <RetirementReasonClsName> {
+    public RetirementReasonClsName(String rawValue) {
         super(rawValue);
     }
 }

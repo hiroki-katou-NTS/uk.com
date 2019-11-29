@@ -7,8 +7,8 @@ import nts.arc.i18n.I18NText;
  */
 public enum ScheduleForReplenishment {
 
-    NO(0, I18NText.getText("QUI004_C222_9")),
-    YES(1, I18NText.getText("QUI004_C222_10"));
+    YES(1, I18NText.getText("QUI004_C222_9")),
+    NO(0, I18NText.getText("QUI004_C222_10"));
 
     /**
      * The value.

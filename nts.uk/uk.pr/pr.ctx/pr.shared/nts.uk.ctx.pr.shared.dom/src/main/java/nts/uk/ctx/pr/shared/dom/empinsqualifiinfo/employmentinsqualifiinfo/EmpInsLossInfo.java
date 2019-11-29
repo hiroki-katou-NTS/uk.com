@@ -42,9 +42,9 @@ public class EmpInsLossInfo extends AggregateRoot {
     private Optional<ScheduleForReplenishment> scheduleForReplenishment;
 
     /**
-     * 喪失原因
+     * 被保険者でなくなったことの原因
      */
-    private Optional<CauseOfLossEmpInsurance> causeOfLossEmpInsurance;
+    private Optional<RetirementReasonClsCode> causeOfLossEmpInsurance;
 
     /**
      * 週間の所定労働時間
@@ -60,7 +60,7 @@ public class EmpInsLossInfo extends AggregateRoot {
                           Integer scheduleWorkingHourPerWeek) {
         this.cId = cId;
         this.sId = sId;
-        this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new CauseOfLossEmpInsurance(causeOfLossEmpInsurance));
+        this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new RetirementReasonClsCode(causeOfLossEmpInsurance));
         this.causeOfLossAtr = causeOfLossAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLossAtr, CauseOfLossAtr.class));
         this.requestForIssuance = requestForIssuance == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(requestForIssuance, RequestForInsurance.class));
         this.scheduleForReplenishment = scheduleForReplenishment == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(scheduleForReplenishment, ScheduleForReplenishment.class));
