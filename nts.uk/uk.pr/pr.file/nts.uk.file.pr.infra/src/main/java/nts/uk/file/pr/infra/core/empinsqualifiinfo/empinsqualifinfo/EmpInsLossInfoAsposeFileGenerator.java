@@ -315,41 +315,40 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             textBuilder.appendText(setValue(pixel, yRoot, lstValue[i], 16));
         }
     }
-    private String formatPhoneNumber(String number){
+    private String formatPhoneNumber(String number) {
+        if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
+            return number;
+        }
         String numberPhone = "";
         String[] numberSplit = number.split("-");
         String[] temp = new String[3];
 
-        if(numberSplit.length == 2){
-
-            if(numberSplit[1].length() <= 3){
-                temp[0] = numberSplit[1].substring(0,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "  -" + temp[0] + " -";
-            }else{
-                temp[0] = numberSplit[1].substring(0,3);
-                temp[1] = numberSplit[1].substring(3,numberSplit[1].length());
-                numberPhone = numberSplit[0] + "  -" + temp[0] + " -" + temp[1];
+        if (numberSplit.length == 2) {
+            if (numberSplit[1].length() <= 3) {
+                temp[0] = numberSplit[1];
+                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）";
+            } else {
+                temp[0] = numberSplit[1].substring(0, 3);
+                temp[1] = numberSplit[1].substring(3);
+                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）" + temp[1];
             }
-
-        }else if(numberSplit.length >= 3){
-            numberPhone = numberSplit[0] + "  -" + numberSplit[1] + " -" + numberSplit[2];
-        }else if(numberSplit.length == 1){
-            if(number.length() <= 3){
-                temp[0] = number.substring(0,number.length());
+        } else if (numberSplit.length >= 3) {
+            numberPhone = numberSplit[0] + "（ " + numberSplit[1] + " ）" + numberSplit[2];
+        } else if (numberSplit.length == 1) {
+            if (number.length() <= 3) {
+                temp[0] = number;
                 numberPhone = temp[0];
-            }else if( number.length() <=6){
-                temp[0] = number.substring(0,3);
-                temp[1] = number.substring(3,number.length());
-                numberPhone = temp[0] + "  -" + temp[1] + " -";
-            }else{
-                temp[0] = number.substring(0,3);
-                temp[1] = number.substring(3,6);
-                temp[2] = number.substring(6,number.length());
-                numberPhone = temp[0] + "  -" + temp[1] + " -" + temp[2];
+            } else if (number.length() <= 6) {
+                temp[0] = number.substring(0, 3);
+                temp[1] = number.substring(3);
+                numberPhone = temp[0] + "（ " + temp[1] + " ）";
+            } else {
+                temp[0] = number.substring(0, 3);
+                temp[1] = number.substring(3, 6);
+                temp[2] = number.substring(6);
+                numberPhone = temp[0] + "（ " + temp[1] + " ）" + temp[2];
             }
-
         }
-
         return numberPhone;
     }
 

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
@@ -207,19 +208,16 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			if (c == 1 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 2 && laborInsuranceOffice != null) {
-				String officeNumber = " ";
-				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent()) {
-					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().get().toString();
-				}
-				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent()) {
-					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().get().toString();
-				}
-				if (laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent()) {
-					officeNumber = officeNumber + laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().get().toString();
-				}
-//				value = laborInsuranceOffice.getLaborOfficeCode().v();
-				value = officeNumber;
+			if (c == 2) {
+				if (officeCls == OfficeCls.OUTPUT_COMPANY.value) {
+                    value = companyInfo.getCompanyCode();
+                }
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+                    String officeNumber1 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse("");
+                    String officeNumber2 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse("");
+                    String officeNumber3 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse("");
+                    value = officeNumber1 + officeNumber2 + officeNumber3;
+                }
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
@@ -254,9 +252,9 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			}
 			if (c == 8) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = companyInfo.getPhoneNum();
+					value = formatPhoneNumber(companyInfo.getPhoneNum());
 				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
-					value = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse("");
+					value = formatPhoneNumber(laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(""));
 			}
 			if (c == 9 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse("");
@@ -452,5 +450,42 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				}
 			}
 		}
+	}
+
+	private String formatPhoneNumber(String number) {
+		if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
+			return number;
+		}
+		String numberPhone = "";
+		String[] numberSplit = number.split("-");
+		String[] temp = new String[3];
+
+		if (numberSplit.length == 2) {
+			if (numberSplit[1].length() <= 3) {
+				temp[0] = numberSplit[1];
+				numberPhone = numberSplit[0] + "（ " + temp[0] + " ）";
+			} else {
+				temp[0] = numberSplit[1].substring(0, 3);
+				temp[1] = numberSplit[1].substring(3);
+				numberPhone = numberSplit[0] + "（ " + temp[0] + " ）" + temp[1];
+			}
+		} else if (numberSplit.length >= 3) {
+			numberPhone = numberSplit[0] + "（ " + numberSplit[1] + " ）" + numberSplit[2];
+		} else if (numberSplit.length == 1) {
+			if (number.length() <= 3) {
+				temp[0] = number;
+				numberPhone = temp[0];
+			} else if (number.length() <= 6) {
+				temp[0] = number.substring(0, 3);
+				temp[1] = number.substring(3);
+				numberPhone = temp[0] + "（ " + temp[1] + " ）";
+			} else {
+				temp[0] = number.substring(0, 3);
+				temp[1] = number.substring(3, 6);
+				temp[2] = number.substring(6);
+				numberPhone = temp[0] + "（ " + temp[1] + " ）" + temp[2];
+			}
+		}
+		return numberPhone;
 	}
 }
