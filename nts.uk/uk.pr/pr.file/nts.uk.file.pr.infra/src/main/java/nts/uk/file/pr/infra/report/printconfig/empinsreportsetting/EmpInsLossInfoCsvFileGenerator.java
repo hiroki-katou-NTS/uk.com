@@ -19,6 +19,7 @@ import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
+import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
@@ -120,7 +121,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 	private void fillData(StringBuilder valueBuilder, EmpInsLossInfoExportData dataSource) {
 		int lineFeedCode = dataSource.getEmpInsReportTxtSetting().getLineFeedCode();
 		LaborInsuranceOffice laborInsuranceOffice = dataSource.getLaborInsuranceOffice();
-		int officeCls = dataSource.getEmpInsReportSetting().getOfficeClsAtr();
+		int officeCls = dataSource.getEmpInsReportTxtSetting().getOfficeAtr();
 		
 		// row 1
 		for (int c = 0; c < ROW_1_HEADERS.size(); c++) {
@@ -292,6 +293,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		JapaneseEras eras = this.erasAdapter.getAllEras();
 		List<EmpInsLossInfoExportRow> rows = dataSource.getRowsData();
 		EmpInsRptSettingCommand empInsRptSetting = dataSource.getEmpInsReportSetting();
+		EmpInsRptTxtSettingCommand empInsRptTxtSetting = dataSource.getEmpInsReportTxtSetting();
 		for (EmpInsLossInfoExportRow row : rows) {
 			String employeeInsuranceNumber = row.getInsuranceNumber();
 			JapaneseDate empInsHistStart = this.toJapaneseDate(row.getEmployeeInsurancePeriodStart(), eras);
@@ -318,13 +320,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 5 && employeeInsuranceNumber.length() >= 11) {
 					value = employeeInsuranceNumber.substring(10);
 				}
-				if (c == 6 && empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 6 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
 					value = row.getLaborInsuranceOfficeNumber1();
 				}
-				if (c == 7 && empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 7 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
 					value = row.getLaborInsuranceOfficeNumber2();
 				}
-				if (c == 8 && empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
+				if (c == 8 && empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value) {
 					value = row.getLaborInsuranceOfficeNumber3();
 				}
 				if (c == 9 && empInsHistStart != null) {
@@ -370,7 +372,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 							? row.getPersonName() : row.getPersonReportName();
 				}
 				if (c == 25 && row.getPersonGender() != null) {
-					value = (row.getPersonGender() + 1) + "";
+					value = row.getPersonGender() + "";
 				}
 				if (c == 26 && birthDay != null) {
 					value = birthDay.era();
@@ -388,9 +390,9 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPersonCurrentAddress();
 				}
 				if (c == 31) {
-					if (empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value)
+					if (empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value)
 						value = row.getCompanyName();
-					if (empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value)
+					if (empInsRptTxtSetting.getOfficeAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value)
 						value = row.getLaborInsuranceOfficeName();
 				}
 				if (c == 36) {
