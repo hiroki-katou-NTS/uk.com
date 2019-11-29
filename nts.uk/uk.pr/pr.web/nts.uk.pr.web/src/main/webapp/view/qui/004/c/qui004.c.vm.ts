@@ -49,9 +49,11 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             /**
              * startPage
              */
+
             $('#emp-component').focus();
             self.selectedItem.subscribe((data) => {
                 self.startPage(data);
+                nts.uk.ui.errors.clearAll();
             });
             /**
              *KCP009
@@ -107,6 +109,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
 
         updateEmpInsLossInfo() {
             let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             let empInsLossInfo: any = {
                 sId: self.selectedItem(),
                 causeOfLossAtr: self.causeOfLossAtr(),
@@ -116,24 +120,30 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                 causeOfLossEmpInsurance: self.causeOfLossEmpInsurance().length > 0 ? self.causeOfLossEmpInsurance() : null,
                 screenMode: self.screenMode()
             };
-            nts.uk.ui.block.grayout();
+
             service.register(empInsLossInfo).done(function () {
+                nts.uk.ui.block.clear();
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                     $('#emp-component').focus();
+                    close();
                 });
             }).fail(error => {
                 dialog.alertError(error);
+                dfd.reject();
             }).always(() => {
-                nts.uk.ui.block.clear();
+                nts.uk.ui.errors.clearAll();
             });
             $('#emp-component').focus();
+            return dfd.promise();
         }
 
         startPage(sId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             $.when(service.start(sId), service.getRetirement()).done(function (data: any, reason: any) {
+                nts.uk.ui.block.clear();
                 self.causeOfLossEmpInsurances(reason);
                 if (data) {
                     self.sId(data.sId);
@@ -149,6 +159,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
                 dfd.reject();
+            }).always(() => {
+                nts.uk.ui.errors.clearAll();
             });
             return dfd.promise();
         }
