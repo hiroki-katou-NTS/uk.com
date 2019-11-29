@@ -130,6 +130,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             };
             nts.uk.ui.block.grayout();
             service.register(empInsGetInfo).done(function () {
+                nts.uk.ui.block.clear();
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                     $('#emp-component').focus();

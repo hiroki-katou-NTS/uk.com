@@ -143,9 +143,14 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(insHistEmpIds);
         List<String> pIds = employee.stream().map( e -> e.getPId()).collect(Collectors.toList());
         List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndEndDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndEndDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(e -> e.getHistId(), Function.identity()));
         Map<String, CurrentPersonResidence> currentPersonResidence = CurrentPersonResidence
                 .createListPerson(personExportAdapter.findByPids(pIds)).stream().collect(Collectors.toMap(CurrentPersonResidence::getPId, Function.identity()));
+        Map<String, EmpInsLossInfo> empLossInfos = empInsLossInfoRepository.getListEmpInsLossInfo(cid, listEmpId).stream().collect(Collectors.toMap(EmpInsLossInfo::getSId, Function.identity()));
+        Map<String, String> causeOfLossIns = retiReasonClsInfoRepository.getRetirementReasonClsInfoById(cid).stream().collect(Collectors.toMap(e -> e.getRetirementReasonClsCode().v(), e -> e.getRetirementReasonClsName().v()));
+        Map<String, EmpInsNumInfo> empNumInfos = mEmpInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
+        List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
+        Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
 
         List<EmpInsLossInfoExportData> listDataExport = new ArrayList<>();
         employee.forEach( e-> {
@@ -157,25 +162,27 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
             temp.setResidenceStatus("高度専門職");
             temp.setFillingDate(fillingDate);
 
+            String laborCode = " ";
             //社員IDと期間から社員雇用保険履歴IDを取得
             if (empInsHists.containsKey(e.getEmployeeId())) {
+                String insHisId = empInsHists.get(e.getEmployeeId()).getHistoryItem().get(0).identifier();
                 temp.setEmpInsHist(empInsHists.get(e.getEmployeeId()));
-            }
-
-            //社員IDから雇用保険喪失時情報を取得する
-            Optional<EmpInsLossInfo> lossInfo = empInsLossInfoRepository.getEmpInsLossInfoById(e.getEmployeeId());
-            if (lossInfo.isPresent()) {
-                temp.setEmpInsLossInfo(lossInfo.get());
-                val retilementReason = retiReasonClsInfoRepository.getByCidAndReasonCode(cid, lossInfo.get().getCauseOfLossEmpInsurance().get().v().toString());
-                if (retilementReason.isPresent()){
-                    temp.setRetirementReasonClsInfo(retilementReason.get());
+                if (empNumInfos.containsKey(insHisId)) {
+                    temp.setEmpInsNumInfo(empNumInfos.get(insHisId));
+                }
+                if (empInsOffices.containsKey(insHisId)) {
+                    laborCode = empInsOffices.get(insHisId).getLaborInsCd().toString();
                 }
             }
 
-            //社員雇用保険履歴IDから雇用保険番号情報を取得する
-            String insHisId = empInsHists.get(e.getEmployeeId()).getHistoryItem().get(0).identifier();
-            Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),insHisId);
-            temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : null);
+            //社員IDから雇用保険喪失時情報を取得する
+            if (empLossInfos.containsKey(e.getEmployeeId())) {
+                val lossInfo = empLossInfos.get(e.getEmployeeId());
+                temp.setEmpInsLossInfo(lossInfo);
+                if (lossInfo.getCauseOfLossEmpInsurance().isPresent()) {
+                    temp.setRetirementReasonClsInfo(causeOfLossIns.get(lossInfo.getCauseOfLossEmpInsurance()));
+                }
+            }
 
             if(currentPersonResidence.containsKey(e.getPId())) {
                 temp.setCurrentPersonResidence(currentPersonResidence.get(e.getPId()));
@@ -186,10 +193,8 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                     temp.setCompanyInfor(cInfo);
                     break;
                 case OUPUT_LABOR_OFFICE:
-                    if (empInsOffices.containsKey(insHisId)) {
-                        String laborInsCode = empInsOffices.get(insHisId).getLaborInsCd().v();
-                        Optional<LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getLaborInsuranceOfficeById(laborInsCode);
-                        temp.setLaborInsuranceOffice(laborInsuranceOffices.isPresent() ? laborInsuranceOffices.get() : null);
+                    if (laborInsuranceOffices.containsKey(laborCode)) {
+                        temp.setLaborInsuranceOffice(laborInsuranceOffices.get(laborCode));
                     }
                     break;
                 default: break;

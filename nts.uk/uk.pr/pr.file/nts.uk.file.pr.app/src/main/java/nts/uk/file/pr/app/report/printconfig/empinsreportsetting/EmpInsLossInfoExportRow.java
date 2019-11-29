@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PublicEmployme
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.ScheduleForReplenishment;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.WorkingTime;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -145,7 +146,7 @@ public class EmpInsLossInfoExportRow {
 		this.employeeInsurancePeriodStart = empInsHist.start();
 		this.employeeInsurancePeriodEnd = empInsHist.end();
 		this.causeOfLossAtr = empInsLossInfo != null ? empInsLossInfo.getCauseOfLossAtr().map(c -> c.value).orElse(null) : null;
-		this.scheduleOfReplenishment = empInsLossInfo != null ? empInsLossInfo.getScheduleForReplenishment().map(s -> s.value == 1 ? "有" : "無")
+		this.scheduleOfReplenishment = empInsLossInfo != null ? empInsLossInfo.getScheduleForReplenishment().map(s -> s.value == ScheduleForReplenishment.YES.value ? "有" : "無")
 				.orElse("") : "";
 		this.personNameKana = personInfo.getPersonNameGroup().getPersonName().getFullNameKana();
 		this.personReportNameKana = personInfo.getPersonNameGroup().getTodokedeFullName().getFullNameKana();

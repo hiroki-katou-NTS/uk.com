@@ -40,8 +40,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
          */
         sId: KnockoutObservable<string> = ko.observable('');
         causeOfLossAtr: KnockoutObservable<number> = ko.observable(0);
-        requestForIssuance: KnockoutObservable<number> = ko.observable(0);
-        scheduleForReplenishment: KnockoutObservable<number> = ko.observable(0);
+        requestForIssuance: KnockoutObservable<number> = ko.observable(1);
+        scheduleForReplenishment: KnockoutObservable<number> = ko.observable(1);
         causeOfLossEmpInsurance: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
@@ -53,7 +53,6 @@ module nts.uk.pr.view.qui004.c.viewmodel {
             $('#emp-component').focus();
             self.selectedItem.subscribe((data) => {
                 self.startPage(data);
-                nts.uk.ui.errors.clearAll();
             });
             /**
              *KCP009
@@ -109,18 +108,16 @@ module nts.uk.pr.view.qui004.c.viewmodel {
 
         updateEmpInsLossInfo() {
             let self = this;
-            let dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
             let empInsLossInfo: any = {
                 sId: self.selectedItem(),
                 causeOfLossAtr: self.causeOfLossAtr(),
                 requestForIssuance: self.requestForIssuance(),
                 scheduleWorkingHourPerWeek: self.scheduleWorkingHourPerWeek() >= 0 ? self.scheduleWorkingHourPerWeek() : null,
                 scheduleForReplenishment: self.scheduleForReplenishment(),
-                causeOfLossEmpInsurance: self.causeOfLossEmpInsurance().length > 0 ? self.causeOfLossEmpInsurance() : null,
+                causeOfLossEmpInsurance: self.causeOfLossEmpInsurance(),
                 screenMode: self.screenMode()
             };
-
+            nts.uk.ui.block.grayout();
             service.register(empInsLossInfo).done(function () {
                 nts.uk.ui.block.clear();
                 dialog.info({messageId: "Msg_15"}).then(() => {
@@ -130,12 +127,10 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                 });
             }).fail(error => {
                 dialog.alertError(error);
-                dfd.reject();
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
             });
             $('#emp-component').focus();
-            return dfd.promise();
         }
 
         startPage(sId: string): JQueryPromise<any> {
@@ -174,8 +169,8 @@ module nts.uk.pr.view.qui004.c.viewmodel {
         createNew() {
             let self = this;
             self.causeOfLossAtr(0);
-            self.requestForIssuance(0);
-            self.scheduleForReplenishment(0);
+            self.requestForIssuance(1);
+            self.scheduleForReplenishment(1);
             self.scheduleWorkingHourPerWeek(null);
             self.causeOfLossEmpInsurance('');
         }
