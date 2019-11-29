@@ -209,17 +209,6 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         tempReport.setBusinessOwnerName(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(""));
                         // A3_4
                         tempReport.setOfficePhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(PrimitiveValueBase::v).orElse(""));
-                    } else {
-                        // A1_23
-                        tempReport.setOfficeName("");
-                        // A3_1
-                        tempReport.setOfficePostalCode("");
-                        // A3_2
-                        tempReport.setOfficeLocation("");
-                        // A3_3
-                        tempReport.setBusinessOwnerName("");
-                        // A3_4
-                        tempReport.setOfficePhoneNumber("");
                     }
                     val qualificationDate = empInsHists.get(e).getHistoryItem().get(0).start();
                     val qualificationDateJp = toJapaneseDate(jpEras, qualificationDate);
