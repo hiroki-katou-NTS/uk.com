@@ -30,14 +30,13 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1)};
-            for (int i = 0; i < reportData.size(); i++) {
-                if (i != 0) {
-                    doc.getPages().add(curPage);
-                }
+            int dataLength = reportData.size();
+            for (int i = 1; i < dataLength; i++) {
+                doc.getPages().add(curPage);
             }
             stylePage(doc);
-            int indexPage = 1;
 
+            int indexPage = 1;
             for (EmpInsGetQualifReport data : reportData) {
                 Page pdfPage = doc.getPages().get_Item(indexPage);
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
@@ -154,7 +153,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9));
 
                 // A3_5
-                detachDate(460, 180, data.getSubmissionDateJp(), textBuilder);
+                detachDate(457, 180, data.getSubmissionDateJp(), textBuilder);
                 // index page
                 indexPage++;
             }
@@ -183,10 +182,9 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        for (int i = 0; i < lstValue.size(); i++) {
+        for (int i = 0; i < value.length(); i++) {
             int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
+            textBuilder.appendText(setValue(pixel, yRoot, value.charAt(i) + "", 16));
         }
     }
 
@@ -201,8 +199,8 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
         textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
-        textBuilder.appendText(setValue(xRoot + 43, yRoot, value.month() + "", 9));
-        textBuilder.appendText(setValue(xRoot + 79, yRoot, value.day() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 41, yRoot, value.month() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 77, yRoot, value.day() + "", 9));
     }
 
     private String formatPhoneNumber(String number) {
