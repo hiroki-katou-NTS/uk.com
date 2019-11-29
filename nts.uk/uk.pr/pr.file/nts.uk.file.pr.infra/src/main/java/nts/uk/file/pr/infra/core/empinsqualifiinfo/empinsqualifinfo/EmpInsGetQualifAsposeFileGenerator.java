@@ -17,27 +17,26 @@ import java.util.stream.Collectors;
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
-    private static final int LOCATION_MAX_BYTE = 46;
-    private static final int BUSINESS_NAME_MAX_BYTE = 46;
-    private static final int OFFICE_NAME_MAX_BYTE = 40;
-    private static final int NATIONALITY_MAX_BYTE = 20;
-    private static final int RESIDENT_STATUS_MAX_BYTE = 16;
-    private static final int INSURED_NAME_MAX_BYTE = 22;
-    private static final int INSURED_FULLNAME_MAX_BYTE = 22;
+    private static final int LOCATION_MAX_BYTE = 56;
+    private static final int BUSINESS_NAME_MAX_BYTE = 48;
+    private static final int OFFICE_NAME_MAX_BYTE = 42;
+    private static final int NATIONALITY_MAX_BYTE = 22;
+    private static final int RESIDENT_STATUS_MAX_BYTE = 18;
+    private static final int INSURED_NAME_MAX_BYTE = 24;
+    private static final int INSURED_FULLNAME_MAX_BYTE = 24;
 
     @Override
     public void generate(FileGeneratorContext fileContext, List<EmpInsGetQualifReport> reportData) {
         try (AsposePdfReportContext report = this.createContext(TEMPLATE_FILE)) {
             Document doc = report.getDocument();
             Page[] curPage = {doc.getPages().get_Item(1)};
-            for (int i = 0; i < reportData.size(); i++) {
-                if (i != 0) {
-                    doc.getPages().add(curPage);
-                }
+            int dataLength = reportData.size();
+            for (int i = 1; i < dataLength; i++) {
+                doc.getPages().add(curPage);
             }
             stylePage(doc);
-            int indexPage = 1;
 
+            int indexPage = 1;
             for (EmpInsGetQualifReport data : reportData) {
                 Page pdfPage = doc.getPages().get_Item(indexPage);
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
@@ -101,7 +100,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String workingTime = formatWorkingTime(data.getScheduleWorkingTimePerWeek());
                 detachText(402, 516, workingTime, 4, textBuilder);
                 // A1_19
-                String estContractPeriod = data.getEstContractPeriod() == null ? "" : data.getEstContractPeriod();
+                String estContractPeriod = data.getSetContractPeriod() == null ? "" : data.getSetContractPeriod().toString();
                 textBuilder.appendText(setValue(119, 464, estContractPeriod, 16));
                 // A1_20
                 String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();
@@ -145,7 +144,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9));
                 // A3_2
                 String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(176, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(160, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
                 textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9));
@@ -154,7 +153,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9));
 
                 // A3_5
-                detachDate(467, 180, data.getSubmissionDateJp(), textBuilder);
+                detachDate(457, 180, data.getSubmissionDateJp(), textBuilder);
                 // index page
                 indexPage++;
             }
@@ -183,10 +182,9 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        List<Character> lstValue = value.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
-        for (int i = 0; i < lstValue.size(); i++) {
+        for (int i = 0; i < value.length(); i++) {
             int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, lstValue.get(i).toString(), 16));
+            textBuilder.appendText(setValue(pixel, yRoot, value.charAt(i) + "", 16));
         }
     }
 
@@ -201,11 +199,14 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
         textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
-        textBuilder.appendText(setValue(xRoot + 36, yRoot, value.month() + "", 9));
-        textBuilder.appendText(setValue(xRoot + 72, yRoot, value.day() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 41, yRoot, value.month() + "", 9));
+        textBuilder.appendText(setValue(xRoot + 77, yRoot, value.day() + "", 9));
     }
 
     private String formatPhoneNumber(String number) {
+        if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
+            return number;
+        }
         String numberPhone = "";
         String[] numberSplit = number.split("-");
         String[] temp = new String[3];
@@ -247,11 +248,11 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
             return number;
         }
         if (numberSplit.length > 1) {
-            postalCode = "〒" + numberSplit[0] + "－" + numberSplit[1];
+            postalCode = numberSplit[0] + "－" + numberSplit[1];
         } else {
             temp[0] = number.length() > 2 ? number.substring(0, 3) : number;
             temp[1] = number.length() > 3 ? number.substring(3) : "";
-            postalCode = "〒" + temp[0] + "－" + temp[1];
+            postalCode = temp[0] + "－" + temp[1];
         }
         return postalCode;
     }
@@ -273,7 +274,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
         }
         return text.substring(0, subLength);

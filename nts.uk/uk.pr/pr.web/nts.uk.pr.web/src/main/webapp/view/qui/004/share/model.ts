@@ -16,33 +16,17 @@ module nts.uk.pr.view.qui004.share.model {
         }
     }
 
-    export class RetirementReason {
-        cId: string;
-        retirementReasonClsCode: string;
-        retirementReasonClsName: string;
-
-        constructor(cId: string, retirementReasonClsCode: string, retirementReasonClsName: string) {
-            this.cId = cId;
-            this.retirementReasonClsCode = retirementReasonClsCode;
-            this.retirementReasonClsName = retirementReasonClsName;
-        }
-    }
-
-    export function getListRetirementReason() : Array<RetirementReason> {
-        return new RetirementReason();
-    }
-
     export function getRequestForInsurance() : Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI004_C222_5')),
-            new ItemModel(1 , getText('QUI004_C222_6'))
+            new ItemModel(1, getText('QUI004_C222_5')),
+            new ItemModel(0, getText('QUI004_C222_6'))
         ];
     }
 
     export function getScheduleForReplenishment() : Array<ItemModel>{
         return [
-            new ItemModel(0, getText('QUI004_C222_9')),
-            new ItemModel(1, getText('QUI004_C222_10'))
+            new ItemModel(1, getText('QUI004_C222_9')),
+            new ItemModel(0, getText('QUI004_C222_10'))
         ];
     }
 

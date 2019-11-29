@@ -30,9 +30,13 @@ public class ExportDataCsv {
 
     private Map<String, EmpInsHist> empInsHists;
 
-    private EmpInsReportSettingExport reportSetting;
+    private EmpInsReportSetting reportSetting;
 
-    private EmpInsRptTxtSettingExport reportTxtSetting;
+    private EmpInsReportTxtSetting reportTxtSetting;
+
+    private EmpInsReportSettingExport reportSettingExport;
+
+    private EmpInsRptTxtSettingExport reportTxtSettingExport;
 
     private Map<String, EmpInsNumInfo> empInsNumInfos;
 
@@ -59,4 +63,6 @@ public class ExportDataCsv {
     private GeneralDate  startDate;
 
     private GeneralDate endDate;
+
+    private List<SortObject> sortObjects;
 }

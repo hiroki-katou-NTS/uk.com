@@ -73,7 +73,7 @@ public class EmpInsGetQualifReport {
     /**
      * 契約期間の定め
      */
-    private String estContractPeriod;
+    private Integer setContractPeriod;
 
     /**
      * 契約開始年月日（和暦）

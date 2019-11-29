@@ -7,8 +7,8 @@ import nts.arc.i18n.I18NText;
  */
 public enum RequestForInsurance {
 
-    NO(0, I18NText.getText("QUI004_C222_5")),
-    YES(1, I18NText.getText("QUI004_C222_6"));
+    YES(1, I18NText.getText("QUI004_C222_5")),
+    NO(0, I18NText.getText("QUI004_C222_6"));
 
     /**
      * The value.
