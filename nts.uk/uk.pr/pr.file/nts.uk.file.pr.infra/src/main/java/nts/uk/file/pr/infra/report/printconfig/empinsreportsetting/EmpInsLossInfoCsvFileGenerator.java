@@ -388,8 +388,10 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPersonCurrentAddress();
 				}
 				if (c == 31) {
-					value = empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value ? row.getCompanyName()
-							: row.getLaborInsuranceOfficeName();
+					if (empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value)
+						value = row.getCompanyName();
+					if (empInsRptSetting.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value)
+						value = row.getLaborInsuranceOfficeName();
 				}
 				if (c == 36) {
 					value = reasonMap.get(row.getCauseOfLossInsurance());
