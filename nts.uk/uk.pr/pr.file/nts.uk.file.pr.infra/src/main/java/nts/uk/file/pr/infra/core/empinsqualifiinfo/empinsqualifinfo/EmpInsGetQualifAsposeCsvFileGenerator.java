@@ -248,9 +248,10 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 1 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse(null));
             cells.get(row, 2 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v());*/
             value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse("") + ","
-                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("") + ","
-                   + laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v() + ",";
+                   + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("") + ",";
 
+
+            //laborInsuranceOffices.get(laborCode).getLaborOfficeCode().v() + ","
             if (reportTxtSettingExport.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value) {
                 /*cells.get(row, 3 + startColumn).setValue(companyInfo.getPostCd().substring(0, 3));
                 cells.get(row, 4 + startColumn).setValue(companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4));
@@ -260,6 +261,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 8 + startColumn).setValue(companyInfo.getPhoneNum());*/
 
                 try {
+                    value += companyInfo.getCompanyCode() + ",";
                     value += companyInfo.getPostCd().substring(0, 3) + ","
                            + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4) + ","
                            + formatTooLongText(companyInfo.getAdd_1() + companyInfo.getAdd_2(), 75) + ","
@@ -279,13 +281,21 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 7 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(null));
                 cells.get(row, 8 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse(null));*/
 
-                value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse("") + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse("") + ","
-                       + ((laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse("")
-                        + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse("")).length() > 75 ? "" : "") + ","
-                       + laborInsuranceOffices.get(laborCode).getLaborOfficeName() + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse("") + ","
-                       + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("") + ",";
+                try {
+                    value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                           + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                           + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")
+                           + ",";
+                    value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse("") + ","
+                           + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse("") + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse("")
+                            + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
+                           + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
+                           + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("") + ",";
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             } else if (reportSetting.getOfficeClsAtr() == OfficeCls.DO_NOT_OUTPUT) {
 
             }
@@ -566,7 +576,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
             cells.get(row, 42 + startColumn).setValue(dummyLaborContractHist.getWorkingSystem());*/
 
-            value += ","
+            value +=  (empInsGetInfos.containsKey(e) ? empInsGetInfos.get(e).getPrintAtr().map(x -> (x.value == 0 ? 2 : String.valueOf(x.value))).orElse("") : "") + ","
                    + startDateJP.era() + ","
                    + (String.valueOf(startDateJP.year()).length() < 2 ? "0" + startDateJP.year() : String.valueOf(startDateJP.year())) + ","
                    + (String.valueOf(startDateJP.month()).length() < 2 ? "0" + startDateJP.month() : String.valueOf(startDateJP.month())) + ","
