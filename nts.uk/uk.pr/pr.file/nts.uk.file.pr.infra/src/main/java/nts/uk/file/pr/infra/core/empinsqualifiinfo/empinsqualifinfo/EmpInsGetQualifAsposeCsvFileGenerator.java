@@ -672,19 +672,17 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                         if (laborInsuranceOffices.containsKey(laborCode)) {
                             //cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
-                            value +=
-                            (pubEmpSecOffices.containsKey((
-                                    laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
-                                  + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
-                                  + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).substring(0, 4)
-                            ) ?
-                                    pubEmpSecOffices.get((
-                                              laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
-                                            + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
-                                            + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).substring(0, 4)
-                                    ).getPublicEmploymentSecurityOfficeName().v()
-                            :
-                                    "") + ",";
+                            String laborInsOffCode = laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                                    + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                                    + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("");
+
+                            if (pubEmpSecOffices.containsKey(laborInsOffCode.length() > 3 ? laborInsOffCode.substring(0, 4) : laborInsOffCode)) {
+
+                                value += pubEmpSecOffices.get(laborInsOffCode.length() > 3 ? laborInsOffCode.substring(0, 4) : laborInsOffCode).getPublicEmploymentSecurityOfficeName() + ",";
+                            } else {
+
+                                value += ",";
+                            }
 
                         } else {
                             value += ",";
