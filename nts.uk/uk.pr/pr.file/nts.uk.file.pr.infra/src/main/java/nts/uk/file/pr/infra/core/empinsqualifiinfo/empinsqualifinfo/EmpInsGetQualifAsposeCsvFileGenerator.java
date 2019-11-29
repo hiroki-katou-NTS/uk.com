@@ -268,7 +268,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                            + formatTooLongText(companyInfo.getCompanyName(), 50) + ","
                            + formatTooLongText(companyInfo.getRepname(), 25) + ","
 
-                           + companyInfo.getPhoneNum() + ",";
+                           + formatPhoneNumber(companyInfo.getPhoneNum()) + ",";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -292,7 +292,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
-                           + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("") + ",";
+                           + formatPhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("")) + ",";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -543,8 +543,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                        + empInsGetInfos.get(e).getJobAtr().map(x -> String.valueOf(x.value)).orElse("") + ","
                        + empInsGetInfos.get(e).getJobPath().map(x -> String.valueOf(x.value)).orElse("") + ","
                        + ",,"
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> String.valueOf(x.v()/60)).orElse("") + ","
-                       + empInsGetInfos.get(e).getWorkingTime().map(x -> String.valueOf(x.v()%60)).orElse("") + ",";
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v()).substring(0, 2)).orElse("") + ","
+                       + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v()).substring(2)).orElse("") + ",";
             } else {
                 /*cells.get(row, 23 + startColumn).setValue("");
                 cells.get(row, 24 + startColumn).setValue("");
@@ -747,5 +747,40 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             subLength++;
             if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
         }
-        return text.substring(0, subLength);    }
+        return text.substring(0, subLength);
+    }
+
+    private String formatPhoneNumber(String number) {
+        String numberPhone = "";
+        String[] numberSplit = number.split("-");
+        String[] temp = new String[3];
+
+        if (numberSplit.length == 2) {
+            if (numberSplit[1].length() <= 3) {
+                temp[0] = numberSplit[1];
+                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）";
+            } else {
+                temp[0] = numberSplit[1].substring(0, 3);
+                temp[1] = numberSplit[1].substring(3);
+                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）" + temp[1];
+            }
+        } else if (numberSplit.length >= 3) {
+            numberPhone = numberSplit[0] + "（ " + numberSplit[1] + " ）" + numberSplit[2];
+        } else if (numberSplit.length == 1) {
+            if (number.length() <= 3) {
+                temp[0] = number;
+                numberPhone = temp[0];
+            } else if (number.length() <= 6) {
+                temp[0] = number.substring(0, 3);
+                temp[1] = number.substring(3);
+                numberPhone = temp[0] + "（ " + temp[1] + " ）";
+            } else {
+                temp[0] = number.substring(0, 3);
+                temp[1] = number.substring(3, 6);
+                temp[2] = number.substring(6);
+                numberPhone = temp[0] + "（ " + temp[1] + " ）" + temp[2];
+            }
+        }
+        return numberPhone;
+    }
 }
