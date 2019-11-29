@@ -758,8 +758,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
         }
         return text.substring(0, subLength-1);
     }
