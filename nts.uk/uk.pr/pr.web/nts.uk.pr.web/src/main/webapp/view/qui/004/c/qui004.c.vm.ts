@@ -114,7 +114,7 @@ module nts.uk.pr.view.qui004.c.viewmodel {
                 requestForIssuance: self.requestForIssuance(),
                 scheduleWorkingHourPerWeek: self.scheduleWorkingHourPerWeek() >= 0 ? self.scheduleWorkingHourPerWeek() : null,
                 scheduleForReplenishment: self.scheduleForReplenishment(),
-                causeOfLossEmpInsurance: self.causeOfLossEmpInsurance().length > 0 ? self.causeOfLossEmpInsurance() : null,
+                causeOfLossEmpInsurance: self.causeOfLossEmpInsurance(),
                 screenMode: self.screenMode()
             };
             nts.uk.ui.block.grayout();
