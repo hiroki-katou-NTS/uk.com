@@ -14,6 +14,7 @@ public class JpaRetiReaClsInfoRepository extends JpaRepository implements Retire
     private static final String SELECT_QUERY_STRING = "SELECT r FROM QqsmtRetiReaClsInfo r";
     private static final String SELECT_BY_KEY_STRING = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cId";
     private static final String SELECT_BY_CID_AND_CODE = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cid AND r.qqsmtRetiReaClsInfoPk.retirementReasonClsCode = :code";
+    private static final String SELECT_BY_CID_AND_CODES = SELECT_QUERY_STRING + " WHERE r.qqsmtRetiReaClsInfoPk.cId =:cid AND r.qqsmtRetiReaClsInfoPk.retirementReasonClsCode IN :codes";
 
     @Override
     public List<RetirementReasonClsInfo> getRetirementReasonClsInfoById(String cId){
@@ -28,5 +29,11 @@ public class JpaRetiReaClsInfoRepository extends JpaRepository implements Retire
                 .setParameter("cid", cid)
                 .setParameter("code", code)
                .getSingle(e -> e.toDomain());
+    }
+
+    @Override
+    public List<RetirementReasonClsInfo> getByCidAndCodes(String cid, List<String> codes){
+        return this.queryProxy().query(SELECT_BY_CID_AND_CODES, QqsmtRetiReaClsInfo.class)
+                .setParameter("cid", cid).setParameter("codes", codes).getList(e -> e.toDomain());
     }
 }
