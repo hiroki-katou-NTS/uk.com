@@ -765,6 +765,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String formatPhoneNumber(String number) {
+        if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
+            return number;
+        }
         String numberPhone = "";
         String[] numberSplit = number.split("-");
         String[] temp = new String[3];
