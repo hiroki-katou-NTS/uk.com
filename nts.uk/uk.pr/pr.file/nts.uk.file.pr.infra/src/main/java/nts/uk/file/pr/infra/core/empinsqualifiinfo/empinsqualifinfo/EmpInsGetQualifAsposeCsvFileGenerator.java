@@ -292,6 +292,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
                            + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
+
                            + formatPhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("")) + ",";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -667,15 +668,28 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     if (empInsOffices.get(histId) != null) {
-                        String laborCode = empInsOffices.get(histId).getLaborInsCd().v();
-                        if (pubEmpSecOffices.get(laborCode.substring(0, 4)) != null) {
-                            //cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
+                        String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
-                            value += pubEmpSecOffices.get(laborCode.substring(0, 4)).getPublicEmploymentSecurityOfficeName().v() + ",";
+                        if (laborInsuranceOffices.containsKey(laborCode)) {
+                            //cells.get(row, 55 + startColumn).setValue(pubEmpSecOffices.get(laborCode).getPublicEmploymentSecurityOfficeName().v());
+                            value +=
+                            (pubEmpSecOffices.containsKey((
+                                    laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                                  + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                                  + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).substring(0, 4)
+                            ) ?
+                                    pubEmpSecOffices.get((
+                                              laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                                            + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                                            + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).substring(0, 4)
+                                    ).getPublicEmploymentSecurityOfficeName().v()
+                            :
+                                    "") + ",";
+
                         } else {
-                            //cells.get(row, 55 + startColumn).setValue("");
                             value += ",";
                         }
+
                     } else {
                         //cells.get(row, 55 + startColumn).setValue("");
 
@@ -740,17 +754,20 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
         int textLength = text.length();
         int subLength = 0;
         for (int i = 0; i < textLength; i++) {
             if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
         }
-        return text.substring(0, subLength);
+        return text.substring(0, subLength-1);
     }
 
     private String formatPhoneNumber(String number) {
+        if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
+            return number;
+        }
         String numberPhone = "";
         String[] numberSplit = number.split("-");
         String[] temp = new String[3];

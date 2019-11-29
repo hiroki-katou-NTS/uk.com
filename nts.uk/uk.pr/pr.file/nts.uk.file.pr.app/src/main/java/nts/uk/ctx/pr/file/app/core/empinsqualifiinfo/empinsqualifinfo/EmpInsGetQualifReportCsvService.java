@@ -126,7 +126,11 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
         CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
-        Map<String, PublicEmploymentSecurityOffice> pubEmpSecOffices = pubEmpSecOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes.stream().map(e -> e.substring(0, 4)).collect(Collectors.toList())).stream().collect(Collectors.toMap(e -> e.getPublicEmploymentSecurityOfficeCode().v(), Function.identity()));
+
+        List<String> laborInsOffCodes = laborInsuranceOffices.values().stream().map(e -> e.getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                                                                                       + e.getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                                                                                       + e.getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).collect(Collectors.toList());
+        Map<String, PublicEmploymentSecurityOffice> pubEmpSecOffices = pubEmpSecOfficeRepository.getByCidAndCodes(cid, laborInsOffCodes.stream().map(e -> e.length() >= 4 ? e.substring(0, 4) : e).collect(Collectors.toList())).stream().collect(Collectors.toMap(e -> e.getPublicEmploymentSecurityOfficeCode().v(), Function.identity()));
 
         // dummy param
         LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
