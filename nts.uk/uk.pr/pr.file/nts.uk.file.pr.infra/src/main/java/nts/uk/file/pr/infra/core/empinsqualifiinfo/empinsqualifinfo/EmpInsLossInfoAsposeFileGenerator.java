@@ -42,7 +42,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int INSURED_PERSON_ADDRESS = 46;
     private static final int BUSINESS_NAME = 31;
     private static final int CAUSE_OF_LOSS_INS = 46;
-    private static final int COMPANY_ADDRESS = 75;
+    private static final int COMPANY_ADDRESS = 80;
 
 
     @Inject
