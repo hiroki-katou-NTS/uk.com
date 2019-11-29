@@ -412,9 +412,26 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 40) {
 					value = row.getPersonNameRomanji();
 				}
-				if (c >= 41 && c <= 49) {
-					// dummy foreigner
-					value = "";
+				if (c == 41) {
+					value = row.getNationalityName();
+				}
+				if (c == 42) {
+					value = row.getNationalityCode();
+				}
+				if (c == 43) {
+					value = row.getStatusOfResidence();
+				}
+				if (c == 45 && row.getPeriodOfStayEnd() != null) {
+					value = row.getPeriodOfStayEnd().year() + "";
+				}
+				if (c == 46 && row.getPeriodOfStayEnd() != null) {
+					value = row.getPeriodOfStayEnd().month() + "";
+				}
+				if (c == 47 && row.getPeriodOfStayEnd() != null) {
+					value = row.getPeriodOfStayEnd().day() + "";
+				}
+				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
+					value = row.getUnqualifiedActivityPermission() + "";
 				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {

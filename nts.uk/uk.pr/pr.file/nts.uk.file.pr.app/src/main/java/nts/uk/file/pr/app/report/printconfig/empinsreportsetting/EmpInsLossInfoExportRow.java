@@ -128,6 +128,31 @@ public class EmpInsLossInfoExportRow {
 	private String publicEmploymentSecurityOfficeName;
 	
 	private LaborInsuranceOffice laborInsuranceOffice;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String nationalityName;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String nationalityCode;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String statusOfResidence;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private GeneralDate periodOfStayEnd;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private Integer unqualifiedActivityPermission;
 
 	public EmpInsLossInfoExportRow(String employeeId, EmployeeInfoEx employeeInfo, DateHistoryItem empInsHist,
 			CompanyInfor companyInfo, EmpInsNumInfo empInsNumInfo, LaborInsuranceOffice laborInsuranceOffice,
@@ -162,5 +187,10 @@ public class EmpInsLossInfoExportRow {
 		this.scheduleWorkingHourPerWeek = empInsLossInfo != null ? empInsLossInfo.getScheduleWorkingHourPerWeek().orElse(null) : null;
 		this.publicEmploymentSecurityOfficeName = pubEmpSecOffice != null ? pubEmpSecOffice.getPublicEmploymentSecurityOfficeName().v() : "";
 		this.laborInsuranceOffice = laborInsuranceOffice;
+		this.nationalityCode = "";
+		this.nationalityName = forResHistInfo.getNationalityRegion();
+		this.statusOfResidence = forResHistInfo.getResidenceStatus();
+		this.periodOfStayEnd = forResHistInfo.getEndDate();
+		this.unqualifiedActivityPermission = forResHistInfo.getNonQualifPermission();
 	}
 }
