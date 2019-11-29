@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.dom.empregulationhistory;
+package nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm;
 
 import java.util.Optional;
 

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.develop.dom.empregulationhistory.EmploymentRegulationHistoryInterface;
+import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 
 @Stateless
 public class EmploymentRegulationHistoryInterfaceImpl extends JpaRepository implements EmploymentRegulationHistoryInterface {
