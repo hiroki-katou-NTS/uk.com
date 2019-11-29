@@ -12,16 +12,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.CommonMaterItemDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.IGroupCommonMaster;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -36,7 +37,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	private EmploymentRepository repository;
 
 	@Inject
-	private GroupCommonMaster groupCommonMaster;
+	private IGroupCommonMaster groupCommonMaster;
 
 	/*
 	 * (non-Javadoc)
@@ -75,13 +76,29 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		String contractCd = AppContexts.user().contractCode();
 		EmploymentFindDto dto = new EmploymentFindDto();
 		Optional<Employment> employment = this.repository.findEmployment(companyId, employmentCode);
+		GroupCommonMasterExportDto data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
+				GeneralDate.today());
+		dto.setCommonMasterName(data.getCommonMasterName());
+		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
+				item -> new CommonMaterItemDto(item.getCommonMasterItemId(), item.getCommonMasterItemName().v(), item.getCommonMasterItemCode().v()))
+				.collect(Collectors.toList()));
 		if (!employment.isPresent()) {
-			return null;
+		return dto;
 		}
 		dto.setCode(employmentCode);
 		dto.setName(employment.get().getEmploymentName().v());
 		dto.setEmpExternalCode(employment.get().getEmpExternalCode());
 		dto.setMemo(employment.get().getMemo());
+		if (data.getCommonMasterItems().isEmpty()) {
+			dto.setErrMessage("Msg_1580");
+			dto.setCode(employmentCode);
+			
+			return dto;
+		}
+		if(employment.get().getEmpCommonMasterItemId().isPresent()){
+			dto.setEmpCommonMasterItemId(employment.get().getEmpCommonMasterItemId().get());
+		}
+		
 
 		int x = 1;
 		if (x == 0) {
@@ -95,21 +112,7 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		 * ID=M000031) ・会社ID//(company ID) ・基準日 = システム日付//(baseDate= System
 		 * Date)
 		 */
-		GroupCommonMaster data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
-				GeneralDate.today());
-		if (data.getCommonMasterItems().isEmpty()) {
-			dto.setErrMessage("Msg_1580");
-			return dto;
-		}
-		if(employment.get().getEmpCommonMasterItemId().isPresent()){
-			dto.setEmpCommonMasterItemId(employment.get().getEmpCommonMasterItemId().get());
-		}
-		dto.setShowsGroupCompany(true);
-		dto.setCommonMasterName(data.getCommonMasterName().v());
 		
-		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
-				item -> new CommonMaterItemDto(item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v()))
-				.collect(Collectors.toList()));
 		return dto;
 	}
 
@@ -166,6 +169,20 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 			result.add(new EmploymentDto(code, itemName));
 		});
 		return result;
+	}
+
+	@Override
+	public GroupCommonMasterImport findGroupCommonMaster() {
+		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		GroupCommonMasterExportDto data = groupCommonMaster.getGroupCommonMasterEnableItem(contractCd, "M000031", companyId,
+				GeneralDate.today());
+		GroupCommonMasterImport dto = new GroupCommonMasterImport();
+		dto.setCommonMasterName(data.getCommonMasterName());
+		dto.setCommonMasterItems(data.getCommonMasterItems().stream().map(
+				item -> new CommonMaterItemDto(item.getCommonMasterItemId(), item.getCommonMasterItemName().v(), item.getCommonMasterItemCode().v()))
+				.collect(Collectors.toList()));
+		return dto;
 	}
 
 }

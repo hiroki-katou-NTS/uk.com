@@ -1022,6 +1022,41 @@ module nts.uk.at.view.kmk002.a {
                 this.amountLower = ko.observable(null);
                 this.timeUpper = ko.observable(null);
                 this.timeLower = ko.observable(null);
+                
+                this.upperCheck.subscribe(vl => {
+                    if (vl) {
+                        if($('#inp-upper-amount').is(':enabled')){
+                            $('#inp-upper-amount').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-number').is(':enabled')){
+                            $('#inp-upper-number').ntsEditor('validate');
+                        }
+                        if($('#inp-upper-time').is(':enabled')){
+                            $('#inp-upper-time').ntsEditor('validate');
+                        }
+                    } else {
+                        $('#inp-upper-amount').ntsError('clear');
+                        $('#inp-upper-number').ntsError('clear');
+                        $('#inp-upper-time').ntsError('clear');
+                    }
+                });
+                this.lowerCheck.subscribe(vl => {
+                    if (vl) {
+                        if($('#inp-upper-amount').is(':enabled')){
+                            $('#inp-lower-amount').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-number').is(':enabled')){
+                            $('#inp-lower-number').ntsEditor('validate');
+                        }
+                        if($('#inp-lower-time').is(':enabled')){
+                            $('#inp-lower-time').ntsEditor('validate');
+                        }
+                    } else {
+                        $('#inp-lower-amount').ntsError('clear');
+                        $('#inp-lower-number').ntsError('clear');
+                        $('#inp-lower-time').ntsError('clear');
+                    }
+                });
             }
 
             /**
@@ -1154,7 +1189,7 @@ module nts.uk.at.view.kmk002.a {
                 self.selectedCode = ko.observable(null);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
-                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100, formatter: _.escape },
+                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 180, formatter: _.escape },
                     {
                         headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
                         formatter: atr => {

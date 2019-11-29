@@ -1,20 +1,18 @@
-module qmm006.c.service {
-    var paths: any = {
-        findAll: "basic/system/bank/linebank/findAll",
-        transfer: "basic/system/bank/linebank/transfer"
-    }
+module nts.uk.pr.view.qmm006.c.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
-    /**
-     * get data from database to screen
-     */
-    export function findAll(): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("com", paths.findAll);
-    }
+    let paths = {
+        getAllSourceBank: "ctx/pr/transfer/sourcebank/get-all-source-bank",
+        integration: "ctx/pr/transfer/emppaymentinfo/source-bank-integration"
+    };
 
-    /**
-     * change lineBankCode in database PERSON_BANK_ACCOUNT
-     */
-    export function transfer(data): JQueryPromise<any> {
-        return nts.uk.request.ajax('com', paths.transfer, data);
+    export function getAllSourceBank(): JQueryPromise<any> {
+        return ajax('pr', paths.getAllSourceBank);
     }
+    
+    export function integration(data: any): JQueryPromise<any> {
+        return ajax('pr', paths.integration, data);
+    }
+    
 }

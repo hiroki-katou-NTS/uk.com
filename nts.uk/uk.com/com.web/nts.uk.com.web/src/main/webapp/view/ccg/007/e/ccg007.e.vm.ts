@@ -4,6 +4,7 @@ module nts.uk.pr.view.ccg007.e {
         import CallerParameter = service.CallerParameter;
         import ChangePasswordCommand = service.ChangePasswordCommand;
         import EmployeeInforDto = service.EmployeeInforDto;
+        import getMessage = nts.uk.resource.getMessage;
 
         export class ScreenModel {
             
@@ -14,7 +15,7 @@ module nts.uk.pr.view.ccg007.e {
             
             // Parameter from caller screen.
             callerParameter: CallerParameter;
-            
+            reasonUpdatePw: KnockoutObservable<string> = ko.observable("");
             constructor(parentData: CallerParameter) {
                 var self = this;
                 
@@ -33,7 +34,16 @@ module nts.uk.pr.view.ccg007.e {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
+                let changePw = nts.uk.ui.windows.getShared('changePw');
+                if(changePw === undefined){
+                    self.reasonUpdatePw('');
+                }else{
+                    if(changePw.reasonUpdatePw == 'Msg_1523'){
+                        self.reasonUpdatePw(getMessage(changePw.reasonUpdatePw, [changePw.spanDays]));
+                    }else{
+                        self.reasonUpdatePw(getMessage(changePw.reasonUpdatePw));
+                    }
+                }
                 // block ui
                 nts.uk.ui.block.invisible();
                 if (self.callerParameter.form1){
@@ -76,13 +86,9 @@ module nts.uk.pr.view.ccg007.e {
                 
                 //submitChangePass
                 service.submitChangePass(command).done(function () {
-                    let returnedData = {
-                            submit: true
-                        };
-                    nts.uk.ui.windows.setShared("childData", returnedData, false);
-                    
-                    self.closeDialog();
                     blockUI.clear();
+                    nts.uk.ui.windows.setShared("changePwDone", true);
+                    nts.uk.ui.windows.close();
                 }).fail(function(res) {
                     //Return Dialog Error
                     self.showMessageError(res);
@@ -124,10 +130,7 @@ module nts.uk.pr.view.ccg007.e {
              * close dialog
              */
             public closeDialog(): void {
-                let returnedData = {
-                            submit: false
-                        };
-                nts.uk.ui.windows.setShared("childData", returnedData, false);
+                nts.uk.ui.windows.setShared("changePwDone", false);
                 nts.uk.ui.windows.close();
             }
         }

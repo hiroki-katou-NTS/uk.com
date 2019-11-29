@@ -12,13 +12,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterCode;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItem;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemName;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterName;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterRepository;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.NotUseCompany;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.NotUseCompanyList;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterCategory;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterItem;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUse;
@@ -91,7 +91,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	}
 
-	private BsymtGpMasterItem mapItem(String contractCode, String commonMasterId, CommonMasterItem item) {
+	private BsymtGpMasterItem mapItem(String contractCode, String commonMasterId, GroupCommonMasterItem item) {
 
 		return new BsymtGpMasterItem(contractCode, commonMasterId, item.getCommonMasterItemId(),
 				item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v(), item.getDisplayNumber(),
@@ -99,7 +99,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	}
 
-	private List<BsymtGpMasterNotUse> mapNotUseList(List<CommonMasterItem> items) {
+	private List<BsymtGpMasterNotUse> mapNotUseList(List<GroupCommonMasterItem> items) {
 
 		return items.stream()
 				.map(item -> item.getNotUseCompanyList().stream()
@@ -108,7 +108,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	}
 
-	private BsymtGpMasterNotUse mapNotUse(String commonMasterItemId, NotUseCompany notuse) {
+	private BsymtGpMasterNotUse mapNotUse(String commonMasterItemId, NotUseCompanyList notuse) {
 		return new BsymtGpMasterNotUse(new BsymtGpMasterNotUsePK(commonMasterItemId, notuse.getCompanyId()));
 	}
 
@@ -141,7 +141,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 				.setParameter("contractCode", contractCode).setParameter("commonMasterIds", commonMasterIds).getList();
 
 		commonMasters.forEach(commonMaster -> {
-			List<CommonMasterItem> items = commonMasterItems.stream()
+			List<GroupCommonMasterItem> items = commonMasterItems.stream()
 					.filter(item -> item.getCommonMasterId().equals(commonMaster.getCommonMasterId()))
 					.map(item -> toItemDomain(item)).collect(Collectors.toList());
 			commonMaster.setCommonMasterItems(items);
@@ -164,14 +164,14 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 				.query(GET_NOT_USE_BY_LIST_ITEM_ID, BsymtGpMasterNotUse.class)
 				.setParameter("commonMasterItemIds", commonMasterItemIds).getList();
 
-		List<CommonMasterItem> masterItems = commonMasters.stream().map(master -> master.getCommonMasterItems())
+		List<GroupCommonMasterItem> masterItems = commonMasters.stream().map(master -> master.getCommonMasterItems())
 				.flatMap(List::stream).collect(Collectors.toList());
 
 		masterItems.forEach(item -> {
 
-			List<NotUseCompany> notUses = notUseCompanyList.stream()
+			List<NotUseCompanyList> notUses = notUseCompanyList.stream()
 					.filter(notUse -> notUse.getPk().getCommonMasterItemId().equals(item.getCommonMasterItemId()))
-					.map(notUse -> new NotUseCompany(notUse.getPk().getCompanyId())).collect(Collectors.toList());
+					.map(notUse -> new NotUseCompanyList(notUse.getPk().getCompanyId())).collect(Collectors.toList());
 
 			item.setNotUseCompanyList(notUses);
 
@@ -187,9 +187,9 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 		return domain;
 	}
 
-	private CommonMasterItem toItemDomain(BsymtGpMasterItem entity) {
+	private GroupCommonMasterItem toItemDomain(BsymtGpMasterItem entity) {
 
-		CommonMasterItem domain = new CommonMasterItem(entity.getCommonMasterItemId(),
+		GroupCommonMasterItem domain = new GroupCommonMasterItem(entity.getCommonMasterItemId(),
 				new CommonMasterItemCode(entity.getCommonMasterItemCode()),
 				new CommonMasterItemName(entity.getCommonMasterItemName()), entity.getDisplayNumber(),
 				entity.getUsageStartDate(), entity.getUsageEndDate());
@@ -260,7 +260,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	}
 
 	@Override
-	public List<CommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
+	public List<GroupCommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId,
 			String companyId, GeneralDate baseDate) {
 		return this.queryProxy().query(GET_ENABLE_ITEM, BsymtGpMasterItem.class)
 				.setParameter("contractCode", contractCode).setParameter("commonMasterId", commonMasterId)

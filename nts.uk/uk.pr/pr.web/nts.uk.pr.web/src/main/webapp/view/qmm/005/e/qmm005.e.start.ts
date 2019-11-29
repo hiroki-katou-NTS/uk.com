@@ -1,7 +1,8 @@
-/// <reference path="../qmm005.ts"/>
-module qmm005.e {
-    __viewContext.ready(() => {
-        __viewContext["viewModel"] = new ViewModel();
-        __viewContext.bind(__viewContext["viewModel"]);
+module nts.uk.pr.view.qmm005.e {
+    __viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });
     });
 }

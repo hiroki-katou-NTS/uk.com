@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,12 +28,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
@@ -86,6 +90,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " AND h.strDate <= :date AND h.endDate >= :date";
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(" SELECT a.CODE ,a.NAME FROM BSYMT_EMPLOYMENT a");
@@ -457,6 +462,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 	@Override
 	@SneakyThrows
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return new ArrayList<>();
@@ -485,32 +491,47 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 					throw new RuntimeException(e);
 				};
 		});
-		return listHistItem.stream().map(item -> toDomain(item))
+		    return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	
 	}
-//
-//	"SELECT aw FROM BsymtEmploymentHistItem aw"
-//	+ " WHERE aw.hisId IN :historyId"
-//	@Override
-//	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
-//			List<String> employmentCodes) {
-//		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
-//		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
-//					.setParameter("employmentCodes", subList)
-//					.setParameter("startDate", dateperiod.start())
-//					.setParameter("endDate", dateperiod.end())
-//					.getList());
-//		});
-//		if(listHistItem.isEmpty()){
-//			return Collections.emptyList();
-//		}
-//		return listHistItem.stream().map(e -> {
-//			EmploymentHistoryItem domain = this.toDomain(e);
-//			return domain;
-//		}).collect(Collectors.toList());
-//	}
+	
+	@Override
+	@SneakyThrows
+	public List<Object[]> getByListHistoryIdForCPS013(List<String> historyIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return new ArrayList<>();
+		}
+		
+		List<Object[]> results = new ArrayList<>();
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				try(PreparedStatement statement = this.connection().prepareStatement(
+						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
+					
+				new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					  Map<String, Integer> mapListEnum = new HashMap<>();
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+						entity.hisId = rec.getString("HIST_ID");
+						entity.sid = rec.getString("SID");
+						entity.empCode = rec.getString("EMP_CD");
+						entity.salarySegment  = SalarySegment.DailyMonthlySalary.value;
+						mapListEnum.put("IS00069", rec.getInt("SALARY_SEGMENT"));
+						results.add(new Object[]{toDomain(entity), mapListEnum});
+						return null;
+					});
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				};
+		});
+		return results;
+	}
+
+
 
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
@@ -561,11 +582,14 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	//key: sid, value: EmploymentInfo
 	@Override
 	public Map<String, EmpmInfo> getLstDetailEmpHistItem(String companyId, List<String> lstSID, GeneralDate date) {
-		List<EmpmInfo> lst =  this.queryProxy().query(GET_BY_LSTSID_DATE, Object[].class)
-			.setParameter("companyId", companyId)
-			.setParameter("lstSID", lstSID)
-			.setParameter("date", date)
-			.getList(c -> new EmpmInfo(c[0].toString(), c[1].toString(), c[2].toString()));
+		List<EmpmInfo> lst = new ArrayList<>();
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			lst.addAll(this.queryProxy().query(GET_BY_LSTSID_DATE, Object[].class)
+					.setParameter("companyId", companyId)
+					.setParameter("lstSID", splitData)
+					.setParameter("date", date)
+					.getList(c -> new EmpmInfo(c[0].toString(), c[1].toString(), c[2].toString())));
+		});
 		Map<String, EmpmInfo> mapResult = new HashMap<>();
 		for(String sid : lstSID){
 			List<EmpmInfo> empInfo = lst.stream().filter(c -> c.getSid().equals(sid)).collect(Collectors.toList());
@@ -577,6 +601,75 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		return mapResult;
 	}
 
+	@Override
+	public void addAll(List<EmploymentHistoryItem> domains) {
+		String INS_SQL = "INSERT INTO BSYMT_EMPLOYMENT_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, SID, EMP_CD,"
+				+ " SALARY_SEGMENT)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, SID_VAL, EMP_CD_VAL, SALARY_SEGMENT_VAL); ";
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = INS_SQL;
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("EMP_CD_VAL", "'" + c.getEmploymentCode().v() + "'");
+			sql = sql.replace("SALARY_SEGMENT_VAL", c.getSalarySegment() != null ? ""+ c.getSalarySegment().value +"" :  "null");
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<EmploymentHistoryItem> domains) {
+		String UP_SQL = "UPDATE BSYMT_EMPLOYMENT_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " EMP_CD = EMP_CD_VAL, SALARY_SEGMENT = SALARY_SEGMENT_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		domains.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("EMP_CD_VAL", "'" + c.getEmploymentCode().v()+ "'");
+			sql = sql.replace("SALARY_SEGMENT_VAL", c.getSalarySegment() != null ? ""+ c.getSalarySegment().value +"" :  "null");
+			 
+			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() +"'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
+	
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<EmploymentHistoryOfEmployee> getEmploymentBySID(List<String> sids,
 			List<String> employmentCodes, DatePeriod dateRange) {
@@ -620,4 +713,5 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		});
 		return listHistItem;
 	}
+
 }

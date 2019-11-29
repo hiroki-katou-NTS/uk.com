@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.google.common.base.Objects;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
@@ -12,9 +14,10 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
-public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<BasicLoginCommand> {
+public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<MobileLoginCommand> {
 
 
 	/** The employee code setting adapter. */
@@ -28,9 +31,9 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected CheckChangePassDto internalHanler(CommandHandlerContext<BasicLoginCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<MobileLoginCommand> context) {
 
-		BasicLoginCommand command = context.getCommand();
+		MobileLoginCommand command = context.getCommand();
 		// check validate input
 		this.service.checkInput(command);
 		
@@ -51,7 +54,12 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 				
 		// Get User by PersonalId
-		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId,employeeCode);
+		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId, employeeCode);
+
+        LoginUserRoles roles = this.checkRole(user.getUserId(), companyId);
+		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
+
+		this.checkAccoutLock(user.getLoginId(), command.getContractCode(), user.getUserId(), companyId, command.isSignOn());
 		
 		// check password
 		String msgErrorId = this.compareHashPassword(user, command.getPassword());
@@ -65,28 +73,35 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<B
 		
 		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
 		this.errorCheck2(companyId, command.getContractCode(), user.getUserId(), false, em.getEmployeeId());
+
 		
 		//アルゴリズム「ログイン記録」を実行する
-		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword());
+		CheckChangePassDto passChecked = this.checkAfterLogin(user, command.getPassword(), false);
+		passChecked.successMsg = systemSuspendOutput.getMsgID();
+		
 		if (passChecked.showChangePass && this.needShowChangePass()){
 			return passChecked;
 		}
 		
-		//set info to session
-		command.getRequest().changeSessionId();
-        
-        //ログインセッション作成 (Create login session)
-        this.initSessionC(user, em, command.getCompanyCode());
+		if(!(!command.isLoginDirect() && Objects.equal(passChecked.msgErrorId, "Msg_1517")) || command.isLoginDirect()){
+			
+			//set info to session
+			command.getRequest().changeSessionId();
+	        
+	        //ログインセッション作成 (Create login session)
+	        this.initSessionC(user, em, command.getCompanyCode(), roles);
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
+			this.service.callLoginRecord(param);
+			
+			//hoatt 2019.05.06
+			//EA修正履歴No.3373
+			//アルゴリズム「ログイン後チェック」を実行する
+			this.deleteLoginLog(user.getUserId());
+		}
 		
-		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command);
-		
-		// アルゴリズム「ログイン記録」を実行する１
-		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
-		this.service.callLoginRecord(param);
-		
-		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
-		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
-		return checkChangePassDto;
+		return passChecked;
 	}
 
 	protected abstract boolean needShowChangePass();

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_SHORT_TIME_NAME)
 public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 
+	/***/
+	private static final long serialVersionUID = 1L;
+	
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -90,15 +94,22 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new ShortTimeOfDailyPerformance(
-					emp,
-					ConvertHelper.mapTo(shortWorkingTimeSheets,
-							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
-									c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
-											? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
-									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
-									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
-					date);
+		return new ShortTimeOfDailyPerformance(emp, toTimeSheetDomain(), date);
+	}
+	
+	private List<ShortWorkingTimeSheet> toTimeSheetDomain() {
+		if (shortWorkingTimeSheets == null) {
+			return new ArrayList<>();
+		}
+		
+		return shortWorkingTimeSheets.stream().filter(c -> c.getStartTime() != null && c.getEndTime() != null)
+									.map(c -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
+												c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
+														? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
+												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
+												createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime())))
+									.collect(Collectors.toList());
+						
 	}
 
 	private TimeWithDayAttr createTimeWithDayAttr(Integer c) {

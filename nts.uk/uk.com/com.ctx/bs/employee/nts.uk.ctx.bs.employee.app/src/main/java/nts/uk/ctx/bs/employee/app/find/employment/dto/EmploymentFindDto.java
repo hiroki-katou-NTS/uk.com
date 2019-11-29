@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentName;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItem;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterName;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -47,6 +47,8 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	private List<CommonMaterItemDto> commonMasterItems;
 	
 	private String errMessage;
+	
+	private String commonMasterItemId;
 	
 	
 	/*

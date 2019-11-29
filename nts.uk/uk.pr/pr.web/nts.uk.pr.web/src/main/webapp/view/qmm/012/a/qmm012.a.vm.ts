@@ -1,50 +1,43 @@
-module qmm012.a.viewmodel {
+module nts.uk.pr.view.qmm012.a.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import getCategory = qmm012.share.model.CategoryAtr;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import model = qmm012.share.model;
+
     export class ScreenModel {
-        //Switch
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any = ko.observable(0);
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-        NavigationMessage: KnockoutObservable<string> = ko.observable('社員に対して支払う金額の種類を登録します。');
+
+        categoryAtr: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        selectedCategoryAtr: KnockoutObservable<number> = ko.observable(null);
+        item: KnockoutObservable<number> = ko.observable(0);
+
         constructor() {
             let self = this;
-            //start Switch Data
-            self.enable
-            self.roundingRules = ko.observableArray([
-                { code: 0, name: '支給項目' },
-                { code: 1, name: '控除項目' },
-                { code: 2, name: '勤怠項目' }
-            ]);
-            //endSwitch Data
-            self.selectedRuleCode.subscribe(function(NewValue) {
-                self.NavigationMessage(Gen_NavigationMessage_Text(NewValue))
+            self.categoryAtr(model.getCategoryAtr());
+            self.selectedCategoryAtr.subscribe(category => {
+                self.item(model.getCategoryAtrText2(parseInt(category)));           
             });
-            function Gen_NavigationMessage_Text(NewValue) {
-                let text;
-                switch (NewValue) {
-                    case 0:
-                        text = "社員に対して支払う金額の種類を登録します。"
-                        break;
-                    case 1:
-                        text = "社員から徴収する金額の種類を登録します。"
-                        break;
-                    case 2:
-                        text = "社員の勤怠実績（日数・回数,時間）の種類を登録します。"
-                        break;
-                }
-                return text;
-            }
-
+            self.selectedCategoryAtr(0);
+            $("#A2_2").focus();
+            $( "#A2_2" ).dblclick(function() {
+              self.saveData();
+            });
         }
-        submitInfo() {
+        saveData() {
             let self = this;
-            //get and set selected code to session
-            let groupCode = self.selectedRuleCode();
-            nts.uk.ui.windows.setShared('groupCode', groupCode);
-            //then close dialog
+            setShared('QMM012_A_Params', self.selectedCategoryAtr()); 
             nts.uk.ui.windows.close();
         }
-        closeDialog() {
+        cancelSetting() {
             nts.uk.ui.windows.close();
+        }
+
+        start(): JQueryPromise<any> {
+            //block.invisible();
+            var self = this;
+            var dfd = $.Deferred();
+            dfd.resolve();
+            return dfd.promise();
         }
     }
 }

@@ -44,5 +44,12 @@ public class EmploymentHistoryDto extends PeregDomainDto {
 		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
 				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment() != null? historyItem.getSalarySegment().value: null );
 	}
+	
+	public static EmploymentHistoryDto createFromDomain(DateHistoryItem dateHistoryItem,
+			EmploymentHistoryItem historyItem, Integer  mapListEnum) {
+		
+		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
+				historyItem.getEmploymentCode().v(), mapListEnum );
+	}
 
 }

@@ -1,0 +1,67 @@
+.caret-background.caret-bottom:after {
+    left: 65px;
+    top: 100%;
+    border-width: 25px 70px;
+}
+
+#custom-caret > span.caret-right:after {
+    font-size: 2em !important;
+    border-left: 1em solid;
+    border-top: 5em solid transparent;
+    border-bottom: 5em solid transparent;
+    color: #e0f59e !important;
+}
+
+#panels-group {
+    margin-left: 45px;
+    margin-right: 0;
+}
+
+.right-content {
+    margin-top: 50px;
+    padding: 10px 0 0 10px;
+}
+
+.left-content {
+    padding: 10px 0 0 10px;
+}
+
+#kcp {
+    margin: 0 0 10px 70px;
+    width: 920px;
+}
+
+#A2_2 {
+    margin-left: 10px;
+}
+
+#A3_1 {
+    margin-left: 28px;
+    margin-bottom: 40px;
+}
+
+#A5_1, #A5_4, #A5_8 {
+    width: 150px;
+}
+
+#A5_9 {
+    width: 150px;
+}
+
+.history-box {
+    margin-top: 17px;
+}
+
+.row {
+    width: 350px;
+    margin-bottom: 20px;
+}
+
+#custom-caret {
+    margin-left: 5px;
+    height: 100%;
+}
+
+#A1_2 {
+    margin-left: 950px;
+}

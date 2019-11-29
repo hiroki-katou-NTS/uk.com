@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk011.e {
                 _self.listWorkType = ko.observableArray([]);
                 _self.columns2 = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDW009_6'), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText('KMK011_49'), key: 'name', width: 150 }
+                    { headerText: nts.uk.resource.getText('KMK011_49'), key: 'name', width: 180 }
                 ]);
                 _self.currentCode = ko.observable();
 

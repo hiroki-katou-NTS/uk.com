@@ -17,21 +17,27 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             
             self.columns1 = ko.observableArray([
                 { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
-                { headerText: getText('KDW006_44'), key: 'roleCode', width: 100 },
-                { headerText: getText('KDW006_45'), key: 'roleName', width: 150, formatter: _.escape }
+                { headerText: getText('KDW006_44'), key: 'roleCode', width: 40 },
+                { headerText: getText('KDW006_45'), key: 'roleName', width: 230, formatter: _.escape }
             ]);
 
             self.selectedItem.subscribe(function(newValue) {
                 self.getFuncRest(newValue);
             });
+            
+            window.onresize = function(evt){
+                $('#grid2_displayContainer').height(window.innerHeight - 235);
+                $('#grid2_container').height(window.innerHeight - 235);
+                $('#grid2_virtualContainer').height(window.innerHeight - 235);  
+                $('#grid2_scrollContainer').height(window.innerHeight - 235);
+            }
         }
 
         initGrid() {
             let self = this;
             $("#grid2").ntsGrid({
                 //width: 780,
-                height: 450,
-                rows: 15,
+                height: window.innerHeight - 213,
                 dataSource: self.functionalRestriction(),
                 primaryKey: 'functionNo',
                 virtualization: true,
@@ -41,7 +47,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                     { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px' },
                     { headerText: getText('KDW006_49'), key: 'displayName', dataType: 'string', width: '320px' },
                     { headerText: getText('KDW006_50'), key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
-                    { headerText: getText('KDW006_51'), key: 'description', dataType: 'string', width: '370px' }
+                    { headerText: getText('KDW006_51'), key: 'description', dataType: 'string', width: '390px' }
                 ],
                 features: [{
                     name: 'Selection',

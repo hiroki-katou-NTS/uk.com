@@ -1,216 +1,157 @@
-<div class="contents-area">
-	<div class="contentvalue">
-		<table>
-			<tr>
-				<td id="contents-left" class="bg-green caret-right caret-background">
-					<div class="leftTop">
-						<button id="btn_addUnemployeeInsuranceHistory"
-							data-bind="click: openAddUnemployeeInsuranceRateHistory">履歴追加</button>
-						<button id="btn_editUnemployeeInsuranceHistory" class="floatRight"
-							data-bind="click: openEditUnemployeeInsuranceRateHistory,enable: isEnableEditUnemployeeInsurance">履歴編集</button>
+<div>
+		<div class="sidebar-content-header"  style="min-width: 1000px;">
+					<span class="title">#{i18n.getText('QMM011_4')}</span>
+                    <!-- A1_1-->
+                    <button class="proceed" id="A1_1" tabindex="1"
+                            data-bind="click: register ,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
+                    <!-- A1_3 -->
+                    <button id="A1_3" tabindex="2"
+                            data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
+				</div>
+	<div class = "contents-area fixed-flex-layout" >
+		<div class = "left" >
+			<div id="B1_1" 
+				data-bind="ntsPanel:{width: '220px', height: '420px', direction: 'right', visible: true}">
+					<div id="action">
+						<!-- B1_2 履歴追加 -->
+						<button id ="B1_2"  tabindex="4" data-bind="click: openEscreen, timeClick: 1000, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+						<!-- B1_3 履歴編集 -->
+						<button id ="B1_3"  tabindex="5" data-bind="click: openFscreen, timeClick: 1000, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
 					</div>
+					<div class = "flex">
+						<!--B1_4 雇用保険料率一覧 -->
+						<table id="B1_4" tabindex="6"
+								data-bind="ntsGridList: {
+												name: '#QMM011_8',
+												height: 300,
+												rows: 15,
+		                                        dataSource: listEmpInsHis,
+		                                        primaryKey: 'hisId',
+		                                        columns: [
+		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
+																{headerText: '', key: 'display', width: 200, formatter: _.escape}
+								         
+								                		],                                        
+								                multiple: false,
+		                                        value: selectedEmpInsHisId
+		                        				}">
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class = "right" style="min-width: 700px; margin-top: 10px;" >
+			<div class = "top">
+				<div id="B2_1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
+				<!--B2_2 開始年月 -->
+				<span class="label" data-bind="text: startYearMonth"></span>
+				<!--B2_3 開始年月和暦 -->
+				<span class="label" data-bind="text: monthlyCalendar"></span>
+				<!--B2_4 ～  -->
 
-					<div class="list-box" id="unemployeeInsuranceList"
-						data-bind="ntsListBox: {
-							options: lstUnemployeeInsuranceRateHistory,
-							primaryKey: 'historyId',
-							primaryText: 'inforMonthRage',
-							multiple: false,
-							value: selectionUnemployeeInsuranceRateHistory,
-							enable: true,
-							rows: 10,
-							required: true,
-							columns: [
-								{key: 'inforMonthRage', length: 10 }
-							]}"></div>
-				</td>
-				<td id="contents-right"
-					data-bind="with: unemployeeInsuranceRateModel">
-					<table data-bind="with: unemployeeInsuranceHistoryModel">
-						<tr>
-							<td class="trFull60B">
-								<div data-bind="ntsFormLabel: {required: true}">
-									<label>期間</label>
+				<label id= "B2_4" data-bind="visible: !enableRegis()">#{i18n.getText('QMM011_9')}</label>
+				<!--B2_5 終了年月  -->
+				<span class="label" data-bind="text: endYearMonth"></span>
+			</div>
+				
+				<div class = "table" style="width: 100%">
+				<div id ="B2_6" class="set-row" style="width: 96.5%">
+					<hr />
+				</div>
+				<table id="B3_1" tabindex="7" style="margin-top: 10px; width: 80%">
+					<colgroup>
+					<col width="120px" />
+					<col width="150px"/>
+					<col width="150px" />
+					<col width="150px" />
+					<col width="150px" />
+					</colgroup>
+					<thead>
+							<tr>
+								<th class="bg-green" style="border: 1px solid #CCC"></th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_13')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
+							</tr>
+					</thead>
+					<tbody data-bind="foreach: listEmpInsurPreRate()">
+						<tr >
+							<td class="bg-green" style="border: 1px solid #CCC;text-align: left;padding-left: 1px">
+								<div data-bind="if: empPreRateId === 2">
+									<span class = "label" id= "B3_6" >#{i18n.getText('QMM011_14')}</span>
+								</div>
+								<div data-bind="if: empPreRateId === 1">
+									<span class = "label" id= "B3_15" >#{i18n.getText('QMM011_16')}</span>
+								</div>
+								<div data-bind="if: empPreRateId === 0">
+									<span class = "label" id= "B3_24" >#{i18n.getText('QMM011_17')}</span>
 								</div>
 							</td>
-							<td><label data-bind="text: startJapStartMonth"></label></td>
-							<td> ~ <label data-bind="text: endMonthRage"> </label></td>
-						</tr>
-					</table>
-					<table id="tableRight">
-						<tr>
-							<td colspan="2"><hr /></td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<table id="health_insurance_rate_table"
-									class="table_border_black">
-									<tbody>
-										<tr class="bg-green">
-											<th></th>
-											<th class="text_center" width="170">個人負担率</th>
-											<th class="text_center">端数処理</th>
-											<th class="text_center" width="170">事業主負担率</th>
-											<th class="text_center">端数処理</th>
-										</tr>
-										<tr
-											data-bind="with: unemployeeInsuranceRateItemAgroforestryModel">
-											<td class="bg-green">一般の事業</td>
-											<td><div>
-													<input class="rate-input save-error"
-														data-name="rateGeneralBusinessPerson"
-														data-bind="ntsNumberEditor: {value: personalSetting.rate ,
-														required:true, 
-														constraint: 'Ins2Rate',
-														enable: personalSetting.isEnable,
-													option: rateInputOptions 
-													}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: personalSetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: personalSetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}"></div>
-											</td>
-											<td><div>
-													<input class="rate-input save-error"
-														data-name="agroforestryModelCompanySettingcode"
-														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-														option: rateInputOptions, 
-														constraint:'Ins2Rate',
-														required: true,
-														enable: companySetting.isEnable}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: companySetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: companySetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-												</div>
-											</td>
-										</tr>
-										<tr
-											data-bind="with: unemployeeInsuranceRateItemOtherModel">
-											<td class="bg-green">農林水産清酒製造の事業</td>
-											<td><div>
-													<input class="rate-input save-error"
-														data-name="rateGeneralBusinessPerson"
-														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
-														option: rateInputOptions, 
-														constraint: 'Ins2Rate',
-														required:true,
-														enable: personalSetting.isEnable}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: personalSetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: personalSetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}"></div>
-											</td>
-											<td><div>
-													<input class="rate-input" data-name="code"
-														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-														option: rateInputOptions, 
-														constraint:'Ins2Rate',
-														required: true,
-														enable: companySetting.isEnable}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: companySetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: companySetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-												</div>
-											</td>
-										</tr>
-										<tr data-bind="with: unemployeeInsuranceRateItemContructionModel">
-											<td class="bg-green">建設の事業</td>
-											<td><div>
-													<input class="rate-input save-error"
-														data-name="rateGeneralBusinessPerson"
-														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
-														option: rateInputOptions, 
-														constraint:'Ins2Rate',
-														required: true,
-														enable: personalSetting.isEnable}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: personalSetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: personalSetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}"></div>
-											</td>
-											<td><div>
-													<input class="rate-input save-error" data-name="code"
-														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-														option: rateInputOptions, 
-														constraint:'Ins2Rate',
-														required: true,
-														enable: companySetting.isEnable}">
-													</input>/1000
-												</div></td>
-											<td>
-												<div
-													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
-													optionsValue: 'code',
-													value: companySetting.roundAtr,
-													optionsText: 'name',
-													editable: false,
-													enable: companySetting.isEnable,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}">
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+							<td >
+								<input id = "B3_7" class = "B3_7" 
+										data-bind=" attr: {tabindex: $parent.setTabIndex(empPreRateId,1)},
+										ntsNumberEditor: {
+																option : {width: '70px', decimallength: 3},
+																name: '#{i18n.getText('QMM011_11')}',
+																value: indBdRatio,
+																required: true,
+																constraint: 'InsuranceRate',
+																enable: !$parent.enableRegis()
+																}"/>
+								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
+							</td>
+							<td>
+								<div class = "B3_9"
+										data-bind="		attr: {tabindex: $parent.setTabIndex(empPreRateId,2)},
+										                style: {textAlign: 'left'},
+														ntsComboBox: {
+																name: '#{i18n.getText('QMM011_12')}',
+																value: perFracClass,
+																options: $parent.listPerFracClass,
+																optionsValue: 'code',
+																optionsText: 'name',
+																visibleItemsCount: 5,
+																dropDownAttachedToBody:true,
+																enable: !$parent.enableRegis(),
+																columns: [             
+																{ prop: 'name', length: 10 },]
+										
+																}"/>
+							</td>
+							<td>
+									<input id = "B3_11" class = "B3_11" 
+										data-bind="	attr: {tabindex: $parent.setTabIndex(empPreRateId,3)},
+													ntsNumberEditor: {
+																option : {width: '70px', decimallength: 3},
+																value: empContrRatio,
+																required: true,
+																constraint: 'InsuranceRate',
+																enable: !$parent.enableRegis(),
+																name: '#{i18n.getText('QMM011_13')}'
+																	}"/>
+
+								<span class= "label" id= "B3_12">#{i18n.getText('QMM011_15')}</span>
+							</td>
+							<td>
+								<div id = "B3_13" 
+										data-bind=" attr: {tabindex: $parent.setTabIndex(empPreRateId,4)},
+										            style: {textAlign: 'left'},
+													ntsComboBox: {
+																value: busiOwFracClass, 
+																name:'#{i18n.getText('QMM011_12')}',
+																options: $parent.listPerFracClass,
+																optionsText: 'name',
+																optionsValue: 'code',
+																enable: !$parent.enableRegis()
+																}">
+																</div>
+
 							</td>
 						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</div>
+			
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
 </div>

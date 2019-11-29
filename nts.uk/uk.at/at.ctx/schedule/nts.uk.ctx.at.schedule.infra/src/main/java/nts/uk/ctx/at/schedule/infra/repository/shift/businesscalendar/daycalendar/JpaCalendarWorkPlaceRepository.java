@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -28,6 +30,11 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
 			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
 			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
+	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KsmmtCalendarWorkplace a"
+			+ " WHERE a.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
+			+ " AND a.ksmmtCalendarWorkplacePK.date >= :date"
+			+ " AND a.workingDayAtr = :workingDayAtr"
+			+ " ORDER BY a.ksmmtCalendarWorkplacePK.date asc";
 	
 	/**
 	 * toDomain calendar workplace
@@ -111,6 +118,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 * get  calendar workplace by date
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_WORKPLACE_BY_DATE,KsmmtCalendarWorkplace.class)
 				.setParameter("workPlaceId", workPlaceId )
@@ -140,5 +148,12 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 				.executeUpdate();
 		
 	}
-	
+	@Override
+	public List<CalendarWorkplace> getLstByDateWorkAtr(String workPlaceId, GeneralDate date, int workingDayAtr) {
+		return this.queryProxy().query(GET_LIST_BY_DATE_ATR,KsmmtCalendarWorkplace.class)
+				.setParameter("workPlaceId", workPlaceId)
+				.setParameter("date", date)
+				.setParameter("workingDayAtr", workingDayAtr)
+				.getList(c->toDomainCalendarWorkplace(c));
+	}
 }

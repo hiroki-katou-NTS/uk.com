@@ -1,6 +1,8 @@
 #contents-area {
 	width: 100%;
 	box-sizing: border-box;
+	padding: 0px !important;
+	height: calc(100vh - 150px) !important;
 }
 
 .myLinkButton {
@@ -83,8 +85,8 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 }
 
 .fixed-flex-layout-left {
-	 width: 305px !important;
-    height: 260px !important;
+	width: 325px !important;
+    height: 268px !important;
 }
 
 .leftLabel {
@@ -97,4 +99,16 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 */
 table#grid tbody td:nth-child(1) {
     text-align: right;
+}
+#grid_scroll {
+    border-bottom:1px solid #dddddd
+}
+.direction-right.ntsPanel.panel {
+	margin: 10px 50px 0px 15px !important;
+}
+.fixed-flex-layout-right{
+	margin-top: 10px;
+}
+html {
+    overflow: hidden;
 }

@@ -1,3 +1,6 @@
+html {
+	overflow: hidden;
+}
 .header-content {
 	padding: 15px 0px 15px 30px;
 	border-bottom-style: solid;
@@ -7,6 +10,8 @@
 
 .contents-area {
 	margin: 20px 0px 0px 60px;
+	overflow: auto;
+	height: calc(100vh - 175px);
 }
 
 .spacer {

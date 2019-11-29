@@ -130,3 +130,6 @@
 .fixed-flex-layout > .fixed-flex-layout-right {
   flex: 1 1 auto;
 }
+#input-date {
+    margin-left: 20px;
+}

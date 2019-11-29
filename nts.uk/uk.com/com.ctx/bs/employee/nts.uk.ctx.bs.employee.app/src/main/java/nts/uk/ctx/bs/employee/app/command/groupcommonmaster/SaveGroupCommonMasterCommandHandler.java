@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterDomainService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class SaveGroupCommonMasterCommandHandler extends CommandHandler<SaveGroupCommonMasterCommand> {
 
 	@Inject
-	private GroupCommonMaster services;
+	private GroupCommonMasterDomainService services;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveGroupCommonMasterCommand> context) {

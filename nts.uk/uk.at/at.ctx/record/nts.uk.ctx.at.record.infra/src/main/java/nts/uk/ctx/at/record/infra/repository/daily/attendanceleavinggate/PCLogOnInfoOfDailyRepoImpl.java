@@ -31,17 +31,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
 
-//	private static final String REMOVE_BY_KEY;
-
-	static {
-//		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDayPcLogonInfo a ");
-//		builderString.append("WHERE a.id.sid = :employeeId ");
-//		builderString.append("AND a.id.ymd = :ymd ");
-//		REMOVE_BY_KEY = builderString.toString();
-	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<PCLogOnInfoOfDaily> find(String employeeId, GeneralDate baseDate) {
 		List<LogOnInfo> logOnInfo = findQuery(employeeId, baseDate).getList(c -> c.toDomain());
@@ -51,6 +41,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		return Optional.empty();
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId, List<GeneralDate> baseDate) {
 		if (baseDate.isEmpty()) {
@@ -66,6 +57,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		return resultList;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
@@ -73,6 +65,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 				.setParameter("sid", employeeId).getList().stream());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PCLogOnInfoOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
 		if (employeeId.isEmpty()) {
@@ -89,6 +82,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		return result;
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PCLogOnInfoOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		if (param.isEmpty()) {
@@ -151,13 +145,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 			}
 			
 		} catch (Exception e) {
-			
+			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void remove(PCLogOnInfoOfDaily domain) {
-		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)

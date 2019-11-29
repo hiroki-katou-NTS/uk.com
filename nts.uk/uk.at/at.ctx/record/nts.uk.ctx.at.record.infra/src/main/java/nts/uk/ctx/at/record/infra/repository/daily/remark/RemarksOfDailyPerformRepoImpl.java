@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.daily.remark;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +10,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumn;
@@ -22,12 +31,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements RemarksOfDailyPerformRepo {
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, GeneralDate workingDate) {
 		return findEntity(employeeId, workingDate)
 				.getList(c -> c.toDomain());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(List<String> employeeId, DatePeriod baseDate) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -45,6 +56,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(Map<String, List<GeneralDate>> param) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -63,6 +75,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, List<GeneralDate> baseDate) {
 		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
@@ -103,6 +116,18 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 			commandProxy().removeAll(entities);
 		}
 	}
+	
+	@Override
+	public void removeWithJdbc(String employeeId, GeneralDate workingDate) {
+		try (val statement = this.connection()
+				.prepareStatement("delete from KRCDT_DAY_REMARKSCOLUMN where SID = ? and YMD = ?")) {
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(workingDate.toLocalDate()));
+			statement.execute();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void update(List<RemarksOfDailyPerform> domain) {
@@ -116,7 +141,9 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 	@Override
 	public void add(List<RemarksOfDailyPerform> domain) {
 		if(!domain.isEmpty()){
-			commandProxy().insert(domain.stream().map(c -> KrcdtDayRemarksColumn.toEntity(c)).collect(Collectors.toList()));	
+			domain.stream().forEach(c -> {
+				add(c);
+			});
 		}
 		
 	}
@@ -128,6 +155,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 				.setParameter("ymd", workingDate);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<RemarksOfDailyPerform> getByKeys(String sid, GeneralDate ymd, int columnNo) {
 		KrcdtDayRemarksColumnPK key = new KrcdtDayRemarksColumnPK(sid, ymd, columnNo);
@@ -136,5 +164,26 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 			return Optional.of(optData.get().toDomain());
 		} 
 		return Optional.empty();
+	}
+
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+    @SneakyThrows
+	public List<RemarksOfDailyPerform> getRemarksBykey(String sid, GeneralDate ymd) {
+        try (PreparedStatement stmt = this.connection().prepareStatement(
+                "SELECT * FROM KRCDT_DAY_REMARKSCOLUMN op" 
+                +" WHERE SID = ?"
+                +" AND YMD = ?")
+        ) {
+            stmt.setString(1, sid);
+            stmt.setDate(2, Date.valueOf(ymd.toLocalDate()));
+            return new NtsResultSet(stmt.executeQuery()).getList(rec ->{                
+                return new RemarksOfDailyPerform(rec.getString("SID"),
+                        rec.getGeneralDate("YMD"),
+                        new RecordRemarks(rec.getString("REMARKS")),
+                                rec.getInt("REMARKS_COLUMN_NO"));
+            });
+        }
+
 	}
 }

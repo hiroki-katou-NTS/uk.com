@@ -33,6 +33,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the by history id
 	 */
 	Optional<WorkingConditionItem> getByHistoryId(String historyId);
+	/**
+	 * 
+	 * @param listHistoryID
+	 * @return
+	 */
+	List<WorkingConditionItem> getByListHistoryID(List<String> listHistoryID);
 
 	/**
 	 * Find working condition item by pers work cat.
@@ -85,6 +91,13 @@ public interface WorkingConditionItemRepository {
 	 * @param item the item
 	 */
 	void add(WorkingConditionItem item);
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param item the item
+	 */
+	void addAll(List<WorkingConditionItem> items);
 
 	/**
 	 * Update.
@@ -93,6 +106,12 @@ public interface WorkingConditionItemRepository {
 	 */
 	void update(WorkingConditionItem item);
 
+	/**
+	 * Update.
+	 *
+	 * @param item the item
+	 */
+	void updateAll(List<WorkingConditionItem> item);
 	/**
 	 * Delete.
 	 *
@@ -149,6 +168,13 @@ public interface WorkingConditionItemRepository {
 	 * @param item the item
 	 */
 	void updateWorkCond2(WorkingConditionItem item);
+	
+	/**
+	 * Update WorkingCondition
+	 * trong trường hợp chia đôi category WorkingCondition
+	 * @param item the item
+	 */
+	void updateAllWorkCond2(List<WorkingConditionItem> items);
 
 	/**
 	 * Gets the list with period by sid and date period 
@@ -164,5 +190,12 @@ public interface WorkingConditionItemRepository {
 	 * @return the last working cond item
 	 */
 	List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds);
+	
+	/**
+	 * 
+	 * @param listHistoryID
+	 * @return
+	 */
+	List<WorkingConditionItemWithEnumList> getAllAndEnumByHistIds(List<String> listHistoryID);
 	
 }

@@ -10,11 +10,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
@@ -49,7 +52,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutputNew;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
@@ -70,13 +73,14 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalStatusForEmployee;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverEmployeeState;
-import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ReleasedProprietyDivision;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -179,7 +183,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 												"", 
 												y.getRepresenterID(),		
 												"",
-												y.getApprovalReason(), y.getConfirmAtr().value);
+												y.getApprovalReason(), 
+												y.getConfirmAtr().value,
+												y.getApprovalDate());
 									}).collect(Collectors.toList()));
 						}).collect(Collectors.toList());
 			mapApprPhsStateEx.put(approvalRootState.getRootStateID(), lstApprPhsStateEx);
@@ -237,7 +243,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 											Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
 											y.getRepresenterID(),		
 											Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),
-											y.getApprovalReason(), y.getConfirmAtr().value);
+											y.getApprovalReason(), 
+											y.getConfirmAtr().value,
+											y.getApprovalDate());
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList())
 				), 
@@ -248,14 +256,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Override
 	public void insertAppRootType(String companyID, String employeeID, 
-			Integer appTypeValue, GeneralDate date, String appID, Integer rootType) {
+			Integer appTypeValue, GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate) {
 		approvalRootStateService.insertAppRootType(
 				companyID, 
 				employeeID, 
 				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				date, 
+				appDate, 
 				appID,
-				rootType);
+				rootType,
+				baseDate);
 	}
 
 	@Override
@@ -351,14 +360,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID,
+	public ApproverPersonExportNew judgmentTargetPersonCanApprove(String companyID, String rootStateID,
 			String employeeID, Integer rootType) {
-		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService
+		ApproverPersonOutputNew approverPersonOutput = judgmentApprovalStatusService
 				.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID, rootType);
-		return new ApproverPersonExport(
+		return new ApproverPersonExportNew(
 				approverPersonOutput.getAuthorFlag(), 
 				EnumAdaptor.valueOf(approverPersonOutput.getApprovalAtr().value, ApprovalBehaviorAtrExport.class) , 
-				approverPersonOutput.getExpirationAgentFlag());
+				approverPersonOutput.getExpirationAgentFlag(),
+				EnumAdaptor.valueOf(approverPersonOutput.getApprovalPhaseAtr().value, ApprovalBehaviorAtrExport.class));
 	}
 
 	@Override
@@ -585,9 +595,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		return false;
 	}
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
-			String companyID) {
-		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
+			String companyID ) {
+	/*	List<ApprovalRootState> approvalRootStates = new ArrayList<>();
 		if(rootType == null){
 			// xử lí 承認者と期間から承認ルートインスタンスを取得する（ルート種類指定なし）
 			 approvalRootStates = this.approvalRootStateRepository
@@ -598,40 +609,25 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			 approvalRootStates = this.approvalRootStateRepository
 					.findByApprover(companyID, startDate, endDate, approverID, rootType);
 		}
-		// ドメインモデル「代行承認」を取得する
-		List<Agent> agents = this.agentRepository.findByApproverAndDate(companyID, approverID, startDate, endDate);
-		List<String> employeeApproverID = new ArrayList<>();
-		employeeApproverID.add(approverID);
-		if (!CollectionUtil.isEmpty(agents)) {
-			for (Agent agent : agents) {
-				// ドメインモデル「承認ルートインスタンス」を取得する
-				employeeApproverID.add(agent.getEmployeeId());
-				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository
-						.findByApprover(companyID, startDate, endDate, agent.getEmployeeId(), rootType);
-				if (!CollectionUtil.isEmpty(approvalRootStateAgents)) {
-					for (ApprovalRootState approver : approvalRootStateAgents) {
-						approvalRootStates.add(approver);
-					}
-				}
-			}
-		}
 		if(CollectionUtil.isEmpty(approvalRootStates)){
 			return false;
 		}
-		System.out.println(approvalRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList()));
 		boolean result = false;
 		for(ApprovalRootState approval : approvalRootStates){
-			ApproverPersonExport ApproverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);
-			if(ApproverPersonExport.getAuthorFlag() && ApproverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && !ApproverPersonExport.getExpirationAgentFlag()){
+			ApproverPersonExportNew approverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);
+			if(approverPersonExport.getAuthorFlag() && 
+					approverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && 
+					!approverPersonExport.getExpirationAgentFlag() &&
+					(approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.UNAPPROVED || approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.REMAND)){
 				result = true;
 				break;
 			}else{
 				result = false;
 			}
-		}
+		}*/
+		//Phan code comment là xử lý cũ của RQ 190 - Update theo bug http://192.168.50.4:3000/issues/108043
 		
-		
-		
+		boolean result = approvalRootStateRepository.resultKTG002(startDate, endDate, approverID, rootType, companyID); 
 		return result;
 	}
 	@Override
@@ -793,5 +789,113 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			return false;
 		}
 		return approveService.isApproveApprovalPhaseStateComplete(companyID, opCurrentPhase.get());
+	}
+    @Override
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, List<String> lstAgent, DatePeriod period,
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus){ 
+		String approverID = AppContexts.user().employeeId();
+		lstAgent.add(approverID);
+		Map<String,List<ApprovalPhaseStateExport>> mapApprPhsStateEx = new LinkedHashMap<>();
+		ApprovalRootContentOutput apprRootContentOut =  null;
+		//ドメインモデル「承認ルートインスタンス」を取得する
+		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentAppCMM045(lstAgent, period, 
+				unapprovalStatus, approvalStatus, denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
+		if(approvalRootStates.isEmpty()){
+			return mapApprPhsStateEx;
+		}
+		//hoatt 2018.12.14
+		//EA修正履歴 No.3009
+		//ドメインモデル「承認設定」を取得する
+		Optional<PrincipalApprovalFlg> flg = repoApprSet.getPrincipalByCompanyId(companyID);
+		List<ApprovalRootState> lstApprRootSttFil = new ArrayList<>();
+		if(!flg.isPresent() || flg.get().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)){//本人による承認＝falseの場合
+			//申請者ID＝ログイン社員IDのデータを取得した一覧から削除する(applicantID = loginID -> remove app)
+			lstApprRootSttFil = approvalRootStates.stream().filter(c -> !c.getEmployeeID().equals(approverID))
+					.collect(Collectors.toList());
+		}else{
+			lstApprRootSttFil = approvalRootStates;
+		}
+		if(lstApprRootSttFil.isEmpty()){
+			return mapApprPhsStateEx;
+		}
+		for(ApprovalRootState approvalRootState :  lstApprRootSttFil){
+			apprRootContentOut = new ApprovalRootContentOutput(approvalRootState, ErrorFlag.NO_ERROR);
+			
+			List<ApprovalPhaseStateExport> lstApprPhsStateEx = apprRootContentOut.getApprovalRootState().getListApprovalPhaseState()
+						.stream()
+						.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+						.map(x -> {
+							return new ApprovalPhaseStateExport(
+									x.getPhaseOrder(),
+									EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+									x.getListApprovalFrame()
+									.stream()
+									.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+									.map(y -> {
+										return new ApprovalFrameExport(
+												y.getPhaseOrder(), 
+												y.getFrameOrder(), 
+												EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+												y.getListApproverState().stream().map(z -> { 
+													return new ApproverStateExport(z.getApproverID(), "", "", "");
+												}).collect(Collectors.toList()), 
+												y.getApproverID(),
+												"", 
+												y.getRepresenterID(),		
+												"",
+												y.getApprovalReason(), 
+												y.getConfirmAtr().value,
+												y.getApprovalDate());
+									}).collect(Collectors.toList()));
+						}).collect(Collectors.toList());
+			mapApprPhsStateEx.put(approvalRootState.getRootStateID(), lstApprPhsStateEx);
+		}
+		return mapApprPhsStateEx;
+    }
+	@Override
+	public List<ApprovalPhaseStateExport> getApprovalDetail(String appID) {
+		String companyID = AppContexts.user().companyId();
+		ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).orElseThrow(()->
+			new BusinessException("Msg_198")
+		);
+		return approvalRootState.getListApprovalPhaseState()
+				.stream()
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.map(x -> {
+					return new ApprovalPhaseStateExport(
+							x.getPhaseOrder(),
+							EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+							x.getListApprovalFrame()
+							.stream()
+							.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+							.map(y -> {
+								return new ApprovalFrameExport(
+										y.getPhaseOrder(), 
+										y.getFrameOrder(), 
+										EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+										y.getListApproverState().stream().map(z -> { 
+											String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
+											String representerID = "";
+											String representerName = "";
+											ApprovalRepresenterOutput approvalRepresenterOutput = 
+													collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
+											if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+												if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
+													representerID = approvalRepresenterOutput.getListAgent().get(0);
+													representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
+												}
+											}
+											return new ApproverStateExport(z.getApproverID(), approverName, representerID, representerName);
+										}).collect(Collectors.toList()), 
+										y.getApproverID(),
+										Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
+										y.getRepresenterID(),		
+										Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),
+										y.getApprovalReason(), 
+										y.getConfirmAtr().value,
+										y.getApprovalDate());
+							}).collect(Collectors.toList()));
+				}).collect(Collectors.toList());
 	}
 }

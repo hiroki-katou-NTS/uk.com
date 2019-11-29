@@ -1,79 +1,56 @@
-@CHARSET "UTF-8";
-
-.nts-switch-button {
-	min-width: 80px;
-	font-size: 13px !important;
-	height: 30px !important;
-	padding: 3px 7px !important;
-	margin-bottom: 3px !important;
+.column-1 {
+    width: 190px;
+}
+.column-2 {
+    margin-left: 190px;
+}
+.tab-row {
+    margin-top: 10px;
+}
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -15px;
+}
+.fixed-table-container{
+    display: inline-block;
+}
+.fixed-table-container tr {
+    height:34px;
+}
+.custom-fixed-table div {
+    display: inline-block;
+}
+.custom-fixed-table td:first-child {
+    text-align: center;
+}
+.large-caret::after{
+    font-size: 3em;
+    color: #97D155 !important;
+    margin-top: 4px
+}
+.custom-fixed-table-body .nts-fixed-table{
+    display: inline-block;
+}
+.E5_1 .nts-fixed-body-container {
+    overflow-x: hidden;
 }
 
-.valign-top {
-	vertical-align: top;
+.ntsHelpButton {
+	position: absolute;
+	padding-left: 3px;
+	margin-top: -7px;
 }
 
-.control-group>td {
-	padding-bottom: 8px
-}
-
-.v-align-top {
-	vertical-align: top;
-}
-
-.wage-table-create-button {
-	padding: 0 160px;
-}
-
-#copyFromExcel {
-	
-}
-
-.wage-table-create-button.caret-bottom:after {
-	border-top-width: 1.8em;
-	border-right-width: 7.5em;
-	border-left-width: 7.5em;
-	margin-left: -7.5em;
-	margin-top: 4px;
-	color: #92D050;
-}
-
-.tab-content {
-	width: 850px;
-}
-
-.tab-inline {
-	padding-left: 20px;
-}
-
-#demension-tbl td {
-	border: black solid 1px;
-}
-
-#demension-tbl tr {
-	height: 35px;
-}
-
-#demension-tbl td span {
-	padding-left: 10px;
-}
-
-#masterInfo .lblData {
-	width: 50%;
-	float: left;
-}
-
-#masterInfo .lblData div {
-	display: inline-block;
-}
-
-#masterInfo .lblData div:first-child {
-	width: 40%;
-}
-
-#masterInfo .lblData div:nth-child(2) {
-	width: 50%;
-}
-
-.bgIgCol {
+.custom-ntsgrid-header { 
 	background-color: #CFF1A5;
+	height: 28px !important;
+	font-weight: bold; 
+}
+
+.nts-grid-sheet-buttons {
+	display: none;
+}
+
+#grid2_container {
+	margin-left: -2px !important;
+	margin-right: -2px !important;
 }

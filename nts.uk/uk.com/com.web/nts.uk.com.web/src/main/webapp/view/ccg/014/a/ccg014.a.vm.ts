@@ -47,6 +47,14 @@ module ccg014.a.viewmodel {
                     $("#titleMenuName").focus();
                 errors.clearAll();
             });
+            
+            window.onresize = function(event) {
+            	$("#preview-iframe").attr('style', 
+                        'height:' + (window.innerHeight - 350) + 'px; ' +
+                        'width:' + (window.innerWidth - 500) + 'px; ');
+            	$(".preview-container").width($("#preview-iframe").width() + 10);
+                
+            };
 
         }
 
@@ -58,6 +66,7 @@ module ccg014.a.viewmodel {
             dfd.done(() => {
                 block.clear();
                 this.selectTitleMenuByIndex(0);
+                this.setHeight();
             });
             return dfd;
         }
@@ -219,6 +228,13 @@ module ccg014.a.viewmodel {
 
         private changePreviewIframe(layoutID: string): void {
             $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
+        }
+        
+        private setHeight(): void {
+        	$("#preview-iframe").attr('style', 
+                'height:' + (window.innerHeight - 350) + 'px; ' +
+                'width:' + (window.innerWidth - 500) + 'px; ');
+        	$(".preview-container").width($("#preview-iframe").width() + 10);
         }
 
     }

@@ -339,6 +339,13 @@ public class PersonInfoCategory extends AggregateRoot {
 				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
 	}
 	
+	// filter by CPS013
+	public boolean isHistoryCategoryCps013() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
 
 	public void setAbolish(IsAbolition isAbolition) {
 		this.isAbolition = isAbolition;
