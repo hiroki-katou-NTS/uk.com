@@ -133,11 +133,12 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                     $('#emp-component').focus();
+                    close();
                 });
             }).fail(error => {
                 dialog.alertError(error);
             }).always(()=>{
-                nts.uk.ui.block.clear();
+                nts.uk.ui.errors.clearAll();
             });
             $('#emp-component').focus();
         }
@@ -145,7 +146,9 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         startPage(sId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             service.start(sId).done(function (data: any) {
+                nts.uk.ui.block.clear();
                 self.screenMode(model.SCREEN_MODE.NEW);
                 if (data) {
                     self.sId(data.sId);
@@ -165,6 +168,8 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
                 dfd.reject();
+            }).always(() => {
+                nts.uk.ui.errors.clearAll();
             });
             return dfd.promise();
         }
