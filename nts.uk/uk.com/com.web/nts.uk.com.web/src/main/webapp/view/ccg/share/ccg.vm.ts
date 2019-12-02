@@ -1654,7 +1654,9 @@ module nts.uk.com.view.ccg.share.ccg {
 //                };
 //                service.searchEmployeeByLogin(param)
                 //end
-                service.searchEmployeeByLogin(moment.utc().toDate(), self.systemType)                
+                var baseDate = moment.utc().toDate();
+                baseDate.setHours(00,00,00);
+                service.searchEmployeeByLogin(baseDate, self.systemType)                
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
