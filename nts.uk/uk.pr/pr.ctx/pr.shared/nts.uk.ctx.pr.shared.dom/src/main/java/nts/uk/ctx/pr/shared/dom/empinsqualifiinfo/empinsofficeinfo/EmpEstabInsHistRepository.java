@@ -10,6 +10,6 @@ import java.util.Optional;
 */
 public interface EmpEstabInsHistRepository {
 
-    List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate startDate, GeneralDate endDate);
+    List<EmpInsOffice> getByHistIdsAndStartDateInPeriod(List<String> histIds, GeneralDate startDate, GeneralDate endDate);
     List<EmpInsOffice> getByHistIdsAndEndDateInPeriod(List<String> hisIds, GeneralDate startDate, GeneralDate endDate);
 }

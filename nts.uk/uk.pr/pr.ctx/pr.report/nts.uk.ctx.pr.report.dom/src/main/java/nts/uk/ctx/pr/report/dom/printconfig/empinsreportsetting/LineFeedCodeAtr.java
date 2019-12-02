@@ -6,7 +6,7 @@ import nts.arc.i18n.I18NText;
 **
 * 改行コード区分
 */
-public enum LineFeedCode {
+public enum LineFeedCodeAtr {
 
     /**
      * 付加する
@@ -33,7 +33,7 @@ public enum LineFeedCode {
      */
     public final String nameId;
 
-    LineFeedCode(int value, String nameId) {
+    LineFeedCodeAtr(int value, String nameId) {
         this.value = value;
         this.nameId = nameId;
     }
