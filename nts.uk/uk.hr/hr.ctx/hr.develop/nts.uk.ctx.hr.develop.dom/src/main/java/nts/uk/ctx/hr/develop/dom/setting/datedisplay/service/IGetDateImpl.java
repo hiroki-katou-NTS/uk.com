@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.develop.dom.setting.datedisplay.service;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -14,6 +15,7 @@ import nts.uk.ctx.hr.develop.dom.setting.datedisplay.algorithm.DateDisplaySettin
  * @author anhdt
  *
  */
+@Stateless
 public class IGetDateImpl implements IGetDate {
 
 	@Inject
