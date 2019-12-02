@@ -5,6 +5,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
     import model = nts.uk.pr.view.qui004.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -134,7 +135,9 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
         exportPDF() {
             let self = this;
-            let dfd = $.Deferred();
+            if (self.validate()) {
+                return;
+            }
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList()).map(i => i.id);
 
             let data: any = {
@@ -166,6 +169,9 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
         exportCSV() {
             let self = this;
+            if (self.validate()) {
+                return;
+            }
             let dfd = $.Deferred();
             let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList()).map(i => i.id);
 
@@ -341,6 +347,12 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         endDateStyle() {
             let self = this;
             return self.endDateJp().length > 13 ? "width:130px; display: inline-block;" : "width:130px; display:inline";
+        }
+
+        validate() {
+            errors.clearAll();
+            $(".nts-input").trigger("validate");
+            return errors.hasError();
         }
     }
 
