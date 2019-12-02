@@ -58,8 +58,8 @@ module nts.uk.pr.view.qui001.share.model {
 
     export function getChangedName(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_35')),
-            new ItemModel(1, getText('QUI001_A222_36'))
+            new ItemModel(1, getText('QUI001_A222_35')),
+            new ItemModel(0, getText('QUI001_A222_36'))
         ];
     }
 

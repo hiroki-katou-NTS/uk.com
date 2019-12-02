@@ -246,7 +246,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 return;
             }
             let params = {
-                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList(),getShared("QUI002_PARAMS_A"));
+                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList(),getShared("QUI002_PARAMS_A")),
             };
             setShared("QUI002_PARAMS_B", params);
             modal("/view/qui/002/b/index.xhtml");

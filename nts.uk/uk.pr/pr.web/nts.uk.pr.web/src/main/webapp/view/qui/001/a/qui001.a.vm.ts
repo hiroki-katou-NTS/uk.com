@@ -33,7 +33,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             outputOrderAtr: 0,
             officeClsAtr: 1,
             myNumberClsAtr: 1,
-            nameChangeClsAtr: 1
+            nameChangeClsAtr: 0
         }));
 
         empInsRptTxtSetting: KnockoutObservable<EmpInsRptTxtSetting> = ko.observable(new EmpInsRptTxtSetting({
