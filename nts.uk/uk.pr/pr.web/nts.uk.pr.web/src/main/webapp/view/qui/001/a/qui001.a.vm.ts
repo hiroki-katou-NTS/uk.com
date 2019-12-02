@@ -105,17 +105,17 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             $.when(service.getEmpInsRptSetg(), service.getEmpInsReportTxtSetting())
-            .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
-                self.screenMode(model.SCREEN_MODE.NEW);
-                if (setting) {
-                    self.empInsReportSetting(new EmpInsReportSetting(setting));
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
-                }
-                if (txtSetting) {
-                    self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
-                }
-                dfd.resolve();
-            }).fail(function (result) {
+                .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
+                    self.screenMode(model.SCREEN_MODE.NEW);
+                    if (setting) {
+                        self.empInsReportSetting(new EmpInsReportSetting(setting));
+                        self.screenMode(model.SCREEN_MODE.UPDATE);
+                    }
+                    if (txtSetting) {
+                        self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+                    }
+                    dfd.resolve();
+                }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
@@ -218,9 +218,14 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             return listEmployee;
         }
 
-        getStyle(){
+        startDateStyle(){
             let self = this;
             return self.startDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
+        }
+
+        endDateStyle() {
+            let self = this;
+            return self.endDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
         }
 
         exportPDF() {
@@ -265,11 +270,10 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         exportCSV() {
             let self = this;
-            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
-            if(empIds.length == 0) {
-                //dialog.alertError({ messageId: 'Msg_37' });
+            if (self.validate()) {
                 return;
             }
+            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
             let data = {
                 empInsReportSetting: ko.toJS(self.empInsReportSetting),
                 empInsRptTxtSetting: ko.toJS(self.empInsRptTxtSetting),
