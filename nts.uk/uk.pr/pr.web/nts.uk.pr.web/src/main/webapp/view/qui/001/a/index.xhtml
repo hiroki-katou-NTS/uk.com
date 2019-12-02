@@ -42,7 +42,7 @@
                 <div id="com-ccg001"></div>
 
                 <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
-                    <div class="panel panel-frame" style="margin-left: 45px; width: 660px;">
+                    <div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
                         <div class="valign-center control-group " >
 							<span class="label with-image">
                                 <img id="img-calendar" class="image image-calendar" src="../resources/QUI001_1.png"/>
@@ -56,7 +56,7 @@
 																required: true
 																}" tabindex="5">
                             </div>
-                            <span id="A222_5" data-bind="attr: {style: getStyle() }, text: startDateJp"
+                            <span id="A222_5" data-bind="attr: {style: startDateStyle() }, text: startDateJp"
                                   class="limited-label"></span>
                             <span id="A222_6">#{i18n.getText('QUI001_A222_6')}</span>
                             <div id="A222_7" data-bind="ntsDatePicker: {
@@ -68,7 +68,7 @@
 																}" tabindex="6">
                             </div>
                             <span id="A222_8" class="limited-label"
-                                  data-bind="attr: {style: getStyle() }, text: endDateJp"></span>
+                                  data-bind="attr: {style: endDateStyle() }, text: endDateJp"></span>
                         </div>
                     </div>
                     <div class="bottom" style="margin-top: 15px; margin-left: 44px;">
@@ -134,7 +134,7 @@
                                 enable: false  }"/>
                             </div>
 
-                            <div id="A222_29" style="border-bottom: 1px solid #bfb4b4; margin-left: 10px;" class="control-group"><span id="A222_28" class="label">#{i18n.getText('QUI001_A222_28')}</span></div>
+                            <div id="A222_29" style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span id="A222_28" class="label">#{i18n.getText('QUI001_A222_28')}</span></div>
 
                             <div class="valign-center control-group ">
                                 <div id="A222_30" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_30')}</div>
@@ -165,7 +165,7 @@
                         </div>
 
                         <div data-bind="with: empInsRptTxtSetting">
-                            <div id="A222_38" style="border-bottom: 1px solid #bfb4b4; margin-left: 10px;" class="control-group"><span id="A222_37" class="label">#{i18n.getText('QUI001_A222_37')}</span></div>
+                            <div id="A222_38" style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span id="A222_37" class="label">#{i18n.getText('QUI001_A222_37')}</span></div>
 
                             <div class="valign-center control-group">
                                 <div id="A222_39" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_39')}</div>

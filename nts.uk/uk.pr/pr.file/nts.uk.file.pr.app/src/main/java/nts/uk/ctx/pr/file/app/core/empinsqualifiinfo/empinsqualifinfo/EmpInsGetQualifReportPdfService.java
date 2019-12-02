@@ -173,7 +173,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
-                    tempReport.setInsuredNumber(tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value ? empInsNumInfos.get(histId).getEmpInsNumber().v() : "");
+                    tempReport.setInsuredNumber(empInsNumInfos.get(histId).getEmpInsNumber().v());
 
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
@@ -324,8 +324,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 break;
             case DEPARTMENT_EMPLOYEE:
             case EMPLOYEE_CODE:
-                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder()))
-                        .thenComparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
+                listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getScd, Comparator.nullsFirst(Comparator.naturalOrder())));
                 break;
             case EMPLOYEE:
                 listDataExport.sort(Comparator.comparing(EmpInsGetQualifReport::getPersonalNameKana, Comparator.nullsFirst(Comparator.naturalOrder()))

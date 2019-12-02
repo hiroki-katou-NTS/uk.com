@@ -5,6 +5,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQualifReport;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQualifRptFileGenerator;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.AcquisitionAtr;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
@@ -42,7 +43,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
 
                 // A1_1
-                String insuredNumber = data.getInsuredNumber() == null ? "" : data.getInsuredNumber();
+                String insuredNumber = data.getInsuredNumber() != null && data.getAcquisitionAtr() != null && (data.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value ? data.getInsuredNumber() : "";
                 detachText(46, 718, insuredNumber, 4, textBuilder);
                 detachText(131, 718, insuredNumber.length() > 4 ? insuredNumber.substring(4) : "", 6, textBuilder);
                 detachText(251, 718, insuredNumber.length() > 10 ? insuredNumber.substring(10) : "", 1, textBuilder);
