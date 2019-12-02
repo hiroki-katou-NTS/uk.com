@@ -10,16 +10,13 @@ module nts.uk.at.view.kaf005.cm.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        workState : KnockoutObservable<boolean> = ko.observable(true);;
+        workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);   
-        //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(null);
-        timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //勤務種類
         workTypeCd: KnockoutObservable<string> = ko.observable('');
         workTypeName: KnockoutObservable<string> = ko.observable('');
@@ -53,7 +50,6 @@ module nts.uk.at.view.kaf005.cm.viewmodel {
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-        useMulti: KnockoutObservable<boolean> = ko.observable(true);
         
         displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
         displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
@@ -118,8 +114,6 @@ module nts.uk.at.view.kaf005.cm.viewmodel {
             self.workTypeName(data.workTypeName);
             self.timeStart1(data.workClockFrom1);
             self.timeEnd1(data.workClockFrom2); 
-            self.timeStart2(data.workClockTo1);
-            self.timeEnd2(data.workClockTo2); 
             
             self.reasonCombo(_.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); } ));
             self.selectedReason(data.application.appReasonID);
