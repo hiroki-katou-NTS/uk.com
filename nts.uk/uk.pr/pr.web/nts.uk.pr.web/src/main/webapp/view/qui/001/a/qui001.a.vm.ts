@@ -270,11 +270,10 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         exportCSV() {
             let self = this;
-            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
-            if(empIds.length == 0) {
-                //dialog.alertError({ messageId: 'Msg_37' });
+            if (self.validate()) {
                 return;
             }
+            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
             let data = {
                 empInsReportSetting: ko.toJS(self.empInsReportSetting),
                 empInsRptTxtSetting: ko.toJS(self.empInsRptTxtSetting),

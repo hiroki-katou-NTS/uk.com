@@ -42,14 +42,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
-            officeClsAtr: 0,
+            officeClsAtr: 1,
             myNumberClsAtr: 1,
             nameChangeClsAtr: 0
         }));
 
         empInsReportTxtSetting: KnockoutObservable<EmpInsReportTxtSetting> = ko.observable(new EmpInsReportTxtSetting({
             lineFeedCode: 0,
-            officeAtr: 0,
+            officeAtr: 1,
             fdNumber: null
         }));
 
