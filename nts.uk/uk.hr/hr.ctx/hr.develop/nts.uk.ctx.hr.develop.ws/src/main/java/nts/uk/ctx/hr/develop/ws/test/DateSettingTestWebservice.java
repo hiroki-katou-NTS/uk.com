@@ -52,9 +52,9 @@ public class DateSettingTestWebservice {
 				.build();
 		
 		DateDisplaySettingValue end = DateDisplaySettingValue.builder()
-				.settingClass(EnumAdaptor.valueOf(dto.getEndDateSettingDate(), DateSettingClass.class))
+				.settingClass(EnumAdaptor.valueOf(dto.getEndDateSettingCategory(), DateSettingClass.class))
 				.settingDate(dto.getEndDateSettingDate())
-				.settingMonth(dto.getEndDateSettingDate())
+				.settingMonth(dto.getEndDateSettingMonth())
 				.settingNum(dto.getEndDateSettingNum())
 				.build();
 		
@@ -79,9 +79,9 @@ public class DateSettingTestWebservice {
 				.build();
 		
 		DateDisplaySettingValue end = DateDisplaySettingValue.builder()
-				.settingClass(EnumAdaptor.valueOf(dto.getEndDateSettingDate(), DateSettingClass.class))
+				.settingClass(EnumAdaptor.valueOf(dto.getEndDateSettingCategory(), DateSettingClass.class))
 				.settingDate(dto.getEndDateSettingDate())
-				.settingMonth(dto.getEndDateSettingDate())
+				.settingMonth(dto.getEndDateSettingMonth())
 				.settingNum(dto.getEndDateSettingNum())
 				.build();
 		

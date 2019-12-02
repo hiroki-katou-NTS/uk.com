@@ -20,7 +20,7 @@ import nts.uk.ctx.hr.develop.infra.entity.setting.datedisplay.JdsmtDateDisplaySe
 @Stateless
 public class JpaDateDisplaySettingRepository extends JpaRepository implements DateDisplaySettingRepository {
 	
-	private static final String SEL = "SELECT * FROM JdsmtDateDisplaySetting dst ";
+	private static final String SEL = "SELECT dst FROM JdsmtDateDisplaySetting dst ";
 	private static final String SEL_BY_COMPANY_ID = SEL + "WHERE dst.cid = :companyId ";
 	private static final String SEL_BY_COMPANY_ID_PROGARM_ID = SEL + "WHERE dst.cid = :companyId AND dst.programId = :programId ";
 
