@@ -20,8 +20,6 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -157,7 +155,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
                 if (element.getEmpInsLossInfo() != null) {
                     //A1_8 Cause of loss
-                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value + 1) : "";
+                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLoss().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLoss().get().value + 1) : "";
                     textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
                     //A1_9 reqIssuAtr
                     if (element.getEmpInsLossInfo().getRequestForIssuance().isPresent()) {

@@ -29,7 +29,7 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
 
 
     @Override
-    public List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate startDate, GeneralDate endDate) {
+    public List<EmpInsOffice> getByHistIdsAndStartDateInPeriod(List<String> histIds, GeneralDate startDate, GeneralDate endDate) {
         List<EmpInsOffice> result = new ArrayList<>();
         CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
             result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)

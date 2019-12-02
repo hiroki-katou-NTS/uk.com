@@ -5,7 +5,7 @@ import nts.arc.i18n.I18NText;
 /**
  * 喪失原因
  */
-public enum CauseOfLossAtr {
+public enum CauseOfLoss {
 
     OTHER_REASON(0, I18NText.getText("Enum_CauseOfLossAtr_OTHER_REASON")),
     TURN_OVER_THAN_3(1, I18NText.getText("Enum_CauseOfLossAtr_TURN_OVER_THAN_3")),
@@ -21,7 +21,7 @@ public enum CauseOfLossAtr {
      */
     public final String nameId;
 
-    CauseOfLossAtr(int value, String nameId) {
+    CauseOfLoss(int value, String nameId) {
         this.value = value;
         this.nameId = nameId;
     }

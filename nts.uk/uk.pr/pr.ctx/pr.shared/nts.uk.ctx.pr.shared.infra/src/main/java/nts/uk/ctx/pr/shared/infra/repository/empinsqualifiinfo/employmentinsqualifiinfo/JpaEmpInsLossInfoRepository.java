@@ -2,8 +2,6 @@ package nts.uk.ctx.pr.shared.infra.repository.empinsqualifiinfo.employmentinsqua
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfoRepository;
 import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifiinfo.QqsmtEmpInsLossInfo;
 
@@ -11,7 +9,6 @@ import javax.ejb.Stateless;
 import java.util.Optional;
 import java.util.List;
 import java.util.Collections;
-import java.util.Optional;
 
 @Stateless
 public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpInsLossInfoRepository{
@@ -48,7 +45,7 @@ public class JpaEmpInsLossInfoRepository extends JpaRepository implements EmpIns
                     return new EmpInsLossInfo(
                             e.empInsLossInfoPk.cId,
                             e.empInsLossInfoPk.sId,
-                            e.causeOfLossAtr,
+                            e.causeOfLoss,
                             e.requestForIssuance,
                             e.scheReplenAtr,
                             e.causeOfLostEmpIns,

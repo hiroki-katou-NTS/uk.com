@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsurance
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
-import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCodeAtr;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
@@ -130,7 +130,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_1_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 
@@ -160,14 +160,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(value);
 			if (c < ROW_1_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
 
 		// row 3
 		valueBuilder.append(A1_13);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -175,7 +175,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		valueBuilder.append(A1_14);
 		valueBuilder.append(SEPERATOR);
 		valueBuilder.append(A1_15);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -183,7 +183,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		valueBuilder.append(A1_16);
 		valueBuilder.append(SEPERATOR);
 		valueBuilder.append(A1_17);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -193,7 +193,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_6_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
@@ -268,14 +268,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(value);
 			if (c < ROW_6_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
 
 		// row 8
 		valueBuilder.append(A1_42);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -293,7 +293,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_9_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
@@ -445,7 +445,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {
 					valueBuilder.append(SEPERATOR);
-				} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 					valueBuilder.append(LINE_BREAK);
 				}
 			}

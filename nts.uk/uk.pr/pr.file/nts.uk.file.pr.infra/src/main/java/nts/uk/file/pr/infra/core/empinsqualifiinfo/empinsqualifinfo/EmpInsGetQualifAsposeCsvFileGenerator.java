@@ -10,7 +10,6 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.employee.ForeignerResHistInfo;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.LaborContractHist;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
-import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeCode;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PublicEmploymentSecurityOffice;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.*;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.*;
@@ -30,7 +29,6 @@ import javax.inject.Inject;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -118,7 +116,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             row = 0;
             startColumn = 0;
             laborCode = "";
-            lineFeedCode = (data.getReportTxtSettingExport().getLineFeedCode() == LineFeedCode.ADD.value || data.getReportTxtSettingExport().getLineFeedCode() == LineFeedCode.E_GOV.value) ? 1 : 0;
+            lineFeedCode = (data.getReportTxtSettingExport().getLineFeedCode() == LineFeedCodeAtr.ADD.value || data.getReportTxtSettingExport().getLineFeedCode() == LineFeedCodeAtr.E_GOV.value) ? 1 : 0;
             fillFixedRows(worksheet, data);
             fillDataRows(worksheet, data);
             reportContext.getDesigner().setWorkbook(workbook);
