@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
