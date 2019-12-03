@@ -252,9 +252,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			}
 			if (c == 8) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = formatPhoneNumber(companyInfo.getPhoneNum());
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
-					value = formatPhoneNumber(laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(""));
+					value = companyInfo.getPhoneNum().substring(0, Math.min(companyInfo.getPhoneNum().length(), 12));
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+					String phoneNumber = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse("");
+					value = phoneNumber.substring(0, Math.min(phoneNumber.length(), 12));
+				}
 			}
 			if (c == 9 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse("");
