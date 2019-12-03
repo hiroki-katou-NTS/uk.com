@@ -178,7 +178,9 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                     laborCode = empInsOffices.get(histId).getLaborInsCd().v();
                     /*cells.get(row, 0 + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse(null));
                     cells.get(row, 1  + startColumn).setValue(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse(null));*/
-                    value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse("") + "," + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("");
+                    if (laborInsuranceOffices.containsKey(laborCode)) {
+                        value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse("") + "," + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("");
+                    }
                 } else {
                     /*cells.get(row, 0 + startColumn).setValue("");
                     cells.get(row, 1 + startColumn).setValue("");*/
