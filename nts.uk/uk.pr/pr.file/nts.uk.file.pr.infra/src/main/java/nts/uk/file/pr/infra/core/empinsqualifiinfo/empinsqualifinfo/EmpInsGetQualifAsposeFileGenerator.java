@@ -92,7 +92,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String employmentStatus = data.getEmploymentStatus() == null ? "" : data.getEmploymentStatus().toString();
                 textBuilder.appendText(setValue(134, 516, employmentStatus, 16));
                 // A1_16
-                String occupation = data.getOccupation() == null ? "" : (data.getOccupation() < 10 ? "0" + (data.getOccupation() + 1) : String.valueOf(data.getOccupation() + 1));
+                String occupation = data.getOccupation() == null ? "" : data.getOccupation();
                 detachText(242, 516, occupation, 2, textBuilder);
                 // A1_17
                 String jobPath = data.getJobPath() == null ? "" : data.getJobPath().toString();

@@ -108,7 +108,7 @@ public class EmpInsGetQualifReport {
     /**
      * 職種
      */
-    private Integer occupation;
+    private String occupation;
 
     /**
      * 被保険者となったことの原因
