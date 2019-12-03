@@ -4,7 +4,7 @@
 } */
 
 #functions-area{
-    overflow: hidden;
+    overflow: visible;
 }
 .tr360 {
 	width: 360px !important;
