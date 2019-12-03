@@ -5,7 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 
-public interface RetirePlanCourceRepository {
+public interface RetirePlanCourceService {
 
 	/** 定年退職コースの取得*/
 	List<RetirePlanCource> getRetirePlanCourse(String companyID);
