@@ -262,8 +262,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                 try {
                     value += companyInfo.getCompanyCode() + ",";
-                    value += companyInfo.getPostCd().substring(0, 3) + ","
-                            + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() - 4) + ","
+                    value += (companyInfo.getPostCd().length() > 2 ? companyInfo.getPostCd().substring(0, 3) : companyInfo.getPostCd()) + ","
+                            + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() > 3 ? companyInfo.getPostCd().length() - 4 : 0) + ","
                             + formatTooLongText(companyInfo.getAdd_1() + companyInfo.getAdd_2(), 75) + ","
                             + formatTooLongText(companyInfo.getCompanyName(), 50) + ","
                             + formatTooLongText(companyInfo.getRepname(), 25) + ","
@@ -288,8 +288,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
                             + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")
                             + ",";
-                    value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(0, 3)).orElse("") + ","
-                            + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().substring(x.v().length() - 4)).orElse("") + ","
+                    value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().length() > 2 ? x.v().substring(0, 3) : x.v()).orElse("") + ","
+                            + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().length() > 3 ? x.v().substring(x.v().length() - 4) : x.v()).orElse("") + ","
                             + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse("")
                             + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress2().map(x -> x.v()).orElse(""), 75) + ","
                             + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
