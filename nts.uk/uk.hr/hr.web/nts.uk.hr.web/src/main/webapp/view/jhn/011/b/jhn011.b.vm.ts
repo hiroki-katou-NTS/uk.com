@@ -65,7 +65,16 @@ module jhn011.b.viewmodel {
                 self.start(layout.id());
             
             })
+            
         }
+        
+        setResize(){
+            
+        
+        
+        }
+        
+        
 
         start(code?: string): JQueryPromise<any> {
             let self = this,
@@ -379,7 +388,7 @@ module jhn011.b.viewmodel {
     
     function makeIcon(value, row) {
         if (value == '1')
-            return '<img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+            return '<img src="images/checked.png" style="margin-left: 15px; width: 15px; height: 15px;" />';
         return '<span></span>';
     }
 }

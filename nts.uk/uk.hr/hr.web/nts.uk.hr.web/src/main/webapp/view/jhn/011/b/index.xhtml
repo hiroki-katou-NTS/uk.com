@@ -48,12 +48,12 @@
 									fields: ['reportCode', 'reportName'] }" />
 							<table id="B221_4"
 								data-bind="ntsGridList: {
-									height: 604,
 									options: layouts,
 									optionsValue: 'id',
 									columns: reportColums,
 									multiple: false,
-									value: layout().id}">
+									value: layout().id,
+									rows:25}">
 							</table>
 						</div>
 					</div>
@@ -72,8 +72,7 @@
 										#{i18n.getText('JHN011_B222_1')}</div>
 								</td>
 								<td class="valign-center">
-									<div>
-										<div class="input_002 input_code">
+									<div class="input_002 input_code">
 											<input id="B222_1_1" tabindex="6"
 												data-bind="ntsTextEditor: {
 															value: reportCode,
@@ -82,9 +81,7 @@
 															required:true,
 															enable: $parent.layout().id() == undefined },
 															attr: { id: 'B222_1_1', NameID: 'JHN011_B222_1_1'} " />
-										</div>
-
-										<div class="input_002 input_name">
+															
 											<input id="B222_1_2" tabindex="7"
 												data-bind="ntsTextEditor: {
 															value: reportName,
@@ -94,10 +91,9 @@
 															enable: true},
 															attr: { id: 'B222_1_2', NameID: 'JHN011_B222_1_2'}" />
 											
-										<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('JHN011_B221_2')}</div>
+											<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('JHN011_B221_2')}</div>
 										
 										</div>
-									</div>
 								</td>
 							</tr>
 							<!-- line 2  届出名よみ-->
