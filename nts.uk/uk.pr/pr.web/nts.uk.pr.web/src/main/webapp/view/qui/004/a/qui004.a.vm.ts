@@ -43,7 +43,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             submitNameAtr: 0,
             outputOrderAtr: 0,
             officeClsAtr: 0,
-            myNumberClsAtr: 1,
+            myNumberClsAtr: 0,
             nameChangeClsAtr: 0
         }));
 
@@ -82,8 +82,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             ]);
 
             self.printCfg = ko.observableArray([
-                new model.ItemModel(0, getText("Enum_PrinfCtg_PRINT")),
-                new model.ItemModel(1, getText("Enum_prinfCtg_DO_NOT_PRINT"))
+                new model.ItemModel(1, getText("Enum_PrinfCtg_PRINT")),
+                new model.ItemModel(0, getText("Enum_prinfCtg_DO_NOT_PRINT"))
             ]);
 
             self.lineFeedCodeCls = ko.observableArray([

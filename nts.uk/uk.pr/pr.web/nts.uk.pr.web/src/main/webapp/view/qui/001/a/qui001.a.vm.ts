@@ -32,7 +32,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             submitNameAtr: 0,
             outputOrderAtr: 0,
             officeClsAtr: 1,
-            myNumberClsAtr: 1,
+            myNumberClsAtr: 0,
             nameChangeClsAtr: 0
         }));
 

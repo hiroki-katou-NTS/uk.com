@@ -27,8 +27,8 @@ module nts.uk.pr.view.qui001.share.model {
     // 25: 印字区分
     export function isPrintMyNum(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_26')),
-            new ItemModel(1, getText('QUI001_A222_27'))
+            new ItemModel(1, getText('QUI001_A222_26')),
+            new ItemModel(0, getText('QUI001_A222_27'))
         ];
     }
 
