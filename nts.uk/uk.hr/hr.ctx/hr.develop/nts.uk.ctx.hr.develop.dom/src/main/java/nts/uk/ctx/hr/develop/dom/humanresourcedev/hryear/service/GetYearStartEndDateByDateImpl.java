@@ -1,16 +1,19 @@
 
 package nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.develop.dom.empregulationhistory.EmploymentRegulationHistoryInterface;
+import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.HrPeriodRegulation;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.HrPeriodRegulationRepository;
+/**
+ * @author hieult
+ * 表示日の取得
+ */
 @Stateless
 public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate{
 

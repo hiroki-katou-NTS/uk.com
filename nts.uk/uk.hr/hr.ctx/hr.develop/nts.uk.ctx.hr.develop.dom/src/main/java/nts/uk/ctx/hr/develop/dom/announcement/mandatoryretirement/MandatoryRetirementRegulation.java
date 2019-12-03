@@ -43,10 +43,10 @@ public class MandatoryRetirementRegulation extends AggregateRoot{
 	private List<ReferEvaluationItem> referEvaluationTerm;
 	
 	/** 希望コース申請条件 */
-	private Optional<PlanCourseApplyTerm> planCourseApplyTerm;
+	private PlanCourseApplyTerm planCourseApplyTerm;
 	
 	public static MandatoryRetirementRegulation createFromJavaType(String companyId, String historyId, int reachedAgeTerm, PublicTerm publicTerm, RetireDateTerm retireDateTerm, 
-			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, Optional<PlanCourseApplyTerm> planCourseApplyTerm) {
+			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm) {
 		return new MandatoryRetirementRegulation(
 				companyId,
 				historyId,

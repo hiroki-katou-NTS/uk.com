@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.hr.develop.dom.empregulationhistory.EmploymentRegulationHistoryRepository;
+import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryRepository;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.dto.RegulationHistoryDto;
 import nts.uk.ctx.hr.develop.infra.entity.empregulationhistory.JshmtEmpRegHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
