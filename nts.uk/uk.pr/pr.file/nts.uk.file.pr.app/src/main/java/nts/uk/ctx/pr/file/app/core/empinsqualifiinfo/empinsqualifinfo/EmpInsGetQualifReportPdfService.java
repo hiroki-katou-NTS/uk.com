@@ -173,7 +173,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
                 if (empInsNumInfos.containsKey(histId)) {
                     // A1_1
-                    tempReport.setInsuredNumber(tempReport.getAcquisitionAtr() != null && (tempReport.getAcquisitionAtr() - 1) == AcquisitionAtr.REHIRE.value ? empInsNumInfos.get(histId).getEmpInsNumber().v() : "");
+                    tempReport.setInsuredNumber(empInsNumInfos.get(histId).getEmpInsNumber().v());
 
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
