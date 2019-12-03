@@ -266,7 +266,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + formatTooLongText(companyInfo.getCompanyName(), 50) + ","
                             + formatTooLongText(companyInfo.getRepname(), 25) + ","
 
-                            + formatPhoneNumber(companyInfo.getPhoneNum()) + ",";
+                            + (companyInfo.getPhoneNum().length() > 12 ? companyInfo.getPhoneNum().substring(0, 12) : companyInfo.getPhoneNum()) + ",";
 
                     value += ",,";
                 } catch (UnsupportedEncodingException e) {
@@ -293,7 +293,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             + formatTooLongText(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v(),50) + ","
                             + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25) + ","
 
-                            + formatPhoneNumber(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v()).orElse("")) + ",";
+                            + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v().length() > 12 ? x.v().substring(0, 12) : x.v()).orElse("") + ",";
 
                     value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("") + ","
                             + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("") + ","

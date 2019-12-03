@@ -180,7 +180,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 val lossInfo = empLossInfos.get(e.getEmployeeId());
                 temp.setEmpInsLossInfo(lossInfo);
                 if (lossInfo.getCauseOfLossEmpInsurance().isPresent()) {
-                    temp.setRetirementReasonClsInfo(causeOfLossIns.get(lossInfo.getCauseOfLossEmpInsurance()));
+                    temp.setRetirementReasonClsInfo(causeOfLossIns.get(lossInfo.getCauseOfLossEmpInsurance().get().v()));
                 }
             }
 
