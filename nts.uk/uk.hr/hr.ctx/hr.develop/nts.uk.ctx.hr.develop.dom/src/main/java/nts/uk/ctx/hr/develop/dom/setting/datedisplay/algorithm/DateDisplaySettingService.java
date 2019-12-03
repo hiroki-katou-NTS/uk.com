@@ -114,12 +114,27 @@ public class DateDisplaySettingService {
 			case 6:
 				// （T/H PeriodSettingClass = 6 ）
 				int year6 = baseDate.year();
-				displayDate = GeneralDate.ymd(year6, settingMonth, settingDate);
+				try {
+					displayDate = GeneralDate.ymd(year6, settingMonth, settingDate);
+				} catch (Exception e) {
+					// displayDate = GeneralDate.max();
+					displayDate = GeneralDate.ymd(year6, settingMonth, 1);
+					displayDate = GeneralDate.ymd(year6, settingMonth, displayDate.lastDateInMonth());
+				}
+				
 				break;
 			case 7:
 				GeneralDate nextYear = baseDate.addYears(1);
-				int year7 = nextYear.addYears(1).year();
-				displayDate = GeneralDate.ymd(year7, settingMonth, settingDate);
+				int year7 = nextYear.year();
+				try {
+					
+					displayDate = GeneralDate.ymd(year7, settingMonth, settingDate);
+				} catch (Exception e) {
+					// displayDate = GeneralDate.max();
+					displayDate = GeneralDate.ymd(year7, settingMonth, 1);
+					displayDate = GeneralDate.ymd(year7, settingMonth, displayDate.lastDateInMonth());
+				}
+				
 				break;
 			default:
 				break;
