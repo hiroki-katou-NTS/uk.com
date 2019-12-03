@@ -10,8 +10,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationRepository;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceRepository;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
@@ -23,11 +23,11 @@ public class RetirementInformationFinder {
 	private EmploymentRegulationHistoryInterface empHis;
 
 	@Inject
-	private MandatoryRetirementRegulationRepository medaRepo;
-	
+	private MandatoryRetirementRegulationService medaRepo;
+
 	@Inject
-	private RetirePlanCourceRepository retiRepo;
-	
+	private RetirePlanCourceService retiRepo;
+
 	@Inject
 	private SyEmploymentAdaptor sysEmp;
 
@@ -55,26 +55,25 @@ public class RetirementInformationFinder {
 		// ドメインモデル [定年退職の就業規則] を取得する (Lấy domain
 		// [MandatoryRetirementRegulation])
 		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
-		if (mada ==null) {
+		if (mada == null) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 
 		// アルゴリズム [全ての定年退職コースの取得] を実行する (Thực hiện thuật toán "Lấy tất cả
 		// retirePlanCourse")
-		
-		List<RetirePlanCource> retis =  this.retiRepo.getRetirePlanCourse(cId);
 
-		if(retis.isEmpty()){
+		List<RetirePlanCource> retis = this.retiRepo.getRetirePlanCourse(cId);
+
+		if (retis.isEmpty()) {
 			throw new BusinessException("MsgJ_JMM018_6");
 		}
-		
-		List<EmploymentInfoImport> empInfos = this.sysEmp.getEmploymentInfo(cId, Optional.of(true), Optional.of(false), Optional.of(false),
-				Optional.of(false), Optional.of(true));
-		
-		if(empInfos.isEmpty()){
+
+		List<EmploymentInfoImport> empInfos = this.sysEmp.getEmploymentInfo(cId, Optional.of(true), Optional.of(false),
+				Optional.of(false), Optional.of(false), Optional.of(true));
+
+		if (empInfos.isEmpty()) {
 			throw new BusinessException(" MsgJ_JMM018_10");
 		}
-		
-		
+
 	}
 }
