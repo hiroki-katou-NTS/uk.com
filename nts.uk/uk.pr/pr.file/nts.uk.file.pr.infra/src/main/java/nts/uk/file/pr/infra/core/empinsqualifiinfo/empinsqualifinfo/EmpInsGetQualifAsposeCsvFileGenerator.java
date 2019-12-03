@@ -564,12 +564,12 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 cells.get(row, 31 + startColumn).setValue(empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v())).orElse(null));
                 cells.get(row, 32 + startColumn).setValue(empInsGetInfos.get(e).getWorkingTime().map(x -> x.v()).orElse(null));*/
 
-                value += empInsGetInfos.get(e).getInsCauseAtr().map(x -> String.valueOf(x.value)).orElse("") + ","
-                        + empInsGetInfos.get(e).getPaymentMode().map(x -> String.valueOf(x.value)).orElse("") + ","
+                value += empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value == 4 ? String.valueOf(2*x.value) : String.valueOf(x.value + 1)).orElse("") + ","
+                        + empInsGetInfos.get(e).getPaymentMode().map(x -> String.valueOf(x.value + 1)).orElse("") + ","
                         + empInsGetInfos.get(e).getPayWage().map(x -> String.valueOf(x.v())).orElse("") + ","
-                        + empInsGetInfos.get(e).getEmploymentStatus().map(x -> String.valueOf(x.value)).orElse("") + ","
-                        + empInsGetInfos.get(e).getJobAtr().map(x -> String.valueOf(x.value)).orElse("") + ","
-                        + empInsGetInfos.get(e).getJobPath().map(x -> String.valueOf(x.value)).orElse("") + ","
+                        + empInsGetInfos.get(e).getEmploymentStatus().map(x -> String.valueOf(x.value + 1)).orElse("") + ","
+                        + empInsGetInfos.get(e).getJobAtr().map(x -> String.valueOf(x.value + 1).length() > 1 ? String.valueOf(x.value + 1) : "0" + (x.value + 1)).orElse("") + ","
+                        + empInsGetInfos.get(e).getJobPath().map(x -> String.valueOf(x.value + 1)).orElse("") + ","
                         + ",,"
                         + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v()).substring(0, 2)).orElse("") + ","
                         + empInsGetInfos.get(e).getWorkingTime().map(x -> toHours(x.v()).substring(2)).orElse("") + ",";
@@ -713,7 +713,6 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                                 value += ",";
                             }
-
                         } else {
                             value += ",";
                         }
