@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 
 /**
@@ -35,6 +36,12 @@ public class ApplicationSettingDto {
 	public Integer attendentTimeReflectFlg;
 	public int classScheAchi;
 	public int reflecTimeofSche;
+	/** 会社単位  */
+	public int companyUnit;
+	/** 職場単位  */
+	public int workplaceUnit;
+	/** 社員単位  */
+	public int employeeUnit;
 
 	public static ApplicationSettingDto convertToDto(ApplicationSetting appSetting) {
 		if(appSetting==null) return null;
@@ -63,6 +70,9 @@ public class ApplicationSettingDto {
 				appSetting.getPriorityTimeReflectFlg().value, 
 				appSetting.getAttendentTimeReflectFlg().value,
 				appSetting.getClassScheAchi().value,
-				appSetting.getReflecTimeofSche().value);
+				appSetting.getReflecTimeofSche().value,
+				appSetting.getApproverResSet().getCompanyUnit().value,
+				appSetting.getApproverResSet().getWorkplaceUnit().value,
+				appSetting.getApproverResSet().getEmployeeUnit().value);
 	}
 }
