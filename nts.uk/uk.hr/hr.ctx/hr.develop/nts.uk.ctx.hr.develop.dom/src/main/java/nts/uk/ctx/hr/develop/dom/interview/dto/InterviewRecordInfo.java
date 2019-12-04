@@ -22,9 +22,9 @@ public class InterviewRecordInfo {
 	/** 社員コード **/
 	private String employeeCD ; 
 	/** ビジネスネーム **/
-	private Optional<String> businessName;
+	private String businessName;
 	/** ビジネスネームカナ **/
-	private Optional<String>  businessNameKana;
+	private String businessNameKana;
 	/** 部門コード **/
 	private Optional<String> departmentCd;
 	/** 部門表示名 **/
@@ -68,8 +68,8 @@ public class InterviewRecordInfo {
 		this.interviewDate = interviewDate;
 		this.mainInterviewerEmployeeID = mainInterviewerEmployeeID;
 		this.employeeCD = employeeCD;
-		this.businessName = Optional.ofNullable(businessName);
-		this.businessNameKana = Optional.ofNullable(businessNameKana);
+		this.businessName = businessName;
+		this.businessNameKana = businessNameKana;
 		this.departmentCd =  Optional.ofNullable(departmentCd);
 		this.departmentDisplayName =  Optional.ofNullable(departmentDisplayName);
 		this.positionCd =  Optional.ofNullable(positionCd);
