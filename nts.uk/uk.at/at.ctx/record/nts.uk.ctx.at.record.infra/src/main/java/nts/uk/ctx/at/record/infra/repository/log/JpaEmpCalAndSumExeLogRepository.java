@@ -108,6 +108,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		return data;
 	}
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean checkStopByID(String empCalAndSumExecLogID) {
 		Optional<EmpCalAndSumExeLog> data = Optional.empty();
 		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EMP_EXECUTION_LOG"

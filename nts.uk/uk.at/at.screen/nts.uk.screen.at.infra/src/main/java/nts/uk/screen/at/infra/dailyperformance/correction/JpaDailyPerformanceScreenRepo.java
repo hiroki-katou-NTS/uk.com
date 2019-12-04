@@ -1351,7 +1351,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Optional<ActualLockDto> findAutualLockById(String companyId, int closureId) {
 		try (val statement = this.connection()
 				.prepareStatement("select * from KRCST_ACTUAL_LOCK where CID = ? and CLOSURE_ID = ? ")) {
-			statement.setString(1, AppContexts.user().companyId());
+			statement.setString(1, companyId);
 			statement.setInt(2, closureId);
 
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {

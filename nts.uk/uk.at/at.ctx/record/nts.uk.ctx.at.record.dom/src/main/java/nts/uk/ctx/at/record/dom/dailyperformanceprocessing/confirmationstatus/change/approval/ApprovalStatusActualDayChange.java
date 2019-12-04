@@ -71,6 +71,9 @@ public class ApprovalStatusActualDayChange {
 
 		List<ConfirmInfoResult> confirmInfoResults = approvalInfoAcqProcess.getApprovalInfoAcp(companyId, empTarget,
 				employeeIds, periodOpt, yearMonthOpt);
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		if (confirmInfoResults.isEmpty())
 			return Collections.emptyList();
 		// ドメインモデル「本人確認処理の利用設定」を取得する

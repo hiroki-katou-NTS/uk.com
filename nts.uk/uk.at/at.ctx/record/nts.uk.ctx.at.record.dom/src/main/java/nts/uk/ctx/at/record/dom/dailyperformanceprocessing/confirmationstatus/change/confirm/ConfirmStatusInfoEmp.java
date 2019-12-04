@@ -11,12 +11,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
-import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.CommonProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -24,8 +21,6 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -38,21 +33,6 @@ public class ConfirmStatusInfoEmp {
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
 
-	@Inject
-	private IdentificationRepository identificationRepository;
-
-	@Inject
-	private ApprovalStatusAdapter approvalStatusAdapter;
-
-	@Inject
-	private ApplicationRecordAdapter applicationRecordAdapter;
-
-	@Inject
-	private ConfirmationMonthRepository confirmationMonthRepository;
-
-	@Inject
-	private RealityStatusService realityStatusService;
-	
 	@Inject
 	private GetClosurePeriod getClosurePeriod;
 

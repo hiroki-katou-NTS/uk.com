@@ -136,6 +136,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
 
 	public List<ApprovalEmployeeDto> buildApprovalEmployeeData(List<EmployeeDto> lstEmployee,
 			List<ApprovalStatusActualResult> lstApprovalData, List<ConfirmStatusActualResult> lstConfirmData) {
@@ -633,10 +636,12 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		// atEmployeeAdapter.getByListSID(lstEmployees);
 		String empLogin = AppContexts.user().employeeId();
 		List<String> lstEmpId = approvalRootSituationsTemp.stream().map(x -> x.getTargetID()).distinct().collect(Collectors.toList());
+		iFindDataDCRecord.clearAllStateless();
 		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(companyId,
-				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(), ModeData.APPROVAL.value,true);
+				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(), ModeData.APPROVAL.value,false);
 		List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(companyId,
 				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(),false);
+		iFindDataDCRecord.clearAllStateless();
 		List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(listEmployeeInfo, lstApproval,
 				lstConfirm);
 		if (buildApprovalEmployeeData.isEmpty()) {

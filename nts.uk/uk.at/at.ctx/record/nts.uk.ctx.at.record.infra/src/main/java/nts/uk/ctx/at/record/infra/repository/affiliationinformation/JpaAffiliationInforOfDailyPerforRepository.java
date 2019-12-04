@@ -117,9 +117,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd) {
-    	Optional<AffiliationInforOfDailyPerfor> result =  this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
-    			.setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
+//    	Optional<AffiliationInforOfDailyPerfor> result =  this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
+//    			.setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 		Optional<AffiliationInforOfDailyPerfor> data = Optional.empty();
 		String sql = "select * from KRCDT_DAI_AFFILIATION_INF"
 				+ " where SID = ?"
@@ -142,7 +142,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return result;
+		return data;
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	
 	@SneakyThrows
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
-		String subEmp = NtsStatement.In.createParamsString(empIds);
+//		String subEmp = NtsStatement.In.createParamsString(empIds);
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
 		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE from KRCDT_DAI_AFFILIATION_INF "
 				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"

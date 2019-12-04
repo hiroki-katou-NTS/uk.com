@@ -366,6 +366,7 @@ public class DailyPerformanceCorrectionProcessor {
 			//System.out.println("khoang thoi gian load checkbox 1:" + (System.currentTimeMillis() - startTime1));
 
 			approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode, false);
+			iFindDataDCRecord.clearAllStateless();
 //			approvalResults = approvalStatusActualDay.processApprovalStatus(companyId, listEmployeeId,
 //					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), screenDto.getClosureId(), mode,
 //					Optional.of(keyFind));
