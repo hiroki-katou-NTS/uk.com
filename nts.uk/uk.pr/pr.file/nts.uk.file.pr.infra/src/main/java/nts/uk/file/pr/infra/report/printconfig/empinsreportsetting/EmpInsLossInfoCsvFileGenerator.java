@@ -407,7 +407,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 						value = row.getLaborInsuranceOfficeName();
 				}
 				if (c == 36) {
-					value = reasonMap.get(row.getCauseOfLossInsurance());
+					value = reasonMap.containsKey(row.getCauseOfLossInsurance()) ? reasonMap.get(row.getCauseOfLossInsurance()) : "";
 				}
 				if (c == 37 && row.getScheduleWorkingHourPerWeek() != null) {
 					int hour = row.getScheduleWorkingHourPerWeek().hour();
