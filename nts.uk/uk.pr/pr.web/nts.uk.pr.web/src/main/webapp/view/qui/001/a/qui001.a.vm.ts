@@ -64,21 +64,21 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.endDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.fillingDate.subscribe((data)=>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.fillingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.fillingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             let today  = new Date();

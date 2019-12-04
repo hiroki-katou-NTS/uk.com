@@ -344,25 +344,25 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = empInsHistStart.era();
 				}
 				if (c == 10 && empInsHistStart != null) {
-					value = (empInsHistStart.year() + 1) + "";
+					value = (empInsHistStart.year() + 1) < 10 ? "0" + (empInsHistStart.year() + 1) : (empInsHistStart.year() + 1) + "";
 				}
 				if (c == 11 && empInsHistStart != null) {
-					value = empInsHistStart.month() + "";
+					value = empInsHistStart.month() < 10 ? "0" + empInsHistStart.month() : empInsHistStart.month() + "";
 				}
 				if (c == 12 && empInsHistStart != null) {
-					value = empInsHistStart.day() + "";
+					value = empInsHistStart.day() < 10 ? "0" + empInsHistStart.day() : empInsHistStart.day() + "";
 				}
 				if (c == 13 && empInsHistEnd != null) {
 					value = empInsHistEnd.era();
 				}
 				if (c == 14 && empInsHistEnd != null) {
-					value = (empInsHistEnd.year() + 1) + "";
+					value = (empInsHistEnd.year() + 1) < 10 ? "0" + (empInsHistEnd.year() + 1) : (empInsHistEnd.year() + 1) + "";
 				}
 				if (c == 15 && empInsHistEnd != null) {
-					value = empInsHistEnd.month() + "";
+					value = empInsHistEnd.month() < 10 ? "0" + empInsHistEnd.month() : empInsHistEnd.month() + "";
 				}
 				if (c == 16 && empInsHistEnd != null) {
-					value = empInsHistEnd.day() + "";
+					value = empInsHistEnd.day() < 10 ? "0" + empInsHistEnd.day() : empInsHistEnd.day() + "";
 				}
 				if (c == 17 && row.getCauseOfLossAtr() != null) {
 					value = (row.getCauseOfLossAtr() + 1) + "";
@@ -389,13 +389,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = birthDay.era();
 				}
 				if (c == 27 && birthDay != null) {
-					value = (birthDay.year() + 1) + "";
+					value = (birthDay.year() + 1) < 10 ? "0" + (birthDay.year() + 1) : (birthDay.year() + 1) + "";
 				}
 				if (c == 28 && birthDay != null) {
-					value = birthDay.month() + "";
+					value = birthDay.month() < 10 ? "0" + birthDay.month() : birthDay.month() + "";
 				}
 				if (c == 29 && birthDay != null) {
-					value = birthDay.day() + "";
+					value = birthDay.day() < 10 ? "0" + birthDay.day() : birthDay.day() + "";
 				}
 				if (c == 30) {
 					value = row.getPersonCurrentAddress();
@@ -436,10 +436,10 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPeriodOfStayEnd().year() + "";
 				}
 				if (c == 46 && row.getPeriodOfStayEnd() != null) {
-					value = row.getPeriodOfStayEnd().month() + "";
+					value = row.getPeriodOfStayEnd().month() < 10 ? "0" + row.getPeriodOfStayEnd().month() : row.getPeriodOfStayEnd().month() + "";
 				}
 				if (c == 47 && row.getPeriodOfStayEnd() != null) {
-					value = row.getPeriodOfStayEnd().day() + "";
+					value = row.getPeriodOfStayEnd().day() < 10 ? "0" + row.getPeriodOfStayEnd().day() : row.getPeriodOfStayEnd().day() + "";
 				}
 				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
 					value = row.getUnqualifiedActivityPermission() + "";

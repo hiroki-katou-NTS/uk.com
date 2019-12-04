@@ -93,27 +93,6 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 new model.ItemModel(2, getText("QUI004_A222_39"))
             ]);
 
-            self.startDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.endDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.filingDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
             let today = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
@@ -127,9 +106,31 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.startDate(yyyyS + "/" + mmStart + "/" + dStart);
             self.endDate(yyyyE + "/" + mmEnd + "/" + dEnd);
             self.filingDate(yyyyE + "/" + mmEnd + "/" + dEnd);
+
+            self.startDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.endDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.filingDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+
             self.loadKCP005();
             self.loadCCG001();
-
             self.initScreen();
         }
 

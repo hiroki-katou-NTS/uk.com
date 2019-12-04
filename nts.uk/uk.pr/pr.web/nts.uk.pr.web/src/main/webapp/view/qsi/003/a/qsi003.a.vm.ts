@@ -52,7 +52,7 @@ module nts.uk.pr.view.qsi003.a.viewmodel {
             let self = this;
             self.date.subscribe((data)=>{
                 if(data) {
-                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                    self.datePicker(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
                 }
             });
             this.getRomajiNameNoti();
