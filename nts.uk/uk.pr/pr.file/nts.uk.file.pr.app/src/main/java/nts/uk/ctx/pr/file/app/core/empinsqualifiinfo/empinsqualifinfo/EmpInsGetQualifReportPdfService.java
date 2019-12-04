@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQualifReportQuery> {
@@ -73,12 +74,75 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
     private JapaneseErasAdapter jpErasAdapter;
 
     private static final String MEIJI = "明治";
+
     private static final String TAISHO = "大正";
+
     private static final String SHOWA = "昭和";
+
     private static final String HEISEI = "平成";
+
     private static final String REIWA = "令和";
+
     private static final int DATE_OF_BIRTH = 0;
+
     private static final int OTHER_DATE = 1;
+
+    private static final Map<Integer, Integer> mapPrintAtr = Stream.of(new Integer[][] {
+            { 0, 2 },
+            { 1, 1 }
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    private static final Map<Integer, Integer> mapAcquisitionAtr = Stream.of(new Integer[][] {
+            { 0, 1 },
+            { 1, 2 }
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    private static final Map<Integer, Integer> mapInsuredCause = Stream.of(new Integer[][] {
+            { 0, 1 },
+            { 1, 2 },
+            { 2, 3 },
+            { 3, 4 },
+            { 4, 8 },
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    private static final Map<Integer, Integer> mapPaymentMode = Stream.of(new Integer[][] {
+            { 0, 1 },
+            { 1, 2 },
+            { 2, 3 },
+            { 3, 4 },
+            { 4, 5 },
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    private static final Map<Integer, Integer> mapEmploymentStatus = Stream.of(new Integer[][] {
+            { 0, 1 },
+            { 1, 2 },
+            { 2, 3 },
+            { 3, 4 },
+            { 4, 5 },
+            { 5, 6 },
+            { 6, 7 }
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+    private static final Map<Integer, String> mapJobAtr = Stream.of(new Object[][] {
+            { 0, "01" },
+            { 1, "02" },
+            { 2, "03" },
+            { 3, "04" },
+            { 4, "05" },
+            { 5, "06" },
+            { 6, "07" },
+            { 7, "08" },
+            { 8, "09" },
+            { 9, "10" },
+            { 10, "11" }
+    }).collect(Collectors.toMap(data -> (Integer) data[0], data -> (String) data[1]));
+
+    private static final Map<Integer, Integer> mapJobPath = Stream.of(new Integer[][] {
+            { 0, 1 },
+            { 1, 2 },
+            { 2, 3 },
+            { 3, 4 }
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
     @Override
     protected void handle(ExportServiceContext<EmpInsGetQualifReportQuery> exportServiceContext) {
@@ -130,7 +194,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
         Map<String, EmpInsNumInfo> empInsNumInfos = empInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
 
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndStartDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
         List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
         Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
         CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
@@ -151,23 +215,23 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
             tempReport.setScd(employeeInfos.containsKey(e) ? employeeInfos.get(e).getEmployeeCode() : "");
             if (empInsGetInfos.containsKey(e)) {
                 // A1_2
-                tempReport.setAcquisitionAtr(empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value + 1).orElse(null));
+                tempReport.setAcquisitionAtr(mapAcquisitionAtr.get(empInsGetInfos.get(e).getAcquisitionAtr().map(x -> x.value).orElse(null)));
                 // A1_11
-                tempReport.setCauseOfInsured(empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value + 1).orElse(null));
+                tempReport.setCauseOfInsured(mapInsuredCause.get(empInsGetInfos.get(e).getInsCauseAtr().map(x -> x.value).orElse(null)));
                 // A1_18
                 tempReport.setScheduleWorkingTimePerWeek(empInsGetInfos.get(e).getWorkingTime().map(PrimitiveValueBase::v).orElse(null));
                 // A1_15
-                tempReport.setEmploymentStatus(empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value + 1).orElse(null));
+                tempReport.setEmploymentStatus(mapEmploymentStatus.get(empInsGetInfos.get(e).getEmploymentStatus().map(x -> x.value).orElse(null)));
                 // A1_17
-                tempReport.setJobPath(empInsGetInfos.get(e).getJobPath().map(x -> x.value + 1).orElse(null));
+                tempReport.setJobPath(mapJobPath.get(empInsGetInfos.get(e).getJobPath().map(x -> x.value).orElse(null)));
                 // A1_13
                 tempReport.setPaymentWage(empInsGetInfos.get(e).getPayWage().map(PrimitiveValueBase::v).orElse(null));
                 // A1_12
-                tempReport.setWagePaymentMode(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value + 1).orElse(null));
+                tempReport.setWagePaymentMode(mapPaymentMode.get(empInsGetInfos.get(e).getPaymentMode().map(x -> x.value).orElse(null)));
                 // A1_16
-                tempReport.setOccupation(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null));
+                tempReport.setOccupation(mapJobAtr.get(empInsGetInfos.get(e).getJobAtr().map(x -> x.value).orElse(null)));
                 // A1_19
-                tempReport.setSetContractPeriod(empInsGetInfos.get(e).getPrintAtr().map(x -> x == ContractPeriodPrintAtr.PRINT ? 1 : 2).orElse(null));
+                tempReport.setSetContractPeriod(mapPrintAtr.get(empInsGetInfos.get(e).getPrintAtr().map(x -> x.value).orElse(null)));
             }
             if (empInsHists.containsKey(e)) {
                 val histId = empInsHists.get(e).getHistoryItem().get(0).identifier();
@@ -307,7 +371,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 // A2_5
                 tempReport.setStayPeriod(dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").replace("/", ""));
                 // A2_6
-                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualifPermission());
+                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualificationPermission());
                 // A2_7
                 tempReport.setContractWorkAtr(dummyForResHistInfo.getContractWorkAtr());
 

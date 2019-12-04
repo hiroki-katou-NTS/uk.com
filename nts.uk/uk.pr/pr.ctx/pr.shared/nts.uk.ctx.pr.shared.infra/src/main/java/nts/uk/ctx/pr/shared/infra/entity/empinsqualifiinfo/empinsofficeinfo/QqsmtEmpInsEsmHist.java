@@ -38,13 +38,6 @@ public class QqsmtEmpInsEsmHist extends UkJpaEntity implements Serializable{
     @Column(name = "END_DATE")
     public GeneralDate endDate;
     
-    /**
-    * 労働保険事業所コード
-    */
-    @Basic(optional = false)
-    @Column(name = "LABOR_INS_CD")
-    public String laborInsCd;
-    
     @Override
     protected Object getKey()
     {

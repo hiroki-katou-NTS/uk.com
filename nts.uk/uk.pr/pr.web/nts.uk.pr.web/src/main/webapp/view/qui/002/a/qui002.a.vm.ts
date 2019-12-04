@@ -52,21 +52,21 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.endDate.subscribe((data) => {
                 if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.filingDate.subscribe((data) => {
                 if (nts.uk.util.isNullOrEmpty(data)) {
                     return;
                 }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
             let today = new Date();
             let start = new Date();
@@ -246,7 +246,7 @@ module nts.uk.pr.view.qui002.a.viewmodel {
                 return;
             }
             let params = {
-                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList(),getShared("QUI002_PARAMS_A"));
+                employeeList: self.getListEmployee(self.selectedCode(), self.employeeList(),getShared("QUI002_PARAMS_A")),
             };
             setShared("QUI002_PARAMS_B", params);
             modal("/view/qui/002/b/index.xhtml");

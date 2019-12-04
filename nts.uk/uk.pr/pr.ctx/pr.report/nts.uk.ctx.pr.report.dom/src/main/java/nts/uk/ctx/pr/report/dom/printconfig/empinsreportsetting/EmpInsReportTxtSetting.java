@@ -30,16 +30,16 @@ public class EmpInsReportTxtSetting extends AggregateRoot {
     private FdNumber fdNumber;
 
     /**
-     * 改行コード
+     * 改行コード区分
      */
-    private LineFeedCode lineFeedCode;
+    private LineFeedCodeAtr lineFeedCodeAtr;
 
     public EmpInsReportTxtSetting(String cid, String userId, int officeAtr, String fdNumber, int lineFeedCode) {
         this.cid = cid;
         this.userId = userId;
         this.officeAtr = EnumAdaptor.valueOf(officeAtr, OfficeCls.class);
         this.fdNumber = new FdNumber(fdNumber);
-        this.lineFeedCode = EnumAdaptor.valueOf(lineFeedCode, LineFeedCode.class);
+        this.lineFeedCodeAtr = EnumAdaptor.valueOf(lineFeedCode, LineFeedCodeAtr.class);
     }
 
 }

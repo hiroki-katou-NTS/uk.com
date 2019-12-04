@@ -43,8 +43,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
+            myNumberClsAtr: 0,
             officeClsAtr: 1,
-            myNumberClsAtr: 1,
             nameChangeClsAtr: 0
         }));
 
@@ -83,8 +83,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             ]);
 
             self.printCfg = ko.observableArray([
-                new model.ItemModel(0, getText("Enum_PrinfCtg_PRINT")),
-                new model.ItemModel(1, getText("Enum_prinfCtg_DO_NOT_PRINT"))
+                new model.ItemModel(1, getText("Enum_PrinfCtg_PRINT")),
+                new model.ItemModel(0, getText("Enum_prinfCtg_DO_NOT_PRINT"))
             ]);
 
             self.lineFeedCodeCls = ko.observableArray([
@@ -92,27 +92,6 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 new model.ItemModel(1, getText("QUI004_A222_38")),
                 new model.ItemModel(2, getText("QUI004_A222_39"))
             ]);
-
-            self.startDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.endDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.filingDate.subscribe((data) => {
-                if (nts.uk.util.isNullOrEmpty(data)) {
-                    return;
-                }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
 
             let today = new Date();
             let start = new Date();
@@ -127,9 +106,31 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             self.startDate(yyyyS + "/" + mmStart + "/" + dStart);
             self.endDate(yyyyE + "/" + mmEnd + "/" + dEnd);
             self.filingDate(yyyyE + "/" + mmEnd + "/" + dEnd);
+
+            self.startDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.endDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.filingDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+
             self.loadKCP005();
             self.loadCCG001();
-
             self.initScreen();
         }
 
