@@ -410,12 +410,20 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = reasonMap.containsKey(row.getCauseOfLossInsurance()) ? reasonMap.get(row.getCauseOfLossInsurance()) : "";
 				}
 				if (c == 37 && row.getScheduleWorkingHourPerWeek() != null) {
-					int hour = row.getScheduleWorkingHourPerWeek().hour();
-					value = hour < 10 ? "0" + hour : "" + hour;
+					if (row.getScheduleWorkingHourPerWeek().hour() > 99) {
+						value = "99";
+					} else {
+						int hour = row.getScheduleWorkingHourPerWeek().hour();
+						value = hour < 10 ? "0" + hour : "" + hour;
+					}
 				}
 				if (c == 38 && row.getScheduleWorkingHourPerWeek() != null) {
-					int minute = row.getScheduleWorkingHourPerWeek().minute();
-					value = minute < 10 ? "0" + minute : "" + minute;
+					if (row.getScheduleWorkingHourPerWeek().hour() > 99) {
+						value = "59";
+					} else {
+						int minute = row.getScheduleWorkingHourPerWeek().minute();
+						value = minute < 10 ? "0" + minute : "" + minute;
+					}
 				}
 				if (c == 39) {
 					value = row.getPublicEmploymentSecurityOfficeName();
