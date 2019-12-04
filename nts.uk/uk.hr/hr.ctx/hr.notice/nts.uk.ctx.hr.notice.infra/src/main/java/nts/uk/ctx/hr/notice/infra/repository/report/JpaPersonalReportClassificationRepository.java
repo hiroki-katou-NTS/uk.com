@@ -16,13 +16,13 @@ import nts.uk.ctx.hr.notice.infra.entity.report.JhnmtRptLayoutPk;
 
 @Stateless
 public class JpaPersonalReportClassificationRepository extends JpaRepository implements PersonalReportClassificationRepository{
-	private final static String SEL_BY_CID = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid order by c.displayOrder";
+	private final static String SEL_BY_CID = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid order by c.rptLayouNameYomi";
 	
-	private final static String SEL_BY_CID_AND_ABOLITON = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.abolition =:abolition order by c.displayOrder";
+	private final static String SEL_BY_CID_AND_ABOLITON = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.abolition =:abolition order by c.rptLayouNameYomi";
 	
-	private final static String IS_DUPLICATE_LAYOUTCODE = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouCd =:rptLayouCd order by c.displayOrder";
+	private final static String IS_DUPLICATE_LAYOUTCODE = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouCd =:rptLayouCd order by c.rptLayouNameYomi";
 	
-	private final static String IS_DUPLICATE_LAYOUT_NAME = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouName =:rptLayouName order by c.displayOrder";
+	private final static String IS_DUPLICATE_LAYOUT_NAME = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouName =:rptLayouName order by c.rptLayouNameYomi";
 	
 	private final static String MAX_ID_BY_CID = "SELECT MAX(c.jhnmtRptLayoutPk.rptLayoutId) FROM JhnmtRptLayout c WHERE c.cid =:cid";
 	

@@ -93,6 +93,7 @@ module jhn011.b.viewmodel {
                         }
                     });
                     _.each(_data, d => layouts.push(d));
+                    //届出一覧の先頭を選択する (chọn item đầu tiên trong list đơn xin (report))
                     if (!code) {
                         layout.id(_data[0].id);
                     }

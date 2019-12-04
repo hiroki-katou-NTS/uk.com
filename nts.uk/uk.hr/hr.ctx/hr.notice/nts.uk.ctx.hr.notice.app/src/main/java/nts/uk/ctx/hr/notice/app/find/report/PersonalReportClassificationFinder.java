@@ -34,26 +34,43 @@ public class PersonalReportClassificationFinder {
 	@Inject
 	private HumanCategoryPub humanCtgPub;
 	
+	/**
+	 * アルゴリズム「届出一覧表示処理」を実行する (Thực hiện thuật toán「Xử lý hiển thị list đơn xin」 )
+	 * @param abolition
+	 * @return
+	 */
 	public List<PersonalReportClassificationDto> getAllReportCls(boolean abolition){
 		return this.reportClsRepo.getAllByCid(AppContexts.user().companyId(), abolition).stream().map(c -> {
 			return PersonalReportClassificationDto.fromDomain(c);
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * アルゴリズム「届出の内容表示処理」を実行する (Thực hiện thuật toán 「Xử lý hiển thị nội dung đơn xin」)
+	 * @param reportClsId
+	 * @return
+	 */
 	public PersonalReportClassificationDto getDetailReportCls(int reportClsId) {
 		String cid = AppContexts.user().companyId();
 		
+		//ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。(Get tất cả domain models「type đơn xin cá nhân」、「 Item dang ky don xin ca nhan」)
 		Optional<PersonalReportClassification> reportClsOpt = this.reportClsRepo
 				.getDetailReportClsByReportClsID(reportClsId);
 		
+		//ドメインモデル「個人情報項目定義」、「個別届出の登録項目」をすべて取得する (Get all domain model 「個人情報項目定義」、「個別届出の登録項目」)
 		List<RegisterPersonalReportItem> listItemCls = this.itemReportClsRepo.getAllItemBy(cid, reportClsId);
+		
 		List<LayoutReportClsDto> items =  mapItemCls(listItemCls);
 		
 		return reportClsOpt.isPresent() == true ? PersonalReportClassificationDto.fromDomain(reportClsOpt.get(), items)
 				: new PersonalReportClassificationDto();
 	}
 	
-	
+	/**
+	 * convert item để lấy thông tin kiểu dữ liệu của item đó
+	 * @param listItemCls
+	 * @return
+	 */
 	private List<LayoutReportClsDto> mapItemCls(List<RegisterPersonalReportItem> listItemCls){
 		List<LayoutReportClsDto> result = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
@@ -72,7 +89,7 @@ public class PersonalReportClassificationFinder {
 				List<String> itemIds = itemsByOrder1.stream().map(c -> c.getItemId()).distinct().collect(Collectors.toList());
 					if(!CollectionUtil.isEmpty(itemIds)) {
 						List<PerInfoItemDefImport> listItemDefDto = new ArrayList<PerInfoItemDefImport>();
-
+						//ドメインモデル「個人情報項目定義」を取得する - Lấy định nghĩa item, điều kiện 
 						List<PerInfoItemDefImport> listItemDef = humanItemPub.getAll(itemIds);
 						listItemDef.stream().forEach(c ->{
 							c.setCategoryCode(item.getCategoryCd());
@@ -140,6 +157,11 @@ public class PersonalReportClassificationFinder {
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * アルゴリズム「システム利用区分から利用可能な個人情報カテゴリを全て取得する」を実行する
+	 * (Thực hiện thuật toán 「Get tất cả các catergory thông tin cá nhân có thể sử dụng từ phân loại sử dụng system」)
+	 * @return
+	 */
 	public PerInfoCtgDataEnumImport getCtg() {
 		return this.humanCtgPub.getAllPerInfoCtgHumanByCompany();
 	}

@@ -19,7 +19,11 @@ import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItem;
 import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-
+/**
+ * アルゴリズム「登録処理」を実行する (Thực hiện thuật toán "Xử lý đăng ký")
+ * @author lanlt
+ *
+ */
 @Stateless
 public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportCommand> {
 	@Inject
@@ -58,19 +62,25 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 	}
 
 	public void insert(String cid, NewLayoutReportCommand cmd, BundledBusinessException exceptions) {
+		//ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する (Get tất cả domain mode 「個別届出種類」、「個別届出の登録項目)
 		Map<String, Boolean> checkExits = this.reportClsRepo.checkExist(cid, cmd.getReportCode(), cmd.getReportName());
+		//個別届出種類.個別届出種類IDを採番する Đánh số [type đơn xin cá nhân.ID type đơn xin cá nhân])
 		int maxLayoutId = this.reportClsRepo.maxId(cid);
+		//
 		int maxDisOrder = this.reportClsRepo.maxDisorder(cid);
 		if (checkExits.isEmpty()) {
+			//max個別届出種類ID+1
+			//maxID typy don xin ca nhan+1
 			this.reportClsRepo.insert(PersonalReportClassification.createFromJavaType(cid, maxLayoutId + 1,
 					cmd.getReportCode(), cmd.getReportName(), cmd.getReportNameYomi(), maxDisOrder + 1,
 					cmd.isAbolition(), cmd.getReportType(), cmd.getRemark(), cmd.getMemo(), cmd.getMessage(),
 					cmd.isFormReport(), true));
 
 		} else {
+			//届出コード、届出名の重複をチェックする (Check Overlap Code đơn xin, Name đơn xin)
 			Boolean name = checkExits.get("NAME");
 			Boolean code = checkExits.get("CODE");
-
+			//メッセージ(#Msgj_41#)、または (#Msgj_42#)を表示する( Hiển thi message (# Msgj_41 #) or (# Msgj_42 #))
 			if (code != null) {
 				// JHN011_B222_1_1
 				BusinessException codeMessage = new BusinessException("Msgj_41",
@@ -102,6 +112,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 
 		Optional<PersonalReportClassification> duplicateNameOpt = duplicateNameLst.stream()
 				.filter(c -> c.getPReportClsId() != cmd.getId().intValue()).findFirst();
+		//届出コード、届出名の重複をチェックする (Check Overlap Code đơn xin, Name đơn xin)
 		if (duplicateNameOpt.isPresent()) {
 			BusinessException nameMessage = new BusinessException("Msgj_42", TextResource.localize("JHN011_B222_1_2"));
 			nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_1"));
@@ -111,17 +122,24 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 				exceptions.throwExceptions();
 			}
 		} else {
-			Optional<PersonalReportClassification> oldReport = duplicateNameLst.stream()
-					.filter(c -> c.getPReportClsId() == cmd.getId().intValue()).findFirst();
+
+			Optional<PersonalReportClassification> oldReport = this.reportClsRepo
+					.getDetailReportClsByReportClsID(cmd.getId().intValue());
+			if(!oldReport.isPresent()) {
+				return;
+			}
 			PersonalReportClassification domain = PersonalReportClassification.createFromJavaType(cid,
 					oldReport.get().getPReportClsId(), cmd.getReportCode(), cmd.getReportName(),
 					cmd.getReportNameYomi(), oldReport.get().getDisplayOrder(), cmd.isAbolition(), cmd.getReportType(),
 					cmd.getRemark(), cmd.getMemo(), cmd.getMessage(), cmd.isFormReport(), true);
+			//画面項目「届出コード/届出名など」に選択、入力された情報をドメインモデル「個別届出種類」に更新する 
+			//(Chọn item màn hình" Code đơn xin/ Tên đơn xin v.v.", cập nhật thông tin đã input vào domain model ''Type đơn xin cá nhân")
 			this.reportClsRepo.update(domain);
 
 			List<RegisterPersonalReportItem> listItemCls = this.itemReportClsRepo.getAllItemBy(cid,
 					cmd.getId().intValue());
-
+			//画面項目「レイアウトフィールド」表示されているレイアウト項目の選択、入力された情報をドメインモデル「個別届出の登録項目」に更新する 
+			//Chọn  layout item đã được hiển thị item màn hình "Layout Field", Cập nhật thông tin đã input vào domain model "item đăng ký đơn xin cá nhân"
 			if (cmd.getClassifications().size() > 0) {
 				List<ClassificationCommand> classifications = cmd.getClassifications();
 				List<RegisterPersonalReportItem> list_cls = new ArrayList<>();
@@ -143,7 +161,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 							});
 
 						}else {
-							
+							//項目が[区切り線]の場合はCATEGORY_CD、ITEM_CDに"SEPA***"を保存します。***は001～999を採番する
 							String itemCd = this.createNewCode(itemCodeLatest, SPECIAL_ITEM_CODE);
 							String categoryCd = this.createNewCode(ctgCodeLatest, SPECIAL_CTG_CODE);
 							ctgCodeLatest = categoryCd;
@@ -175,7 +193,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 							});
 
 						}else {
-							
+							//項目が[区切り線]の場合はCATEGORY_CD、ITEM_CDに"SEPA***"を保存します。***は001～999を採番する
 							String itemCd = this.createNewCode(itemCodeLatest, SPECIAL_ITEM_CODE);
 							String categoryCd = this.createNewCode(ctgCodeLatest, SPECIAL_CTG_CODE);
 							ctgCodeLatest = categoryCd;
