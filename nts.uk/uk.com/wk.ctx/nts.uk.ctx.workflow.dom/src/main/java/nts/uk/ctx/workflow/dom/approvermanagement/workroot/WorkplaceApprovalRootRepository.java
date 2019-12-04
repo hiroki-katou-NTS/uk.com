@@ -50,7 +50,8 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param rootAtr
 	 * @return
 	 */
-	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr);
+	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType,
+			EmploymentRootAtr rootAtr, int sysAtr);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(共通の)
@@ -60,7 +61,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
+	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date, int sysAtr);
 
 	/**
 	 * add Workplace Approval Root

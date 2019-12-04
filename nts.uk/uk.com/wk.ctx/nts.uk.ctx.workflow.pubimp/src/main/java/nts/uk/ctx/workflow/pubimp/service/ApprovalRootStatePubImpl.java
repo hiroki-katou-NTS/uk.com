@@ -29,6 +29,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -201,7 +202,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
 					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class) , 
-					date);
+					date,
+					SystemAtr.WORK.value);
 		} else {
 			ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).orElseThrow(()->
 					new RuntimeException("data WWFDT_APPROVAL_ROOT_STATE error: ID ="+appID)

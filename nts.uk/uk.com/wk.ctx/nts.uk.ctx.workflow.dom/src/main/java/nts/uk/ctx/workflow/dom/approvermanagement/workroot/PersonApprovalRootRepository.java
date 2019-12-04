@@ -89,7 +89,8 @@ public interface PersonApprovalRootRepository {
 	 * @param rootAtr
 	 * @return
 	 */
-	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr);
+	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType,
+			EmploymentRootAtr rootAtr, int sysAtr);
 	
 	/**
 	 * 個人別就業承認ルート」を取得する
@@ -98,7 +99,7 @@ public interface PersonApprovalRootRepository {
 	 * @param sid
 	 * @param baseDate
 	 */
-	Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate);
+	Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate, int sysAtr);
 	/**
 	 * ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
 	 * @param companyId

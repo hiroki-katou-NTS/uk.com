@@ -19,6 +19,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -65,7 +66,8 @@ public class ApproveImpl implements ApproveService {
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
-					appDate);
+					appDate,
+					SystemAtr.WORK.value);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			//ドメインモデル「承認ルートインスタンス」を取得する
@@ -186,7 +188,8 @@ public class ApproveImpl implements ApproveService {
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
-					appDate);
+					appDate,
+					SystemAtr.WORK.value);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
@@ -236,7 +239,8 @@ public class ApproveImpl implements ApproveService {
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
-					appDate);
+					appDate,
+					SystemAtr.WORK.value);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);

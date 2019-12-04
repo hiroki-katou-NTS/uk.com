@@ -51,8 +51,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 //	private ApprovalRootStatePub approvalStatePub;
 
 	@Override
-	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,int appType, GeneralDate standardDate) {
-		List<ApprovalRootExport> approvalRootData = this.approvalRootPub.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate);
+	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,int appType,
+			GeneralDate standardDate, int sysAtr) {
+		List<ApprovalRootExport> approvalRootData = this.approvalRootPub.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate, sysAtr);
 		if(CollectionUtil.isEmpty(approvalRootData)){
 			return Collections.emptyList();
 		}

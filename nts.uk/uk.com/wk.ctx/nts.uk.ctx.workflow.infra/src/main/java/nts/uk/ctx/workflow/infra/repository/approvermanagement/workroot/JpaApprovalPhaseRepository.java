@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -209,7 +208,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 				entity.employeeId,
 				entity.displayOrder,
 				entity.approvalAtr,
-				entity.confirmPerson);
+				entity.confirmPerson,
+				entity.specWkpId);
 		return domain;
 	}
 	
@@ -278,7 +278,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 								y.employeeId, 
 								y.approverDispOrder,
 								EnumAdaptor.valueOf(y.approvalAtr, ApprovalAtr.class), 
-								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class))).collect(Collectors.toList());
+								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class),
+								null)).collect(Collectors.toList());
 					return new ApprovalPhase(companyId, branchId, approvalPhaseId, approvalForm, browsingPhase, orderNumber, approvers);
 				}).collect(Collectors.toList());
 	}

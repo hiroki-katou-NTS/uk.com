@@ -45,6 +45,9 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	/**確定者*/
 	@Column(name = "CONFIRM_PERSON")
 	public int confirmPerson;
+	/**特定職場ID*/
+	@Column(name = "SPEC_WKP_ID")
+	public String specWkpId;
 
 	@ManyToOne
 	@JoinColumns({

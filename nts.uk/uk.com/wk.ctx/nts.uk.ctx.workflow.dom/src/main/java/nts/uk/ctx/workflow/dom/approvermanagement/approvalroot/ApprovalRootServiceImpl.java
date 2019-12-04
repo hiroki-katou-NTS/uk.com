@@ -75,36 +75,33 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
 	 * 
-	 * @param cid
-	 *            会社ID
-	 * @param sid
-	 *            社員ID（申請本人の社員ID）
-	 * @param employmentRootAtr
-	 *            就業ルート区分
-	 * @param subjectRequest
-	 *            対象申請
-	 * @param baseDate
-	 *            基準日
+	 * @param cid 会社ID
+	 * @param sid 社員ID（申請本人の社員ID）
+	 * @param employmentRootAtr 就業ルート区分
+	 * @param subjectRequest 対象申請
+	 * @param baseDate 基準日
+	 * @param システム区分　sysAtr
+	 * update code do update domain (hoatt)
 	 */
 	@Override
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
-			int appType, GeneralDate baseDate) {
+			int appType, GeneralDate baseDate, int sysAtr) {
 		EmploymentRootAtr rootAtr = EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class);
 		ApplicationType applicationType = EnumAdaptor.valueOf(appType, ApplicationType.class);
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
 		Optional<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate,
-				applicationType, rootAtr);
+				applicationType, rootAtr, sysAtr);
 		if (!perAppRoots.isPresent()) {
 			// get 個人別就業承認ルート from workflow by other conditions
 			Optional<PersonApprovalRoot> perAppRootsOfCommon = this.perApprovalRootRepository.findByBaseDateOfCommon(cid,
-					sid, baseDate);
+					sid, baseDate, sysAtr);
 			if (!perAppRootsOfCommon.isPresent()) {
 				// 所属職場を含む上位職場を取得
 				List<String> wpkList = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				for (String wkpId : wpkList) {
 					Optional<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wkpId,
-							baseDate, applicationType, rootAtr);
+							baseDate, applicationType, rootAtr, sysAtr);
 					if (wkpAppRoots.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(wkpAppRoots.get()).stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
@@ -114,7 +111,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					}
 
 					Optional<WorkplaceApprovalRoot> wkpAppRootsOfCom = this.wkpApprovalRootRepository
-							.findByBaseDateOfCommon(cid, wkpId, baseDate);
+							.findByBaseDateOfCommon(cid, wkpId, baseDate, sysAtr);
 					if (wkpAppRootsOfCom.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(wkpAppRootsOfCom.get()).stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
@@ -126,10 +123,10 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 
 				// ドメインモデル「会社別就業承認ルート」を取得する
 				Optional<CompanyApprovalRoot> comAppRoots = this.comApprovalRootRepository.findByBaseDate(cid, baseDate,
-						applicationType, rootAtr);
+						applicationType, rootAtr, sysAtr);
 				if (!comAppRoots.isPresent()) {
 					Optional<CompanyApprovalRoot> companyAppRootsOfCom = this.comApprovalRootRepository
-							.findByBaseDateOfCommon(cid, baseDate);
+							.findByBaseDateOfCommon(cid, baseDate, sysAtr);
 					if (companyAppRootsOfCom.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(companyAppRootsOfCom.get()).stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))

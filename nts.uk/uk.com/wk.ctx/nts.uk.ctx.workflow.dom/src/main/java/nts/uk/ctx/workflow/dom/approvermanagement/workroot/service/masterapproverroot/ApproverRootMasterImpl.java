@@ -111,14 +111,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
 					root.getApprovalId(), root.getEmployeeId(),
 					"", 
-					root.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-					root.getApplicationType() == null ? 0: root.getApplicationType().value,
-					root.getEmploymentAppHistoryItems().get(0).start(), 
-					root.getEmploymentAppHistoryItems().get(0).end(), 
-					root.getBranchId(), 
-					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType() == null ? 0: root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr() == null ? 0: root.getEmploymentRootAtr().value); 
+					root.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+					root.getApprRoot().getApplicationType() == null ? 0: root.getApprRoot().getApplicationType().value,
+					root.getApprRoot().getHistoryItems().get(0).start(), 
+					root.getApprRoot().getHistoryItems().get(0).end(), 
+					root.getApprRoot().getBranchId(), 
+					root.getApprRoot().getAnyItemApplicationId(),
+					root.getApprRoot().getConfirmationRootType() == null ? 0: root.getApprRoot().getConfirmationRootType().value,
+					root.getApprRoot().getEmploymentRootAtr() == null ? 0: root.getApprRoot().getEmploymentRootAtr().value); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -161,14 +161,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprovalId(), 
 					"",
 					root.getWorkplaceId(), 
-					root.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-					root.getApplicationType() == null ? 0:  root.getApplicationType().value,
-					root.getEmploymentAppHistoryItems().get(0).start(), 
-					root.getEmploymentAppHistoryItems().get(0).end(), 
-					root.getBranchId(), 
-					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType()  == null ? 0:  root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr() == null ? 0: root.getEmploymentRootAtr().value);
+					root.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+					root.getApprRoot().getApplicationType() == null ? 0:  root.getApprRoot().getApplicationType().value,
+					root.getApprRoot().getHistoryItems().get(0).start(), 
+					root.getApprRoot().getHistoryItems().get(0).end(), 
+					root.getApprRoot().getBranchId(), 
+					root.getApprRoot().getAnyItemApplicationId(),
+					root.getApprRoot().getConfirmationRootType()  == null ? 0:  root.getApprRoot().getConfirmationRootType().value,
+					root.getApprRoot().getEmploymentRootAtr() == null ? 0: root.getApprRoot().getEmploymentRootAtr().value);
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
@@ -252,17 +252,17 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 */
 	private ApprovalForApplication getApproval(CompanyApprovalRoot comRoot, String companyID) {
 		//find name
-		String nameRoot = this.findNameRoot(comRoot.getEmploymentRootAtr(), comRoot.getApplicationType(), comRoot.getConfirmationRootType());
+		String nameRoot = this.findNameRoot(comRoot.getApprRoot().getEmploymentRootAtr(), comRoot.getApprRoot().getApplicationType(), comRoot.getApprRoot().getConfirmationRootType());
 		//khoi tao
-		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getEmploymentRootAtr().value, comRoot.getEmploymentRootAtr().value == 0 ? null : 
-			comRoot.getEmploymentRootAtr().value == 1 ? comRoot.getApplicationType().value : comRoot.getConfirmationRootType().value,
+		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getApprRoot().getEmploymentRootAtr().value, comRoot.getApprRoot().getEmploymentRootAtr().value == 0 ? null : 
+			comRoot.getApprRoot().getEmploymentRootAtr().value == 1 ? comRoot.getApprRoot().getApplicationType().value : comRoot.getApprRoot().getConfirmationRootType().value,
 					nameRoot , null, null, null);
-		approvalForApp.setStartDate(comRoot.getEmploymentAppHistoryItems().get(0).start());
-		approvalForApp.setEndDate(comRoot.getEmploymentAppHistoryItems().get(0).end());
+		approvalForApp.setStartDate(comRoot.getApprRoot().getHistoryItems().get(0).start());
+		approvalForApp.setEndDate(comRoot.getApprRoot().getHistoryItems().get(0).end());
 		
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId(), comRoot.getEmploymentAppHistoryItems().get(0).start());		
+		lstMatter = getPhaseApprover(companyID, comRoot.getApprRoot().getBranchId(), comRoot.getApprRoot().getHistoryItems().get(0).start());		
 		approvalForApp.setLstApproval(lstMatter);
 		return approvalForApp;
 	}
@@ -328,7 +328,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		}
 		for (CompanyApprovalRoot comRoot : lstComs) {
 			//TH don 36 bo qua
-			if(comRoot.isApplication() && comRoot.getApplicationType().equals(ApplicationType.APPLICATION_36)){
+			if(comRoot.isApplication() && comRoot.getApprRoot().getApplicationType().equals(ApplicationType.APPLICATION_36)){
 				continue;
 			}
 			//convert data

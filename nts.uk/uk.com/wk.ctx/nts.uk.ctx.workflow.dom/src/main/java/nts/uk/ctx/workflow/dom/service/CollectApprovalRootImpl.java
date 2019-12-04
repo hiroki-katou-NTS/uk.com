@@ -44,6 +44,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -100,70 +101,70 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, 
-			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate standardDate) {
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate standardDate, int sysAtr) {
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain「個人別就業承認ルート」)
 		// ①個人別の該当申請の承認ルートを取得、なかったら②へ
-		Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, appType, rootAtr);
+		Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, appType, rootAtr, sysAtr);
 		if(opPerAppRoot.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRoot.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRoot.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opPerAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
 		// ②個人別の共通の承認ルートを取得、なかったら③へ
-		Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate);
+		Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, sysAtr);
 		if(opPerAppRootsOfCommon.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRootsOfCommon.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRootsOfCommon.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
 		List<String> wpkList = employeeAdapter.findWpkIdsBySid(companyID, employeeID, standardDate);
 		for (String wｋｐId : wpkList) {
-			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, wｋｐId, standardDate, appType, rootAtr);
+			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, wｋｐId, standardDate, appType, rootAtr, sysAtr);
 			if(opWkpAppRoot.isPresent()){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRoot.get().getBranchId());
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRoot.get().getApprRoot().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, opWkpAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+						listApprovalPhaseAfter, opWkpAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
-			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate);
+			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate, sysAtr);
 			if(opWkpAppRootsOfCom.isPresent()){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRootsOfCom.get().getBranchId());
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRootsOfCom.get().getApprRoot().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 		}
 		
-		Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, appType, rootAtr);
+		Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, appType, rootAtr, sysAtr);
 		if(opComAppRoot.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opComAppRoot.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opComAppRoot.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opComAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opComAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
-		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate);
+		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, sysAtr);
 		if(opCompanyAppRootsOfCom.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opCompanyAppRootsOfCom.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opCompanyAppRootsOfCom.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.NO_APPROVER);
@@ -210,7 +211,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 										x.getSid(), 
 										approver.getOrderNumber(), 
 										approver.getApprovalAtr(), 
-										approver.getConfirmPerson()))
+										approver.getConfirmPerson(),
+										approver.getSpecWkpId()))
 								.collect(Collectors.toList());
 				if(CollectionUtil.isEmpty(listApproverJob)){
 					return;
@@ -477,11 +479,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// ①個人別の該当申請の承認ルートを取得、なかったら②へ
 		List<PersonApprovalRoot> perAppRootList = perApprovalRootRepository.findEmpByConfirm(companyID, employeeID, confirmAtr, standardDate);
 		if(!CollectionUtil.isEmpty(perAppRootList)){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, perAppRootList.get(0).getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, perAppRootList.get(0).getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, perAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, perAppRootList.get(0).getApprRoot().getHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootState = ApprovalRootState.createFromFirst(
@@ -501,17 +503,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// ②個人別の共通の承認ルートを取得、なかったら③へ
 		Optional<PersonApprovalRoot> opPerAppRootsOfCommon;
 		try {
-			opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate);
+			opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, SystemAtr.WORK.value);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.ABNORMAL_TERMINATION);
 		}
 		if(opPerAppRootsOfCommon.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRootsOfCommon.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRootsOfCommon.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootState = ApprovalRootState.createFromFirst(
@@ -531,11 +533,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		for (String wｋｐId : wpkList) {
 			List<WorkplaceApprovalRoot> wkpAppRootList = wkpApprovalRootRepository.findEmpByConfirm(companyID, wｋｐId, confirmAtr, standardDate);
 			if(!CollectionUtil.isEmpty(wkpAppRootList)){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, wkpAppRootList.get(0).getBranchId());
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, wkpAppRootList.get(0).getApprRoot().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, wkpAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+						listApprovalPhaseAfter, wkpAppRootList.get(0).getApprRoot().getHistoryItems().get(0).getHistoryId());
 				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
 					approvalRootState = ApprovalRootState.createFromFirst(
@@ -552,17 +554,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			}
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom;
 			try {
-				opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate);
+				opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate, SystemAtr.WORK.value);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.ABNORMAL_TERMINATION);
 			}
 			if(opWkpAppRootsOfCom.isPresent()){
-				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRootsOfCom.get().getBranchId());
+				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRootsOfCom.get().getApprRoot().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
 					approvalRootState = ApprovalRootState.createFromFirst(
@@ -581,11 +583,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		
 		List<CompanyApprovalRoot> comAppRootList = comApprovalRootRepository.findEmpByConfirm(companyID, confirmAtr, standardDate);
 		if(!CollectionUtil.isEmpty(comAppRootList)){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, comAppRootList.get(0).getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, comAppRootList.get(0).getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, comAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, comAppRootList.get(0).getApprRoot().getHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootState = ApprovalRootState.createFromFirst(
@@ -603,17 +605,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		
 		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom;
 		try {
-			opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate);
+			opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, SystemAtr.WORK.value);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.ABNORMAL_TERMINATION);
 		}
 		if(opCompanyAppRootsOfCom.isPresent()){
-			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opCompanyAppRootsOfCom.get().getBranchId());
+			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opCompanyAppRootsOfCom.get().getApprRoot().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootState = ApprovalRootState.createFromFirst(

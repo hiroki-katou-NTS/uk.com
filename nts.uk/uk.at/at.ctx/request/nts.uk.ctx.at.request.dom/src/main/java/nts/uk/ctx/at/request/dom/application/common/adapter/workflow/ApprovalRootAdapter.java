@@ -25,7 +25,7 @@ public interface ApprovalRootAdapter {
 	 * @return
 	 */
 	List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr, int appType,
-			GeneralDate standardDate);
+			GeneralDate standardDate, int sysAtr);
 	
 	/**
 	 * 3.職位から承認者へ変換する

@@ -32,6 +32,8 @@ public class Approver extends DomainObject{
 	private ApprovalAtr approvalAtr;
 	/**確定者*/
 	private ConfirmPerson confirmPerson;
+	/**特定職場ID*/
+	private String specWkpId;
 	
 	public static Approver createSimpleFromJavaType(String companyId, 
 			String branchId,
@@ -41,7 +43,8 @@ public class Approver extends DomainObject{
 			String employeeId,
 			int orderNumber,
 			int approvalAtr,
-			int confirmPerson){
+			int confirmPerson,
+			String specWkpId){
 		return new Approver(companyId,
 				branchId,
 				approvalPhaseId,
@@ -50,7 +53,8 @@ public class Approver extends DomainObject{
 				employeeId,
 				orderNumber,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
-				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class));
+				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class),
+				specWkpId);
 	}
 	public void updateApprovalPhaseId(String approvalPhaseId){
 		this.approvalPhaseId = approvalPhaseId;

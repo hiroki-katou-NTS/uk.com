@@ -79,7 +79,8 @@ public interface CompanyApprovalRootRepository {
 	 * @param rootAt
 	 * @return
 	 */
-	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt);
+	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType,
+			EmploymentRootAtr rootAt, int sysAtr);
 
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する(共通）
@@ -88,7 +89,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date);
+	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date, int sysAtr);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する

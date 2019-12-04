@@ -57,11 +57,11 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDate(companyId, baseDate);
 		List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
-				.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
+				.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 				.collect(Collectors.toList());
 		if (!CollectionUtil.isEmpty(comInfoCommon)) {
 			for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
-				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
+				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getApprRoot().getBranchId());
 				if(!lstAppPhase.isEmpty()){
 					return lstUnRegister;
 				}

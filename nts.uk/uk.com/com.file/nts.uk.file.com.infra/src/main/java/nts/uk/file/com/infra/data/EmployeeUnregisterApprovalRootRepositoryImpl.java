@@ -80,13 +80,13 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 			return null;
 		}
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate).map(x -> Arrays.asList(x)).orElse(Collections.emptyList());
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate, 0).map(x -> Arrays.asList(x)).orElse(Collections.emptyList());
 		if (CollectionUtil.isEmpty(comInfo)) {
 			// TODO thuc hien khi co tra loi QA
 			// return null;
 		} else {
 			List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
-					.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
+					.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 					.collect(Collectors.toList());
 			if (!CollectionUtil.isEmpty(comInfoCommon)) {
 				return null;

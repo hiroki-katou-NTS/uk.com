@@ -209,7 +209,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				}
 				List<Approver> lstAppr = new ArrayList<>();
 				for (EmpOrderApproverAsApp c : appr.getLstEmpInfo()) {
-					lstAppr.add(Approver.createSimpleFromJavaType("", "", "", "", "", c.getEmployeeName(), 0, 0, c.isConfirmPerson() ? 1:0));
+					lstAppr.add(Approver.createSimpleFromJavaType("", "", "", "", "", c.getEmployeeName(), 0, 0, c.isConfirmPerson() ? 1:0, null));
 				}
 				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", "", 1, 1, appr.getPhaseNumber(), lstAppr));
 			}

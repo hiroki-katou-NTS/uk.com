@@ -217,14 +217,14 @@ public class SettingOfManagerFinder {
 	 * @return
 	 */
 	private SettingInfo getSettingInfo(String companyId, PersonApprovalRoot psAppRoot){
-		GeneralDate startDate = psAppRoot.getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
-		GeneralDate endDate   = psAppRoot.getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
+		GeneralDate startDate = psAppRoot.getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
+		GeneralDate endDate   = psAppRoot.getApprRoot().getHistoryItems().get(0).getDatePeriod().end();
 		boolean existAppPhase = false;
 		String approvalCode = null;
 		String approverId   = null;
 		String approvalName = null;
 		// ドメインモデル「承認フェーズ」を取得する
-		Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId, psAppRoot.getBranchId());
+		Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
 		if (commonApprovalPhase.isPresent()) {
 			commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
 			// 「承認者」を取得する

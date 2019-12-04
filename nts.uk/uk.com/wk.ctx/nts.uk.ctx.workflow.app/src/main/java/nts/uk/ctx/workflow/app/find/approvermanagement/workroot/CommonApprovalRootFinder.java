@@ -567,7 +567,7 @@ public class CommonApprovalRootFinder {
 		List<PersonApprovalRoot> getAllPsApprovalRoot = repo.getPastHistory(companyId, employeeId);
 
 		Map<GeneralDate, List<PersonApprovalRoot>> grouped = getAllPsApprovalRoot.stream().collect(
-				Collectors.groupingBy(item -> item.getEmploymentAppHistoryItems().get(0).start()));
+				Collectors.groupingBy(item -> item.getApprRoot().getHistoryItems().get(0).start()));
 
 		List<PastHistoryDto> itemModel = grouped.entrySet().stream().map(item -> {
 			GeneralDate startDate    = null;
@@ -580,9 +580,9 @@ public class CommonApprovalRootFinder {
 			String nameB113 = null;
 			if (!item.getValue().isEmpty()) {
 				for(PersonApprovalRoot psAppRoot: item.getValue()){
-					startDate = psAppRoot.getEmploymentAppHistoryItems().get(0).start();
-					endDate   = psAppRoot.getEmploymentAppHistoryItems().get(0).end();
-					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getBranchId());
+					startDate = psAppRoot.getApprRoot().getHistoryItems().get(0).start();
+					endDate   = psAppRoot.getApprRoot().getHistoryItems().get(0).end();
+					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
 					if(psAppPhase.isPresent()){
 						Optional<Approver> approver1 = psAppPhase.get().getApprovers().stream().filter(x-> x.getOrderNumber() == 0).findFirst();
 						PersonImport person = null;
@@ -603,7 +603,7 @@ public class CommonApprovalRootFinder {
 								}
 							}
 						}
-						if(psAppRoot.isConfirm() && psAppRoot.getConfirmationRootType().equals(ConfirmationRootType.MONTHLY_CONFIRMATION)){
+						if(psAppRoot.isConfirm() && psAppRoot.getApprRoot().getConfirmationRootType().equals(ConfirmationRootType.MONTHLY_CONFIRMATION)){
 							if(person != null){
 								codeB17 = person.getEmployeeCode();
 								nameB18 = person.getEmployeeName();

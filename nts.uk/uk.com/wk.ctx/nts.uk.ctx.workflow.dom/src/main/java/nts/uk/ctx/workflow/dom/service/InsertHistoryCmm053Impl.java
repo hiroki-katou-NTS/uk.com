@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
@@ -62,7 +63,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		List<PersonApprovalRoot> psOlds = this.repoPerson.getPsAppRootLastest(companyId, employeeId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 
 		// 追加する履歴を最新の履歴の開始年月日と比較する
-		if (!psOlds.isEmpty() && startDate.beforeOrEquals(psOlds.get(0).getEmploymentAppHistoryItems().get(0).start())) {
+		if (!psOlds.isEmpty() && startDate.beforeOrEquals(psOlds.get(0).getApprRoot().getHistoryItems().get(0).start())) {
 			//追加する履歴の開始年月日 >= 最新の履歴の開始年月日 が falseの場合
 			throw new BusinessException("Msg_153");
 		}
@@ -71,7 +72,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		List<ApprovalPhase> listApprovalPhase = new ArrayList<>();
 		if (!listPsPre.isEmpty()) {
 			for (PersonApprovalRoot psApp : listPsPre) {
-				listApprovalPhase.addAll(this.repoAppPhase.getAllApprovalPhasebyCode(companyId, psApp.getBranchId()));
+				listApprovalPhase.addAll(this.repoAppPhase.getAllApprovalPhasebyCode(companyId, psApp.getApprRoot().getBranchId()));
 			}
 		}
 		// ドメインモデル「個人別就業承認ルート」．「承認フェーズ」．「順序」をチェックする
@@ -114,7 +115,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-10　の社員ID
 				PersonApprovalRoot psAppRoot = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, branchId, null, null, 0);
+						endDate, branchId, null, null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -122,14 +123,14 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-7　の社員ID
 				PersonApprovalRoot common = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, UUID.randomUUID().toString(), null, null, 0);
+						endDate, UUID.randomUUID().toString(), null, null, 0, SystemAtr.WORK.value, null, null);
 				insertPersonApproval.add(common);
 			}
 
 			// 条件： 1．就業ルート区分：確認 AND 確認ルート種類：月次確認 2．承認フェーズ.順序 ＝ 1
 			PersonApprovalRoot monthly = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 					UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-					endDate, UUID.randomUUID().toString(), null, 1, 2);
+					endDate, UUID.randomUUID().toString(), null, 1, 2, SystemAtr.WORK.value, null, null);
 
 			insertPersonApproval.add(monthly);
 
@@ -176,8 +177,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		GeneralDate endDatePrevious        = startDate.addDays(-1);
 		List<PersonApprovalRoot> insertPsAppRoot = new ArrayList<>();
 		//xac dinh ls moi, cu
-		if (commonPs.get().getEmploymentAppHistoryItems().get(0).start()
-				.after(monthlyPs.get().getEmploymentAppHistoryItems().get(0).start())) {
+		if (commonPs.get().getApprRoot().getHistoryItems().get(0).start()
+				.after(monthlyPs.get().getApprRoot().getHistoryItems().get(0).start())) {
 			olderPsAppRoot  = monthlyPs.get();
 		} else {
 			olderPsAppRoot  = commonPs.get();
@@ -187,7 +188,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		PersonApprovalRoot updateOlderPsAppRoot = PersonApprovalRoot.updateEdate(olderPsAppRoot, endDatePrevious.toString().replace("/", "-"));
 		repoPerson.updatePsApprovalRoot(updateOlderPsAppRoot);
 		//1.1　最新履歴の承認者を更新する
-		if (PersonApprovalRoot.isCommonPsApprovalRoot(olderPsAppRoot)) {//TH ls cu la common
+		if (olderPsAppRoot.isCommon()) {//TH ls cu la common
 			//them ls common moi, update ls monthly
 			if(dailyDisplay){//insert 2 record
 				String branchId = UUID.randomUUID().toString();
@@ -196,7 +197,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-10　の社員ID
 				PersonApprovalRoot psAppRoot = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, branchId, null, null, 0);
+						endDate, branchId, null, null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -204,7 +205,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-7　の社員ID
 				PersonApprovalRoot common = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, UUID.randomUUID().toString(), null, null, 0);
+						endDate, UUID.randomUUID().toString(), null, null, 0, SystemAtr.WORK.value, null, null);
 				insertPsAppRoot.add(common);
 			}
 			//update ls monthly
@@ -215,7 +216,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			// 条件： 1．就業ルート区分：確認 AND 確認ルート種類：月次確認 2．承認フェーズ.順序 ＝ 1
 			PersonApprovalRoot monthly = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 					UUID.randomUUID().toString(), employeeId, historyId, null,
-					startDate.toString().replace("/", "-"), endDate, UUID.randomUUID().toString(), null, 1, 2);
+					startDate.toString().replace("/", "-"), endDate, UUID.randomUUID().toString(), null, 1, 2, SystemAtr.WORK.value, null, null);
 			insertPsAppRoot.add(monthly);
 			//update ls common
 			updateHistory.updateRootCMM053(companyId, departmentApproverId, dailyApproverId, commonPs.get(), null, dailyDisplay);
@@ -253,7 +254,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-10　の社員ID
 				PersonApprovalRoot psAppRoot = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, branchId, null, null, 0);
+						endDate, branchId, null, null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -261,7 +262,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				//承認者・社員ID　＝　A2-7　の社員ID
 				PersonApprovalRoot common = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-						endDate, UUID.randomUUID().toString(), null, null, 0);
+						endDate, UUID.randomUUID().toString(), null, null, 0, SystemAtr.WORK.value, null, null);
 				insertPersonApproval.add(common);
 			}
 		}
@@ -272,7 +273,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			// 条件： 1．就業ルート区分：確認 AND 確認ルート種類：月次確認 2．承認フェーズ.順序 ＝ 1
 			PersonApprovalRoot monthly = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 					UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
-					endDate, UUID.randomUUID().toString(), null, 1, 2);
+					endDate, UUID.randomUUID().toString(), null, 1, 2, SystemAtr.WORK.value, null, null);
 			insertPersonApproval.add(monthly);
 		}
 
@@ -303,13 +304,13 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		for (PersonApprovalRoot psAppRoot : insertPersonApproval) {
 			String approverId      = UUID.randomUUID().toString();
 			String approvalPhaseId = UUID.randomUUID().toString();
-			String branchId        = psAppRoot.getBranchId();
+			String branchId        = psAppRoot.getApprRoot().getBranchId();
 
 			// 承認者
 			List<Approver> listApprover = new ArrayList<>();
-			String employeeIdApprover   = PersonApprovalRoot.isCommonPsApprovalRoot(psAppRoot) ? dailyApproverId : departmentApproverId;
+			String employeeIdApprover   = psAppRoot.isCommon() ? dailyApproverId : departmentApproverId;
 			listApprover.add(Approver.createSimpleFromJavaType(companyId, branchId, approvalPhaseId, approverId,
-					jobTitleId, employeeIdApprover, approverOrderNumber, approvalAtr, confirmPerson));
+					jobTitleId, employeeIdApprover, approverOrderNumber, approvalAtr, confirmPerson, null));
 			this.repoApprover.addAllApprover(listApprover);
 
 			// 承認フェーズ
@@ -335,15 +336,15 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		List<ApprovalBranch> lstBranch = new ArrayList<>();
 
 		String approvalPhaseId = UUID.randomUUID().toString();
-		String branchId        = psAppRoot.getBranchId();
+		String branchId        = psAppRoot.getApprRoot().getBranchId();
 		
 		List<Approver> listApprover = new ArrayList<>();
 		//承認者1 A2_10
 		listApprover.add(Approver.createSimpleFromJavaType(companyId, branchId, approvalPhaseId, UUID.randomUUID().toString(),
-				jobTitleId, appr1, 0, approvalAtr, confirmPerson));
+				jobTitleId, appr1, 0, approvalAtr, confirmPerson, null));
 		//承認者2 A2_7
 		listApprover.add(Approver.createSimpleFromJavaType(companyId, branchId, approvalPhaseId, UUID.randomUUID().toString(),
-				jobTitleId, appr2, 1, approvalAtr, confirmPerson));
+				jobTitleId, appr2, 1, approvalAtr, confirmPerson, null));
 		
 		this.repoApprover.addAllApprover(listApprover);
 
@@ -374,12 +375,12 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		int confirmPerson       = 0;
 		String jobTitleId       = null;
 		String approverId       = IdentifierUtil.randomUniqueId();
-		String branchId         = psAppRoot.getBranchId();
+		String branchId         = psAppRoot.getApprRoot().getBranchId();
 		String approvalPhaseId  = IdentifierUtil.randomUniqueId();
 		if(!StringUtil.isNullOrEmpty(employeeIdApprover, true)){
 			// 承認者
-			Approver approver = Approver.createSimpleFromJavaType(companyId, psAppRoot.getBranchId(), approvalPhaseId,
-					approverId, jobTitleId, employeeIdApprover, approverOrderNumber, approvalAtr, confirmPerson);
+			Approver approver = Approver.createSimpleFromJavaType(companyId, psAppRoot.getApprRoot().getBranchId(), approvalPhaseId,
+					approverId, jobTitleId, employeeIdApprover, approverOrderNumber, approvalAtr, confirmPerson, null);
 			List<Approver> lstApprover = Arrays.asList(approver);
 			this.repoApprover.addAllApprover(lstApprover);
 

@@ -94,7 +94,8 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 				entity.employeeId,
 				entity.displayOrder,
 				entity.approvalAtr,
-				entity.confirmPerson);
+				entity.confirmPerson,
+				entity.specWkpId);
 		return domain;
 	}
 	/**

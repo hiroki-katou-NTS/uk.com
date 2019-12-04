@@ -40,14 +40,14 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 		GeneralDate endDatePrevious = startDate.addDays(-1);
 		List<PersonApprovalRoot> getPastHistory = this.repoPerson.getPastHistory(companyId, employeeId);
 		Map<GeneralDate, List<PersonApprovalRoot>> groupedPsApproval = getPastHistory.stream()
-				.collect(Collectors.groupingBy(item -> item.getEmploymentAppHistoryItems().get(0).end()));
+				.collect(Collectors.groupingBy(item -> item.getApprRoot().getHistoryItems().get(0).end()));
 
 		if (groupedPsApproval.containsKey(endDate)) {
 			List<PersonApprovalRoot> deletePersonApproval = groupedPsApproval.get(endDate);
 			for (PersonApprovalRoot deleteItem : deletePersonApproval) {
 				String approvalId = deleteItem.getApprovalId();
-				String historyId  = deleteItem.getEmploymentAppHistoryItems().get(0).getHistoryId();
-				String branchId   = deleteItem.getBranchId();
+				String historyId  = deleteItem.getApprRoot().getHistoryItems().get(0).getHistoryId();
+				String branchId   = deleteItem.getApprRoot().getBranchId();
 				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, branchId);
 				if (approvalPhase.isPresent()) {
 					String phaseId = approvalPhase.get().getApprovalPhaseId();
@@ -88,7 +88,7 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 		if (personAppRootList.isEmpty())
 			return Collections.emptyList();
 		return personAppRootList.stream()
-				.filter(x -> x.getEmploymentAppHistoryItems().get(0).end().compareTo(endDate) == 0)
+				.filter(x -> x.getApprRoot().getHistoryItems().get(0).end().compareTo(endDate) == 0)
 				.collect(Collectors.toList());
 	}
 }

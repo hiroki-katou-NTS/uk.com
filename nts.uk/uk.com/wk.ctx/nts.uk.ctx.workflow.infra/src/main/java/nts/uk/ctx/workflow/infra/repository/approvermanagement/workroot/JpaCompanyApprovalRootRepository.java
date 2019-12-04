@@ -40,11 +40,13 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL";
 	private static final String FIND_BY_BASEDATE = FIND_BY_CID
+				+ " AND c.sysAtr = :sysAtr"
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = :rootAtr" 
 				+ " AND c.applicationType = :appType";
 	private static final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
+				+ " AND c.sysAtr = :sysAtr"
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = 0";
@@ -147,9 +149,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt) {
+	public Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt, int sysAtr) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyID)
+				.setParameter("sysAtr", sysAtr)
 				.setParameter("baseDate", date)
 				.setParameter("appType", appType.value)
 				.setParameter("rootAtr", rootAt.value)
@@ -165,9 +168,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date) {
+	public Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date, int sysAtr) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyID)
+				.setParameter("sysAtr", sysAtr)
 				.setParameter("baseDate", date)
 				.getSingle(c->toDomainComApR(c));
 	}
@@ -257,7 +261,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
-				entity.employmentRootAtr);
+				entity.employmentRootAtr,
+				entity.sysAtr,
+				entity.noticeId,
+				entity.busEventId);
 		return domain;
 	}
 	/**
@@ -267,14 +274,14 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	private WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
 		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmploymentAppHistoryItems().get(0).getHistoryId());
-		entity.startDate = domain.getEmploymentAppHistoryItems().get(0).start();
-		entity.endDate = domain.getEmploymentAppHistoryItems().get(0).end();
-		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
-		entity.branchId = domain.getBranchId();
-		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
-		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
+		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
+		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
+		entity.applicationType = (domain.getApprRoot().getApplicationType() == null ? null : domain.getApprRoot().getApplicationType().value);
+		entity.branchId = domain.getApprRoot().getBranchId();
+		entity.anyItemAppId = domain.getApprRoot().getAnyItemApplicationId();
+		entity.confirmationRootType = (domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value);
+		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		return entity;
 	}
 	@Override
@@ -318,7 +325,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	}
 	@Override
 	public List<CompanyApprovalRoot> getComAppRootLast(String companyID, GeneralDate endDate) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(FIND_LAST_BY_END_DATE,WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("endDate", endDate)

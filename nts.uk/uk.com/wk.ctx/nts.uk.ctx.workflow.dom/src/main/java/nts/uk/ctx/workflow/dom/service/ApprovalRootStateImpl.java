@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
@@ -33,7 +34,8 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 	@Override
 	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, 
 			GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate) {
-		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, baseDate);
+		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID,
+				employeeID, EmploymentRootAtr.APPLICATION, appType, baseDate, SystemAtr.WORK.value);
 		ApprovalRootState approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromFirst(
 				companyID,

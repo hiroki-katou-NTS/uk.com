@@ -36,9 +36,9 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 
 	@Override
 	public List<ApprovalRootExport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
-			int appType, GeneralDate standardDate) {
+			int appType, GeneralDate standardDate, int sysAtr) {
 		List<ApprovalRootOutput> approvalData = this.approvalRootService.getApprovalRootOfSubjectRequest(cid, sid,
-				employmentRootAtr, appType, standardDate);
+				employmentRootAtr, appType, standardDate, sysAtr);
 		if (CollectionUtil.isEmpty(approvalData)) {
 			return Collections.emptyList();
 		}

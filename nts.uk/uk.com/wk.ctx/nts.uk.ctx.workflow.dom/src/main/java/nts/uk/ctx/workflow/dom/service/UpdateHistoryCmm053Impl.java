@@ -52,8 +52,8 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 
 		if (commonPs.isPresent() && monthlyPs.isPresent()) {
 			// １．バラバラ履歴の場合: TH 2 loai deu co ls
-			if (commonPs.get().getEmploymentAppHistoryItems().get(0).start()
-					.compareTo(monthlyPs.get().getEmploymentAppHistoryItems().get(0).start()) != 0) {
+			if (commonPs.get().getApprRoot().getHistoryItems().get(0).start()
+					.compareTo(monthlyPs.get().getApprRoot().getHistoryItems().get(0).start()) != 0) {
 				//TH 2 lich su khong giong nhau
 				this.insertHistoryCmm053Service.updateOrInsertDiffStartDate(companyId, employeeId, historyId, startDate,
 						endDate, commonPs, monthlyPs, departmentApproverId, dailyApproverId, dailyDisplay);
@@ -87,7 +87,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
 		if(Strings.isNotBlank(employeeIdApprover)){
 			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-					psAppRoot.getBranchId());
+					psAppRoot.getApprRoot().getBranchId());
 			if (approvalPhase.isPresent()) {
 				ApprovalPhase updateApprovalPhase = approvalPhase.get();
 				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
@@ -103,7 +103,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	public void updateRootCMM053(String companyId, String a27, String a210,PersonApprovalRoot commonRoot, PersonApprovalRoot monthlyRoot, boolean dailyDisplay) {
 		List<Approver> lstApprNew = new ArrayList<>();
 		if(commonRoot != null){
-			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getBranchId());
+			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getApprRoot().getBranchId());
 			//common
 			if(commonPhase.isPresent()){
 				//承認フェーズ・承認形態　＝　誰か一人
@@ -116,21 +116,21 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 				//delete approver old
 				repoApprover.deleteAllApproverByAppPhId(companyId, phaseId);
 				//insert approver moi
-				String branchId = commonRoot.getBranchId();
+				String branchId = commonRoot.getApprRoot().getBranchId();
 				//common
 				if(dailyDisplay){//common insert 2 record
 					//a210
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a210, 0, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a210, 0, 0, 0, null));
 					//a27
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 1, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 1, 0, 0, null));
 				}else{//common insert 1 record
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0, null));
 				}
 	 		}
 		}
 		if(monthlyRoot != null){
 			//monthly A27
-			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getBranchId());
+			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getApprRoot().getBranchId());
 			if(monthlyPhase.isPresent()){
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
@@ -141,7 +141,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 				String mphaseId = mphase.getApprovalPhaseId();
 				//delete approver old
 				repoApprover.deleteAllApproverByAppPhId(companyId, mphaseId);
-				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getBranchId(), mphaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0));
+				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getApprRoot().getBranchId(), mphaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0, null));
 			}
 		}
 		if(!lstApprNew.isEmpty()){

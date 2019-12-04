@@ -44,9 +44,18 @@ public class WwfmtComApprovalRoot extends UkJpaEntity implements Serializable {
 	/**確認ルート種類*/
 	@Column(name = "CONFIRMATION_ROOT_TYPE")
 	public Integer confirmationRootType;
-	/**就業ルート区分*/
+	/**承認ルート区分*/
 	@Column(name = "EMPLOYMENT_ROOT_ATR")
 	public int employmentRootAtr;
+	/**システム区分*/
+	@Column(name = "SYSTEM_ATR")
+	public int sysAtr;
+	/**届出ID*/
+	@Column(name = "NOTICE_ID")
+	public String noticeId;
+	/**各業務エベントID*/
+	@Column(name = "BUS_EVENT_ID")
+	public String busEventId;
 
 	@Override
 	protected Object getKey() {

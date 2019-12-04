@@ -31,7 +31,8 @@ public interface CollectApprovalRootService {
 			String employeeID, 
 			EmploymentRootAtr rootAtr, 
 			ApplicationType appType, 
-			GeneralDate standardDate);
+			GeneralDate standardDate,
+			int sysAtr);
 	
 	/**
 	 * 2.承認ルートを整理する

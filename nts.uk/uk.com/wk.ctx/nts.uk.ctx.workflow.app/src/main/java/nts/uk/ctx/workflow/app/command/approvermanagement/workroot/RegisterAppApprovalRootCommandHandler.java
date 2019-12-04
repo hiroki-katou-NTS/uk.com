@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
@@ -29,6 +30,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRe
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
@@ -112,11 +114,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				//root right
 				CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
 									UUID.randomUUID().toString(), historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null, employRootAtr);
+									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
+									employRootAtr, SystemAtr.WORK.value, null, null);
 				//branch
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 				lstBranch.add(branch);
-				if(!CompanyApprovalRoot.checkValidate(startDate.toString(), endDateS)){
+				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
 					throw new BusinessException("Msg_156");
 				}
 				listCom.add(com);
@@ -162,12 +165,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstCom.isEmpty()){
 						CompanyApprovalRoot com = lstCom.get(0);
 						//==========
-						deleteAppPh(com.getBranchId());
+						deleteAppPh(com.getApprRoot().getBranchId());
 						//=======
 						//delete root
-						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getApprRoot().getHistoryItems().get(0).getHistoryId());
 						//delete branch
-						repoBranch.deleteBranch(companyId, com.getBranchId());
+						repoBranch.deleteBranch(companyId, com.getApprRoot().getBranchId());
 					}
 				}
 			}
@@ -184,11 +187,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					//root right
 					CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
 										UUID.randomUUID().toString(), historyId, type.getValue(), startDate, endDateOld,
-										branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? typeCom : null, employRootAtr);
+										branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? typeCom : null,
+										employRootAtr, SystemAtr.WORK.value, null, null);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
-					if(!CompanyApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+					if(!ApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
 						throw new BusinessException("Msg_156");
 					}
 					listCom.add(com);
@@ -250,10 +254,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				String branchId = UUID.randomUUID().toString();
 				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
 									UUID.randomUUID().toString(), workplaceId, historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null, employRootAtr);
+									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
+									employRootAtr, SystemAtr.WORK.value, null, null);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 				lstBranch.add(branch);
-				if(!WorkplaceApprovalRoot.checkValidate(startDate.toString(), endDateS)){
+				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
 					throw new BusinessException("Msg_156");
 				}
 				listWp.add(com);
@@ -298,11 +303,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstWp.isEmpty()){
 						WorkplaceApprovalRoot wp = lstWp.get(0);
 						//==========
-						deleteAppPh(wp.getBranchId());
+						deleteAppPh(wp.getApprRoot().getBranchId());
 						//=======
-						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getApprRoot().getHistoryItems().get(0).getHistoryId());
 						//delete branch
-						repoBranch.deleteBranch(companyId, wp.getBranchId());
+						repoBranch.deleteBranch(companyId, wp.getApprRoot().getBranchId());
 					}
 				}
 			}
@@ -317,11 +322,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					//root right
 					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),workplaceId,
 							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
-							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr);
+							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
+							SystemAtr.WORK.value, null, null);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
-					if(!WorkplaceApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+					if(!ApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
 						throw new BusinessException("Msg_156");
 					}
 					listWp.add(wp);
@@ -376,10 +382,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				String branchId = UUID.randomUUID().toString();
 				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
 									UUID.randomUUID().toString(), employeeId, historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null, employRootAtr);
+									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
+									employRootAtr, SystemAtr.WORK.value, null, null);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 				lstBranch.add(branch);
-				if(!PersonApprovalRoot.checkValidate(startDate.toString(), endDateS)){
+				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
 					throw new BusinessException("Msg_156");
 				}
 				listPs.add(com);
@@ -424,11 +431,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstPs.isEmpty()){
 						PersonApprovalRoot ps = lstPs.get(0);
 						//==========
-						deleteAppPh(ps.getBranchId());
+						deleteAppPh(ps.getApprRoot().getBranchId());
 						//=======
-						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getApprRoot().getHistoryItems().get(0).getHistoryId());
 						//delete branch
-						repoBranch.deleteBranch(companyId, ps.getBranchId());
+						repoBranch.deleteBranch(companyId, ps.getApprRoot().getBranchId());
 					}
 				}
 			}
@@ -443,11 +450,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					//root right
 					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),employeeId,
 							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
-							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr);
+							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
+									SystemAtr.WORK.value, null, null);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
-					if(!PersonApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
+					if(!ApprovalRoot.checkValidate(startDate.toString(), endDateOld)){
 						throw new BusinessException("Msg_156");
 					}
 					listPs.add(ps);
@@ -601,7 +609,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		List<ApproverDto> approver = appPhase.getApprover();
 		for (ApproverDto approverDto : approver) {
 			lstApp.add(Approver.createSimpleFromJavaType(companyId, branchId,
-					approvalPhaseId, UUID.randomUUID().toString(), approverDto.getJobTitleId(), approverDto.getEmployeeId(), approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson()));
+					approvalPhaseId, UUID.randomUUID().toString(), approverDto.getJobTitleId(), approverDto.getEmployeeId(),
+					approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson(), null));
 		}
 		return ApprovalPhase.createSimpleFromJavaType(companyId, branchId,
 				approvalPhaseId , appPhase.getApprovalForm(),
