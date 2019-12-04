@@ -763,12 +763,12 @@ module kcp.share.tree {
                     //end
                     optionsText: 'nodeText',
                     multiple: self.isMultiSelect,
-                    virtualization: true,
+                    virtualization: false,
                     rows: self.maxRows,
-                    virtualizationMode: 'continuous',
                     extColumns: self.treeComponentColumn,
                     enable: true,
-                    showCheckBox: self.isMultiSelect
+                    showCheckBox: self.isMultiSelect,
+                    autoCommit: true
                 };
                 //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 const searchBoxOptions = {
