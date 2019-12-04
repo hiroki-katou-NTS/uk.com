@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 
 /**
  * 弁当
@@ -98,7 +98,7 @@ public class Bento {
 	 * @param quantity
 	 * @return
 	 */
-	public BentoAmountTotal calculateAmount(Integer quantity) {
-		return null;
+	public BentoDetailsAmountTotal calculateAmount(Integer quantity) {
+		return BentoDetailsAmountTotal.calculate(frameNo, quantity, amount1.v(), amount2.v());
 	}
 }

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.arc.error.BusinessException;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -15,27 +15,30 @@ import nts.gul.collection.CollectionUtil;
  * @author Doan Duy Hung
  *
  */
-@Getter
 public class BentoReservation extends AggregateRoot{
 	
 	/**
 	 * 予約登録情報
 	 */
+	@Getter
 	private final ReservationRegisterInfo registerInfor;
 	
 	/**
 	 * 予約対象日
 	 */
+	@Getter
 	private final ReservationDate reservationDate;
 	
 	/**
 	 * 注文済み
 	 */
+	@Getter
 	private boolean ordered;
 	
 	/**
 	 * 弁当予約明細リスト
 	 */
+	@Getter
 	private final List<BentoReservationDetail> bentoReservationDetails;
 	
 	public BentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered, 

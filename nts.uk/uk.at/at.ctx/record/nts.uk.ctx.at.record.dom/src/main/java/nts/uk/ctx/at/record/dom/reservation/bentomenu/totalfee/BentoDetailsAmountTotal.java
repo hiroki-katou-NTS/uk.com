@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee;
 
-import java.util.List;
-
 import lombok.Getter;
 
+/**
+ * 弁当合計金額明細
+ * @author Doan Duy Hung
+ *
+ */
 public class BentoDetailsAmountTotal {
 	
 	/**
 	 * 	枠番
 	 */
+	@Getter
 	private Integer frameNo;
 	
 	/**
@@ -37,7 +41,7 @@ public class BentoDetailsAmountTotal {
 	 * @param amount2
 	 * @return
 	 */
-	public BentoDetailsAmountTotal calculate(List<BentoDetailsAmountTotal> detailsAmountTotal, Integer quantity, Integer amount1, Integer amount2) {
+	public static BentoDetailsAmountTotal calculate(Integer frameNo, Integer quantity, Integer amount1, Integer amount2) {
 		return new BentoDetailsAmountTotal(
 						frameNo, 
 						quantity * amount1, 
