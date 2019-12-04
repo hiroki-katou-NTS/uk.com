@@ -2674,8 +2674,6 @@ module nts.custombinding {
                 if (typeof $editable === 'boolean' || $editable !== 2) {
                     // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
-                        //debugger;
-                        console.log("outData:" + data);
                         return {
                             dispOrder: Number(i) + 1,
                             personInfoCategoryID: item.personInfoCategoryID,

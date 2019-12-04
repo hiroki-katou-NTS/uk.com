@@ -19,6 +19,7 @@ module jhn011.b.viewmodel {
         enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
         checkAbolition: KnockoutObservable<boolean> = ko.observable(true);
+        row: KnockoutObservable<number>;
         
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
@@ -37,6 +38,7 @@ module jhn011.b.viewmodel {
             self.start();
 
             layout.id.subscribe(id => {
+                 
                 if (id) {
                     // Gọi service tải dữ liệu ra layout
                     block();
@@ -51,7 +53,7 @@ module jhn011.b.viewmodel {
 
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);
-                            $("#A_INP_NAME").focus();
+                            $("#B222_1_2").focus();
                             unblock();
                         }
                     });
@@ -59,21 +61,17 @@ module jhn011.b.viewmodel {
                     self.enaBtnSave(false);
                     self.enaBtnDel(false);
                 }
+                
+                setTimeout(() =>{
+                    $('#B221_4_container').attr(`style`, `height: 0px !important;`);    
+                }, 100);
+                
             });
             
             self.checkAbolition.subscribe(c =>{
                 self.start(layout.id());
-            
-            })
-            
+            });
         }
-        
-        setResize(){
-            
-        
-        
-        }
-        
         
 
         start(code?: string): JQueryPromise<any> {

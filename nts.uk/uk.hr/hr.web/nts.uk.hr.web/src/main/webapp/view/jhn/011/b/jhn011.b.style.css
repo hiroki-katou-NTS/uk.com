@@ -60,7 +60,7 @@ button.search-btn {
 }
 
 #B222 {
-	margin-left: 30px;
+	/* margin-left: 30px; */
 	margin-top: 14px;
 	float: left;
 	/* min-height: 600px; */
@@ -109,7 +109,10 @@ div#B221.relative.bg-green.caret-right.caret-background {
 
 .layout-control .drag-panel {
 	height: 320px !important;
+	width: 710px !important;
 }
+
+
 
 .nosetarea {
 	width: 810px;
