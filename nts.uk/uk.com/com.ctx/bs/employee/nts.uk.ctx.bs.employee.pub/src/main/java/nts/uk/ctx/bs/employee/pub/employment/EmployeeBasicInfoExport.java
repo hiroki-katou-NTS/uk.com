@@ -20,14 +20,14 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class EmployeeBasicInfoExport   {
 	
-	private String employmentCode;
+	private String employmentCode; // 雇用コード
 
-	private GeneralDate dateJoinComp;
+	private GeneralDate dateJoinComp; // 入社日
 
-	private String sid;
+	private String sid; // 社員ID
 
-	private GeneralDate birthday;
+	private GeneralDate birthday; // 誕生日
 	
-	public  String  pid;
+	public  String  pid; // 個人ID
 	
 }
