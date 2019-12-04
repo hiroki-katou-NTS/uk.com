@@ -60,6 +60,10 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 				.toGetEmploymentCls(false).build();
 		List<EmployeeInformationImport> listInterviewEmployeeImport = employeeInforAdapter.find(paramInterview);
 		
+		listInterviewEmployeeImport.forEach(li -> {
+			System.out.println(li.getDepartment() + " li.sid ->>> " + li.getEmployeeId());
+		});
+		
 		//面談記録情報リストを生成する(Tạo  Main interviewer information list)
 		List<InterviewRecordInfo> listMainInterviewInfo =  this.createInterviewRecordInfoList(
 										output_GetInterviewRecord.getListSimpleInterview(),
@@ -123,8 +127,8 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 					i.getEmployeeCode(), 
 					i.getBusinessName(),
 					i.getBusinessNameKana(), 
-					i.getDepartment().getDepartmentCode(), 
-					i.getDepartment().getDepartmentDisplayName(),
+					i.getDepartment() == null?"": i.getDepartment().getDepartmentCode(), 
+				    i.getDepartment() == null?"": i.getDepartment().getDepartmentDisplayName(),
 					i.getPosition().getPositionCode(), 
 					i.getPosition().getPositionName(), 
 					i.getEmployment().getEmploymentCode(), 
