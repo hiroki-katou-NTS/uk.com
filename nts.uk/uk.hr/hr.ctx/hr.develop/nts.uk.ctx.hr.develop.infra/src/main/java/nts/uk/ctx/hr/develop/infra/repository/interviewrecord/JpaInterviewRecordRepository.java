@@ -17,7 +17,7 @@ public class JpaInterviewRecordRepository extends JpaRepository implements Inter
 	private static final String GET_INTERVIEW_CONTENTS = "SELECT a FROM JflmtInterviewRecord a "
 			+ "WHERE a.companyID = :companyID "
 			+ " AND a.interviewCategory = :interviewCategory"
-			+ " AND a.intervieweeSid IN (:listEmployeeID)";
+			+ " AND a.intervieweeSid IN :listEmployeeID";
 	
 	@Override
 	public List<InterviewRecord> getInterviewRecords(String companyID, int interviewCate, List<String> listEmployeeID) {
