@@ -120,10 +120,15 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 			InterviewRecordInfo info = new InterviewRecordInfo(i.getEmployeeId(), simple.getInterviewRecordId(),
 					simple.getInterviewDate(),
 					simple.getMainInterviewerSid(), 
-					i.getEmployeeCode(), i.getBusinessName(),
-					i.getBusinessNameKana(), i.getDepartment().getDepartmentCode(), i.getDepartment().getDepartmentDisplayName(),
-					i.getPosition().getPositionCode(), i.getPosition().getPositionName(), 
-					i.getEmployment().getEmploymentCode(), i.getEmployment().getEmploymentName());
+					i.getEmployeeCode(), 
+					i.getBusinessName(),
+					i.getBusinessNameKana(), 
+					i.getDepartment().getDepartmentCode(), 
+					i.getDepartment().getDepartmentDisplayName(),
+					i.getPosition().getPositionCode(), 
+					i.getPosition().getPositionName(), 
+					i.getEmployment().getEmploymentCode(), 
+					i.getEmployment().getEmploymentName());
 			
 			result.add(info);
 		});
