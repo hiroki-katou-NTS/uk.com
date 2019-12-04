@@ -1,20 +1,14 @@
 package nts.uk.ctx.hr.develop.ws.interview;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.hr.develop.app.interview.find.InterviewFinder;
-import nts.uk.ctx.hr.develop.dom.interview.InterviewRecord;
 import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
 import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
-import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInforAdapter;
-import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 
 
 @Path("interview")
@@ -22,11 +16,11 @@ import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 public class InterviewWS {
 	
 	
-	@Inject
-	private InterviewFinder interviewFinder;
+//	@Inject
+//	private InterviewFinder interviewFinder;
 
-	@Inject
-	private EmployeeInforAdapter employeeInforAdapter;
+//	@Inject
+//	private EmployeeInforAdapter employeeInforAdapter;
 
 	@Inject
 	private IInterviewRecordSummary iInterviewRecordSummary;
