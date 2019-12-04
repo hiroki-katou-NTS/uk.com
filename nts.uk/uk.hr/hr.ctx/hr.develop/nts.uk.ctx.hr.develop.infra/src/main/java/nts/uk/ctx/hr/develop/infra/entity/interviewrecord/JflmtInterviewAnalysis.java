@@ -42,16 +42,6 @@ public class JflmtInterviewAnalysis extends UkJpaEntity implements Serializable 
 	@Column(name = "ANALYSIS_ITEM_NAME")
 	public String analysisItemName;
 
-	/*
-	 * @ManyToOne
-	 * 
-	 * @JoinColumns({
-	 * 
-	 * @JoinColumn(name = "ANALYSIS_INFO_ID", referencedColumnName =
-	 * "ANALYSIS_INFO_ID", insertable = false, updatable = false) }) public
-	 * JflmtInterviewContent jflmtInterviewContent;
-	 */
-
 	public JflmtInterviewAnalysis(JflmtInterviewAnalysisPK pk, String companyId, long interviewContentId,
 			long analysisItemId, String analysisItemCd, String analysisItemName) {
 		super();

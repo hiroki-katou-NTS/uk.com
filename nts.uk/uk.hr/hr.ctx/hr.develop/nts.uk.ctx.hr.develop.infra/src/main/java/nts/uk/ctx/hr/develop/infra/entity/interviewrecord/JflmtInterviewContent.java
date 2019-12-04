@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.hr.develop.dom.interview.AnalysisItem;
 import nts.uk.ctx.hr.develop.dom.interview.InterviewRecordContent;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -54,9 +55,6 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 	@Column(name = "ANALYSIS_CATEGORY_NAME")
 	public String analysisCategoryName;
 
-	public List<JflmtInterviewAnalysis> jflmtInterviewAnalysis;
-
-	
 	public JflmtInterviewContent(JflmtInterviewContentPK pk, String cid, long interviewContentID, String interviewItemCD,
 			String interviewItemName, String recordContent, long analysisCategoryId, String analysisCategoryCD,
 			String analysisCategoryName, List<JflmtInterviewAnalysis> jflmtInterviewAnalysis) {
@@ -70,10 +68,9 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 		this.analysisCategoryId = analysisCategoryId;
 		this.analysisCategoryCD = analysisCategoryCD;
 		this.analysisCategoryName = analysisCategoryName;
-		this.jflmtInterviewAnalysis = jflmtInterviewAnalysis;
 	}
 
-	public InterviewRecordContent toDomain() {
+	public InterviewRecordContent toDomain(List<AnalysisItem> listAnalysisItemId) {
 		return new InterviewRecordContent(interviewContentID,
 				pk.displayNum,
 				interviewItemCD,
@@ -81,7 +78,7 @@ public class JflmtInterviewContent extends UkJpaEntity implements Serializable {
 				analysisCategoryCD,
 				analysisCategoryId,
 				analysisCategoryName,
-				jflmtInterviewAnalysis.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				listAnalysisItemId,
 				recordContent);
 	}
 	
