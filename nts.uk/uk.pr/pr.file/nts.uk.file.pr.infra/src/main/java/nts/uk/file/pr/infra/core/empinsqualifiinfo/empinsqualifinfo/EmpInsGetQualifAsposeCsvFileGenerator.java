@@ -677,7 +677,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
             cells.get(row, 50 + startColumn).setValue(periodOfStay.month());
             cells.get(row, 51 + startColumn).setValue(periodOfStay.day());
 
-            cells.get(row, 52 + startColumn).setValue(dummyForResHistInfo.getNonQualifPermission());
+            cells.get(row, 52 + startColumn).setValue(dummyForResHistInfo.getNonQualificationPermission());
             cells.get(row, 53 + startColumn).setValue(dummyForResHistInfo.getContractWorkAtr());
 
             cells.get(row, 54 + startColumn).setValue("");*/
@@ -689,7 +689,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                     + (periodStay[0].length() < 2 ? "0" + periodStay[0] : periodStay[0]) + ","
                     + (periodStay[1].length() < 2 ? "0" + periodStay[1] : periodStay[1]) + ","
                     + (periodStay[2].length() < 2 ? "0" + periodStay[2] : periodStay[2]) + ","
-                    + dummyForResHistInfo.getNonQualifPermission() + ","
+                    + dummyForResHistInfo.getNonQualificationPermission() + ","
                     + dummyForResHistInfo.getContractWorkAtr() + ","
                     + ",";
             if (empInsHists.containsKey(e)) {

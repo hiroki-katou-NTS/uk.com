@@ -154,6 +154,8 @@ public class EmpInsLossInfoExportRow {
 	 */
 	private Integer unqualifiedActivityPermission;
 
+	private Integer contractWorkAtr;
+
 	public EmpInsLossInfoExportRow(String employeeId, EmployeeInfoEx employeeInfo, DateHistoryItem empInsHist,
 			CompanyInfor companyInfo, EmpInsNumInfo empInsNumInfo, LaborInsuranceOffice laborInsuranceOffice,
 			EmpInsLossInfo empInsLossInfo, PublicEmploymentSecurityOffice pubEmpSecOffice, PersonExport personInfo,
@@ -191,6 +193,7 @@ public class EmpInsLossInfoExportRow {
 		this.nationalityName = forResHistInfo.getNationalityRegion();
 		this.statusOfResidence = forResHistInfo.getResidenceStatus();
 		this.periodOfStayEnd = forResHistInfo.getEndDate();
-		this.unqualifiedActivityPermission = forResHistInfo.getNonQualifPermission();
+		this.unqualifiedActivityPermission = forResHistInfo.getNonQualificationPermission();
+		this.contractWorkAtr = forResHistInfo.getContractWorkAtr();
 	}
 }

@@ -26,7 +26,7 @@ public class ForeignerResHistInfo {
     /**
      * 資格外活動許可の有無
      */
-    private Integer nonQualifPermission;
+    private Integer nonQualificationPermission;
 
     /**
      * 在留期間（西暦）.開始日

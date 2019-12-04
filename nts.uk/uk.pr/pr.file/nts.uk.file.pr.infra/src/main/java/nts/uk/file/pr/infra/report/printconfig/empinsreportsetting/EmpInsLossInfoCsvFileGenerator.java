@@ -444,6 +444,9 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
 					value = row.getUnqualifiedActivityPermission() + "";
 				}
+				if (c == 49) {
+					value = row.getContractWorkAtr() + "";
+				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {
 					valueBuilder.append(SEPERATOR);

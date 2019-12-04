@@ -371,7 +371,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                 // A2_5
                 tempReport.setStayPeriod(dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").replace("/", ""));
                 // A2_6
-                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualifPermission());
+                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualificationPermission());
                 // A2_7
                 tempReport.setContractWorkAtr(dummyForResHistInfo.getContractWorkAtr());
 
