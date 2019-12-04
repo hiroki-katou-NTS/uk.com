@@ -72,8 +72,11 @@ button.search-btn {
 	width: 23px !important;
 }
 
-#B222_1_2, #B222_7_1, #B222_2_1, #B222_3_1, #B222_4_1, #B222_5_1, #B222_6_1{
-	width: 180px !important;
+#B222_1_2, #B222_7_1,  #B222_3_1, #B222_4_1, #B222_5_1{
+	width: 215px !important;
+}
+#B222_2_1{
+	width: 236px !important;
 }
 .input_002 {
 	display: inline-block;
@@ -85,7 +88,9 @@ button.search-btn {
 	border-left: none;
 	border-right: none;
 }
-
+.nts-combo-item .nts-column{
+	width: 180px !important;
+}
 .sub_table {
 	width: 97px;
 	height: 376px;

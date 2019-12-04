@@ -88,14 +88,14 @@ module jhn011.c.vm {
                 return;
             }
 
-            setShared("JHN011C_PARAM", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
+            setShared("JHN011C_VALUE", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
 
             close();
 
         }
 
         close() {
-            setShared('CPS008B_VALUE', null);
+            setShared('JHN011C_VALUE', null);
             close();
         }
     }

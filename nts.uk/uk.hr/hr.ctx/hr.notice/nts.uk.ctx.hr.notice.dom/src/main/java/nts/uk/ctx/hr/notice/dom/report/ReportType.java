@@ -10,7 +10,7 @@ public enum ReportType {
 	/** 社員登録届出 */
 	EMPLOYEE_REGISTRATION(1),
 	/** 社員の給与・労働条件変更届 */
-	EMPLOYEE_SALARY_WORKING_CONDITION(3);
+	EMPLOYEE_SALARY_WORKING_CONDITION(2);
 	public final int value;
 
 	private ReportType(int value) {
