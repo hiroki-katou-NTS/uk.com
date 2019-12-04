@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.error.BusinessException;
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -14,6 +15,7 @@ import nts.gul.collection.CollectionUtil;
  * @author Doan Duy Hung
  *
  */
+@Getter
 public class BentoReservation extends AggregateRoot{
 	
 	/**
