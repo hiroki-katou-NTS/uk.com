@@ -271,10 +271,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
         int textLength = text.length();
         int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
+        while (subLength < textLength) {
             if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
         }

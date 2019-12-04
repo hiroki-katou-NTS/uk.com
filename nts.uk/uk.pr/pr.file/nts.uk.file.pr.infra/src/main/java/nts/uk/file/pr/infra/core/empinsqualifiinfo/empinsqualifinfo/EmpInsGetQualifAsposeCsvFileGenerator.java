@@ -782,47 +782,10 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
         int textLength = text.length();
         int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
+        while (subLength < textLength) {
             if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
         }
-        return text.substring(0, subLength-1);
-    }
-
-    private String formatPhoneNumber(String number) {
-        if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
-            return number;
-        }
-        String numberPhone = "";
-        String[] numberSplit = number.split("-");
-        String[] temp = new String[3];
-
-        if (numberSplit.length == 2) {
-            if (numberSplit[1].length() <= 3) {
-                temp[0] = numberSplit[1];
-                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）";
-            } else {
-                temp[0] = numberSplit[1].substring(0, 3);
-                temp[1] = numberSplit[1].substring(3);
-                numberPhone = numberSplit[0] + "（ " + temp[0] + " ）" + temp[1];
-            }
-        } else if (numberSplit.length >= 3) {
-            numberPhone = numberSplit[0] + "（ " + numberSplit[1] + " ）" + numberSplit[2];
-        } else if (numberSplit.length == 1) {
-            if (number.length() <= 3) {
-                temp[0] = number;
-                numberPhone = temp[0];
-            } else if (number.length() <= 6) {
-                temp[0] = number.substring(0, 3);
-                temp[1] = number.substring(3);
-                numberPhone = temp[0] + "（ " + temp[1] + " ）";
-            } else {
-                temp[0] = number.substring(0, 3);
-                temp[1] = number.substring(3, 6);
-                temp[2] = number.substring(6);
-                numberPhone = temp[0] + "（ " + temp[1] + " ）" + temp[2];
-            }
-        }
-        return numberPhone;
+        return text.substring(0, subLength);
     }
 }
