@@ -187,11 +187,19 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 					history.identifier());
 			LaborInsuranceOffice laborInsuranceOffice = null;
 			PublicEmploymentSecurityOffice pubEmpSecOffice = null;
+			String laborInsOfficeCode = "";
 			if (empInsOffice.isPresent()) {
 				laborInsuranceOffice = laborInsuranceOfficeRepo
 						.getLaborInsuranceOfficeById(empInsOffice.get().getLaborInsCd().v()).orElse(null);
+
+				if (laborInsuranceOffice != null) {
+					laborInsOfficeCode = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("") +
+										 laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("") +
+										 laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("");
+				}
+
 				pubEmpSecOffice = pubEmpSecurityOfficeRepo.getPublicEmploymentSecurityOfficeById(companyId,
-						laborInsuranceOffice.getLaborOfficeCode().v().substring(0, 4)).orElse(null);
+						laborInsOfficeCode.length() > 3 ? laborInsOfficeCode.substring(0, 4) : laborInsOfficeCode).orElse(null);
 			}
 			ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
 					GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
