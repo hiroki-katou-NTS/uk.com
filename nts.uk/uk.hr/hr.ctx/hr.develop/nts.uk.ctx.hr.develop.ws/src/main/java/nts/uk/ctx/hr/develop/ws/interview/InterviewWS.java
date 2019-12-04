@@ -33,11 +33,12 @@ public class InterviewWS {
 
 	@POST
 	@Path("/testInterviewSummary")
-	public InterviewSummary testInterviewSummarry(String companyID, int interviewCate, List<String> listEmployeeID,
-			boolean getSubInterview, boolean getDepartment, boolean getPosition, boolean getEmployment){
+	public InterviewSummary testInterviewSummarry(ParamEmployee param){
 		
 		InterviewSummary data = iInterviewRecordSummary.getInterviewInfo(
-				companyID, interviewCate, listEmployeeID, getSubInterview, getDepartment, getPosition, getEmployment);
+				param.companyID, param.interviewCate, 
+				param.listEmployeeID, param.getSubInterview, 
+				param.getDepartment, param.getPosition, param.getEmployment);
 		
 		return data;
 	}
