@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsurance
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptSettingCommand;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.EmpInsRptTxtSettingCommand;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
-import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCode;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCodeAtr;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
@@ -130,7 +130,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_1_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 
@@ -160,14 +160,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(value);
 			if (c < ROW_1_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
 
 		// row 3
 		valueBuilder.append(A1_13);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -175,7 +175,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		valueBuilder.append(A1_14);
 		valueBuilder.append(SEPERATOR);
 		valueBuilder.append(A1_15);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -183,7 +183,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 		valueBuilder.append(A1_16);
 		valueBuilder.append(SEPERATOR);
 		valueBuilder.append(A1_17);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -193,7 +193,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_6_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
@@ -252,9 +252,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			}
 			if (c == 8) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value)
-					value = formatPhoneNumber(companyInfo.getPhoneNum());
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null)
-					value = formatPhoneNumber(laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(""));
+					value = companyInfo.getPhoneNum().substring(0, Math.min(companyInfo.getPhoneNum().length(), 12));
+				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
+					String phoneNumber = laborInsuranceOffice.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse("");
+					value = phoneNumber.substring(0, Math.min(phoneNumber.length(), 12));
+				}
 			}
 			if (c == 9 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse("");
@@ -268,14 +270,14 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(value);
 			if (c < ROW_6_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
 
 		// row 8
 		valueBuilder.append(A1_42);
-		if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+		if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 			valueBuilder.append(LINE_BREAK);
 		}
 
@@ -293,7 +295,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			valueBuilder.append(header);
 			if (c < ROW_9_HEADERS.size() - 1) {
 				valueBuilder.append(SEPERATOR);
-			} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+			} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 				valueBuilder.append(LINE_BREAK);
 			}
 		}
@@ -342,25 +344,25 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = empInsHistStart.era();
 				}
 				if (c == 10 && empInsHistStart != null) {
-					value = (empInsHistStart.year() + 1) + "";
+					value = (empInsHistStart.year() + 1) < 10 ? "0" + (empInsHistStart.year() + 1) : (empInsHistStart.year() + 1) + "";
 				}
 				if (c == 11 && empInsHistStart != null) {
-					value = empInsHistStart.month() + "";
+					value = empInsHistStart.month() < 10 ? "0" + empInsHistStart.month() : empInsHistStart.month() + "";
 				}
 				if (c == 12 && empInsHistStart != null) {
-					value = empInsHistStart.day() + "";
+					value = empInsHistStart.day() < 10 ? "0" + empInsHistStart.day() : empInsHistStart.day() + "";
 				}
 				if (c == 13 && empInsHistEnd != null) {
 					value = empInsHistEnd.era();
 				}
 				if (c == 14 && empInsHistEnd != null) {
-					value = (empInsHistEnd.year() + 1) + "";
+					value = (empInsHistEnd.year() + 1) < 10 ? "0" + (empInsHistEnd.year() + 1) : (empInsHistEnd.year() + 1) + "";
 				}
 				if (c == 15 && empInsHistEnd != null) {
-					value = empInsHistEnd.month() + "";
+					value = empInsHistEnd.month() < 10 ? "0" + empInsHistEnd.month() : empInsHistEnd.month() + "";
 				}
 				if (c == 16 && empInsHistEnd != null) {
-					value = empInsHistEnd.day() + "";
+					value = empInsHistEnd.day() < 10 ? "0" + empInsHistEnd.day() : empInsHistEnd.day() + "";
 				}
 				if (c == 17 && row.getCauseOfLossAtr() != null) {
 					value = (row.getCauseOfLossAtr() + 1) + "";
@@ -387,13 +389,13 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = birthDay.era();
 				}
 				if (c == 27 && birthDay != null) {
-					value = (birthDay.year() + 1) + "";
+					value = (birthDay.year() + 1) < 10 ? "0" + (birthDay.year() + 1) : (birthDay.year() + 1) + "";
 				}
 				if (c == 28 && birthDay != null) {
-					value = birthDay.month() + "";
+					value = birthDay.month() < 10 ? "0" + birthDay.month() : birthDay.month() + "";
 				}
 				if (c == 29 && birthDay != null) {
-					value = birthDay.day() + "";
+					value = birthDay.day() < 10 ? "0" + birthDay.day() : birthDay.day() + "";
 				}
 				if (c == 30) {
 					value = row.getPersonCurrentAddress();
@@ -405,15 +407,23 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 						value = row.getLaborInsuranceOfficeName();
 				}
 				if (c == 36) {
-					value = reasonMap.get(row.getCauseOfLossInsurance());
+					value = reasonMap.containsKey(row.getCauseOfLossInsurance()) ? reasonMap.get(row.getCauseOfLossInsurance()) : "";
 				}
 				if (c == 37 && row.getScheduleWorkingHourPerWeek() != null) {
-					int hour = row.getScheduleWorkingHourPerWeek().hour();
-					value = hour < 10 ? "0" + hour : "" + hour;
+					if (row.getScheduleWorkingHourPerWeek().hour() > 99) {
+						value = "99";
+					} else {
+						int hour = row.getScheduleWorkingHourPerWeek().hour();
+						value = hour < 10 ? "0" + hour : "" + hour;
+					}
 				}
 				if (c == 38 && row.getScheduleWorkingHourPerWeek() != null) {
-					int minute = row.getScheduleWorkingHourPerWeek().minute();
-					value = minute < 10 ? "0" + minute : "" + minute;
+					if (row.getScheduleWorkingHourPerWeek().hour() > 99) {
+						value = "59";
+					} else {
+						int minute = row.getScheduleWorkingHourPerWeek().minute();
+						value = minute < 10 ? "0" + minute : "" + minute;
+					}
 				}
 				if (c == 39) {
 					value = row.getPublicEmploymentSecurityOfficeName();
@@ -434,18 +444,21 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPeriodOfStayEnd().year() + "";
 				}
 				if (c == 46 && row.getPeriodOfStayEnd() != null) {
-					value = row.getPeriodOfStayEnd().month() + "";
+					value = row.getPeriodOfStayEnd().month() < 10 ? "0" + row.getPeriodOfStayEnd().month() : row.getPeriodOfStayEnd().month() + "";
 				}
 				if (c == 47 && row.getPeriodOfStayEnd() != null) {
-					value = row.getPeriodOfStayEnd().day() + "";
+					value = row.getPeriodOfStayEnd().day() < 10 ? "0" + row.getPeriodOfStayEnd().day() : row.getPeriodOfStayEnd().day() + "";
 				}
 				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
 					value = row.getUnqualifiedActivityPermission() + "";
 				}
+				if (c == 49) {
+					value = row.getContractWorkAtr() + "";
+				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {
 					valueBuilder.append(SEPERATOR);
-				} else if (lineFeedCode != LineFeedCode.NO_ADD.value) {
+				} else if (lineFeedCode != LineFeedCodeAtr.NO_ADD.value) {
 					valueBuilder.append(LINE_BREAK);
 				}
 			}

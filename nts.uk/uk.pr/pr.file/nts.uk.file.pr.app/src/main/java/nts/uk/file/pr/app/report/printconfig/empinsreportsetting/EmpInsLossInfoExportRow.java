@@ -154,6 +154,8 @@ public class EmpInsLossInfoExportRow {
 	 */
 	private Integer unqualifiedActivityPermission;
 
+	private Integer contractWorkAtr;
+
 	public EmpInsLossInfoExportRow(String employeeId, EmployeeInfoEx employeeInfo, DateHistoryItem empInsHist,
 			CompanyInfor companyInfo, EmpInsNumInfo empInsNumInfo, LaborInsuranceOffice laborInsuranceOffice,
 			EmpInsLossInfo empInsLossInfo, PublicEmploymentSecurityOffice pubEmpSecOffice, PersonExport personInfo,
@@ -170,7 +172,7 @@ public class EmpInsLossInfoExportRow {
 				.map(n -> n + "").orElse("") : "";
 		this.employeeInsurancePeriodStart = empInsHist.start();
 		this.employeeInsurancePeriodEnd = empInsHist.end();
-		this.causeOfLossAtr = empInsLossInfo != null ? empInsLossInfo.getCauseOfLossAtr().map(c -> c.value).orElse(null) : null;
+		this.causeOfLossAtr = empInsLossInfo != null ? empInsLossInfo.getCauseOfLoss().map(c -> c.value).orElse(null) : null;
 		this.scheduleOfReplenishment = empInsLossInfo != null ? empInsLossInfo.getScheduleForReplenishment().map(s -> s.value == ScheduleForReplenishment.YES.value ? "有" : "無")
 				.orElse("") : "";
 		this.personNameKana = personInfo.getPersonNameGroup().getPersonName().getFullNameKana();
@@ -191,6 +193,7 @@ public class EmpInsLossInfoExportRow {
 		this.nationalityName = forResHistInfo.getNationalityRegion();
 		this.statusOfResidence = forResHistInfo.getResidenceStatus();
 		this.periodOfStayEnd = forResHistInfo.getEndDate();
-		this.unqualifiedActivityPermission = forResHistInfo.getNonQualifPermission();
+		this.unqualifiedActivityPermission = forResHistInfo.getNonQualificationPermission();
+		this.contractWorkAtr = forResHistInfo.getContractWorkAtr();
 	}
 }

@@ -20,8 +20,6 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportContext;
 import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -157,7 +155,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
                 if (element.getEmpInsLossInfo() != null) {
                     //A1_8 Cause of loss
-                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLossAtr().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLossAtr().get().value + 1) : "";
+                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLoss().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLoss().get().value + 1) : "";
                     textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
                     //A1_9 reqIssuAtr
                     if (element.getEmpInsLossInfo().getRequestForIssuance().isPresent()) {
@@ -407,11 +405,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
         int textLength = text.length();
         int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        while (subLength < textLength) {
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
             subLength++;
         }
         return text.substring(0, subLength);
