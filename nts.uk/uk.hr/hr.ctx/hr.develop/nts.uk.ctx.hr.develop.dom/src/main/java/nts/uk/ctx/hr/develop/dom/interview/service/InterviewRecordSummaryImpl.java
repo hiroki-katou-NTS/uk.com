@@ -127,12 +127,12 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 					i.getEmployeeCode(), 
 					i.getBusinessName(),
 					i.getBusinessNameKana(), 
-					i.getDepartment() == null?"": i.getDepartment().getDepartmentCode(), 
-				    i.getDepartment() == null?"": i.getDepartment().getDepartmentDisplayName(),
-					i.getPosition().getPositionCode(), 
-					i.getPosition().getPositionName(), 
-					i.getEmployment().getEmploymentCode(), 
-					i.getEmployment().getEmploymentName());
+					i.getDepartment() == null ? "" : i.getDepartment().getDepartmentCode(), 
+				    i.getDepartment() == null ? "" : i.getDepartment().getDepartmentDisplayName(),
+		    		i.getPosition() == null ? "" : i.getPosition().getPositionCode(),		
+					i.getPosition() == null ? "" : i.getPosition().getPositionName(),
+					i.getEmployment() == null ? "" : i.getEmployment().getEmploymentCode(),		
+					i.getEmployment() == null ? "" : i.getEmployment().getEmploymentName());
 			
 			result.add(info);
 		});
