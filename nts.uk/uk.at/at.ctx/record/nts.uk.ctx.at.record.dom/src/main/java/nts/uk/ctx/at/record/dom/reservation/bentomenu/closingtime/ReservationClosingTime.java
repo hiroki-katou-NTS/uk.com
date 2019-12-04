@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 
 import java.util.Optional;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
@@ -10,7 +12,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
  * @author Doan Duy Hung
  *
  */
-public class ReservationClosingTime {
+public class ReservationClosingTime extends ValueObject {
 	
 	/**
 	 * 名前
@@ -34,5 +36,20 @@ public class ReservationClosingTime {
 		this.reservationTimeName = reservationTimeName;
 		this.finish = finish;
 		this.start = start;
+	}
+	
+	/**
+	 * 予約できるか
+	 * @param time
+	 * @return
+	 */
+	public boolean canReserve(BentoReservationTime time) {
+		boolean startOK = true;
+		boolean endOK = false;
+		if(start.isPresent()) {
+			startOK = start.get().lessThanOrEqualTo(time);
+		}
+		endOK = time.lessThanOrEqualTo(finish);
+		return startOK && endOK;
 	}
 }

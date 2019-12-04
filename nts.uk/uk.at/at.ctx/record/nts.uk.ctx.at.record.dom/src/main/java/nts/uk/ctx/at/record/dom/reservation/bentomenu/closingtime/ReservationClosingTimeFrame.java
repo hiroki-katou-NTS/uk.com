@@ -10,12 +10,12 @@ public enum ReservationClosingTimeFrame {
 	/**
 	 * 枠1
 	 */
-	FRAME1(14,"枠1"),
+	FRAME1(1,"枠1"),
 	
 	/**
 	 * 枠2
 	 */
-	FRAME2(14,"枠2");
+	FRAME2(2,"枠2");
 	 
 	public int value;
 	

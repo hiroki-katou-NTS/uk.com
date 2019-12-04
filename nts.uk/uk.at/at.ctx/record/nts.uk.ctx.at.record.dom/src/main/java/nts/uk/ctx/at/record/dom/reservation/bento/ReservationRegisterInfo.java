@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.Getter;
 
 /**
@@ -7,7 +9,7 @@ import lombok.Getter;
  * @author Doan Duy Hung
  *
  */
-public class ReservationRegisterInfo {
+public class ReservationRegisterInfo extends ValueObject {
 	
 	/**
 	 * 予約者のカード番号

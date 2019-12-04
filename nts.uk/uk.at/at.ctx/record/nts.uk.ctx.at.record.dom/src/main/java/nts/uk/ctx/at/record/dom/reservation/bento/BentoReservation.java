@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * 弁当予約
@@ -24,7 +29,7 @@ public class BentoReservation extends AggregateRoot{
 	/**
 	 * 注文済み
 	 */
-	private final boolean ordered;
+	private boolean ordered;
 	
 	/**
 	 * 弁当予約明細リスト
@@ -39,7 +44,38 @@ public class BentoReservation extends AggregateRoot{
 		this.bentoReservationDetails = bentoReservationDetails;
 	} 
 	
+	/**
+	 * 予約する
+	 * @param registerInfor
+	 * @param reservationDate
+	 * @param bentoReservationDetails
+	 * @return
+	 */
 	public static BentoReservation createNew(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, List<BentoReservationDetail> bentoReservationDetails) {
 		return new BentoReservation(registerInfor, reservationDate, false, bentoReservationDetails);
+	}
+	
+	/**
+	 * 予約を取り消す
+	 * @param dateTime
+	 * @return
+	 */
+	public Optional<BentoReservation> cancelReservation(GeneralDateTime dateTime) {
+		isCancel();
+		List<BentoReservationDetail> afterDetails = bentoReservationDetails.stream().filter(x -> !x.getDateTime().equals(dateTime)).collect(Collectors.toList());
+		if(CollectionUtil.isEmpty(afterDetails)) {
+			return Optional.empty();
+		} else {
+			return Optional.of(createNew(registerInfor, reservationDate, afterDetails));
+		}
+	}
+	
+	/**
+	 * 取消可能かチェックする
+	 */
+	public void isCancel() {
+		if(ordered) {
+			throw new BusinessException("Msg_1586");
+		}
 	}
 }

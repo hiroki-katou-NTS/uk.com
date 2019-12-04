@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -9,7 +11,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
  * @author Doan Duy Hung
  *
  */
-public class ReservationDate {
+public class ReservationDate extends ValueObject {
 	
 	/**
 	 * 年月日
@@ -26,5 +28,21 @@ public class ReservationDate {
 	public ReservationDate(GeneralDate date, ReservationClosingTimeFrame closingTimeFrame) {
 		this.date = date;
 		this.closingTimeFrame = closingTimeFrame;
+	}
+	
+	/**
+	 * 過去日か
+	 * @return
+	 */
+	public boolean isPastDay() {
+		return date.before(GeneralDate.today());
+	}
+	
+	/**
+	 * 当日か
+	 * @return
+	 */
+	public boolean isToday() {
+		return date.equals(GeneralDate.today());
 	}
 }

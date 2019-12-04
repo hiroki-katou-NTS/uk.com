@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
-import java.util.Optional;
+import nts.arc.time.GeneralDate;
 
 public interface BentoMenuRepository {
 	
-	public Optional<BentoMenu> find();
+	public BentoMenu getBentoMenu(GeneralDate date);
 	
 }
