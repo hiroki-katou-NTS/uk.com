@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bento;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
@@ -8,7 +10,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 public class BentoReservationRepositoryImpl implements BentoReservationRepository {
 
 	@Override
-	public BentoReservation getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+	public Optional<BentoReservation> find(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -24,5 +26,5 @@ public class BentoReservationRepositoryImpl implements BentoReservationRepositor
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

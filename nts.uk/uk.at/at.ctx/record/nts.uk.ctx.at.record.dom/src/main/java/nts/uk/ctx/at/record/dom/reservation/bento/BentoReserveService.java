@@ -16,7 +16,7 @@ public class BentoReserveService {
 			Map<Integer, BentoReservationCount> bentoDetails) {
 		
 		// 1: get(予約対象日)
-		BentoMenu bentoMenu = require.getBentoMenu(reservationDate.getDate());
+		BentoMenu bentoMenu = require.getBentoMenu(reservationDate);
 		
 		// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
 		BentoReservation bentoReservation = bentoMenu.getBentoReservation(registerInfor, reservationDate, bentoDetails);

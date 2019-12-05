@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import java.util.Optional;
+
 public interface BentoReservationRepository {
 	
-	public BentoReservation getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate);
+	public Optional<BentoReservation> find(ReservationRegisterInfo registerInfor, ReservationDate reservationDate);
 	
 	public void add(BentoReservation bentoReservation);
 	

@@ -5,9 +5,11 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -20,13 +22,16 @@ public class BentoReservationRequireImpl implements BentoReservationRequire {
 	private BentoReservationRepository bentoReservationRepository;
 	
 	@Override
-	public BentoMenu getBentoMenu(GeneralDate date) {
-		return bentoMenuRepository.getBentoMenu(date);
+	public BentoMenu getBentoMenu(ReservationDate reservationDate) {
+		String companyID = AppContexts.user().companyId();
+		return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate());
 	}
 
 	@Override
 	public BentoReservation getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
-		return bentoReservationRepository.getBefore(registerInfor, reservationDate);
+		return bentoReservationRepository.find(registerInfor, reservationDate).orElseGet(() -> {
+			throw new BusinessException(new RawErrorMessage("System Error"));
+		});
 	}
 
 	@Override

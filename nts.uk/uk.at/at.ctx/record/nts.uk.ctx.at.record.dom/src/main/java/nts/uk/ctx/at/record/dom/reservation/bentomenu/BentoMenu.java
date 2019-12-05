@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
@@ -67,11 +69,15 @@ public class BentoMenu extends AggregateRoot {
 	 * 締め時刻別のメニュー
 	 * @return
 	 */
-	public BentoMenu getByClosingTime() {
-		List<Bento> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr()).collect(Collectors.toList());
-		List<Bento> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr()).collect(Collectors.toList());
+	public BentoMenuByClosingTime getByClosingTime() {
+		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr())
+				.map(x -> x.itemByClosingTime())
+				.collect(Collectors.toList());
+		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr())
+				.map(x -> x.itemByClosingTime())
+				.collect(Collectors.toList());
 		menu1.addAll(menu2);
-		return new BentoMenu(historyID, menu1, closingTime);
+		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
 	}
 	
 	/**
