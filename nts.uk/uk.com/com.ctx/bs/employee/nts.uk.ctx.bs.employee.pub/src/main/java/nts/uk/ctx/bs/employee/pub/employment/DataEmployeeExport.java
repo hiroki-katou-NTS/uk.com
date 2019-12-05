@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class DataEmployeeExport   {
 	
-	private String employmentCode;
+	private String employmentCode; // 雇用コード
+ 
+	private String sid; // 社員ID
 
-	private String sid;
-
-	public  String  pid;
+	public  String  pid; // 個人ID
 	
 }

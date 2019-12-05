@@ -288,6 +288,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 			getempCommonMasterItemID = getempCommonMasterItemIDParam.get();
 		}
 		
+		// ドメインモデル [雇用] を取得する(Lấy domain [employment])
 		List<Employment> listEmployment = this.employmentRepository.findAll(cid);
 		if (listEmployment.isEmpty()) {
 			return new ArrayList<>();
@@ -324,6 +325,8 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		
 		for (ObjectParam objectParam : listObjParam) {
 			if (objectParam.getEmploymentCode() != null && objectParam.getBirthdayPeriod().start() != null && objectParam.getBirthdayPeriod().end() != null) {
+				
+				// 条件に一致する情報をjoinして取得する (join và lấy thông tin phù hợp với điều kiện)
 				List<Object[]> data = empHistRepo.getEmploymentBasicInfo(objectParam.getEmploymentCode(), objectParam.getBirthdayPeriod(), baseDate, cid); 
 				if (!data.isEmpty()) {
 					for (int i = 0; i < data.size(); i++) {
@@ -384,8 +387,10 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	
 		List<String> listSid = listDataTemp.stream().map(e -> e.getSid()).collect(Collectors.toList());
 		
+		// アルゴリズム「社員ID(List)から削除されていない社員を取得する」を実行する(thực hiện thuật toán [lấy employee chưa bị xóa từ employeeID(List)])
 		List<EmployeeDataMngInfo> listEmpdataMng = empDataMngInfoRepo.findBySidNotDel(listSid);
 		
+		// set data Result
 		List<DataEmployeeExport> result = new ArrayList<>();
 		listEmpdataMng.forEach(emp -> {
 			
