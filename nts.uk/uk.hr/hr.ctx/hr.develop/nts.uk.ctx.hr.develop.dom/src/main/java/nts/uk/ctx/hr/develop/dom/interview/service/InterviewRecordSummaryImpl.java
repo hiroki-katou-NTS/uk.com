@@ -120,8 +120,10 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 		listMainInterview.forEach(i -> {
 			SimpleInterviewRecord simple = 
 					listSimpleInterview.stream().filter(s -> i.getEmployeeId().equals(s.getMainInterviewerSid())).findFirst().get();
-			
-			InterviewRecordInfo info = new InterviewRecordInfo(i.getEmployeeId(), simple.getInterviewRecordId(),
+			/**
+			 * 面談記録情報リスト {社員ID、面談記録ID、面談日、メイン面談者社員ID、社員コード、ビジネスネーム、ビジネスネームカナ、部門コード、部門表示名、職位コード、職位名称、雇用コード、雇用名称}
+			 */
+			InterviewRecordInfo info = new InterviewRecordInfo(simple.getEmployeeID(), simple.getInterviewRecordId(),
 					simple.getInterviewDate(),
 					simple.getMainInterviewerSid(), 
 					i.getEmployeeCode(), 
