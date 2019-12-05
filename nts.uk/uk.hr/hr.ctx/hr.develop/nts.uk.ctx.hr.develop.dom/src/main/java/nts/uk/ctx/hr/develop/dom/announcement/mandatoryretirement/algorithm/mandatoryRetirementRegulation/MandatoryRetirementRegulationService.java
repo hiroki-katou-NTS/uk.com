@@ -11,7 +11,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.ReferEvaluatio
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
-import nts.uk.ctx.hr.shared.dom.publicTerm.PublicTerm;
+import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 
 public interface MandatoryRetirementRegulationService {
 
@@ -19,11 +19,11 @@ public interface MandatoryRetirementRegulationService {
 	MandatoryRetirementRegulation getMandatoryRetirementRegulation(String companyId, String historyId);
 	
 	//定年退職の就業規則の追加
-	void addMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, PublicTerm publicTerm, RetireDateTerm retireDateTerm, 
+	void addMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, 
 			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm);
 	
 	//定年退職の就業規則の更新
-	void updateMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, PublicTerm publicTerm, RetireDateTerm retireDateTerm, 
+	void updateMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, 
 			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm);
 
 	//基準日で評価参考情報の取得

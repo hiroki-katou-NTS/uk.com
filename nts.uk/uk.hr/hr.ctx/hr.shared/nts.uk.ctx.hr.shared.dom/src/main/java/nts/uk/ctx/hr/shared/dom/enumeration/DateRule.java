@@ -1,10 +1,10 @@
-package nts.uk.ctx.hr.shared.dom.publicTerm;
+package nts.uk.ctx.hr.shared.dom.enumeration;
 
 /**
  * @author thanhpv
- * 公開日基準
+ * 日付基準
  */
-public enum PublicDateRule {
+public enum DateRule {
 
 	UNSPECIFIED (0,"指定なし"),
 	
@@ -24,7 +24,7 @@ public enum PublicDateRule {
 	
 	public String name;
 
-	PublicDateRule(int value, String name) {
+	DateRule(int value, String name) {
 		this.value = value;
 		this.name = name;
 	}
