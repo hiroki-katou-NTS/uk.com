@@ -16,9 +16,7 @@ import nts.arc.time.GeneralDate;
  */
 
 /** 面談記録  **/
-
 @Getter
-
 public class InterviewRecord extends AggregateRoot {
 	
 	/** メイン面談者社員ID **/
@@ -45,8 +43,6 @@ public class InterviewRecord extends AggregateRoot {
 	private Optional<String> intervieweeScd;
 	/** 被面談者社員名 **/
 	private Optional<MainInterviewerName> intervieweeName;
-	
-	
 	
 	public InterviewRecord(EmployeeId mainInterviewerSid, CompanyId cid, EmployeeId intervieweeSid,
 			InterviewCategory interviewCategory, GeneralDate interviewDate, String interviewRecordId,
@@ -80,9 +76,6 @@ public class InterviewRecord extends AggregateRoot {
 				EnumAdaptor.valueOf(interviewCategory , InterviewCategory.class),
 				interviewDate,
 				interviewRecordId,
-				
-				
-				
 				listInterviewRecordContent,
 				listSubInterviewer,
 				mainInterviewerScd,

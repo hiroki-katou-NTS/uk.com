@@ -22,9 +22,9 @@ public class InterviewRecordInfo {
 	/** 社員コード **/
 	private String employeeCD ; 
 	/** ビジネスネーム **/
-	private Optional<String> businessName;
+	private String businessName;
 	/** ビジネスネームカナ **/
-	private Optional<String>  businessNameKana;
+	private String businessNameKana;
 	/** 部門コード **/
 	private Optional<String> departmentCd;
 	/** 部門表示名 **/
@@ -37,10 +37,7 @@ public class InterviewRecordInfo {
 	private Optional<String> employmentCd;
 	/** 雇用名称 **/
 	private Optional<String> employmentName;
-	/** Optional サブ面談者 **/
-	private List<SubInterviewer> listSubInterviewer;
-		
-	
+
 	public void setDataByDepartment(boolean hasDepartment){
 		if(!hasDepartment){
 		 this.departmentCd = Optional.empty();
@@ -59,26 +56,26 @@ public class InterviewRecordInfo {
 			 this.employmentName = Optional.empty();
 		}
 	}
+	
 	public InterviewRecordInfo(String employeeID, String interviewRecordId, GeneralDate interviewDate,
 			String mainInterviewerEmployeeID, String employeeCD, String businessName,
 			String businessNameKana, String departmentCd, String departmentDisplayName,
 			String positionCd, String positionName,String employmentCd,
-			String employmentName, List<SubInterviewer> listSubInterviewer) {
+			String employmentName) {
 		super();
 		this.employeeID = employeeID;
 		this.interviewRecordId = interviewRecordId;
 		this.interviewDate = interviewDate;
 		this.mainInterviewerEmployeeID = mainInterviewerEmployeeID;
 		this.employeeCD = employeeCD;
-		this.businessName = Optional.ofNullable(businessName);
-		this.businessNameKana = Optional.ofNullable(businessNameKana);
+		this.businessName = businessName;
+		this.businessNameKana = businessNameKana;
 		this.departmentCd =  Optional.ofNullable(departmentCd);
 		this.departmentDisplayName =  Optional.ofNullable(departmentDisplayName);
 		this.positionCd =  Optional.ofNullable(positionCd);
 		this.positionName =  Optional.ofNullable(positionName);
 		this.employmentCd =  Optional.ofNullable(employmentCd);
 		this.employmentName =  Optional.ofNullable(employmentName);
-		this.listSubInterviewer =  listSubInterviewer;
 	}
 	
 	

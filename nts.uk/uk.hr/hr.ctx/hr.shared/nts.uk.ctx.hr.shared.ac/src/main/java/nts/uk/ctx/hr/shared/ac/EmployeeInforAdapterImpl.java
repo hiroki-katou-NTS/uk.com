@@ -53,6 +53,9 @@ public class EmployeeInforAdapterImpl implements EmployeeInforAdapter {
 	}
 	
 	private WorkplaceImport converToWorkplaceExport (WorkplaceExport ex){
+		if (ex == null) 
+			return null;
+		
 		return new WorkplaceImport
 				(ex.getWorkplaceId(),
 			     ex.getWorkplaceCode(),
@@ -61,12 +64,18 @@ public class EmployeeInforAdapterImpl implements EmployeeInforAdapter {
 	}
 	
 	private ClassificationImport converToClassificationExport (ClassificationExport ex){
+		if (ex == null) 
+			return null;
+		
 		return new ClassificationImport(
 				ex.getClassificationCode(),
 				ex.getClassificationName());
 	}
 	
 	private DepartmentImport converToDepartmentExport (DepartmentExport ex){
+		if (ex == null) 
+			return null;
+		
 		return new DepartmentImport(ex.getCompanyId(),
 				ex.isDeleteFlag(),
 				ex.getDepartmentHistoryId(),
@@ -80,6 +89,9 @@ public class EmployeeInforAdapterImpl implements EmployeeInforAdapter {
 	}
 	
 	private PositionImport converToPositionExport(PositionExport ex){
+		if (ex == null) 
+			return null;
+		
 		return new PositionImport(
 				ex.getPositionId(),
 				ex.getPositionCode(),
@@ -87,6 +99,9 @@ public class EmployeeInforAdapterImpl implements EmployeeInforAdapter {
 	}
 	
 	private EmploymentImport converToEmploymentExport (EmploymentExport ex){
+		if (ex == null) 
+			return null;
+		
 		return new EmploymentImport(
 				ex.getEmploymentCode(),
 				ex.getEmploymentName());
