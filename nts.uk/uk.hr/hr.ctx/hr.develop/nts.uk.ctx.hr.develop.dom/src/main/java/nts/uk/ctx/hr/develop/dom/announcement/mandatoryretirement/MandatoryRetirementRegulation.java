@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm;
-import nts.uk.ctx.hr.shared.dom.publicTerm.PublicTerm;
+import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 
 /**
  * @author thanhpv
@@ -27,7 +27,7 @@ public class MandatoryRetirementRegulation extends AggregateRoot{
 	private ReachedAgeTerm reachedAgeTerm;
 	
 	/** 公開条件 */
-	private PublicTerm publicTerm;
+	private DateCaculationTerm publicTerm;
 	
 	/** 退職日条件 */
 	private RetireDateTerm retireDateTerm;
@@ -44,7 +44,7 @@ public class MandatoryRetirementRegulation extends AggregateRoot{
 	/** 希望コース申請条件 */
 	private PlanCourseApplyTerm planCourseApplyTerm;
 	
-	public static MandatoryRetirementRegulation createFromJavaType(String companyId, String historyId, int reachedAgeTerm, PublicTerm publicTerm, RetireDateTerm retireDateTerm, 
+	public static MandatoryRetirementRegulation createFromJavaType(String companyId, String historyId, int reachedAgeTerm, DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, 
 			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm) {
 		return new MandatoryRetirementRegulation(
 				companyId,
