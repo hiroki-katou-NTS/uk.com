@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<!-- <com:ValidatorScript>
+					
+			</com:ValidatorScript> -->
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jcm008.a.style.css" />
+			<com:scriptfile path="jcm008.a.start.js" />
+			<com:scriptfile path="jcm008.a.vm.js" />
+			<com:scriptfile path="jcm008.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="reset" tabindex="1" class="proceed group-button-1" data-bind="click: newMode ">
+					#{i18n.getText('JCM008_A1_1')} </button>
+				<!-- A1_2 -->
+				<button id="register" tabindex="2" class="normal group-button-1" data-bind="click: register ">
+					#{i18n.getText('JCM008_A1_2')} </button>
+			</div>
+			<div id="contents-area">
+				<div id="message-area">
+
+				</div>
+				<div id="main-area" class="fixed-flex-layout">
+					<!-- A221-->
+					<div id="main-left-area" class="panel panel-frame fixed-flex-layout-left">
+						<ui:include src="main-left.xhtml" />
+					</div>
+					<div id="main-center-area" class="fixed-flex-layout-right">
+						<div id="info-accordion" data-bind="ntsAccordion: { active: 0, collapsible: true}">
+							<h3>#{i18n.getText('JCM008_A222_11')}</h3>
+							<table id="retirementAgeInfo"></table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

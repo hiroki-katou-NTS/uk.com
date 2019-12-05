@@ -1,0 +1,42 @@
+#main-left-area{
+	width: 650px;
+	height: auto;
+}
+#main-center-area{
+	width: 600px;
+	height: auto;
+}
+#info-accordion{
+	width: 400px;
+}
+.ui-accordion .ui-accordion-content{
+	padding: 0.5em 1em;
+}
+.ui-accordion .ui-accordion-header{
+	margin-top: 0px;
+}
+#retirement-period{
+	margin-right: 125px;
+}
+/* common */
+.mr-10{
+	margin-right: 10px;
+}
+.mr-20{
+	margin-right: 20px;
+}
+.ml-21{
+	margin-left: 21px;
+}
+.mt-6{
+	margin-top:6px;
+}
+.help-button {
+	padding: 3px 9px;
+}
+.line-height{
+	margin-bottom: 10px;
+}
+.check-box-padding{
+	padding: 7px 2px 2px 2px;
+}

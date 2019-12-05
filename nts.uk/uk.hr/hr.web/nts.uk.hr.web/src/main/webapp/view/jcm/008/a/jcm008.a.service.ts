@@ -1,0 +1,13 @@
+module jcm008.a.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    
+    var paths = {
+        'getData': 'databeforereflecting/getData'
+    }
+       
+    export function getData() : JQueryPromise<any>{
+        return ajax(paths.getData);
+    }
+   
+}
