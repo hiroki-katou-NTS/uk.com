@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentInfoExport;
@@ -11,6 +12,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
 
+@Stateless
 public class SyEmploymentAdaptorImpl implements SyEmploymentAdaptor {
 
 	@Inject
