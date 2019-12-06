@@ -13,7 +13,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.ReferEvaluatio
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
-import nts.uk.ctx.hr.shared.dom.publicTerm.PublicTerm;
+import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 
 @Stateless
 public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetirementRegulationService  {
@@ -26,7 +26,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 
 	@Override
 	public void addMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm,
-			PublicTerm publicTerm, RetireDateTerm retireDateTerm, boolean planCourseApplyEnable,
+			DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, boolean planCourseApplyEnable,
 			List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm,
 			PlanCourseApplyTerm planCourseApplyTerm) {
 		// TODO Auto-generated method stub
@@ -35,7 +35,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 
 	@Override
 	public void updateMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm,
-			PublicTerm publicTerm, RetireDateTerm retireDateTerm, boolean planCourseApplyEnable,
+			DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, boolean planCourseApplyEnable,
 			List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm,
 			PlanCourseApplyTerm planCourseApplyTerm) {
 		// TODO Auto-generated method stub
@@ -61,5 +61,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 }
