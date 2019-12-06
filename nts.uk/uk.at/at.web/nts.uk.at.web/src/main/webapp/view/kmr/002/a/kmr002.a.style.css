@@ -1,0 +1,55 @@
+table{
+  border-collapse: collapse;
+  margin-left: 20px;
+}
+
+.table-food-td{
+  border: 1px solid black;
+  
+}
+.table-menu-td{
+  vertical-align: text-top;
+}
+
+.style-table {
+	border: none;
+}
+
+.button-radius {
+	border-radius: 50%;
+	width:50px; 
+	height:50px; 
+	font-size:20px; 
+	text-align: center;
+	border: 1px solid black;
+	box-shadow: none;
+	transition: transform 2s;
+  	position: relative;
+  	margin: 0;
+  	padding-top: -5px !important;
+}
+.label.warning{
+    margin-top: 5px;
+    min-width: 325px;
+    min-height: 25px;
+    text-align: center;
+    padding: 0px;
+}
+button.nts-switch-button {
+	min-width: 100px;
+}
+.menu-order {
+	padding-top: 15px; 
+	overflow-y: scroll; 
+	height:350px; 
+	width:300px;
+}
+.button-food {
+	width: 200px; 
+	height: 50px; 
+	margin-bottom: 20px;
+	margin-right: 20px;
+}
+.button-radius:hover:enabled {
+  background-color: #A4EEB0;
+}
