@@ -22,9 +22,8 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 	
 	@Inject
 	private EmploymentRegulationHistoryInterface histInterface;
+
 	@Override
-	
-	
 	public YearStartEnd getByDate(String companyId, GeneralDate baseDate) {
 		GeneralDate resultStartDate = null;
 		GeneralDate resultEndDate = null;
