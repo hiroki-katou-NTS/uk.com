@@ -3,12 +3,12 @@ package nts.uk.ctx.hr.develop.infra.entity.announcement.mandatoryretirement;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 public class JshmtRetireEvalItemPK implements Serializable {

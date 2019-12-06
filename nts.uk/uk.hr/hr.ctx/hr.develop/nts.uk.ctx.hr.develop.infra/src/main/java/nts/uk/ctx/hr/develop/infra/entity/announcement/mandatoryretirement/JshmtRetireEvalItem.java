@@ -28,38 +28,20 @@ public class JshmtRetireEvalItem extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public JshmtRetireEvalItemPK pkJshmtRetireEvalItem;
 	
-	@Column(name = "REACH_AGE_TERM")
-	public Integer reachedAgeTerm;
+	@Column(name = "CID")
+	public String cId;
 	
-	@Column(name = "PUBLIC_TERM")
-	public Integer calculationTerm;
+	@Column(name = "EVALUATION_ITEM")
+	public Integer evaluationItem;
 	
-	@Column(name = "PUBLIC_SETTING_NUM")
-	public Integer dateSettingNum;
+	@Column(name = "USAGE_FLG")
+	public Integer usageFlg;
 	
-	@Column(name = "PUBLIC_SETTING_DATE")
-	public Integer dateSettingDate;
+	@Column(name = "DISPLAY_NUM")
+	public Integer displayNum;
 	
-	@Column(name = "RETIRE_TERM")
-	public Integer retireDateTerm;
-	
-	@Column(name = "RERIRE_SETTING_DATE")
-	public Integer retireDateSettingDate;
-	
-	@Column(name = "APPLY_FLG")
-	public Integer planCourseApplyFlg;
-	
-	@Column(name = "APPLY_START_AGE")
-	public Integer applicationEnableStartAge;
-	
-	@Column(name = "APPLY_END_AGE")
-	public Integer applicationEnableEndAge;
-	
-	@Column(name = "APPLY_DUE_MONTH")
-	public Integer endMonth;
-	
-	@Column(name = "APPLY_DUE_DATE")
-	public Integer endDate;
+	@Column(name = "PASS_VALUE")
+	public Integer passValue;
 	
 	@Override
 	public Object getKey() {
