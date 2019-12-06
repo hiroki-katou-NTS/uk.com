@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.workday.export;
+package nts.uk.ctx.at.shared.pub.workrule.closure.workday;
 
 import java.util.List;
 
