@@ -15,10 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -62,4 +64,16 @@ public class KrcdtReservation extends UkJpaEntity {
 				reservationDetails.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 	
+	public static KrcdtReservation fromDomain(BentoReservation bentoReservation) {
+		return new KrcdtReservation(
+				new KrcdtReservationPK(
+						AppContexts.user().companyId(), 
+						IdentifierUtil.randomUniqueId()), 
+				AppContexts.user().contractCode(), 
+				bentoReservation.getReservationDate().getDate(), 
+				bentoReservation.getReservationDate().getClosingTimeFrame().value, 
+				bentoReservation.getRegisterInfor().getReservationCardNo(), 
+				bentoReservation.isOrdered(), 
+				bentoReservation.getBentoReservationDetails().stream().map(x -> KrcdtReservationDetail.fromDomain(x)).collect(Collectors.toList()));
+	}
 }
