@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
@@ -23,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_RESERVATION")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrcdtReservation extends UkJpaEntity {
 	
 	@EmbeddedId

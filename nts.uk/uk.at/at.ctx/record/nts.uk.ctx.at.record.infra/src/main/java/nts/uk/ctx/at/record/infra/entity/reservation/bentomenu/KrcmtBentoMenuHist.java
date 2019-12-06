@@ -6,12 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_BENTO_MENU_HIST")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrcmtBentoMenuHist extends UkJpaEntity {
 	
 	@EmbeddedId

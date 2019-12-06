@@ -9,6 +9,7 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -16,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_RESERVATION_DETAIL")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrcdtReservationDetail extends UkJpaEntity {
 	
 	@EmbeddedId

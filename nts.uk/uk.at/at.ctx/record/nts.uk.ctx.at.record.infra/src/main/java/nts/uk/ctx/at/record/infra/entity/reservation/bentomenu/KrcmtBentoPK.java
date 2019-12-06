@@ -4,9 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@Embeddable
+@NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class KrcmtBentoPK {
 	
 	@Column(name = "CID")

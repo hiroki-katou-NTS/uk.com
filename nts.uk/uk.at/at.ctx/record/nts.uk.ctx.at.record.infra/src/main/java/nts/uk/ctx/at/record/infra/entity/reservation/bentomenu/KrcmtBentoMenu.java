@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
@@ -23,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCMT_BENTO_MENU")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrcmtBentoMenu extends UkJpaEntity {
 	
 	@EmbeddedId

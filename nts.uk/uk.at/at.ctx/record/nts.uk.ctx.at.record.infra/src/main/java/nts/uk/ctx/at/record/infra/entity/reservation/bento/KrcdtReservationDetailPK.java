@@ -4,10 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 
-@Embeddable
+@NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class KrcdtReservationDetailPK {
 	
 	@Column(name = "CID")
