@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,10 +28,8 @@ public class BentoReservationRequireImpl implements BentoReservationRequire {
 	}
 
 	@Override
-	public BentoReservation getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
-		return bentoReservationRepository.find(registerInfor, reservationDate).orElseGet(() -> {
-			throw new BusinessException(new RawErrorMessage("System Error"));
-		});
+	public Optional<BentoReservation> getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+		return bentoReservationRepository.find(registerInfor, reservationDate);
 	}
 
 	@Override
@@ -43,7 +41,5 @@ public class BentoReservationRequireImpl implements BentoReservationRequire {
 	public void delete(BentoReservation bentoReservation) {
 		bentoReservationRepository.delete(bentoReservation);
 	}
-	
-	
 	
 }
