@@ -285,12 +285,12 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_2_11", empAddChangeInfoExport.getFmBsPenNum(),10 );
             this.fillByCell(worksheet , i,"A2_2_12", empAddChangeInfoExport.getFmBsPenNum(),11 );
 
-            worksheet.getRangeByName(i + "!A1_2").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 1, 15): ""));
+            worksheet.getRangeByName(i + "!A1_2").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 1, 8): ""));
             worksheet.getRangeByName(i + "!A1_3").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 2, 15): ""));
             worksheet.getRangeByName(i + "!A1_4").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 1, 8): ""));
             worksheet.getRangeByName(i + "!A1_5").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 2, 8): ""));
 
-            worksheet.getRangeByName(i + "!A2_6").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 1, 15): ""));
+            worksheet.getRangeByName(i + "!A2_6").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 1, 8): ""));
             worksheet.getRangeByName(i + "!A2_7").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 2, 15): ""));
             worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 1, 8): ""));
             worksheet.getRangeByName(i + "!A2_9").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 2, 8): ""));
