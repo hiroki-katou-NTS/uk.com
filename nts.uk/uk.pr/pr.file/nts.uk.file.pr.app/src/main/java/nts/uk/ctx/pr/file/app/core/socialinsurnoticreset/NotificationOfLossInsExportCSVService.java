@@ -109,11 +109,9 @@ public class NotificationOfLossInsExportCSVService extends ExportService<Notific
 			List<PersonExport> personList = personExportAdapter.findByPids(employeeInfoList.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));
 			healthInsLoss.forEach(item -> {
 				if (!item.getEndDate().isEmpty() && item.getEndDate().equals(item.getEndDate2())) {
-					item.setCaInsurance2(null);
-					item.setCause2(null);
-					item.setNumRecoved2(null);
-					item.setOther2(null);
-					item.setOtherReason2(null);
+					item.setCaInsurance2(item.getCaInsurance());
+					item.setNumRecoved2(item.getNumRecoved());
+					item.setOtherReason2(item.getOtherReason());
 				}
 				PersonExport p = InsLossDataExport.getPersonInfor(employeeInfoList, personList, item.getEmpId());
 				item.setPersonName(p.getPersonNameGroup().getPersonName().getFullName());

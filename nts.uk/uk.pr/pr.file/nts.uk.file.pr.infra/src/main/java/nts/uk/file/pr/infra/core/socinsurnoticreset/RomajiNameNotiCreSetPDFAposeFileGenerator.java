@@ -69,7 +69,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                           RomajiNameNotiCreSetExport romajiNameNotiCreSetExport,
                           String i){
         try {
-            this.selectShapesRadio(worksheet, findTypeGender(romajiNameNotiCreSetExport.getPerson().getGender(), PERSON) , i, "A1_3","A1_4");
+            this.selectShapesRadio(worksheet, findTypeGender(romajiNameNotiCreSetExport.getPerson().getGender(), Integer.parseInt(personTarget)) , i, "A1_3","A1_4");
             if ( personTarget.equals("0")) {
                 this.pushName(romajiNameNotiCreSetExport.getBasicPenNumber(), worksheet, i, 11, 1);
 
