@@ -18,7 +18,7 @@ import nts.uk.ctx.hr.shared.dom.enumeration.DateRule;
 public class DateCaculationTerm extends DomainObject{
 
 	/** 算出条件 */
-	private DateRule dateTerm;
+	private DateRule calculationTerm;
 	
 	/** 指定数 */
 	private Integer dateSettingNum;

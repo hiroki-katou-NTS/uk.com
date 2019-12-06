@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.workday.export;
+package nts.uk.ctx.at.shared.pubimp.workrule.closure.workday;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.pub.workrule.closure.workday.ClosureDateOfEmployment;
+import nts.uk.ctx.at.shared.pub.workrule.closure.workday.IWorkDayServices;
 
 public class WorkDayServicesImpl implements IWorkDayServices {
 
