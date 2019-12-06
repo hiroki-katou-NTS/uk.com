@@ -12,14 +12,14 @@ import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegula
 public class EmploymentRegulationHistoryInterfaceImpl extends JpaRepository implements EmploymentRegulationHistoryInterface {
 
 	private static final String SELECT_HIS_ID_BY_DATE = "SELECT c.historyId FROM JshmtEmpRegHistory c "
-			+ "WHERE c.startDate <= :baseDate  <= c.endDate "
+			+ "WHERE c.startDate <= :baseDate AND :baseDate <= c.endDate "
 			+ "AND c.cId = :cId ";
 	
 	@Override
 	public Optional<String> getHistoryIdByDate(String cId, GeneralDate baseDate) {
 		return this.queryProxy().query(SELECT_HIS_ID_BY_DATE, String.class)
 			.setParameter("cId", cId)
-			.setParameter("baseDate", baseDate.toString())
+			.setParameter("baseDate", baseDate)
 			.getSingle();
 	}
 
