@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -142,5 +143,20 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 	@Override
 	public void delete(BentoReservation bentoReservation) {
 		commandProxy().remove(bentoReservation);
+	}
+
+	@Override
+	public List<BentoReservation> findList(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+		String query = FIND_BY_ID_DATE;
+		query = query.replaceFirst("cardNo", registerInfor.getReservationCardNo());
+		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		query = query.replaceFirst("frameAtr", String.valueOf(reservationDate.getClosingTimeFrame().value));
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoReservation> bentoReservationLst = toDomain(createFullJoinBentoReservation(rs));
+			return bentoReservationLst;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }
