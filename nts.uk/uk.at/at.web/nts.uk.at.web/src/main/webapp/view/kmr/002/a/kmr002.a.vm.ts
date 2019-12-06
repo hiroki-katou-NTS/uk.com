@@ -11,7 +11,7 @@ module nts.uk.at.view.kmr002.a.model {
     import service = nts.uk.at.view.kmr002.a.service;
     import errors = nts.uk.ui.errors;
     export class ScreenModel {
-        date: KnockoutObservable<string> = ko.observable(moment(new Date()).format("YYYYMMDD"));
+        date: KnockoutObservable<any> = ko.observable(moment(new Date()).format("YYYYMMDD"));
         yearMonth: KnockoutObservable<number> = ko.observable(200002);
         lunch: KnockoutObservable<string> =  ko.observable('昼');
         dinner: KnockoutObservable<string> = ko.observable('夜');
@@ -19,7 +19,7 @@ module nts.uk.at.view.kmr002.a.model {
         priceLunch: KnockoutObservable<number> =  ko.observable(0);
         priceDinner: KnockoutObservable<number> = ko.observable(0);
         priceSum: KnockoutObservable<number> = ko.observable(0);
-        mealSelected: KnockoutObservable<number> = ko.observable(0);
+        mealSelected: KnockoutObservable<number> = ko.observable(1);
         menuLunch: KnockoutObservableArray<any> = ko.observableArray([]);
         menuDinner: KnockoutObservableArray<any> = ko.observableArray([]);
         isUpdate: KnockoutObservable<boolean> = ko.observable(false);
@@ -73,8 +73,8 @@ module nts.uk.at.view.kmr002.a.model {
                          { code: 5, name: 'ハヤシライス', price: 1000, numberOrder: 1,status: ko.observable(true) }
             ]);
             self.optionMenu = [
-                                  { code: 0, name: '昼' },
-                                  { code: 1, name: '夜' }
+                                  { code: 1, name: '昼' },
+                                  { code: 2, name: '夜' }
              ];
         }
 

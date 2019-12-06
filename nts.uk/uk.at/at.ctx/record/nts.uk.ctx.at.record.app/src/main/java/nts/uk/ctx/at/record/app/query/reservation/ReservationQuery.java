@@ -26,7 +26,7 @@ public class ReservationQuery {
 	private BentoMenuRepository bentoMenuRepo;
 	
 	public ReservationDto findAll(ReservationDateParam param) {
-		String userId = AppContexts.user().userId();
+		String userId = "hdfgdgfdufdfdfdg";
 		//1 get*(予約対象日,カード番号)
 		// val dataLunch = bentoReservationRepo.find(new ReservationRegisterInfo(userId), new ReservationDate(param.getDate(), EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class)));
 		val listBento = bentoReservationRepo.findList(new ReservationRegisterInfo(userId), new ReservationDate(param.getDate(), EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class))) ;
