@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -17,6 +19,8 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCour
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.service.IGetDatePeriod;
 import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
@@ -40,26 +44,136 @@ public class RetirementInformationFinder {
 	@Inject
 	private IGetDatePeriod getDate;
 
+	@Inject
+	private EmploymentRegulationHistoryInterface iEmpHis;
+	
+	@Inject
+	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
+
+	/**
+	 * 1.起動する(Khởi động)
+	 */
 	public RetiDateDto startPage() {
 
 		// アルゴリズム[定年退職設定の取得]を実行する(thực hiện thuật toán [lấy setting nghỉ hưu])
 		List<RetirementCourseDto> RetirementCourseDtos = getRetirementAgeSetting();
-		
+
 		// アルゴリズム[定年退職期間設定の取得]を実行する(thực hiện thuật toán [lấy setting khoảng
 		// thời gian nghỉ hưu])
 		DateDisplaySettingPeriodDto dateDisplaySettingPeriodDto = getRetirementPeriod();
-		
+
 		// アルゴリズム[参考情報表示設定の取得]を実行する(thực hiện thuật toán [lấy setting hiển thị
 		// thông tin tham khảo])
-		List<ReferEvaluationItemDto>  referEvaluationItems = GetEmpRegulationHistoryIDByBaseDate();
-	
+		List<ReferEvaluationItemDto> referEvaluationItems = GetEmpRegulationHistoryIDByBaseDate();
 
 		return new RetiDateDto(dateDisplaySettingPeriodDto, RetirementCourseDtos, referEvaluationItems);
 	}
 
+	/**
+	 * 2.定年退職対象者を検索する(Search đối tượng nghỉ hưu)
+	 */
+	public RetiDateDto searchRetiredEmployees(SearchRetiredEmployeesQuery query) {
+
+		// アルゴリズム[検索事前チェック]を実行する(Thực hiện thuật toan [check pre-search ])
+		checkPreSearch(query);
+
+		// アルゴリズム[検索前警告チェック]を実行する(Thực hiện thuật toán [check cảnh báo trước khi
+		// search])
+
+		if (!query.isConfirmCheckRetirementPeriod()) {
+			preSearchWarning(query.getEndDate());
+		}
+		// アルゴリズム[定年退職者一覧の取得]を実行する(Thực hiện thuật toán [lấy danh sách người
+		// nghỉ hưu])
+		getRetiredEmployees(query);
+		return null;
+	}
+
+	private void getRetiredEmployees(SearchRetiredEmployeesQuery query) {
+		String cId = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		// アルゴリズム[定年退職予定者の取得]を実行する(Thực hiện thuật toán [lấy người dự định nghỉ
+		// hưu])
+		Optional<String> hisIdOpt = this.iEmpHis.getHistoryIdByDate(cId, baseDate);
+
+		if (!hisIdOpt.isPresent()) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+
+		// ドメインモデル [定年退職の就業規則] を取得する(Lấy domain [MandatoryRetirementRegulation])
+
+		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
+		if (mada == null) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+		
+		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
+		case 0:
+		case 1:
+		case 2:
+			
+			break;
+		case 3:
+			checkYearMonthDate(cId, baseDate);
+			break;
+		case 4:
+			checkSalaryClosingDate(cId);
+			break;
+		case 5:
+			getClosingDate(cId);
+			break;
+		}
+
+	}
+
+	private void getClosingDate(String cId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void checkSalaryClosingDate(String cId) {
+		//アルゴリズム [給与雇用と締めのリストを取得する] を実行する (Thực hiện thuật toán [Get a list of salary employment and closing])
+		
+	}
+
+	private void checkYearMonthDate(String cId, GeneralDate baseDate) {
+		//アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy YearStartMonthDate, YearEndMonthDate từ BaseDate])
+		YearStartEnd yearStartEnd = this.iGetYearStartEndDateByDate.getByDate(cId, baseDate);
+		if(yearStartEnd ==null){
+			throw new BusinessException("MsgJ_JMM018_3");
+		}
+	}
+
+	private void preSearchWarning(GeneralDate endDate) {
+
+		if (endDate.before(GeneralDate.today().addYears(2))) {
+			throw new BusinessException("MsgJ_JCM008_5");
+		}
+	}
+
+	private void checkPreSearch(SearchRetiredEmployeesQuery query) {
+		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+		// 定年退職年齢の指定チェック(chek setting cua RetirementAge)
+		if (query.isRetirementAgeSetting() && query.getRetirementAge() == null) {
+			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_7"));
+		}
+		// 部門チェック(check department)
+		if (query.isAllSelectDepartment() && query.getSelectDepartment().isEmpty()) {
+			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_3"));
+		}
+		// 雇用チェック(check employment)
+		if (query.isAllSelectEmployment() && query.getSelectEmployment().isEmpty()) {
+			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_4"));
+		}
+		if (!bundleExeption.getMessageId().isEmpty()) {
+			throw bundleExeption;
+		}
+	}
+
 	private List<ReferEvaluationItemDto> GetEmpRegulationHistoryIDByBaseDate() {
 		String cId = AppContexts.user().companyId();
-		return this.medaRepo.getReferEvaluationItemByDate(cId, GeneralDate.today()).stream().map(x-> new ReferEvaluationItemDto(x)).collect(Collectors.toList());
+		return this.medaRepo.getReferEvaluationItemByDate(cId, GeneralDate.today()).stream()
+				.map(x -> new ReferEvaluationItemDto(x)).collect(Collectors.toList());
 	}
 
 	private DateDisplaySettingPeriodDto getRetirementPeriod() {
@@ -83,7 +197,8 @@ public class RetirementInformationFinder {
 		// アルゴリズム[定年退職期間設定の取得]を実行する(thực hiện thuật toán [lấy setting khoảng
 		// thời gian nghỉ hưu])
 
-		return retirementCourses;
+		return retirementCourses.stream().sorted(Comparator.comparing(RetirementCourseDto::getRetirePlanCourseCode))
+				.collect(Collectors.toList());
 	}
 
 	private List<RetirementCourseDto> getRetirementCourse(String cId, GeneralDate baseDate) {
@@ -151,19 +266,16 @@ public class RetirementInformationFinder {
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
 
 		Optional<EmploymentInfoImport> empInfo = empInfos.stream()
-				.filter(emp -> emp.getEmpCommonMasterItemId() == retireTerm.getEmpCommonMasterItemId()).findFirst();
+				.filter(emp -> emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId()))
+				.findFirst();
 
 		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
 		String employmentName = empInfo.isPresent() ? empInfo.get().getEmploymentName() : null;
 
 		retireTerm.getEnableRetirePlanCourse().forEach(x -> {
 
-			RetirementCourseDto dto = 
-					RetirementCourseDto
-					.builder()
-					.employmentCode(employmentCode)
-					.employmentName(employmentName)
-					.retireDateTerm(new RetireDateTermDto(mada.getRetireDateTerm()))
+			RetirementCourseDto dto = RetirementCourseDto.builder().employmentCode(employmentCode)
+					.employmentName(employmentName).retireDateTerm(new RetireDateTermDto(mada.getRetireDateTerm()))
 					.build();
 
 			Optional<RetirePlanCource> retire = retires.stream()
