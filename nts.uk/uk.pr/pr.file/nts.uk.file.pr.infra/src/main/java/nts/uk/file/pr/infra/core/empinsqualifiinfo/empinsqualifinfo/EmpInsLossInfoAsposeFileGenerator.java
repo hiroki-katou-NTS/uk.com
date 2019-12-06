@@ -60,15 +60,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             stylePage(doc);
             int indexPage = 1;
             JapaneseEras japaneseEras = jpErasAdapter.getAllEras();
-            /**
-             * edit by TUAN.NB
-             */
+
             String emInsNumInfo, companyCode, postCd, address, phoneNumber, causeOfLoss, causeOfLossIns, fullName, nationaly, residence, insuredName, insuredPersonName;
             Integer reqIssuAtr, workingTime, scheForRep ;
             JapaneseDate empInsHistDate;
-            /**
-             * end
-             */
+
             for (int i = 0; i < data.size(); i++) {
                 Page pdfPage = doc.getPages().get_Item(indexPage);
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
