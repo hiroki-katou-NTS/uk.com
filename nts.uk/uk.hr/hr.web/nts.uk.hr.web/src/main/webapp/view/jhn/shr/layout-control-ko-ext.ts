@@ -156,7 +156,7 @@ module nts.custombinding {
 
                     .layout-control .add-buttons {
                         margin-left: 165px;
-                        margin-top: 15px;
+                        margin-top: -50px;
                     }
 
                     .layout-control .drag-panel {
