@@ -264,7 +264,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
                 //A3_5
                 empInsHistDate = toJapaneseDate(element.getFillingDate(),japaneseEras);
-                detachDate(486, 206, empInsHistDate, textBuilder);
+                detachDate(480, 206, empInsHistDate, textBuilder);
                 //index page
                 indexPage = indexPage + 1;
             }
@@ -389,8 +389,8 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
         textBuilder.appendText(setValue(xRoot, yRoot,  value.year() + 1 + "", 9, false));
-        textBuilder.appendText(setValue(xRoot + 30, yRoot, value.month() + "", 9, false));
-        textBuilder.appendText(setValue(xRoot + 60, yRoot,  value.day() + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 36, yRoot, value.month() + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 66, yRoot,  value.day() + "", 9, false));
     }
 
     private String formatWorkingTime(Integer workingTime) {
@@ -413,7 +413,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             return text;
         }
         int textLength = text.length();
-        int subLength = 0;
+        int subLength = maxByteAllowed / 2;
         while (subLength < textLength) {
             if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
                 break;
