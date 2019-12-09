@@ -31,7 +31,7 @@ public class BentoReserveModifyService {
 				// 5: delete
 				require.delete(opBeforeBento.get());
 			}
-			if(CollectionUtil.isEmpty(bentoDetails.values())) {
+			if(!CollectionUtil.isEmpty(bentoDetails.values())) {
 				// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
 				BentoReservation afterBento = bentoMenu.getBentoReservation(registerInfor, reservationDate, bentoDetails);
 				
