@@ -11,7 +11,7 @@ module nts.uk.at.view.kmr002.a.model {
     import service = nts.uk.at.view.kmr002.a.service;
     import errors = nts.uk.ui.errors;
     export class ScreenModel {
-        date: KnockoutObservable<any> = ko.observable(moment(new Date()).format("YYYYMMDD"));
+        date: KnockoutObservable<string> = ko.observable();
         yearMonth: KnockoutObservable<number> = ko.observable(200002);
         lunch: KnockoutObservable<string> =  ko.observable('昼');
         dinner: KnockoutObservable<string> = ko.observable('夜');
@@ -83,12 +83,18 @@ module nts.uk.at.view.kmr002.a.model {
             let dfd = $.Deferred<any>();
             console.log(self.date() + self.mealSelected() + 'a');
             service.startScreen({
-                date: self.date(), 
+                date: moment(new Date()).format("YYYY/MM/DD"), 
                 closingTimeFrame: self.mealSelected()}).done((data) => {
+                initData();
                 console.log('a');
             });
             dfd.resolve();
             return dfd.promise();
+        }
+
+        public initData(data: any) {
+            self.menuLunch(data.bentoMenuByClosingTime.menu1);
+            self.menuDinner(data.bentoMenuByClosingTime.menu2);
         }
         
         public updateLunch(code: number, numberOd: number) :void {
