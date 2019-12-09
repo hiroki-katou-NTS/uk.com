@@ -779,11 +779,18 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
+        if (text == null) {
+            return "";
+        }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
         int textLength = text.length();
         int subLength = 0;
         while (subLength < textLength) {
-            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
             subLength++;
         }
         return text.substring(0, subLength);
