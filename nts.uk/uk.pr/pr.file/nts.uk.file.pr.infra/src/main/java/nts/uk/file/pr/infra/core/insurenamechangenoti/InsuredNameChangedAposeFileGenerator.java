@@ -167,20 +167,20 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         ws.getCells().get("Y20").putValue(submitDate.month());
         ws.getCells().get("AA20").putValue(submitDate.day());
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
-            ws.getCells().get("J17").putValue(beforeName);
-            ws.getCells().get("M17").putValue(afterName);
-            ws.getCells().get("J19").putValue(beforeNameKana);
-            ws.getCells().get("M19").putValue(afterNameKana);
+            ws.getCells().get("J17").putValue(beforeName.length() > 5 ? beforeName.substring(0,5) : beforeName);
+            ws.getCells().get("M17").putValue(afterName.length() > 5 ? afterName.substring(0,5) : afterName);
+            ws.getCells().get("J19").putValue(beforeNameKana.length() > 5 ? beforeNameKana.substring(0,5) : beforeNameKana);
+            ws.getCells().get("M19").putValue(afterNameKana.length() > 5 ? afterNameKana.substring(0,5) : afterNameKana);
         }
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.REPORTED_NAME) {
-            ws.getCells().get("J17").putValue(beforeTodoName);
-            ws.getCells().get("M17").putValue(afterTodoName);
-            ws.getCells().get("J19").putValue(beforeTodoNameKana);
-            ws.getCells().get("M19").putValue(afterTodoNameKana);
+            ws.getCells().get("J17").putValue(beforeTodoName.length() > 5 ? beforeTodoName.substring(0,5) : beforeTodoName);
+            ws.getCells().get("M17").putValue(afterTodoName.length() > 5 ? afterTodoName.substring(0,5) : afterTodoName);
+            ws.getCells().get("J19").putValue(beforeTodoNameKana.length() > 5 ? beforeTodoNameKana.substring(0,5) : beforeTodoNameKana);
+            ws.getCells().get("M19").putValue(afterTodoNameKana.length() > 5 ? afterTodoNameKana.substring(0,5) : afterTodoNameKana);
         }
 
-        ws.getCells().get("U17").putValue(beforeOldName);
-        ws.getCells().get("Z17").putValue(afterOldName);
+        ws.getCells().get("U17").putValue(beforeOldName.length() > 5 ? beforeOldName.substring(0,5) : beforeOldName);
+        ws.getCells().get("Z17").putValue(afterOldName.length() > 5 ? afterOldName.substring(0,5) : afterOldName);
 
 
         //厚生年金種別情報
