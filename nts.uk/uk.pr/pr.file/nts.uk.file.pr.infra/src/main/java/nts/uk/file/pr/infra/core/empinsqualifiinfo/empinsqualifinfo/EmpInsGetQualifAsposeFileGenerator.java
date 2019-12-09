@@ -49,25 +49,25 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(251, 718, insuredNumber.length() > 10 ? insuredNumber.substring(10) : "", 1, textBuilder);
                 // A1_2
                 String acquisitionAtr = data.getAcquisitionAtr() == null ? "" : data.getAcquisitionAtr().toString();
-                textBuilder.appendText(setValue(318, 718, acquisitionAtr, 16));
+                textBuilder.appendText(setValue(318, 718, acquisitionAtr, 16, false));
                 // A1_3
                 String insuredName = data.getInsuredName() == null ? "" : data.getInsuredName();
-                textBuilder.appendText(setValue(45, 686, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(45, 686, formatTooLongText(insuredName, INSURED_NAME_MAX_BYTE), 9, false));
                 // A1_4
                 String insuredFullName = data.getInsuredFullName() == null ? "" : data.getInsuredFullName();
                 detachText(182, 682, insuredFullName, 20, textBuilder);
                 // A1_5
                 String nameAfterChange = data.getNameAfterChange() == null ? "" : data.getNameAfterChange();
-                textBuilder.appendText(setValue(45, 650, formatTooLongText(nameAfterChange, INSURED_FULLNAME_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(45, 650, formatTooLongText(nameAfterChange, INSURED_FULLNAME_MAX_BYTE), 9, false));
                 // A1_6
                 String fullNameAfterChange = data.getFullNameAfterChange() == null ? "" : data.getFullNameAfterChange();
                 detachText(182, 647, fullNameAfterChange, 20, textBuilder);
                 // A1_7
                 String gender = data.getGender() == null ? "" : data.getGender().toString();
-                textBuilder.appendText(setValue(46, 609, gender, 16));
+                textBuilder.appendText(setValue(46, 609, gender, 16, false));
                 // A1_8
                 String eraDob = data.getEraDateOfBirth() == null ? "" : data.getEraDateOfBirth();
-                textBuilder.appendText(setValue(108, 609, eraDob, 16));
+                textBuilder.appendText(setValue(108, 609, eraDob, 16, false));
                 // A1_9
                 String dobJp = data.getDateOfBirthJp() == null ? "" : data.getDateOfBirthJp();
                 detachText(142, 609, dobJp, 6, textBuilder);
@@ -77,10 +77,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(505, 609, data.getOfficeNumber3() == null ? "" : data.getOfficeNumber3(), 1, textBuilder);
                 // A1_11
                 String insuredCause = data.getCauseOfInsured() == null ? "" : data.getCauseOfInsured().toString();
-                textBuilder.appendText(setValue(88, 566, insuredCause, 16));
+                textBuilder.appendText(setValue(88, 566, insuredCause, 16, false));
                 // A1_12
                 String wagePaymentMode = data.getWagePaymentMode() == null ? "" : data.getWagePaymentMode().toString();
-                textBuilder.appendText(setValue(155, 566, wagePaymentMode, 16));
+                textBuilder.appendText(setValue(155, 566, wagePaymentMode, 16, false));
                 // A1_13
                 String paymentWage = data.getPaymentWage() == null ? "" : data.getPaymentWage().toString();
                 detachText(189 + (4 - paymentWage.length()) * 17, 566, paymentWage, 4, textBuilder);
@@ -90,19 +90,19 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(386, 566, qualificationDateJp.length() > 1 ? qualificationDateJp.substring(1) : "", 6, textBuilder);
                 // A1_15
                 String employmentStatus = data.getEmploymentStatus() == null ? "" : data.getEmploymentStatus().toString();
-                textBuilder.appendText(setValue(134, 516, employmentStatus, 16));
+                textBuilder.appendText(setValue(134, 516, employmentStatus, 16, false));
                 // A1_16
                 String occupation = data.getOccupation() == null ? "" : data.getOccupation();
                 detachText(242, 516, occupation, 2, textBuilder);
                 // A1_17
                 String jobPath = data.getJobPath() == null ? "" : data.getJobPath().toString();
-                textBuilder.appendText(setValue(317, 516, jobPath, 16));
+                textBuilder.appendText(setValue(317, 516, jobPath, 16, false));
                 // A1_18
                 String workingTime = formatWorkingTime(data.getScheduleWorkingTimePerWeek());
                 detachText(402, 516, workingTime, 4, textBuilder);
                 // A1_19
                 String estContractPeriod = data.getSetContractPeriod() == null ? "" : data.getSetContractPeriod().toString();
-                textBuilder.appendText(setValue(119, 464, estContractPeriod, 16));
+                textBuilder.appendText(setValue(119, 464, estContractPeriod, 16, false));
                 // A1_20
                 String contractStartDateJp = data.getContractStartDateJp() == null ? "" : data.getContractStartDateJp();
                 detachText(217, 464, contractStartDateJp, 1, textBuilder);
@@ -113,10 +113,10 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(406, 464, contractEndDateJp.length() > 1 ? contractEndDateJp.substring(1) : "", 6, textBuilder);
                 // A1_22
                 String contractRenewalProvision = data.getContractRenewalProvision() == null ? "" : data.getContractRenewalProvision().toString();
-                textBuilder.appendText(setValue(250, 432, contractRenewalProvision, 16));
+                textBuilder.appendText(setValue(250, 432, contractRenewalProvision, 16, false));
                 // A1_23
                 String officeName = data.getOfficeName() == null ? "" : data.getOfficeName();
-                textBuilder.appendText(setValue(90, 406, formatTooLongText(officeName, OFFICE_NAME_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(90, 406, formatTooLongText(officeName, OFFICE_NAME_MAX_BYTE), 9, false));
                 // A1_24 pending
                 // detachText(174, 757, data.getPersonalNumber(), 11, textBuilder);
                 // A2_1
@@ -127,31 +127,31 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 detachText(48, 320, insuredRomanName2, 12, textBuilder);
                 // A2_3
                 String nationalityRegion = data.getNationalityRegion() == null ? "" : data.getNationalityRegion();
-                textBuilder.appendText(setValue(271, 324, formatTooLongText(nationalityRegion, NATIONALITY_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(271, 324, formatTooLongText(nationalityRegion, NATIONALITY_MAX_BYTE), 9, false));
                 // A2_4
                 String residenceStatus = data.getResidenceStatus() == null ? "" : data.getResidenceStatus();
-                textBuilder.appendText(setValue(405, 324, formatTooLongText(residenceStatus, RESIDENT_STATUS_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(405, 324, formatTooLongText(residenceStatus, RESIDENT_STATUS_MAX_BYTE), 9, false));
                 // A2_5
                 String stayPeriod = data.getStayPeriod() == null ? "" : data.getStayPeriod();
                 detachText(85, 291, stayPeriod, 8, textBuilder);
                 // A2_6
                 String nonQualificationPermission = data.getNonQualifPermission() == null ? "" : data.getNonQualifPermission().toString();
-                textBuilder.appendText(setValue(305, 291, nonQualificationPermission, 16));
+                textBuilder.appendText(setValue(305, 291, nonQualificationPermission, 16, false));
                 // A2_7
                 String contractWorkAtr = data.getContractWorkAtr() == null ? "" : data.getContractWorkAtr().toString();
-                textBuilder.appendText(setValue(415, 291, contractWorkAtr, 16));
+                textBuilder.appendText(setValue(415, 291, contractWorkAtr, 16, false));
                 // A3_1
                 String postalCode = data.getOfficePostalCode() == null ? "" : data.getOfficePostalCode();
-                textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9));
+                textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9, false));
                 // A3_2
                 String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(160, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(160, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9, false));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
-                textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9));
+                textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9, false));
                 // A3_4
                 String officePhoneNumber = data.getOfficePhoneNumber() == null ? "" : data.getOfficePhoneNumber();
-                textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9));
+                textBuilder.appendText(setValue(110, 122, formatPhoneNumber(officePhoneNumber), 9, false));
 
                 // A3_5
                 detachDate(457, 180, data.getSubmissionDateJp(), textBuilder);
@@ -164,14 +164,17 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         }
     }
 
-    private TextFragment setValue(int x, int y, String value, int textSize) {
+    private TextFragment setValue(int x, int y, String value, int textSize, boolean isDetach) {
         TextFragment textFragment = new TextFragment(value);
         textFragment.setPosition(new Position(x, y));
-        styleText(textFragment.getTextState(), textSize);
+        styleText(textFragment.getTextState(), textSize, isDetach);
         return textFragment;
     }
 
-    private void styleText(TextFragmentState textFragmentState, int textSize) {
+    private void styleText(TextFragmentState textFragmentState, int textSize, boolean isDetach) {
+        if (isDetach) {
+            textFragmentState.setCharacterSpacing(9);
+        }
         textFragmentState.setFont(FontRepository.findFont("MS-Gothic"));
         textFragmentState.setFontSize(textSize);
         textFragmentState.setForegroundColor(Color.getBlack());
@@ -183,10 +186,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        for (int i = 0; i < value.length(); i++) {
-            int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, value.charAt(i) + "", 16));
-        }
+        textBuilder.appendText(setValue(xRoot, yRoot, value, 16, true));
     }
 
     private void stylePage(Document doc) {
@@ -199,9 +199,9 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     }
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
-        textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9));
-        textBuilder.appendText(setValue(xRoot + 41, yRoot, value.month() + "", 9));
-        textBuilder.appendText(setValue(xRoot + 77, yRoot, value.day() + "", 9));
+        textBuilder.appendText(setValue(xRoot, yRoot, value.year() + 1 + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 41, yRoot, value.month() + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 77, yRoot, value.day() + "", 9, false));
     }
 
     private String formatPhoneNumber(String number) {
@@ -271,11 +271,18 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
+        if (text == null) {
+            return "";
+        }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
         int textLength = text.length();
-        int subLength = 0;
+        int subLength = maxByteAllowed / 2;
         while (subLength < textLength) {
-            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
             subLength++;
         }
         return text.substring(0, subLength);

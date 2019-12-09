@@ -60,6 +60,11 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
             stylePage(doc);
             int indexPage = 1;
             JapaneseEras japaneseEras = jpErasAdapter.getAllEras();
+
+            String emInsNumInfo, companyCode, postCd, address, phoneNumber, causeOfLoss, causeOfLossIns, fullName, nationaly, residence, insuredName, insuredPersonName;
+            Integer reqIssuAtr, workingTime, scheForRep ;
+            JapaneseDate empInsHistDate;
+
             for (int i = 0; i < data.size(); i++) {
                 Page pdfPage = doc.getPages().get_Item(indexPage);
                 TextBuilder textBuilder = new TextBuilder(pdfPage);
@@ -67,36 +72,34 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 EmpInsLossInfoExportData element = data.get(i);
 
                 //A1_2
-                textBuilder.appendText(setValue(114, 757, "1", 16));
+                textBuilder.appendText(setValue(114, 757, "1", 16, false));
                 //A1_3
-                String emInsNumInfo =  element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "" ;
+                emInsNumInfo =  element.getEmpInsNumInfo() != null ? element.getEmpInsNumInfo().getEmpInsNumber().v() : "" ;
                 if( element.getEmpInsNumInfo() != null && !element.getEmpInsNumInfo().getEmpInsNumber().v().equals("")  ){
                     detachText(45,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(0,4): emInsNumInfo,4,textBuilder);
                     detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,textBuilder);
                     detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,textBuilder);
                 }
-
                 switch (element.getEmpInsReportSetting().getOfficeClsAtr()){
                     case OUTPUT_COMPANY: {
                         if (element.getCompanyInfor() != null) {
-                            //A1_4
-                            String companyCode = element.getCompanyInfor().getCompanyCode();
+                            companyCode = element.getCompanyInfor().getCompanyCode();
                             detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, textBuilder);
                             detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, textBuilder);
                             detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, textBuilder);
                             //A2_7
-                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getCompanyInfor().getCompanyName(), BUSINESS_NAME), 9));
+                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getCompanyInfor().getCompanyName(), BUSINESS_NAME), 9, false));
                             //A3_1
-                            String postCd = element.getCompanyInfor().getPostCd();
-                            textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
+                            postCd = element.getCompanyInfor().getPostCd();
+                            textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9, false));
                             //A3_2
-                            String address = element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2();
+                            address = element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2();
 
-                            textBuilder.appendText(setValue(210, 190, formatTooLongText(address, COMPANY_ADDRESS), 9));
+                            textBuilder.appendText(setValue(210, 190, formatTooLongText(address, COMPANY_ADDRESS), 9, false));
                             //A3_3
-                            textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
+                            textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9, false));
                             //A3_4
-                            textBuilder.appendText(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9));
+                            textBuilder.appendText(setValue(150, 131, formatPhoneNumber(element.getCompanyInfor().getPhoneNum()), 9, false));
                         }
                         break;
                     }
@@ -108,29 +111,28 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                             detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
 
                             //A2_7
-                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getLaborInsuranceOffice().getLaborOfficeName().v(), BUSINESS_NAME), 9));
+                            textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getLaborInsuranceOffice().getLaborOfficeName().v(), BUSINESS_NAME), 9, false));
 
                             if (element.getLaborInsuranceOffice().getBasicInformation() != null) {
                                 //A3_1
-                                String postCd =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
-                                textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9));
+                                postCd =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
+                                textBuilder.appendText(setValue(150, 190,formatPostalCode(postCd), 9, false));
                                 //A3_2
-                                String addressLabor;
                                 if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
-                                    addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
+                                    address = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                 } else {
                                     if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent()) {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
+                                        address = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString()  + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
                                     } else {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
+                                        address = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
                                     }
                                 }
-                                textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor, COMPANY_ADDRESS), 9));
+                                textBuilder.appendText(setValue(210, 190, formatTooLongText(address, COMPANY_ADDRESS), 9, false));
                                 //A3_3
-                                textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
+                                textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9, false));
                                 //A3_4
-                                String phoneNumber = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";
-                                textBuilder.appendText(setValue(150, 131, formatPhoneNumber(phoneNumber), 9));
+                                phoneNumber = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";
+                                textBuilder.appendText(setValue(150, 131, formatPhoneNumber(phoneNumber), 9, false));
                             }
                         }
                         break;
@@ -138,46 +140,45 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     default: break;
                 }
                 ///A1_5
-                JapaneseDate empInsHistStartDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).start().toString().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
-                textBuilder.appendText(setValue(45, 677, findEra(empInsHistStartDate.era()), 16));
+                empInsHistDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).start().toString().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
+                textBuilder.appendText(setValue(45, 677, findEra(empInsHistDate.era()), 16, false));
                 //A1_6
                 {
-                    String value = (empInsHistStartDate.year() + 1 < 10 ? "0" + (empInsHistStartDate.year() + 1) : empInsHistStartDate.year() + 1) + "" + (empInsHistStartDate.month() < 10 ? "0" + empInsHistStartDate.month() : empInsHistStartDate.month()) + "" + (empInsHistStartDate.day() < 10 ? "0" + empInsHistStartDate.day() : empInsHistStartDate.day()) + "";
+                    String value = (empInsHistDate.year() + 1 < 10 ? "0" + (empInsHistDate.year() + 1) : empInsHistDate.year() + 1) + "" + (empInsHistDate.month() < 10 ? "0" + empInsHistDate.month() : empInsHistDate.month()) + "" + (empInsHistDate.day() < 10 ? "0" + empInsHistDate.day() : empInsHistDate.day()) + "";
                     detachText(79, 677, value, 6, textBuilder);
                 }
                 //A1_7
-                JapaneseDate empInsHistEndDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).end().toString().substring(0,10), "yyyy/MM/dd"), japaneseEras);
-                textBuilder.appendText(setValue(233,677, findEra(empInsHistEndDate.era()), 16));
+                empInsHistDate = toJapaneseDate(GeneralDate.fromString(element.getEmpInsHist().getHistoryItem().get(0).end().toString().substring(0,10), "yyyy/MM/dd"), japaneseEras);
+                textBuilder.appendText(setValue(233,677, findEra(empInsHistDate.era()), 16, false));
                 {
-                    String value = (empInsHistEndDate.year() + 1 < 10 ? "0" + (empInsHistEndDate.year() + 1) : empInsHistEndDate.year() + 1) + "" + (empInsHistEndDate.month() < 10 ? "0" + empInsHistEndDate.month() : empInsHistEndDate.month()) + "" + (empInsHistEndDate.day() < 10 ? "0" + empInsHistEndDate.day() : empInsHistEndDate.day()) + "";
+                    String value = (empInsHistDate.year() + 1 < 10 ? "0" + (empInsHistDate.year() + 1) : empInsHistDate.year() + 1) + "" + (empInsHistDate.month() < 10 ? "0" + empInsHistDate.month() : empInsHistDate.month()) + "" + (empInsHistDate.day() < 10 ? "0" + empInsHistDate.day() : empInsHistDate.day()) + "";
                     detachText(267, 677, value, 6, textBuilder);
                 }
-
                 if (element.getEmpInsLossInfo() != null) {
                     //A1_8 Cause of loss
-                    String causeOfLoss = element.getEmpInsLossInfo().getCauseOfLoss().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLoss().get().value + 1) : "";
-                    textBuilder.appendText(setValue(387, 677, causeOfLoss, 16));
+                    causeOfLoss = element.getEmpInsLossInfo().getCauseOfLoss().isPresent() ? String.valueOf(element.getEmpInsLossInfo().getCauseOfLoss().get().value + 1) : "";
+                    textBuilder.appendText(setValue(387, 677, causeOfLoss, 16, false));
                     //A1_9 reqIssuAtr
                     if (element.getEmpInsLossInfo().getRequestForIssuance().isPresent()) {
-                        Integer reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().get().value;
-                        textBuilder.appendText(setValue(45, 629, reqIssuAtr.intValue() == RequestForInsurance.NO.value ? String.valueOf(reqIssuAtr + 2) : String.valueOf(reqIssuAtr) , 16));
+                        reqIssuAtr = element.getEmpInsLossInfo().getRequestForIssuance().get().value;
+                        textBuilder.appendText(setValue(45, 629, reqIssuAtr.intValue() == RequestForInsurance.NO.value ? String.valueOf(reqIssuAtr + 2) : String.valueOf(reqIssuAtr) , 16, false));
                     }
                     //A1_10 workingTime
-                    Integer workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v() : null;
+                    workingTime = element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().isPresent() ? element.getEmpInsLossInfo().getScheduleWorkingHourPerWeek().get().v() : null;
                     detachText(135, 629, formatWorkingTime(workingTime), 4, textBuilder);
                     //A1_11 scheForRep
                     if (element.getEmpInsLossInfo().getScheduleForReplenishment().isPresent()) {
-                        Integer scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().get().value;
-                        textBuilder.appendText(setValue(248, 629, scheForRep.intValue() == RequestForInsurance.NO.value ? " " : String.valueOf(scheForRep), 16));
+                        scheForRep = element.getEmpInsLossInfo().getScheduleForReplenishment().get().value;
+                        textBuilder.appendText(setValue(248, 629, scheForRep.intValue() == RequestForInsurance.NO.value ? " " : String.valueOf(scheForRep), 16, false));
                     }
                     //A2_8
                     if(element.getRetirementReasonClsInfo() != null) {
-                        String causeOfLossIns = element.getRetirementReasonClsInfo();
-                        textBuilder.appendText(setValue(112, 255, formatTooLongText(causeOfLossIns, CAUSE_OF_LOSS_INS), 9));
+                        causeOfLossIns = element.getRetirementReasonClsInfo();
+                        textBuilder.appendText(setValue(112, 255, formatTooLongText(causeOfLossIns, CAUSE_OF_LOSS_INS), 9, false));
                     }
                 }
                 //A1_12
-                String fullName = element.getFullName() != null ? element.getFullName() : "";
+                fullName = element.getFullName() != null ? element.getFullName() : "";
                 detachText(45, 466, fullName, 28, textBuilder);
                 //A1_13
                 if(fullName.length() >= 29){
@@ -188,19 +189,19 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     detachText(334, 433, element.getPeriodOfStay(), 8, textBuilder);
                 }
                 //A1_15
-                textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16));
+                textBuilder.appendText(setValue(109, 397, element.getWorkCategory().toString(), 16, false));
                 //A1_16
-                String nationaly = element.getNationality().toString();
-                textBuilder.appendText(setValue(235, 402, formatTooLongText(nationaly, NATIONALITY_MAX_BYTE), 9));
+                nationaly = element.getNationality().toString();
+                textBuilder.appendText(setValue(235, 402, formatTooLongText(nationaly, NATIONALITY_MAX_BYTE), 9, false));
                 //A1_17
-                String residence = element.getResidenceStatus().toString();
-                textBuilder.appendText(setValue(368, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9));
+                residence = element.getResidenceStatus().toString();
+                textBuilder.appendText(setValue(368, 402, formatTooLongText(residence, RESIDENT_STATUS_MAX_BYTE), 9, false));
                 //A2_1
-                String insuredName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getName() : element.getReportFullName();
-                textBuilder.appendText(setValue(112, 362, insuredName != null ?  insuredName.length() > 23 ? insuredName.substring(0,22) : insuredName : "", 9));
+                insuredName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getName() : element.getReportFullName();
+                textBuilder.appendText(setValue(112, 362, insuredName != null ?  insuredName.length() > 23 ? insuredName.substring(0,22) : insuredName : "", 9, false));
                 //A2_2
-                String insuredPersonName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getNameKana() : element.getReportFullNameKana();
-                textBuilder.appendText(setValue(112, 375, insuredPersonName != null ? insuredPersonName.length() > 23 ? insuredPersonName.substring(0,22) :insuredPersonName : "", 9));
+                insuredPersonName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getNameKana() : element.getReportFullNameKana();
+                textBuilder.appendText(setValue(112, 375, insuredPersonName != null ? insuredPersonName.length() > 23 ? insuredPersonName.substring(0,22) :insuredPersonName : "", 9, false));
                 //A2_3
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
@@ -212,7 +213,6 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 graph.getShapes().add(line2);
                 paragraphs.add(graph);
 
-
                 Circle rect = null;
                 if (element.getGender() == 1) {
                     rect = new Circle(317, 38, 8);
@@ -223,9 +223,9 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 rect.getGraphInfo().setColor(com.aspose.pdf.Color.getBlack());
                 graph.getShapes().add(rect);
                 //A2_4
-                JapaneseDate birthDay = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
+                empInsHistDate = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
                 Ellipse rect2 = null;
-                switch (birthDay.era()) {
+                switch (empInsHistDate.era()) {
                     case MEI: {
                         rect2 = new Ellipse(363, 36, 16.5, 11);
                         break;
@@ -251,20 +251,20 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 graph.getShapes().add(rect2);
                 //A2_5
                 {
-                    JapaneseDate birthDayJapanCla = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
-                    textBuilder.appendText(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
-                    textBuilder.appendText(setValue(455, 357,  birthDayJapanCla.month() + "", 9));
-                    textBuilder.appendText(setValue(491, 357, birthDayJapanCla.day() + "", 9));
+                    empInsHistDate = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"), japaneseEras);
+                    textBuilder.appendText(setValue(418, 357, empInsHistDate.year() + 1 + "", 9, false));
+                    textBuilder.appendText(setValue(455, 357,  empInsHistDate.month() + "", 9, false));
+                    textBuilder.appendText(setValue(491, 357, empInsHistDate.day() + "", 9, false));
                 }
                 //A2_6
                 if (element.getCurrentPersonResidence() != null){
-                    String currentAddress = element.getCurrentPersonResidence().getAddress1() + element.getCurrentPersonResidence().getAddress2();
-                    textBuilder.appendText(setValue(112, 328, formatTooLongText(currentAddress, INSURED_PERSON_ADDRESS), 9));
+                    address = element.getCurrentPersonResidence().getAddress1() + element.getCurrentPersonResidence().getAddress2();
+                    textBuilder.appendText(setValue(112, 328, formatTooLongText(address, INSURED_PERSON_ADDRESS), 9, false));
                 }
 
                 //A3_5
-                JapaneseDate fillingDate = toJapaneseDate(element.getFillingDate(),japaneseEras);
-                detachDate(486, 206, fillingDate, textBuilder);
+                empInsHistDate = toJapaneseDate(element.getFillingDate(),japaneseEras);
+                detachDate(480, 206, empInsHistDate, textBuilder);
                 //index page
                 indexPage = indexPage + 1;
             }
@@ -288,14 +288,17 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         marginInfo.setBottom(0);
     }
 
-    private TextFragment setValue(int x, int y, String value, int textSize) {
+    private TextFragment setValue(int x, int y, String value, int textSize, boolean isDetach) {
         TextFragment textFragment = new TextFragment(value);
         textFragment.setPosition(new Position(x, y));
-        styleText(textFragment.getTextState(), textSize);
+        styleText(textFragment.getTextState(), textSize, isDetach);
         return textFragment;
     }
 
-    private void styleText(TextFragmentState textFragmentState, int textSize) {
+    private void styleText(TextFragmentState textFragmentState, int textSize, boolean isDetach) {
+        if (isDetach) {
+            textFragmentState.setCharacterSpacing(9);
+        }
         textFragmentState.setFont(FontRepository.findFont("MS-Gothic"));
         textFragmentState.setFontSize(textSize);
         textFragmentState.setForegroundColor(Color.getBlack());
@@ -307,11 +310,9 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
         if (value.length() > numCells) {
             value = value.substring(0, numCells);
         }
-        String[] lstValue = value.split("");
-        for (int i = 0; i < lstValue.length; i++) {
-            int pixel = xRoot + (17 * i);
-            textBuilder.appendText(setValue(pixel, yRoot, lstValue[i], 16));
-        }
+
+        textBuilder.appendText(setValue(xRoot, yRoot, value, 16, true));
+
     }
     private String formatPhoneNumber(String number) {
         if (number.matches("(\\+*\\d*\\(\\d*\\)\\d*)")) {
@@ -387,9 +388,9 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
 
     private void detachDate(int xRoot, int yRoot, JapaneseDate value, TextBuilder textBuilder) {
-        textBuilder.appendText(setValue(xRoot, yRoot,  value.year() + 1 + "", 9));
-        textBuilder.appendText(setValue(xRoot + 30, yRoot, value.month() + "", 9));
-        textBuilder.appendText(setValue(xRoot + 60, yRoot,  value.day() + "", 9));
+        textBuilder.appendText(setValue(xRoot, yRoot,  value.year() + 1 + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 36, yRoot, value.month() + "", 9, false));
+        textBuilder.appendText(setValue(xRoot + 66, yRoot,  value.day() + "", 9, false));
     }
 
     private String formatWorkingTime(Integer workingTime) {
@@ -405,11 +406,18 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) return text;
+        if (text == null) {
+            return "";
+        }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
         int textLength = text.length();
-        int subLength = 0;
+        int subLength = maxByteAllowed / 2;
         while (subLength < textLength) {
-            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) break;
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
             subLength++;
         }
         return text.substring(0, subLength);
