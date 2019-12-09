@@ -53,7 +53,6 @@ module jhn011.b.viewmodel {
 
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);
-                            $("#B222_1_2").focus();
                             unblock();
                         }
                     });
@@ -159,11 +158,9 @@ module jhn011.b.viewmodel {
             service.saveData(command).done((_data: any) => {
                 unblock();
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-                    $("#B222_1_2").focus();
                 });
 
                 self.start(data.reportCode);
-
 
             }).fail((error: any) => {
                 

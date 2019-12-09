@@ -2749,19 +2749,19 @@ module nts.custombinding {
                                 } else {
                                     // show message if hasn't any category
                                     if (ko.toJS(opts.sortable.isEnabled)) {
-                                        alert({ messageId: 'Msg_288' }).then(opts.callback);
+                                        alert({ messageId: 'Msgj_34' }).then(opts.callback);
                                     }
                                 }
                             } else {
                                 // show message if hasn't any category
                                 if (ko.toJS(opts.sortable.isEnabled)) {
-                                    alert({ messageId: 'Msg_288' }).then(opts.callback);
+                                    alert({ messageId: 'Msgj_34' }).then(opts.callback);
                                 }
                             }
                         });
                     } else { // get item by group
                         // change text in add-button to [グループを追加　→]
-                        $(ctrls.button).text(text('CPS007_20'));
+                        $(ctrls.button).text(text('JHN011_C2_8'));
                         services.getGroups().done((data: Array<IItemGroup>) => {
                             // prevent if slow networks
                             if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
