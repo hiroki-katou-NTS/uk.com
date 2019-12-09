@@ -77,8 +77,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.pushBirthDay(romajiNameNotiCreSetExport.getPerson().getBirthDate().toString("yyyy-MM-dd"), worksheet, i);
                 }
 
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName(), worksheet, i, 14, 4);
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana(), worksheet, i, 13, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName()), worksheet, i, 14, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana()), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
                         romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? "（ " + romajiNameNotiCreSetExport.getPersonalOtherReason() + " ）" : "（           ）"));
