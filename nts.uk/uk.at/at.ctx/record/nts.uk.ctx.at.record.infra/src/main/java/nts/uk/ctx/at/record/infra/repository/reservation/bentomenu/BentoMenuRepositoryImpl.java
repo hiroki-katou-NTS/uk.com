@@ -150,7 +150,7 @@ public class BentoMenuRepositoryImpl extends JpaRepository implements BentoMenuR
 	public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
-		query = query.replaceFirst("date", date.toString());
+		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
@@ -165,7 +165,7 @@ public class BentoMenuRepositoryImpl extends JpaRepository implements BentoMenuR
 	public Bento getBento(String companyID, GeneralDate date, Integer frameNo) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
-		query = query.replaceFirst("date", date.toString());
+		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
