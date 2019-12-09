@@ -143,10 +143,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
     }
 
     private String cutName(String name) {
+        if(name == null || name.length() == 0) return "";
         if (name != null && name.length() > 32) {
             return name.substring(0, 32);
         }
-        return "";
+        return name;
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
