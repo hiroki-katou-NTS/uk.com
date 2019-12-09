@@ -86,16 +86,15 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         String afterTodoNameKana = todoNameKana.split("　").length > 1 ? todoNameKana.split("　")[1] : "";
         String address = "";
         String phoneNumber = "";
-        String healthInsuranceOfficeNumber1[];
+        String healthInsuranceOfficeNumber1;
         String healthInsuranceOfficeNumber2[];
-        String welfarePensionOfficeNumber1[];
+        String welfarePensionOfficeNumber1;
         String welfarePensionOfficeNumber2[];
 
         if (socialInsurNotiCreateSet.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL) {
             if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().isPresent()) {
-                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v().split("");
-                ws.getCells().get("E11").putValue(healthInsuranceOfficeNumber1.length > 0 ? healthInsuranceOfficeNumber1[0] : "");
-                ws.getCells().get("F11").putValue(healthInsuranceOfficeNumber1.length > 1 ? healthInsuranceOfficeNumber1[1] : "");
+                healthInsuranceOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber1().get().v();
+                ws.getCells().get("E11").putValue(healthInsuranceOfficeNumber1.length() > 2 ? healthInsuranceOfficeNumber1.substring(0,3) : healthInsuranceOfficeNumber1);
             }
             if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().isPresent()) {
                 healthInsuranceOfficeNumber2 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getHealthInsuranceOfficeNumber2().get().v().split("");
@@ -107,9 +106,8 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         } else {
             if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().isPresent()) {
-                welfarePensionOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v().split("");
-                ws.getCells().get("E11").putValue(welfarePensionOfficeNumber1.length > 0 ? welfarePensionOfficeNumber1[0] : "");
-                ws.getCells().get("F11").putValue(welfarePensionOfficeNumber1.length > 1 ? welfarePensionOfficeNumber1[1] : "");
+                welfarePensionOfficeNumber1 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber1().get().v();
+                ws.getCells().get("E11").putValue(welfarePensionOfficeNumber1.length() > 2 ? welfarePensionOfficeNumber1.substring(0,3) : welfarePensionOfficeNumber1);
             }
             if (data.getSocialInsuranceOffice() != null && data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().isPresent()) {
                 welfarePensionOfficeNumber2 = data.getSocialInsuranceOffice().getInsuranceMasterInformation().getOfficeOrganizeNumber().getWelfarePensionOfficeNumber2().get().v().split("");
