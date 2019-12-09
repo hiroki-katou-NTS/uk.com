@@ -328,6 +328,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
+	private final static String SEL_ITEM_ID_BY_CTG_CD_AND_ITEM_CD = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " FROM PpemtPerInfoItem i"
+			+ " WHERE i.itemCd IN :itemCd"
+			+ " AND i.perInfoCtgId IN (SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId FROM  PpemtPerInfoCtg c WHERE c.cid =:cid  AND  c.categoryCd IN :categoryCd)";
 	private final static String SELECT_ITEMDF_BY_CTGCD_ITEMCDS_CID = String.join(" ",
 			SELECT_COMMON_FIELD,
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -1252,6 +1256,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
+	public List<String> getAllItemIdsByCtgCodeAndItemCd(String cid, List<String> ctgCodes, List<String> itemCds) {
+		List<String> itemIds = this.getEntityManager()
+				.createQuery(SEL_ITEM_ID_BY_CTG_CD_AND_ITEM_CD, String.class)
+				.setParameter("itemCd", itemCds)
+				.setParameter("cid", cid)
+				.setParameter("categoryCd", ctgCodes)
+				.getResultList();
+		return itemIds;
+
+	}
 	public List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId, int abolitionAtr) {
 		// TODO Auto-generated method stub
 		return null;

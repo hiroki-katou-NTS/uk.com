@@ -1046,6 +1046,10 @@ public class ProgramIdConsts {
 
 	/** JMM018 */
 	public static final String JMM018A = "JMM018A";
+	
+	/** JMM018 */
+	public static final String JHN011B = "JHN011B";
+	public static final String JHN011C = "JHN011C";
 
 	//スマホ②
 	public static final String KAFS05A = "KAFS05A";
@@ -1239,5 +1243,4 @@ public class ProgramIdConsts {
 	/** QUI004 */
 	public static final String QUI004A = "QUI004A";
 	public static final String QUI004C = "QUI004C";
-
 }
