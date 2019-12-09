@@ -77,8 +77,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.pushBirthDay(romajiNameNotiCreSetExport.getPerson().getBirthDate().toString("yyyy-MM-dd"), worksheet, i);
                 }
 
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName(), worksheet, i, 14, 4);
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana(), worksheet, i, 13, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName()), worksheet, i, 14, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana()), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
                         romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? "（ " + romajiNameNotiCreSetExport.getPersonalOtherReason() + " ）" : "（           ）"));
@@ -94,8 +94,8 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(romajiNameNotiCreSetExport.getFmBsPenNum(), worksheet, i, 11, 1);
                 if ( romajiNameNotiCreSetExport.getFamilyMember() != null ) {
                     this.pushBirthDay(romajiNameNotiCreSetExport.getFamilyMember().getBirthday(), worksheet, i);
-                    this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse(""), worksheet, i, 14, 4);
-                    this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse(""), worksheet, i, 13, 4);
+                    this.pushName(this.cutName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse("")), worksheet, i, 14, 4);
+                    this.pushName(this.cutName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse("")), worksheet, i, 13, 4);
                 }
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
                         romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? "（ "  + romajiNameNotiCreSetExport.getSpouseOtherReason().toString() + " ）": "（           ）"));
@@ -140,6 +140,13 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String cutName(String name) {
+        if (name != null && name.length() > 32) {
+            return name.substring(0, 32);
+        }
+        return "";
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
