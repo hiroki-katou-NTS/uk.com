@@ -158,14 +158,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         ws.getCells().get("Y20").putValue(submitDate.month());
         ws.getCells().get("AA20").putValue(submitDate.day());
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
-            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 1, 8));
-            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 2, 8));
+            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 1, 11));
+            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 2, 11));
             ws.getCells().get("J19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(nameKana, 1, 16));
             ws.getCells().get("M19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(nameKana, 2, 16));
         }
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.REPORTED_NAME) {
-            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 1, 8));
-            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 2, 8));
+            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 1, 11));
+            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 2, 11));
             ws.getCells().get("J19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoNameKana, 1, 16));
             ws.getCells().get("M19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoNameKana, 2, 16));
         }
