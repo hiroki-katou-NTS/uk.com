@@ -136,7 +136,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         return add.toString();
     }
 
-    private static String cutSpace(String name, int ps, int count) throws UnsupportedEncodingException {
+    public static String cutSpace(String name, int ps, int count) throws UnsupportedEncodingException {
 
         if (name == null || name.length() == 0)
             return "";
