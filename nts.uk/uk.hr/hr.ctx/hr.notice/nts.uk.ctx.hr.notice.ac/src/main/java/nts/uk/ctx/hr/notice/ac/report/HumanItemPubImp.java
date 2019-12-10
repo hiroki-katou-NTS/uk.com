@@ -32,9 +32,7 @@ import nts.uk.ctx.pereg.pub.person.info.item.ReadOnlyButtonExport;
 import nts.uk.ctx.pereg.pub.person.info.item.ReadOnlyExport;
 import nts.uk.ctx.pereg.pub.person.info.item.ReferenceTypesExport;
 import nts.uk.ctx.pereg.pub.person.info.item.RelatedCategoryExport;
-import nts.uk.ctx.pereg.pub.person.info.item.SelectionButtonExport;
 import nts.uk.ctx.pereg.pub.person.info.item.SelectionItemExport;
-import nts.uk.ctx.pereg.pub.person.info.item.SelectionRadioExport;
 import nts.uk.ctx.pereg.pub.person.info.item.SetItemExport;
 import nts.uk.ctx.pereg.pub.person.info.item.SetTableItemExport;
 import nts.uk.ctx.pereg.pub.person.info.item.SingleItemExport;
@@ -110,11 +108,11 @@ public class HumanItemPubImp implements HumanItemPub{
 			SelectionItemExport selItemExport = (SelectionItemExport) dataTypeState;
 			return createSelectionItemDto(selItemExport);
 		case 7:
-			SelectionRadioExport rItem = (SelectionRadioExport) dataTypeState;
+			SelectionItemExport rItem = (SelectionItemExport) dataTypeState;
 			return createSelectionRadioDto(rItem);
 
 		case 8:
-			SelectionButtonExport bItem = (SelectionButtonExport) dataTypeState;
+			SelectionItemExport bItem = (SelectionItemExport) dataTypeState;
 			return createSelectionButtonDto(bItem);
 
 		case 9:
@@ -161,12 +159,12 @@ public class HumanItemPubImp implements HumanItemPub{
 
 	}
 
-	public static DataTypeStateImport createSelectionButtonDto(SelectionButtonExport refTypeState) {
+	public static DataTypeStateImport createSelectionButtonDto(SelectionItemExport refTypeState) {
 		return createFromJavaType(refTypeState, DataTypeValueExport.SELECTION_BUTTON.value);
 
 	}
 
-	public static DataTypeStateImport createSelectionRadioDto(SelectionRadioExport refTypeState) {
+	public static DataTypeStateImport createSelectionRadioDto(SelectionItemExport refTypeState) {
 		return createFromJavaType(refTypeState, DataTypeValueExport.SELECTION_RADIO.value);
 
 	}
