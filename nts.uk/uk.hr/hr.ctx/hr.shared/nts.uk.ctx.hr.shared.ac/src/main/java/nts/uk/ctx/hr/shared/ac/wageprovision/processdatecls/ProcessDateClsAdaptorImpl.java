@@ -8,9 +8,9 @@ import nts.uk.ctx.hr.shared.dom.wageprovision.processdatecls.ClosureDateImport;
 import nts.uk.ctx.hr.shared.dom.wageprovision.processdatecls.ProcessDateClsAdaptor;
 
 public class ProcessDateClsAdaptorImpl implements ProcessDateClsAdaptor {
-	
+
 	@Inject
-	private IAlgorithm GetClosingSalaryEmploymentList;
+	private IWorkDayServices workDay;
 
 	@Override
 	public List<ClosureDateImport> GetClosingSalaryEmploymentList(String companyId) {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -46,9 +47,12 @@ public class RetirementInformationFinder {
 
 	@Inject
 	private EmploymentRegulationHistoryInterface iEmpHis;
-	
+
 	@Inject
 	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
+
+	@Inject
+	private RetirePlanCourceService retiService;
 
 	/**
 	 * 1.起動する(Khởi động)
@@ -89,7 +93,7 @@ public class RetirementInformationFinder {
 		return null;
 	}
 
-	private void getRetiredEmployees(SearchRetiredEmployeesQuery query) {
+	private List<Object> getRetiredEmployees(SearchRetiredEmployeesQuery query) {
 		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		// アルゴリズム[定年退職予定者の取得]を実行する(Thực hiện thuật toán [lấy người dự định nghỉ
@@ -106,12 +110,12 @@ public class RetirementInformationFinder {
 		if (mada == null) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
-		
+
 		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
 		case 0:
 		case 1:
 		case 2:
-			
+
 			break;
 		case 3:
 			checkYearMonthDate(cId, baseDate);
@@ -123,23 +127,101 @@ public class RetirementInformationFinder {
 			getClosingDate(cId);
 			break;
 		}
+		// アルゴリズム [全ての定年退職コースの取得] を実行する (THực hiện thuật toán " Lấy tất cả
+		// retirePlanCourse")
+		List<RetirePlanCource> retires = this.retiService.getAllRetirePlanCource(cId);
 
+		if (retires.isEmpty()) {
+			throw new BusinessException("MsgJ_JMM018_6");
+		}
+
+		// アルゴリズム [会社ID、取得したい情報パラメータから雇用情報を取得する] を実行する(THực hiện thuật toán [lấy
+		// thông tin employment từ companyID parameter thông tin muốn lấy, ]
+
+		List<EmploymentInfoImport> empInfos = this.sysEmp.getEmploymentInfo(cId, Optional.of(false), Optional.of(false),
+				Optional.of(false), Optional.of(false), Optional.of(true));
+
+		if (empInfos.isEmpty()) {
+			throw new BusinessException("MsgJ_JMM018_9");
+		}
+
+		// 雇用情報リストを確認する(Xác nhận employment Infomation list)
+
+		empInfos.forEach(x -> {
+			if (StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
+				throw new BusinessException(" MsgJ_JMM018_10");
+			}
+		});
+
+		// 定年条件リストを生成する ( Tạo retireTerm List/List điều kiện về hưu)
+
+		List<RetirementCourseDto> retireCourseTerm = new ArrayList<RetirementCourseDto>();
+
+		mada.getMandatoryRetireTerm().forEach(x -> {
+
+			retireCourseTerm.addAll(getRetirePlanCoursesData(mada, x, empInfos, retires));
+		});
+
+		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
+
+		if (query.getRetirementAge().isEmpty()) {
+			// 定年条件リストを絞り込む(Fillter retireTerrmList)
+			retirePlanCourses = retireCourseTerm.stream().filter(x -> x.getRetirePlanCourseClass().equals(0))
+					.collect(Collectors.toList());
+
+			if (!query.getSelectEmployment().isEmpty()) {
+				// 定年条件リストを絞り込む (Fillter retireTerrmList)
+				retirePlanCourses = retireCourseTerm.stream()
+						.filter(x -> query.getSelectEmployment().indexOf(x.getEmploymentCode()) != -1)
+						.collect(Collectors.toList());
+			}
+
+			if (retirePlanCourses.isEmpty()) {
+				return Collections.emptyList();
+			}
+		} else {
+			// 定年条件リストを絞り込む(Fillter retireTerrmList)
+			retirePlanCourses = retireCourseTerm.stream()
+					.filter(x -> x.getRetirementAge().equals(query.getRetirementAge())).collect(Collectors.toList());
+
+			if (retirePlanCourses.isEmpty()) {
+				return Collections.emptyList();
+			}
+
+			if (!query.getSelectEmployment().isEmpty()) {
+				// 定年条件リストを絞り込む (Filter RetireTermList)
+				retirePlanCourses = retireCourseTerm.stream()
+						.filter(x -> query.getSelectEmployment().indexOf(x.getEmploymentCode()) != -1)
+						.collect(Collectors.toList());
+			}
+
+			if (retirePlanCourses.isEmpty()) {
+				return Collections.emptyList();
+			}
+		}
+
+		// 検索条件リストを生成する ( Tạo list điều kiện tìm kiếm/Search condition list)
+		return null;
+
+		// empInfos.forEach(arg0);
 	}
 
 	private void getClosingDate(String cId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void checkSalaryClosingDate(String cId) {
-		//アルゴリズム [給与雇用と締めのリストを取得する] を実行する (Thực hiện thuật toán [Get a list of salary employment and closing])
-		
+		// アルゴリズム [給与雇用と締めのリストを取得する] を実行する (Thực hiện thuật toán [Get a list of
+		// salary employment and closing])
+		// TODO Auto-generated method stub
 	}
 
 	private void checkYearMonthDate(String cId, GeneralDate baseDate) {
-		//アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy YearStartMonthDate, YearEndMonthDate từ BaseDate])
+		// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy
+		// YearStartMonthDate, YearEndMonthDate từ BaseDate])
 		YearStartEnd yearStartEnd = this.iGetYearStartEndDateByDate.getByDate(cId, baseDate);
-		if(yearStartEnd ==null){
+		if (yearStartEnd == null) {
 			throw new BusinessException("MsgJ_JMM018_3");
 		}
 	}
@@ -233,18 +315,13 @@ public class RetirementInformationFinder {
 				Optional.of(false), Optional.of(false), Optional.of(true));
 
 		if (empInfos.isEmpty()) {
-			throw new BusinessException(" MsgJ_JMM018_9");
+			throw new BusinessException("MsgJ_JMM018_9");
 		}
 
 		// 雇用情報リストを確認する (Xác nhận Employment information list)
 		empInfos.forEach(x -> {
 			if (!StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
-
-				Integer value = Integer.valueOf(x.getEmpCommonMasterItemId());
-
-				if (value >= 1) {
-					throw new BusinessException(" MsgJ_JMM018_10");
-				}
+				throw new BusinessException(" MsgJ_JMM018_10");
 			}
 		});
 
