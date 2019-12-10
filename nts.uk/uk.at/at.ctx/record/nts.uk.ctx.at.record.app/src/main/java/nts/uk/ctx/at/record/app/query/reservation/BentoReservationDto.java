@@ -3,9 +3,11 @@ package nts.uk.ctx.at.record.app.query.reservation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 
+@Data
 public class BentoReservationDto {
 	
 	private boolean ordered;

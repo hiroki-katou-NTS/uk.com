@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.app.query.reservation;
 
+import lombok.Data;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 
+@Data
 public class BentoReservationDetailDto {
 	
 	private Integer frameNo;

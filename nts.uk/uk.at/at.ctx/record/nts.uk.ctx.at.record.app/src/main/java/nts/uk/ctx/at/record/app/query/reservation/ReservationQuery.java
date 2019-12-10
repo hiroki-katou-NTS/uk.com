@@ -30,14 +30,16 @@ public class ReservationQuery {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
 		String userId = "hdfgdgfdufdfdfdg";
 		//1 get*(予約対象日,カード番号)
-		// val dataLunch = bentoReservationRepo.find(new ReservationRegisterInfo(userId), new ReservationDate(param.getDate(), EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class)));
 		val listBento = bentoReservationRepo.findList(new ReservationRegisterInfo(userId), new ReservationDate(date, EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class))) ;
 		//2 get(会社ID, 予約日)
-		String companyId = AppContexts.user().companyId();
+		//String companyId = AppContexts.user().companyId();
+		String companyId = "000000000000-0001";
 		val bento = bentoMenuRepo.getBentoMenu(companyId, date);
 		//3 締め時刻別のメニュー
 		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime();
-		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), bentoMenuClosingTime);
+	//	return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), bentoMenuClosingTime);
+		ReservationDto dto = new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), BentoMenuByClosingTimeDto.fromDomain(bentoMenuClosingTime));
+		return dto;
 	}
 	
 }
