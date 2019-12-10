@@ -36,7 +36,7 @@
 				<!-- Mode Application -->
 				<!-- CCG_001 -->
 				<div id="ccgcomponent"></div>
-			    <div style ="margin-top: 10px; margin-left: 20px; display:none" data-bind = "visible: true">
+			    <div style="width:850px; margin-top: 12px; margin-left: 20px; display:none" data-bind = "visible: true">
 				<!-- A3 -->
 				<div style = "width: 150px; display: inline-block; float: left" data-bind = "visible: mode()==1">
 					<div data-bind="with: approvalCount" class="table-number">
@@ -78,7 +78,7 @@
 						</table>
 					</div>
 				</div>
-				<div style ="padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
+				<div style ="width: 625px; padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
 					data-bind="css: {'app-left': mode()==0}">
 						<!-- A2: Switch button -->
 						<!-- delete - ver35 -->
@@ -141,11 +141,11 @@
 					</table>
 					</div>
 				</div>
-				<div style="margin-left: 20px; margin-top: 10px">
+				<div style="margin-left: 20px; margin-top: 10px" data-bind="if: mode()==1">
 					<!-- Mode Approval -->
 					<table tabindex="8" id="grid1"></table>
 				</div>
-				<div style="margin-left: 20px;">
+				<div style="margin-left: 20px;" data-bind="if: mode()==0" >
 					<div style = "margin-left: 70px;, display: inline-block;">
 						<table tabindex="9" id="grid2"></table>
 					</div>

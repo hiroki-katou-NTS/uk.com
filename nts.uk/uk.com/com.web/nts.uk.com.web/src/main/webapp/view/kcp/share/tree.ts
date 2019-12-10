@@ -1245,10 +1245,10 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         <div data-bind="visible: !isMultipleUse" style= "float: left">
             <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
-                style="margin-left: -9px; margin-right: 5px;"
+                style="margin-left: -9px; margin-right: 5px; vertical-align: top;"
                 data-bind="attr: {tabindex: tabindex},
                 ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
-            <button
+            <button style="vertical-align: top;"
                 data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>

@@ -11,6 +11,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
@@ -27,6 +28,7 @@ public class OverTimeDto {
 	private Long version;
 	/**
 	 * application
+	 * 
 	 */
 	private ApplicationDto_New application;
 	/**
@@ -259,9 +261,38 @@ public class OverTimeDto {
 	private String enteredPersonName;
 	
 	private PreActualColorResult preActualColorResult;
-	
 	private int performanceExcessAtr;
 	private int preExcessDisplaySetting;
+	/**
+	 * 事前申請内容
+	 */
+	private ApplicationDto_New opAppBefore;
+	
+	/** 事前申請状態 */
+	private boolean beforeAppStatus;
+	
+	/**
+	 * 実績状態
+	 */
+	private int actualStatus;
+	/**
+	 * 実績内容
+	 */
+	private String workTypeActual; // 出勤時刻
+	private String workTimeActual; // 退勤時刻
+	private Integer startTimeActual; // 勤務種類
+	private Integer endTimeActual; // 就業時間帯
+	private List<OvertimeColorCheck> actualLst;
+	
+	/**
+	 * 申請共通設定
+	 */
+	private OvertimeSettingDataDto overtimeSettingDataDto;
+	
+	/**
+	 * List<勤怠種類, 枠NO, 計算入力差異, 事前申請超過, 実績超過>
+	 */
+	public List<OvertimeColorCheck> resultLst;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
@@ -329,7 +360,17 @@ public class OverTimeDto {
 				"",
 				null,
 				0,
-				0);
+				0,
+				null,
+				false,
+				0,
+				null,
+				null,
+				null, 
+				null,
+				Collections.emptyList(),
+				null,
+				Collections.emptyList());
 	}
 	
 }

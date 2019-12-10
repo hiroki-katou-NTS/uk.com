@@ -1,7 +1,14 @@
 .contents-area {
-	/* width: 1200px !important; */
+	overflow-y: auto; 
+	height: calc(100vh - 161px);
+	white-space: nowrap;
 }
-
+.sidebar-content {
+	overflow: hidden !important;
+}
+.sidebar-content-header {
+	min-width: 750px;
+}
 .sidebar-content-header > button {
 	padding: 0px 15px;
 }
@@ -20,18 +27,20 @@
 }
 
 .tabpanel-1-contents-area-left {
-	width: 440px;
-	margin-left: 40px;
-	margin-top: 17px;
-	float: left;
+	width: 400px;
+	margin-left: 25px;
+	margin-top: 25px;
+	display: inline-block;
 	clean: right;
+	vertical-align: top;
 }
 
 .tabpanel-1-contents-area-right {
 	width: 400px;
-	margin-top: 20px;
-	float: left;
+	margin-top: 25px;
+	display: inline-block;
 	clean: right;
+	vertical-align: top;
 }
 
 .table-basic-setting-list-td-label {
@@ -79,4 +88,7 @@
 #func-notifier-errors {
 	top: 140px !important;
 	left: 125px !important;
+}
+#sidebar {
+	height: 99% !important;
 }

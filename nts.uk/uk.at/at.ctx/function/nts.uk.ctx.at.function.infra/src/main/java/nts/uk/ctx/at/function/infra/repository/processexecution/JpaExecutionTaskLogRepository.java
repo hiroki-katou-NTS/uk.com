@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -16,7 +14,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -40,7 +37,12 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
 				return new ExecutionTaskLog(EnumAdaptor.valueOf(rs.getInt("TASK_ID"), ProcessExecutionTask.class),
 						rs.getString("STATUS")==null?Optional.empty() :Optional.of(EnumAdaptor.valueOf(rs.getInt("STATUS"),EndStatus.class)),
-						 rs.getString("EXEC_ID"));
+						 rs.getString("EXEC_ID"),
+						rs.getGeneralDateTime("LAST_EXEC_DATETIME"),
+						rs.getGeneralDateTime("LAST_END_EXEC_DATETIME"),
+						rs.getString("ERROR_SYSTEM") == null?null:(rs.getInt("ERROR_SYSTEM")==1?true:false),
+						rs.getString("ERROR_BUSINESS") == null?null:(rs.getInt("ERROR_BUSINESS")==1?true:false)
+						);
 			});
 
 		} catch (SQLException e) {
@@ -50,6 +52,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 //				.setParameter("companyId", companyId)
 //				.setParameter("execItemCd", execItemCd)
 //				.setParameter("execId", execId).getList(c -> c.toDomain());
+
 	}
 	
 	/**

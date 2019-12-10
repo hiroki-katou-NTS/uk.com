@@ -24,7 +24,6 @@ export class KafS05aStep3Component extends Vue {
 
     public created() {
         this.convertDisplayItem();
-
         this.kafs05ModelStep3.overtimeHours.forEach((overtimeHour) => {
             if (overtimeHour.preAppExceedState) {
                 this.hasPreAppError = true;
@@ -99,7 +98,8 @@ export class KafS05aStep3Component extends Vue {
             appReasonID: this.comboBoxReason,
             divergenceReasonArea: self.multilContent2,
             checkOver1Year: true,
-            checkAppDate: false
+            checkAppDate: false,
+            overtimeSettingDataDto: self.overtimeSettingDataDto
         };
 
         if (!self.isCreate) {

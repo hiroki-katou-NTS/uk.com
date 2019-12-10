@@ -1,3 +1,9 @@
+.fixed-flex-layout-right {
+	white-space: nowrap;
+}
+html {
+	overflow: hidden;
+}
 "src/main/webapp/view/kmw/003/a/kmw003.a.style.css"#function-content {
 	width: 1200px;
 }
@@ -8,7 +14,7 @@
 }
 #multi-archieve-message{
 	width:250px;
-	margin-left: 195px;
+	margin-left: 80px;
 }
 #btnVacationRemaining {
 	margin-left: 50px;
@@ -50,7 +56,7 @@
 
 .grid-container {
 	margin: 15px 0 0 0px;
-    margin-top: 8px;
+    margin-top: 2px;
     float: left;
 }
 
@@ -182,7 +188,7 @@
 	position: relative;
 	bottom: -30px;
 	margin-right: 300px; */
-	margin-top: -3px;
+	margin-top: -10px;
 }
 .ui-iggrid-results{
 	background-color: #e9e9e9;
@@ -346,8 +352,42 @@
 
 #id-vertical-middle{
 	height: 32px;
+	display: inline-block;
+	margin-left: 20px;
 }
 
 #id-vertical-middle>*{
 	vertical-align: middle;
+}
+.fixed-flex-layout-left {
+	width: 70px;
+}
+.label.warning {
+	width: 90px !important;
+	padding: 15px 3px !important;
+}
+#functions-area * {
+    font-size: 0.8rem;
+}
+button {
+    height: 25px !important;
+    min-width: 10px !important;
+}
+#contents-area * {
+    font-size: 0.8rem;
+}
+#contents-area {
+    padding-top: 5px !important;
+}
+#functions-area button {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.ccg-lbl-vertical {
+    font-size: 18pt !important;
+}
+#functions-area {
+    height: auto;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }

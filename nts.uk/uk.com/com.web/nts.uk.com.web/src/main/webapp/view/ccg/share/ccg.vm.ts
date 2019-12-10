@@ -706,11 +706,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.showAllReferableEmployee = true;
                 } else {
                     if (self.showAllReferableEmployee) {
-                        if (self.systemType === ConfigEnumSystemType.EMPLOYMENT 
-                            && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF 
-                            && _.isEmpty(manageWkp)) {
-                            self.showAllReferableEmployee = false;
+                        if (self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF) {
+                            if (self.systemType === ConfigEnumSystemType.EMPLOYMENT) {
+                                if (_.isEmpty(manageWkp)) {
+                                    self.showAllReferableEmployee = false;        
+                                }
+                            } else {
+                                self.showAllReferableEmployee = false;
+                            }       
                         }
+                        
                     }    
                 }
             }
@@ -1649,7 +1654,7 @@ module nts.uk.com.view.ccg.share.ccg {
 //                };
 //                service.searchEmployeeByLogin(param)
                 //end
-                service.searchEmployeeByLogin(moment.utc().toDate(), self.systemType)                
+                service.searchEmployeeByLogin(new Date(moment().format('YYYY-MM-DD')).toISOString(), self.systemType)                
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();

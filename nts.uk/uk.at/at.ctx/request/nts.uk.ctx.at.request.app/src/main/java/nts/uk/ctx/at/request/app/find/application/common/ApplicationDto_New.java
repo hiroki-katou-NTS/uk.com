@@ -106,11 +106,11 @@ public class ApplicationDto_New {
 				domain.getAppType().value, 
 				domain.getEmployeeID(), 
 				domain.getReflectionInformation().getNotReason().isPresent() ? domain.getReflectionInformation().getNotReason().get().value : null, 
-				domain.getReflectionInformation().getDateTimeReflection().isPresent() ? domain.getReflectionInformation().getDateTimeReflection().get().toString(DATE_FORMAT) : null, 
+				domain.getReflectionInformation().getDateTimeReflection().isPresent() ? domain.getReflectionInformation().getDateTimeReflection().get().toString(DATE_TIME_FORMAT) : null, 
 				domain.getReflectionInformation().getStateReflection().value, 
 				domain.getReflectionInformation().getForcedReflection().value, 
 				domain.getReflectionInformation().getNotReasonReal().isPresent() ? domain.getReflectionInformation().getNotReasonReal().get().value : null, 
-				domain.getReflectionInformation().getDateTimeReflectionReal().isPresent() ? domain.getReflectionInformation().getDateTimeReflectionReal().get().toString(DATE_FORMAT) : null, 
+				domain.getReflectionInformation().getDateTimeReflectionReal().isPresent() ? domain.getReflectionInformation().getDateTimeReflectionReal().get().toString(DATE_TIME_FORMAT) : null, 
 				domain.getReflectionInformation().getStateReflectionReal().value, 
 				domain.getReflectionInformation().getForcedReflectionReal().value,
 				domain.getStartDate().isPresent() ? domain.getStartDate().get().toString(DATE_FORMAT) : null,
@@ -123,7 +123,7 @@ public class ApplicationDto_New {
 				appDto.getCompanyID(), 
 				appDto.getApplicationID(),
 				EnumAdaptor.valueOf(appDto.getPrePostAtr(), PrePostAtr.class), 
-				GeneralDateTime.fromString(appDto.getInputDate(), DATE_FORMAT), 
+				GeneralDateTime.fromString(appDto.getInputDate(), DATE_TIME_FORMAT), 
 				appDto.getEnteredPersonSID(), 
 				new AppReason(appDto.getReversionReason()), 
 				GeneralDate.fromString(appDto.getApplicationDate(), DATE_FORMAT),
@@ -146,9 +146,9 @@ public class ApplicationDto_New {
 						.notReasonReal(Optional.ofNullable(appDto.getReflectPerScheReason())
 								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
 						.dateTimeReflection(Optional
-								.ofNullable(GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_FORMAT)))
+								.ofNullable(appDto.getReflectPlanTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPlanTime(), DATE_TIME_FORMAT)))
 						.dateTimeReflectionReal(Optional
-								.ofNullable(GeneralDateTime.fromString(appDto.getReflectPerTime(), DATE_FORMAT)))
+								.ofNullable(appDto.getReflectPerTime() == null ? null : GeneralDateTime.fromString(appDto.getReflectPerTime(), DATE_TIME_FORMAT)))
 						.build());
 		return app;
 	}
@@ -166,11 +166,11 @@ public class ApplicationDto_New {
                 domain.getAppType().value, 
                 domain.getEmployeeID(), 
                 domain.getReflectionInformation().getNotReason().isPresent() ? domain.getReflectionInformation().getNotReason().get().value : null, 
-                domain.getReflectionInformation().getDateTimeReflection().isPresent() ? domain.getReflectionInformation().getDateTimeReflection().get().toString(DATE_FORMAT) : null, 
+                domain.getReflectionInformation().getDateTimeReflection().isPresent() ? domain.getReflectionInformation().getDateTimeReflection().get().toString(DATE_TIME_FORMAT) : null, 
                 domain.getReflectionInformation().getStateReflection().value, 
                 domain.getReflectionInformation().getForcedReflection().value, 
                 domain.getReflectionInformation().getNotReasonReal().isPresent() ? domain.getReflectionInformation().getNotReasonReal().get().value : null, 
-                domain.getReflectionInformation().getDateTimeReflectionReal().isPresent() ? domain.getReflectionInformation().getDateTimeReflectionReal().get().toString(DATE_FORMAT) : null, 
+                domain.getReflectionInformation().getDateTimeReflectionReal().isPresent() ? domain.getReflectionInformation().getDateTimeReflectionReal().get().toString(DATE_TIME_FORMAT) : null, 
                 domain.getReflectionInformation().getStateReflectionReal().value, 
                 domain.getReflectionInformation().getForcedReflectionReal().value,
                 domain.getStartDate().isPresent() ? domain.getStartDate().get().toString(DATE_FORMAT) : null,

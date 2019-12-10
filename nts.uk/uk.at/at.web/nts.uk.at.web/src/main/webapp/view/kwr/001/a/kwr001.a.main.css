@@ -23,7 +23,7 @@
 }
 
 .td-right{
-	/* width: 57%; */
+	width: 57%;
 }
 
 .table1 {
@@ -59,6 +59,7 @@
 
 #combo-box{
 	margin-left: 55px;
+	margin-right: 5px;
 }
 
 .A7_2 {
@@ -84,7 +85,7 @@ label {
 }
 
 .table2 {
-	margin-left: 7%;
+	margin-left: 29px;
 }
 
 hr {
@@ -96,7 +97,7 @@ hr {
 }
 
 .td-left .panel.panel-frame {
-	width: 565px;
+	width: 545px;
 }
 
 .type-page-brake {
@@ -114,7 +115,7 @@ hr {
 }
 
 #output-setting-content {
-	height: 573px
+	height: 445px;
 }
 
 #btnSetErrorAlarmCd {
@@ -137,4 +138,11 @@ hr {
 
 .A10-left label{
 	width:105px;
+}
+#component-items-list > div{
+	padding: 10px !important;
+}
+.work-place-accum {
+	width:330px;
+	margin-left:35px;
 }

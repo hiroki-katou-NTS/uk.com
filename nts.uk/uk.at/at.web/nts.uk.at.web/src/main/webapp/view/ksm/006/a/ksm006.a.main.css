@@ -1,9 +1,23 @@
 @CHARSET "UTF-8";
 
+.sidebar-content-header {
+	white-space: nowrap;
+}
+.select-table {
+	min-width: 500px;
+}
+#classification-content {
+	height: calc(100vh - 143px);
+    overflow: auto;
+}
+#workplace-content {
+	height: calc(100vh - 143px);
+    overflow: auto;
+}
 #companyWide-content {
-	height: 450px;
-	width: 85%;
-	overflow: auto;
+	height: calc(100vh - 161px);
+    overflow: auto;
+    min-width: 700px;
 }
 
 #companyWide-content-detail {
@@ -16,6 +30,7 @@
 	height: 1px;
 	background-color: #7f7f7f;
 	width: 50%;
+	min-width: 447px;
 }
 
 .ruledLine2 {
@@ -40,4 +55,7 @@
 }
 #nts-component-tree {
 	padding-right: 5px !important;
+}
+html {
+	overflow :hidden;
 }

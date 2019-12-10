@@ -49,6 +49,14 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	
 	@Override
 	public void insert(ProcessExecutionLogHistory domain) {
+		Optional<KfnmtProcessExecutionLogHistory> data = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
+			.setParameter("companyId", domain.getCompanyId())
+			.setParameter("execItemCd", domain.getExecItemCd())
+			.setParameter("execId", domain.getExecId()).getSingle();
+		if(data.isPresent()) {
+			this.commandProxy().remove(data.get());
+			this.getEntityManager().flush();
+		}
 		this.commandProxy().insert(KfnmtProcessExecutionLogHistory.toEntity(domain));
 		this.getEntityManager().flush();
 	}
@@ -72,6 +80,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 //		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
 //		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
 //		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
+//		updateEntity.lastEndExecDateTime = newEntity.lastEndExecDateTime;
+//		updateEntity.errorSystem = newEntity.errorSystem;
+//		updateEntity.errorBusiness = newEntity.errorBusiness;
 //		updateEntity.taskLogList = newEntity.taskLogList;
 //		this.commandProxy().update(updateEntity);	
 		
@@ -88,6 +99,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 					+ " ,DAILY_CALC_END = ?"
 					+ " ,RFL_APPR_START = ?"
 					+ " ,RFL_APPR_END = ?"
+					+ " ,LAST_END_EXEC_DATETIME = ?"
+					+ " ,ERROR_SYSTEM = ?"
+					+ " ,ERROR_BUSINESS = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ?";
 			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 				ps.setInt(1, newEntity.overallStatus);
@@ -101,9 +115,12 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				ps.setDate(9, newEntity.dailyCalcEnd ==null?null: Date.valueOf(newEntity.dailyCalcEnd.localDate()));
 				ps.setDate(10, newEntity.reflectApprovalResultStart ==null?null: Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
 				ps.setDate(11, newEntity.reflectApprovalResultEnd ==null?null: Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
-				ps.setString(12, domain.getCompanyId());
-				ps.setString(13, domain.getExecItemCd().v());
-				ps.setString(14, domain.getExecId());
+				ps.setString(12, newEntity.lastEndExecDateTime ==null?null:newEntity.lastEndExecDateTime.toString());
+				ps.setString(13, newEntity.errorSystem == null?null:(newEntity.errorSystem ==1?"1":"0"));
+				ps.setString(14, newEntity.errorBusiness == null?null:(newEntity.errorBusiness ==1?"1":"0"));
+				ps.setString(15, domain.getCompanyId());
+				ps.setString(16, domain.getExecItemCd().v());
+				ps.setString(17, domain.getExecId());
 				ps.executeUpdate();
 			}
 		}catch (Exception e) {
@@ -114,13 +131,19 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : newEntity.taskLogList) {
 				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
 						+ " STATUS = ?"
+						+ " ,LAST_END_EXEC_DATETIME = ?"
+						+ " ,ERROR_SYSTEM = ?"
+						+ " ,ERROR_BUSINESS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
+					ps.setString(3, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
+					ps.setString(4, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
+					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}

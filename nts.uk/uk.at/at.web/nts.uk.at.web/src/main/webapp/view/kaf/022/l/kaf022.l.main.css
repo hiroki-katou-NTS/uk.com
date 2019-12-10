@@ -39,8 +39,9 @@
     display: inline-block;
 }
 .fixed-flex-layout-left{
-    margin-left: 20px !important;
-    margin-top: 20px !important;
+    margin-left: 31px !important;
+    margin-top: 16px !important;
+    margin-right: 25px !important;
 }
 
 

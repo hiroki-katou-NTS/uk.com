@@ -103,7 +103,7 @@ public class RegulationInfoEmployeeWs {
 	@POST
 	@Path("find/currentlogin")
 	public RegulationInfoEmployeeDto findCurrentLoginEmployee(LoginEmployeeQuery query) {
-		return this.finder.findCurrentLoginEmployeeInfo(query.getBaseDate(), query.getSystemType());
+		return this.finder.findCurrentLoginEmployeeInfo(query);
 	}
 
 }

@@ -53,6 +53,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.selectedWplName = ko.observable('');
             self.enableNext = ko.observable(false);
             self.enablePre = ko.observable(false);
+            window.onresize = function(event) {
+            	$(".ex-body-leftmost").height(window.innerHeight - 320);
+            	$(".ex-body-detail").height(window.innerHeight - 303);
+            };
         }
 
         /**
@@ -207,7 +211,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, self.listDailyStatus);
 
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "46px", bodyRowHeight: "23px", bodyHeight: window.outerHeight - 430 + 'px',
+                        headerHeight: "46px", bodyRowHeight: "23px", bodyHeight: window.innerHeight - 320 + 'px',
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,

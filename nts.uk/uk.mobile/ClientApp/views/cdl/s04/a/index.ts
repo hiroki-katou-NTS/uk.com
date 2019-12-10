@@ -37,16 +37,16 @@ export class CdlS04AComponent extends Vue {
                 //Parameter．未選択表示をチェックする
                 if (self.params.isShowNoSelectRow) {//true
                     //画面項目「職位一覧」の先頭に「選択なし」を追加する
-                    result.data.push({
+                    self.allData.push({
                         id: null,
                         code: '',
                         name: ''
                     });
                 }
-                self.allData = _.sortBy(result.data, ['code']);
+                self.allData = [...self.allData, ...result.data];
                 self.data = self.allData;
 
-                if (_.find(self.allData, (item) => item.code == self.params.selectedCode) != undefined) {
+                if (!_.isEmpty(self.params.selectedCode) || _.find(self.allData, (item) => item.code == self.params.selectedCode) != undefined) {
                     self.activeNoSelect = false;
                 } else {
                     self.activeNoSelect = true;

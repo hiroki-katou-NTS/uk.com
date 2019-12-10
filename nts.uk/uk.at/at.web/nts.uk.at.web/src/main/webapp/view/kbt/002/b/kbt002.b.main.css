@@ -84,3 +84,6 @@
 .middle .ntsMonthDays_Container{
 	top:0px;
 }
+html {
+	overflow: hidden;
+}

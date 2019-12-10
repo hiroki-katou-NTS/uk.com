@@ -135,49 +135,52 @@
 								</tr>
 								<tr>
 									<td>
-										<div tabindex="12" class="methodsCls" data-bind="ntsRadioBoxGroup: {
-											options: methods,
-											optionsValue: 'id',
-											optionsText: 'name',
-											value: selectedMethod,
-											enable: true }"></div>
-										
-										<div class="grant-period">
-											<div class="years">
-												<div class="year-lbl">#{i18n.getText('KMF004_21')}</div>
-												<div class="year-inp">
-													<input tabindex="13" id="years" data-bind="ntsNumberEditor: {
-														value: years, 
-														constraint: 'GrantedYears',
-														name: '#[KMF004_21]',
-														option: ko.mapping.fromJS({
-															unitID: 'YEARS',
-															width: '50'
-														}),
-														required: yearReq,
-														enable: yearEnable }" />
-												</div>
-											</div>
-											<div class="days">
-												<div class="day-lbl">#{i18n.getText('KMF004_22')}</div>
-												<div class="day-inp">
-													<input tabindex="14" id="days" data-bind="ntsNumberEditor: {
-														value: days, 
-														constraint: 'GrantedDays',
-														name: '#[KMF004_22]',
-														option: ko.mapping.fromJS({
-															unitID: 'DAYS',
-															width: '60'
-														}),
-														required: dayReq,
-														enable: dayEnable }" />
-												</div>
-											</div>
+									<div class="row" style="padding: 10px 0px 20px 30px;">
+										<div data-bind="ntsRadioButton: {
+														option: methods1,
+														checked: selectedMethod,
+														enable: true,
+														optionValue: 'id', 
+														optionText: 'name'}"
+										class="cell" style="margin-right: 20px;width: 270px"></div>
+										<div class="year-lbl cell">#{i18n.getText('KMF004_21')}</div>
+										<div class="year-inp cell">
+											<input tabindex="13" id="years" data-bind="ntsNumberEditor: {
+												value: years, 
+												constraint: 'GrantedYears',
+												name: '#[KMF004_21]',
+												option: ko.mapping.fromJS({
+													unitID: 'YEARS',
+													width: '50'
+												}),
+												required: yearReq,
+												enable: yearEnable }" />
 										</div>
-										
-										<div class="timing">
-											<button tabindex="15" class="btn-d-dialog" data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
-											<div class="timing-hint">#{i18n.getText('KMF004_24')}</div>
+										<div class="day-lbl cell">#{i18n.getText('KMF004_22')}</div>
+										<div class="day-inp cell">
+											<input tabindex="14" id="days" data-bind="ntsNumberEditor: {
+												value: days, 
+												constraint: 'GrantedDays',
+												name: '#[KMF004_22]',
+												option: ko.mapping.fromJS({
+													unitID: 'DAYS',
+													width: '60'
+												}),
+												required: dayReq,
+												enable: dayEnable }" />
+										</div>
+										</div>
+									<div class="row" style="padding-left: 30px;">
+									<div data-bind="ntsRadioButton: {
+														option: methods2,
+														checked: selectedMethod,
+														enable: true,
+														optionValue: 'id', 
+														optionText: 'name'}"
+									class="cell" style="width: 270px"></div>
+									<button tabindex="15" class="cell" style="margin-left: 20px"
+										data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
+									<div class="cell" style="padding-left: 300px">#{i18n.getText('KMF004_24')}</div>
 										</div>
 									</td>
 								</tr>

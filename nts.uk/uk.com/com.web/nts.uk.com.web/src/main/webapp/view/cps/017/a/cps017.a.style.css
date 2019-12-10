@@ -64,11 +64,11 @@ body {
 }
 
 #register {
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 #itemRegisterLst {
-	margin-top: 20px;
+	margin-top: 10px;
 	width: 405px;
 	position: absolute;
 }

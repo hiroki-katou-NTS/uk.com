@@ -2207,7 +2207,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.width = "120px";
                     } else {
-                        this.width = "170px";
+                        this.width = "141px";
                     }
                     break;
                 }

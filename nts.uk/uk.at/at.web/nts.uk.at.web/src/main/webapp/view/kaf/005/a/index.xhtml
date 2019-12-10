@@ -26,32 +26,26 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" data-bind="">
-				<!--A1_1 登録ボタン--> 
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick" tabindex="1">#{i18n.getText('KAF005_10')}</button>
-				<!--A1_2 実績参照ボタン--> 				
-				<button tabindex="2" id="btnSpecSetting" data-bind="visible: false">#{i18n.getText('KAF005_11')}</button>
-				<!--A1_3 承認者変更ボタン--> 				
-				<button tabindex="3" data-bind="click: openCMM018, visible: false">#{i18n.getText('KAF005_12')}</button>
-				<!--A1_4 登録時にメールを送信する--> 				
+				<!--A1_1 登録ボタン-->
+				<button class="proceed"
+					data-bind="enable: $root.errors.isEmpty, click: registerClick"
+					tabindex="1">#{i18n.getText('KAF005_10')}</button>
+				<!--A1_4 登録時にメールを送信する-->
 				<div class="btnSendMail" tabindex="4"
 					data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF005_13')}'},visible: enableSendMail"></div>
 			</div>
 			<div id="contents-area" class="">
-					<!-- Message area -->
-				<div style ="width :800px; margin-left: -2px; padding-top: 5px">	
-					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin:7px 0px 0px 12px" data-bind = "visible : false">
-						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
-						<label data-bind="text : instructInfor,visible: instructInforFlag"></label>
-					</div>
-					<div data-bind="with: kaf000_a" class="" >
+				<!-- Message area -->
+				<div style="width: 800px; margin-left: -2px; padding-top: 5px">
+					<div id='message_ct' data-bind="with: kaf000_a">
 						<ui:include src="../../000/a/index1.xhtml" />
 					</div>
-				</div>	
+				</div>
 				<!-- Main -->
 				<div class="mainScreen container cf" data-bind="">
 					<ui:include src="../cm/index.xhtml"></ui:include>
 				</div>
-						
+
 			</div>
 		</ui:define>
 	</ui:composition>

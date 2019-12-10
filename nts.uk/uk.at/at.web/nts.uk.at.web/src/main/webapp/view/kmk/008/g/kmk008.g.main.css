@@ -20,11 +20,11 @@
 }
 
 #kmk008-tab-panel .ui-tabs-panel > div {
-    height: 325px;
+    height: 300px;
 }
 
 #main{
-	margin-top: 20px;
+	margin-top: 10px;
 }
 #kmk008-tab-panel{
 	margin-top: -25px;

@@ -67,7 +67,6 @@ public class JobTitleFinder {
 						.code(job.getJobTitleCode().v())
 						.name(job.getJobTitleName().v())
 						.build())
-				.sorted((job1, job2) -> job1.getCode().compareTo(job2.getCode()))
 				.collect(Collectors.toList());
 	}
 	
