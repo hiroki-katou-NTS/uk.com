@@ -97,8 +97,8 @@ public class BentoMenuRepositoryImpl extends JpaRepository implements BentoMenuR
 					rs.getString("UNIT_NAME"), 
 					Integer.valueOf(rs.getString("PRICE1")), 
 					Integer.valueOf(rs.getString("PRICE2")), 
-					Boolean.valueOf(rs.getString("RESERVATION1_ATR")),
-					Boolean.valueOf(rs.getString("RESERVATION2_ATR"))));
+					"0".equals(rs.getString("RESERVATION1_ATR")) ? false : true,
+				    "0".equals(rs.getString("RESERVATION2_ATR")) ? false : true));
 		}
 		return listFullData;
 	}
