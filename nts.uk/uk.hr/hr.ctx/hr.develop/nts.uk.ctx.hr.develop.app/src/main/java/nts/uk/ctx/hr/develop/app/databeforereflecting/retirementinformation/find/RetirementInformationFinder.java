@@ -89,72 +89,46 @@ public class RetirementInformationFinder {
 		}
 		// アルゴリズム[定年退職者一覧の取得]を実行する(Thực hiện thuật toán [lấy danh sách người
 		// nghỉ hưu])
-		getRetiredEmployees(query);
+		getListRetiredEmployees(query);
 		return null;
 	}
 
-	private List<Object> getRetiredEmployees(SearchRetiredEmployeesQuery query) {
+	private List<Object> getListRetiredEmployees(SearchRetiredEmployeesQuery query) {
+		
 		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
+		
 		// アルゴリズム[定年退職予定者の取得]を実行する(Thực hiện thuật toán [lấy người dự định nghỉ
 		// hưu])
-		Optional<String> hisIdOpt = this.iEmpHis.getHistoryIdByDate(cId, baseDate);
-
-		if (!hisIdOpt.isPresent()) {
-			throw new BusinessException("MsgJ_JMM018_2");
-		}
+		String hisId = getRetiredEmployees(cId, baseDate);
 
 		// ドメインモデル [定年退職の就業規則] を取得する(Lấy domain [MandatoryRetirementRegulation])
+		MandatoryRetirementRegulation mada = getRetirementRules(cId, hisId, baseDate);
 
-		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
-		if (mada == null) {
-			throw new BusinessException("MsgJ_JMM018_2");
-		}
-
-		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
-		case 0:
-		case 1:
-		case 2:
-
-			break;
-		case 3:
-			checkYearMonthDate(cId, baseDate);
-			break;
-		case 4:
-			checkSalaryClosingDate(cId);
-			break;
-		case 5:
-			getClosingDate(cId);
-			break;
-		}
 		// アルゴリズム [全ての定年退職コースの取得] を実行する (THực hiện thuật toán " Lấy tất cả
 		// retirePlanCourse")
-		List<RetirePlanCource> retires = this.retiService.getAllRetirePlanCource(cId);
-
-		if (retires.isEmpty()) {
-			throw new BusinessException("MsgJ_JMM018_6");
-		}
+		List<RetirePlanCource> retires = getAllRetires(cId);
 
 		// アルゴリズム [会社ID、取得したい情報パラメータから雇用情報を取得する] を実行する(THực hiện thuật toán [lấy
 		// thông tin employment từ companyID parameter thông tin muốn lấy, ]
 
-		List<EmploymentInfoImport> empInfos = this.sysEmp.getEmploymentInfo(cId, Optional.of(false), Optional.of(false),
-				Optional.of(false), Optional.of(false), Optional.of(true));
-
-		if (empInfos.isEmpty()) {
-			throw new BusinessException("MsgJ_JMM018_9");
-		}
+		List<EmploymentInfoImport> empInfos = getEmpInfo(cId);
 
 		// 雇用情報リストを確認する(Xác nhận employment Infomation list)
-
-		empInfos.forEach(x -> {
-			if (StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
-				throw new BusinessException(" MsgJ_JMM018_10");
-			}
-		});
+		checkEmpInfos(empInfos);
 
 		// 定年条件リストを生成する ( Tạo retireTerm List/List điều kiện về hưu)
+		
+		List<RetirementCourseDto> retirePlanCourses = createRetirePlanCourses(query,mada,empInfos,retires);
 
+		// 検索条件リストを生成する ( Tạo list điều kiện tìm kiếm/Search condition list)
+		return null;
+
+		// empInfos.forEach(arg0);
+	}
+
+	private List<RetirementCourseDto> createRetirePlanCourses(SearchRetiredEmployeesQuery query,
+			MandatoryRetirementRegulation mada, List<EmploymentInfoImport> empInfos, List<RetirePlanCource> retires) {
 		List<RetirementCourseDto> retireCourseTerm = new ArrayList<RetirementCourseDto>();
 
 		mada.getMandatoryRetireTerm().forEach(x -> {
@@ -199,11 +173,71 @@ public class RetirementInformationFinder {
 				return Collections.emptyList();
 			}
 		}
+		return retirePlanCourses;
+	}
 
-		// 検索条件リストを生成する ( Tạo list điều kiện tìm kiếm/Search condition list)
-		return null;
+	private void checkEmpInfos(List<EmploymentInfoImport> empInfos) {
+		empInfos.forEach(x -> {
+			if (StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
+				throw new BusinessException(" MsgJ_JMM018_10");
+			}
+		});
+	}
 
-		// empInfos.forEach(arg0);
+	private List<EmploymentInfoImport> getEmpInfo(String cId) {
+		List<EmploymentInfoImport> empInfos = this.sysEmp.getEmploymentInfo(cId, Optional.of(false), Optional.of(false),
+				Optional.of(false), Optional.of(false), Optional.of(true));
+
+		if (empInfos.isEmpty()) {
+			throw new BusinessException("MsgJ_JMM018_9");
+		}
+		return empInfos;
+	}
+
+	private List<RetirePlanCource> getAllRetires(String cId) {
+		List<RetirePlanCource> retires = this.retiService.getAllRetirePlanCource(cId);
+
+		if (retires.isEmpty()) {
+			throw new BusinessException("MsgJ_JMM018_6");
+		}
+
+		return retires;
+	}
+
+	private MandatoryRetirementRegulation getRetirementRules(String cId, String hisId, GeneralDate baseDate) {
+		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisId);
+		if (mada == null) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+
+		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
+		case 0:
+		case 1:
+		case 2:
+
+			break;
+		case 3:
+			checkYearMonthDate(cId, baseDate);
+			break;
+		case 4:
+			checkSalaryClosingDate(cId);
+			break;
+		case 5:
+			getClosingDate(cId);
+			break;
+		}
+
+		return mada;
+	}
+
+	private String getRetiredEmployees(String cId, GeneralDate baseDate) {
+		Optional<String> hisIdOpt = this.iEmpHis.getHistoryIdByDate(cId, baseDate);
+
+		if (!hisIdOpt.isPresent()) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+
+		return hisIdOpt.get();
 	}
 
 	private void getClosingDate(String cId) {
