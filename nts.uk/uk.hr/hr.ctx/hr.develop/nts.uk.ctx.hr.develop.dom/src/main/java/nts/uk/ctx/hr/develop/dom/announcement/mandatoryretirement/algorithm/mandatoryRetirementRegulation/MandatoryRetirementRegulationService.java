@@ -7,11 +7,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetireTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseApplyTerm;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.ReferEvaluationItem;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 
 public interface MandatoryRetirementRegulationService {
 
@@ -42,4 +44,7 @@ public interface MandatoryRetirementRegulationService {
 	 * @param employmentCode
 	 */
 	void getMandatoryRetirementListByPeriodDepartmentEmployment(String companyId, GeneralDate baseDate, GeneralDate endDate, Optional<RetirementAge> retirementAge, List<String> departmentId, List<String> employmentCode);
+	
+	//退職日の取得
+	void getRetireDateBySidList(List<RetirePlanParam> retirePlan, RetirementAge retirementAge, List<RetireDateTermParam> retireDateTerm, Optional<GeneralDate> endDate, Optional<GeneralDate> closingDate, Optional<GeneralDate> attendanceDate);
 }
