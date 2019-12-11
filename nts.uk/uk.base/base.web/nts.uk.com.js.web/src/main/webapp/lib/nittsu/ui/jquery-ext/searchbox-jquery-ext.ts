@@ -21,7 +21,7 @@ module nts.uk.ui.jqueryExtentions {
                     var row = null;
                     if ($grid.igGridSelection('option', 'multipleSelection')) {
                         let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                        if (chk[0].getAttribute("data-chk") == "on") {
+                        if (chk.attr("data-chk") == "on") {
                             return;
                         }
                     }
@@ -46,7 +46,7 @@ module nts.uk.ui.jqueryExtentions {
                     var row = null;
                     if ($grid.igGridSelection('option', 'multipleSelection')) {
                         let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                        if (chk[0].getAttribute("data-chk") == "on") {
+                        if (chk.attr("data-chk") == "on") {
                             return;
                         }
                     }
