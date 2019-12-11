@@ -16,17 +16,17 @@ import nts.uk.ctx.hr.notice.infra.entity.report.JhnmtRptLayoutPk;
 
 @Stateless
 public class JpaPersonalReportClassificationRepository extends JpaRepository implements PersonalReportClassificationRepository{
-	private final static String SEL_BY_CID = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid order by c.rptLayouNameYomi";
+	private final static String SEL_BY_CID = "SELECT c FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid order by c.rptLayouNameYomi";
 	
-	private final static String SEL_BY_CID_AND_ABOLITON = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.abolition =:abolition order by c.rptLayouNameYomi";
+	private final static String SEL_BY_CID_AND_ABOLITON = "SELECT c FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid AND c.abolition =:abolition order by c.rptLayouNameYomi";
 	
-	private final static String IS_DUPLICATE_LAYOUTCODE = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouCd =:rptLayouCd order by c.rptLayouNameYomi";
+	private final static String IS_DUPLICATE_LAYOUTCODE = "SELECT c FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid AND c.rptLayouCd =:rptLayouCd order by c.rptLayouNameYomi";
 	
-	private final static String IS_DUPLICATE_LAYOUT_NAME = "SELECT c FROM JhnmtRptLayout c WHERE c.cid =:cid AND c.rptLayouName =:rptLayouName order by c.rptLayouNameYomi";
+	private final static String IS_DUPLICATE_LAYOUT_NAME = "SELECT c FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid AND c.rptLayouName =:rptLayouName order by c.rptLayouNameYomi";
 	
-	private final static String MAX_ID_BY_CID = "SELECT MAX(c.jhnmtRptLayoutPk.rptLayoutId) FROM JhnmtRptLayout c WHERE c.cid =:cid";
+	private final static String MAX_ID_BY_CID = "SELECT MAX(c.jhnmtRptLayoutPk.rptLayoutId) FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid";
 	
-	private final static String MAX_DIS_ORDER_BY_CID = "SELECT MAX(c.displayOrder) FROM JhnmtRptLayout c WHERE c.cid =:cid";
+	private final static String MAX_DIS_ORDER_BY_CID = "SELECT MAX(c.displayOrder) FROM JhnmtRptLayout c WHERE c.jhnmtRptLayoutPk.cid =:cid";
 	
 	
 	@Override
@@ -63,7 +63,7 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 	}
 	
 	private PersonalReportClassification createDomainFromEntity(JhnmtRptLayout entity) {
-		return PersonalReportClassification.createFromJavaType(entity.cid, 
+		return PersonalReportClassification.createFromJavaType(entity.jhnmtRptLayoutPk.cid, 
 				entity.jhnmtRptLayoutPk.rptLayoutId, entity.rptLayouCd, 
 				entity.rptLayouName, entity.rptLayouNameYomi, 
 				entity.displayOrder, entity.abolition, 
@@ -72,8 +72,8 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 	}
 	
 	private JhnmtRptLayout toEntity(PersonalReportClassification domain) {
-		JhnmtRptLayoutPk primaryKey = new JhnmtRptLayoutPk(domain.getPReportClsId());
-		return new JhnmtRptLayout(primaryKey, domain.getCompanyId(), 
+		JhnmtRptLayoutPk primaryKey = new JhnmtRptLayoutPk(domain.getPReportClsId(), domain.getCompanyId());
+		return new JhnmtRptLayout(primaryKey, 
 				domain.getPReportCode().v(), domain.getPReportName().v(),
 				domain.getPReportNameYomi().v(), domain.getDisplayOrder(),
 				domain.isAbolition(), domain.getReportType() == null? null: domain.getReportType().value,
@@ -84,8 +84,8 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 	}
 
 	@Override
-	public Optional<PersonalReportClassification> getDetailReportClsByReportClsID(int reportClsID) {
-		JhnmtRptLayoutPk key = new JhnmtRptLayoutPk(reportClsID);
+	public Optional<PersonalReportClassification> getDetailReportClsByReportClsID(String cid, int reportClsID) {
+		JhnmtRptLayoutPk key = new JhnmtRptLayoutPk(reportClsID, cid);
 		Optional<JhnmtRptLayout> rptLayoutOpt = this.queryProxy().find(key, JhnmtRptLayout.class);
 		if (rptLayoutOpt.isPresent()) {
 			return Optional.of(createDomainFromEntity(rptLayoutOpt.get()));

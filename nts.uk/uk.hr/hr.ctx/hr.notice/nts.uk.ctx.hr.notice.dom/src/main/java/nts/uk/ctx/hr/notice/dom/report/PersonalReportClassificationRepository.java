@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface PersonalReportClassificationRepository {
  List<PersonalReportClassification> getAllByCid(String cid, boolean abolition);
- Optional<PersonalReportClassification> getDetailReportClsByReportClsID(int reportClsID);
+ Optional<PersonalReportClassification> getDetailReportClsByReportClsID(String cid, int reportClsID);
  List<PersonalReportClassification> getAllSameNameByCid(String cid, String reportName);
  List<PersonalReportClassification> getAllSameCodeByCid(String cid, String reportCode);
  Map<String, Boolean> checkExist(String cid, String reportCode, String reportName);

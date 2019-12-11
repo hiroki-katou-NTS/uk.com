@@ -20,5 +20,10 @@ public class JhnmtRptLayoutPk implements Serializable{
     @Column(name = "RPT_LAYOUT_ID")
 	public int rptLayoutId;
 	
+	//CID
+	@Basic(optional = false)
+    @Column(name = "CID")
+	public String cid;
+	
 }
 

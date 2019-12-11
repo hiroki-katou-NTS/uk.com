@@ -2605,7 +2605,6 @@ module nts.custombinding {
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 //opts.sortable.isEditable.valueHasMutated();
-                console.log(data);
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
@@ -2722,6 +2721,7 @@ module nts.custombinding {
                     opts.listbox.options.removeAll();
 
                     if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
+                       
                         opts.combobox.options.removeAll();
                         services.getCats().done((data: any) => {
                             if (data && data.categoryList && data.categoryList.length) {
@@ -2749,7 +2749,7 @@ module nts.custombinding {
                                 } else {
                                     // show message if hasn't any category
                                     if (ko.toJS(opts.sortable.isEnabled)) {
-                                        alert({ messageId: 'Msgj_34' }).then(opts.callback);
+                                        alert({ messageId: 'MsgJ_34' }).then(opts.callback);
                                     }
                                 }
                             } else {
@@ -2759,9 +2759,14 @@ module nts.custombinding {
                                 }
                             }
                         });
+//                        if($(".form-group.add-buttons").length > 0){
+//                            $(".form-group.add-buttons")[0].attr(`style`, `margin-left: 165px !important;`); 
+//                        }
+                        
                     } else { // get item by group
                         // change text in add-button to [グループを追加　→]
                         $(ctrls.button).text(text('JHN011_C2_8'));
+                       
                         services.getGroups().done((data: Array<IItemGroup>) => {
                             // prevent if slow networks
                             if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
@@ -2784,6 +2789,12 @@ module nts.custombinding {
                                 opts.listbox.options(_opts);
                             }
                         });
+                        
+//                        if($(".form-group.add-buttons").length > 0){
+//                            $(".form-group.add-buttons")[0].attr(`style`, `margin-left: 160px !important;`); 
+//                        }
+                        
+                        
                     }
 
                     // remove listbox data

@@ -34,7 +34,7 @@ public class DeleteReportClassificationHandler extends CommandHandler<String>{
 		
 		int reportClsId = Integer.valueOf(context.getCommand()).intValue();
 		String cid = AppContexts.user().companyId();
-		Optional<PersonalReportClassification > reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(Integer.valueOf(reportClsId).intValue());
+		Optional<PersonalReportClassification > reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid, Integer.valueOf(reportClsId).intValue());
 		//個別届出種類IDをキーとしたドメイン「個別届出種類」.「廃止」=true、およびドメイン「個別届出の登録項目」.「廃止」=trueに設定する (set 「個別届出種類」.「廃止」=true and 「個別届出の登録項目」.「廃止」=true lấy với key là 個別届出種類ID)
 		if(reportClsOpt.isPresent()) {
 			reportClsOpt.get().setAbolition(true);

@@ -83,14 +83,14 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 			//メッセージ(#Msgj_41#)、または (#Msgj_42#)を表示する( Hiển thi message (# Msgj_41 #) or (# Msgj_42 #))
 			if (code != null) {
 				// JHN011_B222_1_1
-				BusinessException codeMessage = new BusinessException("Msgj_41",
+				BusinessException codeMessage = new BusinessException("MsgJ_41",
 						TextResource.localize("JHN011_B222_1_1"));
 				codeMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_1"));
 				exceptions.addMessage(codeMessage);
 			}
 
 			if (name != null) {
-				BusinessException nameMessage = new BusinessException("Msgj_42",
+				BusinessException nameMessage = new BusinessException("MsgJ_42",
 						TextResource.localize("JHN011_B222_1_2"));
 				nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_2"));
 				exceptions.addMessage(nameMessage);
@@ -114,8 +114,8 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 				.filter(c -> c.getPReportClsId() != cmd.getId().intValue()).findFirst();
 		//届出コード、届出名の重複をチェックする (Check Overlap Code đơn xin, Name đơn xin)
 		if (duplicateNameOpt.isPresent()) {
-			BusinessException nameMessage = new BusinessException("Msgj_42", TextResource.localize("JHN011_B222_1_2"));
-			nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_1"));
+			BusinessException nameMessage = new BusinessException("MsgJ_42", TextResource.localize("JHN011_B222_1_2"));
+			nameMessage.setSuppliment("NameID", TextResource.localize("JHN011_B222_1_2"));
 			exceptions.addMessage(nameMessage);
 			// Has error, throws message
 			if (exceptions.cloneExceptions().size() > 0) {
@@ -124,7 +124,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 		} else {
 
 			Optional<PersonalReportClassification> oldReport = this.reportClsRepo
-					.getDetailReportClsByReportClsID(cmd.getId().intValue());
+					.getDetailReportClsByReportClsID(cid, cmd.getId().intValue());
 			if(!oldReport.isPresent()) {
 				return;
 			}

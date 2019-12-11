@@ -20,9 +20,6 @@ public class JhnmtRptLayout extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public JhnmtRptLayoutPk jhnmtRptLayoutPk;
 
-    @Column(name = "CID")
-	public String cid;
-	
     @Column(name = "RPT_LAYOUT_CD")
 	public String rptLayouCd;
 	

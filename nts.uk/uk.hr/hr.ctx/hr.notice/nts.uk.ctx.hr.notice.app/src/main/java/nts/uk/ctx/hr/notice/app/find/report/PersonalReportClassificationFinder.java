@@ -55,7 +55,7 @@ public class PersonalReportClassificationFinder {
 		
 		//ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。(Get tất cả domain models「type đơn xin cá nhân」、「 Item dang ky don xin ca nhan」)
 		Optional<PersonalReportClassification> reportClsOpt = this.reportClsRepo
-				.getDetailReportClsByReportClsID(reportClsId);
+				.getDetailReportClsByReportClsID(cid, reportClsId);
 		
 		//ドメインモデル「個人情報項目定義」、「個別届出の登録項目」をすべて取得する (Get all domain model 「個人情報項目定義」、「個別届出の登録項目」)
 		List<RegisterPersonalReportItem> listItemCls = this.itemReportClsRepo.getAllItemBy(cid, reportClsId);
