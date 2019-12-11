@@ -14,10 +14,10 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumSetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.ShortAttendanceItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -39,6 +39,7 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
+		String languageId = query.getLanguageId();
 		Map<String, Object> data = new HashMap<>();		
 		// Get company id
 		//String companyId = AppContexts.user().companyId();
@@ -50,6 +51,7 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 	if(!CollectionUtil.isEmpty(listPersonCostCalculationSetting)){
 			for(PersonCostCalculationSettingDto personCostCalculationSettingDto:listPersonCostCalculationSetting){			
 				PersonCostCalculationSettingDto personCostCalculationSetting	=personCostCalculationSettingFinder.findByHistoryID(personCostCalculationSettingDto.getHistoryID());
+				
 				data=putEntryMasterDatas();				
 				data.put("有効開始日",personCostCalculationSettingDto.getStartDate() !=null? personCostCalculationSettingDto.getStartDate().toString():"");
 				data.put("終了日",personCostCalculationSettingDto.getEndDate() !=null? personCostCalculationSettingDto.getEndDate().toString():"");
@@ -58,11 +60,20 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 				boolean checkshow=true;
 				if(personCostCalculationSetting !=null){
 					List<PremiumSetDto> premiumSets=personCostCalculationSetting.getPremiumSets();
+					List<PremiumItemDto> listPremiumItemLanguage = personCostCalculationSettingFinder.findWorkTypeLanguage(languageId);
 					premiumSets.sort((PremiumSetDto o1,PremiumSetDto o2) -> o1.getDisplayNumber()-o2.getDisplayNumber() );
 					if(!CollectionUtil.isEmpty(premiumSets)){
 						for(PremiumSetDto premiumSetDto:premiumSets){
 							if(premiumSetDto.getUseAtr()==1){
-														
+								String nameEnglish = "";
+								for(PremiumItemDto premiumItemDto :listPremiumItemLanguage) {
+									if(premiumItemDto.getDisplayNumber() == premiumSetDto.getDisplayNumber()) {
+										nameEnglish = premiumItemDto.getName();
+										break;
+									}
+								}
+								
+								data.put("他言語名称",nameEnglish);
 								data.put("名称",premiumSetDto.getName());
 								data.put("割増率",premiumSetDto.getRate()+"%");	
 								//
@@ -96,6 +107,7 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 								rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 								rowData.get("割増率").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 								rowData.get("人件費計算用時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+								rowData.get("他言語名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 								datas.add(masterData);
 							}
 							
@@ -120,9 +132,10 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 		columns.add(new MasterHeaderColumn("終了日", "終了日", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("人件費を計算する際に使用する単価", "人件費を計算する際に使用する単価", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("備考", "備考", ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.LEFT, "", true));	
+		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("割増率", "割増率", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("人件費計算用時間", "人件費計算用時間", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("他言語名称", "他言語名称", ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 		
@@ -142,7 +155,8 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 			data.put("備考","");
 			data.put("名称", "");
 			data.put("割増率","");
-			data.put("人件費計算用時間","");										
+			data.put("人件費計算用時間","");	
+			data.put("他言語名称", "");
           return data;
 	}
 	

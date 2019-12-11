@@ -65,3 +65,7 @@ button.nts-switch-button {
 #functions-area-bottom {
 	height: 55px !important;
 }
+#switch-language {
+	margin-bottom: 2px;
+	margin-left: 10px;
+}

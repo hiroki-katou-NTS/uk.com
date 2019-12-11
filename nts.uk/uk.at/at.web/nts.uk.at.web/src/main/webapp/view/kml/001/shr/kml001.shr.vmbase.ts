@@ -101,6 +101,20 @@ module nts.uk.at.view.kml001.shr {
             }
         }
         
+        export class PremiumItemLanguage {
+            companyID: KnockoutObservable<string>;
+            displayNumber: KnockoutObservable<number>; 
+            langID: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            constructor(companyID: string, displayNumber: number,langID : string, name: string) {
+                var self = this;
+                self.companyID = ko.observable(companyID);
+                self.displayNumber = ko.observable(displayNumber);
+                self.langID = ko.observable(langID);
+                self.name = ko.observable(name);
+            }
+        }
+        
         export class ProcessHandler {
             
             /**

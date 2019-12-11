@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * 
+ * 人件費計算設定
  * @author Doan Duy Hung
  *
  */
