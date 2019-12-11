@@ -248,8 +248,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
 
-        } else {
-            if (data.getSocialInsuranceOffice() != null) {
+        } else if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_SIC_INSURES.value && data.getSocialInsuranceOffice() != null) {
                 if (data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().isPresent() && !data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v().isEmpty()) {
                     phoneNumber = this.formatPhoneNumber(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v());
                 }
@@ -261,8 +260,6 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
                 ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
                 ws.getCells().get("J27").putValue(phoneNumber);
-            }
-
         }
     }
 
