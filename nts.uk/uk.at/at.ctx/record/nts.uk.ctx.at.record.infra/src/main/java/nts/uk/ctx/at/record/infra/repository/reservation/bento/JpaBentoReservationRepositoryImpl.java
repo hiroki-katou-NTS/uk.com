@@ -31,7 +31,7 @@ import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationPK;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class BentoReservationRepositoryImpl extends JpaRepository implements BentoReservationRepository {
+public class JpaBentoReservationRepositoryImpl extends JpaRepository implements BentoReservationRepository {
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
