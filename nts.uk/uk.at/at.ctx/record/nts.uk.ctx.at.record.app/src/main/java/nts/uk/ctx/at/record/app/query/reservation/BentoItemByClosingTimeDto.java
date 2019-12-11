@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClo
 
 @Data
 public class BentoItemByClosingTimeDto {
-	private Integer framNo;
+	private Integer frameNo;
 	
 	private String name;
 	
@@ -19,9 +19,9 @@ public class BentoItemByClosingTimeDto {
 
 
 
-	public BentoItemByClosingTimeDto(Integer framNo, String name, Integer bentoAmount) {
+	public BentoItemByClosingTimeDto(Integer frameNo, String name, Integer bentoAmount) {
 		super();
-		this.framNo = framNo;
+		this.frameNo = frameNo;
 		this.name = name;
 		this.amount1 = bentoAmount;
 	}

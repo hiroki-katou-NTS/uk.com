@@ -28,12 +28,11 @@ public class ReservationQuery {
 	
 	public ReservationDto findAll(ReservationDateParam param) {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
-		String userId = "hdfgdgfdufdfdfdg";
+		String userId = AppContexts.user().userId();
 		//1 get*(予約対象日,カード番号)
 		val listBento = bentoReservationRepo.findList(new ReservationRegisterInfo(userId), new ReservationDate(date, EnumAdaptor.valueOf(param.getClosingTimeFrame(), ReservationClosingTimeFrame.class))) ;
 		//2 get(会社ID, 予約日)
-		//String companyId = AppContexts.user().companyId();
-		String companyId = "000000000000-0001";
+		String companyId = AppContexts.user().companyId();
 		val bento = bentoMenuRepo.getBentoMenu(companyId, date);
 		//3 締め時刻別のメニュー
 		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime();

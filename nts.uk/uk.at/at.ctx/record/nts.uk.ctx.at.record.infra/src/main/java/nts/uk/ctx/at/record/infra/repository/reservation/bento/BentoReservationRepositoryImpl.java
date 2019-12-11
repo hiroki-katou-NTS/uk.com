@@ -40,6 +40,8 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 	
 	private static final String FIND_BY_ID_DATE;
 	
+	private static final String FIND_ALL_BY_DATE;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.RESERVATION_ID, a.CONTRACT_CD, a.RESERVATION_YMD, a.RESERVATION_FRAME, a.CARD_NO, a.ORDERED,");
@@ -51,6 +53,11 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO = 'cardNo' AND a.RESERVATION_YMD = 'date' AND a.RESERVATION_FRAME = frameAtr");
 		FIND_BY_ID_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO = 'cardNo' AND a.RESERVATION_YMD = 'date'");
+		FIND_ALL_BY_DATE = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -160,10 +167,9 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 
 	@Override
 	public List<BentoReservation> findList(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
-		String query = FIND_BY_ID_DATE;
+		String query = FIND_ALL_BY_DATE;
 		query = query.replaceFirst("cardNo", registerInfor.getReservationCardNo());
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
-		query = query.replaceFirst("frameAtr", String.valueOf(reservationDate.getClosingTimeFrame().value));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
