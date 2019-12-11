@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
+import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOther;
+import nts.uk.ctx.at.record.app.find.optitem.language.OptionalItemNameOtherFinder;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -39,6 +41,9 @@ public class OptionalItemWs extends WebService {
 	/** The i 18 n. */
 	@Inject
 	private I18NResourcesForUK i18n;
+	
+	@Inject
+	private OptionalItemNameOtherFinder optionalItemNameOtherFinder;
 
 	/**
 	 * Find.
@@ -46,9 +51,9 @@ public class OptionalItemWs extends WebService {
 	 * @return the optional item dto
 	 */
 	@POST
-	@Path("find/{itemNo}")
-	public OptionalItemDto find(@PathParam("itemNo") Integer itemNo) {
-		return this.finder.find(itemNo);
+	@Path("find/{itemNo}/{langId}")
+	public OptionalItemDto find(@PathParam("itemNo") Integer itemNo, @PathParam("langId") String langId) {
+		return this.finder.findWithLang(itemNo, langId);
 	}
 
 	/**
@@ -60,6 +65,12 @@ public class OptionalItemWs extends WebService {
 	@Path("findall")
 	public List<OptionalItemHeaderDto> findAll() {
 		return this.finder.findAll();
+	}
+	
+	@POST
+	@Path("findall/{langId}")
+	public List<OptionalItemHeaderDto> findAll(@PathParam("langId") String langId) {
+		return this.finder.findAllWithLang(langId);
 	}
 
 	/**
@@ -82,6 +93,12 @@ public class OptionalItemWs extends WebService {
 	@Path("getenum")
 	public OptItemEnumDto getEnum() {
 		return OptItemEnumDto.init(i18n);
+	}
+	
+	@POST
+	@Path("findNameOther/{langId}")
+	public List<OptionalItemNameOther> findNameOther(@PathParam("langId") String langId) {
+		return this.optionalItemNameOtherFinder.findAllNameLangguage(langId);
 	}
 
 }
