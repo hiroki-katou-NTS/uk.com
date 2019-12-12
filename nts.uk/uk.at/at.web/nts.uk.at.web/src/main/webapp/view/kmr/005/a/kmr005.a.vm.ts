@@ -14,8 +14,6 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         // period
         dateValue: KnockoutObservable<any> = ko.observable({});
-        startDateString: KnockoutObservable<string> = ko.observable("");
-        endDateString: KnockoutObservable<string> = ko.observable("");
         
         // title
         title: KnockoutObservable<string> = ko.observable('');
@@ -32,16 +30,6 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 endDate: moment().utc().format("YYYY/MM/DD")
             });
             self.dateValue.valueHasMutated();
-            
-            self.startDateString.subscribe(function(value){
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();        
-            });
-            
-            self.endDateString.subscribe(function(value){
-                self.dateValue().endDate = value;   
-                self.dateValue.valueHasMutated();      
-            });
             
             self.ccgcomponent = {
                 /** Common properties */
@@ -97,6 +85,19 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();   
+            nts.uk.ui.block.invisible();
+            service.startup().done((data) => {
+                self.dateValue().startDate = moment(data.substring(20,30)).format("YYYY/MM/DD");
+                self.dateValue().endDate = moment(data.substring(36,46)).format("YYYY/MM/DD");
+                self.dateValue.valueHasMutated();
+                nts.uk.ui.block.clear();
+                dfd.resolve(); 
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                    nts.uk.ui.block.clear();
+                });        
+                dfd.reject();
+            });
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
@@ -105,7 +106,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 });
                 
             });
-            return dfd.resolve();     
+            return dfd.promise(); 
         }
         
         applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
@@ -141,6 +142,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         }
         
         exportFile() {
+            let self = this;
             nts.uk.ui.block.invisible();
             service.exportFile().done((data) => {
                 nts.uk.ui.block.clear();        
