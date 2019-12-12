@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -8,29 +9,44 @@ import java.util.Optional;
 /**
  * 社員社会保険等級情報
  */
+@Getter
 public class EmpSocialInsGradeInfo extends AggregateRoot {
-    /** 履歴ID */
+    /**
+     * 履歴ID
+     */
     private String hisId;
 
-    /** 社会保険報酬月額(実質) */
+    /**
+     * 社会保険報酬月額(実質)
+     */
     private MonthlyRemuneration socInsMonthlyRemune;
 
-    /** 算定区分 */
+    /**
+     * 算定区分
+     */
     private CalculationAtr calculationAtr;
 
-    /** 健康保険標準報酬月額 */
+    /**
+     * 健康保険標準報酬月額
+     */
     private Optional<MonthlyRemuneration> healInsStandMonthlyRemune;
 
-    /** 健康保険等級 */
+    /**
+     * 健康保険等級
+     */
     private Optional<InsuranceGrade> healInsGrade;
 
-    /** 厚生年金保険標準報酬月額 */
+    /**
+     * 厚生年金保険標準報酬月額
+     */
     private Optional<MonthlyRemuneration> pensionInsStandCompenMonthly;
 
-    /** 厚生年金保険等級 */
+    /**
+     * 厚生年金保険等級
+     */
     private Optional<InsuranceGrade> pensionInsGrade;
 
-    public EmpSocialInsGradeInfo(String hisId, Integer socInsMonthlyRemune, Integer calculationAtr, Integer healInsStandMonthlyRemune, Integer healInsGrade, Integer pensionInsStandCompenMonthly, Integer pensionInsGrade){
+    public EmpSocialInsGradeInfo(String hisId, Integer socInsMonthlyRemune, Integer calculationAtr, Integer healInsStandMonthlyRemune, Integer healInsGrade, Integer pensionInsStandCompenMonthly, Integer pensionInsGrade) {
         this.hisId = hisId;
         this.socInsMonthlyRemune = new MonthlyRemuneration(socInsMonthlyRemune);
         this.calculationAtr = EnumAdaptor.valueOf(calculationAtr, CalculationAtr.class);
