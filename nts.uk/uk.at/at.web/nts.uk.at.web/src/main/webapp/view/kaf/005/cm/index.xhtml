@@ -301,7 +301,7 @@
 									inputFormat: 'time', 
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $root.editable &amp;&amp; $root.enableOvertimeInput }" />
+									enable: $parent.enableOvertimeInput() &amp;&amp; $parent.editable() }" />
 									</td>
 									<!--A6_9 残業事前申請時間-->
 									<td class="right-content" data-bind="text: preAppTime"></td>
