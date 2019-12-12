@@ -18,7 +18,7 @@ module jhn011.b.viewmodel {
         enaBtnSave : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
-        checkAbolition: KnockoutObservable<boolean> = ko.observable(true);
+        checkAbolition: KnockoutObservable<boolean> = ko.observable(false);
         row: KnockoutObservable<number>;
         
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
@@ -110,6 +110,10 @@ module jhn011.b.viewmodel {
                     self.createNewLayout();
                 }
                 dfd.resolve();
+            }).fail(res => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.request.jump("com","/view/ccg/008/a/index.xhtml");
+                    });
             });
             return dfd.promise();
         }
@@ -118,12 +122,14 @@ module jhn011.b.viewmodel {
             let self = this,
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
+            self.checkAbolition(false);
             layout.id(undefined);
             self.setDetailLayout({}, layout);
             self.enaBtnSave(true);
             self.enaBtnDel(false);
             layout.classifications([]);
             layout.action(LAYOUT_ACTION.INSERT);
+            
             $("#B222_1_1").focus();
         }
 

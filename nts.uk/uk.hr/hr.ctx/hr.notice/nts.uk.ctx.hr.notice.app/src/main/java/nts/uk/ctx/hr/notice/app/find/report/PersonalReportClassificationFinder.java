@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -40,6 +41,10 @@ public class PersonalReportClassificationFinder {
 	 * @return
 	 */
 	public List<PersonalReportClassificationDto> getAllReportCls(boolean abolition){
+		//アルゴリズム「ログイン者がグループ会社管理者かどうか判定する]
+		if(AppContexts.user().roles().forGroupCompaniesAdmin() == null) {
+			throw new BusinessException("Msg_1103");
+		}
 		return this.reportClsRepo.getAllByCid(AppContexts.user().companyId(), abolition).stream().map(c -> {
 			return PersonalReportClassificationDto.fromDomain(c);
 		}).collect(Collectors.toList());
