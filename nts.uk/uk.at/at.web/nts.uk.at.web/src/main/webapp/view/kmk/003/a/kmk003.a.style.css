@@ -116,3 +116,10 @@
 html {
 	overflow: hidden;
 }
+#switch-language {
+	display: inline-block;
+}
+.disabled-panel{
+	pointer-events: none;
+    opacity: 0.35;
+}
