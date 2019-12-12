@@ -19,11 +19,11 @@ import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 public interface MandatoryRetirementRegulationService {
 
 	//定年退職の就業規則の取得
-	MandatoryRetirementRegulation getMandatoryRetirementRegulation(String companyId, String historyId);
+	Optional<MandatoryRetirementRegulation> getMandatoryRetirementRegulation(String companyId, String historyId);
 	
 	//定年退職の就業規則の追加
 	void addMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, 
-			boolean planCourseApplyEnable, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm);
+			boolean planCourseApplyFlg, List<MandatoryRetireTerm> mandatoryRetireTerm, List<ReferEvaluationItem> referEvaluationTerm, PlanCourseApplyTerm planCourseApplyTerm);
 	
 	//定年退職の就業規則の更新
 	void updateMandatoryRetirementRegulation(String companyId, String historyId, int reachedAgeTerm, DateCaculationTerm publicTerm, RetireDateTerm retireDateTerm, 

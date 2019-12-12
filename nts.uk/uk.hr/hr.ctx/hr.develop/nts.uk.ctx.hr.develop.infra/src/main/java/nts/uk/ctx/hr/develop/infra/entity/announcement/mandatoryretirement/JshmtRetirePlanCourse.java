@@ -93,11 +93,13 @@ public class JshmtRetirePlanCourse extends UkJpaEntity implements Serializable {
 		this.notUsageFlg = retirePlanCource.isNotUsageFlg()?1:0;
 		this.usageStartDate = retirePlanCource.getUsageStartDate();
 		this.usageEndDate = retirePlanCource.getUsageEndDate();
-		this.applicationEnableStartAge = retirePlanCource.getPlanCourseApplyTerm().isPresent()?retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableStartAge().v():null;
-		this.applicationEnableEndAge = retirePlanCource.getPlanCourseApplyTerm().isPresent()?retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableEndAge().v():null;
-		this.endMonth = retirePlanCource.getPlanCourseApplyTerm().isPresent()?retirePlanCource.getPlanCourseApplyTerm().get().getEndMonth().value:null;
-		this.endDate = retirePlanCource.getPlanCourseApplyTerm().isPresent()?retirePlanCource.getPlanCourseApplyTerm().get().getEndDate().value:null;
 		this.recontractEmpCode = retirePlanCource.getRecontractEmpCode();
+		if(retirePlanCource.getPlanCourseApplyTerm().isPresent()) {
+			this.applicationEnableStartAge = retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableStartAge().v();
+			this.applicationEnableEndAge = retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableEndAge().v();
+			this.endMonth = retirePlanCource.getPlanCourseApplyTerm().get().getEndMonth().value;
+			this.endDate = retirePlanCource.getPlanCourseApplyTerm().get().getEndDate().value;
+		}
 	}
 
 	public RetirePlanCource toDomain() {
