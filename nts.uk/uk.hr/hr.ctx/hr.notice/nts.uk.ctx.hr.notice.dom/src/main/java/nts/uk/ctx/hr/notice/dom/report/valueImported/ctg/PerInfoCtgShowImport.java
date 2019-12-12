@@ -1,8 +1,14 @@
 package nts.uk.ctx.hr.notice.dom.report.valueImported.ctg;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Value
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PerInfoCtgShowImport {
 	private String id;
 	private String categoryName;

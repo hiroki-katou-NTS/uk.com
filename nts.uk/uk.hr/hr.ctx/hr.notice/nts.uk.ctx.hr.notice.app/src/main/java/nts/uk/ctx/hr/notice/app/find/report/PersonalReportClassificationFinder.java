@@ -136,7 +136,7 @@ public class PersonalReportClassificationFinder {
 					}
 									
 					if (classDto.getLayoutItemType() == LayoutReportItemType.LIST) {
-						String catDto = this.humanItemPub.getCategoryName(cid, "");
+						String catDto = this.humanItemPub.getCategoryName(cid, classDto.getCategoryCode());
 						if (catDto != null) {
 							classDto.setClassName(catDto);
 						}
