@@ -90,8 +90,7 @@
 															required:true,
 															enable: true},
 															attr: { id: 'B222_1_2', NameID: nts.uk.resource.getText('JHN011_B222_1_2')}" />
-											
-											<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('JHN011_B221_2')}</div>
+											<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }, visible: $parent.layout().id() != undefined">#{i18n.getText('JHN011_B222_1_3')}</div>
 										
 										</div>
 								</td>

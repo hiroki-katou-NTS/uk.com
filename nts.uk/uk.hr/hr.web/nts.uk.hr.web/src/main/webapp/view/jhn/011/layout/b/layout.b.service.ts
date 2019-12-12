@@ -1,4 +1,4 @@
-module cps007.b.service {
+module layout.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
@@ -8,10 +8,10 @@ module cps007.b.service {
     };
 
     export function getCategory(cid) {
-        return ajax(format(paths.getCat, cid));
+        return ajax("com", format(paths.getCat, cid));
     }
 
     export function getItemDefinitions(cid) {
-        return ajax(format(paths.getItemDs, cid));
+        return ajax("com",format(paths.getItemDs, cid));
     }
 }

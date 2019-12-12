@@ -157,7 +157,7 @@ module jhn011.b.viewmodel {
             block();
             service.saveData(command).done((_data: any) => {
                 unblock();
-                showDialog.info({ messageId: "Msg_15" }).then(function() {
+                showDialog.info({ messageId: "MsgJ_36" }).then(function() {
                 });
 
                 self.start(data.reportCode);
@@ -170,22 +170,6 @@ module jhn011.b.viewmodel {
             });
         }
 
-        copyDataLayout() {
-            let self = this,
-                data: ILayout = ko.toJS(self.layout),
-                layouts: Array<ILayout> = ko.toJS(self.layouts);
-
-            data.classifications = _.map(data.classifications, m => _.omit(m, ["items", "renders"]));
-
-            setShared('CPS008_PARAM', data);
-            modal('../c/index.xhtml').onClosed(() => {
-                let _data = getShared('CPS008C_RESPONE');
-                if (_data != undefined) {
-                    self.start(_data);
-                }
-            });
-        }
-
         setDetailLayout(param: ILayout, layout: any){
             layout.reportCode(param.reportCode || null);
             layout.reportName(param.reportName || null);
@@ -195,7 +179,7 @@ module jhn011.b.viewmodel {
             layout.remark(param.remark || null);
             layout.memo(param.memo || null);
             layout.message(param.message || null);
-            layout.formReport(param.formReport || 0);
+            layout.formReport(param.formReport || 1);
             layout.agentReportIsCan(param.agentReportIsCan || 0);
         }
             
@@ -333,9 +317,9 @@ module jhn011.b.viewmodel {
             { code: "2", name: text("JHN011_B222_2_1_3") }]);
     
         roundingRules: KnockoutObservableArray < any > = ko.observableArray([
-            { code: "0", name: text("JHN011_B222_6_1_1") },
-            { code: "1", name: text("JHN011_B222_6_1_2") }]);
-        
+            { code: "1", name: text("JHN011_B222_6_1_1")},
+            { code: "0", name: text("JHN011_B222_6_1_2") } ]);
+        // 1 する、０しない
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
         
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
@@ -354,7 +338,7 @@ module jhn011.b.viewmodel {
                 self.remark(param.remark || null);
                 self.memo(param.memo || null);
                 self.message(param.message || null);
-                self.formReport(param.formReport || 0);
+                self.formReport(param.formReport || 1);
                 self.agentReportIsCan(param.agentReportIsCan || 0);
                 self.classifications(param.classifications || []);
             }

@@ -54,30 +54,11 @@ public class PerInfoCtgOrderByCompanyPubImpl implements IPerInfoCtgOrderByCompan
 		int forAttendance = NotUseAtr.NOT_USE.value;
 		int forPayroll = NotUseAtr.NOT_USE.value;
 		int forPersonnel = 1;
-//		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
-//		for (InstalledProduct productType : installProduct) {
-//			switch (productType.getProductType()) {
-//			case ATTENDANCE:
-//				forAttendance = NotUseAtr.USE.value;
-//				break;
-//			case PAYROLL:
-//				forPayroll = NotUseAtr.USE.value;
-//				break;
-//			case PERSONNEL:
-//				forPersonnel = NotUseAtr.USE.value;
-//				break;
-//			default:
-//				break;
-//			}
-//		}
 
 		List<PersonInfoCategory> lstCtg = perInfoCtgRepositoty.getAllCategoryForCPS007(companyId, contractCode,
 				forAttendance, forPayroll, forPersonnel);
 
 		List<String> lstCtgId = lstCtg.stream().map(c -> c.getPersonInfoCategoryId()).collect(Collectors.toList());
-
-//		Map<String, PersonInfoCategory> mapCtgAndId = lstCtg.stream()
-//				.collect(Collectors.toMap(e -> e.getPersonInfoCategoryId(), e -> e));
 
 		Map<String, List<Object[]>> mapCategoryIdAndLstItemDf =  this.pernfoItemDefRep.getAllPerInfoItemDefByListCategoryId(lstCtgId, AppContexts.user().contractCode());
 
@@ -99,5 +80,20 @@ public class PerInfoCtgOrderByCompanyPubImpl implements IPerInfoCtgOrderByCompan
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumExport(historyTypes, categoryList);
+	}
+
+	@Override
+	public List<PerInfoCtgShowExport> getInfoCtgByCtgIdsAndCid(String cid, List<String> ctgIds) {
+		List<PerInfoCtgShowExport> categoryList = perInfoCtgRepositoty.getAllByCtgId(cid, ctgIds).stream().map(p -> {
+			return new PerInfoCtgShowExport(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
+					p.getCategoryParentCode().v(), p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value, p.isCanAbolition(),
+					p.getSalaryUseAtr() == null? 0:p.getSalaryUseAtr().value, 
+					p.getPersonnelUseAtr() == null? 0: p.getPersonnelUseAtr().value, 
+					p.getEmploymentUseAtr() == null? 0:p.getEmploymentUseAtr().value);
+
+		}).filter(m -> m != null).collect(Collectors.toList());
+		return categoryList;
 	}
 }

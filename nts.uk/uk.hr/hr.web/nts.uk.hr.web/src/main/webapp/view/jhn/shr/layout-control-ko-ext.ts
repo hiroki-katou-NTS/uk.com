@@ -1329,7 +1329,7 @@ module nts.custombinding {
                         value: ko.observableArray([]),
                         optionsValue: 'id',
                         optionsText: 'itemName',
-                        columns: [{ key: 'itemName', headerText: text('CPS007_9'), length: 15 }]
+                        columns: [{ key: 'itemName', headerText: text('JHN011_C2_5_1'), length: 15 }]
                     },
                     sortable: {
                         data: ko.observableArray([]),
@@ -1368,6 +1368,7 @@ module nts.custombinding {
                                 }
                             }
                         },
+                        
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
                             let items: Array<any> = _(ko.toJS(opts.sortable.data))
                                 .map((x: IItemClassification) => _.omit(x, "items"))
@@ -1376,7 +1377,7 @@ module nts.custombinding {
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items = _.filter(items, x => x.layoutID != data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
-                                items = _.filter(items, (x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                                items = _.filter(items, (x: IItemClassification) => (x.layoutItemType == IT_CLA_TYPE.SPER ||(x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id));
                             }
 
                             let maps: Array<number> = _(items).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
@@ -1399,7 +1400,11 @@ module nts.custombinding {
                         },
                         removeItems: (data: Array<IItemClassification>) => {
                             if (data && data.length) {
-                                _.each(data, x => opts.sortable.removeItem(x, true));
+                                _.each(data, x => {
+                                    console.log(x);
+                                    opts.sortable.removeItem(x, true);
+                                    console.log(ko.toJS(opts.sortable.data()));
+                                });
                             }
                         },
                         findExist: (ids: Array<string>) => {
@@ -1408,12 +1413,12 @@ module nts.custombinding {
                             }
 
                             let items: Array<IItemClassification> = opts.sortable.data();
-
                             // return items if it's exist in list
                             return _(items)
-                                .map(x => x.listItemDf)
+                                .map(c => { if (Array.isArray(c.listItemDf)) { return c.listItemDf } else { return _.map(c.listItemDf, i => { return i; });  } })
                                 .flatten()
-                                .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
+                                .filter((x:IItemDefinition) => { 
+                                    return x && ids.indexOf(x.id) > -1;})
                                 .value();
                         },
                         pushItem: (data: IItemClassification) => {
@@ -1427,7 +1432,7 @@ module nts.custombinding {
                             }
                         },
                         pushItems: (defs: Array<IItemDefinition>) => {
-                            let is_new = location.href.indexOf('/view/cps/007') > -1,
+                            let is_new = location.href.indexOf('/view/jhn/011/layout') > -1,
                                 relates: Array<string> = _(defs).map((x: any) => ((x.itemTypeState || {}).dataTypeState || {}).relatedCtgCode)
                                     .filter(x => x)
                                     .value();
@@ -1517,6 +1522,7 @@ module nts.custombinding {
                                         messageParams: dups.map((x: IItemDefinition) => x.itemName)
                                     })
                                         .then(() => {
+                                            debugger;
                                             opts.sortable.removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
                                                     layoutID: random(),
@@ -2740,6 +2746,7 @@ module nts.custombinding {
                                     if (options[0]) {
                                         if (ko.toJS(opts.combobox.value) != options[0].id) {
                                             opts.combobox.value(options[0].id);
+                                            console.log(ko.toJS(opts));
                                         } else {
                                             opts.combobox.value.valueHasMutated();
                                         }
@@ -2847,7 +2854,9 @@ module nts.custombinding {
                                                 .orderBy(m => m.dispOrder).value();
 
                                             opts.listbox.options(data);
+                                            
                                             opts.listbox.value.removeAll();
+                                            opts.listbox.value.push(data[0].id);
                                         }
                                     });
                                     break;
@@ -2921,6 +2930,7 @@ module nts.custombinding {
                 $(ctrls.button)
                     .data('safeClick', new Date().getTime())
                     .on('click', () => {
+                        debugger;
                         let timeClick = new Date().getTime(),
                             safeClick = $(ctrls.button).data('safeClick');
 
@@ -2959,10 +2969,10 @@ module nts.custombinding {
                                         return;
                                     }
 
-                                    setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
-                                    modal('../../007/b/index.xhtml').onClosed(() => {
+                                    setShared('LAYOUTB_PARAM', { category: cat, chooseItems: [] });
+                                    modal('../../011/layout/b/index.xhtml').onClosed(() => {
                                         let dfds: Array<JQueryDeferred<any>> = [],
-                                            data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
+                                            data = getShared('LAYOUTB_VALUE') || { category: undefined, chooseItems: [] };
 
                                         if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
                                             services.getCat(data.category.id).done((_cat: IItemCategory) => {
@@ -3118,7 +3128,7 @@ module nts.custombinding {
                 ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
                 // fix header off listbox
-                $('#jhn011_lst_header').text(text('CPS007_9'));
+                $('#jhn011_lst_header').text(text('JHN011_C2_5_1'));
             }
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
