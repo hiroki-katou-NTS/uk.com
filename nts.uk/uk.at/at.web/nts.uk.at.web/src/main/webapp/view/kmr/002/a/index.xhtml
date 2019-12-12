@@ -36,11 +36,11 @@
 						<tbody>
 							<tr>
 								<td class="table-food-td" data-bind="text: lunch"></td>
-								<td class="table-food-td" data-bind="text: priceLunch"></td>
+								<td class="table-food-td" data-bind="text: priceLunch()"></td>
 							</tr>
 							<tr>
 								<td class="table-food-td" data-bind="text: dinner"></td>
-								<td class="table-food-td" data-bind="text: priceDinner"></td>
+								<td class="table-food-td" data-bind="text: priceDinner()"></td>
 							</tr>
 							<tr>
 								<td class="table-food-td" style="" data-bind="text: sum"></td>
@@ -89,25 +89,25 @@
 
 									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''}, click:  function(){$vm.updateOrderLunch(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuLunch().length > 20 ? _.slice(menuLunch(), 10, 20) : _.slice(menuLunch(), 10, menuLunch().length), visible: menuLunch().length > 10 ? true : false">
 									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuLunch().length > 30 ? _.slice(menuLunch(), 20, 30) : _.slice(menuLunch(), 20, menuLunch().length), visible: menuLunch().length > 20 ? true : false">
 									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: _.slice(menuLunch(), 30, menuLunch().length), visible: menuLunch().length > 30 ? true : false">
 									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 							</tr>
@@ -124,27 +124,27 @@
 							<tr>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 10 ? _.slice(menuDinner(), 0, 10) : menuDinner()">
 
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 20 ? _.slice(menuDinner(), 10, 20) : _.slice(menuDinner(), 10, menuDinner().length), visible: menuDinner().length > 10 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 30 ? _.slice(menuDinner(), 20, 30) : _.slice(menuDinner(), 20, menuDinner().length), visible: menuDinner().length > 20 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: _.slice(menuDinner(), 30, menuDinner().length), visible: menuDinner().length > 30 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
 										<span data-bind="text: name"></span><span
-											data-bind="text: price" style="float: right"></span>
+											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 							</tr>
@@ -166,16 +166,16 @@
 									<td class="table-food-td" colspan="2" data-bind="text: name"
 										style="padding: 15px;"></td>
 									<td class="table-food-td" style="text-align: right;"
-										data-bind="text: price"></td>
+										data-bind="text: unit"></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click: preOrder">-</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, -1)}">-</button></td>
 									<td class="table-food-td" data-bind="text: bentoCount"
 										style="text-align: center;"></td>
 									<td class="table-food-td" style="padding: 15px;">
-									<button class="button-radius" data-bind="click:  addOrder">+</button></td>
+									<button class="button-radius" data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, 1)}">+</button></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" colspan="3"><button
@@ -199,17 +199,17 @@
 									<td class="table-food-td" colspan="2" data-bind="text: name"
 										style="padding: 15px;"></td>
 									<td class="table-food-td" style="text-align: right;"
-										data-bind="text: price"></td>
+										data-bind="text: unit"></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click: preOrder">-</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, -1)}">-</button></td>
 									<td class="table-food-td" data-bind="text: bentoCount"
 										style="text-align: center;"></td>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click: addOrder">+</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, 1)}">+</button></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" colspan="3"><button

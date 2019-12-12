@@ -27,8 +27,6 @@ module nts.uk.at.view.kmr002.a.model {
         startTime: KnockoutObservable<string> = ko.observable();
         endTime: KnockoutObservable<string> = ko.observable();
         amount: KnockoutObservable<number> = ko.observable(1);
-        menuOrderLunchs: KnockoutObservableArray<any> = ko.observableArray([]);
-        menuOrderDinners: KnockoutObservableArray<any> = ko.observableArray([]);
         listBentoOrderLunch: KnockoutObservableArray<BentoOrder> = ko.observableArray([]);
         listBentoOrderDinner: KnockoutObservableArray<BentoOrder> = ko.observableArray([]);
         isError: KnockoutObservable<boolean> = ko.observable(false);
@@ -43,132 +41,197 @@ module nts.uk.at.view.kmr002.a.model {
                 2002: { 1: [{ 11: "round-green" }, { 12: "round-green" }, { 15: "round-green" }], 3: [{ 1: "round-green" }, { 2: "round-green" }, { 3: "round-green" }] }
             }
             
-            self.menuOrderLunchs = ko.observableArray([{ code: 10, name: 'ハヤシライス', price: 1000, numberOrder:  ko.observable(1),status: ko.observable(true) },
-                         { code: 11, name: 'ハヤシライス', price: 2000, numberOrder:  ko.observable(2),status: ko.observable(true) },
-                         { code: 21, name: 'ハヤシライス', price: 3000, numberOrder:  ko.observable(5),status: ko.observable(true) }]);
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            console.log(self.date() + self.mealSelected() + 'a');
-            service.startScreen({
-                date: moment(new Date()).format("YYYY/MM/DD"), 
-                closingTimeFrame: self.mealSelected()}).done((data) => {
-                self.initData(data);
+            self.date.subscribe(() => {
+                service.startScreen({
+                    date: moment(self.date()).format("YYYY/MM/DD"), 
+                    closingTimeFrame: self.mealSelected()}).done((data) => {
+                     self.menuLunch().clear();
+                     self.menuLunch.valueHasMutated();
+                     self.menuDinner().clear();
+                     self.menuDinner.valueHasMutated();
+                     console.log(self.menuLunch().length + self.menuDinner().length);
+                     self.initData(data);
+                });
             });
             dfd.resolve();
             return dfd.promise();
         }
 
         public initData(data: any) {
-            let self = this;
+            let self = this, start = data.bentoMenuByClosingTimeDto.closingTime1.start,
+                end = data.bentoMenuByClosingTimeDto.closingTime1.finish;;
             self.optionMenu.push({ code: 1, name: data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName });
             self.optionMenu.push({ code: 2, name: data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName }); 
             self.optionMenu.valueHasMutated();
-            if (self.mealSelected() == 1) {
-                self.startTime(data.bentoMenuByClosingTimeDto.closingTime1.start);
-                self.endTime(data.bentoMenuByClosingTimeDto.closingTime1.finish);
-                if (data.listOder.length > 0 && (data.listOrder[0].ordered || self.date() < new Date())) {
-                    self.isError(true);
+            self.initTime(start, end, data);
+            self.mealSelected.subscribe(() => {
+                if (self.mealSelected() == 1) {
+                    start = data.bentoMenuByClosingTimeDto.closingTime1.start;
+                    end = data.bentoMenuByClosingTimeDto.closingTime1.finish;
+                    self.initTime(start, end, data);
                 } else {
-                    self.isError(false);
+                    start = data.bentoMenuByClosingTimeDto.closingTime2.start;
+                    end = data.bentoMenuByClosingTimeDto.closingTime2.finish;
+                    self.initTime(start, end, data);
                 }
-             } else {
-                self.startTime(data.bentoMenuByClosingTimeDto.closingTime2.start);
-                self.endTime(data.bentoMenuByClosingTimeDto.closingTime2.finish);
-                if (data.listOder.length > 1 && (data.listOrder[1].ordered || self.date() < new Date())) {
-                    self.isError(true);
-                } else {
-                    self.isError(false);
-                }
-            }
-            
-            self.startTime.valueHasMutated();
-            self.endTime.valueHasMutated();
-            _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
-                self.menuLunch().push(new BentoMenu({frameNo: item.frameNo, name: item.name, price: item.amount1, status: false}));
             });
-            console.log(self.menuLunch());
+            _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
+                let unit = item.amount1 + item.unit;
+                self.menuLunch().push(new BentoMenu({frameNo: item.frameNo, name: item.name, price: item.amount1, status: false, unit: unit}));
+            });
             self.menuLunch.valueHasMutated();
         
             _.forEach(data.bentoMenuByClosingTimeDto.menu2, (item) => {
-                 self.menuDinner().push(new BentoMenu({frameNo: item.frameNo, name: item.name, price: item.amount1, status: false}));
+                let unit = item.amount1 + item.unit;
+                 self.menuDinner().push(new BentoMenu({frameNo: item.frameNo, name: item.name, price: item.amount1, status: false, unit: unit}));
             });
             self.menuDinner.valueHasMutated();
             
             for(let i = 0; i < data.listOder.length; i++ ){
                 if(data.listOder[i].reservationClosingTimeFrame == 1){
-                    let name = '', price = 0;
+                    let name = '', price = 0, unit = '';
                     _.forEach(data.listOder[i].listBentoReservationDetail, (item) => {
                         _.each(self.menuLunch(), (benTo) => {
                             if(benTo.frameNo == item.frameNo) {
                                 name = benTo.name;
                                 price = benTo.amount1;
+                                unit =  benTo.amount1 + benTo.unit;
                             }    
                         });
-                        self.listBentoOrderLunch().push(new BentoOrder({frameNo: item.frameNo, bentoCount : item.bentoCount, name: name, price: price}));
+                        self.listBentoOrderLunch().push(new BentoOrder({frameNo: item.frameNo, bentoCount : item.bentoCount, name: name, price: price, unit: unit}));
                     });
                     self.listBentoOrderLunch.valueHasMutated();
                 }
                 
                 if (data.listOder[i].reservationClosingTimeFrame == 2) {
-                    let name = '', price = 0;
+                    let name = '', price = 0, unit = '';
                     _.forEach(data.listOder[i].listBentoReservationDetail, (item) => {
                          _.each(self.menuDinner(), (benTo) => {
                             if(benTo.frameNo == item.frameNo) {
                                 name = benTo.name;
                                 price = benTo.amount1;
+                                unit =  benTo.amount1 + benTo.unit;
                             }    
                         });
-                        self.listBentoOrderDinner().push(new BentoOrder({frameNo: item.frameNo, bentoCount : item.bentoCount, name: name, price: price}));
+                        self.listBentoOrderDinner().push(new BentoOrder({frameNo: item.frameNo, bentoCount : item.bentoCount, name: name, price: price, unit: unit}));
                     });
                     self.listBentoOrderDinner.valueHasMutated();
                 }
             }
-            
-            _.forEach(self.listBentoOrderLunch(), (item) => {
-                 self.priceLunch += item.listBentoOrderLunch().price*item.listBentoOrderLunch().bentoCount;
+
+            self.listBentoOrderLunch.subscribe(() => {
+                self.priceLunch(0);
+                _.forEach(self.listBentoOrderLunch(), (item) => {
+                    self.priceLunch(self.priceLunch() + item.price()*item.bentoCount());
+                    self.priceSum(self.priceLunch() + self.priceDinner());
+                });
             });
-             _.forEach(self.listBentoOrderDinner(), (item) => {
-                 self.priceLunch += item.listBentoOrderDinner().price*item.listBentoOrderDinner().bentoCount;
+            self.listBentoOrderDinner.subscribe(() => {
+                self.priceDinner(0);
+                _.forEach(self.listBentoOrderDinner(), (item) => {
+                    self.priceDinner(self.priceDinner() + item.price()*item.bentoCount());
+                    self.priceSum(self.priceLunch() + self.priceDinner());
+                });
             });
+        }
+        
+        public initTime(start: number, end: number, data: any) {
+            let self = this;
+            self.startTime(start > 0 ? (_.floor(start/60) + ":" + (start%60)) : '');
+            self.endTime(end > 0 ? (_.floor(end/60) + ":" + (end%60)) : '');
+            if (data.listOder.length > 0 && (data.listOrder[0].ordered || self.date() < new Date())) {
+                 self.isError(true);
+            } else {
+                 self.isError(false);
+            }
+            self.startTime.valueHasMutated();
+            self.endTime.valueHasMutated();
         }
         
         public updateOrderLunch(frameNo: number) :void{
             let self = this;
-            console.log(frameNo);
            _.each(self.menuLunch(), (item) => {
-               console.log(item.frameNo);
             if(item.frameNo == frameNo && !item.status()){
                 item.status(true);
-                self.listBentoOrderLunch().push(new BentoOrder({frameNo: item.frameNo(), bentoCount : 1, name: item.name(), price: item.price()}));
-                self.listBentoOrderLunch.valueHasMutated();
+                self.listBentoOrderLunch().push(new BentoOrder({frameNo: item.frameNo(), bentoCount : 1, name: item.name(), price: item.price(), unit: item.unit()}));
             }    
            });
+            self.listBentoOrderLunch.valueHasMutated();
         }
         
-        public updateOrderDinner(code: number) :void{
+        public updateOrderDinner(frameNo: number) :void{
             let self = this;
            _.each(self.menuDinner(), (item) => {
-            if(item.code == code && item.status()){
-                item.status(false);
-                self.menuOrderDinners.push(item);
-                self.menuOrderDinners.valueHasMutated();
+            if(item.frameNo == frameNo && !item.status()){
+                item.status(true);
+                self.listBentoOrderDinner().push(new BentoOrder({frameNo: item.frameNo(), bentoCount : 1, name: item.name(), price: item.price(), unit: item.unit()}));
             }    
            });
+             self.listBentoOrderDinner.valueHasMutated();
+        }
+        
+        public updateCountOrderLunch(frameNo: number, count: number) :void {
+            let self = this;
+            _.each(self.listBentoOrderLunch(), (item) => {
+                let bentoCount = item.bentoCount() + count;
+                if(item.frameNo == frameNo && !item.status && bentoCount > 0){
+                    item.bentoCount(bentoCount);
+                }
+           });
+            self.listBentoOrderLunch.valueHasMutated();
+        }
+        
+        public updateCountOrderDinner(frameNo: number, count: number) :void {
+            let self = this;
+            _.each(self.listBentoOrderDinner(), (item) => {
+                let bentoCount = item.bentoCount() + count;
+                if(item.frameNo == frameNo && !item.status && bentoCount > 0){
+                    item.bentoCount(bentoCount);
+                }
+           });
+            self.listBentoOrderDinner.valueHasMutated();
         }
 
-//        public cancelLunch(code: number) :void {
-//           let self = this;
-//            _.each(self.menuLunch(), function(item){
-//            if(item.code == code){
-//                item.status(true);
-//                self.menuOrderDinners.delete(item);
-//                console.log(self.menuOrderDinners());
-//            }
-//          });
-//        }
+        public cancelLunch(frameNo: number) :void {
+           let self = this;
+            _.each(self.menuLunch(), (item) => {
+                if(item.frameNo() == frameNo()) {
+                    item.status(false);
+                }    
+            });
+             self.menuLunch.valueHasMutated();
+            if (self.listBentoOrderLunch().length > 0) {
+                  _.each(self.listBentoOrderLunch(), (item) => {
+                if(item.frameNo == frameNo){
+                    self.listBentoOrderLunch.remove(item);
+                }
+            });
+            }
+   
+        }
+        
+          public cancelDinner(frameNo: number) :void {
+           let self = this;
+            _.each(self.menuDinner(), (item) => {
+                if(item.frameNo() == frameNo()) {
+                    item.status(false);
+                }    
+            });
+             self.menuLunch.valueHasMutated();
+            if (self.listBentoOrderDinner().length > 0) {
+                  _.each(self.listBentoOrderDinner(), (item) => {
+                if(item.frameNo == frameNo){
+                    self.listBentoOrderDinner.remove(item);
+                }
+            });
+            }
+   
+        }
         
         public registerFood() :void {
             let self = this, detailLst = [];
@@ -179,20 +242,21 @@ module nts.uk.at.view.kmr002.a.model {
                 detailLst.push({closingTimeFrame: 2, frameNo: item.frameNo(), bentoCount: item.bentoCount()});
             });
             let  bentoReservation = { date: self.date(), details: detailLst };
-            service.register(bentoReservation).done((data) => {
-                 console.log(data);
-            });
+            if (self.isUpdate()) {
+                service.register(bentoReservation).done((data) => {
+                 
+                });
+            } else {
+                service.update(bentoReservation).done((data) => {
+                 
+                });
+            }
         }
         
         public outputData() :void {
             let self = this;
 
         }
-        
-//        public cancelDinner(code: number) :void {
-//            let self = this; 
-//            console.log('h');   
-//        }
 
      }
     
@@ -202,12 +266,14 @@ module nts.uk.at.view.kmr002.a.model {
         frameNo: number;
         name: string;
         price: number;
+        unit: string;
     }
     
     export interface IBentoMenu {
         frameNo: number;
         name: string;
         price: number;
+        unit: string;
         status: boolean;
     }
     
@@ -216,29 +282,14 @@ module nts.uk.at.view.kmr002.a.model {
         frameNo: KnockoutObservable<number>;
         name: KnockoutObservable<string>;
         price: KnockoutObservable<number>;
+        unit: KnockoutObservable<string>;
         constructor(param: IBentoOrder) {
             let self = this;
             self.bentoCount = ko.observable(param.bentoCount);
             self.frameNo = ko.observable(param.frameNo);
             self.name = ko.observable(param.name);
             self.price = ko.observable(param.price);
-        }
-        
-        addOrder(): void {
-            let self = this, bentoCount_ = self.bentoCount() + 1;
-            self.bentoCount(bentoCount_ );
-        }
-        
-        preOrder(): void {
-            let self = this, bentoCount_ = self.bentoCount() - 1;
-            if (bentoCount_ > 1) {
-                self.bentoCount(bentoCount_ );
-            }
-        }
-        
-        cancelOrder(): void {
-            let self = this;
-            
+            self.unit = ko.observable(param.unit);
         }
     }
     
@@ -247,20 +298,15 @@ module nts.uk.at.view.kmr002.a.model {
         name: KnockoutObservable<string>;
         price: KnockoutObservable<number>;
         status: KnockoutObservable<boolean>;
+        unit: KnockoutObservable<string>;
         constructor(param: IBentoMenu) {
             let self = this;
             self.frameNo = ko.observable(param.frameNo);
             self.name = ko.observable(param.name);
             self.price = ko.observable(param.price);
             self.status = ko.observable(param.status);
+            self.unit = ko.observable(param.unit);
         }
-        
-        reservation(): void {
-            let self = this;
-       //     self.status(true);
-            self.status(true);
-        }
-        
     }
 }
 

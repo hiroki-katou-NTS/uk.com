@@ -11,7 +11,7 @@ public class BentoItemByClosingTimeDto {
 	
 	private Integer amount1;
 	
-
+	private String unit;
 
 	public BentoItemByClosingTimeDto() {
 		super();
@@ -19,14 +19,15 @@ public class BentoItemByClosingTimeDto {
 
 
 
-	public BentoItemByClosingTimeDto(Integer frameNo, String name, Integer bentoAmount) {
+	public BentoItemByClosingTimeDto(Integer frameNo, String name, Integer bentoAmount, String unit) {
 		super();
 		this.frameNo = frameNo;
 		this.name = name;
 		this.amount1 = bentoAmount;
+		this.unit = unit;
 	}
 	
 	public static BentoItemByClosingTimeDto fromDomain(BentoItemByClosingTime domain) {
-		return new BentoItemByClosingTimeDto(domain.getFrameNo(), domain.getName().v(), domain.getAmount1().v());
+		return new BentoItemByClosingTimeDto(domain.getFrameNo(), domain.getName().v(), domain.getAmount1().v(), domain.getUnit().toString());
 	}
 }

@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class BentoReservationRequireImpl implements BentoReservationRequire {
 
 	@Inject
