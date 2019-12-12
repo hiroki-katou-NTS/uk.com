@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class BentoMenuRepositoryImpl extends JpaRepository implements BentoMenuRepository {
+public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMenuRepository {
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	

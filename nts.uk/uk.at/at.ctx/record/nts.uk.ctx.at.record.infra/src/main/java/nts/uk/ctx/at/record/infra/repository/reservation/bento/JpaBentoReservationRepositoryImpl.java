@@ -18,6 +18,7 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
@@ -30,7 +31,7 @@ import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservationPK;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class BentoReservationRepositoryImpl extends JpaRepository implements BentoReservationRepository {
+public class JpaBentoReservationRepositoryImpl extends JpaRepository implements BentoReservationRepository {
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
@@ -41,6 +42,8 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 	private static final String FIND_BY_ID_DATE;
 	
 	private static final String FIND_ALL_BY_DATE;
+	
+	private static final String FIND_BY_ORDER_PERIOD_EMP;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -58,6 +61,11 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO = 'cardNo' AND a.RESERVATION_YMD = 'date'");
 		FIND_ALL_BY_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CARD_NO IN (empLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
+		FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -170,6 +178,40 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 		String query = FIND_ALL_BY_DATE;
 		query = query.replaceFirst("cardNo", registerInfor.getReservationCardNo());
 		query = query.replaceFirst("date", reservationDate.getDate().toString());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
+					.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+			return bentoReservationLst;
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<BentoReservation> findByOrderedPeriodEmpLst(List<String> empLst, DatePeriod period, boolean ordered) {
+		String query = FIND_BY_ORDER_PERIOD_EMP;
+		String empLstStr = "";
+		if(CollectionUtil.isEmpty(empLst)) {
+			empLstStr = "''";
+		} else {
+			for(String emp : empLst) {
+				empLstStr += "'" + emp + "'";
+				if(empLst.indexOf(empLstStr) < empLst.size() - 1) {
+					empLstStr += ",";
+				}
+			}
+		}
+		String orderedParam = "";
+		if(ordered) {
+			orderedParam = "1";
+		} else {
+			orderedParam = "0,1";
+		}
+		query = query.replaceFirst("empLst", empLstStr);
+		query = query.replaceFirst("startDate", period.start().toString());
+		query = query.replaceFirst("endDate", period.end().toString());
+		query = query.replaceFirst("ordered", orderedParam);
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoReservation> bentoReservationLst = toEntity(createFullJoinBentoReservation(rs))
