@@ -32,7 +32,7 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 	public Integer quantity;
 	
 	@Column(name = "AUTO_RESERVATION_ATR")
-	public boolean autoReservation;
+	public Integer autoReservation;
 	
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -50,7 +50,7 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 		return new BentoReservationDetail(
 				pk.frameNo, 
 				pk.registerDate, 
-				autoReservation, 
+				autoReservation == 1 ? true : false, 
 				new BentoReservationCount(quantity));
 	}
 	
@@ -63,7 +63,7 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 						bentoReservationDetail.getDateTime()), 
 				AppContexts.user().contractCode(), 
 				bentoReservationDetail.getBentoCount().v(), 
-				bentoReservationDetail.isAutoReservation(), 
+				bentoReservationDetail.isAutoReservation() ? 1 : 0, 
 				null);
 	}
 	

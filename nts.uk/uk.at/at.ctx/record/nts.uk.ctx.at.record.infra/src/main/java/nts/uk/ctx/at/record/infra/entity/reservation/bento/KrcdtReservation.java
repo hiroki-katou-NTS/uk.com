@@ -45,7 +45,7 @@ public class KrcdtReservation extends UkJpaEntity {
 	public String cardNo;
 	
 	@Column(name = "ORDERED")
-	public boolean ordered;
+	public Integer ordered;
 	
 	@OneToMany(targetEntity = KrcdtReservationDetail.class, mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KRCDT_RESERVATION_DETAIL")
@@ -60,7 +60,7 @@ public class KrcdtReservation extends UkJpaEntity {
 		return new BentoReservation(
 				new ReservationRegisterInfo(cardNo), 
 				new ReservationDate(date, EnumAdaptor.valueOf(frameAtr, ReservationClosingTimeFrame.class)), 
-				ordered, 
+				ordered == 0 ? false : true, 
 				reservationDetails.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 	
@@ -73,7 +73,7 @@ public class KrcdtReservation extends UkJpaEntity {
 				bentoReservation.getReservationDate().getDate(), 
 				bentoReservation.getReservationDate().getClosingTimeFrame().value, 
 				bentoReservation.getRegisterInfor().getReservationCardNo(), 
-				bentoReservation.isOrdered(), 
+				bentoReservation.isOrdered() ? 1 : 0, 
 				bentoReservation.getBentoReservationDetails().stream().map(x -> KrcdtReservationDetail.fromDomain(x)).collect(Collectors.toList()));
 	}
 }

@@ -118,9 +118,9 @@ public class BentoReservationRepositoryImpl extends JpaRepository implements Ben
 										y.getValue().get(0).getRegisterDate());
 								Integer quantity = y.getValue().get(0).getQuantity();
 								boolean autoReservation = y.getValue().get(0).isAutoReservation();
-								return new KrcdtReservationDetail(detailPk, contractCD, quantity, autoReservation, null);
+								return new KrcdtReservationDetail(detailPk, contractCD, quantity, autoReservation ? 1 : 0, null);
 							}).collect(Collectors.toList());
-					return new KrcdtReservation(pk, contractCD, date, frameAtr, cardNo, ordered, reservationDetails);
+					return new KrcdtReservation(pk, contractCD, date, frameAtr, cardNo, ordered ? 1 : 0, reservationDetails);
 				}).collect(Collectors.toList());
 	}
 	
