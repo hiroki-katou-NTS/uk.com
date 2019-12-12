@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +42,11 @@ public class JshmtRetireEvalItem extends UkJpaEntity implements Serializable {
 	public Object getKey() {
 		return pkJshmtRetireEvalItem;
 	}
+	
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false) })
+	public JshmtMandatRetireReg referEvaluationTerm;
 	
 	public JshmtRetireEvalItem(String cId, String historyId, ReferEvaluationItem referEvaluationItem) {
 		super();

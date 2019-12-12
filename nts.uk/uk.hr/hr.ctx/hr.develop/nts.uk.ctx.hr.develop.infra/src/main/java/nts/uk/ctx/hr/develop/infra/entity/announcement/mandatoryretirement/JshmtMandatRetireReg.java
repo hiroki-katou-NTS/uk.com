@@ -1,11 +1,15 @@
 package nts.uk.ctx.hr.develop.infra.entity.announcement.mandatoryretirement;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -68,6 +72,14 @@ public class JshmtMandatRetireReg extends UkJpaEntity implements Serializable {
 	public Object getKey() {
 		return historyId;
 	}
+	
+	@OneToMany(mappedBy = "referEvaluationTerm", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "JSHMT_RETIRE_EVAL_ITEM")
+	public List<JshmtRetireEvalItem> referEvaluationTerm;
+	
+	@OneToMany(mappedBy = "mandatoryRetireTerm", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "JSHMT_RETIRE_TERM")
+	public List<JshmtRetireTerm> mandatoryRetireTerm;
 
 	public JshmtMandatRetireReg(MandatoryRetirementRegulation mandatoryRetirementRegulation) {
 		super();
@@ -84,6 +96,10 @@ public class JshmtMandatRetireReg extends UkJpaEntity implements Serializable {
 		this.applicationEnableEndAge = mandatoryRetirementRegulation.getPlanCourseApplyTerm().getApplicationEnableEndAge().v();
 		this.endMonth = mandatoryRetirementRegulation.getPlanCourseApplyTerm().getEndMonth().value;
 		this.endDate = mandatoryRetirementRegulation.getPlanCourseApplyTerm().getEndDate().value;
+		this.referEvaluationTerm =  mandatoryRetirementRegulation.getReferEvaluationTerm().stream().map(
+				c-> new JshmtRetireEvalItem(mandatoryRetirementRegulation.getCompanyId(), mandatoryRetirementRegulation.getHistoryId(), c)).collect(Collectors.toList());
+		this.mandatoryRetireTerm = mandatoryRetirementRegulation.getMandatoryRetireTerm().stream().map(
+				c -> new JshmtRetireTerm(mandatoryRetirementRegulation.getCompanyId(), mandatoryRetirementRegulation.getHistoryId(), c)).collect(Collectors.toList());
 	}
 
 	public MandatoryRetirementRegulation toDomain() {
@@ -94,8 +110,8 @@ public class JshmtMandatRetireReg extends UkJpaEntity implements Serializable {
 				DateCaculationTerm.createFromJavaType(this.calculationTerm, this.dateSettingNum, this.dateSettingDate), 
 				RetireDateTerm.createFromJavaType(this.retireDateTerm, this.retireDateSettingDate), 
 				this.planCourseApplyFlg == 1, 
-				new ArrayList<>(), 
-				new ArrayList<>(), 
+				this.mandatoryRetireTerm.stream().map(c -> c.toDomain()).collect(Collectors.toList()), 
+				this.referEvaluationTerm.stream().map(c -> c.toDomain()).collect(Collectors.toList()), 
 				PlanCourseApplyTerm.createFromJavaType(this.applicationEnableStartAge, this.applicationEnableEndAge, this.endMonth, this.endDate));
 	}
 }
