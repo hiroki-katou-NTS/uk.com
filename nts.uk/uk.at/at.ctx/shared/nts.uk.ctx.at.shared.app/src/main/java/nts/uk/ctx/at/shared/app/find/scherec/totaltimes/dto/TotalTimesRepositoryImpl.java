@@ -24,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.language.TotalTimesLang;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.language.TotalTimesLangRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -53,6 +55,9 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 	private TotalTimesRepository totalTimesRepository;
 	
 	@Inject
+	private TotalTimesLangRepository langRepository;
+	
+	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
@@ -67,7 +72,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		String companyId = AppContexts.user().companyId();
 		
 		List<MasterData> datas = new ArrayList<>();
-		
+		List<TotalTimesLang> totalTimeLang = langRepository.findAll(companyId, query.getLanguageId());
 		List<TotalTimes> listTotalTimesItem = totalTimesRepository.getAllTotalTimes(companyId);
 		
 		if(CollectionUtil.isEmpty(listTotalTimesItem)){
@@ -89,9 +94,13 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					// neu =0 
 					// khong in ra
 				}else{
+					Optional<TotalTimesLang> timeLang = totalTimeLang.stream().filter(x -> x.getTotalCountNo() == c.getTotalCountNo()).findFirst();
 					putEmptyData(data);	
 					data.put("No", c.getTotalCountNo());
 					data.put("使用区分", UseAtr.Use.nameId);
+					if(timeLang.isPresent()){
+						data.put("他言語名称", timeLang.get().getTotalTimesNameEng());
+					}
 
 					List<String> lista= optTotalTimes.get().getSummaryList().get().getWorkTypeCodes();
 					List<String> listb= optTotalTimes.get().getSummaryList().get().getWorkTimeCodes();
@@ -271,6 +280,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("他言語名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					datas.add(masterData);
 				}
 			});	
@@ -310,6 +320,8 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11")+" "+TextResource.localize("KMK009_27"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("他言語名称", TextResource.localize("KMK009_99"),
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 	
@@ -327,6 +339,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		data.put("未満","");
 		data.put("対象項目", "");
 		data.put("半日勤務区分", "");
+		data.put("他言語名称", "");
 		
 	}
 
