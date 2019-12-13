@@ -10,14 +10,14 @@
         <div id="retirement-period" tabindex="3"
             data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod, maxRange: 'oneMonth'}"></div>
         <!-- JCM008_A222_2_2 -->
-        <div data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
+        <div id="includingReflected" data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
             class="check-box-padding">
             #{i18n.getText('JCM008_A222_2_2')}</div>
     </div>
     <div class="line-height flex">
         <!-- JCM008_A222_4 -->
         <div data-bind="ntsCheckBox: { checked: searchFilter.retirementAgeDesignation, enable: true }"
-            class="check-box-padding mr-10 ml-21">
+            class="check-box-padding mr-10 ml-16">
             #{i18n.getText('JCM008_A222_4')}</div>
         <!-- JCM008_A222_4_1 -->
         <button data-bind="ntsHelpButton: {textId: 'JCM008_A222_4_1', position : 'right center'}"
@@ -38,19 +38,40 @@
         <!-- A222_6 -->
         <div data-bind="ntsFormLabel: { required: false, constraint: ''}">#{i18n.getText('JCM008_A222_6')}</div>
         <!-- A222_7_1 -->
-        <div tabindex="6" data-bind="ntsCheckBox: { checked: searchFilter.selectAll, enable: true }"
+        <div tabindex="6" data-bind="ntsCheckBox: { checked: searchFilter.selectAllDepartment, enable: true }"
             class="check-box-padding ml-21 mr-10">
             #{i18n.getText('JCM008_A222_7_1')}</div>
         <!-- A222_7_2 -->
-        <button tabindex="7" class="small normal mt-6">#{i18n.getText('JCM008_A222_7_2')}</button>
+        <button tabindex="7" class="small mt-6 mr-10" data-bind = "disable: searchFilter.selectAllDepartment">#{i18n.getText('JCM008_A222_7_2')}</button>
         <!-- A222_7_3 -->
         <input id="A222_7_3" data-bind="ntsTextEditor: { 
-									name: '#[A222_7_3]', 
+									name: '#[JCM008_A222_7_3]', 
 									value: searchFilter.department,
-									option: {width: '180px'},
+									option: {width: '280px'},
                                     enable: true, 
                                     readonly: true,
                                     required: true
-                                }" />
+                                }" class="mt-6" />
+    </div>
+
+    <div class="line-height flex">
+        <!-- A222_8 -->
+        <div data-bind="ntsFormLabel: { required: false, constraint: ''}">#{i18n.getText('JCM008_A222_8')}</div>
+        <!-- A222_9_1 -->
+        <div tabindex="8" data-bind="ntsCheckBox: { checked: searchFilter.selectAllEmployment, enable: true }"
+            class="check-box-padding ml-21 mr-10">
+            #{i18n.getText('JCM008_A222_9_1')}</div>
+        <!-- A222_9_2 -->
+        <button tabindex="9" class="small mt-6 mr-10" data-bind = "disable: searchFilter.selectAllEmployment">#{i18n.getText('JCM008_A222_9_2')}</button>
+        <!-- A222_9_3 -->
+        <input id="A222_9_3" data-bind="ntsTextEditor: { 
+            name: '#[JCM008_A222_9_3]', 
+            value: searchFilter.employment,
+            option: {width: '280px'},
+            enable: true, 
+            readonly: true,
+            required: true
+        }" class="mt-6" />
+        <button tabindex="10" class="normal mt-6 ml-70">#{i18n.getText('JCM008_A222_10')}</button>
     </div>
 </div>

@@ -1,0 +1,36 @@
+<!-- A1_1 -->
+<div class="employee-info-pop-up popup-panel ">
+	<div class="fixed-flex-layout">
+		<div id="pop-left" class="fixed-flex-layout-left mr-10">
+			<!-- A1_2 -->
+			<img id="emp-avatar" data-bind="attr:{src: employeeInfo().image}"
+				alt=""></img>
+		</div>
+		<div id="pop-right" class="fixed-flex-layout-right">
+		<!-- A1_3 -->
+			<h4 data-bind="text: employeeInfo().code"></h4>
+			<!-- A1_4 -->
+			<h4 data-bind="text: employeeInfo().name"></h4>
+			<!-- A1_5 -->
+			<h4 data-bind="text: employeeInfo().kanaName"></h4>
+			<!-- A1_6 -->
+			<h4 data-bind="text: employeeInfo().sex"></h4>
+			<h4> 
+			<!-- A1_7 -->
+				<span data-bind="text: employeeInfo().dob" class="mr-10">
+				</span>
+				<!-- A1_8 -->
+				<span data-bind="text: employeeInfo().age">
+				</span>
+			</h4>
+		</div>
+	</div>
+	<div id="pop-bottom">
+		<!-- A1_9 --><!-- A1_10 -->
+		<p>#{i18n.getText('JAP0070_A1_9')}: <span data-bind="text: employeeInfo().department"></span></p>
+		<!-- A1_11 --><!-- A1_12 -->
+		<p>#{i18n.getText('JAP0070_A1_11')}: <span data-bind="text: employeeInfo().position"></span></p>
+		<!-- A1_13 --><!-- A1_4 -->
+		<p>#{i18n.getText('JAP0070_A1_13')}: <span data-bind="text: employeeInfo().employment"></span></p>
+	</div>
+</div>

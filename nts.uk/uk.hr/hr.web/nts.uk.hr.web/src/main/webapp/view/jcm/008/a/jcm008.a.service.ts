@@ -3,7 +3,7 @@ module jcm008.a.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        'getData': 'databeforereflecting/getData'
+        'getData': 'databeforereflecting/startPage'
     }
        
     export function getData() : JQueryPromise<any>{
