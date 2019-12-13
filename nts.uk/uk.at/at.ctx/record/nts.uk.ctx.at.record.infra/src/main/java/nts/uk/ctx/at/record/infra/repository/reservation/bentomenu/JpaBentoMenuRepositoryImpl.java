@@ -186,7 +186,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	@Override
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period) {
-		String query = FIND_BENTO_MENU_DATE;
+		String query = FIND_BENTO_MENU_PERIOD;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("startDate", period.start().toString());
 		query = query.replaceAll("endDate", period.end().toString());

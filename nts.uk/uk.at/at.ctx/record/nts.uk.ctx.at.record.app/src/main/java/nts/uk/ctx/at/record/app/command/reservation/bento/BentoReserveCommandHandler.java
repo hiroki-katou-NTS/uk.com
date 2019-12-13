@@ -38,7 +38,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 				Arrays.asList(AppContexts.user().employeeId()),
 				AppContexts.user().companyCode()).get(0);
 		
-		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.toString());
+		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
 		
 		AtomTask persist1 = BentoReserveService.reserve(
 				bentoReservationRequire, 
