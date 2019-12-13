@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmk002.a {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
+        var screenModel = __viewContext.vm = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             // focus optional item name input

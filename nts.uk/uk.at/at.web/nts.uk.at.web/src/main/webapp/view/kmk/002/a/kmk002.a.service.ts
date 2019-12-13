@@ -6,9 +6,10 @@ module nts.uk.at.view.kmk002.a {
          */
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
-            findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
+            findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall/{0}',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
+            getOptItemEnum: 'ctx/at/record/optionalitem/getenum',
+            findByLangId: "ctx/at/record/optionalitem/findNameOther/{0}",
         };
 
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
@@ -38,17 +39,22 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Call service to get optional item detail
          */
-        export function findOptionalItemDetail(itemNo: number): JQueryPromise<model.OptionalItemDto> {
-            return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
+        export function findOptionalItemDetail(itemNo: number, langId: string): JQueryPromise<model.OptionalItemDto> {
+            return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo+"/" + langId);
         }
 
         /**
          * Call service to get optional item header
          */
-        export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
-            return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
+        export function findOptionalItemHeaders(langId: string): JQueryPromise<Array<model.OptionalItemHeader>> {
+            var path = nts.uk.text.format(servicePath.findOptionalItemHeaders, langId);
+            return nts.uk.request.ajax(path);
         }
-
+        
+        export function findByLangId(langId: string): JQueryPromise<any> {
+            var path = nts.uk.text.format(servicePath.findByLangId, langId);
+            return nts.uk.request.ajax("at", path);
+        }
         /**
          * Data Model
          */
@@ -58,6 +64,7 @@ module nts.uk.at.view.kmk002.a {
                 itemName: string;
                 usageAtr: number;
                 performanceAtr: number;
+                nameNotJP: string;
             }
 
             /**

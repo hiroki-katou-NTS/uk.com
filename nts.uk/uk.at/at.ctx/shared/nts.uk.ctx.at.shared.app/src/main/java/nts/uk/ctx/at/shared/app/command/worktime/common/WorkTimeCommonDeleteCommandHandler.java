@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingReposito
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.language.WorkTimeLanguageRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -54,6 +55,9 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 	@Inject 
 	private FlexWorkSettingRepository flexWorkSettingRepository;
 	
+	@Inject
+	private WorkTimeLanguageRepository workTimeLanguageRepository;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -74,6 +78,9 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		
 		//remove worktimeset
 		this.workTimeDisplayModeRepository.remove(companyId, workTimeCode);
+		
+		// remove workTimeLanguage
+		this.workTimeLanguageRepository.delete(companyId, command.getLangId(), workTimeCode);
 		
 		//remove fixed
 		if(this.fixedWorkSettingRepository.findByKey(companyId, workTimeCode).isPresent()){

@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.validate.Validatable;
 /**
- * 
+ * 割増設定
  * @author Doan Duy Hung
  *
  */

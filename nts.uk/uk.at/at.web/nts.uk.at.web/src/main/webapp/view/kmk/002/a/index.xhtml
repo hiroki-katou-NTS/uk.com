@@ -15,6 +15,11 @@
                nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
                nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem
             </com:ValidatorScript>
+            <com:scriptfile
+				path="/view/language/select/languagemasterselect-jquery-ext.js"
+				of="nts.uk.com.web" />
+			<com:stylefile path="/view/language/select/languagemasterselect.css"
+				of="nts.uk.com.web" />
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kmk002.a.style.css" />
             <com:scriptfile path="kmk002.a.start.js" />
@@ -24,10 +29,13 @@
          <ui:define name="content">
             <com:ko tag="with" bind="optionalItemHeader">
                <div id="functions-area">
+                  <div class="container">
                   <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
                   #{i18n.getText('KMK002_1')}</button>
                   <!-- Print Excel -->
                   <button tabindex="1" id="print-button" data-bind="click: function(){ $vm.exportExcel()}">#{i18n.getText('KMK002_99')}</button>
+                  <div tabindex="1" id="switch-language"></div>
+                  </div>
                </div>
                <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">
                   <!-- Optional item grid list. -->
@@ -83,7 +91,7 @@
                                     value: optionalItemAtr,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: true,
+                                    enable: true &amp;&amp; $parents[1].langJP(),
                                     columns: [
                                     { prop: 'localizedName', length: 2 },
                                     ]}">
@@ -97,7 +105,7 @@
                                     data-bind="ntsTextEditor: {
                                     name: '#[KMK002_75]',
                                     value: unit,
-                                    enable: enableUnit,
+                                    enable: enableUnit &amp;&amp; $parents[1].langJP(),
                                     constraint: 'UnitOfOptionalItem',
                                     required: false}"/>
                               </td>
@@ -115,7 +123,7 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: usageAtr,
-                                    enable: $parent.hasSelected }"></div>
+                                    enable: $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
                               </td>
                            </tr>
                            <tr><td colspan="4"><hr/></td></tr>
@@ -132,7 +140,7 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: performanceAtr,
-                                    enable: isUsed }"></div>
+                                    enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
                               </td>
                               <!-- Calculation ResultRange -->
                               <td>
@@ -144,7 +152,7 @@
                                     data-bind="ntsCheckBox: {
                                     name: '#[KMK002_26]',
                                     checked: calcResultRange.upperCheck,
-                                    enable: isUsed,
+                                    enable: isUsed &amp;&amp; $parents[1].langJP(),
                                     text: nts.uk.resource.getText('KMK002_26') }"></div>
                                  <com:ko tag="if" bind="isNumberSelected()">
                                     <input tabindex="1" id="inp-upper-number"
@@ -157,7 +165,7 @@
                                        decimallength: 1
                                        },
                                        required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  <com:ko tag="if" bind="isAmountSelected()">
                                     <input tabindex="1" id="inp-upper-amount"
@@ -169,7 +177,7 @@
                                        grouplength: 3
                                        },
                                        required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  <com:ko tag="if" bind="isTimeSelected()">
                                     <input tabindex="1" id="inp-upper-time"
@@ -180,7 +188,7 @@
                                        inputFormat: 'time',
                                        mode: 'time',
                                        required: true,
-                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.upperCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  </div>
                               </td>
@@ -198,9 +206,9 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
-                                    enable: isUsed }"></div>
+                                    enable: isUsed &amp;&amp; $parents[1].langJP()}"></div>
                                  <button tabindex="2"
-                                 data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed">#{i18n.getText('KMK002_19')}</button>
+                                 data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
                               </td>
                               <td></td>
                               <!-- Calculation ResultRange -->
@@ -210,7 +218,7 @@
                                     data-bind="ntsCheckBox: {
                                     name: '#[KMK002_27]',
                                     checked: calcResultRange.lowerCheck,
-                                    enable: isUsed,
+                                    enable: isUsed &amp;&amp; $parents[1].langJP(),
                                     text: nts.uk.resource.getText('KMK002_27') }"></div>
                                  <com:ko tag="if" bind="isNumberSelected()">
                                     <input tabindex="1" id="inp-lower-number"
@@ -223,7 +231,7 @@
                                        decimallength: 1
                                        },
                                        required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  <com:ko tag="if" bind="isTimeSelected()">
                                     <input tabindex="1" id="inp-lower-time"
@@ -234,7 +242,7 @@
                                        inputFormat: 'time',
                                        mode: 'time',
                                        required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  <com:ko tag="if" bind="isAmountSelected()">
                                     <input tabindex="1" id="inp-lower-amount"
@@ -246,18 +254,18 @@
                                        grouplength: 3
                                        },
                                        required: true,
-                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed()}"/>
+                                       enable: calcResultRange.lowerCheck() &amp;&amp; isUsed() &amp;&amp; $parents[1].langJP()}"/>
                                  </com:ko>
                                  </div>
                               </td>
                            </tr>
                            <!-- Optional Item view model -->
                            <tr>
-                              <td><button tabindex="2" data-bind="click: addFormulaAbove, enable: isUsed">#{i18n.getText('KMK002_28')}</button></td>
+                              <td><button tabindex="2" data-bind="click: addFormulaAbove, enable: isUsed &amp;&amp; $parents[1].langJP()" >#{i18n.getText('KMK002_28')}</button></td>
                               <td>
-                                 <button tabindex="2" data-bind="click: addFormulaBelow, enable: isUsed">#{i18n.getText('KMK002_29')}</button>
+                                 <button tabindex="2" data-bind="click: addFormulaBelow, enable: isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
                                  <button tabindex="2" style="margin-left: 12px"
-                                 data-bind="click: removeFormula, enable: isUsed() &amp;&amp; hasSelectedFormula()" class="danger">#{i18n.getText('KMK002_30')}</button>
+                                 data-bind="click: removeFormula, enable: isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()" class="danger">#{i18n.getText('KMK002_30')}</button>
                               </td>
                            </tr>
                            <tr>
@@ -265,7 +273,7 @@
                                  <input style="width: 700px; margin-left: 18px;" id="inp-apply-formula"
                                     data-bind="ntsTextEditor: {
                                     value: applyFormula,
-                                    enable: isUsed,
+                                    enable: isUsed &amp;&amp; $parents[1].langJP(),
                                     readonly: true,
                                     required: false}"/>
                               </td>

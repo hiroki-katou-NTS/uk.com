@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 660, height: 640 };</script>
+			<script>var dialogSize = { width: 660, height: 690 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName
    			</com:ValidatorScript>
@@ -17,12 +17,18 @@
 			<com:scriptfile path="kml001.b.vm.js" />
 			<com:scriptfile path="kml001.b.start.js" />
 			<com:stylefile path="kml001.b.main.css" />
+			<com:scriptfile
+				path="/view/language/select/languagemasterselect-jquery-ext.js"
+				of="nts.uk.com.web" />
+			<com:stylefile path="/view/language/select/languagemasterselect.css"
+				of="nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<div class="label">#{i18n.getText('KML001_16')}</div>
+					<div id="switch-language"></div>
+					<div style="margin-left: 10px;" class="label">#{i18n.getText('KML001_16')}</div>
 				</div>
 				<table id="premium-set-tbl-b" data-bind=" style: { height: browser() ? '445px' : '485px' }">
 					<thead>
@@ -45,7 +51,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: useAtr,
-										enable: true }"></div>	
+										enable: $parent.enableLanguage }"></div>	
 							</td>
 							<td>
 								<input  class="premiumName" data-bind="ntsTextEditor: {
