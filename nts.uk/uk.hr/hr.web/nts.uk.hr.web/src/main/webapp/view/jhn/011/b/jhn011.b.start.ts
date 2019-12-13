@@ -32,7 +32,7 @@ $(window).on('resize', () => {
         $(".drag-panel").attr(`style`, `max-height: 100px !important;height: 100px !important;`);
         $('#B221').attr(`style`, `max-height: 488px !important;height: 488px !important;` + `magin-bottom: 5px !important;`);
         $("#B221_4").igGrid("option", "height", 368);
-        $("#B221_4_container").attr(`style`, `max-height: ` + 368 + `px !important;` + `height: ` + 368 + `px !important;`);
+        //$("#B221_4_container").attr(`style`, `max-height: ` + 368 + `px !important;` + `height: ` + 368 + `px !important;`);
     } else {
         let heighGridCal = ((B221_panelResize - 120) % 23) == 0 ? B221_panelResize - 120 : Math.floor((B221_panelResize - 120) / 23) * 23,
             heightGridSet = heighGridCal < 368 ? 368 : (heighGridCal - 23),
@@ -41,6 +41,6 @@ $(window).on('resize', () => {
         $(".drag-panel").attr(`style`, `max-height: ` + dragPanelSet + `px !important;` + `height: ` + dragPanelSet + `px !important;`);
         $("#B221").attr(`style`, `max-height: ` + (heightGridSet + 120) + `px !important;` + `height: ` + (heightGridSet + 120) + `px !important;` + `magin-bottom: 5px !important;`);
         $("#B221_4").igGrid("option", "height", heightGridSet);
-        $("#B221_4_container").attr(`style`, `max-height: ` + heightGridSet + `px !important;` + `height: ` + heightGridSet + `px !important;`);
+        //$("#B221_4_container").attr(`style`, `max-height: ` + heightGridSet + `px !important;` + `height: ` + heightGridSet + `px !important;`);
     }
 });
