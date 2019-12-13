@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 
 /**
@@ -45,6 +44,6 @@ public class BentoReservationClosingTime extends ValueObject {
 		if(timeFrameAtr==ReservationClosingTimeFrame.FRAME2) {
 			return closingTime2.map(x -> x.canReserve(time)).orElse(true);
 		}
-		throw new BusinessException("System Error");
+		throw new RuntimeException("System Error");
 	}
 }

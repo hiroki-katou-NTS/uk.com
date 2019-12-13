@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
@@ -77,10 +76,10 @@ public class Bento {
 	 */
 	public BentoReservationDetail reserve(ReservationDate reservationDate, BentoReservationCount bentoCount) {
 		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME1 && !reservationTime1Atr) {
-			throw new BusinessException("System Error");
+			throw new RuntimeException("System Error");
 		}
 		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME2 && !reservationTime2Atr) {
-			throw new BusinessException("System Error");
+			throw new RuntimeException("System Error");
 		}
 		return BentoReservationDetail.createNew(frameNo, bentoCount);
 	}

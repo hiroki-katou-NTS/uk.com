@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
@@ -119,7 +118,7 @@ public class BentoMenu extends AggregateRoot {
 	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, Integer frameNo, BentoReservationCount count) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
 				.map(x -> x.reserve(reservationDate, count)).orElseGet(() -> {
-					throw new BusinessException(new RawErrorMessage("System Error"));
+					throw new RuntimeException("System Error");
 				});
 	}
 	
@@ -132,7 +131,7 @@ public class BentoMenu extends AggregateRoot {
 	private BentoDetailsAmountTotal calculateAmount(Integer frameNo, Integer quantity) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
 				.map(x -> x.calculateAmount(quantity)).orElseGet(() -> {
-					throw new BusinessException(new RawErrorMessage("System Error"));
+					throw new RuntimeException("System Error");
 				});
 	}
 }
