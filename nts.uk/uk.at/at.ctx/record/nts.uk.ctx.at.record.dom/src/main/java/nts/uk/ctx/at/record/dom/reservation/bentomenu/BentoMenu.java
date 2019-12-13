@@ -117,9 +117,7 @@ public class BentoMenu extends AggregateRoot {
 	 */
 	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, Integer frameNo, BentoReservationCount count) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
-				.map(x -> x.reserve(reservationDate, count)).orElseGet(() -> {
-					throw new RuntimeException("System Error");
-				});
+				.map(x -> x.reserve(reservationDate, count)).get();
 	}
 	
 	/**
