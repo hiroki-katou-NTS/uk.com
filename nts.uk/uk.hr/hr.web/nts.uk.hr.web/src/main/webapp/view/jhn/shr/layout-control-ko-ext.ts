@@ -1377,7 +1377,7 @@ module nts.custombinding {
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items = _.filter(items, x => x.layoutID != data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
-                                items = _.filter(items, (x: IItemClassification) => (x.layoutItemType == IT_CLA_TYPE.SPER ||(x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id));
+                                items = _.filter(items, (x: IItemClassification) => (x.layoutItemType == IT_CLA_TYPE.SPER || (x.listItemDf && x.listItemDf[0].id != data.listItemDf[0].id)));
                             }
 
                             let maps: Array<number> = _(items).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
@@ -1522,7 +1522,6 @@ module nts.custombinding {
                                         messageParams: dups.map((x: IItemDefinition) => x.itemName)
                                     })
                                         .then(() => {
-                                            debugger;
                                             opts.sortable.removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
                                                     layoutID: random(),
@@ -2762,17 +2761,16 @@ module nts.custombinding {
                             } else {
                                 // show message if hasn't any category
                                 if (ko.toJS(opts.sortable.isEnabled)) {
-                                    alert({ messageId: 'Msgj_34' }).then(opts.callback);
+                                    alert({ messageId: 'MsgJ_34' }).then(opts.callback);
                                 }
                             }
                         });
-//                        if($(".form-group.add-buttons").length > 0){
-//                            $(".form-group.add-buttons")[0].attr(`style`, `margin-left: 165px !important;`); 
-//                        }
+                        if($(".form-group.add-buttons").length > 0){
+                            $(".form-group.add-buttons").css("margin-left", "160px"); 
+                        }
                         
                     } else { // get item by group
-                        // change text in add-button to [グループを追加　→]
-                        $(ctrls.button).text(text('JHN011_C2_8'));
+
                        
                         services.getGroups().done((data: Array<IItemGroup>) => {
                             // prevent if slow networks
@@ -2797,11 +2795,12 @@ module nts.custombinding {
                             }
                         });
                         
-//                        if($(".form-group.add-buttons").length > 0){
-//                            $(".form-group.add-buttons")[0].attr(`style`, `margin-left: 160px !important;`); 
-//                        }
+                        if($(".form-group.add-buttons").length > 0){
+                                $(".form-group.add-buttons").css("margin-left", "140px"); 
+                        }
                         
-                        
+                        // change text in add-button to [グループを追加　→]
+                        $(ctrls.button).text(text('JHN011_C2_8'));                        
                     }
 
                     // remove listbox data
@@ -2930,7 +2929,6 @@ module nts.custombinding {
                 $(ctrls.button)
                     .data('safeClick', new Date().getTime())
                     .on('click', () => {
-                        debugger;
                         let timeClick = new Date().getTime(),
                             safeClick = $(ctrls.button).data('safeClick');
 

@@ -12,36 +12,36 @@ module jhn011.c.vm {
                 layout = self.layout();
 
             //self.start();
-
-            var currentDialog = nts.uk.ui.windows.getSelf();
-            if (currentDialog) {
-                let doit = undefined;
-                $(currentDialog.parent.globalContext).resize(function() {
-                    clearTimeout(doit);
-                    doit = setTimeout(self.resizedw(), 1000);
-                });
-            }
+//
+//            var currentDialog = nts.uk.ui.windows.getSelf();
+//            if (currentDialog) {
+//                let doit = undefined;
+//                $(currentDialog.parent.globalContext).resize(function() {
+//                    clearTimeout(doit);
+//                    doit = setTimeout(self.resizedw(), 1000);
+//                });
+//            }
         }
 
-        resizedw() {
-            let self = this,
-                currentDialog = nts.uk.ui.windows.getSelf();
-            // $(currentDialog.parent.globalContext).css("overflow", "hidden");
-
-            if (currentDialog) {
-                if (currentDialog.parent.globalContext.innerWidth <= 1275) {
-                    currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
-                } else {
-                    currentDialog.setWidth(1275);
-                }
-
-                if (currentDialog.parent.globalContext.innerHeight <= 750) {
-                    currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
-                } else {
-                    currentDialog.setHeight(750);
-                }
-            }
-        }
+//        resizedw() {
+//            let self = this,
+//                currentDialog = nts.uk.ui.windows.getSelf();
+//            // $(currentDialog.parent.globalContext).css("overflow", "hidden");
+//
+//            if (currentDialog) {
+//                if (currentDialog.parent.globalContext.innerWidth <= 1125) {
+//                    currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
+//                } else {
+//                    currentDialog.setWidth(1125);
+//                }
+//
+//                if (currentDialog.parent.globalContext.innerHeight <= 750) {
+//                    currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
+//                } else {
+//                    currentDialog.setHeight(750);
+//                }
+//            }
+//        }
 
         start() {
             let self = this,
