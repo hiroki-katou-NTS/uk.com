@@ -66,7 +66,6 @@ module jhn011.c.vm {
         pushData() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
-            console.log(layout);
 
             // check item tren man hinh
             if (layout.itemsClassification.length == 0) {
