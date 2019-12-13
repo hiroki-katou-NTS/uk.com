@@ -233,6 +233,7 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
+		result.setOvertimeAtr(Integer.parseInt(url));
 		return result;
 	}
 	

@@ -174,9 +174,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function() {
-                let url = $(location).attr('search');
-                let urlParam :string = url.split("=")[1];
-                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, urlParam).done(function() {
+                self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, self.overtimeAtr()).done(function() {
                     self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
                     for(let i = self.overtimeHours().length - 1; i > 0; i--){
                         self.tmpOverTime.children('tbody').children('tr')[i].remove();
@@ -205,10 +203,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             let url = $(location).attr('search');
-            let urlParam :string = url.split("=")[1];
+            let urlParam :string = url == "" ? "0" : url.split("=")[1].trim();
             nts.uk.ui.block.invisible();
             service.getOvertimeByUI({
-                url: urlParam,
+                url: urlParam == '' ? 0 : urlParam,
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                 uiType: self.uiType(),
                 timeStart1: self.timeStart1(),
@@ -254,8 +252,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
-                    let url = $(location).attr('search');
-                    let urlParam :string = url.split("=")[1];
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
@@ -278,7 +274,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }).done((data) =>{
                             self.resetForceAction();
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(), urlParam);
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(), self.overtimeAtr());
                             self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
