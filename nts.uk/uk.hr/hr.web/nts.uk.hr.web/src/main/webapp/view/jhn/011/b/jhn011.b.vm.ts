@@ -185,7 +185,7 @@ module jhn011.b.viewmodel {
             layout.remark(param.remark || null);
             layout.memo(param.memo || null);
             layout.message(param.message || null);
-            layout.formReport(param.formReport);
+            layout.formReport(param.formReport == undefined?1: param.formReport);
             layout.agentReportIsCan(param.agentReportIsCan || 0);
         }
             

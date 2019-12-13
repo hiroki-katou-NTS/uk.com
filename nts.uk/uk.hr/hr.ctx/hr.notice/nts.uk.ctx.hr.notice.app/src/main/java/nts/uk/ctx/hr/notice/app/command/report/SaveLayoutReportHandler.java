@@ -191,7 +191,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 				
 				if (!CollectionUtil.isEmpty(listItemCls)) {
 					
-					this.itemReportClsRepo.removeAllByLayoutId(cmd.getId().intValue());
+					this.itemReportClsRepo.removeAllByLayoutId(cid, cmd.getId().intValue());
 					
 					itemCodeLatest = null;
 					
@@ -293,7 +293,7 @@ public class SaveLayoutReportHandler extends CommandHandler<NewLayoutReportComma
 				
 				if (!CollectionUtil.isEmpty(listItemCls)) {
 					
-					this.itemReportClsRepo.removeAllByLayoutId(cmd.getId().intValue());
+					this.itemReportClsRepo.removeAllByLayoutId(cid, cmd.getId().intValue());
 				
 				}
 			}
