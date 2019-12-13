@@ -2,8 +2,8 @@ package nts.uk.file.at.app.export.bento;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.period.DatePeriod;
 
 /**
@@ -11,14 +11,16 @@ import nts.arc.time.period.DatePeriod;
  * @author Doan Duy Hung
  *
  */
-@AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class ReservationMonthDataSource {
 	
 	/**
 	 * 会社名
 	 */
 	private String companyName;
+	
+	private String title;
 	
 	/**
 	 * 対象期間

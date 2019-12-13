@@ -3,11 +3,13 @@ package nts.uk.file.at.app.export.bento;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
+@NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
 public class ReservationBentoLedger {
 	
 	private Integer bentoNumber;

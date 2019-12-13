@@ -2,11 +2,11 @@ package nts.uk.file.at.app.export.bento;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class ReservationWkpLedger {
 	
 	/**

@@ -10,7 +10,7 @@ module nts.uk.at.view.kmr005.a.service {
         return nts.uk.request.ajax("at", paths.startup);
     }
         
-    export function exportFile(): JQueryPromise<any> {
-        return nts.uk.request.exportFile("at", paths.exportFile);
+    export function exportFile(param: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile("at", paths.exportFile, param);
     }
 }

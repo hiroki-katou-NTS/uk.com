@@ -1,6 +1,8 @@
 package nts.uk.file.at.infra.bento;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -76,6 +78,7 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setHeader(0, dataSource.getCompanyName());
+		pageSetup.setHeader(1, dataSource.getTitle());
 	}
 	
 	private void printContent(Worksheet worksheet, ReservationMonthDataSource dataSource) throws Exception {
@@ -83,10 +86,10 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		int maxRow = cells.getMaxRow();
 		int maxColumn = cells.getMaxColumn();
 		cells.clearContents(CellArea.createCellArea(3, 1, maxRow, maxColumn));
-		// cells.clearFormats(CellArea.createCellArea(3, 1, maxRow, maxColumn));
 		GeneralDate startDate = dataSource.getPeriod().start();
 		GeneralDate endDate = dataSource.getPeriod().end();
-		cells.get(0, 1).setValue(I18NText.getText("KMR005_8") + startDate.toString("yyyy/MM/dd(E)") + "~" + endDate.toString("yyyy/MM/dd(E)"));
+		SimpleDateFormat jp = new SimpleDateFormat("yyyy年MM月dd日(E)",Locale.JAPAN);
+		cells.get(0, 1).setValue(I18NText.getText("KMR005_8") + jp.format(startDate.date()) + "〜" + jp.format(endDate.date()));
 		cells.get(1, 1).setValue(I18NText.getText("Com_Person"));
 		cells.get(1, 2).setValue(I18NText.getText("KMR005_9"));
 		printDayOfWeekHeader(worksheet, dataSource);
@@ -98,6 +101,9 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 				y.getBentoLedgerLst().size() + 1
 			).collect(Collectors.summingInt(Integer::intValue))
 		).map(x -> x + 1).collect(Collectors.summingInt(Integer::intValue));	
+		if(dataNumberRow==0) {
+			return;
+		}
 		cells.insertRows(7, dataNumberRow);
 		cells.clearFormats(7, 1, dataNumberRow, maxColumn);
 		printFormat(cells, dataSource);

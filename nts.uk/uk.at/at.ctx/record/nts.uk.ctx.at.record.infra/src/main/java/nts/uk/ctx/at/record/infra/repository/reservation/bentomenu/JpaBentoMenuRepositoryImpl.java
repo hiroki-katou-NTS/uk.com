@@ -46,7 +46,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		builderString.append("SELECT a.CID, a.HIST_ID, a.CONTRACT_CD, a.RESERVATION_FRAME1_NAME, a.RESERVATION_FRAME1_START_TIME, a.RESERVATION_FRAME1_END_TIME,");
 		builderString.append("a.RESERVATION_FRAME2_NAME, a.RESERVATION_FRAME2_START_TIME, a.RESERVATION_FRAME2_END_TIME, b.START_YMD, b.END_YMD,");
 		builderString.append("c.MENU_FRAME, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.RESERVATION1_ATR, c.RESERVATION2_ATR ");
-		builderString.append("FROM KRCMT_BENTO_MENU a LEFT JOIN KRCMT_BENTO_MENU_HIST b ON a.HIST_ID = b.HIST_ID AND a.CID = b.CID ");
+		builderString.append("FROM KRCMT_BENTO_MENU a JOIN KRCMT_BENTO_MENU_HIST b ON a.HIST_ID = b.HIST_ID AND a.CID = b.CID ");
 		builderString.append("LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID ");
 		SELECT = builderString.toString();
 		

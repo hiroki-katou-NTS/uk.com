@@ -143,8 +143,15 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         exportFile() {
             let self = this;
+            let param = {
+                empLst: self.employeeList(),
+                title: self.title(),
+                startDate: self.dateValue().startDate,
+                endDate: self.dateValue().endDate,
+                ordered: self.selectedOrdered() == 1 ? true : false 
+            };
             nts.uk.ui.block.invisible();
-            service.exportFile().done((data) => {
+            service.exportFile(param).done((data) => {
                 nts.uk.ui.block.clear();        
             }).fail((res: any) => {
                 nts.uk.ui.block.clear();     
