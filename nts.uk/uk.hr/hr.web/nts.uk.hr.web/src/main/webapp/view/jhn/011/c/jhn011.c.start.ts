@@ -1,19 +1,31 @@
 module jhn011.c {
     let __viewContext: any = window['__viewContext'] || {};
+    
     __viewContext.ready(function() {
+        
         __viewContext['viewModel'] = new vm.ViewModel();
+        
         __viewContext.bind(__viewContext['viewModel']);
+        
         __viewContext['viewModel'].start();
         
-        // Re-calculate size
-        var currentDialog = nts.uk.ui.windows.getSelf();
-        if (currentDialog.parent.globalContext.innerHeight < currentDialog.$dialog.height()) {
-            currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
-        }
-        
-        if (currentDialog.parent.globalContext.innerWidth < currentDialog.$dialog.width()) {
-            currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
-        }
-        
+        setTimeout(() => $(window).trigger('resize'), 100);
+
+        $(document.body).on('click', '.nts-guide-link', () => {
+            
+            setTimeout(() => $(window).trigger('resize'), 5);
+            
+        });
     });
 }
+
+$(window).on('resize', () => {
+    var currentDialog = nts.uk.ui.windows.getSelf(),
+        withResize = (currentDialog.$dialog.width() - $(".drag-panel")[0].getBoundingClientRect().left - 90),
+        widthDraggable = withResize + 300;
+    
+    $(".layout-control.dragable").attr("style", "max-width:" +  widthDraggable + "px!important;" + "width:" + widthDraggable+" !important;");
+    
+    $(".drag-panel").attr("style", "max-width:" +  (withResize) + "px!important;" + "width:" + (withResize)+" !important;");
+    
+});

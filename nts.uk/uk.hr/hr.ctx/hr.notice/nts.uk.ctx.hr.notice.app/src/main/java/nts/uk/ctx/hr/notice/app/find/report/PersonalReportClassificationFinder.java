@@ -155,7 +155,6 @@ public class PersonalReportClassificationFinder {
 			
 		}
 		
-		
 		return result.stream()
 				.filter(m -> (m.getLayoutItemType() != LayoutReportItemType.SeparatorLine && m.getListItemDf() != null
 						&& !m.getListItemDf().isEmpty()) || m.getLayoutItemType() == LayoutReportItemType.SeparatorLine)
@@ -170,8 +169,5 @@ public class PersonalReportClassificationFinder {
 	public PerInfoCtgDataEnumImport getCtg() {
 		return this.humanCtgPub.getAllPerInfoCtgHumanByCompany();
 	}
-	
-	
-	
 
 }

@@ -185,7 +185,7 @@ module jhn011.b.viewmodel {
             layout.remark(param.remark || null);
             layout.memo(param.memo || null);
             layout.message(param.message || null);
-            layout.formReport(param.formReport || 1);
+            layout.formReport(param.formReport);
             layout.agentReportIsCan(param.agentReportIsCan || 0);
         }
             
@@ -344,7 +344,7 @@ module jhn011.b.viewmodel {
                 self.remark(param.remark || null);
                 self.memo(param.memo || null);
                 self.message(param.message || null);
-                self.formReport(param.formReport || 1);
+                self.formReport(param.formReport);
                 self.agentReportIsCan(param.agentReportIsCan || 0);
                 self.classifications(param.classifications || []);
             }
