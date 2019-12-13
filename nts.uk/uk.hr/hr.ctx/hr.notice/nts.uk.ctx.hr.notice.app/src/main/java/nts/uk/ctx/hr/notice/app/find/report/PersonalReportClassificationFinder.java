@@ -67,7 +67,30 @@ public class PersonalReportClassificationFinder {
 		
 		List<LayoutReportClsDto> items =  mapItemCls(listItemCls);
 		
-		return reportClsOpt.isPresent() == true ? PersonalReportClassificationDto.fromDomain(reportClsOpt.get(), items)
+		List<LayoutReportClsDto> itemInter = new ArrayList<>();
+		
+		int itemSize = items.size();
+		
+		for(int i = 0; i < itemSize; i++) {
+			
+			if(items.get(i).getLayoutItemType() == LayoutReportItemType.SeparatorLine && (i + 1) < itemSize ) {
+				
+				if(items.get(i + 1).getLayoutItemType() == LayoutReportItemType.SeparatorLine) {
+					
+					i = i + 1;
+					
+				}
+				
+				itemInter.add(items.get(i));
+				
+			}else {
+				
+				itemInter.add(items.get(i));
+				
+			}
+		}
+		
+		return reportClsOpt.isPresent() == true ? PersonalReportClassificationDto.fromDomain(reportClsOpt.get(), itemInter)
 				: new PersonalReportClassificationDto();
 	}
 	

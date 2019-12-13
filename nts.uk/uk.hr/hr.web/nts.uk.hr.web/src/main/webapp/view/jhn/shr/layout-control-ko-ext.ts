@@ -1424,9 +1424,11 @@ module nts.custombinding {
                         pushItem: (data: IItemClassification) => {
                             if (data.layoutItemType == IT_CLA_TYPE.SPER) {
                                 // add line to list sortable
-                                let last: any = _.last(ko.unwrap(opts.sortable.data));
-
-                                if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                let last: any = _.last(ko.unwrap(opts.sortable.data)),
+                                    dataLayout:Array<any> = ko.unwrap(opts.sortable.data);
+                                if (dataLayout.length == 0) {
+                                    opts.sortable.data.push(data);
+                                } else if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
                                     opts.sortable.data.push(data);
                                 }
                             }
