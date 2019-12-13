@@ -15,6 +15,6 @@ public interface BentoReservationRepository {
 	
 	public void delete(BentoReservation bentoReservation);
 	
-	public List<BentoReservation> findByOrderedPeriodEmpLst(List<String> empLst, DatePeriod period, boolean ordered);
+	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered);
 	
 }

@@ -64,7 +64,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append("WHERE a.CARD_NO IN (empLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
+		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
 		FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
 	}
 	
@@ -189,16 +189,17 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	}
 
 	@Override
-	public List<BentoReservation> findByOrderedPeriodEmpLst(List<String> empLst, DatePeriod period, boolean ordered) {
+	public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered) {
 		String query = FIND_BY_ORDER_PERIOD_EMP;
-		String empLstStr = "";
-		if(CollectionUtil.isEmpty(empLst)) {
-			empLstStr = "''";
+		List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
+		String cardLstStr = "";
+		if(CollectionUtil.isEmpty(inforLst)) {
+			cardLstStr = "''";
 		} else {
-			for(String emp : empLst) {
-				empLstStr += "'" + emp + "'";
-				if(empLst.indexOf(empLstStr) < empLst.size() - 1) {
-					empLstStr += ",";
+			for(String cardStr : cardLst) {
+				cardLstStr += "'" + cardStr + "'";
+				if(cardLst.indexOf(cardLstStr) < cardLst.size() - 1) {
+					cardLstStr += ",";
 				}
 			}
 		}
@@ -208,7 +209,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} else {
 			orderedParam = "0,1";
 		}
-		query = query.replaceFirst("empLst", empLstStr);
+		query = query.replaceFirst("cardLst", cardLstStr);
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
 		query = query.replaceFirst("ordered", orderedParam);

@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
@@ -38,6 +39,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	
 	private static final String FIND_BENTO_MENU_DATE;
 	
+	private static final String FIND_BENTO_MENU_PERIOD;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.HIST_ID, a.CONTRACT_CD, a.RESERVATION_FRAME1_NAME, a.RESERVATION_FRAME1_START_TIME, a.RESERVATION_FRAME1_END_TIME,");
@@ -51,6 +54,11 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CID = 'companyID' AND b.START_YMD <= 'date' AND b.END_YMD >= 'date'");
 		FIND_BENTO_MENU_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append("WHERE a.CID = 'companyID' AND b.START_YMD <= 'startDate' AND b.END_YMD >= 'endDate'");
+		FIND_BENTO_MENU_PERIOD = builderString.toString();
 	}
 	
 	@AllArgsConstructor
@@ -171,6 +179,21 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
 			return bentoMenuLst.get(0).getMenu().stream()
 					.filter(x -> x.getFrameNo()==frameNo).findAny().get();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period) {
+		String query = FIND_BENTO_MENU_DATE;
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceAll("startDate", period.start().toString());
+		query = query.replaceAll("endDate", period.end().toString());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			return bentoMenuLst;
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}

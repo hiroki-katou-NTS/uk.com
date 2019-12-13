@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,13 +25,20 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 	
 	@Inject
 	private BentoReservationRequire bentoReservationRequire;
+	
+	@Inject
+	private StampCardRepository stampCardRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
 		
 		BentoReserveCommand command = context.getCommand();
 		
-		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(AppContexts.user().employeeId());
+		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
+				Arrays.asList(AppContexts.user().employeeId()),
+				AppContexts.user().companyCode()).get(0);
+		
+		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.toString());
 		
 		AtomTask persist1 = BentoReserveModifyService.reserve(
 				bentoReservationRequire, 
