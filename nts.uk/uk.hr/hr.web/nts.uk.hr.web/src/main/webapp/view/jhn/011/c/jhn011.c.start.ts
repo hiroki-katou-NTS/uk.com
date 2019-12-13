@@ -20,12 +20,17 @@ module jhn011.c {
 }
 
 $(window).on('resize', () => {
-    var currentDialog = nts.uk.ui.windows.getSelf(),
-        withResize = (currentDialog.$dialog.width() - $(".drag-panel")[0].getBoundingClientRect().left - 90),
-        widthDraggable = withResize + 300;
     
-    $(".layout-control.dragable").attr("style", "max-width:" +  widthDraggable + "px!important;" + "width:" + widthDraggable+" !important;");
+    let $content = $(".drag-panel");
     
-    $(".drag-panel").attr("style", "max-width:" +  (withResize) + "px!important;" + "width:" + (withResize)+" !important;");
-    
+    if ($content.length) {
+        
+        var currentDialog = nts.uk.ui.windows.getSelf(),
+            withResize = (currentDialog.$dialog.width() - $content[0].getBoundingClientRect().left - 90),
+            widthDraggable = withResize + 300;
+
+        $(".layout-control.dragable").attr("style", "max-width:" + widthDraggable + "px!important;" + "width:" + widthDraggable + " !important;");
+
+        $(".drag-panel").attr("style", "max-width:" + (withResize) + "px!important;" + "width:" + (withResize) + " !important;");
+    }
 });
