@@ -1519,9 +1519,24 @@ module nts.custombinding {
                                 if (dups && dups.length) {
                                     // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
                                     // Show Msg_204 if itemdefinition is exist
+                                    let idValues = opts.listbox.value(),
+                                        itemNames = dups.map((x: IItemDefinition) => x.itemName),
+                                        str = _.chain(itemNames)
+                                                .map((n) => {
+                                                    return n;
+                                                })
+                                                .join(',')
+                                                .value(),
+                                        groupName = _.filter(opts.listbox.options(), c => {return c && idValues.indexOf(c.id) > -1;}),
+                                        str1 = _.chain(groupName)
+                                                .map((n) => {
+                                                    return n.itemName;
+                                                })
+                                                .join(',')
+                                                .value();
                                     info({
                                         messageId: 'Msg_204',
-                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                        messageParams: [str, str1]
                                     })
                                         .then(() => {
                                             opts.sortable.removeItems(dups.map((x: IItemDefinition) => {
