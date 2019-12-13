@@ -56,7 +56,7 @@ public class BentoReservation extends AggregateRoot{
 	 * @param bentoReservationDetails
 	 * @return
 	 */
-	public static BentoReservation createNew(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, List<BentoReservationDetail> bentoReservationDetails) {
+	public static BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, List<BentoReservationDetail> bentoReservationDetails) {
 		return new BentoReservation(registerInfor, reservationDate, false, bentoReservationDetails);
 	}
 	
@@ -71,7 +71,7 @@ public class BentoReservation extends AggregateRoot{
 		if(CollectionUtil.isEmpty(afterDetails)) {
 			return Optional.empty();
 		} else {
-			return Optional.of(createNew(registerInfor, reservationDate, afterDetails));
+			return Optional.of(reserve(registerInfor, reservationDate, afterDetails));
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class BentoReserveService {
 		BentoMenu bentoMenu = require.getBentoMenu(reservationDate);
 		
 		// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
-		BentoReservation bentoReservation = bentoMenu.getBentoReservation(registerInfor, reservationDate, bentoDetails);
+		BentoReservation bentoReservation = bentoMenu.reserve(registerInfor, reservationDate, bentoDetails);
 		
 		// 3: persist
 		return AtomTask.of(() -> require.reserve(bentoReservation));

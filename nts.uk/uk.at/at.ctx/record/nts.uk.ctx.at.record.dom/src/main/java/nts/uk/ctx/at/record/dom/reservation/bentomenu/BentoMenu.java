@@ -58,11 +58,11 @@ public class BentoMenu extends AggregateRoot {
 	 * @param bentoDetails
 	 * @return
 	 */
-	public BentoReservation getBentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, Map<Integer, BentoReservationCount> bentoDetails) {
+	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, Map<Integer, BentoReservationCount> bentoDetails) {
 		receptionCheck(registerInfor, reservationDate);
 		List<BentoReservationDetail> bentoReservationDetails = bentoDetails.entrySet().stream()
 				.map(x -> createBentoReservationDetail(reservationDate, x.getKey(), x.getValue())).collect(Collectors.toList());
-		return BentoReservation.createNew(registerInfor, reservationDate, bentoReservationDetails);
+		return BentoReservation.reserve(registerInfor, reservationDate, bentoReservationDetails);
 	}
 	
 	/**

@@ -33,7 +33,7 @@ public class BentoReserveModifyService {
 			}
 			if(!CollectionUtil.isEmpty(bentoDetails.values())) {
 				// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
-				BentoReservation afterBento = bentoMenu.getBentoReservation(registerInfor, reservationDate, bentoDetails);
+				BentoReservation afterBento = bentoMenu.reserve(registerInfor, reservationDate, bentoDetails);
 				
 				// 6: persist
 				require.reserve(afterBento);
