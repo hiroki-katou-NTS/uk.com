@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaRegisterPersonalReportItemRepository extends JpaRepository implements RegisterPersonalReportItemRepository{
 	
 	private static final String SEL_ALL_ITEM_BY_CID_RPTLAYOUT_ID = "SELECT c FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.cid =:cid AND c.jhnRptLtItemPk.rptLayouId =:rptLayouId order by c.displayOrder ";
-	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.rptLayouId =:rptLayouId";
+	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM JhnRptLtItem c WHERE c.jhnRptLtItemPk.rptLayouId =:rptLayouId AND c.jhnRptLtItemPk.cid =:cid";
 	@Override
 	public List<RegisterPersonalReportItem> getAllItemBy(String cid, int rptLayoutId) {
 		return this.queryProxy().query(SEL_ALL_ITEM_BY_CID_RPTLAYOUT_ID, JhnRptLtItem.class)
@@ -73,10 +73,12 @@ public class JpaRegisterPersonalReportItemRepository extends JpaRepository imple
 	}
 
 	@Override
-	public void removeAllByLayoutId(int rptLayoutId) {
+	public void removeAllByLayoutId(String cid, int rptLayoutId) {
 		// remove all classifications when update or override layout
-		this.getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID, JhnRptLtItem.class).setParameter("rptLayouId", rptLayoutId)
-				.executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID, JhnRptLtItem.class)
+		.setParameter("rptLayouId", rptLayoutId)
+		.setParameter("cid", cid)
+		.executeUpdate();
 	}
 	
 /*
