@@ -8,7 +8,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCour
 public interface RetirePlanCourceService {
 
 	/** 定年退職コースの取得*/
-	List<RetirePlanCource> getRetirePlanCourse(String companyID);
+	List<RetirePlanCource> getRetirePlanCourse(String companyId);
 	
 	/** 定年退職コースの追加*/
 	void addRetirePlanCourse(String cId, List<RetirePlanCource> retirePlanCourse);
@@ -17,11 +17,11 @@ public interface RetirePlanCourceService {
 	void updateRetirePlanCourse(String cId, List<RetirePlanCource> retirePlanCourse);
 	
 	/** 全ての定年退職コースの取得 */
-	List<RetirePlanCource> getAllRetirePlanCource(String companyID);
+	List<RetirePlanCource> getAllRetirePlanCource(String companyId);
 	
 	/** 定年退職コースIDリストから定年退職条件の取得 */
-	RetirePlanCource getRetireTermByRetirePlanCourceIdList(String companyID, String retirePlanCourseIdList);
+	List<RetirePlanCource> getRetireTermByRetirePlanCourceIdList(String companyId, List<String> retirePlanCourseId);
 	
 	/** 基準日で使用可能な定年退職コースの取得 */
-	List<RetirePlanCource> getEnableRetirePlanCourceByBaseDate(String companyID, GeneralDate baseDate);
+	List<RetirePlanCource> getEnableRetirePlanCourceByBaseDate(String companyId, GeneralDate baseDate);
 }
