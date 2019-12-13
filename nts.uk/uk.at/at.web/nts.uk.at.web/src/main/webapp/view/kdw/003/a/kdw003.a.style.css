@@ -435,8 +435,8 @@ table#employ_view tr{
 }
 #cbDisplayFormat{
 	height: 27px;
-	bottom: -7px;
-	width: 150px;
+    bottom: -10px;
+    width: 110px;
 }
 /* #dislayFormatLbl{
 	height: 25px;
@@ -473,4 +473,11 @@ table#employ_view tr{
 }
 body {
 	-ms-overflow-x: hidden;
+}
+.nts-combo-item{
+	width: 103px !important;
+
+}
+.nts-column {
+	font-size: 0.8rem !important;
 }

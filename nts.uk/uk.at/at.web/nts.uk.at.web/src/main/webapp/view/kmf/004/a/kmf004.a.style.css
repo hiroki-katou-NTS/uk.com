@@ -99,7 +99,7 @@ div#tab-panel {
 }
 
 .years, .days, .year-lbl, .year-inp, .day-lbl, .day-inp {
-	float: left;
+	display: inline-block !important;
 	padding-right: 10px;
 }
 
