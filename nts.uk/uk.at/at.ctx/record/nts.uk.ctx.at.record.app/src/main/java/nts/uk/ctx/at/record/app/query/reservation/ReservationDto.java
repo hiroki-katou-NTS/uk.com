@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClo
 
 @Data
 public class ReservationDto {
-	private List<BentoReservationDto> listOder;	
+	private List<BentoReservationDto> listOrder;	
 	
 	private BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto;
 
@@ -15,9 +15,9 @@ public class ReservationDto {
 		super();
 	}
 
-	public ReservationDto(List<BentoReservationDto> listOder, BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto) {
+	public ReservationDto(List<BentoReservationDto> listOrder, BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto) {
 		super();
-		this.listOder = listOder;
+		this.listOrder = listOrder;
 		this.bentoMenuByClosingTimeDto = bentoMenuByClosingTimeDto;
 	}
 	

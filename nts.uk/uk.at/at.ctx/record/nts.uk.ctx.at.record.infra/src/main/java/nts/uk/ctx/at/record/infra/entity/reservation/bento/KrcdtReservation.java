@@ -65,15 +65,16 @@ public class KrcdtReservation extends UkJpaEntity {
 	}
 	
 	public static KrcdtReservation fromDomain(BentoReservation bentoReservation) {
+		String reservationId = IdentifierUtil.randomUniqueId();
 		return new KrcdtReservation(
 				new KrcdtReservationPK(
-						AppContexts.user().companyId(), 
-						IdentifierUtil.randomUniqueId()), 
+						AppContexts.user().companyId(), reservationId
+						), 
 				AppContexts.user().contractCode(), 
 				bentoReservation.getReservationDate().getDate(), 
 				bentoReservation.getReservationDate().getClosingTimeFrame().value, 
 				bentoReservation.getRegisterInfor().getReservationCardNo(), 
-				bentoReservation.isOrdered() ? 1 : 0, 
-				bentoReservation.getBentoReservationDetails().stream().map(x -> KrcdtReservationDetail.fromDomain(x)).collect(Collectors.toList()));
+				bentoReservation.isOrdered() ? 1 : 0 , 
+				bentoReservation.getBentoReservationDetails().stream().map(x -> KrcdtReservationDetail.fromDomain(x, reservationId)).collect(Collectors.toList()));
 	}
 }

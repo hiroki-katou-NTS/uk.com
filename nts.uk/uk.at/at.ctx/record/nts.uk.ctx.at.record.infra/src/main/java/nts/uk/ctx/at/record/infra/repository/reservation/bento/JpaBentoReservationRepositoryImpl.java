@@ -167,7 +167,9 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			KrcdtReservation beforeKrcdtReservation = toEntity(createFullJoinBentoReservation(rs)).get(0);
-			commandProxy().remove(beforeKrcdtReservation);
+			
+			commandProxy().remove(KrcdtReservation.class, beforeKrcdtReservation.pk);
+			this.getEntityManager().flush();
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}

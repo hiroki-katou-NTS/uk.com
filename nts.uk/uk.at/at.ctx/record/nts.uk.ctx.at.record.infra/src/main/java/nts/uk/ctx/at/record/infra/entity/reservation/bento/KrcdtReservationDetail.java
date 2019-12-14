@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,11 +53,11 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 				new BentoReservationCount(quantity));
 	}
 	
-	public static KrcdtReservationDetail fromDomain(BentoReservationDetail bentoReservationDetail) {
+	public static KrcdtReservationDetail fromDomain(BentoReservationDetail bentoReservationDetail, String reservationId) {
 		return new KrcdtReservationDetail(
 				new KrcdtReservationDetailPK(
 						AppContexts.user().companyId(), 
-						IdentifierUtil.randomUniqueId(), 
+						reservationId, 
 						bentoReservationDetail.getFrameNo(), 
 						bentoReservationDetail.getDateTime()), 
 				AppContexts.user().contractCode(), 
@@ -66,5 +65,4 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 				bentoReservationDetail.isAutoReservation() ? 1 : 0, 
 				null);
 	}
-	
 }

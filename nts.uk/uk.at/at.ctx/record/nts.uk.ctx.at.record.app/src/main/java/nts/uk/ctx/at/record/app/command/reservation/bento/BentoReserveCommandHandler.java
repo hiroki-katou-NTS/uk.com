@@ -36,7 +36,7 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		
 		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
 				Arrays.asList(AppContexts.user().employeeId()),
-				AppContexts.user().companyCode()).get(0);
+				AppContexts.user().contractCode()).get(0);
 		
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
 		
