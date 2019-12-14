@@ -11,13 +11,13 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.language.TotalTimesLang;
 @Data
 @AllArgsConstructor
 public class TotalTimesLangDto {
-
+	/** 会社ID */
 	private String companyId;
 	
-	/** The total count no. */
+	/** 回数集計No */
 	private Integer totalCountNo;
 	
-	/** The total times name. */
+	/** 回数集計名称 */
 	private String totalTimesNameEng;
 	
 	public static TotalTimesLangDto fromDomain(TotalTimesLang timeLang) {

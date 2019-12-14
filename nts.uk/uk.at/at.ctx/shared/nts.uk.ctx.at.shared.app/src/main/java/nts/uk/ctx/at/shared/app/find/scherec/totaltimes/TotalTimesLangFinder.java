@@ -23,6 +23,7 @@ public class TotalTimesLangFinder {
 
 	public List<TotalTimesLangDto> getTotalTimesDetails(String langId) {
 		String companyId = AppContexts.user().companyId();
+		// ドメインモデル「回数集計の他言語表示名」を取得する(Lấy dữ liệu từ domain 「回数集計の他言語表示名」)
 		List<TotalTimesLang> workTypeLanguage = repo.findAll(companyId, langId);
 		return workTypeLanguage.stream().map(x -> {
 			TotalTimesLang wT = new TotalTimesLang(companyId, x.getTotalCountNo(),langId, x.getTotalTimesNameEng());

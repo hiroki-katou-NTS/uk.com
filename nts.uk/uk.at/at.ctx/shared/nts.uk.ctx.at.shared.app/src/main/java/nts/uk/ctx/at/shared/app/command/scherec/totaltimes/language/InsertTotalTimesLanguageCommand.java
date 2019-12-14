@@ -10,8 +10,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Value
 public class InsertTotalTimesLanguageCommand {
+	/**回数集計No*/
 	private Integer totalCountNo;
+	
+	/** 言語ID */
 	private String langId;
+	
+	/** 回数集計名称 */
 	private String totalTimesNameEn;
 
 	public TotalTimesLang toDomain(Integer totalCountNo, String langId, String totalTimesNameEn) {

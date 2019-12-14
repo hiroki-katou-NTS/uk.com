@@ -27,6 +27,11 @@ public class TotalTimesChangeLanguageWS extends WebService {
 	
 	@Inject InsertTotalTimesLanguageCommandHandler commandHandler;
 	
+	/**
+	 * 
+	 * @param langId
+	 * @return
+	 */
 	@POST
 	@Path("getdetail/{langId}")
 	public List<TotalTimesLangDto> findWorkTypeLanguage(@PathParam("langId") String langId) {

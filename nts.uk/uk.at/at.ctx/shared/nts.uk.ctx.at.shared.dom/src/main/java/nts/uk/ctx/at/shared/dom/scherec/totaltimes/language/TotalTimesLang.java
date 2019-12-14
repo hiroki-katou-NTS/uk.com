@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 /**
  * 
  * @author phongtq
- *
+ * 回数集計の他言語表示名
  */
 @Getter
 public class TotalTimesLang extends AggregateRoot {

@@ -26,11 +26,14 @@ public class InsertTotalTimesLanguageCommandHandler extends CommandHandler<Inser
 		InsertTotalTimesLanguageCommand command = context.getCommand();
 		
 		TotalTimesLang timesLang = command.toDomain(command.getTotalCountNo(), command.getLangId(), command.getTotalTimesNameEn());
+		// ドメインモデル「回数集計の他言語表示名」を取得する(Lấy dữ liệu từ domain 「回数集計の他言語表示名」)
 		Optional<TotalTimesLang> optional = this.repo.findById(companyId, command.getTotalCountNo(), command.getLangId());
 		
 		if(optional.isPresent())
+			//ドメインモデル「回数集計の他言語表示名」更新する (Update Domain "OtherLanguageCountDisplay")
 			this.repo.update(timesLang);
 		else
+			//ドメインモデル「回数集計の他言語表示名」を登録する (Đăng ký Domain "OtherLanguageCountDisplay")
 			this.repo.add(timesLang);
 	}
 }

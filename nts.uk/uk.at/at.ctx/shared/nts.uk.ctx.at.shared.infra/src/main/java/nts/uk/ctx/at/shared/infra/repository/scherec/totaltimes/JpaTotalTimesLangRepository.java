@@ -23,11 +23,17 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 			+ "WHERE a.kshstTotalTimesLangPK.companyId = :companyId "
 			+ "AND a.kshstTotalTimesLangPK.languageId =:languageId";
 
+	/**
+	 * add Total Times Lang
+	 */
 	@Override
 	public void add(TotalTimesLang totalTimesLang) {
 		this.commandProxy().insert(toEntity(totalTimesLang));
 	}
 
+	/**
+	 * update Total Times Lang
+	 */
 	@Override
 	public void update(TotalTimesLang totalTimesLang) {
 		KshstTotalTimesLangPK pk = new KshstTotalTimesLangPK(totalTimesLang.getCompanyId(),
@@ -40,6 +46,11 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 		
 	}
 	
+	/**
+	 * to Entity KshstTotalTimesLang
+	 * @param domain
+	 * @return
+	 */
 	private KshstTotalTimesLang toEntity(TotalTimesLang domain) {
 		val entity = new KshstTotalTimesLang();
 
@@ -50,18 +61,29 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 		return entity;
 	}
 
+	/**
+	 * find all Total Times Lang
+	 */
 	@Override
 	public List<TotalTimesLang> findAll(String companyId, String langId) {
 		return this.queryProxy().query(SEL_BY_CID_LANGID, KshstTotalTimesLang.class)
 				.setParameter("companyId", companyId).setParameter("languageId", langId).getList(x -> toDomain(x));
 	}
 
+	/**
+	 * to Domain TotalTimesLang
+	 * @param entity
+	 * @return
+	 */
 	private TotalTimesLang toDomain(KshstTotalTimesLang entity) {
 		val domain = TotalTimesLang.createFromJavaType(entity.kshstTotalTimesLangPK.companyId,
 				entity.kshstTotalTimesLangPK.totalTimesNo, entity.kshstTotalTimesLangPK.languageId, entity.totalTimesName);
 		return domain;
 	}
 	
+	/**
+	 * findById Total Times Lang
+	 */
 	@Override
 	public Optional<TotalTimesLang> findById(String companyId, Integer totalTimesNo, String langId) {
 		KshstTotalTimesLangPK pk = new KshstTotalTimesLangPK(companyId, totalTimesNo, langId);
