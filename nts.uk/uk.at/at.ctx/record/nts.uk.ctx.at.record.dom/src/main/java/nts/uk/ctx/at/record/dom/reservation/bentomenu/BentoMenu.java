@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.ClockHourMinute;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
@@ -90,7 +90,7 @@ public class BentoMenu extends AggregateRoot {
 		}
 		
 		// thời gian check tay hệ thống chưa có, khởi tạo tạm
-		BentoReservationTime time = new BentoReservationTime(0);
+		ClockHourMinute time = ClockHourMinute.now();
 		if(reservationDate.isToday() && !closingTime.canReserve(reservationDate.getClosingTimeFrame(), time)) {
 			throw new BusinessException("Msg_1585");
 		}

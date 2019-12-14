@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
+import nts.arc.time.ClockHourMinute;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName;
 /**
@@ -43,13 +44,13 @@ public class ReservationClosingTime extends ValueObject {
 	 * @param time
 	 * @return
 	 */
-	public boolean canReserve(BentoReservationTime time) {
+	public boolean canReserve(ClockHourMinute time) {
 		boolean startOK = true;
 		boolean endOK = false;
 		if(start.isPresent()) {
-			startOK = start.get().lessThanOrEqualTo(time);
+			startOK = start.get().lessThanOrEqualTo(time.v());
 		}
-		endOK = time.lessThanOrEqualTo(finish);
+		endOK = time.lessThanOrEqualTo(finish.v());
 		return startOK && endOK;
 	}
 }

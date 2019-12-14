@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
+import nts.arc.time.ClockHourMinute;
 
 /**
  * 弁当の予約締め時刻
@@ -37,7 +37,7 @@ public class BentoReservationClosingTime extends ValueObject {
 	 * @param time
 	 * @return
 	 */
-	public boolean canReserve(ReservationClosingTimeFrame timeFrameAtr, BentoReservationTime time) {
+	public boolean canReserve(ReservationClosingTimeFrame timeFrameAtr, ClockHourMinute time) {
 		if(timeFrameAtr==ReservationClosingTimeFrame.FRAME1) {
 			return closingTime1.canReserve(time);
 		}

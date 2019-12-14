@@ -3,8 +3,7 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime;
+import nts.arc.time.ClockHourMinute;
 
 /**
  * 	締め時刻別の弁当メニュー
@@ -62,10 +61,10 @@ public class BentoMenuByClosingTime {
 	public static BentoMenuByClosingTime createForCurrent(BentoReservationClosingTime closingTime, List<BentoItemByClosingTime> menu1, List<BentoItemByClosingTime> menu2) {
 		boolean reservationTime1Atr = closingTime.canReserve(
 				ReservationClosingTimeFrame.FRAME1, 
-				new BentoReservationTime(GeneralDateTime.now().minutes()));
+				ClockHourMinute.now());
 		boolean reservationTime2Atr = closingTime.canReserve(
 				ReservationClosingTimeFrame.FRAME2, 
-				new BentoReservationTime(GeneralDateTime.now().minutes()));
+				ClockHourMinute.now());
 		return new BentoMenuByClosingTime(menu1, menu2, closingTime, reservationTime1Atr, reservationTime2Atr);
 	}
 }
