@@ -7,13 +7,17 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRequire;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -24,10 +28,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class BentoReserveCommandHandler extends CommandHandler<BentoReserveCommand> {
 	
 	@Inject
-	private BentoReservationRequire bentoReservationRequire;
+	private StampCardRepository stampCardRepository;
 	
 	@Inject
-	private StampCardRepository stampCardRepository;
+	private BentoMenuRepository bentoMenuRepository;
+	
+	@Inject
+	private BentoReservationRepository bentoReservationRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
@@ -40,14 +47,16 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
 		
+		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
+		
 		AtomTask persist1 = BentoReserveService.reserve(
-				bentoReservationRequire, 
+				require, 
 				reservationRegisterInfo, 
 				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
 				command.getFrame1Bentos());
 		
 		AtomTask persist2 = BentoReserveService.reserve(
-				bentoReservationRequire, 
+				require, 
 				reservationRegisterInfo, 
 				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
 				command.getFrame2Bentos());
@@ -56,6 +65,26 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 			persist1.run();
 			persist2.run();
 		});
+		
+	}
+	
+	@RequiredArgsConstructor
+	private static class RequireImpl implements BentoReserveService.Require {
+		
+		private final BentoMenuRepository bentoMenuRepository;
+		
+		private final BentoReservationRepository bentoReservationRepository;
+		
+		@Override
+		public BentoMenu getBentoMenu(ReservationDate reservationDate) {
+			String companyID = AppContexts.user().companyId();
+			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate());
+		}
+
+		@Override
+		public void reserve(BentoReservation bentoReservation) {
+			bentoReservationRepository.add(bentoReservation);
+		}
 		
 	}
 }

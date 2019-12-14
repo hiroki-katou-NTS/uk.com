@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
  */
 public class BentoReserveModifyService {
 	
-	public static AtomTask reserve(BentoReservationRequire require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
+	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
 			Map<Integer, BentoReservationCount> bentoDetails) {
 		
 		// 1: get(予約対象日)
@@ -39,5 +39,16 @@ public class BentoReserveModifyService {
 				require.reserve(afterBento);
 			}
 		});
+	}
+	
+	public static interface Require {
+		
+		BentoMenu getBentoMenu(ReservationDate reservationDate);
+		
+		Optional<BentoReservation> getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate);
+		
+		void reserve(BentoReservation bentoReservation);
+		
+		void delete(BentoReservation bentoReservation);
 	}
 }
