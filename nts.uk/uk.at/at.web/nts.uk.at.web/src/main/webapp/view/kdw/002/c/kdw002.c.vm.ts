@@ -92,7 +92,7 @@ module nts.uk.at.view.kdw002.c {
                                 self.datasources(self.dailyServiceTypeControl().displayAndInput);
                                 $("#grid").igGrid({
                                     primaryKey: "itemDailyID",
-                                    height: window.innerHeight - 250,
+                                    height: window.innerHeight - 280,
                                     dataSource: ko.mapping.toJSON(self.datasources()),
                                     autoGenerateColumns: false,
                                     //alternateRowStyles: false,
@@ -190,11 +190,6 @@ module nts.uk.at.view.kdw002.c {
                 });
 
                 self.txtSearch = ko.observable("");
-                window.onresize = function(evt) {
-                    $('#grid_container').height(window.innerHeight - 250); 
-                    $('#grid_scroll').height(window.innerHeight - 250); 
-                    $('#grid_footer_container').height(window.innerHeight - 250); 
-                }
             }
             
             jumpToHome(sidebar): void {

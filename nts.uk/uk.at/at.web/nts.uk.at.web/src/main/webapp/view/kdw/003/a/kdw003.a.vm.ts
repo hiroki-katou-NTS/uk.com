@@ -18,8 +18,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         { headerText: 'ER/AL', key: 'error', dataType: 'String', width: '60px', ntsControl: 'Label' },
         { headerText: getText("KDW003_41"), key: 'date', dataType: 'String', width: '90px', ntsControl: 'Label' },
         { headerText: getText("KDW003_42"), key: 'sign', dataType: 'boolean', width: '35px', ntsControl: 'Checkbox' },
-        { headerText: getText("KDW003_32"), key: 'employeeCode', dataType: 'String', width: '120px', ntsControl: 'Label' },
-        { headerText: getText("KDW003_33"), key: 'employeeName', dataType: 'String', width: '190px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_32"), key: 'employeeCode', dataType: 'String', width: '87px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_33"), key: 'employeeName', dataType: 'String', width: '162px', ntsControl: 'Label' },
         { headerText: '', key: "picture-person", dataType: "string", width: '35px', ntsControl: 'Image' }
     ];
 

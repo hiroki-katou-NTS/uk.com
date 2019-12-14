@@ -15,12 +15,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             var self = this;
             self.id = ko.observable(null);
             //combobox
-            self.itemList = ko.observableArray([
-                // 共通 :COMMON(0) 
-                new ItemModel('0', nts.uk.resource.getText("Enum_System_COMMON")),
-                // 勤次郎  :TIME_SHEET(1) 
-                new ItemModel('1', nts.uk.resource.getText("Enum_System_TIME_SHEET"))
-            ]);
+            self.itemList = ko.observableArray([]);
             self.selectedCode = ko.observable('0');
             self.isEnable = ko.observable(true);
 
@@ -58,6 +53,18 @@ module nts.uk.com.view.ccg013.k.viewmodel {
 
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            $.when(self.getAllStandardMenu(), self.getSystemEnum()).done(function(){
+                dfd.resolve();   
+            }).fail(function() {
+                dfd.reject();    
+            });
+            return dfd.promise();
+        }  
+        
+         /** get data when start dialog **/
+        getAllStandardMenu(): JQueryPromise<any> {
             let self = this;
             self.id(0);
             let dfd = $.Deferred();
@@ -78,6 +85,23 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             });
             return dfd.promise();
         }  
+        
+        getSystemEnum(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+           
+            /** Get EditMenuBar*/
+            service.getEditMenuBar().done(function(editMenuBar: any) {
+                _.forEach(editMenuBar.listSystem, function(item) {
+                    self.itemList.push(new ItemModel(item.value.toString(), item.localizedName));
+                }); 
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject();
+                alert(error.message);
+            });
+            return dfd.promise();
+        }
         
         /** update data when click button register **/
         register() {

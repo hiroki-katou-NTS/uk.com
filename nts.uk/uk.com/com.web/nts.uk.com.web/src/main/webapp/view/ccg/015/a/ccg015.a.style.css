@@ -4,7 +4,7 @@
 } */
 
 #functions-area{
-    overflow: hidden;
+    overflow: visible;
 }
 .tr360 {
 	width: 360px !important;
@@ -148,6 +148,7 @@ button.nts-switch-button {
 	max-height: 50px;
 	margin-left: 270px;
     color: #0D86D1;
+    z-index: 4;
 }
 
 .drop_links .function-header{
@@ -156,4 +157,10 @@ button.nts-switch-button {
 
 .float_left {
 	float: left;
+}
+html {
+	overflow: hidden;
+}
+.function-icon {
+	line-height: 0px !important;
 }

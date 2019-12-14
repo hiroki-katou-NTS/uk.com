@@ -611,8 +611,8 @@ module nts.uk.at.view.kdw008.a {
 
             register() {
                 let self = this;
-                $(".need-check").trigger("validate");
                 if (self.isDaily()) {
+                    $(".need-check").trigger("validate");
                     if (!nts.uk.ui.errors.hasError()) {
                         //add or update Monthly
                         let authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {

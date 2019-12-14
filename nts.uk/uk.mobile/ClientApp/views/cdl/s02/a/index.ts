@@ -71,7 +71,7 @@ export class CdlS02AComponent extends Vue {
                     self.allData = _.sortBy(result.data, ['code']);
                     self.data = self.allData;
                     let findData = _.find(self.allData, (data) => data.code == self.params.selectedCode);
-                    if (findData == undefined) {
+                    if (_.isEmpty(self.params.selectedCode) && findData == undefined) {
                         self.activeNoSelect = true;
                     } else {
                         self.activeNoSelect = false;
@@ -119,14 +119,18 @@ export class CdlS02AComponent extends Vue {
                     self.closureList = _.filter(self.closureList, (item) => _.includes(closureIds, item.id));
 
                     let findData = _.find(self.allData, (data) => data.code != '' && data.code == self.params.selectedCode);
-                    if (findData == undefined) {
+                    if (_.isEmpty(self.params.selectedCode)) {
                         self.activeNoSelect = true;
                         self.data = _.filter(self.allData, (data) => data.closureId == self.closureList[0].id || data.closureId == 'No');
                         self.selectedClosure = self.closureList[0].id;
-                    } else {
+                    } else if (findData != undefined) {
                         self.activeNoSelect = false;
                         self.data = _.filter(self.allData, (data) => data.closureId == findData.closureId || data.closureId == 'No');
                         self.selectedClosure = findData.closureId;
+                    } else {
+                        self.activeNoSelect = false;
+                        self.data = _.filter(self.allData, (data) => data.closureId == self.closureList[0].id || data.closureId == 'No');
+                        self.selectedClosure = self.closureList[0].id;
                     }
                 }).catch((res: any) => {
                     self.$mask('hide');

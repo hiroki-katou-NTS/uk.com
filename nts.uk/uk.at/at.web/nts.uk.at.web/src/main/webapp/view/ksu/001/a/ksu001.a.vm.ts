@@ -654,13 +654,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
 
                 new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "60px", bodyRowHeight: "30px", bodyHeight: "0px",
+                    headerHeight: "60px", bodyRowHeight: "28px", bodyHeight: "0px",
                     horizontalSumHeaderHeight: "40px", horizontalSumBodyHeight: "75px",
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 134,
-                    windowYOccupation: 210,
+                    windowXOccupation: 20,
+                    windowYOccupation: 230,
                     manipulatorId: self.employeeIdLogin,
                     manipulatorKey: "empId",
                     updateMode: "stick",
@@ -691,8 +691,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#popup-set").click(function() {
                     $("#extable").exTable("popupValue", self.popupVal());
                 });
+                
+                $('#extable').css({
+                	'float': 'left',
+            		'top': '2px',
+            		'left': '80px',
+                });
                 self.setWidth();
             });
+        }
+        
+        setWidth(): any {
+            $(".ex-header-detail").width(window.innerWidth - 277);
+            $(".ex-body-detail").width(window.innerWidth - 253);
+            $("#extable").width(window.innerWidth - 253); 
         }
 
         /**
@@ -2050,11 +2062,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
-        }
-        
-        setWidth(): any {
-        	$(".ex-header-detail").width(window.outerWidth - 287);
-        	$(".ex-body-detail").width(window.outerWidth - 270); 
         }
 
     }

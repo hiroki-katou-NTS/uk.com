@@ -227,10 +227,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.displayNumberZero1();
             });
             
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 230) + 'px !IMPORTANT');
             $(window).on('resize', function() {
-                var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 230) + 'px !IMPORTANT');
+            	self.setScreenSize();
             });
 
         }
@@ -360,6 +358,24 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        setScreenSize() {
+        	if (window.innerHeight < 447) {
+        		return;
+        	}
+        	$('.mgrid-fixed').height(window.innerHeight - 364);
+        	$('.mgrid-free').height(window.innerHeight - 364);
+        	$('.grid-container').height(window.innerHeight - 240);
+        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 376 + 'px' });
+        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 376 + 'px' });
+        	$('.mgrid-paging').css({ top: window.innerHeight - 330 + 'px' });
+        	$('.mgrid-sheet').css({ top: window.innerHeight - 285 + 'px' });
+        	$('.mgrid-free').width(window.innerWidth - 627);
+        	$('.mgrid-free.mgrid-header').width(window.innerWidth - 644);
+        	$('.mgrid-free-summaries').width(window.innerWidth - 644);
+        	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
+        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
         }
         /**********************************
         * Initialize Screen 
@@ -1014,8 +1030,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
-                height: '650px',
-                headerHeight: '50px',
+                height: '612px',
+                headerHeight: '32px',
                 dataSource: dataSource,
                 dataSourceAdapter: function(ds) {
                     return ds;
@@ -1025,7 +1041,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',
-                autoFitWindow: true,
+                autoFitWindow: false,
                 preventEditInError: false,
                 hidePrimaryKey: true,
                 userId: self.employIdLogin,
@@ -1039,6 +1055,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }).create();
             self.showHeaderNumber.valueHasMutated();
             self.displayNumberZero1();
+            self.setScreenSize();
         };
         /**********************************
         * Grid Data Setting 

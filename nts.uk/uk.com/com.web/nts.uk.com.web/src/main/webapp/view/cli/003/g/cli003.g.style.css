@@ -12,18 +12,16 @@
 }
 
 .contentL {
-	float:left;
 }
 
 .contentR {
-	float:left;
 	width: 900px;
-	margin-left: 20px;
+	padding-left: 20px;
 }
 
 #G3 td {
 	padding-right: 20px;
-	padding-bottom: 20px;
+	padding-bottom: 8px;
 }
 
 #G4 td {
@@ -50,6 +48,18 @@
 	text-overflow: ellipsis!important;
 	overflow: hidden!important;
 	white-space: nowrap!important;
+}
+.nts-searchbbox-wrapper.ntsSearchArea {
+	margin-bottom: -3px;
+}
+#G4_2_container {
+	height: 275px !important;
+}
+#up-down {
+	height: inherit;
+}
+.upDown-container {
+	height: inherit;
 }
 
 

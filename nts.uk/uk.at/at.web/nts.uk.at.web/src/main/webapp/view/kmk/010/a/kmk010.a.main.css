@@ -214,3 +214,6 @@
 .fixed-flex-layout-left {
 	width: 100%;
 }
+html {
+	overflow: hidden;
+}

@@ -7,7 +7,7 @@ module nts.uk.com.view.cli001.a {
         export class ScreenModel {
             items: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
-            currentCodeList: KnockoutObservableArray<any>
+            currentCodeList: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;

@@ -57,10 +57,10 @@ module nts.uk.at.view.kdw001.f {
                     { headerText: '', key: 'empCalAndSumExecLogID', width: 1, hidden: true},
                     
                     { headerText: getText('KDW001_74'), key: 'personCode', width: 120 },
-                    { headerText: getText('KDW001_75'), key: 'personName', width: 100 },
+                    { headerText: getText('KDW001_75'), key: 'personName', width: 120 },
                     { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
                     //doi mau
-                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200,
+                    { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 110,
                             formatter: function (executedMenuName, record) {
                                 if(record.isTextRed.toString() === "true"){
                                     return "<label style='color: red;'> " + executedMenuName + " </label>";       
@@ -77,6 +77,9 @@ module nts.uk.at.view.kdw001.f {
                     }
                 ];
                 $('#button-search').focus();
+                $(window).on('resize', function() {
+                	self.setHeight();
+                });
             }
 
             /**
@@ -92,13 +95,18 @@ module nts.uk.at.view.kdw001.f {
                      //get all EmpCalAndSumExeLog by date
                     self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate()).done(() => {
                         dfd.resolve();
+                        self.setHeight();
                     });
                     
                 });
-
                 return dfd.promise();
             }//end start page
-
+            setHeight() {
+            	$('#single-list_displayContainer').height(window.innerHeight - 320);
+            	$('#single-list_scrollContainer').height(window.innerHeight - 320);
+            	$('#single-list_container').height(window.innerHeight - 317);
+            }
+            
             /**
              * function get all EmpCalAndSumExeLog by startDate and endDate
              */
