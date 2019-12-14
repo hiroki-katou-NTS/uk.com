@@ -13,20 +13,20 @@ import nts.arc.time.GeneralDateTime;
 @NoArgsConstructor
 public class AttachmentPersonReportFile extends AggregateRoot{
 	
-	String cid; //会社ID
-	int reportID; //届出ID
-	int docID; //書類ID
-	String docName; //書類名
-	String fileId; //ファイルID
-	String fileName; //ファイル名
-	boolean fileAttached; //ファイル添付済     0:未添付、1:添付済み	
-	GeneralDateTime fileStorageDate; //ファイル格納日時
-	String mimeType; //MIMEタイプ
-	String fileTypeName; //ファイル種別名
-	int fileSize; //ファイルサイズ    đơn vị byte
-	boolean delFlg; //削除済     0:未削除、1:削除済
-	String sampleFileID; //サンプルファイルID
-	String sampleFileName; //サンプルファイル名
+	private String cid; //会社ID
+	private int reportID; //届出ID
+	private int docID; //書類ID
+	private String docName; //書類名
+	private String fileId; //ファイルID
+	private String fileName; //ファイル名
+	private boolean fileAttached; //ファイル添付済     0:未添付、1:添付済み	
+	private GeneralDateTime fileStorageDate; //ファイル格納日時
+	private String mimeType; //MIMEタイプ
+	private String fileTypeName; //ファイル種別名
+	private int fileSize; //ファイルサイズ    đơn vị byte
+	private boolean delFlg; //削除済     0:未削除、1:削除済
+	private String sampleFileID; //サンプルファイルID
+	private String sampleFileName; //サンプルファイル名
 	
 	public AttachmentPersonReportFile(String cid, int reportID, int docID, String docName, String fileId,
 			String fileName, boolean fileAttached, GeneralDateTime fileStorageDate, String mimeType,

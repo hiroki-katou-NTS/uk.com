@@ -1,6 +1,3 @@
-/**
- * 
- */
 package nts.uk.ctx.hr.notice.dom.report.registration.person;
 
 import java.math.BigDecimal;
@@ -22,23 +19,23 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 @NoArgsConstructor
 public class ReportItem extends AggregateRoot {
 
-	String cid; // 会社ID
-	int workId; // 業務ID
-	int reportID; // 届出ID
-	int reportLayoutID; // 個別届出種類ID
-	String reportName; // 項目区分
-	LayoutItemType layoutItemType; // 項目区分
-	String ctgCode; // カテゴリコード
-	String ctgName; // カテゴリ名
-	boolean fixedAtr; // 既定区分
-	String itemCd; // 項目コード
-	String itemName; // 項目名
-	int dspOrder; // 表示順
-	int saveDataAtr; // 保存データ型
-	String stringVal; // 文字列
-	BigDecimal intVal; // 数値
-	GeneralDateTime dateVal;// 日付
-	int reflectID; // 反映ID
+	private String cid; // 会社ID
+	private int workId; // 業務ID
+	private int reportID; // 届出ID
+	private int reportLayoutID; // 個別届出種類ID
+	private String reportName; 	// 届出名
+	private LayoutItemType layoutItemType; // 項目区分
+	private String ctgCode; // カテゴリコード
+	private String ctgName; // カテゴリ名
+	private boolean fixedAtr; // 既定区分
+	private String itemCd; // 項目コード
+	private String itemName; // 項目名
+	private int dspOrder; // 表示順
+	private int saveDataAtr; // 保存データ型
+	private String stringVal; // 文字列
+	private BigDecimal intVal; // 数値
+	private GeneralDateTime dateVal;// 日付
+	private int reflectID; // 反映ID
 
 	public ReportItem(String cid, int workId, int reportID, int reportLayoutID, String reportName, int layoutItemType,
 			String ctgCode, String ctgName, boolean fixedAtr, String itemCd, String itemName, int dspOrder,

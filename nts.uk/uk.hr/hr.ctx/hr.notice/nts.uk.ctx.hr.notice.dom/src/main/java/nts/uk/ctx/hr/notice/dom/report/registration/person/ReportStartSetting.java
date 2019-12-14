@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportStartSetting {
 	
-	String cid; //会社ID
-	boolean changeDisp; //差し戻しを否認に表示変更  true:否認、false:差し戻し	
+	private String cid; //会社ID
+	private boolean changeDisp; //差し戻しを否認に表示変更  true:否認、false:差し戻し	
 
 	public ReportStartSetting(String cid, boolean changeDisp) {
 		super();

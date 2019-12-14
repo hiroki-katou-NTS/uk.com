@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.notice.dom.report.ReportType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
 
 /**
  * @author laitv
@@ -23,40 +23,40 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatu
 @NoArgsConstructor
 public class RegistrationPersonReport extends AggregateRoot{
 	
-	String cid; // 会社ID
-	String rootInstanceID; // ルートインスタンスID
-	int workId; // 業務ID
-	int reportID; // 届出ID
-	int  reportLayoutID; // 個別届出種類ID
-	String reportCode; // 届出コード
-	String reportName; // 届出名
-	String reportDetail; // 届出内容
-	RegistrationStatus regStatus; // 登録状態
-	ApprovalStatusForRegis aprStatus;// 承認状況
-	GeneralDateTime draftSaveDate;//下書き保存日
-	String missingDocName;//不足書類名
-	String inputPid;//入力者個人ID
-	String inputSid;//入力者社員ID
-	String inputScd; //入力者社員CD
-	String inputBussinessName; //入力者表示氏名
-	GeneralDateTime inputDate;//入力日
-	String appPid;//申請者個人ID
-	String appSid;//申請者社員ID
-	String appScd;//申請者社員CD
-	String appBussinessName;//申請者表示氏名
-	GeneralDateTime appDate;//申請日
-	String appDevId ;//申請者部門ID
-	String appDevCd ;//申請者部門CD
-	String appDevName ;//申請者部門名
-	String appPosId ;//申請者職位ID
-	String appPosCd ;//申請者職位CD
-	String appPosName ;//申請者職位名
-	ReportType reportType;//届出種類
-	String sendBackSID;//差し戻し先社員ID
-	String sendBackComment;//差し戻しコメント
-	boolean delFlg;//削除済
+	private String cid; // 会社ID
+	private String rootSateId; // ルートインスタンスID
+	private int workId; // 業務ID
+	private int reportID; // 届出ID
+	private int  reportLayoutID; // 個別届出種類ID
+	private String reportCode; // 届出コード
+	private String reportName; // 届出名
+	private String reportDetail; // 届出内容
+	private RegistrationStatus regStatus; // 登録状態
+	private ApprovalStatusForRegis aprStatus;// 承認状況
+	private GeneralDateTime draftSaveDate;//下書き保存日
+	private String missingDocName;//不足書類名
+	private String inputPid;//入力者個人ID
+	private String inputSid;//入力者社員ID
+	private String inputScd; //入力者社員CD
+	private String inputBussinessName; //入力者表示氏名
+	private GeneralDateTime inputDate;//入力日
+	private String appPid;//申請者個人ID
+	private String appSid;//申請者社員ID
+	private String appScd;//申請者社員CD
+	private String appBussinessName;//申請者表示氏名
+	private GeneralDateTime appDate;//申請日
+	private String appDevId ;//申請者部門ID
+	private String appDevCd ;//申請者部門CD
+	private String appDevName ;//申請者部門名
+	private String appPosId ;//申請者職位ID
+	private String appPosCd ;//申請者職位CD
+	private String appPosName ;//申請者職位名
+	private ReportType reportType;//届出種類
+	private String sendBackSID;//差し戻し先社員ID
+	private String sendBackComment;//差し戻しコメント
+	private boolean delFlg;//削除済
 	
-	public RegistrationPersonReport(String cid, String rootInstanceID, int workId, int reportID, int reportLayoutID,
+	public RegistrationPersonReport(String cid, String rootSateId, int workId, int reportID, int reportLayoutID,
 			String reportCode, String reportName, String reportDetail, int regStatus,
 			int aprStatus, GeneralDateTime draftSaveDate, String missingDocName, String inputPid,
 			String inputSid, String inputScd, String inputBussinessName, GeneralDateTime inputDate, String appPid,
@@ -65,7 +65,7 @@ public class RegistrationPersonReport extends AggregateRoot{
 			int reportType, String sendBackSID, String sendBackComment, boolean delFlg) {
 		super();
 		this.cid = cid;
-		this.rootInstanceID = rootInstanceID;
+		this.rootSateId = rootSateId;
 		this.workId = workId;
 		this.reportID = reportID;
 		this.reportLayoutID = reportLayoutID;
@@ -98,14 +98,14 @@ public class RegistrationPersonReport extends AggregateRoot{
 		this.delFlg = delFlg;
 	}
 
-	public static RegistrationPersonReport createFromJavaType(String cid, String rootInstanceID, int workId, int reportID, int reportLayoutID,
+	public static RegistrationPersonReport createFromJavaType(String cid, String rootSateId, int workId, int reportID, int reportLayoutID,
 			String reportCode, String reportName, String reportDetail, int regStatus,
 			int aprStatus, GeneralDateTime draftSaveDate, String missingDocName, String inputPid,
 			String inputSid, String inputScd, String inputBussinessName, GeneralDateTime inputDate, String appPid,
 			String appSid, String appScd, String appBussinessName, GeneralDateTime appDate, String appDevId,
 			String appDevCd, String appDevName, String appPosId, String appPosCd, String appPosName,
 			int reportType, String sendBackSID, String sendBackComment, boolean delFlg){
-		return new RegistrationPersonReport(cid, rootInstanceID, workId, reportID, reportLayoutID, reportCode,
+		return new RegistrationPersonReport(cid, rootSateId, workId, reportID, reportLayoutID, reportCode,
 				reportName, reportDetail, regStatus, aprStatus, draftSaveDate, missingDocName, inputPid, inputSid,
 				inputScd, inputBussinessName, inputDate, appPid, appSid, appScd, appBussinessName, appDate, appDevId,
 				appDevCd, appDevName, appPosId, appPosCd, appPosName, reportType, sendBackSID, sendBackComment, delFlg);

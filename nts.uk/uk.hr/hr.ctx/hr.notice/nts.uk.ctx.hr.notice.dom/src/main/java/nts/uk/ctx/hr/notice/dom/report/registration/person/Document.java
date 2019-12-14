@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Document {
 
-	String cid; //会社ID
-	int docID; //書類ID
-	String docName; //書類名
-	String docRemarks; //備考
-	int sampleFileId; //サンプルファイルID
-	String sampleFileName; //サンプルファイル名
+	private String cid; //会社ID
+	private int docID; //書類ID
+	private String docName; //書類名
+	private String docRemarks; //備考
+	private int sampleFileId; //サンプルファイルID
+	private String sampleFileName; //サンプルファイル名
 
 	public static Document createFromJavaType(String cid, int docID, String docName, String docRemarks, int sampleFileId, String sampleFileName){
 		return new Document(cid, docID, docName, docRemarks, sampleFileId, sampleFileName);

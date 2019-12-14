@@ -17,11 +17,11 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.CountClass;
 @AllArgsConstructor
 public class ReportAnalysis {
 
-	String cid; //会社ID
-	int reportYearMonth; //届出年月
-	int  reportLayoutID; // 個別届出種類ID 
-	CountClass countClass; //カウント大区分
-	int countClass_s; //カウント小区分
-	int reportCount;//カウント数量
+	private String cid; //会社ID
+	private int reportYearMonth; //届出年月
+	private int  reportLayoutID; // 個別届出種類ID 
+	private CountClass countClass; //カウント大区分
+	private int countClass_s; //カウント小区分
+	private int reportCount;//カウント数量
 
 }

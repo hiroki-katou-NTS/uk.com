@@ -27,31 +27,31 @@ import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
 @NoArgsConstructor
 public class ApprovalPersonReport extends AggregateRoot{
  
-	String cid; //会社ID
-	String rootInstanceID; //ルートインスタンスID
-	int reportID; //届出ID
-	String reportName; //届出名
-	GeneralDateTime refDate; //基準日
-	GeneralDateTime inputDate; //入力日
-	GeneralDateTime appDate; //申請日
-	GeneralDateTime aprDate; //承認日
-	String aprSid; //承認者社員ID
-	String aprBussinessName; //承認者社員名
-	String emailAddress; //メールアドレス
-	int phaseNum; // フェーズ通番
-	ApprovalStatus aprStatusName; //承認状況
-	int aprNum;//承認者通番
-	boolean arpAgency;//代行承認
-	String_Any_400 comment; //コメント
-	ApprovalActivity aprActivity;//承認活性
-	EmailTransmissionClass emailTransmissionClass;//メール送信区分
-	String appSid; //申請者社員ID
-	String inputSid; //入力者社員ID
-	int  reportLayoutID;//個別届出種類ID
-	Optional<String> sendBackSID; //差し戻し先社員ID
-	Optional<SendBackClass> sendBackClass; //差し戻し区分
+	private String cid; //会社ID
+	private String rootSatteId; //ルートインスタンスID
+	private int reportID; //届出ID
+	private String reportName; //届出名
+	private GeneralDateTime refDate; //基準日
+	private GeneralDateTime inputDate; //入力日
+	private GeneralDateTime appDate; //申請日
+	private GeneralDateTime aprDate; //承認日
+	private String aprSid; //承認者社員ID
+	private String aprBussinessName; //承認者社員名
+	private String emailAddress; //メールアドレス
+	private int phaseNum; // フェーズ通番
+	private ApprovalStatus aprStatusName; //承認状況
+	private int aprNum;//承認者通番
+	private boolean arpAgency;//代行承認
+	private String_Any_400 comment; //コメント
+	private ApprovalActivity aprActivity;//承認活性
+	private EmailTransmissionClass emailTransmissionClass;//メール送信区分
+	private String appSid; //申請者社員ID
+	private String inputSid; //入力者社員ID
+	private int  reportLayoutID;//個別届出種類ID
+	private Optional<String> sendBackSID; //差し戻し先社員ID
+	private Optional<SendBackClass> sendBackClass; //差し戻し区分
 	
-	public ApprovalPersonReport(String cid, String rootInstanceID, int reportID, String reportName,
+	public ApprovalPersonReport(String cid, String rootSatteId, int reportID, String reportName,
 			GeneralDateTime refDate, GeneralDateTime inputDate, GeneralDateTime appDate, GeneralDateTime aprDate,
 			String aprSid, String aprBussinessName, String emailAddress, int phaseNum, int aprStatusName,
 			int aprNum, boolean arpAgency, String comment, int aprActivity,
@@ -59,7 +59,7 @@ public class ApprovalPersonReport extends AggregateRoot{
 			String sendBackSID, Integer sendBackClass) {
 		super();
 		this.cid = cid;
-		this.rootInstanceID = rootInstanceID;
+		this.rootSatteId = rootSatteId;
 		this.reportID = reportID;
 		this.reportName = reportName;
 		this.refDate = refDate;
@@ -83,13 +83,13 @@ public class ApprovalPersonReport extends AggregateRoot{
 		this.sendBackClass = sendBackClass == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(sendBackClass, SendBackClass.class));
 	}
 
-	public static ApprovalPersonReport createFromJavaType(String cid, String rootInstanceID, int reportID, String reportName,
+	public static ApprovalPersonReport createFromJavaType(String cid, String rootSatteId, int reportID, String reportName,
 			GeneralDateTime refDate, GeneralDateTime inputDate, GeneralDateTime appDate, GeneralDateTime aprDate,
 			String aprSid, String aprBussinessName, String emailAddress, int phaseNum, int aprStatusName,
 			int aprNum, boolean arpAgency, String comment, int aprActivity,
 			int emailTransmissionClass, String appSid, String inputSid, int reportLayoutID,
 			String sendBackSID, Integer sendBackClass){
-		return new ApprovalPersonReport(cid, rootInstanceID, reportID, reportName, refDate, inputDate, appDate, aprDate,
+		return new ApprovalPersonReport(cid, rootSatteId, reportID, reportName, refDate, inputDate, appDate, aprDate,
 				aprSid, aprBussinessName, emailAddress, phaseNum, aprStatusName, aprNum, arpAgency, comment,
 				aprActivity, emailTransmissionClass, appSid, inputSid, reportLayoutID, sendBackSID, sendBackClass);
 		

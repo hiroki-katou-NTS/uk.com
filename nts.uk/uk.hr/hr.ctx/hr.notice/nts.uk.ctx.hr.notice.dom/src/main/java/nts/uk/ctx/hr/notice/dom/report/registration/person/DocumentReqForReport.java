@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DocumentReqForReport {
 
-	String cid; //会社ID
-	int  reportLayoutID; // 個別届出種類ID
-	int docID; //書類ID
-	String docName; //書類名
-	int dispOrder; //表示順
-	boolean requiredDoc; //必須書類
+	private String cid; //会社ID
+	private int  reportLayoutID; // 個別届出種類ID
+	private int docID; //書類ID
+	private String docName; //書類名
+	private int dispOrder; //表示順
+	private boolean requiredDoc; //必須書類
 	
 	public static DocumentReqForReport createFromJavaType(String cid, int reportLayoutID, int docID, String docName, int dispOrder,
 			boolean requiredDoc){
