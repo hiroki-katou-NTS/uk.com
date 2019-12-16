@@ -22,12 +22,11 @@ public interface EmpSocialInsGradeHisRepository {
 
     List<EmpSocialInsGradeHis> getAllEmpSocialInsGradeHis();
 
-    Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisById(String employeeId, GeneralDate basDate);
+    Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisBySId(String employeeId);
 
     Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisById(String employeeId, String hisId);
 
-    Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisById(String employeeId);
+    Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisByHistId(String histId);
 
     Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisById(List<String> employeeIds, GeneralDate startDate);
-
 }

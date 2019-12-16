@@ -2,11 +2,10 @@ package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emp
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.GenericHistYMPeriod;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "QQSMT_EMP_SOC_INS_GRA_HIS")
-public class QqsdtEmpSocialInsGradeHis extends UkJpaEntity implements Serializable {
+public class QqsmtEmpSocialInsGradeHis extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,51 +29,60 @@ public class QqsdtEmpSocialInsGradeHis extends UkJpaEntity implements Serializab
      * ID
      */
     @EmbeddedId
-    public QqsdtEmpSocialInsGradeHisPk qqsdtEmpSocialInsGradeHisPk;
+    public QqsmtEmpSocialInsGradeHisPk qqsmtEmpSocialInsGradeHisPk;
+
+    /**
+     * 会社ID
+     */
+    private String cid;
 
     /**
      * 社員ID
      */
     @Basic(optional = false)
     @Column(name = "SID")
-    private String sId;
+    public String sId;
 
     /**
      * 期間.開始年月
      */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MON")
-    public GeneralDate startDate;
+    @Column(name = "START_YM")
+    public Integer startYM;
 
     /**
      * 期間.終了年月
      */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MON")
-    public GeneralDate endDate;
+    @Column(name = "END_YM")
+    public Integer endYM;
 
     @Override
     protected Object getKey() {
-        return qqsdtEmpSocialInsGradeHisPk;
+        return qqsmtEmpSocialInsGradeHisPk;
     }
 
-    public static EmpSocialInsGradeHis toDomain(List<QqsdtEmpSocialInsGradeHis> entities) {
+    /*public static List<EmpSocialInsGradeHis> toDoMain(List<QqsmtEmpSocialInsGradeHis> entities) {
+
+    }*/
+
+    public static EmpSocialInsGradeHis toDomain(List<QqsmtEmpSocialInsGradeHis> entities) {
         if(entities.size() < 1){
             return null;
         }
 
         return new EmpSocialInsGradeHis(
                 entities.get(0).sId,
-                entities.stream().map(x -> new GenericHistYMPeriod(x.qqsdtEmpSocialInsGradeHisPk.historyId, new DateHistoryItem(x.qqsdtEmpSocialInsGradeHisPk.historyId, new DatePeriod(x.startDate, x.endDate)))).collect(Collectors.toList()));
+                entities.stream().map(x -> new GenericHistYMPeriod(x.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(x.startYM), new YearMonth(x.endYM)))).collect(Collectors.toList()));
     }
 
     public EmpSocialInsGradeHis toDomain() {
         List<GenericHistYMPeriod> date = new ArrayList<>();
-        date.add(new GenericHistYMPeriod(this.qqsdtEmpSocialInsGradeHisPk.historyId, new DateHistoryItem(this.qqsdtEmpSocialInsGradeHisPk.historyId, new DatePeriod(this.startDate, endDate))));
+        date.add(new GenericHistYMPeriod(this.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(startYM), new YearMonth(endYM))));
         return new EmpSocialInsGradeHis(this.sId, date);
     }
 
-    public static QqsdtEmpSocialInsGradeHis toEntity(EmpSocialInsGradeHis domain) {
+    public static QqsmtEmpSocialInsGradeHis toEntity(EmpSocialInsGradeHis domain) {
         return null;
     }
 }

@@ -2,12 +2,14 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialins
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 年月期間の汎用履歴項目
  */
 @Getter
-public class GenericHistYMPeriod extends DomainObject {
+public class GenericHistYMPeriod extends YearMonthHistoryItem {
 
     /**
      * 履歴ID
@@ -17,10 +19,10 @@ public class GenericHistYMPeriod extends DomainObject {
     /**
      * 期間
      */
-    private DateHistoryItem datePeriod;
+    private YearMonthPeriod ymPeriod;
 
-    public GenericHistYMPeriod(String histId, DateHistoryItem datePeriod) {
-        this.histId = histId;
-        this.datePeriod = datePeriod;
+
+    public GenericHistYMPeriod(String historyId, YearMonthPeriod period) {
+        super(historyId, period);
     }
 }

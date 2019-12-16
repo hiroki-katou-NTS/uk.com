@@ -1,6 +1,9 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,6 +13,9 @@ import java.util.Optional;
  * 社員社会保険等級情報
  */
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmpSocialInsGradeInfo extends AggregateRoot {
     /**
      * 履歴ID

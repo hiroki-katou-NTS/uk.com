@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QqsdtEmpSocialInsGradeHisPk implements Serializable {
+public class QqsmtEmpSocialInsGradeHisPk implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
