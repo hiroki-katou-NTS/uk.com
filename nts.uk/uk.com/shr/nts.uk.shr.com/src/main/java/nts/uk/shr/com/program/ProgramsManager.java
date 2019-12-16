@@ -2430,6 +2430,15 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 	 */
 	public static final Program JMM018A = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_A",
 			"/view/jmm/018/a/index.xhtml");
+	
+	/**
+	 * JHN011
+	 */
+	public static final Program JHN011B = new Program(WebAppId.HR, ProgramIdConsts.JHN011B, "JHN011_B",
+			"/view/jhn/011/b/index.xhtml");
+	public static final Program JHN011C = new Program(WebAppId.HR, ProgramIdConsts.JHN011C, "JHN011_C",
+			"/view/jhn/011/c/index.xhtml");
+	
 
     /**     * The Constant CCG007A. IN MOBILE     */
     public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07A, "CCG007_51",

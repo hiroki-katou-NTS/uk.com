@@ -8,7 +8,6 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
 import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
-import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInforAdapter;
 
 
 @Path("interview")

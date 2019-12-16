@@ -2,7 +2,6 @@ package nts.uk.ctx.hr.develop.dom.interview.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.hr.develop.dom.interview.SubInterviewer;
 @Getter
 @Setter
 public class SubInterviewInfor {

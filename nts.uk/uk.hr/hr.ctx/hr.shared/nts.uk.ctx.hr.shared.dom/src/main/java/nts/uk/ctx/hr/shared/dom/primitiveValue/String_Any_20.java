@@ -3,7 +3,7 @@ package nts.uk.ctx.hr.shared.dom.primitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(20)
+@StringMaxLength(40)
 public class String_Any_20 extends StringPrimitiveValue<String_Any_20> {
 
 	/** serialVersionUID */
