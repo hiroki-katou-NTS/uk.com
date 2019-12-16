@@ -16,7 +16,7 @@ public class BentoReservationDetail extends ValueObject {
 	 * 弁当メニュー枠番
 	 */
 	@Getter
-	private final Integer frameNo;
+	private final int frameNo;
 	
 	/**
 	 * 予約登録日時
@@ -36,7 +36,7 @@ public class BentoReservationDetail extends ValueObject {
 	@Getter
 	private final BentoReservationCount bentoCount;
 	
-	public BentoReservationDetail(Integer frameNo, GeneralDateTime dateTime, boolean autoReservation, BentoReservationCount bentoCount) {
+	public BentoReservationDetail(int frameNo, GeneralDateTime dateTime, boolean autoReservation, BentoReservationCount bentoCount) {
 		this.frameNo = frameNo;
 		this.dateTime = dateTime;
 		this.autoReservation = autoReservation;
@@ -49,7 +49,7 @@ public class BentoReservationDetail extends ValueObject {
 	 * @param bentoCount
 	 * @return
 	 */
-	public static BentoReservationDetail createNew(Integer frameNo, BentoReservationCount bentoCount) {
+	public static BentoReservationDetail createNew(int frameNo, BentoReservationCount bentoCount) {
 		return new BentoReservationDetail(
 				frameNo, 
 				GeneralDateTime.now(), 

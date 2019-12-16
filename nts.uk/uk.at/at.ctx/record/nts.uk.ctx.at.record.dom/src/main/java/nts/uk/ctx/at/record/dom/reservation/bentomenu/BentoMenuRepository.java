@@ -9,7 +9,7 @@ public interface BentoMenuRepository {
 	
 	public BentoMenu getBentoMenu(String companyID, GeneralDate date);
 	
-	public Bento getBento(String companyID, GeneralDate date, Integer frameNo);
+	public Bento getBento(String companyID, GeneralDate date, int frameNo);
 	
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period);
 	

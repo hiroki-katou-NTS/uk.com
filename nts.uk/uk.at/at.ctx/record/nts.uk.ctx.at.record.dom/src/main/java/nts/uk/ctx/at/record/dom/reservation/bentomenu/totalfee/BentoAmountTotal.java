@@ -16,13 +16,13 @@ public class BentoAmountTotal {
 	 * 金額１
 	 */
 	@Getter
-	private final Integer totalAmount1;
+	private final int totalAmount1;
 	
 	/**
 	 * 金額２
 	 */
 	@Getter
-	private final Integer totalAmount2;
+	private final int totalAmount2;
 	
 	/**
 	 * 明細リスト
@@ -30,7 +30,7 @@ public class BentoAmountTotal {
 	@Getter
 	private final List<BentoDetailsAmountTotal> detailsAmountTotal;
 	
-	public BentoAmountTotal(Integer totalAmount1, Integer totalAmount2, List<BentoDetailsAmountTotal> detailsAmountTotal) {
+	public BentoAmountTotal(int totalAmount1, int totalAmount2, List<BentoDetailsAmountTotal> detailsAmountTotal) {
 		this.totalAmount1 = totalAmount1;
 		this.totalAmount2 = totalAmount2;
 		this.detailsAmountTotal = detailsAmountTotal;

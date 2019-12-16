@@ -13,21 +13,21 @@ public class BentoDetailsAmountTotal {
 	 * 	枠番
 	 */
 	@Getter
-	private Integer frameNo;
+	private int frameNo;
 	
 	/**
 	 * 金額１
 	 */
 	@Getter
-	private final Integer amount1;
+	private final int amount1;
 	
 	/**
 	 * 金額２
 	 */
 	@Getter
-	private final Integer amount2;
+	private final int amount2;
 	
-	public BentoDetailsAmountTotal(Integer frameNo, Integer amount1, Integer amount2) {
+	public BentoDetailsAmountTotal(int frameNo, int amount1, int amount2) {
 		this.frameNo = frameNo;
 		this.amount1 = amount1;
 		this.amount2 = amount2;
@@ -41,7 +41,7 @@ public class BentoDetailsAmountTotal {
 	 * @param amount2
 	 * @return
 	 */
-	public static BentoDetailsAmountTotal calculate(Integer frameNo, Integer quantity, Integer amount1, Integer amount2) {
+	public static BentoDetailsAmountTotal calculate(int frameNo, int quantity, int amount1, int amount2) {
 		return new BentoDetailsAmountTotal(
 						frameNo, 
 						quantity * amount1, 

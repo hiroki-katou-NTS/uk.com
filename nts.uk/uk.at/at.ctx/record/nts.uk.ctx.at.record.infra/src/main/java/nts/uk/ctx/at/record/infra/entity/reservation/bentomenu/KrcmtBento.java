@@ -35,10 +35,10 @@ public class KrcmtBento extends UkJpaEntity {
 	public String unitName;
 	
 	@Column(name = "PRICE1")
-	public Integer price1;
+	public int price1;
 	
 	@Column(name = "PRICE2")
-	public Integer price2;
+	public int price2;
 	
 	@Column(name = "RESERVATION1_ATR")
 	public boolean reservationAtr1;

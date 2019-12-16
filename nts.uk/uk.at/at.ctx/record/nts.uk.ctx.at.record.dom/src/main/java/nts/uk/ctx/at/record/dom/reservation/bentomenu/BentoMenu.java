@@ -115,7 +115,7 @@ public class BentoMenu extends AggregateRoot {
 	 * @param count
 	 * @return
 	 */
-	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, Integer frameNo, BentoReservationCount count) {
+	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, int frameNo, BentoReservationCount count) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
 				.map(x -> x.reserve(reservationDate, count)).get();
 	}
@@ -126,7 +126,7 @@ public class BentoMenu extends AggregateRoot {
 	 * @param quantity
 	 * @return
 	 */
-	private BentoDetailsAmountTotal calculateAmount(Integer frameNo, Integer quantity) {
+	private BentoDetailsAmountTotal calculateAmount(int frameNo, int quantity) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
 				.map(x -> x.calculateAmount(quantity)).orElseGet(() -> {
 					throw new RuntimeException("System Error");

@@ -16,7 +16,7 @@ public class BentoItemByClosingTime {
 	 * 枠番
 	 */
 	@Getter
-	private final Integer frameNo;
+	private final int frameNo;
 	
 	/**
 	 * 弁当名
@@ -42,7 +42,7 @@ public class BentoItemByClosingTime {
 	@Getter
 	private BentoReservationUnitName unit;
 	
-	public BentoItemByClosingTime(Integer frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2, BentoReservationUnitName unit) {
+	public BentoItemByClosingTime(int frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2, BentoReservationUnitName unit) {
 		this.frameNo = frameNo;
 		this.name = name;
 		this.amount1 = amount1;

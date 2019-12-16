@@ -16,7 +16,7 @@ public class BentoReservationCount extends IntegerPrimitiveValue<BentoReservatio
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BentoReservationCount(Integer rawValue) {
+	public BentoReservationCount(int rawValue) {
 		super(rawValue);
 	}
 

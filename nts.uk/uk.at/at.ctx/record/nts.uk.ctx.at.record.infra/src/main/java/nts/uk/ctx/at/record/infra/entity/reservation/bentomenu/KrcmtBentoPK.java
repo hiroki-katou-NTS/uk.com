@@ -18,6 +18,6 @@ public class KrcmtBentoPK {
 	public String histID;
 	
 	@Column(name = "MENU_FRAME")
-	public Integer frameNo;
+	public int frameNo;
 	
 }

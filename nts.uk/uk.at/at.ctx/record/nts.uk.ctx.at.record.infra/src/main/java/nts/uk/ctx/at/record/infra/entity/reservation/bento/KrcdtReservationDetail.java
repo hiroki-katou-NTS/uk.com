@@ -28,10 +28,10 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 	public String contractCD;
 	
 	@Column(name = "QUANTITY")
-	public Integer quantity;
+	public int quantity;
 	
 	@Column(name = "AUTO_RESERVATION_ATR")
-	public Integer autoReservation;
+	public int autoReservation;
 	
 	@ManyToOne
     @PrimaryKeyJoinColumns({

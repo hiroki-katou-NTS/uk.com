@@ -39,13 +39,13 @@ public class KrcdtReservation extends UkJpaEntity {
 	public GeneralDate date;
 	
 	@Column(name = "RESERVATION_FRAME")
-	public Integer frameAtr;
+	public int frameAtr;
 	
 	@Column(name = "CARD_NO")
 	public String cardNo;
 	
 	@Column(name = "ORDERED")
-	public Integer ordered;
+	public int ordered;
 	
 	@OneToMany(targetEntity = KrcdtReservationDetail.class, mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KRCDT_RESERVATION_DETAIL")

@@ -75,12 +75,12 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		public String reservationID;
 		public String contractCD;
 		public GeneralDate date;
-		public Integer frameAtr;
+		public int frameAtr;
 		public String cardNo;
 		public boolean ordered;
-		public Integer frameNo;
+		public int frameNo;
 		public GeneralDateTime registerDate;
-		public Integer quantity;
+		public int quantity;
 		public boolean autoReservation;
 	}
 	
@@ -113,7 +113,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 							first.getReservationID());
 					String contractCD = first.getContractCD();
 					GeneralDate date = first.getDate();
-					Integer frameAtr = first.getFrameAtr();
+					int frameAtr = first.getFrameAtr();
 					String cardNo = first.getCardNo();
 					boolean ordered= first.isOrdered();
 					List<KrcdtReservationDetail> reservationDetails = x.getValue().stream()
@@ -124,7 +124,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 										y.getValue().get(0).getReservationID(), 
 										y.getValue().get(0).getFrameNo(), 
 										y.getValue().get(0).getRegisterDate());
-								Integer quantity = y.getValue().get(0).getQuantity();
+								int quantity = y.getValue().get(0).getQuantity();
 								boolean autoReservation = y.getValue().get(0).isAutoReservation();
 								return new KrcdtReservationDetail(detailPk, contractCD, quantity, autoReservation ? 1 : 0, null);
 							}).collect(Collectors.toList());

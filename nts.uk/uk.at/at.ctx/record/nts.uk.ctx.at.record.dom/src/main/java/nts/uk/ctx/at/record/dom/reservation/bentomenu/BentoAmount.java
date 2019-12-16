@@ -16,7 +16,7 @@ public class BentoAmount extends IntegerPrimitiveValue<BentoAmount>{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BentoAmount(Integer rawValue) {
+	public BentoAmount(int rawValue) {
 		super(rawValue);
 	}
 

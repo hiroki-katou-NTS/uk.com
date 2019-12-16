@@ -40,7 +40,7 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 	public Integer reservationStartTime1;
 	
 	@Column(name = "RESERVATION_FRAME1_END_TIME")
-	public Integer reservationEndTime1;
+	public int reservationEndTime1;
 	
 	@Column(name = "RESERVATION_FRAME2_NAME")
 	public String reservationFrameName2;
@@ -66,7 +66,7 @@ public class KrcmtBentoMenu extends UkJpaEntity {
 			closingTime2 = Optional.of(new ReservationClosingTime(
 					new BentoReservationTimeName(reservationFrameName2), 
 					new BentoReservationTime(reservationEndTime2), 
-					reservationStartTime1==null ? Optional.empty() : Optional.of(new BentoReservationTime(reservationStartTime2))));
+					reservationStartTime2==null ? Optional.empty() : Optional.of(new BentoReservationTime(reservationStartTime2))));
 		}
 		return new BentoMenu(
 				pk.histID, 

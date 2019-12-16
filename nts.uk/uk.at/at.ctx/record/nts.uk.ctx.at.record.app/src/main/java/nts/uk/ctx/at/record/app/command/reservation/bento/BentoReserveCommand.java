@@ -30,11 +30,11 @@ public class BentoReserveCommand {
 	@Value
 	public static class BentoReservationDetailCommand {
 		
-		private Integer closingTimeFrame;
+		private int closingTimeFrame;
 		
-		private Integer frameNo;
+		private int frameNo;
 		
-		private Integer bentoCount;
+		private int bentoCount;
 		
 		public ReservationClosingTimeFrame getClosingTimeFrame() {
 			return EnumAdaptor.valueOf(closingTimeFrame, ReservationClosingTimeFrame.class);

@@ -19,7 +19,7 @@ public class Bento {
 	 * 枠番
 	 */
 	@Getter
-	private final Integer frameNo;
+	private final int frameNo;
 	
 	/**
 	 * 弁当名
@@ -57,7 +57,7 @@ public class Bento {
 	@Getter
 	private boolean reservationTime2Atr;
 	
-	public Bento(Integer frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2,
+	public Bento(int frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2,
 			BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr) {
 		this.frameNo = frameNo; 
 		this.name = name; 

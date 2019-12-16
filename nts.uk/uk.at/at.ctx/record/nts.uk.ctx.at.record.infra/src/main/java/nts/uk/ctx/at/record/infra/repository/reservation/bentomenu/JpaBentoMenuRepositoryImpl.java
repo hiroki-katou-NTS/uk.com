@@ -69,17 +69,17 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		public String contractCD;
 		public String reservationFrameName1;
 		public Integer reservationStartTime1;
-		public Integer reservationEndTime1;
+		public int reservationEndTime1;
 		public String reservationFrameName2;
 		public Integer reservationStartTime2;
 		public Integer reservationEndTime2;
 		public GeneralDate startDate;
 		public GeneralDate endDate;
-		public Integer frameNo;
+		public int frameNo;
 		public String bentoName;
 		public String unitName;
-		public Integer price1;
-		public Integer price2;
+		public int price1;
+		public int price2;
 		public boolean reservationAtr1;
 		public boolean reservationAtr2;
 	}
@@ -119,7 +119,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					List<Bento> bentos = x.getValue().stream()
 							.collect(Collectors.groupingBy(FullJoinBentoMenu::getFrameNo))
 							.entrySet().stream().map(y -> {
-								Integer frameNo = y.getValue().get(0).getFrameNo();
+								int frameNo = y.getValue().get(0).getFrameNo();
 								BentoName name = new BentoName(y.getValue().get(0).getBentoName()); 
 								BentoAmount amount1 = new BentoAmount(y.getValue().get(0).getPrice1());
 								BentoAmount amount2 = new BentoAmount(y.getValue().get(0).getPrice2());
@@ -130,7 +130,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 							}).collect(Collectors.toList());
 					String reservationFrameName1 = first.getReservationFrameName1();
 					Integer reservationStartTime1 = first.getReservationStartTime1();
-					Integer reservationEndTime1 = first.getReservationEndTime1();
+					int reservationEndTime1 = first.getReservationEndTime1();
 					String reservationFrameName2 = first.getReservationFrameName2();
 					Integer reservationStartTime2 = first.getReservationStartTime2();
 					Integer reservationEndTime2 = first.getReservationEndTime2();
@@ -139,7 +139,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 						closingTime2 = Optional.of(new ReservationClosingTime(
 								new BentoReservationTimeName(reservationFrameName2), 
 								new BentoReservationTime(reservationEndTime2), 
-								reservationStartTime1==null ? Optional.empty() : Optional.of(new BentoReservationTime(reservationStartTime2))));
+								reservationStartTime2==null ? Optional.empty() : Optional.of(new BentoReservationTime(reservationStartTime2))));
 					}
 					return new BentoMenu(
 							historyID, 
@@ -170,7 +170,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 
 	@Override
 	@SneakyThrows
-	public Bento getBento(String companyID, GeneralDate date, Integer frameNo) {
+	public Bento getBento(String companyID, GeneralDate date, int frameNo) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
