@@ -1965,30 +1965,30 @@ module nts.uk.at.view.kmf022 {
                 }
             }
             initDataA15(): void {
-                let self = this;
-                let date = {
-                    baseDate: new Date().toISOString()
-                };
-                self.listDataA15([]);
-                service.findJobId(date).done((data: any) => {
-                    if (data) {
-                        let jobIds = _.map(data, 'id');
-
-                        let id = {
-                            "jobtitleId": jobIds
-                        };
-                        service.findJobTitleSearchList(id).done(obj => {
-                            _.forEach(data, element => {
-                                let finder = _.find(obj, ['jobId', element.id]);
-                                if (finder) {
-                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
-                                } else {
-                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
-                                }
-                            });
-                        });
-                    }
-                });
+//                let self = this;
+//                let date = {
+//                    baseDate: new Date().toISOString()
+//                };
+//                self.listDataA15([]);
+//                service.findJobId(date).done((data: any) => {
+//                    if (data) {
+//                        let jobIds = _.map(data, 'id');
+//
+//                        let id = {
+//                            "jobtitleId": jobIds
+//                        };
+//                        service.findJobTitleSearchList(id).done(obj => {
+//                            _.forEach(data, element => {
+//                                let finder = _.find(obj, ['jobId', element.id]);
+//                                if (finder) {
+//                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
+//                                } else {
+//                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
+//                                }
+//                            });
+//                        });
+//                    }
+//                });
             }
 
             initDataA16(allData: any): void {
