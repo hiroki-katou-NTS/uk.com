@@ -12,11 +12,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
@@ -88,6 +90,10 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()), 
 				period, 
 				ordered);
+		
+		if(CollectionUtil.isEmpty(bentoReservationLst)) {
+			throw new BusinessException("Msg_741");
+		}
 		
 		// get(年月日)
 		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());

@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmr005.a.viewmodel {
     import service = nts.uk.at.view.kmr005.a.service;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         
         // employee select
@@ -144,6 +145,12 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         exportFile() {
             let self = this;
+            if(_.isEmpty(self.employeeList())) {
+                dialog.alertError({ messageId : "Msg_1587" }).then(function(){
+                    nts.uk.ui.block.clear();
+                });
+                return;    
+            }
             let param = {
                 empLst: _.map(self.employeeList(), (o) => o.id),
                 title: self.title(),
@@ -155,7 +162,9 @@ module nts.uk.at.view.kmr005.a.viewmodel {
             service.exportFile(param).done((data) => {
                 nts.uk.ui.block.clear();        
             }).fail((res: any) => {
-                nts.uk.ui.block.clear();     
+                dialog.alertError({ messageId : res.messageId }).then(function(){
+                    nts.uk.ui.block.clear();
+                });   
             });  
         }
     }
