@@ -136,14 +136,9 @@ module nts.uk.at.view.kaf005.b {
                         self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
                         $("#fixed-overtime-hour-table").remove();
                         self.timeTableEdit(self.prePostSelected());
-                        
                         $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                         $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                         $("#fixed-table").ntsFixedTable({ height: 120 });
-                        $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                         $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                     } else {                       
                         if (rebind == true) {
@@ -155,15 +150,10 @@ module nts.uk.at.view.kaf005.b {
                             self.timeTableEdit(self.prePostSelected());
                             ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
                             ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
-                            
                             $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
-                            $("#fixed-break_time-table").ntsFixedTable({ height: 96 });
-                            $("#fixed-bonus_time-table").ntsFixedTable({ height: 96 });
                             $("#fixed-table-indicate").ntsFixedTable({ height: 96 });
                             $("#fixed-table").ntsFixedTable({ height: 96 });
-                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
-                            $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 96 });
-                            $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');        
+                            $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');  
                         }    
                     }
                 });
@@ -453,7 +443,7 @@ module nts.uk.at.view.kaf005.b {
                 let color = '';
                 if(nts.uk.util.isNullOrUndefined(calcValue.applicationTime)){
                     if(self.editable()&& self.enableOvertimeInput()){
-                        color = 'none';
+                        color = 'transparent';
                     } else {
                         color = '#ebebe4';
                     }  
@@ -491,7 +481,7 @@ module nts.uk.at.view.kaf005.b {
                     return '#F69164';
                 }
                 if(self.editable()&& self.enableOvertimeInput()){
-                    return 'none';    
+                    return 'transparent';    
                 } else {
                     return '#ebebe4';
                 }
@@ -889,9 +879,9 @@ module nts.uk.at.view.kaf005.b {
                         overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
                         if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                             if(self.editable()&& self.enableOvertimeInput()){
-                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                overtimeHour.color('none');
+                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                overtimeHour.color('transparent');
                                 return; 
                             } else {
                                 $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
@@ -917,9 +907,9 @@ module nts.uk.at.view.kaf005.b {
                     } else {
                         if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                             if(self.editable()&& self.enableOvertimeInput()){
-                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                overtimeHour.color('none');
+                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                overtimeHour.color('transparent');
                                 return; 
                             } else {
                                 $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
@@ -1040,9 +1030,9 @@ module nts.uk.at.view.kaf005.b {
                 }
                 if(self.editable()&& self.enableOvertimeInput()){
                     if(calcChange){
-                        $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                        $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                        return 'none'; 
+                        $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                        $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                        return 'transparent'; 
                     }
                 } else {
                     if(calcChange){
