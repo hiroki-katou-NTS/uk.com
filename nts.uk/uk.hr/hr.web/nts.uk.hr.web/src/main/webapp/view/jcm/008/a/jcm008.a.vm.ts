@@ -108,7 +108,7 @@ module jcm008.a {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: false,
-                autoFitWindow: true,
+                // autoFitWindow: true,
                 columns: [
                     { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                     { headerText: getText('JCM008_A222_23'), key: 'retirementStatus', dataType: 'string', width: '80px', ntsControl: 'RetirementStatusCb' },
@@ -217,6 +217,46 @@ module jcm008.a {
             // Toggle
             
         };
+
+        public choseDepartment(){
+            let self = this;
+            block.grayout();
+            setShared('inputCDL008', {  
+                selectedCodes: [],
+                baseDate: moment(new Date()).toDate(),
+                isMultiple: true, 
+                selectedSystemType:1 , 
+                isrestrictionOfReferenceRange:false , 
+                showNoSelection:false , 
+                isShowBaseDate:true });
+            modal("/view/jdl/0110/a/index.xhtml").onClosed(function(){
+                block.clear();
+                let data = getShared('outputCDL008');
+                let baseDate = getShared('baseDateCDL008');  
+                console.log(data);
+                console.log(baseDate);
+            });
+        }
+
+        public choseEmployment(){
+            let self = this;
+            block.grayout();
+            setShared('inputCDL008', {  
+                selectedCodes: [],
+                baseDate: moment(new Date()).toDate(),
+                isMultiple: true, 
+                selectedSystemType:1 , 
+                isrestrictionOfReferenceRange:false , 
+                showNoSelection:false , 
+                isShowBaseDate:true });
+            modal("/view/jdl/0080/a/index.xhtml").onClosed(function(){
+                block.clear();
+                let data = getShared('outputCDL008');
+                let baseDate = getShared('baseDateCDL008');  
+                console.log(data);
+                console.log(baseDate);
+            });
+        }
     }
 
 }
