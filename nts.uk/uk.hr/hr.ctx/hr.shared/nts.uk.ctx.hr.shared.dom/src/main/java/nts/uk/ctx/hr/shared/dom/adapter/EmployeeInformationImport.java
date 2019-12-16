@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.shared.dom.adapter;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Builder
 @Data
@@ -35,21 +36,20 @@ public class EmployeeInformationImport {
 
 	/** The employment cls. */
 	Integer employmentCls; // 就業区分
+	
+	// 個人ID
+	String personID;
 
-	public EmployeeInformationImport(String employeeId, String employeeCode, String businessName,
-			String businessNameKana, WorkplaceImport workplace, ClassificationImport classification,
-			DepartmentImport department, PositionImport position, EmploymentImport employment, Integer employmentCls) {
-		super();
-		this.employeeId = employeeId;
-		this.employeeCode = employeeCode;
-		this.businessName = businessName;
-		this.businessNameKana = businessNameKana;
-		this.workplace = workplace;
-		this.classification = classification;
-		this.department = department;
-		this.position = position;
-		this.employment = employment;
-		this.employmentCls = employmentCls;
-	}
+	// 社員名
+	String employeeName;
+
+	// 顔写真ファイル
+	FacePhotoFileImport avatarFile;
+
+	// 誕生日
+	GeneralDate birthday;
+
+	// 年齢
+	int age;
 	
 }
