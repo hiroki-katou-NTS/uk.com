@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 
 /**
  * @author thanhpv

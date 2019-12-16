@@ -98,7 +98,7 @@ public class RetirementInformationFinder {
 	/**
 	 * 2.定年退職対象者を検索する(Search đối tượng nghỉ hưu)
 	 */
-	public SearchRetiredResult searchRetiredEmployees(SearchRetiredEmployeesQuery query) {
+	public SearchRetiredResultDto searchRetiredEmployees(SearchRetiredEmployeesQuery query) {
 
 		// アルゴリズム[検索事前チェック]を実行する(Thực hiện thuật toan [check pre-search ])
 		checkPreSearch(query);
@@ -111,16 +111,20 @@ public class RetirementInformationFinder {
 		}
 		// アルゴリズム[定年退職者一覧の取得]を実行する(Thực hiện thuật toán [lấy danh sách người
 		// nghỉ hưu])
-		SearchRetiredResult result = getListRetiredEmployees(query);
+		SearchRetiredResultDto result = getListRetiredEmployees(query);
 		// アルゴリズム[社員情報リストを取得]を実行する xử lý này tách thành 1 API riêng
-		
-		List<String> sIDs = result.getRetiredEmployees().stream().map(x-> x.getSId()).collect(Collectors.toList());
-		this.empInfoAdaptor.getEmployeeInfos(Optional.ofNullable(null), sIDs, GeneralDate.today());
-		
+
+		List<String> sIDs = result.getRetiredEmployees().stream().map(x -> x.getSId()).collect(Collectors.toList());
+
+		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor
+				.getEmployeeInfos(Optional.ofNullable(null), sIDs, GeneralDate.today());
+
+		result.setEmployeeImports(employeeImports);
+
 		return result;
 	}
 
-	private SearchRetiredResult getListRetiredEmployees(SearchRetiredEmployeesQuery query) {
+	private SearchRetiredResultDto getListRetiredEmployees(SearchRetiredEmployeesQuery query) {
 
 		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
@@ -144,7 +148,7 @@ public class RetirementInformationFinder {
 		return createListRetiredEmployees(retirementEmployees, retiredEmployees);
 	}
 
-	private SearchRetiredResult createListRetiredEmployees(List<RetirementInformation> retirementEmployees,
+	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation> retirementEmployees,
 			List<PlannedRetirement> retiredEmployees) {
 		List<PlannedRetirement> result = new ArrayList<PlannedRetirement>();
 
@@ -166,7 +170,7 @@ public class RetirementInformationFinder {
 		String cId = AppContexts.user().companyId();
 		InterviewSummary interView = this.interviewSum.getInterviewInfo(cId, InterviewCategory.RETIREMENT_AGE.value,
 				employeeIds, false, true, true, true);
-		return SearchRetiredResult.builder().retiredEmployees(result).interView(interView).build();
+		return SearchRetiredResultDto.builder().retiredEmployees(result).interView(interView).build();
 
 	}
 
@@ -372,12 +376,12 @@ public class RetirementInformationFinder {
 	}
 
 	private MandatoryRetirementRegulation getRetirementRules(String cId, String hisId, GeneralDate baseDate) {
-		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisId);
-		if (mada == null) {
+		Optional<MandatoryRetirementRegulation> madaOpt = this.medaRepo.getMandatoryRetirementRegulation(cId, hisId);
+		if (!madaOpt.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 
-		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
+		switch (madaOpt.get().getRetireDateTerm().getRetireDateTerm().value) {
 		case 0:
 		case 1:
 		case 2:
@@ -394,7 +398,7 @@ public class RetirementInformationFinder {
 			break;
 		}
 
-		return mada;
+		return madaOpt.get();
 	}
 
 	private String getRetiredEmployees(String cId, GeneralDate baseDate) {
@@ -495,8 +499,8 @@ public class RetirementInformationFinder {
 
 		// ドメインモデル [定年退職の就業規則] を取得する (Lấy domain
 		// [MandatoryRetirementRegulation])
-		MandatoryRetirementRegulation mada = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
-		if (mada == null) {
+		Optional<MandatoryRetirementRegulation> madaOpt = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
+		if (!madaOpt.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 
@@ -530,9 +534,9 @@ public class RetirementInformationFinder {
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
 
-		mada.getMandatoryRetireTerm().forEach(x -> {
+		madaOpt.get().getMandatoryRetireTerm().forEach(x -> {
 
-			retirePlanCourses.addAll(getRetirePlanCoursesData(mada, x, empInfos, retires));
+			retirePlanCourses.addAll(getRetirePlanCoursesData(madaOpt.get(), x, empInfos, retires));
 		});
 
 		return retirePlanCourses;

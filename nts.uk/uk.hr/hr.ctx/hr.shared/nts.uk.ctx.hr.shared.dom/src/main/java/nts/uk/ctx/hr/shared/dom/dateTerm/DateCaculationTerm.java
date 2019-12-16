@@ -26,9 +26,9 @@ public class DateCaculationTerm extends DomainObject{
 	/** 指定日 */
 	private Optional<DateSelectItem> dateSettingDate;
 	
-	public static DateCaculationTerm createFromJavaType(int dateTerm, Integer dateSettingNum, Integer dateSettingDate) {
+	public static DateCaculationTerm createFromJavaType(int calculationTerm, Integer dateSettingNum, Integer dateSettingDate) {
 		return new DateCaculationTerm(
-				EnumAdaptor.valueOf(dateTerm, DateRule.class),
+				EnumAdaptor.valueOf(calculationTerm, DateRule.class),
 				dateSettingNum,
 				dateSettingDate == null ? Optional.empty(): Optional.of(EnumAdaptor.valueOf(dateSettingDate, DateSelectItem.class))
 				);
