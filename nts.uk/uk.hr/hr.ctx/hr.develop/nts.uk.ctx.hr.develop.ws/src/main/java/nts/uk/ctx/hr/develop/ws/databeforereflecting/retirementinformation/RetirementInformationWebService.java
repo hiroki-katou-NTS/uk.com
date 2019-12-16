@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetiDateDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementInformationFinder;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
 
 @Path("databeforereflecting/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,4 +23,11 @@ public class RetirementInformationWebService {
 	public RetiDateDto startPage() {
 		return this.finder.startPage();
 	}
+	
+	@POST
+	@Path("search-retired")
+	public SearchRetiredResultDto searchRetiredEmployees(SearchRetiredEmployeesQuery query) {
+		return this.finder.searchRetiredEmployees(query);
+	}
+	
 }

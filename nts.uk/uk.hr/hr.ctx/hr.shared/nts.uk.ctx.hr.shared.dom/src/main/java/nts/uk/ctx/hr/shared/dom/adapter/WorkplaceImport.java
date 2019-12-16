@@ -10,13 +10,13 @@ public class WorkplaceImport {
 	private String workplaceId; // 職場ID
 
 	/** The workplace code. */
-	private String workplaceCode; //職場コード
-	
+	private String workplaceCode; // 職場コード
+
 	/** The workplace generic name. */
-	private String workplaceGenericName; //職場総称
-	
+	private String workplaceGenericName; // 職場総称
+
 	/** The workplace name. */
-	private String workplaceName; //職場表示名
+	private String workplaceName; // 職場表示名
 
 	public WorkplaceImport(String workplaceId, String workplaceCode, String workplaceGenericName,
 			String workplaceName) {
@@ -26,6 +26,4 @@ public class WorkplaceImport {
 		this.workplaceGenericName = workplaceGenericName;
 		this.workplaceName = workplaceName;
 	}
-
-	
 }

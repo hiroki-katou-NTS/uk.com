@@ -19,6 +19,6 @@ public class JshmtRetireEvalItemPK implements Serializable {
 	public String historyId;
 	
 	@Column(name = "EVALUATION_ITEM")
-	public String evaluationItem;
+	public Integer evaluationItem;
 
 }

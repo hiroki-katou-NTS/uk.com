@@ -2,7 +2,7 @@ package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.fin
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.ReferEvaluationItem;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 
 @Data
 @AllArgsConstructor
