@@ -83,7 +83,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	private ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
 		String companyID = AppContexts.user().companyId();
 		
-		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().companyCode());
+		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().contractCode());
 		
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
