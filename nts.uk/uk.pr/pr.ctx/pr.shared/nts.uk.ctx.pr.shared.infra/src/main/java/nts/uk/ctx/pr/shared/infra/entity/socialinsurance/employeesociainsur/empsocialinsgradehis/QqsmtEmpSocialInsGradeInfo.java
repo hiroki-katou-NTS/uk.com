@@ -16,12 +16,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "QQSMT_EMP_SOC_INS_GRA_INF")
-public class QqsmpEmpSocialInsGradeInfo extends UkJpaEntity implements Serializable {
+public class QqsmtEmpSocialInsGradeInfo extends UkJpaEntity implements Serializable {
     /**
      * 履歴ID
      */
     @EmbeddedId
-    public QqsmpEmpSocialInsGradeInfoPk empSocialInsGradeInfoPk;
+    public QqsmtEmpSocialInsGradeInfoPk empSocialInsGradeInfoPk;
 
     /**
      * 社会保険報酬月額(実質)
@@ -82,8 +82,8 @@ public class QqsmpEmpSocialInsGradeInfo extends UkJpaEntity implements Serializa
         );
     }
 
-    public static QqsmpEmpSocialInsGradeInfo toEntity(EmpSocialInsGradeInfo domain) {
-        return new QqsmpEmpSocialInsGradeInfo(new QqsmpEmpSocialInsGradeInfoPk(domain.getHisId()),
+    public static QqsmtEmpSocialInsGradeInfo toEntity(EmpSocialInsGradeInfo domain) {
+        return new QqsmtEmpSocialInsGradeInfo(new QqsmtEmpSocialInsGradeInfoPk(domain.getHisId()),
                 domain.getSocInsMonthlyRemune().v(),
                 domain.getCalculationAtr().value,
                 domain.getHealInsStandMonthlyRemune().map(PrimitiveValueBase::v).orElse(null),

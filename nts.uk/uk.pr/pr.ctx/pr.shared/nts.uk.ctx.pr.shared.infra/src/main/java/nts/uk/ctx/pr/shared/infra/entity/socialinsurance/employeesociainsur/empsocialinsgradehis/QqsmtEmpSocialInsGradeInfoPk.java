@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QqsmpEmpSocialInsGradeInfoPk implements Serializable {
+public class QqsmtEmpSocialInsGradeInfoPk implements Serializable {
 
     /**
      * 履歴ID

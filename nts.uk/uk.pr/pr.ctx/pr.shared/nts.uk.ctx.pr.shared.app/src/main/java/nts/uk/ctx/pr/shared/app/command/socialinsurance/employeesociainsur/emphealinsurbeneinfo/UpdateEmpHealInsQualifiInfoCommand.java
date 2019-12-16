@@ -2,9 +2,10 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emph
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ public class UpdateEmpHealInsQualifiInfoCommand {
     private String employeeId;
 
     /**
-     * 得喪期間
+     * 履歴ID
      */
-    @PeregItem("IS00840")
-    private List<EmpHealthInsurBenefits> mourningPeriod;
+    @PeregRecordId
+    private String historyId;
 
     /**
      * 得喪期間.期間.開始日

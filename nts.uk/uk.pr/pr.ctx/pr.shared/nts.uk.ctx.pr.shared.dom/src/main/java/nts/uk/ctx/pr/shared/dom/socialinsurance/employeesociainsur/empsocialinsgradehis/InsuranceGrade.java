@@ -4,7 +4,10 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
-@IntegerMinValue(0)
+/**
+ * 健康保険等級
+ */
+@IntegerMinValue(1)
 @IntegerMaxValue(99)
 public class InsuranceGrade extends IntegerPrimitiveValue<InsuranceGrade> {
     public InsuranceGrade(Integer rawValue) {

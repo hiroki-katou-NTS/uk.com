@@ -31,5 +31,9 @@ public class HealInsurNumberInfor extends AggregateRoot {
         this.healInsNumber = healInsurNumber == null ? Optional.empty() : Optional.of(new HealInsurNumber(healInsurNumber));
         this.careInsurNumber = careIsNumber == null ? Optional.empty() : Optional.of(new NurCareInsurNum(careIsNumber));
     }
+
+    public static HealInsurNumberInfor createFromJavaType(String historyId, String careInsurNumber, String healInsNumber){
+        return new HealInsurNumberInfor(historyId, careInsurNumber, healInsNumber);
+    }
     
 }

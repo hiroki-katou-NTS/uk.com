@@ -6,6 +6,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -20,6 +22,9 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
     @Inject
     private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
 
+    @Inject
+    private HealInsurNumberInforRepository healInsurNumberInforRepository;
+
     @Override
     public String targetCategoryCd() {
         return "CS00082";
@@ -33,7 +38,7 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
     @Override
     protected void handle(CommandHandlerContext<UpdateEmpHealInsQualifiInfoCommand> context) {
         val command = context.getCommand();
-        EmplHealInsurQualifiInfor domain = new EmplHealInsurQualifiInfor(command.getEmployeeId(), command.getMourningPeriod());
-        emplHealInsurQualifiInforRepository.update(domain);
+        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(command.getHistoryId(), command.getHealInsNumber(), command.getNurCaseInsNumber());
+        healInsurNumberInforRepository.update(numberInfor);
     }
 }

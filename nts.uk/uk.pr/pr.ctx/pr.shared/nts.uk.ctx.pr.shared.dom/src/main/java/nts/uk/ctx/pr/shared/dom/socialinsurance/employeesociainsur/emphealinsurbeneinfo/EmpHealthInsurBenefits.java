@@ -9,13 +9,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.HistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 /**
 * 社員健康保険得喪期間項目
 */
 @Getter
-public class EmpHealthInsurBenefits extends DomainObject
+public class EmpHealthInsurBenefits extends HistoryItem<DatePeriod, GeneralDate>
 {
     
     /**
@@ -28,9 +30,23 @@ public class EmpHealthInsurBenefits extends DomainObject
     */
     private DateHistoryItem datePeriod;
     
-    public EmpHealthInsurBenefits( String healInsurProfirMourHisId,DateHistoryItem datePeriod) {
+    public EmpHealthInsurBenefits(String healInsurProfirMourHisId, DateHistoryItem datePeriod) {
         this.healInsurProfirMourHisId = healInsurProfirMourHisId;
         this.datePeriod = datePeriod;
     }
-    
+
+    @Override
+    public DatePeriod span() {
+        return datePeriod.span();
+    }
+
+    @Override
+    public String identifier() {
+        return healInsurProfirMourHisId;
+    }
+
+    @Override
+    public void changeSpan(DatePeriod generalPeriod) {
+        this.datePeriod.changeSpan(generalPeriod);
+    }
 }
