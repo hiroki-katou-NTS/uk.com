@@ -118,7 +118,8 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 var employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
-                    workplaceName: employeeSearch.workplaceName
+                    workplaceName: employeeSearch.workplaceName,
+                    id: employeeSearch.employeeId
                 };
                 employeeSearchs.push(employee);
                 self.selectedEmployeeCode.push(employee.code);
@@ -144,7 +145,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         exportFile() {
             let self = this;
             let param = {
-                empLst: self.employeeList(),
+                empLst: _.map(self.employeeList(), (o) => o.id),
                 title: self.title(),
                 startDate: self.dateValue().startDate,
                 endDate: self.dateValue().endDate,
@@ -229,6 +230,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         name?: string;
         workplaceName?: string;
         isAlreadySetting?: boolean;
+        id?: string;
     }
     
     export class SelectType {

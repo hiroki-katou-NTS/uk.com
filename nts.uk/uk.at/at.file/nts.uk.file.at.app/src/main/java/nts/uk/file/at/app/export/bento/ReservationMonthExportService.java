@@ -1,7 +1,6 @@
 package nts.uk.file.at.app.export.bento;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,9 +81,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 	private ReservationMonthDataSource createReservationMonthLedger(List<String> empLst, DatePeriod period, boolean ordered, String title) {
 		String companyID = AppContexts.user().companyId();
 		
-		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(
-				Arrays.asList(AppContexts.user().employeeId()),
-				AppContexts.user().companyCode());
+		List<StampCard> stampCardLst = stampCardRepository.getLstStampCardByLstSidAndContractCd(empLst, AppContexts.user().companyCode());
 		
 		// get*(対象社員リスト,期間,注文済み)
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
