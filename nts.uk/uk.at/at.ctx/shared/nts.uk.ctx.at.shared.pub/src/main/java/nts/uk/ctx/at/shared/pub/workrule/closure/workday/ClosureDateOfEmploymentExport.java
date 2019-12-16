@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClosureDateOfEmployment {
+public class ClosureDateOfEmploymentExport {
 	// 雇用ｺｰﾄﾞ
 	private String employmentCd;
 	// 締め日
