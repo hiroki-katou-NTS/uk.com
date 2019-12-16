@@ -5,6 +5,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class EmpSocialInsGradeHis extends AggregateRoot implements UnduplicatableHistory<GenericHistYMPeriod, YearMonthPeriod, YearMonth> {
+public class EmpSocialInsGradeHis extends AggregateRoot implements UnduplicatableHistory<YearMonthHistoryItem, YearMonthPeriod, YearMonth> {
     /**
      * 社員ID
      */
@@ -24,18 +25,18 @@ public class EmpSocialInsGradeHis extends AggregateRoot implements Unduplicatabl
     /**
      * 期間
      */
-    private List<GenericHistYMPeriod> period;
+    private List<YearMonthHistoryItem> period;
 
     public EmpSocialInsGradeHis() {
     }
 
-    public EmpSocialInsGradeHis(String employeeId, List<GenericHistYMPeriod> period) {
+    public EmpSocialInsGradeHis(String employeeId, List<YearMonthHistoryItem> period) {
         this.employeeId = employeeId;
         this.period = period;
     }
 
     @Override
-    public List<GenericHistYMPeriod> items() {
+    public List<YearMonthHistoryItem> items() {
         return period;
     }
 }

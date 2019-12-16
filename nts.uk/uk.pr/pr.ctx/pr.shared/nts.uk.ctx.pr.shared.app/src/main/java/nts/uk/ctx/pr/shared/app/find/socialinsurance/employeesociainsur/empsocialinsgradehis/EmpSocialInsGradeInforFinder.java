@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.*;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -46,11 +47,11 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
             if (!domain.isPresent()) {
                 return null;
             }
-            GenericHistYMPeriod period = domain.get().getPeriod().get(0);
+            YearMonthHistoryItem period = domain.get().getPeriod().get(0);
             if (period == null) {
                 return null;
             }
-            EmpSocialInsGradeInfo info = esigiFinfer.getEmpSocialInsGradeInfoByHistId(period.getHistId()).get();
+            EmpSocialInsGradeInfo info = esigiFinfer.getEmpSocialInsGradeInfoByHistId(period.identifier()).get();
 
             return EmpSocialInsGradeInforDto.fromDomain(domain.get(), info);
         } else {

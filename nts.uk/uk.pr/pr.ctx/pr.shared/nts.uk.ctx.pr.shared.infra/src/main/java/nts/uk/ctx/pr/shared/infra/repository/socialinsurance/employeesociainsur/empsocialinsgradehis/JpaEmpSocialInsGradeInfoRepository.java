@@ -21,11 +21,6 @@ public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements
     }
 
     @Override
-    public void remove(EmpSocialInsGradeInfo domain) {
-
-    }
-
-    @Override
     public void remove(String histId) {
 
     }
@@ -33,10 +28,7 @@ public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements
     @Override
     public Optional<EmpSocialInsGradeInfo> getEmpSocialInsGradeInfoByHistId(String histId) {
         Optional<QqsmpEmpSocialInsGradeInfo> gradeInfo = this.queryProxy().find(histId, QqsmpEmpSocialInsGradeInfo.class);
-        if (gradeInfo.isPresent()) {
-            return Optional.of(toDomain(gradeInfo.get()));
-        }
-        return Optional.empty();
+        return gradeInfo.map(this::toDomain);
     }
 
     private EmpSocialInsGradeInfo toDomain(QqsmpEmpSocialInsGradeInfo entity) {

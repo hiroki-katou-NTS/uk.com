@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.GenericHistYMPeriod;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -73,12 +73,12 @@ public class QqsmtEmpSocialInsGradeHis extends UkJpaEntity implements Serializab
 
         return new EmpSocialInsGradeHis(
                 entities.get(0).sId,
-                entities.stream().map(x -> new GenericHistYMPeriod(x.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(x.startYM), new YearMonth(x.endYM)))).collect(Collectors.toList()));
+                entities.stream().map(x -> new YearMonthHistoryItem(x.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(x.startYM), new YearMonth(x.endYM)))).collect(Collectors.toList()));
     }
 
     public EmpSocialInsGradeHis toDomain() {
-        List<GenericHistYMPeriod> date = new ArrayList<>();
-        date.add(new GenericHistYMPeriod(this.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(startYM), new YearMonth(endYM))));
+        List<YearMonthHistoryItem> date = new ArrayList<>();
+        date.add(new YearMonthHistoryItem(this.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(startYM), new YearMonth(endYM))));
         return new EmpSocialInsGradeHis(this.sId, date);
     }
 

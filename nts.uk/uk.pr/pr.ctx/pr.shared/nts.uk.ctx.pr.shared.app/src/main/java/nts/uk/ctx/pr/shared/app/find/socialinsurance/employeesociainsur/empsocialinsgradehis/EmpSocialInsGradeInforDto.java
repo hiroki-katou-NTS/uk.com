@@ -2,10 +2,9 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsoci
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.GenericHistYMPeriod;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -56,14 +55,14 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
         if (domain == null || info == null) {
             return null;
         }
-        GenericHistYMPeriod period = domain.getPeriod().get(0);
+        YearMonthHistoryItem period = domain.getPeriod().get(0);
         if (period == null) {
             return null;
         }
         return new EmpSocialInsGradeInforDto(
-                period.getHistId(),
-                period.getYmPeriod().start().v(),
-                period.getYmPeriod().end().v(),
+                period.identifier(),
+                period.span().start().v(),
+                period.span().end().v(),
                 info.getCalculationAtr().value,
                 info.getHealInsGrade().map(x -> x.v()).orElse(null),
                 info.getHealInsStandMonthlyRemune().map(x -> x.v()).orElse(null),

@@ -5,8 +5,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.GenericHistYMPeriod;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHis;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
@@ -80,12 +80,12 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
             return null;
         }
         EmpSocialInsGradeHis domain = new EmpSocialInsGradeHis();
-        List<GenericHistYMPeriod> periodList = new ArrayList<>();
+        List<YearMonthHistoryItem> periodList = new ArrayList<>();
         entities.forEach(item -> {
             if (domain.getEmployeeId() == null) {
                 domain.setEmployeeId(item.sId);
             }
-            periodList.add(new GenericHistYMPeriod(item.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(item.startYM), new YearMonth(item.endYM))));
+            periodList.add(new YearMonthHistoryItem(item.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(item.startYM), new YearMonth(item.endYM))));
         });
 
         domain.setPeriod(periodList);
