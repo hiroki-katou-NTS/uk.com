@@ -21,7 +21,7 @@
 					<div style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
 					<!--A1_2 受取日-->
 					<div style="float: left"
-						data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, cssRanger: cssRangerYMD, defaultClass: 'round-orange', showJumpButtons: true }"></div>
+						data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
 					<br />
 					<!-- A1_3注文エラー -->
 					<span class="label warning" style="float: left;" data-bind = "visible: isError">#{i18n.getText('KMR002_6')}</span>
@@ -34,17 +34,17 @@
 							<col width="70px" />
 						</colgroup>
 						<tbody>
-							<tr>
-								<td class="table-food-td" data-bind="text: lunch"></td>
-								<td class="table-food-td" data-bind="text: priceLunch()"></td>
+							<tr style="height: 20px;">
+								<td class="table-food-td" data-bind="text: lunch()"></td>
+								<td class="table-food-td" data-bind="text: txtPriceLunch()"></td>
 							</tr>
-							<tr>
-								<td class="table-food-td" data-bind="text: dinner"></td>
-								<td class="table-food-td" data-bind="text: priceDinner()"></td>
+							<tr style="height: 20px;">
+								<td class="table-food-td" data-bind="text: dinner()"></td>
+								<td class="table-food-td" data-bind="text: txtPriceDinner()"></td>
 							</tr>
-							<tr>
-								<td class="table-food-td" style="" data-bind="text: sum"></td>
-								<td class="table-food-td" style="" data-bind="text: priceSum"></td>
+							<tr style="height: 20px;">
+								<td class="table-food-td" style="" data-bind="text: sum()"></td>
+								<td class="table-food-td" style="" data-bind="text: txtPriceSum()"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -87,25 +87,25 @@
 							<tr>
 								<td class="table-menu-td" data-bind="foreach: menuLunch().length > 10 ? _.slice(menuLunch(), 0, 10) : menuLunch()">
 
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''}, click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''}, click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuLunch().length > 20 ? _.slice(menuLunch(), 10, 20) : _.slice(menuLunch(), 10, menuLunch().length), visible: menuLunch().length > 10 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuLunch().length > 30 ? _.slice(menuLunch(), 20, 30) : _.slice(menuLunch(), 20, menuLunch().length), visible: menuLunch().length > 20 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: _.slice(menuLunch(), 30, menuLunch().length), visible: menuLunch().length > 30 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderLunch(frameNo)}, enable: $vm.isEnableLunch()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
@@ -124,25 +124,25 @@
 							<tr>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 10 ? _.slice(menuDinner(), 0, 10) : menuDinner()">
 
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 20 ? _.slice(menuDinner(), 10, 20) : _.slice(menuDinner(), 10, menuDinner().length), visible: menuDinner().length > 10 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: menuDinner().length > 30 ? _.slice(menuDinner(), 20, 30) : _.slice(menuDinner(), 20, menuDinner().length), visible: menuDinner().length > 20 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
 								</td>
 								<td class="table-menu-td" data-bind="foreach: _.slice(menuDinner(), 30, menuDinner().length), visible: menuDinner().length > 30 ? true : false">
-									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}">
+									<button class="button-food" data-bind="style: {'background-color': status() ? '#A4EEB0' : ''},  click:  function(){$vm.updateOrderDinner(frameNo)}, enable: $vm.isEnableDinner()">
 										<span data-bind="text: name"></span><span
 											data-bind="text: unit" style="float: right"></span>
 									</button>
@@ -153,7 +153,7 @@
 				</div>
 				<div class="fixed-flex-layout-right" style="float: right;">
 					<div>#{i18n.getText('KMR002_13')}</div>
-					<div>昼</div>
+					<div data-bind="text: lunchText()"></div>
 					<div class="menu-order" data-bind="foreach: listBentoOrderLunch">
 						<table>
 							<colgroup>
@@ -171,22 +171,22 @@
 								<tr>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, -1)}">-</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, -1)}, enable: $vm.isEnableLunch()">-</button></td>
 									<td class="table-food-td" data-bind="text: bentoCount"
 										style="text-align: center;"></td>
 									<td class="table-food-td" style="padding: 15px;">
-									<button class="button-radius" data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, 1)}">+</button></td>
+									<button class="button-radius" data-bind="click:  function(){$vm.updateCountOrderLunch(frameNo, 1)}, enable: $vm.isEnableLunch()">+</button></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" colspan="3"><button
 											class="danger" style="width: 240px;"
-											data-bind="click: function(){$vm.cancelLunch(frameNo)}">#{i18n.getText('C1_6')}</button></td>	
+											data-bind="click: function(){$vm.cancelLunch(frameNo)}, enable: $vm.isEnableLunch()">#{i18n.getText('C1_6')}</button></td>	
 								</tr>
 							</tbody>
 						</table>
 						<br />
 					</div>
-					<div style="margin-top: 15px;">夜</div>
+					<div style="margin-top: 15px;" data-bind="text: dinnerText()"></div>
 					<div class="menu-order" data-bind="foreach: listBentoOrderDinner">
 						<table>
 							<colgroup>
@@ -204,17 +204,17 @@
 								<tr>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, -1)}">-</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, -1)}, enable: $vm.isEnableDinner()">-</button></td>
 									<td class="table-food-td" data-bind="text: bentoCount"
 										style="text-align: center;"></td>
 									<td class="table-food-td" style="padding: 15px;"><button
 											class="button-radius"
-											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, 1)}">+</button></td>
+											data-bind="click:  function(){$vm.updateCountOrderDinner(frameNo, 1)}, enable: $vm.isEnableDinner()">+</button></td>
 								</tr>
 								<tr>
 									<td class="table-food-td" colspan="3"><button
 											class="danger" style="width: 240px;"
-											data-bind="click: function(){$vm.cancelDinner(frameNo)}">#{i18n.getText('C1_6')}</button></td>
+											data-bind="click: function(){$vm.cancelDinner(frameNo)}, enable: $vm.isEnableDinner()">#{i18n.getText('C1_6')}</button></td>
 								</tr>
 							</tbody>
 						</table>
