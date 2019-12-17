@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.pubimp.workrule.closure.workday;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.pub.workrule.closure.workday.ClosureDateOfEmploymentExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.workday.IWorkDayPub;
 
+@Stateless
 public class WorkDayServicesImpl implements IWorkDayPub {
 
 	@Inject

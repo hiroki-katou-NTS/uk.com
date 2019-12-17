@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
@@ -13,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ValPayDateSetReposito
 import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.algorithm.ClosureDateExport;
 import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.algorithm.IAlgorithm;
 
+@Stateless
 public class AlgorithmImpl implements IAlgorithm {
 
 	@Inject
