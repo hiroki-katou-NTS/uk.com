@@ -19,8 +19,8 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetir
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.RetirementInformation;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.service.RetirementInformationService;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementInformation;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.RetirementInformationService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
