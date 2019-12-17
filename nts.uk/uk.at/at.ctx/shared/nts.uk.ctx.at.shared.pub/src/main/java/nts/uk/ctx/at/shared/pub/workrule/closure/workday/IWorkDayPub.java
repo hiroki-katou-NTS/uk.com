@@ -7,12 +7,12 @@ import java.util.List;
  * @author sonnlb
  *
  */
-public interface IWorkDayServices {
+public interface IWorkDayPub {
 	/**
 	 * [NO.642]指定した会社の雇用毎の締め日を取得する
 	 * 
 	 * @param 会社ID
 	 * @return 雇用毎の締め日リスト
 	 */
-	List<ClosureDateOfEmployment> getClosureDate(String companyId);
+	List<ClosureDateOfEmploymentExport> getClosureDate(String companyId);
 }

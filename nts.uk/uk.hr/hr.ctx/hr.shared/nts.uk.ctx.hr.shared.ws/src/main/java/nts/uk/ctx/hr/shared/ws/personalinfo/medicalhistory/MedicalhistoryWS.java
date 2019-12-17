@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
@@ -25,8 +25,7 @@ public class MedicalhistoryWS {
 	public MedicalhistoryManagement getList(ParamTest param) {
 
 		List<String> listSid = param.listSid;
-		String sid = param.sid;
-		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
+		GeneralDate baseDate = GeneralDate.legacyDate(param.baseDate.date()).addMonths(-1);
 		
 		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
 
@@ -40,7 +39,7 @@ public class MedicalhistoryWS {
 
 		List<String> listSid = param.listSid;
 		String sid = param.sid;
-		GeneralDateTime baseDate = GeneralDateTime.legacyDateTime(param.baseDate.date()).addMonths(-1);
+		GeneralDate baseDate = GeneralDate.legacyDate(param.baseDate.date()).addMonths(-1);
 		
 		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
 

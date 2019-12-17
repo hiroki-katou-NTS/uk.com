@@ -8,9 +8,9 @@ public enum EvaluationItem {
 
 	PERSONNEL_ASSESSMENT (0,"人事評価"),
 	
-	HEALTH_CONDITION (0,"健康状態"),
+	HEALTH_CONDITION (1,"健康状態"),
 	
-	STRESS_CHECK (1, "ストレスチェック");
+	STRESS_CHECK (2, "ストレスチェック");
 	
 	public int value;
 	

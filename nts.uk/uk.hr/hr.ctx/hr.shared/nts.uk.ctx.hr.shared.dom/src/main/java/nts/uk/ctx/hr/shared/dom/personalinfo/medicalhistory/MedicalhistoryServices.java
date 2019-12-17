@@ -7,7 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 
 
 @Stateless
@@ -16,8 +16,8 @@ public class MedicalhistoryServices {
 	@Inject
 	private MedicalhistoryRepository repo;
 
-	// 受診履歴の取得
-	public MedicalhistoryManagement loadMedicalhistoryItem(List<String> listSID, GeneralDateTime baseDate, MedicalhistoryManagement result) {
+	// 受診履歴のロード
+	public MedicalhistoryManagement loadMedicalhistoryItem(List<String> listSID, GeneralDate baseDate, MedicalhistoryManagement result) {
 
 		List<MedicalhistoryItem> listDomain = repo.getListMedicalhistoryItem(listSID, baseDate);
 		result.fillData(listDomain, listSID);
@@ -25,7 +25,7 @@ public class MedicalhistoryServices {
 	}
 
 	// 受診履歴の取得
-	public MedicalhistoryItem getMedicalhistoryItem(String sId, GeneralDateTime baseDate, MedicalhistoryManagement medicalhisManagement) {
+	public MedicalhistoryItem getMedicalhistoryItem(String sId, GeneralDate baseDate, MedicalhistoryManagement medicalhisManagement) {
 		Optional<MedicalhistoryItem> domainOpt = medicalhisManagement.getMedicalhistoryItems().stream()
 				.filter(e -> e.sid.equals(sId)).findFirst();
 		if (domainOpt.isPresent()) {

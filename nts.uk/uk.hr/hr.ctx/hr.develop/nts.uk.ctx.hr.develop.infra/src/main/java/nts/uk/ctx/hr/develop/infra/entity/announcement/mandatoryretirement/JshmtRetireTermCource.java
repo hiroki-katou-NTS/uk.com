@@ -36,7 +36,7 @@ public class JshmtRetireTermCource extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "COMMON_MASTER_ITEM_ID", referencedColumnName = "COMMON_MASTER_ITEM_ID", insertable = false, updatable = false) })
 	public JshmtRetireTerm enableRetirePlanCourse;
 
-	public JshmtRetireTermCource(String historyId, String empCommonMasterItemId, String retirePlanCourseId, String cId) {
+	public JshmtRetireTermCource(String historyId, String empCommonMasterItemId, long retirePlanCourseId, String cId) {
 		this.pkJshmtRetireTermCource = new JshmtRetireTermCourcePK(historyId, empCommonMasterItemId, retirePlanCourseId);
 		this.cId = cId;
 	}

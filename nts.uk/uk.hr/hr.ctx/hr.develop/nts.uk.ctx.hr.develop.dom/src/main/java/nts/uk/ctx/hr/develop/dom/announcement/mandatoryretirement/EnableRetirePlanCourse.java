@@ -13,6 +13,6 @@ import nts.arc.layer.dom.DomainObject;
 public class EnableRetirePlanCourse extends DomainObject{
 
 	/** 定年退職コースID */
-	private String retirePlanCourseId;
+	private long retirePlanCourseId;
 	
 }

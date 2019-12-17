@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
-import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.Medicalhistory;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheck;
 
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public class EvaluationInfoDto {
 	private List<PersonnelAssessment> personnelAssessment;
 	
 	//List<健康状態>
-	private List<MedicalhistoryItem> medicalhistoryItem;
+	private List<Medicalhistory> medicalhistoryItem;
 	
 	//list<ストレスチェック>
 	private List<StressCheck> stressCheck;
