@@ -44,15 +44,16 @@ public class BentoReservationDetail extends ValueObject {
 	}
 	
 	/**
-	 * 作る(枠番, 個数)
+	 * 作る(枠番, 個数, 予約登録日時)
 	 * @param frameNo
 	 * @param bentoCount
+	 * @param dateTime
 	 * @return
 	 */
-	public static BentoReservationDetail createNew(int frameNo, BentoReservationCount bentoCount) {
+	public static BentoReservationDetail createNew(int frameNo, BentoReservationCount bentoCount, GeneralDateTime dateTime) {
 		return new BentoReservationDetail(
 				frameNo, 
-				GeneralDateTime.now(), 
+				dateTime, 
 				false, 
 				bentoCount);
 	}

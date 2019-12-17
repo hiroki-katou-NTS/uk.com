@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
@@ -72,16 +73,17 @@ public class Bento {
 	 * 予約する
 	 * @param reservationDate
 	 * @param bentoCount
+	 * @param dateTime
 	 * @return
 	 */
-	public BentoReservationDetail reserve(ReservationDate reservationDate, BentoReservationCount bentoCount) {
+	public BentoReservationDetail reserve(ReservationDate reservationDate, BentoReservationCount bentoCount, GeneralDateTime dateTime) {
 		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME1 && !reservationTime1Atr) {
 			throw new RuntimeException("System Error");
 		}
 		if(reservationDate.getClosingTimeFrame()==ReservationClosingTimeFrame.FRAME2 && !reservationTime2Atr) {
 			throw new RuntimeException("System Error");
 		}
-		return BentoReservationDetail.createNew(frameNo, bentoCount);
+		return BentoReservationDetail.createNew(frameNo, bentoCount, dateTime);
 	}
 	
 	/**

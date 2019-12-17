@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
@@ -49,16 +50,20 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		
+		GeneralDateTime datetime = GeneralDateTime.now();
+		
 		AtomTask persist1 = BentoReserveService.reserve(
 				require, 
 				reservationRegisterInfo, 
 				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
+				datetime,
 				command.getFrame1Bentos());
 		
 		AtomTask persist2 = BentoReserveService.reserve(
 				require, 
 				reservationRegisterInfo, 
 				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
+				datetime,
 				command.getFrame2Bentos());
 		
 		transaction.execute(() -> {

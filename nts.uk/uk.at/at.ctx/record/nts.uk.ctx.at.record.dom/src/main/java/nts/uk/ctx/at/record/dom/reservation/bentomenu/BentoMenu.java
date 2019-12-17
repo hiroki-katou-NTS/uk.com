@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.ClockHourMinute;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
@@ -57,10 +57,11 @@ public class BentoMenu extends AggregateRoot {
 	 * @param bentoDetails
 	 * @return
 	 */
-	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, Map<Integer, BentoReservationCount> bentoDetails) {
-		receptionCheck(registerInfor, reservationDate);
+	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
+			Map<Integer, BentoReservationCount> bentoDetails) {
+		receptionCheck(dateTime, reservationDate);
 		List<BentoReservationDetail> bentoReservationDetails = bentoDetails.entrySet().stream()
-				.map(x -> createBentoReservationDetail(reservationDate, x.getKey(), x.getValue())).collect(Collectors.toList());
+				.map(x -> createBentoReservationDetail(reservationDate, x.getKey(), x.getValue(), dateTime)).collect(Collectors.toList());
 		return BentoReservation.reserve(registerInfor, reservationDate, bentoReservationDetails);
 	}
 	
@@ -81,17 +82,15 @@ public class BentoMenu extends AggregateRoot {
 	
 	/**
 	 * 予約受付チェック
-	 * @param registerInfor
+	 * @param dateTime
 	 * @param reservationDate
 	 */
-	public void receptionCheck(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+	public void receptionCheck(GeneralDateTime dateTime, ReservationDate reservationDate) {
 		if(reservationDate.isPastDay()) {
 			throw new BusinessException("Msg_1584");
 		}
 		
-		// thời gian check tay hệ thống chưa có, khởi tạo tạm
-		ClockHourMinute time = ClockHourMinute.now();
-		if(reservationDate.isToday() && !closingTime.canReserve(reservationDate.getClosingTimeFrame(), time)) {
+		if(reservationDate.isToday() && !closingTime.canReserve(reservationDate.getClosingTimeFrame(), dateTime.clockHourMinute())) {
 			throw new BusinessException("Msg_1585");
 		}
 	}
@@ -113,11 +112,12 @@ public class BentoMenu extends AggregateRoot {
 	 * @param reservationDate
 	 * @param frameNo
 	 * @param count
+	 * @param dateTime
 	 * @return
 	 */
-	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, int frameNo, BentoReservationCount count) {
+	private BentoReservationDetail createBentoReservationDetail(ReservationDate reservationDate, int frameNo, BentoReservationCount count, GeneralDateTime dateTime) {
 		return menu.stream().filter(x -> x.getFrameNo()==frameNo).findAny()
-				.map(x -> x.reserve(reservationDate, count)).get();
+				.map(x -> x.reserve(reservationDate, count, dateTime)).get();
 	}
 	
 	/**
