@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.ac.person;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.person.FullNameSetImport;
@@ -13,6 +14,7 @@ import nts.uk.ctx.bs.person.pub.person.PersonExport;
 import nts.uk.ctx.bs.person.pub.person.PersonNameGroupExport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 
+@Stateless
 public class PersonAdaptorImpl implements PersonAdaptor {
 
 	@Inject
