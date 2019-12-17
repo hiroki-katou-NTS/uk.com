@@ -200,7 +200,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} else {
 			for(String cardStr : cardLst) {
 				cardLstStr += "'" + cardStr + "'";
-				if(cardLst.indexOf(cardLstStr) < cardLst.size() - 1) {
+				if(cardLst.indexOf(cardStr) < cardLst.size() - 1) {
 					cardLstStr += ",";
 				}
 			}
