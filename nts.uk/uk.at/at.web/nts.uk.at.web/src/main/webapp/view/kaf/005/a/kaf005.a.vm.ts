@@ -186,11 +186,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
-                    $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC')
                 })
             })
@@ -849,9 +845,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             if(self.editable()&& self.enableOvertimeInput()){
                 if(calcChange){
-                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                    return 'none'; 
+                    $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                    $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                    return 'transparent'; 
                 }
             } else {
                 if(calcChange){
@@ -969,9 +965,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
                     if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                         if(self.editable()&& self.enableOvertimeInput()){
-                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                            overtimeHour.color('none');
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                            overtimeHour.color('transparent');
                             return; 
                         } else {
                             $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
@@ -997,9 +993,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 } else {
                     if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                         if(self.editable()&& self.enableOvertimeInput()){
-                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                            overtimeHour.color('none');
+                            $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                            $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                            overtimeHour.color('transparent');
                             return; 
                         } else {
                             $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
