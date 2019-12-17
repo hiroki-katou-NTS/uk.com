@@ -236,7 +236,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"B2_1_2", empAddChangeInfoExport.getBusinessEstCode1(),1 );*/
 
             String data = empAddChangeInfoExport.getBusinessEstCode1();
-            worksheet.getRangeByName(i + "!J7").setValue(data != null ? (data.length() > 2 ? data.substring(0, 3) : data) : "");
+            worksheet.getRangeByName(i + "!HIHI").setValue(data != null ? (data.length() > 2 ? data.substring(0, 3) : data) : "");
 
             if(empAddChangeInfoExport.isHealthInsurance() && !empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_1").setValue("健康保険");
