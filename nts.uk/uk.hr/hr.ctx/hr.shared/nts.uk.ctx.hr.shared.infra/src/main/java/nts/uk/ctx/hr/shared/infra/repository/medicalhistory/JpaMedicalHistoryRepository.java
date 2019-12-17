@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryRepository;
@@ -26,7 +26,7 @@ public class JpaMedicalHistoryRepository extends JpaRepository implements Medica
 
 	@Override
 	public List<MedicalhistoryItem> getListMedicalhistoryItem(List<String> listSId,
-			GeneralDateTime baseDate) {
+			GeneralDate baseDate) {
 		
 		if (listSId.isEmpty() || baseDate == null) {
 			return new ArrayList<MedicalhistoryItem>();
