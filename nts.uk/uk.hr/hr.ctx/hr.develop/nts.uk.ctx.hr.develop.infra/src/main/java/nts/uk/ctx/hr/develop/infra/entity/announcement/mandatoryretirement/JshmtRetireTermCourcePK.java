@@ -22,6 +22,6 @@ public class JshmtRetireTermCourcePK implements Serializable {
 	public String empCommonMasterItemId;
 	
 	@Column(name = "RETIRE_PLAN_ID")
-	public String retirePlanCourseId;
+	public long retirePlanCourseId;
 
 }
