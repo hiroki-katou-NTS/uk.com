@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "JSHMT_RETIRE_TERM")
+@Table(name = "JSHMT_RETIRE_TERM_COURCE")
 public class JshmtRetireTermCource extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

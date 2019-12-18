@@ -13,4 +13,20 @@ public class RetirementDateDto {
 	private String employmentCode;
 	//退職日
 	private GeneralDate retirementDate;
+	
+	public void setDay(int settingDate) {
+		if(settingDate > this.retirementDate.lastDateInMonth()) {
+			this.retirementDate = GeneralDate.ymd(this.retirementDate.year(), this.retirementDate.month(), this.retirementDate.lastDateInMonth());
+		}else if(settingDate >= this.retirementDate.day()) {
+			this.retirementDate = GeneralDate.ymd(this.retirementDate.year(), this.retirementDate.month(), settingDate);
+		}else if(settingDate < this.retirementDate.day()) {
+			this.retirementDate = this.retirementDate.addMonths(1);
+			if(settingDate > this.retirementDate.lastDateInMonth()) {
+				this.retirementDate = GeneralDate.ymd(this.retirementDate.year(), this.retirementDate.month(), this.retirementDate.lastDateInMonth());
+			}else {
+				this.retirementDate = GeneralDate.ymd(this.retirementDate.year(), this.retirementDate.month(), settingDate);
+			}
+		}
+		
+	}
 }

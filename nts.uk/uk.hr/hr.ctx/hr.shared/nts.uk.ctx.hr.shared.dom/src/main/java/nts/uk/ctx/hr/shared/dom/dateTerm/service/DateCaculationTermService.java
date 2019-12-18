@@ -34,9 +34,14 @@ public class DateCaculationTermService {
 				if(targetDate.lastDateInMonth() < dateCaculationTerm.getDateSettingDate().value) {
 					targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
 				}else if(targetDate.day() <= dateCaculationTerm.getDateSettingDate().value){
-					targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.day());
+					targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), dateCaculationTerm.getDateSettingDate().value);
 				}else if(targetDate.day() > dateCaculationTerm.getDateSettingDate().value){
-					targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month()+1, targetDate.day());
+					targetDate = targetDate.addMonths(1);
+					if(targetDate.lastDateInMonth() < dateCaculationTerm.getDateSettingDate().value) {
+						targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
+					}else {
+						targetDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), dateCaculationTerm.getDateSettingDate().value);
+					}
 				}
 				return new EmployeeDateDto(c.getEmployeeId(), targetDate);
 				}).collect(Collectors.toList());
