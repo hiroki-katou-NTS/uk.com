@@ -50,8 +50,10 @@ module jcm008.a {
             let self = this;
             block.grayout();
             let dfd = $.Deferred<any>();
-            service.getData().done((data) => {
+            service.getData().done((data : IStartPageDto) => {
                 console.log(data);
+                let dateDisplaySet = data.dateDisplaySettingPeriod;
+                self.searchFilter.retirementPeriod({startDate: dateDisplaySet.periodStartdate, endDate: dateDisplaySet.periodEnddate});
                 dfd.resolve();
                 // block.clear();
             }).fail((error) => {

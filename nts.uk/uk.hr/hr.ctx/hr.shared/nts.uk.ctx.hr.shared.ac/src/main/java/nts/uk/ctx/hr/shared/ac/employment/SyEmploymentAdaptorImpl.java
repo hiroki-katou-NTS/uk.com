@@ -39,7 +39,7 @@ public class SyEmploymentAdaptorImpl implements SyEmploymentAdaptor {
 		return EmploymentInfoImport.builder().companyId(export.getCompanyId())
 				.employmentCode(export.getEmploymentCode()).employmentName(export.getEmploymentName())
 				.empExternalCode(export.getEmpExternalCode()).memo(export.getMemo())
-				.empCommonMasterId(export.getEmpCommonMasterId()).empCommonMasterItemId(export.getEmpCommonMasterId())
+				.empCommonMasterId(export.getEmpCommonMasterId()).empCommonMasterItemId(export.getEmpCommonMasterItemId())
 				.build();
 	}
 

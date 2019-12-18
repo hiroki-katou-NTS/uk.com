@@ -13,7 +13,7 @@ public class DateDisplaySettingPeriodDto {
 	private GeneralDate periodEnddate;
 
 	public DateDisplaySettingPeriodDto(DateDisplaySettingPeriod domain) {
-		this.periodStartdate = domain.getPeriodStartdate() == null ? GeneralDate.today() : domain.getPeriodStartdate();
-		this.periodEnddate = domain.getPeriodEnddate() == null ? GeneralDate.today() : domain.getPeriodEnddate();
+		this.periodStartdate = domain == null || domain.getPeriodStartdate() == null ? GeneralDate.today() : domain.getPeriodStartdate();
+		this.periodEnddate = domain == null || domain.getPeriodEnddate() == null ? GeneralDate.today() : domain.getPeriodEnddate();
 	}
 }
