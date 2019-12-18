@@ -235,19 +235,23 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
         // row 7
         value = "";
         if (!laborCode.equals("")) {
-            // A1_130, A1_131
+            // A1_130, A1_131, A1_132
             if (laborInsuranceOffices.containsKey(laborCode)) {
                 value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse("") + ","
                         + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse("") + ",";
+
+                value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                        + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                        + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")
+                        + ",";
             } else {
-                value += ",,";
+                value += ",,,";
             }
 
-            // A1_132, A1_133, A1_134, A1_135, A1_136, A1_137, A1_138, A1_139, A1_140, A1_141
+            // A1_133, A1_134, A1_135, A1_136, A1_137, A1_138, A1_139, A1_140, A1_141
             if (reportTxtSettingExport.getOfficeAtr() == OfficeCls.OUTPUT_COMPANY.value) {
 
                 try {
-                    value += companyInfo.getCompanyCode() + ",";
                     value += (companyInfo.getPostCd().length() > 2 ? companyInfo.getPostCd().substring(0, 3) : companyInfo.getPostCd()) + ","
                             + companyInfo.getPostCd().substring(companyInfo.getPostCd().length() > 3 ? companyInfo.getPostCd().length() - 4 : 0) + ","
                             + formatTooLongText(companyInfo.getAdd_1() + companyInfo.getAdd_2(), 75) + ","
@@ -264,10 +268,6 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
 
                 try {
                     if (laborInsuranceOffices.containsKey(laborCode)) {
-                        value += laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
-                                + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
-                                + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")
-                                + ",";
                         value += laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().length() > 2 ? x.v().substring(0, 3) : x.v()).orElse("") + ","
                                 + laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPostalCode().map(x -> x.v().length() > 3 ? x.v().substring(x.v().length() - 4) : x.v()).orElse("") + ","
                                 + formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getAddress1().map(x -> x.v()).orElse("")
@@ -281,7 +281,7 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                                 + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("") + ","
                                 + laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("");
                     } else {
-                        value += ",,,,,,,,,";
+                        value += ",,,,,,,,";
                     }
 
                 } catch (UnsupportedEncodingException e) {
