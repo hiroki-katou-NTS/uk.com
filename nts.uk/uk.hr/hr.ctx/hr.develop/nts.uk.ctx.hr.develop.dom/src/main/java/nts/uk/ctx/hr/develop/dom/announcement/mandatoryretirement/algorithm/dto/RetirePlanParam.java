@@ -1,11 +1,13 @@
 package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @Getter
+@Builder
 public class RetirePlanParam {
 	// 社員ID
 	private String employeeId;

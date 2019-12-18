@@ -24,7 +24,7 @@ public class SearchRetiredEmployeesQuery {
 	private boolean retirementAgeSetting;
 
 	// (A222_5)定年退職年齢
-	private String retirementAge;
+	private Integer retirementAge;
 
 	// （A222_7_1）すべて選択 = チェックなし
 	private boolean allSelectDepartment;

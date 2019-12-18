@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.adapter.ClassificationImport;
 import nts.uk.ctx.hr.shared.dom.adapter.DepartmentImport;
@@ -27,6 +27,7 @@ import nts.uk.query.pub.employement.EmploymentExport;
 import nts.uk.query.pub.position.PositionExport;
 import nts.uk.query.pub.workplace.WorkplaceExport;
 
+@Stateless
 public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdaptor {
 
 	@Inject

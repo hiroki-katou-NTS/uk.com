@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.person.PersonAdaptor;
 import nts.uk.ctx.at.shared.dom.person.PersonImport;
 
 @Stateless
-public class PersonFinder {
+public class PersonAdaptorFinder {
 	@Inject
 	private PersonAdaptor personAdaptor;
 

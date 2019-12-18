@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -17,8 +18,11 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetireTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetireDateRule;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementInformation;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.RetirementInformationService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
@@ -30,11 +34,13 @@ import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.service.IGetDatePeriod;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.ctx.hr.shared.dom.employment.EmployeeBasicInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.ObjectParam;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
+import nts.uk.ctx.hr.shared.dom.enumeration.DateSelectItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -44,7 +50,7 @@ public class RetirementInformationFinder {
 	private EmploymentRegulationHistoryInterface empHis;
 
 	@Inject
-	private MandatoryRetirementRegulationService medaRepo;
+	private MandatoryRetirementRegulationService madaRepo;
 
 	@Inject
 	private RetirePlanCourceService retiRepo;
@@ -72,9 +78,12 @@ public class RetirementInformationFinder {
 
 	@Inject
 	private IInterviewRecordSummary interviewSum;
-	
+
 	@Inject
 	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private DateCaculationTermService dateCal;
 
 	/**
 	 * 1.起動する(Khởi động)
@@ -241,30 +250,37 @@ public class RetirementInformationFinder {
 		}
 
 		// 定年退職者リストを生成する (Tạo retirePlanList)
-		List<RetirePlanDto> retirePlans = createRetirePlanList(retireInfos, retirePlanCourses);
+		List<RetirePlanParam> retirePlans = createRetirePlanList(retireInfos, retirePlanCourses);
 		// アルゴリズム [退職日の取得] を実行する (Thực hiện thuật toán [Lấy Retirement date])
 
+		RetireDateTermParam retireDateTerm = new RetireDateTermParam(
+				EnumAdaptor.valueOf(retirePlanCourses.get(0).getRetireDateTerm().getRetireDateTerm(),
+						RetireDateRule.class),
+				EnumAdaptor.valueOf(retirePlanCourses.get(0).getRetireDateTerm().getRetireDateSettingDate(),
+						DateSelectItem.class));
+//		this.madaRepo.getRetireDateBySidList(retirePlans, query.getRetirementAge(), retireDateTerm, query.getEndDate(),
+//				closingDate, attendanceDate);
 		// 社員年齢リストを生成する (Tạo Employee age list)
 
 		// アルゴリズム [算出日の取得] を実行する (Thực hiện thuật toán "Get CalculationDate")
-
+//		this.dateCal.getDateBySidList(date, dateCaculationTerm);
 		// アルゴリズム [評価情報の取得] を実行する (THực hiện thuật toán " Lấy thông tin đánh
 		// giá")
-
+//		this.madaRepo.getEvaluationInfoBySidList(retiredEmployeeId, evaluationReferInfo);
 		// 定年退職予定者リストを生成する (Tạo List of retired employees)
 
 		return Collections.emptyList();
 	}
 
-	private List<RetirePlanDto> createRetirePlanList(List<RetirementInformationDto> retireInfos,
+	private List<RetirePlanParam> createRetirePlanList(List<RetirementInformationDto> retireInfos,
 			List<RetirementCourseDto> retirePlanCourses) {
 
-		List<RetirePlanDto> retirePlans = new ArrayList<RetirePlanDto>();
+		List<RetirePlanParam> retirePlans = new ArrayList<RetirePlanParam>();
 
 		retireInfos.forEach(x -> {
 			retirePlanCourses.stream().filter(rp -> rp.getEmploymentCode().equals(x.getEmployeeCode())).findFirst()
 					.ifPresent(rp -> {
-						retirePlans.add(RetirePlanDto.builder().employeeId(x.getEmployeeId())
+						retirePlans.add(RetirePlanParam.builder().employeeId(x.getEmployeeId())
 								.employmentCode(x.getEmployeeCode()).birthday(x.getBirthday())
 								.retirementAge(rp.getRetirementAge()).build());
 					});
@@ -315,7 +331,7 @@ public class RetirementInformationFinder {
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
 
-		if (query.getRetirementAge().isEmpty()) {
+		if (query.getRetirementAge()==null) {
 			// 定年条件リストを絞り込む(Fillter retireTerrmList)
 			retirePlanCourses = retireCourseTerm.stream().filter(x -> x.getRetirePlanCourseClass().equals(0))
 					.collect(Collectors.toList());
@@ -376,7 +392,7 @@ public class RetirementInformationFinder {
 	}
 
 	private MandatoryRetirementRegulation getRetirementRules(String cId, String hisId, GeneralDate baseDate) {
-		Optional<MandatoryRetirementRegulation> madaOpt = this.medaRepo.getMandatoryRetirementRegulation(cId, hisId);
+		Optional<MandatoryRetirementRegulation> madaOpt = this.madaRepo.getMandatoryRetirementRegulation(cId, hisId);
 		if (!madaOpt.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
@@ -459,7 +475,7 @@ public class RetirementInformationFinder {
 
 	private List<ReferEvaluationItemDto> GetEmpRegulationHistoryIDByBaseDate() {
 		String cId = AppContexts.user().companyId();
-		return this.medaRepo.getReferEvaluationItemByDate(cId, GeneralDate.today()).stream()
+		return this.madaRepo.getReferEvaluationItemByDate(cId, GeneralDate.today()).stream()
 				.map(x -> new ReferEvaluationItemDto(x)).collect(Collectors.toList());
 	}
 
@@ -499,7 +515,8 @@ public class RetirementInformationFinder {
 
 		// ドメインモデル [定年退職の就業規則] を取得する (Lấy domain
 		// [MandatoryRetirementRegulation])
-		Optional<MandatoryRetirementRegulation> madaOpt = this.medaRepo.getMandatoryRetirementRegulation(cId, hisIdOpt.get());
+		Optional<MandatoryRetirementRegulation> madaOpt = this.madaRepo.getMandatoryRetirementRegulation(cId,
+				hisIdOpt.get());
 		if (!madaOpt.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
@@ -561,7 +578,7 @@ public class RetirementInformationFinder {
 					.build();
 
 			Optional<RetirePlanCource> retire = retires.stream()
-					.filter(re -> re.getRetirePlanCourseId() == Long.parseLong(x.getRetirePlanCourseId())).findFirst();
+					.filter(re -> re.getRetirePlanCourseId() == x.getRetirePlanCourseId()).findFirst();
 
 			if (retire.isPresent()) {
 				dto.setRetirePlanCourseClass(retire.get().getRetirePlanCourseClass().value);
