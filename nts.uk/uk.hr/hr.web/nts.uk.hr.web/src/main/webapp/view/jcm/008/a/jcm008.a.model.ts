@@ -34,7 +34,7 @@ interface IEmployee {
 class SearchFilterModel {
     includingReflected: KnockoutObservable<boolean> = ko.observable(false);
     retirementAgeDesignation: KnockoutObservable<boolean> = ko.observable(false);
-    retirementPeriod: KnockoutObservable<any> = ko.observable({});
+    retirementPeriod: KnockoutObservable<IDateRange> = ko.observable({startDate:'', endDate: ''});
     department: KnockoutObservable<string> = ko.observable("");
     selectAllDepartment: KnockoutObservable<boolean> = ko.observable(false);
     employment: KnockoutObservable<string> = ko.observable("");
@@ -61,6 +61,34 @@ class RetirementSetting {
     }
 }
 
+interface IStartPageDto {
+    dateDisplaySettingPeriod: IDateDisplaySettingPeriod;
+    retirementCourses: Array<IRetirementCourses>;
+    referEvaluationItems: Array<any>;
+}
+
+interface IDateDisplaySettingPeriod {
+    periodStartdate: String;
+    periodEnddate: String;
+}
+
+interface IRetirementCourses {
+    employmentCode: string;
+    employmentName: string;
+    retirePlanCourseClass: 0;
+    retirementAge: number;
+    retireDateTerm: IRetireDateTerm;
+    retirePlanCourseId: number;
+    retirePlanCourseCode: string;
+    retirePlanCourseName: string;
+    durationFlg: boolean;
+}
+
+interface IRetireDateTerm {
+    retireDateTerm: number;
+    retireDateSettingDate: number;
+}
+
 class ItemModel {
     code: string;
     name: string;
@@ -69,4 +97,9 @@ class ItemModel {
         this.code = code;
         this.name = name;
     }
+}
+
+interface IDateRange {
+    startDate: string;
+    endDate: string;
 }

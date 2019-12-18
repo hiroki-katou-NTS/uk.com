@@ -565,7 +565,8 @@ public class RetirementInformationFinder {
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
 
 		Optional<EmploymentInfoImport> empInfo = empInfos.stream()
-				.filter(emp -> emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId()))
+				.filter(emp -> emp.getEmpCommonMasterItemId() != null 
+							&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId()))
 				.findFirst();
 
 		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
