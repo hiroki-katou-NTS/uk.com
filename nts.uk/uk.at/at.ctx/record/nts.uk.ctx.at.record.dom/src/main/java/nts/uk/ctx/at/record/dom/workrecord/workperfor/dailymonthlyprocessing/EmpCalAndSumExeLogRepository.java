@@ -36,6 +36,8 @@ public interface EmpCalAndSumExeLogRepository {
 	 */
 	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 	
+	boolean checkStopByID (String empCalAndSumExecLogID);
+	
 	/**
 	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID

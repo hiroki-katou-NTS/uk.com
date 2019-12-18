@@ -254,6 +254,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
+                    let url = $(location).attr('search');
+                    let urlParam :string = url.split("=")[1];
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
@@ -276,7 +278,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }).done((data) =>{
                             self.resetForceAction();
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(), urlParam);
                             self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
