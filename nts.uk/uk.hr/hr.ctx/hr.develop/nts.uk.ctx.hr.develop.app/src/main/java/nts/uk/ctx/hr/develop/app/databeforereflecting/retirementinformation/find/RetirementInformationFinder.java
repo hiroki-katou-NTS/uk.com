@@ -49,6 +49,7 @@ import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.ObjectParam;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RetirementInformationFinder {
@@ -283,7 +284,7 @@ public class RetirementInformationFinder {
 		}
 
 		// 検索条件リストを生成する ( Tạo list điều kiện tìm kiếm/Search condition list)
-		List<ObjectParam> listObjParam = createSearchConditionList(query.getStartDate(), query.getEndDate(),
+		List<ObjectParam> listObjParam = createSearchConditionList(mada.getReachedAgeTerm(), query.getStartDate(), query.getEndDate(),
 				retirePlanCourses);
 
 		// アルゴリズム [基準日、検索条件リストから該当する在籍社員を取得する] を実行する ( Thực hiện thuật toán "Lấy
@@ -482,10 +483,38 @@ public class RetirementInformationFinder {
 		return result;
 	}
 
-	private List<ObjectParam> createSearchConditionList(GeneralDate generalDate, GeneralDate generalDate2,
+	private List<ObjectParam> createSearchConditionList(ReachedAgeTerm reachedAgeTerm, GeneralDate startDate, GeneralDate endDate,
 			List<RetirementCourseDto> retirePlanCourses) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		 List<ObjectParam> result = new ArrayList<ObjectParam>();
+		 
+		retirePlanCourses.forEach(x -> {
+
+			if (reachedAgeTerm.equals(ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY)) {
+
+				startDate.addYears(x.getRetirementAge());
+				startDate.addDays(-1);
+
+				endDate.addYears(x.getRetirementAge());
+				endDate.addDays(-1);
+			} else {
+				startDate.addYears(x.getRetirementAge());
+
+				if (startDate.day() == 29 && startDate.month() == 2) {
+					startDate.addDays(-1);
+				}
+
+				if (endDate.day() == 29 && endDate.month() == 2) {
+					endDate.addYears(x.getRetirementAge());
+					endDate.addDays(-1);
+				}
+			}
+
+			result.add(new ObjectParam(x.getEmploymentCode(), new DatePeriod(startDate, endDate)));
+		});
+		
+				 
+		return result;
 	}
 
 	private List<RetirementCourseDto> createRetirePlanCourses(SearchRetiredEmployeesQuery query,
