@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -93,11 +95,11 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					rs.getString("HIST_ID"), 
 					rs.getString("CONTRACT_CD"), 
 					rs.getString("RESERVATION_FRAME1_NAME"), 
-					Integer.valueOf(rs.getString("RESERVATION_FRAME1_START_TIME")), 
+					Strings.isBlank(rs.getString("RESERVATION_FRAME1_START_TIME")) ? null : Integer.valueOf(rs.getString("RESERVATION_FRAME1_START_TIME")), 
 					Integer.valueOf(rs.getString("RESERVATION_FRAME1_END_TIME")), 
 					rs.getString("RESERVATION_FRAME2_NAME"), 
-					Integer.valueOf(rs.getString("RESERVATION_FRAME2_START_TIME")), 
-					Integer.valueOf(rs.getString("RESERVATION_FRAME2_END_TIME")), 
+					Strings.isBlank(rs.getString("RESERVATION_FRAME2_START_TIME")) ? null :  Integer.valueOf(rs.getString("RESERVATION_FRAME2_START_TIME")), 
+					Strings.isBlank(rs.getString("RESERVATION_FRAME2_END_TIME")) ? null :  Integer.valueOf(rs.getString("RESERVATION_FRAME2_END_TIME")), 
 					GeneralDate.fromString(rs.getString("START_YMD"), DATE_FORMAT), 
 					GeneralDate.fromString(rs.getString("END_YMD"), DATE_FORMAT), 
 					Integer.valueOf(rs.getString("MENU_FRAME")), 
