@@ -16,6 +16,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetir
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseApplyTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.ComprehensiveEvaluationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.OutputObjectDto;
@@ -26,16 +27,15 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementPlannedPersonDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetireDateRule;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
-import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
-import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
-import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheck;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 
@@ -183,9 +183,33 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	}
 
 	@Override
-	public List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, RetirementAge retirementAge,
+	public List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm,
 			RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<GeneralDate> closingDate,
 			List<GeneralDate> attendanceDate) {
+		List<RetirementDateDto> result = new ArrayList<>();
+		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
+			result.addAll(retirePlan.stream().map(c-> new RetirementDateDto(c.getEmployeeId(), c.getEmploymentCode(), c.getBirthday().addYears(c.getRetirementAge()).addDays(-1))).collect(Collectors.toList()));
+		}else if(reachedAgeTerm == ReachedAgeTerm.ON_THE_DAY_OF_BIRTHDAY) {
+			result.addAll(retirePlan.stream().map(c-> new RetirementDateDto(c.getEmployeeId(), c.getEmploymentCode(), c.getBirthday().addYears(c.getRetirementAge()))).collect(Collectors.toList()));
+		}
+		
+		if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_DAY_OF_REACHING_RETIREMENT_AGE) {
+			return result;
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.RETIREMENT_DATE_DESIGNATED_DATE) {
+			return result.stream().map(c->{
+					c.setDay(retireDateTerm.getRetireDateSettingDate().value);
+					return c;
+				}).collect(Collectors.toList());
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_MONTH_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
+			
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_YEAR_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
+			
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_WAGE_CLOSING_DATE_AFTER_THE_DATE_OF_RETIREMENT_AGE) {
+			
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_DUE_DATE_AFTER_REACHING_RETIREMENT_AGE) {
+			
+		}
+		
 		return new ArrayList<>();
 	}
 
@@ -205,23 +229,23 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				outputObject.setStressStatusDispNumber(item.getDisplayNum());
 			}
 		}
-		List<PersonnelAssessment> personnelAssessmentList = new ArrayList<>();
+		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
 			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
 			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
 		}
-		List<MedicalhistoryItem> medicalhistoryItemList = new ArrayList<>();
+		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
 			MedicalhistoryManagement medicalhistoryManagement = new MedicalhistoryManagement();
 			medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1), medicalhistoryManagement);
 		}
-		List<StressCheck> stressCheck = new ArrayList<>();
+		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
 			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
 			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
 		}
 		
-		return null;
+		return new EvaluationInfoDto(hrEvaluationList, healthStatusList, stressStatusList);
 		
 	}
 

@@ -13,7 +13,7 @@ public class RetirePlanParam {
 	private String employeeId;
 	// 雇用コード.
 	private String employmentCode;
-
+	// 誕生日
 	private GeneralDate birthday;
 	// 定年年齢
 	private Integer retirementAge;
