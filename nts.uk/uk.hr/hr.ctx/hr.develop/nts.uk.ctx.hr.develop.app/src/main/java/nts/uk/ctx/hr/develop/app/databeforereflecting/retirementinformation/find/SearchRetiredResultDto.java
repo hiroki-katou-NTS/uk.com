@@ -13,7 +13,7 @@ public class SearchRetiredResultDto {
 	// 処理結果
 	private InterviewSummary interView;
 	// List<定年退職予定者>
-	private List<PlannedRetirement> retiredEmployees;
+	private List<PlannedRetirementDto> retiredEmployees;
 	// 社員情報のリスト
 	private List<EmployeeInformationImport> employeeImports;
 }

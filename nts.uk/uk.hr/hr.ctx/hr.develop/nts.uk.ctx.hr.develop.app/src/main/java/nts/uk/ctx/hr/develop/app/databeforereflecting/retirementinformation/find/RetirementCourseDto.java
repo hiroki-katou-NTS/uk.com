@@ -14,6 +14,8 @@ public class RetirementCourseDto {
 	private Integer retirePlanCourseClass;
 	// 定年年齢
 	private Integer retirementAge;
+	//退職日基準
+	private String retireDateBase; 
 	// 退職日条件
 	private RetireDateTermDto retireDateTerm;
 	// 定年退職コースID

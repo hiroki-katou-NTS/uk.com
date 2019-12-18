@@ -3,7 +3,6 @@ package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.fin
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * 定点退職予定者
@@ -13,13 +12,13 @@ import nts.arc.time.GeneralDateTime;
  */
 @Data
 @Builder
-public class PlannedRetirement {
+public class PlannedRetirementDto {
 	// 個人ID
-	public String pId;
+	private String pId;
 	// 社員ID
-	public String sId;
+	private String sId;
 	// 社員コード
-	public String scd;
+	private String scd;
 	// ビジネスネーム
 	private String businessName;
 	// ビジネスネームカナ
@@ -45,14 +44,27 @@ public class PlannedRetirement {
 	// 雇用名
 	private String employmentName;
 	// 年齢
+	private Integer age;
 	// 退職日
-	public GeneralDateTime retirementDate;
+	private GeneralDate retirementDate;
 	// 公開日
-	public GeneralDateTime releaseDate;
+	private GeneralDate releaseDate;
 	// 人事評価1
-	// 人事評価n
+	private String hrEvaluation1;
+	// 人事評価2
+	private String hrEvaluation2;
+	// 人事評価3
+	private String hrEvaluation3;
 	// 健康評価1
-	// 健康評価n
+	private String healthStatus1;
+	// 健康評価2
+	private String healthStatus2;
+	// 健康評価3
+	private String healthStatus3;
 	// ストレス評価1
-	// ストレス評価n
+	private String stressStatus1;
+	// ストレス評価2
+	private String stressStatus2;
+	// ストレス評価3
+	private String stressStatus3;
 }

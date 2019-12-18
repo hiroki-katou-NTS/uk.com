@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 @Builder
 @Data
 public class RetirementInformationDto {
+	// 個人ID
+	private String pId;
 	// 社員ID
 	private String employeeId;
 
