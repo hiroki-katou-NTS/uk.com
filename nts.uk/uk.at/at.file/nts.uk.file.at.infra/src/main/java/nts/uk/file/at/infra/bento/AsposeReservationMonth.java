@@ -26,6 +26,7 @@ import nts.uk.file.at.app.export.bento.ReservationEmpLedger;
 import nts.uk.file.at.app.export.bento.ReservationMonthDataSource;
 import nts.uk.file.at.app.export.bento.ReservationMonthGenerator;
 import nts.uk.file.at.app.export.bento.ReservationWkpLedger;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -77,8 +78,8 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	private void printPage(Worksheet worksheet, ReservationMonthDataSource dataSource) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
-		pageSetup.setHeader(0, dataSource.getCompanyName());
-		pageSetup.setHeader(1, dataSource.getTitle());
+		pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
+		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + dataSource.getTitle());
 	}
 	
 	private void printContent(Worksheet worksheet, ReservationMonthDataSource dataSource) throws Exception {
@@ -105,7 +106,7 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 			return;
 		}
 		cells.insertRows(7, dataNumberRow);
-		cells.clearFormats(7, 1, dataNumberRow, maxColumn);
+		cells.clearFormats(7, 1, 7 + dataNumberRow, maxColumn);
 		printFormat(cells, dataSource);
 		printContent(cells, dataSource);
 		cells.deleteBlankRows();
