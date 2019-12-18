@@ -212,21 +212,24 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				return c;
 			}).collect(Collectors.toList());
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_WAGE_CLOSING_DATE_AFTER_THE_DATE_OF_RETIREMENT_AGE) {
-			List<String> employmentCodeWithoutDeadline = new ArrayList<>();
 			for (RetirementDateDto item : result) {
-				
+				Optional<EmploymentDateDto> employmentDate = closingDate.stream().parallel().filter(c->c.getEmploymentCode().equals(item.getEmploymentCode())).findAny();
+				if(!employmentDate.isPresent()) {
+					throw new BusinessException("MsgJ_JMM018_7");
+				}
+				item.setDay(employmentDate.get().getRetirementDate());
 			}
-			if(!employmentCodeWithoutDeadline.isEmpty()) {
-				throw new BusinessException("MsgJ_JMM018_7");
-			}
+			return result;
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_DUE_DATE_AFTER_REACHING_RETIREMENT_AGE) {
-			List<String> employmentCodeWithoutDeadline = new ArrayList<>();
-			
-			if(!employmentCodeWithoutDeadline.isEmpty()) {
-				throw new BusinessException("MsgJ_JMM018_8");
+			for (RetirementDateDto item : result) {
+				Optional<EmploymentDateDto> employmentDate = attendanceDate.stream().parallel().filter(c->c.getEmploymentCode().equals(item.getEmploymentCode())).findAny();
+				if(!employmentDate.isPresent()) {
+					throw new BusinessException("MsgJ_JMM018_8");
+				}
+				item.setDay(employmentDate.get().getRetirementDate());
 			}
+			return result;
 		}
-		
 		return new ArrayList<>();
 	}
 
