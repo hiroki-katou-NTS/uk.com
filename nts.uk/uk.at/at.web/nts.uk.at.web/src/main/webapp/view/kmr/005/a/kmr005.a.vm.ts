@@ -20,8 +20,11 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         title: KnockoutObservable<string> = ko.observable('');
         
         // enum
-        orderedRules: KnockoutObservableArray<any>;
-        selectedOrdered: any;
+        orderedRules: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 1, name: '注文済' },
+            { code: 0, name: 'すべて' }
+        ]);
+        selectedOrdered: any = ko.observable(0);
         
         constructor() {
             let self = this;
@@ -76,11 +79,23 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 }
             }
             
-            self.orderedRules = ko.observableArray([
-                { code: 1, name: '注文済' },
-                { code: 0, name: 'すべて' }
-            ]);
-            self.selectedOrdered = ko.observable(0);
+            nts.uk.characteristics.restore("exportTitle").done((data) => {
+                self.title(_.isEmpty(data) ? "" : data);            
+            });
+            
+            nts.uk.characteristics.restore("ordered").done((data) => {
+                self.selectedOrdered(_.isEmpty(data) ? 0 : data);            
+            });
+            
+            self.title.subscribe(value => {
+                nts.uk.characteristics.remove("exportTitle");
+                nts.uk.characteristics.save("exportTitle", value);
+            });
+            
+            self.selectedOrdered.subscribe(value => {
+                nts.uk.characteristics.remove("ordered");
+                nts.uk.characteristics.save("ordered", value);
+            });
         }
         
         startPage(): JQueryPromise<any> {
@@ -145,6 +160,10 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         
         exportFile() {
             let self = this;
+            $("#exportTitle").trigger("validate");
+            if(nts.uk.ui.errors.hasError()) {
+                return;    
+            }
             if(_.isEmpty(self.employeeList())) {
                 dialog.alertError({ messageId : "Msg_1587" }).then(function(){
                     nts.uk.ui.block.clear();

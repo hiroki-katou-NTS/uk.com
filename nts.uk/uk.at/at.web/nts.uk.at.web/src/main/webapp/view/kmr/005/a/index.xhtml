@@ -24,7 +24,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: exportFile">#{i18n.getText('KMR005_2')}</button>
+				<button class="proceed" data-bind="click: exportFile, enable: $root.errors.isEmpty">#{i18n.getText('KMR005_2')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="ccgcomponent"></div>
@@ -51,7 +51,7 @@
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR005_4')}</div>
 							</div>
 							<div class="cell">
-								<input data-bind="ntsTextEditor: {
+								<input id="exportTitle" data-bind="ntsTextEditor: {
 												value: title,
 												required: true }" />
 							</div>
