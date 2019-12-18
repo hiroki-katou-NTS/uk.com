@@ -396,7 +396,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 						endDate.before(end) ? endDate : end);
 				BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(cId, employeeId, periodDate, false,
 						closureInforOpt.get().getPeriod().end(), false, new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), Optional.empty());
+						new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 				BreakDayOffRemainMngOfInPeriod currentHoliday = breakDayOffMngInPeriodQuery .getBreakDayOffMngInPeriod(param);
 				listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryForwardDays(), currentHoliday.getOccurrenceDays(), currentHoliday.getUseDays(), currentHoliday.getUnDigestedDays(), currentHoliday.getRemainDays()));
 			}
