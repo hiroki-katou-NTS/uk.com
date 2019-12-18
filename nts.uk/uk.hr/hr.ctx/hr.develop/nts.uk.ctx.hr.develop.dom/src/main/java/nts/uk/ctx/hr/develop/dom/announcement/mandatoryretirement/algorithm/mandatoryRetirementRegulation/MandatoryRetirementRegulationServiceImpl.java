@@ -17,6 +17,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseAppl
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.ComprehensiveEvaluationDto;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.OutputObjectDto;
@@ -184,8 +185,8 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 
 	@Override
 	public List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm,
-			RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<GeneralDate> closingDate,
-			List<GeneralDate> attendanceDate) {
+			RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate,
+			List<EmploymentDateDto> attendanceDate) {
 		List<RetirementDateDto> result = new ArrayList<>();
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
 			result.addAll(retirePlan.stream().map(c-> new RetirementDateDto(c.getEmployeeId(), c.getEmploymentCode(), c.getBirthday().addYears(c.getRetirementAge()).addDays(-1))).collect(Collectors.toList()));
@@ -201,15 +202,34 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 					return c;
 				}).collect(Collectors.toList());
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_MONTH_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
-			
-		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_YEAR_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
-			
+			return result.stream().map(c->{
+				c.setLastDateInMonth();
+				return c;
+			}).collect(Collectors.toList());
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_YEAR_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE && endDate.isPresent()) {
+			return result.stream().map(c->{
+				c.setRetirementDateByYear(endDate.get());
+				return c;
+			}).collect(Collectors.toList());
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_WAGE_CLOSING_DATE_AFTER_THE_DATE_OF_RETIREMENT_AGE) {
-			
+			for (RetirementDateDto item : result) {
+				Optional<EmploymentDateDto> employmentDate = closingDate.stream().parallel().filter(c->c.getEmploymentCode().equals(item.getEmploymentCode())).findAny();
+				if(!employmentDate.isPresent()) {
+					throw new BusinessException("MsgJ_JMM018_7");
+				}
+				item.setDay(employmentDate.get().getRetirementDate());
+			}
+			return result;
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_DUE_DATE_AFTER_REACHING_RETIREMENT_AGE) {
-			
+			for (RetirementDateDto item : result) {
+				Optional<EmploymentDateDto> employmentDate = attendanceDate.stream().parallel().filter(c->c.getEmploymentCode().equals(item.getEmploymentCode())).findAny();
+				if(!employmentDate.isPresent()) {
+					throw new BusinessException("MsgJ_JMM018_8");
+				}
+				item.setDay(employmentDate.get().getRetirementDate());
+			}
+			return result;
 		}
-		
 		return new ArrayList<>();
 	}
 
