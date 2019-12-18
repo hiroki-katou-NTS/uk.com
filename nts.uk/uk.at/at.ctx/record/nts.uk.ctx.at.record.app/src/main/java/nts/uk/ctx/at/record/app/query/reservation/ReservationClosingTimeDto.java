@@ -23,7 +23,7 @@ public class ReservationClosingTimeDto {
 	}
 	
 	public static ReservationClosingTimeDto fromDomain(ReservationClosingTime domain) {
-		return new ReservationClosingTimeDto(domain.getReservationTimeName().v(), domain.getStart().get().v(),
+		return new ReservationClosingTimeDto(domain.getReservationTimeName().v(), domain.getStart().isPresent() ? null : domain.getStart().get().v(),
 				domain.getFinish().v());
 	}
 }

@@ -1018,6 +1018,9 @@ public class ProgramIdConsts {
 	public static final String CPS013A = "CPS013A";
 	public static final String CPS013B = "CPS013B";
 	
+	/** KMR002*/
+	public static final String KMR002A = "KMR002A";
+	
 
 
 }

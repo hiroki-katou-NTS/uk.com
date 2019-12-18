@@ -40,7 +40,7 @@ public class BentoMenuByClosingTimeDto {
 		return new BentoMenuByClosingTimeDto(domain.getMenu1().stream().map(x -> BentoItemByClosingTimeDto.fromDomain(x)).collect(Collectors.toList()), 
 				domain.getMenu2().stream().map(x -> BentoItemByClosingTimeDto.fromDomain(x)).collect(Collectors.toList()),
 				ReservationClosingTimeDto.fromDomain(domain.getClosingTime().getClosingTime1()),
-				ReservationClosingTimeDto.fromDomain(domain.getClosingTime().getClosingTime2().get()),
+				ReservationClosingTimeDto.fromDomain(domain.getClosingTime().getClosingTime2().isPresent() ? null : domain.getClosingTime().getClosingTime2().get()),
 				domain.isReservationTime1Atr(), 
 				domain.isReservationTime2Atr()
 				);

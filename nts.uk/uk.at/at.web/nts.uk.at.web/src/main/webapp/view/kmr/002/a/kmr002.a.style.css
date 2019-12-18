@@ -39,9 +39,9 @@ button.nts-switch-button {
 	min-width: 100px;
 }
 .menu-order {
-	padding-top: 15px; 
+	padding-top: 10px; 
 	overflow-y: scroll; 
-	height:350px; 
+	height:320px; 
 	width:300px;
 }
 .button-food {
@@ -51,5 +51,8 @@ button.nts-switch-button {
 	margin-right: 20px;
 }
 .button-radius:hover:enabled {
-  background-color: #A4EEB0;
+   background-color: #A4EEB0;
+}
+.fixed-flex-layout-left {
+	min-width:1500px;
 }
