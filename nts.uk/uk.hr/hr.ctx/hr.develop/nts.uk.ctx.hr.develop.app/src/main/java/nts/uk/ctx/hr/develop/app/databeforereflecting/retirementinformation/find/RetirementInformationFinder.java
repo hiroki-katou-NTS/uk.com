@@ -20,6 +20,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetir
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetireDateRule;
@@ -32,6 +33,8 @@ import nts.uk.ctx.hr.develop.dom.interview.InterviewCategory;
 import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
 import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.service.IGetDatePeriod;
+import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.ClosureDateOfEmploymentImport;
+import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.WorkDayAdaptor;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
@@ -81,9 +84,12 @@ public class RetirementInformationFinder {
 
 	@Inject
 	private EmployeeInformationAdaptor empInfoAdaptor;
-	
+
 	@Inject
 	private DateCaculationTermService dateCal;
+
+	@Inject
+	private WorkDayAdaptor workDayAdaptor;
 
 	/**
 	 * 1.起動する(Khởi động)
@@ -196,6 +202,29 @@ public class RetirementInformationFinder {
 		// ドメインモデル [定年退職の就業規則] を取得する(Lấy domain [MandatoryRetirementRegulation])
 		MandatoryRetirementRegulation mada = getRetirementRules(cId, hisId, baseDate);
 
+		YearStartEnd yearStartEnd = null;
+		
+		List<Object> salaryClosingDate =  new ArrayList<Object>();
+		
+		
+		List<ClosureDateOfEmploymentImport> closureDates = new ArrayList<ClosureDateOfEmploymentImport>();
+		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
+		case 0:
+		case 1:
+		case 2:
+
+			break;
+		case 3:
+			yearStartEnd = getYearMonthDate(cId, baseDate);
+			break;
+		case 4:
+			salaryClosingDate = getSalaryClosingDate(cId);
+			break;
+		case 5:
+			closureDates = getClosingDate(cId);
+			break;
+		}
+
 		// アルゴリズム [全ての定年退職コースの取得] を実行する (THực hiện thuật toán " Lấy tất cả
 		// retirePlanCourse")
 		List<RetirePlanCource> retires = getAllRetires(cId);
@@ -258,15 +287,16 @@ public class RetirementInformationFinder {
 						RetireDateRule.class),
 				EnumAdaptor.valueOf(retirePlanCourses.get(0).getRetireDateTerm().getRetireDateSettingDate(),
 						DateSelectItem.class));
-//		this.madaRepo.getRetireDateBySidList(retirePlans, query.getRetirementAge(), retireDateTerm, query.getEndDate(),
-//				closingDate, attendanceDate);
+		//List<RetirementDateDto> retiDtos = this.madaRepo.getRetireDateBySidList(retirePlans, mada.getReachedAgeTerm(), mada.getRetireDateTerm(),
+		//		query.getEndDate(), salaryClosingDate, closureDates);
 		// 社員年齢リストを生成する (Tạo Employee age list)
 
 		// アルゴリズム [算出日の取得] を実行する (Thực hiện thuật toán "Get CalculationDate")
-//		this.dateCal.getDateBySidList(date, dateCaculationTerm);
+		// this.dateCal.getDateBySidList(date, dateCaculationTerm);
 		// アルゴリズム [評価情報の取得] を実行する (THực hiện thuật toán " Lấy thông tin đánh
 		// giá")
-//		this.madaRepo.getEvaluationInfoBySidList(retiredEmployeeId, evaluationReferInfo);
+		// this.madaRepo.getEvaluationInfoBySidList(retiredEmployeeId,
+		// evaluationReferInfo);
 		// 定年退職予定者リストを生成する (Tạo List of retired employees)
 
 		return Collections.emptyList();
@@ -331,7 +361,7 @@ public class RetirementInformationFinder {
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
 
-		if (query.getRetirementAge()==null) {
+		if (query.getRetirementAge() == null) {
 			// 定年条件リストを絞り込む(Fillter retireTerrmList)
 			retirePlanCourses = retireCourseTerm.stream().filter(x -> x.getRetirePlanCourseClass().equals(0))
 					.collect(Collectors.toList());
@@ -397,23 +427,6 @@ public class RetirementInformationFinder {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 
-		switch (madaOpt.get().getRetireDateTerm().getRetireDateTerm().value) {
-		case 0:
-		case 1:
-		case 2:
-
-			break;
-		case 3:
-			checkYearMonthDate(cId, baseDate);
-			break;
-		case 4:
-			checkSalaryClosingDate(cId);
-			break;
-		case 5:
-			getClosingDate(cId);
-			break;
-		}
-
 		return madaOpt.get();
 	}
 
@@ -427,24 +440,32 @@ public class RetirementInformationFinder {
 		return hisIdOpt.get();
 	}
 
-	private void getClosingDate(String cId) {
-		// TODO Auto-generated method stub
+	private List<ClosureDateOfEmploymentImport> getClosingDate(String cId) {
 
+		List<ClosureDateOfEmploymentImport> closureDates = this.workDayAdaptor.getClosureDate(cId);
+
+		if (closureDates.isEmpty()) {
+			throw new BusinessException("MsgJ_JMM018_5");
+		}
+		return closureDates;
 	}
 
-	private void checkSalaryClosingDate(String cId) {
+	private List<Object> getSalaryClosingDate(String cId) {
 		// アルゴリズム [給与雇用と締めのリストを取得する] を実行する (Thực hiện thuật toán [Get a list of
 		// salary employment and closing])
-		// TODO Auto-generated method stub
+		// đoạn này đang gọi đến RQ 641 , không đúng cấu trúc project nên đang
+		// bàn lại
+		return Collections.emptyList();
 	}
 
-	private void checkYearMonthDate(String cId, GeneralDate baseDate) {
+	private YearStartEnd getYearMonthDate(String cId, GeneralDate baseDate) {
 		// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy
 		// YearStartMonthDate, YearEndMonthDate từ BaseDate])
 		YearStartEnd yearStartEnd = this.iGetYearStartEndDateByDate.getByDate(cId, baseDate);
 		if (yearStartEnd == null) {
 			throw new BusinessException("MsgJ_JMM018_3");
 		}
+		return yearStartEnd;
 	}
 
 	private void preSearchWarning(GeneralDate endDate) {

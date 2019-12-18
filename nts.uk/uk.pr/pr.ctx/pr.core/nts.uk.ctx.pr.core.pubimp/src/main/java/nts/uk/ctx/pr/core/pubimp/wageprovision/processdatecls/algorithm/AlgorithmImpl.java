@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.pubimp.wageprovision.processdatecls.algorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class AlgorithmImpl implements IAlgorithm {
 
 		// 締め日リストをNULLで作成する(Tạo ClosuredateList bằng null)
 		if (empTieds.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		// ドメインモデル「支払日の設定の既定値」を取得する(Lấy domain [giá trị mặc định của setting
 		// ngày thanh toán ])
@@ -43,7 +44,7 @@ public class AlgorithmImpl implements IAlgorithm {
 
 		// 締め日リストをNULLで作成する(Tạo ClosuredateList bằng null)
 		if (valDays.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		// 取得した雇用リストと参照日リストを処理日区分NOで紐付けたリストを作成するTạo list kết hợp 2 list

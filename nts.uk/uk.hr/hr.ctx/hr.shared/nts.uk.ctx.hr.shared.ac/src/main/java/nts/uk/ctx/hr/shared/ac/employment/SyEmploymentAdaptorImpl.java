@@ -21,6 +21,7 @@ public class SyEmploymentAdaptorImpl implements SyEmploymentAdaptor {
 
 	@Inject
 	private SyEmploymentPub sysEmp;
+	
 
 	@Override
 	public List<EmploymentInfoImport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentName,
