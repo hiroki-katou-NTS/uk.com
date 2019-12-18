@@ -29,4 +29,16 @@ public class RetirementDateDto {
 		}
 		
 	}
+	
+	public void setLastDateInMonth() {
+		this.retirementDate = this.retirementDate.addMonths(1);
+	}
+	
+	public void setRetirementDateByYear(GeneralDate endDate) {
+		if(this.retirementDate.beforeOrEquals(endDate)) {
+			this.retirementDate = endDate;
+		}else {
+			this.retirementDate = endDate.addYears(1);
+		}
+	}
 }

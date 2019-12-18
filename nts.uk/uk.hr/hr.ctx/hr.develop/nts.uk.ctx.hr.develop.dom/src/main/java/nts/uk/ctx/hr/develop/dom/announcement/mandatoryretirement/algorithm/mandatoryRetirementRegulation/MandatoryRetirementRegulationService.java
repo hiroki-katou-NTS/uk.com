@@ -8,6 +8,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetir
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseApplyTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
@@ -42,7 +43,7 @@ public interface MandatoryRetirementRegulationService {
 	List<RetirementPlannedPersonDto> getMandatoryRetirementListByPeriodDepartmentEmployment(String companyId, GeneralDate baseDate, GeneralDate endDate, Optional<RetirementAge> retirementAge, List<String> departmentId, List<String> employmentCode);
 	
 	//退職日の取得
-	List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm, RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<GeneralDate> closingDate, List<GeneralDate> attendanceDate);
+	List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm, RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate, List<EmploymentDateDto> attendanceDate);
 	
 	//評価情報の取得
 	EvaluationInfoDto getEvaluationInfoBySidList(List<String> retiredEmployeeId, List<ReferEvaluationItem> evaluationReferInfo);
