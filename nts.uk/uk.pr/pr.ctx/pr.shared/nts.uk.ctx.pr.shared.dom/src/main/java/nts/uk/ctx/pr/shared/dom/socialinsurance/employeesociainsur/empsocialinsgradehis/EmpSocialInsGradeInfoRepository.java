@@ -9,7 +9,7 @@ public interface EmpSocialInsGradeInfoRepository {
 
     void add(EmpSocialInsGradeInfo domain);
     void update(EmpSocialInsGradeInfo domain);
-    void remove(String histId);
+    void delete(String histId);
 
     Optional<EmpSocialInsGradeInfo> getEmpSocialInsGradeInfoByHistId(String histId);
 }

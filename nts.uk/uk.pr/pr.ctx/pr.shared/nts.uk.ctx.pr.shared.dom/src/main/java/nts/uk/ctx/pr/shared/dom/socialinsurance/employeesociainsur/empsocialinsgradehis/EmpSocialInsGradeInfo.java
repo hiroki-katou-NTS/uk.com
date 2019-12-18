@@ -20,7 +20,7 @@ public class EmpSocialInsGradeInfo extends AggregateRoot {
     /**
      * 履歴ID
      */
-    private String hisId;
+    private String histId;
 
     /**
      * 社会保険報酬月額(実質)
@@ -53,7 +53,7 @@ public class EmpSocialInsGradeInfo extends AggregateRoot {
     private Optional<InsuranceGrade> pensionInsGrade;
 
     public EmpSocialInsGradeInfo(String hisId, Integer socInsMonthlyRemune, Integer calculationAtr, Integer healInsStandMonthlyRemune, Integer healInsGrade, Integer pensionInsStandCompenMonthly, Integer pensionInsGrade) {
-        this.hisId = hisId;
+        this.histId = hisId;
         this.socInsMonthlyRemune = new MonthlyRemuneration(socInsMonthlyRemune);
         this.calculationAtr = EnumAdaptor.valueOf(calculationAtr, CalculationAtr.class);
         this.healInsStandMonthlyRemune = healInsStandMonthlyRemune == null ? Optional.empty() : Optional.of(new MonthlyRemuneration(healInsStandMonthlyRemune));

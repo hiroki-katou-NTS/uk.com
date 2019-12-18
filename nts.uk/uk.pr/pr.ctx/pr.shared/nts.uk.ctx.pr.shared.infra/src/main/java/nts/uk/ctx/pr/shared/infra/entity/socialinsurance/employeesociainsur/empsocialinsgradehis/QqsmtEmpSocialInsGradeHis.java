@@ -34,7 +34,9 @@ public class QqsmtEmpSocialInsGradeHis extends UkJpaEntity implements Serializab
     /**
      * 会社ID
      */
-    private String cid;
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cId;
 
     /**
      * 社員ID
@@ -72,6 +74,7 @@ public class QqsmtEmpSocialInsGradeHis extends UkJpaEntity implements Serializab
         }
 
         return new EmpSocialInsGradeHis(
+                entities.get(0).cId,
                 entities.get(0).sId,
                 entities.stream().map(x -> new YearMonthHistoryItem(x.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(x.startYM), new YearMonth(x.endYM)))).collect(Collectors.toList()));
     }
@@ -79,7 +82,7 @@ public class QqsmtEmpSocialInsGradeHis extends UkJpaEntity implements Serializab
     public EmpSocialInsGradeHis toDomain() {
         List<YearMonthHistoryItem> date = new ArrayList<>();
         date.add(new YearMonthHistoryItem(this.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(startYM), new YearMonth(endYM))));
-        return new EmpSocialInsGradeHis(this.sId, date);
+        return new EmpSocialInsGradeHis(this.cId, this.sId, date);
     }
 
     public static QqsmtEmpSocialInsGradeHis toEntity(EmpSocialInsGradeHis domain) {

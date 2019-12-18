@@ -6,6 +6,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHis;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHisPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -18,17 +19,54 @@ import java.util.Optional;
 public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements EmpSocialInsGradeHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpSocialInsGradeHis f";
-    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.sId = :sId";
-    private static final String SELECT_BY_HISTID = SELECT_ALL_QUERY_STRING + " WHERE f.qqsmtEmpSocialInsGradeHisPk.historyId = :histId";
+    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.cId = :cId and f.sId = :sId ORDER BY f.startYM";
+    private static final String SELECT_BY_HISTID = SELECT_ALL_QUERY_STRING + " WHERE f.qqsmtEmpSocialInsGradeHisPk.historyId = :histId ORDER BY f.startYM";
 
-    @Override
-    public void add(EmpSocialInsGradeHis domain) {
+    /**
+     * Convert from domain to entity
+     *
+     * @param employeeID
+     * @param item
+     * @return
+     */
+    private QqsmtEmpSocialInsGradeHis toEntity(String companyId, String employeeID, YearMonthHistoryItem item) {
+        return new QqsmtEmpSocialInsGradeHis(new QqsmtEmpSocialInsGradeHisPk(item.identifier()), companyId, employeeID, item.start().v(), item.end().v());
+    }
 
+    /**
+     * Update entity from domain
+     *
+     * @param employeeID
+     * @param item
+     * @return
+     */
+    private void updateEntity(YearMonthHistoryItem item, QqsmtEmpSocialInsGradeHis entity) {
+        entity.startYM = item.start().v();
+        entity.endYM = item.end().v();
     }
 
     @Override
-    public void update(EmpSocialInsGradeHis domain) {
+    public void add(String cid, String sid, YearMonthHistoryItem item) {
+        this.commandProxy().insert(toEntity(cid, sid, item));
+    }
 
+    @Override
+    public void update(YearMonthHistoryItem item) {
+        Optional<QqsmtEmpSocialInsGradeHis> histItem = this.queryProxy().find(item.identifier(), QqsmtEmpSocialInsGradeHis.class);
+        if (!histItem.isPresent()) {
+            throw new RuntimeException("invalid QqsmtEmpSocialInsGradeHis");
+        }
+        updateEntity(item, histItem.get());
+        this.commandProxy().update(histItem.get());
+    }
+
+    @Override
+    public void delete(String histId) {
+        Optional<QqsmtEmpSocialInsGradeHis> histItem = this.queryProxy().find(histId, QqsmtEmpSocialInsGradeHis.class);
+        if (!histItem.isPresent()) {
+            throw new RuntimeException("invalid QqsmtEmpSocialInsGradeHis");
+        }
+        this.commandProxy().remove(QqsmtEmpSocialInsGradeHis.class, histId);
     }
 
     @Override
@@ -52,11 +90,32 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
     }
 
     @Override
-    public Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisBySId(String employeeId) {
+    public Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisBySId(String cid, String employeeId) {
         List<QqsmtEmpSocialInsGradeHis> hisList = this.queryProxy()
                 .query(SELECT_BY_EMPID, QqsmtEmpSocialInsGradeHis.class)
+                .setParameter("cId", cid)
                 .setParameter("sId", employeeId).getList();
-        return toDomain(hisList);
+
+        if (hisList != null && !hisList.isEmpty()) {
+            return Optional.of(toDomainTemp(hisList));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Convert to domain EmpSocialInsGradeHis
+     *
+     * @param employeeId
+     * @param listHist
+     * @return
+     */
+    private EmpSocialInsGradeHis toDomainTemp(List<QqsmtEmpSocialInsGradeHis> listHist) {
+        EmpSocialInsGradeHis domain = new EmpSocialInsGradeHis(listHist.get(0).cId, listHist.get(0).sId, new ArrayList<YearMonthHistoryItem>());
+        for (QqsmtEmpSocialInsGradeHis item : listHist) {
+            YearMonthHistoryItem dateItem = new YearMonthHistoryItem(item.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(item.startYM), new YearMonth( item.endYM)));
+            domain.getYearMonthHistoryItems().add(dateItem);
+        }
+        return domain;
     }
 
     @Override
@@ -66,8 +125,8 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
 
     @Override
     public Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisByHistId(String histId) {
-        return Optional.of(this.queryProxy().query(SELECT_BY_HISTID, QqsmtEmpSocialInsGradeHis.class).setParameter("histId", histId)
-        .getSingle(x -> x.toDomain()).orElse(null));
+        return this.queryProxy().query(SELECT_BY_HISTID, QqsmtEmpSocialInsGradeHis.class).setParameter("histId", histId)
+        .getSingle(x -> x.toDomain());
     }
 
     @Override
@@ -88,7 +147,7 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
             periodList.add(new YearMonthHistoryItem(item.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(item.startYM), new YearMonth(item.endYM))));
         });
 
-        domain.setPeriod(periodList);
+        domain.setYearMonthHistoryItems(periodList);
         return Optional.of(domain);
     }
 }

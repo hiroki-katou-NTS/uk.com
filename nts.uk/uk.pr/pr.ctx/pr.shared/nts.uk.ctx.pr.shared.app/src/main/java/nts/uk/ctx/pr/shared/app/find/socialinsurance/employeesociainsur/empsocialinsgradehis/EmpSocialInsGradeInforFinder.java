@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -23,7 +24,7 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
     EmpSocialInsGradeHisRepository esighFinder;
 
     @Inject
-    EmpSocialInsGradeInfoRepository esigiFinfer;
+    EmpSocialInsGradeInfoRepository esigiFinder;
 
     @Override
     public String targetCategoryCode() {
@@ -42,21 +43,22 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
 
     @Override
     public EmpSocialInsGradeInforDto getSingleData(PeregQuery peregQuery) {
+        String companyId = AppContexts.user().companyId();
         if (peregQuery.getInfoId() == null) {
-            Optional<EmpSocialInsGradeHis> domain = esighFinder.getEmpSocialInsGradeHisBySId(peregQuery.getEmployeeId());
+            Optional<EmpSocialInsGradeHis> domain = esighFinder.getEmpSocialInsGradeHisBySId(companyId, peregQuery.getEmployeeId());
             if (!domain.isPresent()) {
                 return null;
             }
-            YearMonthHistoryItem period = domain.get().getPeriod().get(0);
+            YearMonthHistoryItem period = domain.get().getYearMonthHistoryItems().get(0);
             if (period == null) {
                 return null;
             }
-            EmpSocialInsGradeInfo info = esigiFinfer.getEmpSocialInsGradeInfoByHistId(period.identifier()).get();
+            EmpSocialInsGradeInfo info = esigiFinder.getEmpSocialInsGradeInfoByHistId(period.identifier()).orElse(null);
 
             return EmpSocialInsGradeInforDto.fromDomain(domain.get(), info);
         } else {
-            EmpSocialInsGradeInfo info = esigiFinfer.getEmpSocialInsGradeInfoByHistId(peregQuery.getInfoId()).get();
-            EmpSocialInsGradeHis domain = esighFinder.getEmpSocialInsGradeHisByHistId(peregQuery.getInfoId()).get();
+            EmpSocialInsGradeInfo info = esigiFinder.getEmpSocialInsGradeInfoByHistId(peregQuery.getInfoId()).orElse(null);
+            EmpSocialInsGradeHis domain = esighFinder.getEmpSocialInsGradeHisByHistId(peregQuery.getInfoId()).orElse(null);
 
             return  EmpSocialInsGradeInforDto.fromDomain(domain, info);
         }

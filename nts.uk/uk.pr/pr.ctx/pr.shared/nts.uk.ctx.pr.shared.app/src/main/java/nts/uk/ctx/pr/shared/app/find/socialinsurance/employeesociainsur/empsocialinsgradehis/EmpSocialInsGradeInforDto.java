@@ -12,34 +12,43 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @NoArgsConstructor
 public class EmpSocialInsGradeInforDto extends PeregDomainDto {
 
+    /** 期間.開始年月 */
     @PeregItem("IS01016")
-    private int startYM;
+    private Integer startYM;
 
+    /** 期間.終了年月 */
     @PeregItem("IS01017")
-    private int endYM;
+    private Integer endYM;
 
+    /** 現在の等級 */
     @PeregItem("IS01018")
-    private int currentGrade;
+    private Integer currentGrade;
 
+    /** 算定区分 */
     @PeregItem("IS01019")
-    private int calculationAtr;
+    private Integer calculationAtr;
 
+    /** 健康保険等級 */
     @PeregItem("IS01020")
-    private int healInsGrade;
+    private Integer healInsGrade;
 
+    /** 健康保険標準報酬月額 */
     @PeregItem("IS01021")
-    private int healInsStandMonthlyRemune;
+    private Integer healInsStandMonthlyRemune;
 
+    /** 厚生年金保険等級 */
     @PeregItem("IS01022")
-    private int pensionInsGrade;
+    private Integer pensionInsGrade;
 
+    /** 厚生年金保険標準報酬月額 */
     @PeregItem("IS01023")
-    private int pensionInsStandCompenMonthly;
+    private Integer pensionInsStandCompenMonthly;
 
+    /** 社会保険報酬月額（実質） */
     @PeregItem("IS01024")
-    private int socInsMonthlyRemune;
+    private Integer socInsMonthlyRemune;
 
-    public EmpSocialInsGradeInforDto(String recordId, int startYM, int endYM, int calculationAtr, int healInsGrade, int healInsStandMonthlyRemune, int pensionInsGrade, int pensionInsStandCompenMonthly, int socInsMonthlyRemune) {
+    private EmpSocialInsGradeInforDto(String recordId, Integer startYM, Integer endYM, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
         super(recordId);
         this.startYM = startYM;
         this.endYM = endYM;
@@ -55,7 +64,7 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
         if (domain == null || info == null) {
             return null;
         }
-        YearMonthHistoryItem period = domain.getPeriod().get(0);
+        YearMonthHistoryItem period = domain.getYearMonthHistoryItems().get(0);
         if (period == null) {
             return null;
         }
