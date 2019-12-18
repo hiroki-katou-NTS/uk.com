@@ -148,7 +148,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 						x, 
 						bentoReservationLst, 
 						bentoMenu,
-						stampCardLst.stream().filter(y -> y.getEmployeeId()==x.getKey()).findAny().get().getStampNumber().toString()))
+						stampCardLst.stream().filter(y -> y.getEmployeeId().equals(x.getKey())).findAny().get().getStampNumber().toString()))
 				.collect(Collectors.toList());
 		wkpLedger.setEmpLedgerLst(reservationEmpLedgerLst);
 		return wkpLedger;
