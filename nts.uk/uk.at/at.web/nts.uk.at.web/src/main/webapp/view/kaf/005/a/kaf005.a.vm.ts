@@ -244,7 +244,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });    
                 });
                 self.checkRequiredOvertimeHours();
-                $("#inputdate").focus();
+                // $("#inputdate").focus();
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
@@ -307,24 +307,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
 
-                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
-                        nts.uk.ui.errors.clearAll();
-                        $("#inputdate").trigger("validate");
-                        if (nts.uk.ui.errors.hasError()) {
-                            if (value == 0) {
-                                self.isRightContent(false);
-                            }
-                            if (value == 1 && self.performanceDisplayAtr()) {
-                                self.isRightContent(true);
-                                self.referencePanelFlg(true);
-                            }
-                            if (value == 1 && self.preDisplayAtr()) {
-                                self.isRightContent(true);
-                                self.allPreAppPanelFlg(true);
-                            }
-                            return;
+                    nts.uk.ui.errors.clearAll();
+                    $("#inputdate").trigger("validate");
+                    if (nts.uk.ui.errors.hasError()) {
+                        if (value == 0) {
+                            self.isRightContent(false);
                         }
+                        if (value == 1 && self.performanceDisplayAtr()) {
+                            self.isRightContent(true);
+                            self.referencePanelFlg(true);
+                        }
+                        if (value == 1 && self.preDisplayAtr()) {
+                            self.isRightContent(true);
+                            self.allPreAppPanelFlg(true);
+                        }
+                        return;
                     }
+                    
                     if (value == 0) {
                         self.isRightContent(false);
                     } else {
@@ -691,6 +690,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         registerClick() {
             let self = this;
             $('#kaf005-pre-post-select').ntsError('check');
+            $("#inputdate").trigger("validate");
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");
