@@ -20,7 +20,6 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
@@ -143,14 +142,15 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	private List<WorkTypeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
 		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
-		query.append(" WHERE YMD <= ? AND YMD >= ? ");
-		query.append(" AND SID IN (" + subEmp + ")");
+		query.append(" WHERE SID IN ( " + subEmp + ")");
+		query.append(" AND YMD <= ? AND YMD >= ? ");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
-			stmt.setDate(1, Date.valueOf(baseDate.end().localDate()));
-			stmt.setDate(2, Date.valueOf(baseDate.start().localDate()));
-			for (int i = 0; i < empIds.size(); i++) {
-				stmt.setString(i + 3, empIds.get(i));
+			int i = 0;
+			for (; i < empIds.size(); i++) {
+				stmt.setString(i + 1, empIds.get(i));
 			}
+			stmt.setDate(i+1, Date.valueOf(baseDate.end().localDate()));
+			stmt.setDate(i+2, Date.valueOf(baseDate.start().localDate()));
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				return new WorkTypeOfDailyPerformance(rec.getString("SID"), 
 						rec.getGeneralDate("YMD"), rec.getString("WORKTYPE_CODE"));
@@ -159,21 +159,41 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<KrcdtDaiWorkType> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
-		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
-		query.append("AND af.krcdtDaiWorkTypePK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiWorkType> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiWorkTypePK.employeeId).contains(c.krcdtDaiWorkTypePK.ymd))
-					.collect(Collectors.toList()));
+    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
 		});
-		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
+		return result;
 	}
+    
+    @SneakyThrows
+	private List<WorkTypeOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
+    	String subEmp = NtsStatement.In.createParamsString(subList);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+    	
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
+		query.append(" WHERE SID IN (" + subEmp + ")");
+		query.append(" AND YMD IN (" + subInDate + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				return new WorkTypeOfDailyPerformance(rec.getString("SID"), 
+						rec.getGeneralDate("YMD"), rec.getString("WORKTYPE_CODE"));
+			});
+		}
+    }
 
 }

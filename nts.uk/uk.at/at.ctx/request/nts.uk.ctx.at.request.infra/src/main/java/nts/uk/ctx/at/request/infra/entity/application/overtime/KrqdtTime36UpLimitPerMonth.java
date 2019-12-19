@@ -49,5 +49,14 @@ public class KrqdtTime36UpLimitPerMonth extends UkJpaEntity {
 	protected Object getKey() {
 		return pk;
 	}
+
+	public KrqdtTime36UpLimitPerMonth(KrqdpTime36UpLimitPerMonthPK pk, Integer averageTime, Integer totalTime) {
+		super();
+		this.pk = pk;
+		this.averageTime = averageTime;
+		this.totalTime = totalTime;
+	}
+	
+	
 	
 }

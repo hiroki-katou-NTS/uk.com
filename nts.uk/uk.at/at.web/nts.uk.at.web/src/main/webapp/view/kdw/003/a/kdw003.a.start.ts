@@ -16,6 +16,7 @@ module nts.uk.at.view.kdw003.a {
                 nts.uk.ui.block.clear();
             }
             __viewContext.bind(screenModel);
+             $("#yearMonthPicker").ntsError("clear");
              screenModel.changeConditionExtract(false);
             if (data.bindDataMap) {
                 screenModel.setSprFromItem(data.data);
