@@ -11,5 +11,5 @@ public class ClosureDateOfEmploymentExport {
 	// 雇用ｺｰﾄﾞ
 	private String employmentCd;
 	// 締め日
-	private Integer closureDate;
+	private int closureDate;
 }
