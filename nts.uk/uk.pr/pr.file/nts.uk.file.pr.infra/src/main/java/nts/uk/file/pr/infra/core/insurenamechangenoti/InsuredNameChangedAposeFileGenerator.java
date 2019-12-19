@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.file.app.core.insurenamechangenoti.InsuredNameChangedExport
 import nts.uk.ctx.pr.file.app.core.insurenamechangenoti.InsuredNameChangedNotiExportData;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.*;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empbenepenpeninfor.PitInsiderDivision;
+import nts.uk.file.pr.infra.core.socinsurnoticreset.EmpAddChangeInfoPDFAposeFileGenerator;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -70,20 +71,10 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         
         Worksheet ws = wsc.get(index);
         String oldName = data.getPerson().getPersonNameGroup().getOldName().getFullName();
-        String beforeOldName = oldName.split("　")[0];
-        String afterOldName = oldName.split("　").length > 1 ? oldName.split("　")[1] : "";
         String name = data.getPerson().getPersonNameGroup().getPersonName().getFullName();
-        String beforeName = name.split("　")[0];
-        String afterName =  name.split("　").length > 1 ? name.split("　")[1] : "";
         String nameKana = data.getPerson().getPersonNameGroup().getPersonName().getFullNameKana();
-        String beforeNameKana = nameKana.split("　")[0];
-        String afterNameKana = nameKana.split("　").length > 1 ? nameKana.split("　")[1] : "";
         String todoName = data.getPerson().getPersonNameGroup().getTodokedeFullName().getFullName();
         String todoNameKana = data.getPerson().getPersonNameGroup().getTodokedeFullName().getFullNameKana();
-        String beforeTodoName= todoName.split("　")[0];
-        String afterTodoName = todoName.split("　").length > 1 ? todoName.split("　")[1] : "";
-        String beforeTodoNameKana= todoNameKana.split("　")[0];
-        String afterTodoNameKana = todoNameKana.split("　").length > 1 ? todoNameKana.split("　")[1] : "";
         String address = "";
         String phoneNumber = "";
         String healthInsuranceOfficeNumber1;
@@ -167,21 +158,20 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         ws.getCells().get("Y20").putValue(submitDate.month());
         ws.getCells().get("AA20").putValue(submitDate.day());
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.PERSONAL_NAME) {
-            ws.getCells().get("J17").putValue(beforeName.length() > 5 ? beforeName.substring(0,5) : beforeName);
-            ws.getCells().get("M17").putValue(afterName.length() > 5 ? afterName.substring(0,5) : afterName);
-            ws.getCells().get("J19").putValue(beforeNameKana.length() > 5 ? beforeNameKana.substring(0,5) : beforeNameKana);
-            ws.getCells().get("M19").putValue(afterNameKana.length() > 5 ? afterNameKana.substring(0,5) : afterNameKana);
+            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 1, 11));
+            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(name, 2, 11));
+            ws.getCells().get("J19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(nameKana, 1, 16));
+            ws.getCells().get("M19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(nameKana, 2, 16));
         }
         if(socialInsurNotiCreateSet.getSubmittedName() == SubNameClass.REPORTED_NAME) {
-            ws.getCells().get("J17").putValue(beforeTodoName.length() > 5 ? beforeTodoName.substring(0,5) : beforeTodoName);
-            ws.getCells().get("M17").putValue(afterTodoName.length() > 5 ? afterTodoName.substring(0,5) : afterTodoName);
-            ws.getCells().get("J19").putValue(beforeTodoNameKana.length() > 5 ? beforeTodoNameKana.substring(0,5) : beforeTodoNameKana);
-            ws.getCells().get("M19").putValue(afterTodoNameKana.length() > 5 ? afterTodoNameKana.substring(0,5) : afterTodoNameKana);
+            ws.getCells().get("J17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 1, 11));
+            ws.getCells().get("M17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoName, 2, 11));
+            ws.getCells().get("J19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoNameKana, 1, 16));
+            ws.getCells().get("M19").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(todoNameKana, 2, 16));
         }
 
-        ws.getCells().get("U17").putValue(beforeOldName.length() > 5 ? beforeOldName.substring(0,5) : beforeOldName);
-        ws.getCells().get("Z17").putValue(afterOldName.length() > 5 ? afterOldName.substring(0,5) : afterOldName);
-
+        ws.getCells().get("U17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(oldName, 1, 8));
+        ws.getCells().get("Z17").putValue(EmpAddChangeInfoPDFAposeFileGenerator.cutSpace(oldName, 2, 8));
 
         //厚生年金種別情報
 
@@ -258,8 +248,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
 
-        } else {
-            if (data.getSocialInsuranceOffice() != null) {
+        } else if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_SIC_INSURES.value && data.getSocialInsuranceOffice() != null) {
                 if (data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().isPresent() && !data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v().isEmpty()) {
                     phoneNumber = this.formatPhoneNumber(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPhoneNumber().get().v());
                 }
@@ -271,8 +260,6 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
                 ws.getCells().get("K25").putValue(data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : null);
                 ws.getCells().get("J27").putValue(phoneNumber);
-            }
-
         }
     }
 
