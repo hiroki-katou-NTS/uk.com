@@ -1,7 +1,6 @@
 package nts.uk.file.at.infra.bento;
 
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,6 @@ import nts.uk.file.at.app.export.bento.ReservationEmpLedger;
 import nts.uk.file.at.app.export.bento.ReservationMonthDataSource;
 import nts.uk.file.at.app.export.bento.ReservationMonthGenerator;
 import nts.uk.file.at.app.export.bento.ReservationWkpLedger;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -48,6 +46,12 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	private static final Integer AMOUNT1_COLUMN = 35;
 	
 	private static final Integer AMOUNT2_COLUMN = 36;
+	
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	
+	private static final String DATE_FORMAT_JP = "yyyy年MM月dd日(E)";
+	
+	private static final String DAY_OF_WEEK_FORMAT_JP = "E";
 	
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ReservationMonthDataSource dataSource) {
@@ -86,11 +90,10 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		Cells cells = worksheet.getCells();
 		int maxRow = cells.getMaxRow();
 		int maxColumn = cells.getMaxColumn();
-		cells.clearContents(CellArea.createCellArea(3, 1, maxRow, maxColumn));
+		cells.clearContents(CellArea.createCellArea(0, 1, maxRow, maxColumn));
 		GeneralDate startDate = dataSource.getPeriod().start();
 		GeneralDate endDate = dataSource.getPeriod().end();
-		SimpleDateFormat jp = new SimpleDateFormat("yyyy年MM月dd日(E)",Locale.JAPAN);
-		cells.get(0, 1).setValue(I18NText.getText("KMR005_8") + jp.format(startDate.date()) + "〜" + jp.format(endDate.date()));
+		cells.get(0, 1).setValue(I18NText.getText("KMR005_8") + getDayOfWeekJapan(startDate, DATE_FORMAT_JP) + "〜" + getDayOfWeekJapan(endDate, DATE_FORMAT_JP));
 		cells.get(1, 1).setValue(I18NText.getText("Com_Person"));
 		cells.get(1, 2).setValue(I18NText.getText("KMR005_9"));
 		printDayOfWeekHeader(worksheet, dataSource);
@@ -116,35 +119,10 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		Cells cells = worksheet.getCells();
 		GeneralDate startDate = dataSource.getPeriod().start();
 		GeneralDate endDate = dataSource.getPeriod().end();
-		for(int i = 0; i <= endDate.compareTo(startDate); i++) {
+		for(int i = 0; i <= getDateRange(startDate, endDate); i++) {
 			GeneralDate loopDate = startDate.addDays(i);
 			cells.get(1, i + 3).setValue(loopDate.day());
-			DayOfWeek dayOfWeek = DayOfWeek.of(loopDate.dayOfWeek());
-			switch (dayOfWeek) {
-			case MONDAY:
-				cells.get(2, i + 3).setValue("月");
-				break;
-			case TUESDAY:
-				cells.get(2, i + 3).setValue("火");
-				break;
-			case WEDNESDAY:
-				cells.get(2, i + 3).setValue("水");
-				break;
-			case THURSDAY:
-				cells.get(2, i + 3).setValue("木");
-				break;
-			case FRIDAY:
-				cells.get(2, i + 3).setValue("金");
-				break;
-			case SATURDAY:
-				cells.get(2, i + 3).setValue("土");
-				break;
-			case SUNDAY:
-				cells.get(2, i + 3).setValue("日");
-				break;
-			default:
-				break;
-			}
+			cells.get(2, i + 3).setValue(getDayOfWeekJapan(loopDate, DAY_OF_WEEK_FORMAT_JP));
 		}
 	}
 	
@@ -213,11 +191,28 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		bentoLedger.getQuantityDateMap().entrySet().stream().forEach(x -> {
 			GeneralDate loopDate = x.getKey();
 			Integer quantity = x.getValue();
-			int periodRange = loopDate.compareTo(period.start());
+			int periodRange = getDateRange(period.start(), loopDate);
 			cells.get(dataRow, START_DATA_COLUMN + periodRange).setValue(quantity);
 		});
 		cells.get(dataRow, QUANTITY_COLUMN).setValue(bentoLedger.getTotalQuantity());
 		cells.get(dataRow, AMOUNT1_COLUMN).setValue(bentoLedger.getTotalAmount1());
 		cells.get(dataRow, AMOUNT2_COLUMN).setValue(bentoLedger.getTotalAmount2());
+	}
+	
+	private int getDateRange(GeneralDate startDate, GeneralDate endDate) {
+		if(endDate.year() - startDate.year() > 0) {
+			int startYear = startDate.year();
+			int endYear = endDate.year();
+			int beforeDateNo = GeneralDate.fromString(startYear + "/12/31", DATE_FORMAT).compareTo(startDate);
+			int afterDateNo = endDate.compareTo(GeneralDate.fromString(endYear + "/01/01", DATE_FORMAT));
+			return beforeDateNo + afterDateNo;
+		} else {
+			return endDate.dayOfYear() - startDate.dayOfYear();
+		}
+	}
+	
+	private String getDayOfWeekJapan(GeneralDate date, String formatDate) {
+		SimpleDateFormat jp = new SimpleDateFormat(formatDate, Locale.JAPAN);
+		return jp.format(date.date());
 	}
 }
