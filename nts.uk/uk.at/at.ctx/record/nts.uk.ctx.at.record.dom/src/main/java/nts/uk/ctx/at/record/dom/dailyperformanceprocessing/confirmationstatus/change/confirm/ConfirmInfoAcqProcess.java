@@ -23,12 +23,7 @@ public class ConfirmInfoAcqProcess {
 
 	public List<ConfirmInfoResult> getConfirmInfoAcp(String companyId, List<String> employeeIds,
 			Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
-		if (periodOpt.isPresent()) {
-			return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
-		} else {
-			return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
-		}
-
+		return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
 	}
 
 	private List<ConfirmInfoResult> processModeAll(String companyId, List<String> employeeIds,

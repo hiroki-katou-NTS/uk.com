@@ -83,7 +83,7 @@ public class QqsmtEmpSocialInsGradeInfo extends UkJpaEntity implements Serializa
     }
 
     public static QqsmtEmpSocialInsGradeInfo toEntity(EmpSocialInsGradeInfo domain) {
-        return new QqsmtEmpSocialInsGradeInfo(new QqsmtEmpSocialInsGradeInfoPk(domain.getHisId()),
+        return new QqsmtEmpSocialInsGradeInfo(new QqsmtEmpSocialInsGradeInfoPk(domain.getHistId()),
                 domain.getSocInsMonthlyRemune().v(),
                 domain.getCalculationAtr().value,
                 domain.getHealInsStandMonthlyRemune().map(PrimitiveValueBase::v).orElse(null),

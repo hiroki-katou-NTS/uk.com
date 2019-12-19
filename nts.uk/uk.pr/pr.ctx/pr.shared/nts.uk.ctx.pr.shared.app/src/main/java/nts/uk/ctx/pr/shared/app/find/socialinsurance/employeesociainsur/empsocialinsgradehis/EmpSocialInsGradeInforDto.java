@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsoci
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -12,37 +13,47 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @NoArgsConstructor
 public class EmpSocialInsGradeInforDto extends PeregDomainDto {
 
+    /** 期間.開始年月 */
     @PeregItem("IS01016")
-    private int startYM;
+    private Integer startYM;
 
+    /** 期間.終了年月 */
     @PeregItem("IS01017")
-    private int endYM;
+    private Integer endYM;
 
+    /** 現在の等級 */
     @PeregItem("IS01018")
-    private int currentGrade;
+    private String currentGrade;
 
+    /** 算定区分 */
     @PeregItem("IS01019")
-    private int calculationAtr;
+    private Integer calculationAtr;
 
+    /** 健康保険等級 */
     @PeregItem("IS01020")
-    private int healInsGrade;
+    private Integer healInsGrade;
 
+    /** 健康保険標準報酬月額 */
     @PeregItem("IS01021")
-    private int healInsStandMonthlyRemune;
+    private Integer healInsStandMonthlyRemune;
 
+    /** 厚生年金保険等級 */
     @PeregItem("IS01022")
-    private int pensionInsGrade;
+    private Integer pensionInsGrade;
 
+    /** 厚生年金保険標準報酬月額 */
     @PeregItem("IS01023")
-    private int pensionInsStandCompenMonthly;
+    private Integer pensionInsStandCompenMonthly;
 
+    /** 社会保険報酬月額（実質） */
     @PeregItem("IS01024")
-    private int socInsMonthlyRemune;
+    private Integer socInsMonthlyRemune;
 
-    public EmpSocialInsGradeInforDto(String recordId, int startYM, int endYM, int calculationAtr, int healInsGrade, int healInsStandMonthlyRemune, int pensionInsGrade, int pensionInsStandCompenMonthly, int socInsMonthlyRemune) {
+    public EmpSocialInsGradeInforDto(String recordId, Integer startYM, Integer endYM, String currentGrade, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
         super(recordId);
         this.startYM = startYM;
         this.endYM = endYM;
+        this.currentGrade = currentGrade;
         this.calculationAtr = calculationAtr;
         this.healInsGrade = healInsGrade;
         this.healInsStandMonthlyRemune = healInsStandMonthlyRemune;
@@ -51,11 +62,11 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
         this.socInsMonthlyRemune = socInsMonthlyRemune;
     }
 
-    public static EmpSocialInsGradeInforDto fromDomain(EmpSocialInsGradeHis domain, EmpSocialInsGradeInfo info) {
+    public static EmpSocialInsGradeInforDto fromDomain(EmpSocialInsGradeHis domain, EmpSocialInsGradeInfo info, String currentGrade) {
         if (domain == null || info == null) {
             return null;
         }
-        YearMonthHistoryItem period = domain.getPeriod().get(0);
+        YearMonthHistoryItem period = domain.getYearMonthHistoryItems().get(0);
         if (period == null) {
             return null;
         }
@@ -63,11 +74,12 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
                 period.identifier(),
                 period.span().start().v(),
                 period.span().end().v(),
+                currentGrade,
                 info.getCalculationAtr().value,
-                info.getHealInsGrade().map(x -> x.v()).orElse(null),
-                info.getHealInsStandMonthlyRemune().map(x -> x.v()).orElse(null),
-                info.getPensionInsGrade().map(x -> x.v()).orElse(null),
-                info.getPensionInsStandCompenMonthly().map(x -> x.v()).orElse(null),
+                info.getHealInsGrade().map(PrimitiveValueBase::v).orElse(null),
+                info.getHealInsStandMonthlyRemune().map(PrimitiveValueBase::v).orElse(null),
+                info.getPensionInsGrade().map(PrimitiveValueBase::v).orElse(null),
+                info.getPensionInsStandCompenMonthly().map(PrimitiveValueBase::v).orElse(null),
                 info.getSocInsMonthlyRemune().v());
     }
 }

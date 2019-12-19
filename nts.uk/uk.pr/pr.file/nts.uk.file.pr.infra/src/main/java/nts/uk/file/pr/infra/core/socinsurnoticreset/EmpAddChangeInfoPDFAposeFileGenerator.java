@@ -136,7 +136,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         return add.toString();
     }
 
-    private static String cutSpace(String name, int ps, int count) throws UnsupportedEncodingException {
+    public static String cutSpace(String name, int ps, int count) throws UnsupportedEncodingException {
 
         if (name == null || name.length() == 0)
             return "";
@@ -232,8 +232,12 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"B2_2_3", empAddChangeInfoExport.getBusinessEstCode2(),2 );
             this.fillByCell(worksheet , i,"B2_2_4", empAddChangeInfoExport.getBusinessEstCode2(),3 );
 
-            this.fillByCell(worksheet , i,"B2_1_1", empAddChangeInfoExport.getBusinessEstCode1(),0 );
-            this.fillByCell(worksheet , i,"B2_1_2", empAddChangeInfoExport.getBusinessEstCode1(),1 );
+            /*this.fillByCell(worksheet , i,"B2_1_1", empAddChangeInfoExport.getBusinessEstCode1(),0 );
+            this.fillByCell(worksheet , i,"B2_1_2", empAddChangeInfoExport.getBusinessEstCode1(),1 );*/
+
+            // A2_1 Template1
+            String data = empAddChangeInfoExport.getBusinessEstCode1();
+            worksheet.getRangeByName(i + "!A2_1").setValue(data != null ? (data.length() > 2 ? data.substring(0, 3) : data) : "");
 
             if(empAddChangeInfoExport.isHealthInsurance() && !empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_1").setValue("健康保険");

@@ -55,6 +55,15 @@ public class ApprovalStatusActualDayChange {
 	// [No.585]日の実績の承認状況を取得する（NEW）
 	public List<ApprovalStatusActualResult> processApprovalStatus(String companyId, String empTarget,
 			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt, int mode) {
+		return processApprovalStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt, mode, true);
+	}
+	
+	public List<ApprovalStatusActualResult> processApprovalStatus(String companyId, String empTarget,
+			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt, int mode,
+			boolean clearState) {
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		// ドメインモデル「承認処理の利用設定」を取得する
 		Optional<ApprovalProcessingUseSetting> optApprovalUse = iFindDataDCRecord.findApprovalByCompanyId(companyId);
 		if (!optApprovalUse.isPresent() || !optApprovalUse.get().getUseDayApproverConfirm())
@@ -62,6 +71,9 @@ public class ApprovalStatusActualDayChange {
 
 		List<ConfirmInfoResult> confirmInfoResults = approvalInfoAcqProcess.getApprovalInfoAcp(companyId, empTarget,
 				employeeIds, periodOpt, yearMonthOpt);
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		if (confirmInfoResults.isEmpty())
 			return Collections.emptyList();
 		// ドメインモデル「本人確認処理の利用設定」を取得する

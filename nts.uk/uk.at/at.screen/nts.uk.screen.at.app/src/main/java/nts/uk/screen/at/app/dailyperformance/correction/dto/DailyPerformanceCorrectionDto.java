@@ -56,6 +56,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 
 	private DPControlDisplayItem lstControlDisplayItem;
 
+	private Map<String, DPCellStateDto> mapCellState;
+	
 	private List<DPCellStateDto> lstCellState;
 	
 	private List<DPCellStateDto> lstCellStateCalc;
@@ -140,6 +142,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
+		this.mapCellState = new HashMap<>();
 		this.lstCellState = new ArrayList<>();
 		this.lstControlDisplayItem = new DPControlDisplayItem();
 		this.itemValues = new HashSet<>();
@@ -174,16 +177,18 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 
 	/** Find cell by dataID and columnKey */
 	private Optional<DPCellStateDto> findExistCellState(String dataId, String columnKey) {
-		String rowId, column;
-		for (int i = 0; i < this.lstCellState.size(); i++) {
-			rowId = this.lstCellState.get(i).getRowId();
-			column = this.lstCellState.get(i).getColumnKey();
-			if (rowId != null && column != null & rowId.equals("_" + String.valueOf(dataId))
-					&& column.equals(String.valueOf(columnKey))) {
-				return Optional.of(this.lstCellState.get(i));
-			}
-		}
-		return Optional.empty();
+		DPCellStateDto dto = mapCellState.get("_" + String.valueOf(dataId)+ "|"+columnKey);
+		return Optional.ofNullable(dto);
+//		 return this.mapCellState.stream().filter(x -> {
+//			 String rowId = x.getRowId();
+//			 String column = x.getColumnKey();
+//		     if (rowId != null && column != null & rowId.equals("_" + String.valueOf(dataId))
+//						&& column.equals(String.valueOf(columnKey))) {
+//		    	 return true;
+//		     }else {
+//		    	 return false;
+//		     }
+//		 }).findFirst();
 	}
 
 	/** Set disable cell & Create not existed cell */
@@ -196,16 +201,16 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
-					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "NO" + getID(header.getKey()), toList("mgrid-disable")));
+					this.mapCellState.put("_" + data.getId() + "|"+ "NO" + getID(header.getKey()), new DPCellStateDto("_" + data.getId(), "NO" + getID(header.getKey()), toList("mgrid-disable")));
 				    lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "NO" + getID(header.getKey())));
 				} else {
-					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Code" + getID(header.getKey()), toList("mgrid-disable")));
+					this.mapCellState.put("_" + data.getId()+ "|" + "Code" + getID(header.getKey()), new DPCellStateDto("_" + data.getId(), "Code" + getID(header.getKey()), toList("mgrid-disable")));
 					 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "Code" + getID(header.getKey())));
 				}
-				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Name" + getID(header.getKey()), toList("mgrid-disable")));
+				this.mapCellState.put("_" + data.getId() + "|" + "Name" + getID(header.getKey()), new DPCellStateDto("_" + data.getId(), "Name" + getID(header.getKey()), toList("mgrid-disable")));
 				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), "Name" + getID(header.getKey())));
 			} else {
-				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
+				this.mapCellState.put("_" + data.getId()+ "|" + header.getKey(), new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
 				 lstCellDisByLock.add(new DPHideControlCell("_" + data.getId(), header.getKey()));
 			}
 		   }
@@ -318,7 +323,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 			existedCellState.get().addState(state);
 		} else {
 			DPCellStateDto dto = new DPCellStateDto("_" + dataId, columnKey, toList(state));
-			this.lstCellState.add(dto);
+			this.mapCellState.put("_" + dataId + "|" + columnKey, dto);
 		}
 	}
 	
@@ -345,7 +350,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 			if (existedCellState.isPresent()) {
 				existedCellState.get().addState(state);
 			} else {
-				this.lstCellState.add(new DPCellStateDto("_" + dataId, colKey, toList(state)));
+				this.mapCellState.put("_" + dataId + "|" + colKey, new DPCellStateDto("_" + dataId, colKey, toList(state)));
 			}
 			
 			if (nameKey != null) {
@@ -353,7 +358,7 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 				if (existedNameCellState.isPresent()) {
 					existedNameCellState.get().addState(state);
 				} else {
-					this.lstCellState.add(new DPCellStateDto("_" + dataId, nameKey, toList(state)));
+					this.mapCellState.put("_" + dataId + "|" + nameKey, new DPCellStateDto("_" + dataId, nameKey, toList(state)));
 				}
 			}
 		}
@@ -368,34 +373,36 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	public void setCellSate(String rowId, String columnKey, String state) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
-			existedCellState.get().addState(state);
 			List<String> stateCell = existedCellState.get().getState();
 			if(stateCell.contains(DPText.STATE_DISABLE)) {
 				lstCellDisByLock.add(new DPHideControlCell(rowId, columnKey));
 			}
+			if (existedCellState.get().getState().contains(state))
+				return;
+			existedCellState.get().addState(state);
 		} else {
 			List<String> states = new ArrayList<>();
 			states.add(state);
 			DPCellStateDto dto = new DPCellStateDto("_" + rowId, columnKey, states);
-			this.lstCellState.add(dto);
+			this.mapCellState.put("_" + rowId + "|" + columnKey, dto);
 			if(states.contains(DPText.STATE_DISABLE)) {
 				lstCellDisByLock.add(new DPHideControlCell("_" + rowId, columnKey));
 			}
 		}
-		
-
 	}
 	
 	/** Set AlarmCell state for Fixed cell */
 	public void setCellSate(String rowId, String columnKey, String state, boolean lock) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
+			if (existedCellState.get().getState().contains(state))
+				return;
 			existedCellState.get().addState(state);
 		} else {
 			List<String> states = new ArrayList<>();
 			states.add(state);
 			DPCellStateDto dto = new DPCellStateDto("_" + rowId, columnKey, states);
-			this.lstCellState.add(dto);
+			this.mapCellState.put("_" + rowId + "|" + columnKey, dto);
 		}
 
 	}

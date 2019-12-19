@@ -3022,56 +3022,49 @@ button.nts-switch-button[disabled].selected {
 .ui-igtreegrid table .ui-ig-altrecord {
   background-color: #FFFFFF;
 }
-
-/* line 20, ../sass/components/_treegridview.scss */
-.nts-treegridview .ui-icon-triangle-1-e {
-  display: none;
-}
-/* line 24, ../sass/components/_treegridview.scss */
-.nts-treegridview .ui-igtreegrid-expandcell {
-  margin-top: -10px !important;
-}
-
+/* line 21, ../sass/components/_treegridview.scss */
 .ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr td:last-child {
   padding-right: 2px !important;
 }
-
+/* line 25, ../sass/components/_treegridview.scss */
 .ui-igtreegrid .ui-iggrid-table .ui-iggrid-tablebody tr.row-disabled {
   background-color: #CCC;
   color: #333;
 }
 
+/* line 34, ../sass/components/_treegridview.scss */
 .nts-treegridview .ui-icon-triangle-1-e {
-	display : none;
+  display: none;
 }
-
+/* line 38, ../sass/components/_treegridview.scss */
 .nts-treegridview .ui-igtreegrid-expandcell {
-	margin-top: -10px !important;
+  margin-top: -10px !important;
 }
-
+/* line 43, ../sass/components/_treegridview.scss */
 .nts-treegridview .ui-iggrid-headertable th {
-	position: relative;
+  position: relative;
 }
-
+/* line 46, ../sass/components/_treegridview.scss */
 .nts-treegridview .ui-iggrid-headertable th span.ui-iggrid-headertext {
-	width: 100%;
-	display: inline-block;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-/* line 32, ../sass/components/_treegridview.scss */
+/* line 59, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-class {
   visibility: hidden;
 }
-/* line 36, ../sass/components/_treegridview.scss */
+/* line 63, ../sass/components/_treegridview.scss */
 .no-selector table th:first-child.ui-iggrid-rowselector-header {
   visibility: hidden;
 }
 
-.no-width{
-	width: 0% !important;
+/* line 69, ../sass/components/_treegridview.scss */
+.no-width {
+  width: 0% !important;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
@@ -4524,6 +4517,39 @@ button.nts-switch-button[disabled].selected {
 /* line 267, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
+}
+
+/* line 271, ../sass/components/_ntsgrid.scss */
+.mdatepicker-container {
+  font-size: 12px;
+  line-height: 30px;
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 210px;
+  user-select: none;
+  background-color: #fff;
+  direction: ltr !important;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* line 287, ../sass/components/_ntsgrid.scss */
+.mdatepicker-dropdown {
+  position: absolute;
+  z-index: 1;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border: 1px solid #ccc;
+  box-shadow: 0 3px 6px #ccc;
+}
+
+/* line 297, ../sass/components/_ntsgrid.scss */
+input.nts-editor::-ms-clear {
+  display: none;
 }
 
 /* line 1, ../sass/components/_extable.scss */

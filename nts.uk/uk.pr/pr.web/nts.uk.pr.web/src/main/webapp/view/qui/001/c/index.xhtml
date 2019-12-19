@@ -58,7 +58,7 @@
                     </div>
                     <div class="control-group valign-center">
                         <div id="C222_10" class="column-first" data-bind="ntsFormLabel:{ constraint: 'WorkingTime' }">#{i18n.getText('QUI001_C222_10')}</div>
-                        <input id="C222_11" tabindex="7" data-bind="ntsTimeEditor: {value: workingTime, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
+                        <input id="C222_11" tabindex="7" data-bind="ntsTimeEditor: {name: '#{i18n.getText('QUI001_C222_11')}', value: workingTime, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
                     </div>
                     <div class="control-group valign-center">
                         <div id="C222_12" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_12')}</div>
@@ -74,7 +74,7 @@
                     </div>
                     <div class="control-group valign-center">
                         <div id="C222_15" class="column-first" data-bind="ntsFormLabel:{ constraint: 'PayWage' }">#{i18n.getText('QUI001_C222_15')}</div>
-                        <input id="C222_16" tabindex="9" data-bind="ntsNumberEditor: {value: payWage, constraint: 'PayWage', option: { numberGroup: true, decimallength: 0 } }"/>
+                        <input id="C222_16" tabindex="9" data-bind="ntsNumberEditor: {name: '#{i18n.getText('QUI001_C222_16')}', value: payWage, constraint: 'PayWage', option: { numberGroup: true, decimallength: 0 } }"/>
                     </div>
                     <div class="control-group valign-center">
                         <div id="C222_17" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI001_C222_17')}</div>

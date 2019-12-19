@@ -795,12 +795,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
 		dateHistoryItemLst.forEach(x -> {
 			Optional<Entry<String,String>> wkpIDItem = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny();
-			if(!wkpIDItem.isPresent()){
-				for(int i = 0; i< 10; i++){
-					System.out.println("lỗi dữ liệu WorkplacePubImp line 703");
-				}
-				return;
-			}
 			String wkpID = wkpIDItem.get().getValue();
 			WkpInfoExport wkpInfoExport = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny()
 					.map(k -> new WkpInfoExport(

@@ -241,9 +241,12 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
 
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
+                    // A1_10
+                    tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
+                    tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
+                    tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
+
                     if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
-                        // A1_10
-                        tempReport.setOfficeNumber1(companyInfo.getCompanyCode());
                         // A1_23
                         tempReport.setOfficeName(companyInfo.getCompanyName());
                         // A3_1
@@ -255,10 +258,6 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_4
                         tempReport.setOfficePhoneNumber(companyInfo.getPhoneNum());
                     } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
-                        // A1_10
-                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
-                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
-                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
                         // A1_23
                         tempReport.setOfficeName(laborInsuranceOffices.get(laborCode).getLaborOfficeName().v());
                         // A3_1

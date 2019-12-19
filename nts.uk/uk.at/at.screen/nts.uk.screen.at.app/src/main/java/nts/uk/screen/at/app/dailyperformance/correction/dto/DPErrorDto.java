@@ -23,4 +23,18 @@ public class DPErrorDto {
 	private List<Integer> attendanceItemId;
 	private boolean errorCancelable;
 	private String errorAlarmMessage;
+	private String id;
+	
+	public DPErrorDto(String errorCode, String errorType, String employeeId, GeneralDate processingDate,
+			List<Integer> attendanceItemId, boolean errorCancelable, String errorAlarmMessage) {
+		super();
+		this.errorCode = errorCode;
+		this.errorType = errorType;
+		this.employeeId = employeeId;
+		this.processingDate = processingDate;
+		this.attendanceItemId = attendanceItemId;
+		this.errorCancelable = errorCancelable;
+		this.errorAlarmMessage = errorAlarmMessage;
+	}
+	
 }
