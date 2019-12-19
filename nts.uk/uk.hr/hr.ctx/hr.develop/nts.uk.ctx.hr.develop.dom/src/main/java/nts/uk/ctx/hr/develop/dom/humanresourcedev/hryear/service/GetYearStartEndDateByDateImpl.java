@@ -24,18 +24,18 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 	private EmploymentRegulationHistoryInterface histInterface;
 
 	@Override
-	public YearStartEnd getByDate(String companyId, GeneralDate baseDate) {
+	public Optional<YearStartEnd> getYearStartEndDateByDate(String companyId, GeneralDate baseDate) {
 		GeneralDate resultStartDate = null;
 		GeneralDate resultEndDate = null;
 		// アルゴリズム [基準日から就業規則の履歴IDの取得] を実行する(thực hiện thuật toán[lấy HistoryID của HrPeriodRegulation từ BaseDate])
 		Optional<String> historyId = histInterface.getHistoryIdByDate(companyId, baseDate);
 		if(!historyId.isPresent()){
-			return null;
+			return Optional.empty();
 		}
 		
 		Optional<HrPeriodRegulation> hrPeriod = hrPeriodRegulaRepo.getByKeyAndDate(companyId, historyId.get());
 		if(!hrPeriod.isPresent()){
-			return null;
+			return Optional.empty();
 		}
 		
 			GeneralDate checkStartDate = GeneralDate.ymd(GeneralDate.today().year(), hrPeriod.get().getYearStartMonth(), hrPeriod.get().getYearStartDate());
@@ -49,7 +49,7 @@ public class GetYearStartEndDateByDateImpl implements IGetYearStartEndDateByDate
 				}	
 				resultEndDate = checkEndDate;
 				YearStartEnd result = new YearStartEnd(resultStartDate, resultEndDate);
-				return result;
+				return Optional.of(result);
 				
 				
 	}
