@@ -72,14 +72,13 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                     detachText(250, 711, emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10, emInsNumInfo.length()) : "", 1, textBuilder);
                 }
                 //A1_4
+                detachText(276, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().get().v() : "", 4, textBuilder);
+                detachText(362, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().get().v() : "", 6, textBuilder);
+                detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
                 {
                     switch (element.getEmpInsReportSetting().getOfficeClsAtr()) {
                         case OUTPUT_COMPANY: {
                             if (element.getCompanyInfor() != null) {
-                                String companyCode = element.getCompanyInfor().getCompanyCode();
-                                detachText(276, 711, companyCode.length() > 4 ? companyCode.substring(0, 4) : companyCode, 4, textBuilder);
-                                detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4, companyCode.length()) : "", 6, textBuilder);
-                                detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10, companyCode.length()) : "", 1, textBuilder);
                                 //A2_6
                                 textBuilder.appendText(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
@@ -96,10 +95,6 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                         }
                         case OUPUT_LABOR_OFFICE: {
                             if (element.getLaborInsuranceOffice() != null) {
-                                detachText(276, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().get().v() : "", 4, textBuilder);
-                                detachText(362, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().get().v() : "", 6, textBuilder);
-                                detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
-
                                 //A2_6
                                 textBuilder.appendText(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
                                 //A3_1
@@ -373,12 +368,20 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        int textLength = text.length();
-        int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
-            subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        if (text == null) {
+            return "";
         }
-        return text.substring(0, subLength);    }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
+        int textLength = text.length();
+        int subLength = maxByteAllowed / 2;
+        while (subLength < textLength) {
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
+            subLength++;
+        }
+        return text.substring(0, subLength);
+    }
 }
