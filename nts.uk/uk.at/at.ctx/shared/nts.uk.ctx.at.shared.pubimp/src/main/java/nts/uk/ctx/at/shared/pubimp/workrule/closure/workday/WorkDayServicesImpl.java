@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -36,9 +37,13 @@ public class WorkDayServicesImpl implements IWorkDayPub {
 			closureEmpLst.forEach(emp -> {
 				// 当月の締め日を取得する(Lấy ClosureDate của ClosureMonth )
 				// 雇用コード、締め日のセットを作成(Tạo set cua employmentCode, ClosureDate)
+				if (!closure.getClosureDateOfCurrentMonth().isPresent()
+						|| closure.getClosureDateOfCurrentMonth().get().getClosureDay() == null) {
+					throw new BusinessException("ClosureDay = null");
+				}
+
 				rersult.add(new ClosureDateOfEmploymentExport(emp.getEmploymentCD(),
-						closure.getClosureDateOfCurrentMonth().isPresent()
-								? closure.getClosureDateOfCurrentMonth().get().getClosureDay().v() : null));
+						closure.getClosureDateOfCurrentMonth().get().getClosureDay().v()));
 			});
 
 		});
