@@ -258,7 +258,7 @@ public class RetirementInformationFinder {
 			break;
 		case 5:
 			closureDates = getClosingDate(cId).stream()
-					.map(x -> new EmploymentDateDto(x.getEmploymentCd(), x.getClosureDay().v()))
+					.map(x -> new EmploymentDateDto(x.getEmploymentCd(), x.getClosureDay()))
 					.collect(Collectors.toList());
 			break;
 		}
@@ -628,11 +628,11 @@ public class RetirementInformationFinder {
 	private YearStartEnd getYearMonthDate(String cId, GeneralDate baseDate) {
 		// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy
 		// YearStartMonthDate, YearEndMonthDate từ BaseDate])
-		YearStartEnd yearStartEnd = this.iGetYearStartEndDateByDate.getByDate(cId, baseDate);
-		if (yearStartEnd == null) {
+		Optional<YearStartEnd> yearStartEndOtp = this.iGetYearStartEndDateByDate.getYearStartEndDateByDate(cId, baseDate);
+		if (!yearStartEndOtp.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_3");
 		}
-		return yearStartEnd;
+		return yearStartEndOtp.get();
 	}
 
 	private void preSearchWarning(GeneralDate endDate) {
