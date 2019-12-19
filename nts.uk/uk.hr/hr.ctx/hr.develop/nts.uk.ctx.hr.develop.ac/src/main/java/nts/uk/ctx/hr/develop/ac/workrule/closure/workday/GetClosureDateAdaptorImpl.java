@@ -21,7 +21,7 @@ public class GetClosureDateAdaptorImpl implements GetClosureDateAdaptor {
 
 		return this.workPub
 				.getClosureDate(companyId).stream().map(x -> ClosureDateOfEmploymentImport.builder()
-						.employmentCd(x.getEmploymentCd()).closureDay(x.getClosureDay()).build())
+						.employmentCd(x.getEmploymentCd()).closureDay(x.getClosureDay().v()).build())
 				.collect(Collectors.toList());
 	}
 
