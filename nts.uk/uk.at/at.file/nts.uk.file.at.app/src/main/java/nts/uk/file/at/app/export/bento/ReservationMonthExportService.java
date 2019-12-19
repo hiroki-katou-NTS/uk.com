@@ -16,7 +16,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
@@ -98,10 +97,12 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		// get(年月日)
 		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
 		
+		/*
 		// 社員を並べ替える
 		List<String> sortEmpLst = regulationInfoEmployeeAdapter.sortEmployee(companyID, empLst, 2, null, 1, 
 				GeneralDateTime.fromString(period.end().toString("yyyy/MM/dd") + " 00:00", "yyyy/MM/dd HH:mm"));
-		
+		*/
+		List<String> sortEmpLst = empLst;
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationExport> empInfoLst = employeeInformationPub.find(
 				EmployeeInformationQueryDto
