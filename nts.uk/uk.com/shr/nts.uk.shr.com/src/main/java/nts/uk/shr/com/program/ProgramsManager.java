@@ -2309,10 +2309,6 @@ public class ProgramsManager {
 			"/view/cps/013/a/index.xhtml");
 	public static final Program CPS013B = new Program(WebAppId.COM, ProgramIdConsts.CPS013B, "CPS013_35",
 			"/view/cps/013/b/index.xhtml");
-
-	/**
-	 * KMR002
-	 */
 	public static final Program KMR002A = new Program(WebAppId.AT, ProgramIdConsts.KMR002A, "KMR_1",
 			"/view/kmr/002/a/index.xhtml");
 	

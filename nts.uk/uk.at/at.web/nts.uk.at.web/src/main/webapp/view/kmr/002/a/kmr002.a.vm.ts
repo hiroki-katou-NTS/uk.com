@@ -43,6 +43,9 @@ module nts.uk.at.view.kmr002.a.model {
         isEnableDinner: KnockoutObservable<boolean> = ko.observable(true);
         start: KnockoutObservable<number> = ko.observable(0);
         end: KnockoutObservable<number> = ko.observable(0);
+        isVisible: KnockoutObservable<boolean> = ko.observable(false);
+        isVisibleDinner: KnockoutObservable<boolean> = ko.observable(false);
+        isVisibleLunch: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
         }
@@ -51,13 +54,15 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this;
             let dfd = $.Deferred<any>();
             self.date.subscribe(() => {
-                service.startScreen({
-                    date: moment(self.date()).format("YYYY/MM/DD"),
-                    closingTimeFrame: self.mealSelected()
-                }).done((data) => {
-                    self.clearData();
-                    self.initData(data);
-                });
+                if (self.date()) {
+                    service.startScreen({
+                        date: moment(self.date()).format("YYYY/MM/DD"),
+                        closingTimeFrame: self.mealSelected()
+                    }).done((data) => {
+                        self.clearData();
+                        self.initData(data);
+                    });
+                }
             });
             dfd.resolve();
             return dfd.promise();
@@ -73,6 +78,12 @@ module nts.uk.at.view.kmr002.a.model {
             self.listBentoOrderLunch.valueHasMutated();
             self.listBentoOrderDinner().clear();
             self.listBentoOrderDinner.valueHasMutated();
+            self.lunch('');
+            self.dinner('');
+            self.sum('');
+            self.txtPriceLunch('');
+            self.txtPriceDinner('');
+            self.txtPriceSum('');
         }
 
         public initData(data: any): void {
@@ -90,74 +101,93 @@ module nts.uk.at.view.kmr002.a.model {
                 self.isUpdate(false);
             }
             self.initTime(data, 0);
-            _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
-                let self = this, unit = item.amount1 + item.unit, status = false;
-                status = self.checkLengthOrder(self.setIndex(data, 1), data, item);
-                self.menuLunch().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: unit }));
-            });
+            if (self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length > 0) {
+                _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
+                    let self = this, unit = item.amount1 + item.unit, status = false;
+                    status = self.checkLengthOrder(self.setIndex(data, 1), data, item);
+                    self.menuLunch().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: unit }));
+                });
+                self.menuLunch.valueHasMutated();
+            }
+            if (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length > 0) {
+                _.forEach(data.bentoMenuByClosingTimeDto.menu2, (item) => {
+                    let self = this, unit = item.amount1 + item.unit, status = false;
+                    status = self.checkLengthOrder(self.setIndex(data, 2), data, item);
+                    self.menuDinner().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: unit }));
+                });
+                self.menuDinner.valueHasMutated();
+            } else if (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0) {
+                error({ messageId: "Msg_1589" });
+            }
+
+            if (self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0) {
+                error({ messageId: "Msg_1589" });
+            }
             self.menuLunch.valueHasMutated();
+
             self.mealSelected.subscribe(() => {
                 if (self.mealSelected() == 1) {
                     self.start(data.bentoMenuByClosingTimeDto.closingTime1.start);
                     self.end(data.bentoMenuByClosingTimeDto.closingTime1.finish);
                     self.initTime(data, self.setIndex(data, 1));
-                    if (data.bentoMenuByClosingTimeDto.menu1.length > 0) {
-                        _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
-                            let self = this, unit = item.amount1 + item.unit, status = false;
-                            status = self.checkLengthOrder(self.setIndex(data, 1), data, item);
-                            self.menuLunch().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: unit }));
-                        });
-                        self.menuLunch.valueHasMutated();
-                    } else {
-                        error({ messageId: "Msg_1589" });
-                    }
+
                 } else {
                     self.start(data.bentoMenuByClosingTimeDto.closingTime2.start);
                     self.end(data.bentoMenuByClosingTimeDto.closingTime2.finish);
                     self.initTime(data, self.setIndex(data, 2));
-                    if (data.bentoMenuByClosingTimeDto.menu2.length > 0) {
-                        _.forEach(data.bentoMenuByClosingTimeDto.menu2, (item) => {
-                            let self = this, unit = item.amount1 + item.unit, status = false;
-                            status = self.checkLengthOrder(self.setIndex(data, 2), data, item);
-                            self.menuDinner().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: unit }));
-                        });
-                        self.menuDinner.valueHasMutated();
-                    } else {
-                        error({ messageId: "Msg_1589" });
-                    }
                 }
             });
 
+            if (data.listOrder.length <= 1) {
+                self.isVisibleLunch(false);
+                self.isVisibleDinner(false);
+            }
+
             for (let i = 0; i < data.listOrder.length; i++) {
                 if (data.listOrder[i].reservationClosingTimeFrame == 1) {
-                    let name = '', price = 0, unit = '';
-                    _.forEach(data.listOrder[i].listBentoReservationDetail, (item) => {
-                        _.each(self.menuLunch(), (benTo) => {
-                            if (benTo.frameNo() == item.frameNo) {
-                                name = benTo.name();
-                                price = benTo.price();
-                                unit = benTo.unit();
-                            }
+                    let name = '', price = 0, unit = '', listOrderLunch = data.listOrder[i].listBentoReservationDetail;
+                    if (listOrderLunch.length == 0) {
+                        self.isVisibleLunch(false);
+                    } else {
+                        self.isVisibleLunch(true);
+                        _.forEach(listOrderLunch, (item) => {
+                            _.each(self.menuLunch(), (benTo) => {
+                                if (benTo.frameNo() == item.frameNo) {
+                                    name = benTo.name();
+                                    price = benTo.price();
+                                    unit = benTo.unit();
+                                }
+                            });
+                            self.listBentoOrderLunch().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
                         });
-                        self.listBentoOrderLunch().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
-                    });
-                    self.listBentoOrderLunch.valueHasMutated();
+                        self.listBentoOrderLunch.valueHasMutated();
+                    }
                 }
 
                 if (data.listOrder[i].reservationClosingTimeFrame == 2) {
-                    let name = '', price = 0, unit = '';
-                    _.forEach(data.listOrder[i].listBentoReservationDetail, (item) => {
-                        _.each(self.menuDinner(), (benTo) => {
-                            if (benTo.frameNo() == item.frameNo) {
-                                name = benTo.name();
-                                price = benTo.price();
-                                unit = benTo.unit();
-                            }
+                    let name = '', price = 0, unit = '', listOrderDinner = data.listOrder[i].listBentoReservationDetail;
+                    if (listOrderDinner.length == 0) {
+                        self.isVisibleDinner(false);
+                    } else {
+                        self.isVisibleDinner(true);
+                        _.forEach(listOrderDinner, (item) => {
+                            _.each(self.menuDinner(), (benTo) => {
+                                if (benTo.frameNo() == item.frameNo) {
+                                    name = benTo.name();
+                                    price = benTo.price();
+                                    unit = benTo.unit();
+                                }
+                            });
+                            self.listBentoOrderDinner().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
                         });
-                        self.listBentoOrderDinner().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
-                    });
-                    self.listBentoOrderDinner.valueHasMutated();
+                        self.listBentoOrderDinner.valueHasMutated();
+                    }
                 }
+            }
+            if (!self.isVisibleLunch() && !self.isVisibleDinner()) {
+                self.isVisible(false);
+            } else {
+                self.isVisible(true);
             }
             self.caculatorLunch();
             self.caculatorDinner();
@@ -209,6 +239,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.sumCount(self.lunchCount() + self.dinnerCount());
                 self.txtPriceLunch(getText('KMR002_11', [self.priceLunch()]));
                 self.lunch(getText('KMR002_10', [self.lunchText(), self.lunchCount()]));
+                console.log(self.lunch());
                 self.sum(getText('KMR002_12', [self.sumCount()]));
                 self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
             });
