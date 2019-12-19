@@ -63,6 +63,10 @@ module nts.uk.at.view.kmr002.a.model {
                     }).done((data) => {
                         self.clearData();
                         self.initData(data);
+                    }).fail(() => {
+                        error({ messageId: "Msg_1589" }).then(() => {
+                            uk.request.jumpToTopPage();
+                        });
                     });
                 }
             });
@@ -90,7 +94,6 @@ module nts.uk.at.view.kmr002.a.model {
 
         public initData(data: any): void {
             let self = this;
-            console.log(data);
             self.start(data.bentoMenuByClosingTimeDto.closingTime1.start);
             self.end(data.bentoMenuByClosingTimeDto.closingTime1.finish);
             self.lunchText(data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName);
@@ -98,11 +101,6 @@ module nts.uk.at.view.kmr002.a.model {
             self.optionMenu.push({ code: 1, name: self.lunchText() });
             self.optionMenu.push({ code: 2, name: self.dinnerText() });
             self.optionMenu.valueHasMutated();
-            if (data == null) {
-                error({ messageId: "Msg_1589" }).then(function() {
-                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                });
-            }
             if (data.listOrder.length > 0) {
                 self.isUpdate(true);
             } else {
@@ -110,6 +108,8 @@ module nts.uk.at.view.kmr002.a.model {
             }
             self.initTime(data, 0);
             if (data.bentoMenuByClosingTimeDto.menu1.length > 0) {
+                self.optionMenu().clear();
+                self.optionMenu.push({ code: 1, name: self.lunchText() });
                 _.forEach(data.bentoMenuByClosingTimeDto.menu1, (item) => {
                     let self = this, status = false;
                     status = self.checkLengthOrder(self.setIndex(data, 1), data, item);
@@ -118,6 +118,9 @@ module nts.uk.at.view.kmr002.a.model {
                 self.menuLunch.valueHasMutated();
             }
             if (data.bentoMenuByClosingTimeDto.menu2.length > 0) {
+                self.optionMenu().clear();
+                self.optionMenu.push({ code: 1, name: self.lunchText() });
+                self.optionMenu.push({ code: 2, name: self.dinnerText() });
                 _.forEach(data.bentoMenuByClosingTimeDto.menu2, (item) => {
                     let self = this, status = false;
                     status = self.checkLengthOrder(self.setIndex(data, 2), data, item);
@@ -409,7 +412,7 @@ module nts.uk.at.view.kmr002.a.model {
                 dateNow = moment(new Date()).format("YYYY/MM/DD"), timeNow = (new Date()).getHours() * 60 + (new Date()).getMinutes();
             if (dateNow > dateSelect) {
                 error({ messageId: "Msg_1584" });
-            } else if ( dateNow == dateSelect && (timeNow < self.start() || timeNow > self.end())) {
+            } else if (dateNow == dateSelect && (timeNow < self.start() || timeNow > self.end())) {
                 error({ messageId: "Msg_1585" });
             } else {
                 self.register();
@@ -431,18 +434,19 @@ module nts.uk.at.view.kmr002.a.model {
                     info({ messageId: "Msg_15" });
                     if (detailLst.length == 0) {
                         self.isUpdate(false);
+                        break;
                     }
                 });
             } else {
                 if (detailLst.length == 0) {
                     error({ messageId: "Msg_1589" });
+                } else {
+                    service.register(bentoReservation).done((data) => {
+                        info({ messageId: "Msg_15" });
+                        self.isUpdate(true);
+                    });
                 }
-                service.register(bentoReservation).done((data) => {
-                    info({ messageId: "Msg_15" });
-                    self.isUpdate(true);
-                });
             }
-            //            }
         }
 
         public outputData(): void {

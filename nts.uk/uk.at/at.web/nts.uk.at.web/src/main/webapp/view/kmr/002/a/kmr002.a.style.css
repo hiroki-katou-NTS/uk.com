@@ -38,6 +38,11 @@ table{
 button.nts-switch-button {
 	min-width: 100px;
 }
+.danger {
+	border: 0px solid #999999;
+	margin-bottom: 2px;
+	min-width: 241px;
+}
 .menu-order {
 	padding-top: 10px; 
 	overflow-y: scroll; 
@@ -49,6 +54,7 @@ button.nts-switch-button {
 	height: 50px; 
 	margin-bottom: 20px;
 	margin-right: 20px;
+	text-align: left;
 }
 .button-radius:hover:enabled {
    background-color: #A4EEB0;

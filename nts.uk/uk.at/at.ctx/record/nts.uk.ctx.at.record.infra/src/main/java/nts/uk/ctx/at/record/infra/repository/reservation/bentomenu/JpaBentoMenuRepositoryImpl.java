@@ -17,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.period.DatePeriod;
@@ -164,6 +165,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if(bentoMenuLst.isEmpty()){
+				throw new BusinessException("Msg_1589");
+			}
 			return bentoMenuLst.get(0);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
