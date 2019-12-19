@@ -226,12 +226,9 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                 //A2_5
                 {
                     JapaneseDate birthDayJapanCla = toJapaneseDate(GeneralDate.fromString(element.getBrithDay().substring(0, 10), "yyyy/MM/dd"));
-                    if (!birthDayJapanCla.era().equals(TAISO)) {
-                        textBuilder.appendText(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
-                        textBuilder.appendText(setValue(455, 357, birthDayJapanCla.month() + "", 9));
-                        textBuilder.appendText(setValue(491, 357, birthDayJapanCla.day() + "", 9));
-                    }
-
+                    textBuilder.appendText(setValue(418, 357, birthDayJapanCla.year() + 1 + "", 9));
+                    textBuilder.appendText(setValue(455, 357, birthDayJapanCla.month() + "", 9));
+                    textBuilder.appendText(setValue(491, 357, birthDayJapanCla.day() + "", 9));
                 }
                 //A2_7
                 if (!element.getChangeDate().equals("")) {
