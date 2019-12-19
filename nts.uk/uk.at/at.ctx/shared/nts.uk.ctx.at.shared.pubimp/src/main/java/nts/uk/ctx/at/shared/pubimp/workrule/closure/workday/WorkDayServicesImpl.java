@@ -38,7 +38,7 @@ public class WorkDayServicesImpl implements IWorkDayPub {
 				// 雇用コード、締め日のセットを作成(Tạo set cua employmentCode, ClosureDate)
 				rersult.add(new ClosureDateOfEmploymentExport(emp.getEmploymentCD(),
 						closure.getClosureDateOfCurrentMonth().isPresent()
-								? closure.getClosureDateOfCurrentMonth().get().getClosureDay() : null));
+								? closure.getClosureDateOfCurrentMonth().get().getClosureDay().v() : null));
 			});
 
 		});
