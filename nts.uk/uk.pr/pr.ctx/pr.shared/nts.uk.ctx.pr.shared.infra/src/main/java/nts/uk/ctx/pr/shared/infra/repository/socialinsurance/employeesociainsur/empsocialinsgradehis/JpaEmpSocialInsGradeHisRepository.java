@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHis;
@@ -11,9 +13,8 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements EmpSocialInsGradeHisRepository {
@@ -21,10 +22,12 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpSocialInsGradeHis f";
     private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.cId = :cId and f.sId = :sId ORDER BY f.startYM";
     private static final String SELECT_BY_HISTID = SELECT_ALL_QUERY_STRING + " WHERE f.qqsmtEmpSocialInsGradeHisPk.historyId = :histId ORDER BY f.startYM";
+    private static final String SELECT_BY_SIDS_AND_BASE_YM = SELECT_ALL_QUERY_STRING + " WHERE f.sid IN :sids AND f.startYM <= :baseYM AND f.endYM >= :baseYM";
 
     /**
      * Convert from domain to entity
      *
+     * @param companyId
      * @param employeeID
      * @param item
      * @return
@@ -36,7 +39,6 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
     /**
      * Update entity from domain
      *
-     * @param employeeID
      * @param item
      * @return
      */
@@ -62,10 +64,6 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
 
     @Override
     public void delete(String histId) {
-        Optional<QqsmtEmpSocialInsGradeHis> histItem = this.queryProxy().find(histId, QqsmtEmpSocialInsGradeHis.class);
-        if (!histItem.isPresent()) {
-            throw new RuntimeException("invalid QqsmtEmpSocialInsGradeHis");
-        }
         this.commandProxy().remove(QqsmtEmpSocialInsGradeHis.class, histId);
     }
 
@@ -105,7 +103,6 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
     /**
      * Convert to domain EmpSocialInsGradeHis
      *
-     * @param employeeId
      * @param listHist
      * @return
      */
@@ -134,9 +131,34 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
         return Optional.empty();
     }
 
+    @Override
+    public List<EmpSocialInsGradeHis> getBySidsAndBaseYM(List<String> sids, YearMonth baseYearMonth) {
+        List<EmpSocialInsGradeHis> result = new ArrayList<>();
+        CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitList -> {
+            result.addAll(toDomains(this.queryProxy().query(SELECT_BY_SIDS_AND_BASE_YM, QqsmtEmpSocialInsGradeHis.class)
+                    .setParameter("sids", sids)
+                    .setParameter("baseYM", baseYearMonth)
+                    .getList()));
+        });
+        return result;
+    }
+
+    private List<EmpSocialInsGradeHis> toDomains(List<QqsmtEmpSocialInsGradeHis> entities) {
+        List<EmpSocialInsGradeHis> result = new ArrayList<>();
+        entities.stream().collect(Collectors.groupingBy(e -> e.sId))
+                .forEach((k, v) -> {
+                    List<YearMonthHistoryItem> historyItems = v.stream()
+                            .sorted((o1, o2) -> o2.startYM.compareTo(o1.startYM))
+                            .map(e -> new YearMonthHistoryItem(e.qqsmtEmpSocialInsGradeHisPk.historyId, new YearMonthPeriod(new YearMonth(e.startYM), new YearMonth(e.endYM))))
+                            .collect(Collectors.toList());
+                    result.add(new EmpSocialInsGradeHis(entities.get(0).cId, k, historyItems));
+                });
+        return result;
+    }
+
     private Optional<EmpSocialInsGradeHis> toDomain(List<QqsmtEmpSocialInsGradeHis> entities) {
         if (entities.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         EmpSocialInsGradeHis domain = new EmpSocialInsGradeHis();
         List<YearMonthHistoryItem> periodList = new ArrayList<>();

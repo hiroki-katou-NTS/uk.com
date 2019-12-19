@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,4 +13,5 @@ public interface EmpSocialInsGradeInfoRepository {
     void delete(String histId);
 
     Optional<EmpSocialInsGradeInfo> getEmpSocialInsGradeInfoByHistId(String histId);
+    List<EmpSocialInsGradeInfo> getByHistIds(List<String> histIds);
 }

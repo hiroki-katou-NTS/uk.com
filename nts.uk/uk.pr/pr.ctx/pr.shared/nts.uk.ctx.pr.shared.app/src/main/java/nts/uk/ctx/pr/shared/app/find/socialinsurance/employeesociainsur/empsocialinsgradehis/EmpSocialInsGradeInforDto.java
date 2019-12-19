@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsoci
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -22,7 +23,7 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
 
     /** 現在の等級 */
     @PeregItem("IS01018")
-    private Integer currentGrade;
+    private String currentGrade;
 
     /** 算定区分 */
     @PeregItem("IS01019")
@@ -48,10 +49,11 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
     @PeregItem("IS01024")
     private Integer socInsMonthlyRemune;
 
-    private EmpSocialInsGradeInforDto(String recordId, Integer startYM, Integer endYM, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
+    public EmpSocialInsGradeInforDto(String recordId, Integer startYM, Integer endYM, String currentGrade, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
         super(recordId);
         this.startYM = startYM;
         this.endYM = endYM;
+        this.currentGrade = currentGrade;
         this.calculationAtr = calculationAtr;
         this.healInsGrade = healInsGrade;
         this.healInsStandMonthlyRemune = healInsStandMonthlyRemune;
@@ -60,7 +62,7 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
         this.socInsMonthlyRemune = socInsMonthlyRemune;
     }
 
-    public static EmpSocialInsGradeInforDto fromDomain(EmpSocialInsGradeHis domain, EmpSocialInsGradeInfo info) {
+    public static EmpSocialInsGradeInforDto fromDomain(EmpSocialInsGradeHis domain, EmpSocialInsGradeInfo info, String currentGrade) {
         if (domain == null || info == null) {
             return null;
         }
@@ -72,11 +74,12 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
                 period.identifier(),
                 period.span().start().v(),
                 period.span().end().v(),
+                currentGrade,
                 info.getCalculationAtr().value,
-                info.getHealInsGrade().map(x -> x.v()).orElse(null),
-                info.getHealInsStandMonthlyRemune().map(x -> x.v()).orElse(null),
-                info.getPensionInsGrade().map(x -> x.v()).orElse(null),
-                info.getPensionInsStandCompenMonthly().map(x -> x.v()).orElse(null),
+                info.getHealInsGrade().map(PrimitiveValueBase::v).orElse(null),
+                info.getHealInsStandMonthlyRemune().map(PrimitiveValueBase::v).orElse(null),
+                info.getPensionInsGrade().map(PrimitiveValueBase::v).orElse(null),
+                info.getPensionInsStandCompenMonthly().map(PrimitiveValueBase::v).orElse(null),
                 info.getSocInsMonthlyRemune().v());
     }
 }

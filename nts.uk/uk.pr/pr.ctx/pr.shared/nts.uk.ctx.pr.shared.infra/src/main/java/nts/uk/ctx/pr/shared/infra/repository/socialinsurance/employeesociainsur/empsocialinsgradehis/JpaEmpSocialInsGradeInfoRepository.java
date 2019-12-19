@@ -8,10 +8,14 @@ import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emps
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeInfoPk;
 
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
 public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements EmpSocialInsGradeInfoRepository {
+
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpSocialInsGradeInfo f";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empSocialInsGradeInfoPk.historyId IN :histIds";
 
     public QqsmtEmpSocialInsGradeInfo toEntity(EmpSocialInsGradeInfo domain) {
         return new QqsmtEmpSocialInsGradeInfo(
@@ -67,6 +71,13 @@ public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements
     public Optional<EmpSocialInsGradeInfo> getEmpSocialInsGradeInfoByHistId(String histId) {
         Optional<QqsmtEmpSocialInsGradeInfo> gradeInfo = this.queryProxy().find(histId, QqsmtEmpSocialInsGradeInfo.class);
         return gradeInfo.map(this::toDomain);
+    }
+
+    @Override
+    public List<EmpSocialInsGradeInfo> getByHistIds(List<String> histIds) {
+        return this.queryProxy().query(SELECT_BY_HIST_IDS, QqsmtEmpSocialInsGradeInfo.class)
+                .setParameter("histIds", histIds)
+                .getList(this::toDomain);
     }
 
     private EmpSocialInsGradeInfo toDomain(QqsmtEmpSocialInsGradeInfo entity) {
