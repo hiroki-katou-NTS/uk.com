@@ -267,3 +267,33 @@
 .text-limited {
    	white-space: nowrap;
 }
+
+.mdatepicker-container {
+	font-size: 12px;
+	line-height: 30px;
+	position: fixed;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	width: 210px;
+	user-select: none;
+	background-color: #fff;
+	direction: ltr !important;
+	touch-action: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+}
+
+.mdatepicker-dropdown {
+	position: absolute;
+	z-index: 1;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px solid #ccc;
+	box-shadow: 0 3px 6px #ccc;
+}
+
+input.nts-editor::-ms-clear {
+	display: none;
+} 
