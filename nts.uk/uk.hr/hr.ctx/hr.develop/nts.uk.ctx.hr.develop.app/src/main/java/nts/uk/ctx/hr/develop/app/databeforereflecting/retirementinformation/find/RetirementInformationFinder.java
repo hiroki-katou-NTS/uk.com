@@ -37,7 +37,7 @@ import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
 import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.setting.datedisplay.service.IGetDatePeriod;
 import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.ClosureDateOfEmploymentImport;
-import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.WorkDayAdaptor;
+import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.GetClosureDateAdaptor;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
@@ -94,7 +94,7 @@ public class RetirementInformationFinder {
 	private DateCaculationTermService dateCal;
 
 	@Inject
-	private WorkDayAdaptor workDayAdaptor;
+	private GetClosureDateAdaptor workDayAdaptor;
 
 	/**
 	 * 1.起動する(Khởi động)

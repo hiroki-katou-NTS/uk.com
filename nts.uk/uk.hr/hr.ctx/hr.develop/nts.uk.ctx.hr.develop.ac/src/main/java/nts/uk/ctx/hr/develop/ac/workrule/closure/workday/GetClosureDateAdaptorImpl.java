@@ -8,10 +8,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.pub.workrule.closure.workday.IWorkDayPub;
 import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.ClosureDateOfEmploymentImport;
-import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.WorkDayAdaptor;
+import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.GetClosureDateAdaptor;
 
 @Stateless
-public class WorkDayAdaptorImpl implements WorkDayAdaptor {
+public class GetClosureDateAdaptorImpl implements GetClosureDateAdaptor {
 
 	@Inject
 	private IWorkDayPub workPub;
