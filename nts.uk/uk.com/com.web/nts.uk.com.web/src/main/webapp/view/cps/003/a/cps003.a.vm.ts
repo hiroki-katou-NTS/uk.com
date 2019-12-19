@@ -1199,7 +1199,7 @@ module cps003.a.vm {
                             states.push(new State(record.id, "className", ["red-color"]));
                         }
                         
-                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
+                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE) {
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
                                 states.push(new State(record.id, item.itemCode, ["mgrid-disable"]));

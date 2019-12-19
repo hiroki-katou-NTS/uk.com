@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.schedule.infra.repository.schedule.schedulemaster;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,8 +12,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfoRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
@@ -37,15 +39,38 @@ public class JpaScheduleMasterInfoRepository extends JpaRepository implements Sc
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ScheMasterInfo> getScheMasterInfoByPeriod(String sId, DatePeriod period) {
 		List<ScheMasterInfo> listScheMasterInfo = new ArrayList<>();
-			listScheMasterInfo.addAll(
-					this.queryProxy().query(GET_ALL_BY_PERIOD, KscdtScheMasterInfo.class)
-						.setParameter("sId", sId)
-						.setParameter("startDate", period.start())
-						.setParameter("endDate", period.end())
-						.getList(x -> toDomain(x)));
+//			listScheMasterInfo.addAll(
+//					this.queryProxy().query(GET_ALL_BY_PERIOD, KscdtScheMasterInfo.class)
+//						.setParameter("sId", sId)
+//						.setParameter("startDate", period.start())
+//						.setParameter("endDate", period.end())
+//						.getList(x -> toDomain(x)));
+		String sql = "select * from KSCDT_SCHE_MASTER h"
+				+ " where h.SID = ? "
+				+ " and h.YMD >= ?"
+				+ " and h.YMD <= ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1 , sId);
+			stmt.setDate(2 , Date.valueOf(period.start().localDate()));
+			stmt.setDate(3 , Date.valueOf(period.end().localDate()));
+			
+			listScheMasterInfo = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				ScheMasterInfo ent = new ScheMasterInfo(
+						rec.getString("SID"),
+						rec.getGeneralDate("YMD"),
+						rec.getString("EMP_CD"),
+						rec.getString("CLS_CD"),
+						rec.getString("BUSINESS_TYPE_CD"),
+						rec.getString("JOB_ID"),
+						rec.getString("WKP_ID")
+						);
+				return ent;
+			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		return listScheMasterInfo;
 	}
-
 	private static ScheMasterInfo toDomain(KscdtScheMasterInfo entity) {
 		if (entity == null) {
 			return null;

@@ -158,7 +158,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 // index page
                 indexPage++;
             }
-            report.saveAsPdf(this.createNewFile(fileContext, "雇用保険被保険者氏名変更届.pdf"));
+            report.saveAsPdf(this.createNewFile(fileContext, "雇用保険被保険者資格取得届.pdf"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
