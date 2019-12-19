@@ -628,11 +628,11 @@ public class RetirementInformationFinder {
 	private YearStartEnd getYearMonthDate(String cId, GeneralDate baseDate) {
 		// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する((thực hiện thuật toán[lấy
 		// YearStartMonthDate, YearEndMonthDate từ BaseDate])
-		YearStartEnd yearStartEnd = this.iGetYearStartEndDateByDate.getByDate(cId, baseDate);
-		if (yearStartEnd == null) {
+		Optional<YearStartEnd> yearStartEnd = this.iGetYearStartEndDateByDate.getYearStartEndDateByDate(cId, baseDate);
+		if (!yearStartEnd.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_3");
 		}
-		return yearStartEnd;
+		return yearStartEnd.get();
 	}
 
 	private void preSearchWarning(GeneralDate endDate) {

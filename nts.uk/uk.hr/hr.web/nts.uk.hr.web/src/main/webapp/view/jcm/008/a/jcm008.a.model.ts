@@ -35,7 +35,10 @@ class SearchFilterModel {
     includingReflected: KnockoutObservable<boolean> = ko.observable(false);
     retirementAgeDesignation: KnockoutObservable<boolean> = ko.observable(false);
     retirementPeriod: KnockoutObservable<IDateRange> = ko.observable({startDate:'', endDate: ''});
-    department: KnockoutObservable<string> = ko.observable("");
+    department: KnockoutObservable<Array<String>> = ko.observable("");
+    departmentDisplay: KnockoutObservable<string> = ko.computed(() => {
+        return this.department().join(', ');
+    })
     selectAllDepartment: KnockoutObservable<boolean> = ko.observable(false);
     employment: KnockoutObservable<string> = ko.observable("");
     selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
