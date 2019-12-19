@@ -209,15 +209,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 2) {
-				if (officeCls == OfficeCls.OUTPUT_COMPANY.value) {
-                    value = companyInfo.getCompanyCode();
-                }
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
-                    String officeNumber1 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse("");
-                    String officeNumber2 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse("");
-                    String officeNumber3 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse("");
-                    value = officeNumber1 + officeNumber2 + officeNumber3;
-                }
+				String officeNumber1 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse("");
+				String officeNumber2 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse("");
+				String officeNumber3 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse("");
+				value = officeNumber1 + officeNumber2 + officeNumber3;
+				value = value.length() > 5 ? value.substring(0, 5) : value;
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
