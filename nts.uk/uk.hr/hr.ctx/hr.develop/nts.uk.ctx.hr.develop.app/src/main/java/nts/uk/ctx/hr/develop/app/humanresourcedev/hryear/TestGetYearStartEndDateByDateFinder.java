@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.app.humanresourcedev.hryear;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,7 +14,7 @@ public class TestGetYearStartEndDateByDateFinder {
 	private IGetYearStartEndDateByDate getYearStartEndDateByDateImpl;
 	
 	
-	public YearStartEnd getByDate(String companyId, GeneralDate baseDate) {
-		return getYearStartEndDateByDateImpl.getByDate(companyId, baseDate);
+	public Optional<YearStartEnd> getByDate(String companyId, GeneralDate baseDate) {
+		return getYearStartEndDateByDateImpl.getYearStartEndDateByDate(companyId, baseDate);
 	}
 }
