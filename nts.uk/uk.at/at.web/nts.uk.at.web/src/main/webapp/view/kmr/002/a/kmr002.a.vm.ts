@@ -409,7 +409,7 @@ module nts.uk.at.view.kmr002.a.model {
                 dateNow = moment(new Date()).format("YYYY/MM/DD"), timeNow = (new Date()).getHours() * 60 + (new Date()).getMinutes();
             if (dateNow > dateSelect) {
                 error({ messageId: "Msg_1584" });
-            } else if (timeNow < self.start() && timeNow > self.end()) {
+            } else if ( dateNow == dateSelect && (timeNow < self.start() || timeNow > self.end())) {
                 error({ messageId: "Msg_1585" });
             } else {
                 self.register();
