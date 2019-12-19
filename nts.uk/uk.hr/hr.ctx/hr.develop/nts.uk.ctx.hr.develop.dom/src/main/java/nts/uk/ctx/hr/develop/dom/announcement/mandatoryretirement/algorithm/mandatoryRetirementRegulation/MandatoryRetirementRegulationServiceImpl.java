@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.EnableRetirePlanCourse;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetireTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
@@ -32,6 +33,8 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedA
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetireDateRule;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
+import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
@@ -60,6 +63,9 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	
 	@Inject
 	private MedicalhistoryServices medicalhistoryServices;
+	
+	@Inject
+	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
 	
 	@Override
 	public Optional<MandatoryRetirementRegulation> getMandatoryRetirementRegulation(String companyId, String historyId) {
@@ -180,6 +186,46 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	public List<RetirementPlannedPersonDto> getMandatoryRetirementListByPeriodDepartmentEmployment(String companyId, GeneralDate baseDate,
 			GeneralDate endDate, Optional<RetirementAge> retirementAge, List<String> departmentId,
 			List<String> employmentCode) {
+		Optional<String> historyId = employmentRegulationHistoryInterface.getHistoryIdByDate(companyId, baseDate);
+		if(!historyId.isPresent()) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+		Optional<MandatoryRetirementRegulation> mandatoryRetirementRegulation = repo.getMandatoryRetirementRegulation(historyId.get(), companyId);
+		if(!mandatoryRetirementRegulation.isPresent()) {
+			throw new BusinessException("MsgJ_JMM018_2");
+		}
+		//※）List<MandatoryRetireTerm>．xac dinh tuoi nghi huu = 1
+		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->c.isUsageFlg());
+		
+		//・ReachedAgeTerm
+		ReachedAgeTerm reachedAgeTerm = mandatoryRetirementRegulation.get().getReachedAgeTerm();
+		
+		//・RetireDateTerm{RetireDateRule、RetireDateSettingDate}
+		RetireDateTerm retireDateTerm = mandatoryRetirementRegulation.get().getRetireDateTerm();
+		
+		//・PublicTerm{DateRule、DateSettingNum、SettingDate}
+		DateCaculationTerm publicTerm = mandatoryRetirementRegulation.get().getPublicTerm();
+		
+		//・List<ReferEvaluationItem>{EvaluationItem、UsageFLg、displayNum、passValue}
+		List<ReferEvaluationItem> referEvaluationTerm = mandatoryRetirementRegulation.get().getReferEvaluationTerm();
+		
+		//・List<RetirePlanCourseItem>{CommonMasterItemID、RetirePlanCourseID}
+		List<RetirementCourseInformationIdDto> mandatoryRetireTerm = new ArrayList<>();
+		
+		for (MandatoryRetireTerm item : mandatoryRetirementRegulation.get().getMandatoryRetireTerm()) {
+			for (EnableRetirePlanCourse id : item.getEnableRetirePlanCourse()) {
+				mandatoryRetireTerm.add(new RetirementCourseInformationIdDto(item.getEmpCommonMasterItemId(), id.getRetirePlanCourseId()));
+			}
+		}
+		
+		if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_YEAR_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
+			Optional<YearStartEnd> yearStartEnd = iGetYearStartEndDateByDate.getYearStartEndDateByDate(companyId, GeneralDate.today());
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_WAGE_CLOSING_DATE_AFTER_THE_DATE_OF_RETIREMENT_AGE) {
+			
+		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_DUE_DATE_AFTER_REACHING_RETIREMENT_AGE) {
+			
+		}
+		
 		return new ArrayList<>();
 	}
 
@@ -230,7 +276,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			}
 			return result;
 		}
-		return new ArrayList<>();
+		return result;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.dom.setting.datedisplay.algorithm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -164,24 +165,24 @@ public class DateDisplaySettingService {
 				break;
 			}
 			// アルゴリズム [基準日から年度開始年月日、年度終了年月日の取得] を実行する
-			YearStartEnd yearStartEnd = getYearStartEndSv.getByDate(companyId, inputDate);
+			Optional<YearStartEnd> yearStartEnd = getYearStartEndSv.getYearStartEndDateByDate(companyId, inputDate);
 
 			switch (settingClass) {
 			case 8:
 				// (T/H PeriodSettingClass=8)
-				displayDate = yearStartEnd.getYearStartYMD();
+				displayDate = yearStartEnd.get().getYearStartYMD();
 				break;
 			case 9:
 				// (T/H PeriodSettingClass=9)
-				displayDate = yearStartEnd.getYearStartYMD();
+				displayDate = yearStartEnd.get().getYearStartYMD();
 				break;
 			case 10:
 				// (T/H PeriodSettingClass=10)
-				displayDate = yearStartEnd.getYearEndYMD();
+				displayDate = yearStartEnd.get().getYearEndYMD();
 				break;
 			case 11:
 				// (T/H PeriodSettingClass=11)
-				displayDate = yearStartEnd.getYearEndYMD();
+				displayDate = yearStartEnd.get().getYearEndYMD();
 				break;
 			default:
 				break;
