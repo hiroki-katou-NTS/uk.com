@@ -25,7 +25,7 @@
 					<br />
 					<!-- A1_3注文エラー -->
 					<span class="label warning" style="float: left;"
-						data-bind="visible: isError">#{i18n.getText('KMR002_6')}</span>
+						data-bind="visible: isError, text: textError()"></span>
 				</div>
 				<!--A1_4合計表-->
 				<div style="float: left;">
@@ -37,15 +37,15 @@
 						<tbody>
 							<tr style="height: 20px;">
 								<td class="table-food-td" data-bind="text: lunch()"></td>
-								<td class="table-food-td" data-bind="text: txtPriceLunch()"></td>
+								<td class="table-food-td" align="right" data-bind="text: txtPriceLunch()"></td>
 							</tr>
 							<tr style="height: 20px;">
 								<td class="table-food-td" data-bind="text: dinner()"></td>
-								<td class="table-food-td" data-bind="text: txtPriceDinner()"></td>
+								<td class="table-food-td" align="right" data-bind="text: txtPriceDinner()"></td>
 							</tr>
 							<tr style="height: 20px;">
 								<td class="table-food-td" style="" data-bind="text: sum()"></td>
-								<td class="table-food-td" style=""
+								<td class="table-food-td" align="right"
 									data-bind="text: txtPriceSum()"></td>
 							</tr>
 						</tbody>
@@ -77,7 +77,7 @@
 					</div>
 					<span data-bind="text: startTime" style="margin-left: 15px;"></span>
 					~ <span data-bind="text: endTime"></span> <span
-						class="label warning" style="margin-left: 15px;">#{i18n.getText('KMR002_7')}</span>
+						class="label warning" style="margin-left: 15px;" data-bind = "visible: isVisible">#{i18n.getText('KMR002_7')}</span>
 					<table data-bind="if: mealSelected()==1">
 						<colgroup>
 							<col width="50px" />
@@ -170,7 +170,7 @@
 					</table>
 				</div>
 				<div class="fixed-flex-layout-right" style="float: right;">
-					<div data-bind="visible: isVisible">#{i18n.getText('KMR002_13')}</div>
+					<div>#{i18n.getText('KMR002_13')}</div>
 					<div data-bind="visible: isVisibleLunch">
 						<div data-bind="text: lunchText()"></div>
 						<div class="menu-order" data-bind="foreach: listBentoOrderLunch">
