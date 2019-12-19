@@ -84,7 +84,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
             });
             
             nts.uk.characteristics.restore("ordered").done((data) => {
-                self.selectedOrdered(_.isEmpty(data) ? 0 : data);            
+                self.selectedOrdered(_.isNumber(data) ? data : 0);            
             });
             
             self.title.subscribe(value => {
