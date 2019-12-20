@@ -82,8 +82,8 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	private void printPage(Worksheet worksheet, ReservationMonthDataSource dataSource) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
-		pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
-		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + dataSource.getTitle());
+		pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyName());
+		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + dataSource.getTitle());
 	}
 	
 	private void printContent(Worksheet worksheet, ReservationMonthDataSource dataSource) throws Exception {
