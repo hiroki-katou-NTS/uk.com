@@ -46,7 +46,7 @@ module nts.uk.at.view.kmr002.a.model {
         isVisible: KnockoutObservable<boolean> = ko.observable(false);
         isVisibleDinner: KnockoutObservable<boolean> = ko.observable(false);
         isVisibleLunch: KnockoutObservable<boolean> = ko.observable(false);
-        textError: KnockoutObservable<string> = ko.observable('');
+        textError: KnockoutObservable<string> = ko.observable(getText('KMR002_6'));
 
         constructor() {
             let self = this;
@@ -176,7 +176,6 @@ module nts.uk.at.view.kmr002.a.model {
 
                 if (data.listOrder[i].reservationClosingTimeFrame == 2) {
                     let name = '', price = 0, unit = '', listOrderDinner = data.listOrder[i].listBentoReservationDetail;
-                    console.log(listOrderDinner);
                     if (listOrderDinner.length == 0) {
                         self.isVisibleDinner(false);
                     } else {
@@ -246,7 +245,6 @@ module nts.uk.at.view.kmr002.a.model {
                 self.sumCount(self.lunchCount() + self.dinnerCount());
                 self.txtPriceLunch(getText('KMR002_11', [self.priceLunch()]));
                 self.lunch(getText('KMR002_10', [self.lunchText(), self.lunchCount()]));
-                console.log(self.lunch());
                 self.sum(getText('KMR002_12', [self.sumCount()]));
                 self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
             });
@@ -272,31 +270,36 @@ module nts.uk.at.view.kmr002.a.model {
 
         public initTime(data: any, index: number) {
             let self = this, dateSelect = moment(self.date()).format("YYYY/MM/DD"), dateNow = moment(new Date()).format("YYYY/MM/DD"), timeNow = (new Date()).getHours() * 60 + (new Date()).getMinutes();
-            if (self.start() >= 0) {
+            if (self.start() !== null) {
                 let startHour = _.floor(self.start() / 60), startMi = self.start() % 60;
                 self.startTime(((startHour >= 10) ? startHour : ('0' + startHour)) + ':' + ((startMi >= 10) ? startMi : ('0' + startMi)));
             } else {
                 self.startTime('');
             }
-            if (self.end() >= 0) {
+            if (self.end() !== null) {
                 let endHour = _.floor(self.end() / 60), endMi = self.end() % 60;
                 self.endTime(((endHour >= 10) ? endHour : ('0' + endHour)) + ':' + ((endMi >= 10) ? endMi : ('0' + endMi)));
             } else {
                 self.endTime('');
             }
             let timeSt = self.start() != null ? self.start() : 0;
-            if (self.end() <= timeNow && timeSt >= timeNow) {
-                self.isVisible(false);
-            }
             if (dateSelect < dateNow) {
                 self.isVisible(true);
                 self.setDisPlay(false);
                 self.textError(getText('KMR002_9'));
-            } else if (data.listOrder.length > index && data.listOrder[index].ordered) {
-                self.textError(getText('KMR002_6'));
-                self.isVisible(false);
-                self.setDisPlay(false);
+            } else if (dateSelect == dateNow) {
+                if (data.listOrder.length > index && data.listOrder[index].ordered) {
+                    self.isVisible(true);
+                    self.textError(getText('KMR002_6'));
+                    self.setDisPlay(false);
+                }
+                if (timeSt <= timeNow && timeNow <= self.end()) {
+                    self.isVisible(false);
+                } else {
+                    self.isVisible(true);
+                }
             } else {
+                self.isVisible(false);
                 self.setDisPlay(true);
             }
             self.startTime.valueHasMutated();
@@ -373,14 +376,14 @@ module nts.uk.at.view.kmr002.a.model {
             });
             self.menuLunch.valueHasMutated();
             if (self.listBentoOrderLunch().length > 0) {
-                _.each(self.listBentoOrderLunch(), (item) => {
-                    if (item.frameNo == frameNo) {
-                        self.listBentoOrderLunch.remove(item);
+                _.each(self.listBentoOrderLunch(), (value) => {
+                    if (value && value.frameNo() == frameNo()) {
+                        self.listBentoOrderLunch.remove(value);
                     }
                 });
             }
 
-            if (self.listBentoOrderLunch.length == 0) {
+            if (self.listBentoOrderLunch().length == 0) {
                 self.isVisibleLunch(false);
             }
         }
@@ -394,14 +397,14 @@ module nts.uk.at.view.kmr002.a.model {
             });
             self.menuLunch.valueHasMutated();
             if (self.listBentoOrderDinner().length > 0) {
-                _.each(self.listBentoOrderDinner(), (item) => {
-                    if (item.frameNo == frameNo) {
-                        self.listBentoOrderDinner.remove(item);
+                _.each(self.listBentoOrderDinner(), (value) => {
+                    if (value && value.frameNo() == frameNo()) {
+                        self.listBentoOrderDinner.remove(value);
                     }
                 });
             }
 
-            if (self.listBentoOrderDinner.length == 0) {
+            if (self.listBentoOrderDinner().length == 0) {
                 self.isVisibleDinner(false);
             }
 
@@ -421,7 +424,7 @@ module nts.uk.at.view.kmr002.a.model {
         }
 
         public register(): void {
-            let self = this, detailLst = [];
+            let self = this, detailLst = [], checkUpdate = true;
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 detailLst.push({ closingTimeFrame: 1, frameNo: item.frameNo(), bentoCount: item.bentoCount() });
             });
@@ -429,15 +432,16 @@ module nts.uk.at.view.kmr002.a.model {
                 detailLst.push({ closingTimeFrame: 2, frameNo: item.frameNo(), bentoCount: item.bentoCount() });
             });
             let bentoReservation = { date: self.date(), details: detailLst };
-            if (self.isUpdate()) {
+            if (self.isUpdate() && self.date()) {
                 service.update(bentoReservation).done((data) => {
                     info({ messageId: "Msg_15" });
                     if (detailLst.length == 0) {
                         self.isUpdate(false);
-                        break;
+                        checkUpdate = false;
                     }
                 });
-            } else {
+            }
+            if (!self.isUpdate() && checkUpdate && self.date()) {
                 if (detailLst.length == 0) {
                     error({ messageId: "Msg_1589" });
                 } else {
