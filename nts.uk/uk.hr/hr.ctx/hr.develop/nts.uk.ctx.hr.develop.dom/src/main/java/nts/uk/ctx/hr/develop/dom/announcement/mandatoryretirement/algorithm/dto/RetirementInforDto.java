@@ -10,7 +10,7 @@ public class RetirementInforDto extends EmployeeInformationImport {
 
 	private GeneralDate birthday; // 誕生日
 	
-	public  String  pid; // 個人ID
+	private  String  pid; // 個人ID
 
 	public RetirementInforDto(EmployeeInformationImport employeeInformationImport, GeneralDate dateJoinComp, 
 			GeneralDate birthday, String pid) {

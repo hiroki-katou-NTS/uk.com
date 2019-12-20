@@ -19,6 +19,7 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseAppl
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.ComprehensiveEvaluationDto;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeAgeDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeBasicInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeInformationImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
@@ -31,7 +32,6 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationIdDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementInforDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementPlannedPersonDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.SearchCondition;
@@ -44,6 +44,8 @@ import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegula
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
+import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
+import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
@@ -75,6 +77,9 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	
 	@Inject
 	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
+	
+	@Inject
+	private DateCaculationTermService dateCaculationTermService;
 	
 	@Override
 	public Optional<MandatoryRetirementRegulation> getMandatoryRetirementRegulation(String companyId, String historyId) {
@@ -240,16 +245,15 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			}
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_WAGE_CLOSING_DATE_AFTER_THE_DATE_OF_RETIREMENT_AGE) {
 			
-			//chỗ này đang gọi requestList 639 
-			// nhưng hiện tại requestList 639 đang viết trong context pr nên cần xác nhận lại 
+			//chỗ này đang gọi requestList 641
+			// nhưng hiện tại requestList 641 đang viết trong context pr nên cần xác nhận lại 
+			// đã xác nhận với bác sato lần này không phải làm
 			
 			if(closingDate.isEmpty()) {
 				throw new BusinessException("MsgJ_JMM018_4");
 			}
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.FIRST_DUE_DATE_AFTER_REACHING_RETIREMENT_AGE) {
-			
-			// Chỗ này đang cần gọi từ at.share nhưng chưa gọi được
-			
+			attendanceDate.addAll(syEmploymentService.getClosureDate(companyId));
 			if(attendanceDate.isEmpty()) {
 				throw new BusinessException("MsgJ_JMM018_5");
 			}
@@ -362,15 +366,84 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				retirementList.add(new RetirePlanParam(item.getEmployeeId(), item.getEmploymentCode(), item.getBirthday(), retireTerm.get().getRetirementAge().v()));
 			}
 		}
-		
+		//・List<退職日> = {社員ID、雇用コード、退職日}
 		List<RetirementDateDto> retireDateBySidList = this.getRetireDateBySidList(retirementList, reachedAgeTerm, retireDateTerm, yearEndMonthDate, closingDate, attendanceDate);
 		
-		return new ArrayList<>();
+		//List<社員年齢> = {List<定年退職者>．社員ID、年齢}
+		List<EmployeeAgeDto> employeeAgeList = new ArrayList<>();
+		
+		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
+			for (RetirementDateDto item : retireDateBySidList) {
+				Optional<RetirePlanParam> d = retirementList.stream().filter(c->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+				if(d.isPresent()) {
+					employeeAgeList.add(new EmployeeAgeDto(item.getEmployeeId(), item.getRetirementDate().year()-d.get().getBirthday().addDays(-1).year()));
+				}
+			}
+		}else {
+			for (RetirementDateDto item : retireDateBySidList) {
+				Optional<RetirePlanParam> d = retirementList.stream().filter(c->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+				if(d.isPresent()) {
+					employeeAgeList.add(new EmployeeAgeDto(item.getEmployeeId(), item.getRetirementDate().year()-d.get().getBirthday().year()));
+				}
+			}
+		}
+		
+		List<EmployeeDateDto> date = retireDateBySidList.stream().map(c->new EmployeeDateDto(c.getEmployeeId(), c.getRetirementDate())).collect(Collectors.toList());
+		//List<公開日> = {社員ID、公開日}
+		List<EmployeeDateDto> employeeDateList = dateCaculationTermService.getDateBySidList(date, publicTerm);
+		
+		List<String> retiredEmployeeId = retirementList.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+		EvaluationInfoDto evaluationInfoBySidList = this.getEvaluationInfoBySidList(retiredEmployeeId, referEvaluationTerm);
+		
+		List<RetirementPlannedPersonDto> result = new ArrayList<>();
+		
+		for (RetirementInforDto item : retirementInforList) {
+			//社員年齢
+			Optional<EmployeeAgeDto> employeeAge = employeeAgeList.stream().filter(c->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+			//退職日
+			Optional<RetirementDateDto> retireDateBySid = retireDateBySidList.stream().filter(c->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+			//公開日
+			Optional<EmployeeDateDto> employeeDate = employeeDateList.stream().filter(c->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+			//人事評価
+			Optional<ComprehensiveEvaluationDto> hrEvaluationList = evaluationInfoBySidList.getHrEvaluationList().stream().filter(c->c.getEmployeeID().equals(item.getEmployeeId())).findFirst();
+			//健康状態
+			Optional<ComprehensiveEvaluationDto> healthStatusList = evaluationInfoBySidList.getHealthStatusList().stream().filter(c->c.getEmployeeID().equals(item.getEmployeeId())).findFirst();
+			//ストレスチェック
+			Optional<ComprehensiveEvaluationDto> stressStatusList = evaluationInfoBySidList.getStressStatusList().stream().filter(c->c.getEmployeeID().equals(item.getEmployeeId())).findFirst();
+			
+			if(employeeAge.isPresent() && retireDateBySid.isPresent() && employeeDate.isPresent()) {
+				RetirementPlannedPersonDto em = new RetirementPlannedPersonDto(
+						item.getPid(), 
+						item.getEmployeeId(), 
+						item.getEmployeeCode(), 
+						item.getBusinessName(), 
+						item.getBusinessNameKana(), 
+						item.getBirthday(), 
+						item.getDateJoinComp(), 
+						item.getDepartmentId(), 
+						item.getDepartmentCode(), 
+						item.getDepartmentName(), 
+						item.getPositionId(), 
+						item.getPositionCode(), 
+						item.getPositionName(), 
+						item.getEmploymentCode(), 
+						item.getEmploymentName(), 
+						employeeAge.get().getRetirementAge(), 
+						retireDateBySid.get().getRetirementDate(), 
+						employeeDate.get().getTargetDate(), 
+						hrEvaluationList, 
+						healthStatusList, 
+						stressStatusList);
+				result.add(em);
+			}
+		}
+		
+		return result;
 	}
 
 	@Override
 	public List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm,
-			RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate,
+			RetireDateTerm retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate,
 			List<EmploymentDateDto> attendanceDate) {
 		List<RetirementDateDto> result = new ArrayList<>();
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
@@ -382,8 +455,11 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_DAY_OF_REACHING_RETIREMENT_AGE) {
 			return result;
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.RETIREMENT_DATE_DESIGNATED_DATE) {
+			if(!retireDateTerm.getRetireDateSettingDate().isPresent()) {
+				throw new BusinessException("MsgJ_JMM018_2");
+			}
 			return result.stream().map(c->{
-					c.setDay(retireDateTerm.getRetireDateSettingDate().value);
+					c.setDay(retireDateTerm.getRetireDateSettingDate().get().value);
 					return c;
 				}).collect(Collectors.toList());
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.THE_LAST_DAY_OF_THE_MONTH_INCLUDING_THE_DAY_OF_REACHING_RETIREMENT_AGE) {
