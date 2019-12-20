@@ -68,24 +68,24 @@ module jcm008.a {
         }
 
         /** event when click register */
-        getRetirementData(force) {
+        getRetirementData() {
             let self = this;
             let param = new ISearchParams(self.searchFilter);
-            if(force instanceof Boolean) {
-                param.confirmCheckRetirementPeriod = force;
-            }
+            
             block.grayout();
             let dfd = $.Deferred<any>();
             service.searchRetireData(param)
                 .done((res) => {
                     console.log(res);
+                    self.searchFilter.confirmCheckRetirementPeriod(false);
                 })
                 .fail((error) => {
                     dfd.reject();
                     console.log(error);
                     if(error.messageId == "MsgJ_JCM008_5") {
                         nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM008_5" }).ifYes(() => {
-                            self.getRetirementData(true);
+                            self.searchFilter.confirmCheckRetirementPeriod(true);
+                            self.getRetirementData();
                         });
                     } else {
                         nts.uk.ui.dialog.info(error);
@@ -276,6 +276,20 @@ module jcm008.a {
                 let data = getShared('CDL002Output');
                 self.searchFilter.employment(data);
             });
+        }
+
+        /**
+            * Export excel
+            */
+           public exportExcel(): void {
+            let self = this;
+            self.searchFilter.confirmCheckRetirementPeriod(true);
+            let param = new ISearchParams(self.searchFilter);
+            service.outPutFileExcel(param).done((data1) => {
+                console.log(data1);
+            })
+
+
         }
     }
 

@@ -123,6 +123,7 @@ class SearchFilterModel {
         }).join(', ');
     })
     selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
+    confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
     constructor() {
 
     }
@@ -145,7 +146,7 @@ class ISearchParams {
         this.selectDepartment = _.map(param.department(), (d) => {return d.name;});
         this.allSelectEmployment = param.selectAllEmployment();
         this.selectEmployment = _.map(param.employment(), (d) => {return d.name;});
-        this.confirmCheckRetirementPeriod = false;
+        this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
     }
 }
 

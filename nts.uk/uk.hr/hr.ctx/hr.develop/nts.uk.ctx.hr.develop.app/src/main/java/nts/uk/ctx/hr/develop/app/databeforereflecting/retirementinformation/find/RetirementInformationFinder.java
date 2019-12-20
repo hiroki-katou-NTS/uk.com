@@ -189,7 +189,7 @@ public class RetirementInformationFinder {
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
 		
 		String cId = AppContexts.user().companyId();
-		
+		employeeIds.add("-1");
 		InterviewSummary interView = this.interviewSum.getInterviewInfo(cId, InterviewCategory.RETIREMENT_AGE.value,
 				employeeIds, false, true, true, true);
 		
@@ -718,8 +718,8 @@ public class RetirementInformationFinder {
 
 		// 雇用情報リストを確認する (Xác nhận Employment information list)
 		empInfos.forEach(x -> {
-			if (!StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
-				throw new BusinessException(" MsgJ_JMM018_10");
+			if (StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
+				throw new BusinessException("MsgJ_JMM018_10");
 			}
 		});
 

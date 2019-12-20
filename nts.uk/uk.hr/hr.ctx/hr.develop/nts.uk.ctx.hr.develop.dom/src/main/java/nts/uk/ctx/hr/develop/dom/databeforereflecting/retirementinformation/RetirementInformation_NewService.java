@@ -31,7 +31,7 @@ public class RetirementInformation_NewService {
 		// ドメイン [個人情報反映前データ] を取得する (Get domain "Data before reflecting personal
 		// information/data trước khi phản ánh thông tin cá nhân")
 		List<DataBeforeReflectingPerInfo> dataInfos = this.dataBeforeReflectPerInfoService.getDataBeforeReflectPerInfo(
-				cId, 2, employeeIds, includingReflected, Optional.ofNullable("DATE01"), Optional.ofNullable("ASC"));
+				cId, 2, employeeIds, includingReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
 		// 個人情報反映前データリストを定年退職者情報リストへ変換する(Chuyển đổi list data trước khi phản ánh
 		// thông tin các nhân sang list thông tin người nghỉ hưu)
 		

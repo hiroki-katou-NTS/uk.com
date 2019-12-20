@@ -4,7 +4,8 @@ module jcm008.a.service {
     
     var paths = {
         getData: 'databeforereflecting/startPage',
-        searchRetirementInfo: 'databeforereflecting/search-retired'
+        searchRetirementInfo: 'databeforereflecting/search-retired',
+        export: 'file/hr/report/retirementinformation/export'
     }
        
     export function getData() : JQueryPromise<any>{
@@ -13,6 +14,10 @@ module jcm008.a.service {
 
     export function searchRetireData(data: ISearchParams) : JQueryPromise<any>{
         return ajax(paths.searchRetirementInfo, data);
+    }
+
+    export function outPutFileExcel(data: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.export, data);
     }
    
 }
