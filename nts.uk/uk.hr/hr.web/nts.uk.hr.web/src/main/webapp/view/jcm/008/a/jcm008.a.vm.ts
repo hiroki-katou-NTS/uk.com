@@ -46,7 +46,7 @@ module jcm008.a {
         }
 
         /** start page */
-        start(historyId: any) {
+        start() {
             let self = this;
             block.grayout();
             let dfd = $.Deferred<any>();
@@ -68,14 +68,32 @@ module jcm008.a {
         }
 
         /** event when click register */
-        register() {
-
-        }
-
-        /** new mode */
-        newMode() {
+        getRetirementData(force) {
             let self = this;
-            nts.uk.ui.errors.clearAll();
+            let param = new ISearchParams(self.searchFilter);
+            if(force instanceof Boolean) {
+                param.confirmCheckRetirementPeriod = force;
+            }
+            block.grayout();
+            let dfd = $.Deferred<any>();
+            service.searchRetireData(param)
+                .done((res) => {
+                    console.log(res);
+                })
+                .fail((error) => {
+                    dfd.reject();
+                    console.log(error);
+                    if(error.messageId == "MsgJ_JCM008_5") {
+                        nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM008_5" }).ifYes(() => {
+                            self.getRetirementData(true);
+                        });
+                    } else {
+                        nts.uk.ui.dialog.info(error);
+                    }
+                })
+                .always(() => {
+                    block.clear();
+                })
         }
 
         public bindRetirementAgeGrid(): void {
@@ -224,39 +242,39 @@ module jcm008.a {
             let self = this;
             block.grayout();
             setShared('inputCDL008', {  
-                selectedCodes: [],
+                selectedCodes: self.searchFilter.department().map(function(elem){
+                    return elem.workplaceId;
+                }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true, 
                 selectedSystemType:1 , 
                 isrestrictionOfReferenceRange:false , 
                 showNoSelection:false , 
                 isShowBaseDate:true });
-            modal("/view/jdl/0110/a/index.xhtml").onClosed(function(){
+            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function(){
                 block.clear();
                 let data = getShared('outputCDL008');
-                let baseDate = getShared('baseDateCDL008');  
-                console.log(data);
-                console.log(baseDate);
+                self.searchFilter.department(data);
             });
         }
 
         public choseEmployment(){
             let self = this;
             block.grayout();
-            setShared('inputCDL008', {  
-                selectedCodes: [],
+            setShared('CDL002Params', {  
+                selectedCodes: self.searchFilter.employment().map(function(elem){
+                    return elem.workplaceId;
+                }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true, 
                 selectedSystemType:1 , 
                 isrestrictionOfReferenceRange:false , 
                 showNoSelection:false , 
                 isShowBaseDate:true });
-            modal("/view/jdl/0080/a/index.xhtml").onClosed(function(){
+            modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function(){
                 block.clear();
-                let data = getShared('outputCDL008');
-                let baseDate = getShared('baseDateCDL008');  
-                console.log(data);
-                console.log(baseDate);
+                let data = getShared('CDL002Output');
+                self.searchFilter.employment(data);
             });
         }
     }

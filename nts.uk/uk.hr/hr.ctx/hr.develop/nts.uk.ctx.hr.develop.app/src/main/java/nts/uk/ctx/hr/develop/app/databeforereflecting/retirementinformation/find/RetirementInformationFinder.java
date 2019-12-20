@@ -551,7 +551,7 @@ public class RetirementInformationFinder {
 	private void checkEmpInfos(List<EmploymentInfoImport> empInfos) {
 		empInfos.forEach(x -> {
 			if (StringUtil.isNullOrEmpty(x.getEmpCommonMasterItemId(), false)) {
-				throw new BusinessException(" MsgJ_JMM018_10");
+				throw new BusinessException("MsgJ_JMM018_10");
 			}
 		});
 	}

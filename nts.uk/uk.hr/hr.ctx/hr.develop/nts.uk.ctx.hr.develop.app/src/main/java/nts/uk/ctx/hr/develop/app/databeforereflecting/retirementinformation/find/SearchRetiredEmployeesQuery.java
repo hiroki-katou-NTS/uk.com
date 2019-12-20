@@ -2,16 +2,14 @@ package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.fin
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class SearchRetiredEmployeesQuery {
-
+	
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	private boolean confirmCheckRetirementPeriod;
 
 	// A222_2_2 反映済みを含む
@@ -40,4 +38,14 @@ public class SearchRetiredEmployeesQuery {
 
 	// （A222_9_3）雇用選択 = 空白
 	private List<String> selectEmployment;
+	
+	public void setStartDate(String date) {
+		this.startDate = GeneralDate.fromString(date, DATE_FORMAT);
+	}
+	
+	public void setEndDate(String date) {
+		this.endDate = GeneralDate.fromString(date, DATE_FORMAT);
+	}
+	
+	
 }

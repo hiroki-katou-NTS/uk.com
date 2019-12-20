@@ -8,7 +8,7 @@
             class="mr-20 help-button">?</button>
         <!-- JCM008_A222_3 -->
         <div id="retirement-period" tabindex="3"
-            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod, maxRange: 'oneMonth'}"></div>
+            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod}"></div>
         <!-- JCM008_A222_2_2 -->
         <div id="includingReflected" data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
             class="check-box-padding">
@@ -42,13 +42,13 @@
             class="check-box-padding ml-21 mr-10">
             #{i18n.getText('JCM008_A222_7_1')}</div>
         <!-- A222_7_2 -->
-        <button tabindex="7" class="small mt-6 mr-10" data-bind = "click: choseDepartment, disable: searchFilter.selectAllDepartment">#{i18n.getText('JCM008_A222_7_2')}</button>
+        <button tabindex="7" class="small mt-6 mr-10" data-bind = "click: choseDepartment, disable: searchFilter.selectAllDepartment()">#{i18n.getText('JCM008_A222_7_2')}</button>
         <!-- A222_7_3 -->
         <input id="A222_7_3" data-bind="ntsTextEditor: { 
 									name: '#[JCM008_A222_7_3]', 
-									value: searchFilter.department,
+									value: searchFilter.departmentDisplay,
 									option: {width: '280px'},
-                                    enable: true, 
+                                    enable: !searchFilter.selectAllDepartment(), 
                                     readonly: true,
                                     required: true
                                 }" class="mt-6" />
@@ -62,16 +62,16 @@
             class="check-box-padding ml-21 mr-10">
             #{i18n.getText('JCM008_A222_9_1')}</div>
         <!-- A222_9_2 -->
-        <button tabindex="9" class="small mt-6 mr-10" data-bind = "click: choseEmployment, disable: searchFilter.selectAllEmployment">#{i18n.getText('JCM008_A222_9_2')}</button>
+        <button tabindex="9" class="small mt-6 mr-10" data-bind = "click: choseEmployment, disable: searchFilter.selectAllEmployment()">#{i18n.getText('JCM008_A222_9_2')}</button>
         <!-- A222_9_3 -->
         <input id="A222_9_3" data-bind="ntsTextEditor: { 
             name: '#[JCM008_A222_9_3]', 
-            value: searchFilter.employment,
+            value: searchFilter.employmentDisplay,
             option: {width: '280px'},
-            enable: true, 
+            enable: !searchFilter.selectAllEmployment(), 
             readonly: true,
             required: true
         }" class="mt-6" />
-        <button tabindex="10" class="normal mt-6 ml-70">#{i18n.getText('JCM008_A222_10')}</button>
+        <button tabindex="10" class="normal mt-6 ml-70" data-bind="click: getRetirementData">#{i18n.getText('JCM008_A222_10')}</button>
     </div>
 </div>
