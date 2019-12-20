@@ -49,7 +49,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 	private static final String FILE_NAME = "10191-soshitsu.csv";
 
 	// row 1
-	private static final List<String> ROW_1_HEADERS = Arrays.asList("都市区符号", "事業所記号", "ＦＤ通番", "作成年月日", "代表届書コード",
+	private static final List<String> ROW_1_HEADERS = Arrays.asList("郡市区符号", "事業所記号", "ＦＤ通番", "作成年月日", "代表届書コード",
 			"連記式項目バージョン");
 
 	// row 2
@@ -68,7 +68,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 	private static final String A1_17 = "001";
 
 	// row 6
-	private static final List<String> ROW_6_HEADERS = Arrays.asList("都市区符号", "事業所記号", "事業所番号", "親番号（郵便番号）", "子番号（郵便番号）",
+	private static final List<String> ROW_6_HEADERS = Arrays.asList("郡市区符号", "事業所記号", "事業所番号", "親番号（郵便番号）", "子番号（郵便番号）",
 			"事業所所在地", "事業所名称", "事業主氏名", "電話番号", "雇用保険適用事業所番号（安定所番号）", "雇用保険適用事業所番号（一連番号）", "雇用保険適用事業所番号（CD）");
 
 	// row 8
