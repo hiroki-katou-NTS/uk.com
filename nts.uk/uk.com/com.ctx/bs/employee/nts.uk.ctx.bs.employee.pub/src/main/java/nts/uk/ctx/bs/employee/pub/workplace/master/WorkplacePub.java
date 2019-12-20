@@ -66,4 +66,13 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
+	/**
+	 * [No.560]職場IDから職場の情報をすべて取得する_HoaTT
+	 * Doi ung su dung table cu
+	 * @param companyId
+	 * @param listWorkplaceId
+	 * @param baseDate
+	 * @return
+	 */
+//	public List<WorkplaceInforExport> getWkpInforByWkpIds_OLD(String companyId, List<String> listWkpId,	GeneralDate baseDate);
 }

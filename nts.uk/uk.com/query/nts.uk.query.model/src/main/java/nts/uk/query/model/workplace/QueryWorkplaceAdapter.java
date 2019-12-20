@@ -55,5 +55,8 @@ public interface QueryWorkplaceAdapter {
      * @return
      */
     List<String> getWorkplaceIdAndChildren(String companyId, GeneralDate baseDate, String workplaceId);
-
+    
+    //[No.560]職場IDから職場の情報をすべて取得する_HoaTT
+    //SU DUNG TABLE CU
+    List<WorkplaceInfoImport> getWkpInfoByWkpIds_OLD(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
 }
