@@ -242,10 +242,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
                     // A1_10
-                    tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
-                    tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
-                    tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
-
+                    if (laborInsuranceOffices.containsKey(laborCode)) {
+                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
+                    }
                     if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
                         // A1_23
                         tempReport.setOfficeName(companyInfo.getCompanyName());
