@@ -409,6 +409,8 @@ project (':hr.file:nts.uk.file.hr.app') {
 
 project (':hr.file:nts.uk.file.hr.infra') {
 	dependencies {
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
 		compile project (':hr.file:nts.uk.file.hr.app')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
