@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -301,6 +302,36 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 				select_name_01, select_name_02, select_name_03, select_name_04, select_name_05,
 				select_name_06, select_name_07, select_name_08, select_name_09, select_name_10, 
 				str_01, str_02, str_03,str_04, str_05, str_06, str_07, str_08, str_09, str_10);
+	}
+
+	public DataBeforeReflectingPerInfo(String historyId, String contractCode, String companyId, String companyCode,
+			String pId, String sId, String scd, Integer workId, String personName, String workName,
+			int requestFlag, GeneralDate registerDate, GeneralDateTime releaseDate, int onHoldFlag, int status,
+			String histId_Refer, GeneralDateTime date_01, String select_code_01, String select_code_0,
+			String select_code_03, String select_code_04, String select_name_01, String select_name_0,
+			String select_name_03) {
+		this.historyId = historyId;
+		this.contractCode = contractCode;
+		this.companyId = companyId;
+		this.companyCode = companyCode;
+		this.pId = pId;
+		this.sId = sId;
+		this.scd = scd;
+		this.workId = workId;
+		this.personName = personName;
+		this.workName = workName;
+		this.requestFlag = EnumAdaptor.valueOf(requestFlag, RequestFlag.class) ;
+		this.registerDate = registerDate;
+		this.releaseDate = releaseDate;
+		this.onHoldFlag = EnumAdaptor.valueOf(onHoldFlag,OnHoldFlag.class) ;
+		this.stattus =   EnumAdaptor.valueOf(status,Status.class) ;
+		this.histId_Refer = histId_Refer;
+		this.date_01 = date_01;
+		this.select_code_01 = select_code_01;
+		this.select_code_03 = select_code_03;
+		this.select_code_04 = select_code_04;
+		this.select_name_01 = select_name_01;
+		this.select_name_03 = select_name_03;
 	}
 
 }

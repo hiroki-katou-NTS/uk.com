@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
+import java.math.BigInteger;
+
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -19,6 +21,8 @@ public class PlannedRetirementDto {
 	private String sId;
 	// 社員コード
 	private String scd;
+	// 個人名
+	private String PersonName;
 	// ビジネスネーム
 	private String businessName;
 	// ビジネスネームカナ
@@ -67,4 +71,43 @@ public class PlannedRetirementDto {
 	private String stressStatus2;
 	// ストレス評価3
 	private String stressStatus3;
+	// 保留フラグ
+	private int pendingFlag;
+	// ステータス
+	private int status;
+	// 反映先_履歴ID
+	private String dst_HistId;
+	// 入力日
+	public GeneralDate inputDate;
+	// 履歴ID
+	private String historyId;
+
+	// 希望勤務コース_CD
+	private String desiredWorkingCourseCd;
+	// 継続雇用フラグ
+	private int extendEmploymentFlg;
+	// 会社ID
+	private String companyId;
+	// 業務名称
+	private String workName;
+	// 希望勤務コース_ID
+	private BigInteger desiredWorkingCourseId;
+	// 会社コード
+	private String companyCode;
+	// 希望勤務コース_名称
+	private String desiredWorkingCourseName;
+	// 契約コード
+	private String contractCode;
+	// 業務ID
+	private Integer workId;
+	// 退職区分
+	private Integer retirementCategory;
+	// 届出区分
+	private int notificationCategory;
+	// 退職理由区分1_ID
+	private BigInteger retirementReasonCtgID1;
+	// 退職理由区分1_CD
+	private String retirementReasonCtgCd1;
+	// 退職理由区分1_名称
+	private String retirementReasonCtgName1;
 }

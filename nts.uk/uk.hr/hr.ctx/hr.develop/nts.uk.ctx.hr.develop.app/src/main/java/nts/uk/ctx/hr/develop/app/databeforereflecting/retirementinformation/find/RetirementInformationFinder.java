@@ -27,8 +27,8 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementInformation;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.RetirementInformation_New;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.RetirementInformation_NewService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.IGetYearStartEndDateByDate;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
@@ -82,7 +82,7 @@ public class RetirementInformationFinder {
 	private EmployeeInformationAdaptor empInforAdaptor;
 
 	@Inject
-	private RetirementInformationService retiInfoService;
+	private RetirementInformation_NewService retiInfoService;
 
 	@Inject
 	private IInterviewRecordSummary interviewSum;
@@ -158,9 +158,9 @@ public class RetirementInformationFinder {
 		}
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
-		List<RetirementInformation> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,
-				Optional.ofNullable(retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList())),
-				Optional.ofNullable(null));
+		List<RetirementInformation_New> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,
+				retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList()),
+				Optional.ofNullable(query.isIncludingReflected()));
 
 		// アルゴリズム[定年退職者一覧の表示]を実行する(thực hiện thuật toán [hiển thị danh sách
 		// người nghỉ hưu])
@@ -168,20 +168,20 @@ public class RetirementInformationFinder {
 		return createListRetiredEmployees(retirementEmployees, retiredEmployees);
 	}
 
-	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation> retirementEmployees,
+	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation_New> retirementEmployees,
 			List<PlannedRetirementDto> retiredEmployees) {
 		List<PlannedRetirementDto> result = new ArrayList<PlannedRetirementDto>();
 
 		result.addAll(retiredEmployees);
 		// 定年退職予定者リストと定年退職者情報リストをマージする(Merger list người dự định nghỉ hưu và
 		// list thông tin người nghỉ hưu)
-		retirementEmployees.forEach(item -> {
-			Optional<PlannedRetirementDto> retiredOps = retiredEmployees.stream()
-					.filter(retired -> retired.getSId().equals(item.getSId())).findFirst();
+		retiredEmployees.forEach(item -> {
+			retirementEmployees.stream().filter(retirement -> retirement.getSId().equals(item.getSId())).findFirst()
+					.ifPresent(retirement -> {
+						setRetiredInfo(item,retirement);
+					});
 
-			if (!retiredOps.isPresent()) {
-				result.add(toRetired(item));
-			}
+			
 		});
 		// アルゴリズム[面談記録チェック]を実行する(Thực hiện thuật toán [check báo cáo kết quả
 		// phỏng vấn])
@@ -197,38 +197,26 @@ public class RetirementInformationFinder {
 
 	}
 
-	private PlannedRetirementDto toRetired(RetirementInformation item) {
-
-		return PlannedRetirementDto
-				.builder()
-				.pId(item.getPId())
-				.sId(item.getSId())
-				.scd(item.getScd())
-				.businessName(item.getPersonName())
-				//.businessnameKana(item.getBusinessNameKana())
-				//.birthday(item.getBirthday())
-				//.dateJoinComp(item.getDateJoinComp())
-				//.departmentId(item.get())
-				//.departmentCode(item.getDepartmentCode())
-				//.departmentName(item.getDepartmentName())
-				//.jobTitleId(item.getPositionId())
-				//.jobTitleCd(item.getPositionCode())
-				//.jobTitleName(item.getPositionName())
-				//.employmentCode(item.getEmploymentCode())
-				//.employmentName(item.getEmploymentName())
-				//.age(retiredOpt.isPresent() ? retiredOpt.get().getAge() : null)
-				.retirementDate(item.getRetirementDate().toDate())
-				.releaseDate(item.getReleaseDate().toDate())
-//				.hrEvaluation1(item.get1)
-//				.hrEvaluation2(hreOpt.isPresent() ? hreOpt.get().getOverallResult2() : null)
-//				.hrEvaluation3(hreOpt.isPresent() ? hreOpt.get().getOverallResult3() : null)
-//				.healthStatus1(heathOpt.isPresent() ? heathOpt.get().getOverallResult1() : null)
-//				.healthStatus2(heathOpt.isPresent() ? heathOpt.get().getOverallResult2() : null)
-//				.healthStatus3(heathOpt.isPresent() ? heathOpt.get().getOverallResult3() : null)
-//				.stressStatus1(streeOpt.isPresent() ? streeOpt.get().getOverallResult1() : null)
-//				.stressStatus2(streeOpt.isPresent() ? streeOpt.get().getOverallResult2() : null)
-//				.stressStatus3(streeOpt.isPresent() ? streeOpt.get().getOverallResult3() : null)
-				.build();
+	private void setRetiredInfo(PlannedRetirementDto item, RetirementInformation_New reti) {
+		item.setHistoryId(reti.getHistoryId());
+		item.setStatus(reti.getStatus().value);
+		item.setDesiredWorkingCourseCd(reti.getDesiredWorkingCourseCd());
+		item.setExtendEmploymentFlg(reti.getExtendEmploymentFlg().value);
+		item.setCompanyId(reti.getCompanyId());
+		item.setWorkName(reti.getWorkName());
+		item.setDesiredWorkingCourseId(reti.getDesiredWorkingCourseId());
+		item.setCompanyCode(reti.getCompanyCode());
+		item.setPersonName(reti.getPersonName());
+		item.setDesiredWorkingCourseName(reti.getDesiredWorkingCourseName());
+		item.setContractCode(reti.getContractCode());
+		item.setPendingFlag(reti.getPendingFlag().value);
+		item.setWorkId(reti.getWorkId());
+		item.setDst_HistId(reti.getDst_HistId());
+		item.setRetirementCategory(reti.getRetirementCategory().value);
+		item.setNotificationCategory(reti.getNotificationCategory().value);
+		item.setRetirementReasonCtgID1(reti.getRetirementReasonCtgID1());
+		item.setRetirementReasonCtgCd1(reti.getRetirementReasonCtgCd1());
+		item.setRetirementReasonCtgName1(reti.getRetirementReasonCtgName1());
 	}
 
 	private List<PlannedRetirementDto> getRetiredEmployees(SearchRetiredEmployeesQuery query, String cId,

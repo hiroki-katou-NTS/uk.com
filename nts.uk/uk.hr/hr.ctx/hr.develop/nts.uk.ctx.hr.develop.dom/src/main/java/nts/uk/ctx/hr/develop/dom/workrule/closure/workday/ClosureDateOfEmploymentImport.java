@@ -9,5 +9,5 @@ public class ClosureDateOfEmploymentImport {
 	// 雇用ｺｰﾄﾞ
 	private String employmentCd;
 	// 締め日
-	private Integer closureDay;
+	private int closureDay;
 }

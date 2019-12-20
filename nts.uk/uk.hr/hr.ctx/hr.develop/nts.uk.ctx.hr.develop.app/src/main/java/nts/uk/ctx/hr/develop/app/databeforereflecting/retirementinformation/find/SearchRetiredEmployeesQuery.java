@@ -11,8 +11,11 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchRetiredEmployeesQuery {
-	
+
 	private boolean confirmCheckRetirementPeriod;
+
+	// A222_2_2 反映済みを含む
+	private boolean includingReflected;
 
 	// A222_3 定年退職期間(開始日)
 	private GeneralDate startDate;
