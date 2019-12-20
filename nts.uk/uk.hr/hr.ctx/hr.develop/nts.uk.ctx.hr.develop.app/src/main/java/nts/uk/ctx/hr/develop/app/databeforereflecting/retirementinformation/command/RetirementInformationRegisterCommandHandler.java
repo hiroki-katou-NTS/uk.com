@@ -14,7 +14,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
-import nts.uk.shr.com.context.AppContexts;
 
 public class RetirementInformationRegisterCommandHandler extends CommandHandler<RetirementInformationRegisterCommand> {
 

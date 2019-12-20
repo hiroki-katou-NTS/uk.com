@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Data
 public class RetiInforRegisInfoCommand {

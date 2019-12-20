@@ -11,9 +11,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ResignmentDivision {
 	// 退職
-	Resignment(0),
+	Resignment(0, "退職"),
 	// 継続
-	Transfer(1);
+	Transfer(1, "継続");
 
 	public final int value;
+	public final String name;
 }
