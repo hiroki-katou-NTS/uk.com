@@ -187,17 +187,9 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
             if(currentPersonResidence.containsKey(e.getPId())) {
                 temp.setCurrentPersonResidence(currentPersonResidence.get(e.getPId()));
             }
-
-            switch (reportSetting.getOfficeClsAtr()) {
-                case OUTPUT_COMPANY:
-                    temp.setCompanyInfor(cInfo);
-                    break;
-                case OUPUT_LABOR_OFFICE:
-                    if (laborInsuranceOffices.containsKey(laborCode)) {
-                        temp.setLaborInsuranceOffice(laborInsuranceOffices.get(laborCode));
-                    }
-                    break;
-                default: break;
+            temp.setCompanyInfor(cInfo);
+            if (laborInsuranceOffices.containsKey(laborCode)) {
+                temp.setLaborInsuranceOffice(laborInsuranceOffices.get(laborCode));
             }
 
             Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
