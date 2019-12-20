@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Color;
@@ -23,6 +24,7 @@ import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.Status;
+import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -79,7 +81,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			// set up page prepare print
-			this.writeFileExcel(worksheets, dataSource.getRetiredEmployees(), query, companyName);
+			this.writeFileExcel(worksheets, dataSource, query, companyName);
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -92,15 +94,22 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		}
 	}
 
-	private void writeFileExcel(WorksheetCollection wsc, List<PlannedRetirementDto> exportData,
+	private void writeFileExcel(WorksheetCollection wsc, SearchRetiredResultDto dto,
 			SearchRetiredEmployeesQuery query,String companyName) {
 		try {
+			
+			List<PlannedRetirementDto> exportData = dto.getRetiredEmployees();
+			List<InterviewRecordInfo> interviewRecords = dto.getInterView().listInterviewRecordInfo;
 			int rowIndex = FIRST_ROW_FILL;
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
 			this.settingHeader(ws, query,companyName);
 			for (int i = 0; i < exportData.size(); i++) {
+			
+				
 				PlannedRetirementDto entity = exportData.get(i);
+				Optional<InterviewRecordInfo> interViewOpt = interviewRecords.stream()
+						.filter(x -> x.getEmployeeID().equals(entity.getSId())).findFirst();
 				if (i % 2 == 0) {
 					ws.getCells().copyRows(ws.getCells(), rowIndex, rowIndex + lineCopy - 1, lineCopy);
 				}
@@ -136,8 +145,10 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, STRESS_CHECK_1).putValue(entity.getStressStatus1());
 				ws.getCells().get(rowIndex, STRESS_CHECK_2).putValue(entity.getStressStatus2());
 				ws.getCells().get(rowIndex, STRESS_CHECK_3).putValue(entity.getStressStatus3());
-				ws.getCells().get(rowIndex, INTERVIEW_DATE).putValue(GeneralDate.today().toString(FORMAT_DATE));
-				ws.getCells().get(rowIndex, INTERVIEWER).putValue(entity.getWorkName());
+				ws.getCells().get(rowIndex, INTERVIEW_DATE).putValue(
+						interViewOpt.isPresent() ? interViewOpt.get().getInterviewDate().toString(FORMAT_DATE) : "");
+				ws.getCells().get(rowIndex, INTERVIEWER)
+						.putValue(interViewOpt.isPresent() ? interViewOpt.get().getBusinessName() : "");
 				rowIndex++;
 			}
 			if (exportData.size() == 0) {
