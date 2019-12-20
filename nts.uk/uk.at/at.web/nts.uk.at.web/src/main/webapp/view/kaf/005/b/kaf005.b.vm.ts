@@ -147,6 +147,15 @@ module nts.uk.at.view.kaf005.b {
                         $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                     } else {                       
                         if (rebind == true) {
+                            self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
+                            for(let i = self.overtimeHours().length - 1; i > 0; i--){
+                                self.tmpOverTime.children('tbody').children('tr')[i].remove();
+                            }
+                            $("#fixed-overtime-hour-table").remove();
+                            self.timeTableEdit(self.prePostSelected());
+                            ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
+                            ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
+                            
                             $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
                             $("#fixed-break_time-table").ntsFixedTable({ height: 96 });
                             $("#fixed-bonus_time-table").ntsFixedTable({ height: 96 });

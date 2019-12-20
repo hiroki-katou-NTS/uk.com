@@ -177,6 +177,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		long startTime = System.currentTimeMillis();
 		Map<String, Map<GeneralDate, WorkInformationOfDailyDto>> workInfos = toMap(
 				workInfoFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, CalcAttrOfDailyPerformanceDto>> calcAttrs = toMap(
@@ -213,7 +214,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				pcLogOnInfoFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(
 				remarkFinder.find(employeeId, baseDate));
-
+        System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
 		return (List<T>) employeeId.stream().map(em -> {
 			List<DailyRecordDto> dtoByDates = new ArrayList<>();
 			GeneralDate start = baseDate.start();
@@ -249,6 +250,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
+		long startTime = System.currentTimeMillis();
 		Map<String, Map<GeneralDate, WorkInformationOfDailyDto>> workInfos = toMap(workInfoFinder.find(param));
 		Map<String, Map<GeneralDate, CalcAttrOfDailyPerformanceDto>> calcAttrs = toMap(calcAttrFinder.find(param));
 		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
@@ -277,7 +279,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				temporaryTimeFinder.find(param));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(pcLogOnInfoFinder.find(param));
 		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(remarkFinder.find(param));
-
+		System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
 		return (List<T>) param.entrySet().stream().map(p -> {
 			return p.getValue().stream().map(d -> {
 				return DailyRecordDto.builder().employeeId(p.getKey()).workingDate(d)

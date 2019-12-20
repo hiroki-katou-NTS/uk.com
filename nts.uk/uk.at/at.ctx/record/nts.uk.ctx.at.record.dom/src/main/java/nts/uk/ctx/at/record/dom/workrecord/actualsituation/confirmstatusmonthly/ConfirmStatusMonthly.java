@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmInfoAcqProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmInfoResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.InformationMonth;
@@ -36,9 +37,12 @@ public class ConfirmStatusMonthly {
 
 	@Inject
 	private ConfirmInfoAcqProcess confirmInfoAcqProcess;
+	
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;
 
-	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId) {
-		iFindDataDCRecord.clearAllStateless();
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId, boolean clearState) {
+		if(clearState) iFindDataDCRecord.clearAllStateless();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> identityProcessUseSet = identityProcessUseSetRepo.findByKey(companyId);
 		if (!identityProcessUseSet.isPresent())
@@ -48,10 +52,11 @@ public class ConfirmStatusMonthly {
 			return Optional.empty();
 		}
 		// ドメインモデル「承認処理の利用設定」を取得する
-		Optional<ApprovalProcessingUseSetting> optApprovalUse = iFindDataDCRecord.findApprovalByCompanyId(companyId);
+		Optional<ApprovalProcessingUseSetting> optApprovalUse = approvalProcessingUseSettingRepository.findByCompanyId(companyId);
 		// 確認情報取得処理
 		List<ConfirmInfoResult> confirmInfoResults = this.confirmInfoAcqProcess.getConfirmInfoAcp(companyId,
 				listEmployeeId, Optional.empty(), Optional.of(yearmonthInput));
+		if(clearState) iFindDataDCRecord.clearAllStateless();
 		if(confirmInfoResults.isEmpty()){
 			return Optional.empty();
 		}
@@ -62,6 +67,9 @@ public class ConfirmStatusMonthly {
 		return result;
 	}
 
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId) {
+		return getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, true);
+	}
 	/**
 	 * チェック処理（月の確認）
 	 * 

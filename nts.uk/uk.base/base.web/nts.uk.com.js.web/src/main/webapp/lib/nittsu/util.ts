@@ -743,7 +743,8 @@
             if (args == null || args.length == 0) return message;
             let paramRegex = /{([0-9])+(:\w+)?}/;
             let matches: string[];
-            let formatter = time.getFormatter();
+            let timeFormatter = time.getFormatter();
+            let numberFormatter = ntsNumber.getFormatter();
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
@@ -751,8 +752,13 @@
                 //                    text = getText(text.substring(1))
                 //                }
                 let param = matches[2];
-                if (param !== undefined && formatter !== undefined) {
-                    text = time.applyFormat(param.substring(1), text, formatter);
+                if (param !== undefined) {
+                    let format = param.substring(1);
+                    if (numberFormatter !== undefined && numberFormatter.isNumberFormat(format)) {
+                        text = ntsNumber.applyFormat(format, text, numberFormatter);
+                    } else if (timeFormatter !== undefined) {
+                        text = time.applyFormat(format, text, timeFormatter);
+                    }
                 }
                 message = message.replace(paramRegex, text);
             }
