@@ -533,28 +533,30 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	 * @return
 	 */
 	private String displayTimeNo417(TimeNo417 timeNo417, int screenAtr) {
-		if (timeNo417 == null) {
+
+		if (timeNo417 == null || timeNo417.getTime36() <= 0) {
+			// 「時間外時間の詳細」．36時間 > 0 の場合 追加
 			return "";
 		}
-		if (timeNo417.getTime36() <= 0) {// 「時間外時間の詳細」．36時間 > 0 の場合 追加
-			return "";
-		}
-		if (timeNo417.getNumOfYear36Over() == 0) {// 未超過の場合
-			return this.checkCRLF(screenAtr) + I18NText.getText("CMM045_282") + this.convertTime_Short_HM(timeNo417.getTotalOv()) + "　"
-					+ I18NText.getText("CMM045_283")
+
+		if (timeNo417.getNumOfYear36Over() == 0) {
+			// 未超過の場合
+			return this.checkCRLF(screenAtr) + I18NText.getText("CMM045_282")
+					+ this.convertTime_Short_HM(timeNo417.getTotalOv()) + "　" + I18NText.getText("CMM045_283")
 					+ I18NText.getText("CMM045_284", String.valueOf(timeNo417.getNumOfYear36Over()));
 		}
 		// 超過した場合
 		String a1 = I18NText.getText("CMM045_282") + this.convertTime_Short_HM(timeNo417.getTotalOv()) + "　"
 				+ I18NText.getText("CMM045_283")
 				+ I18NText.getText("CMM045_284", String.valueOf(timeNo417.getNumOfYear36Over()));
-		List<Integer> listMY = timeNo417.getLstOverMonth().stream().sorted().collect(Collectors.toList());
-		List<Integer> lstMonth = listMY.stream().map(c -> c % 100).collect(Collectors.toList());
+		List<Integer> lstMonth = timeNo417.getLstOverMonth().stream().sorted().map(c -> c % 100).collect(Collectors.toList());
 		String a2 = "";
+
 		for (Integer mon : lstMonth) {
 			a2 = a2 == "" ? I18NText.getText("CMM045_285", String.valueOf(mon))
 					: a2 + "、" + I18NText.getText("CMM045_285", String.valueOf(mon));
 		}
+
 		return a2 == "" ? this.checkCRLF(screenAtr) + a1 : this.checkCRLF(screenAtr) + a1 + "(" + a2 + ")";
 	}
 	

@@ -11,7 +11,7 @@ module nts.uk.at.view.ktg001.a.viewmodel {
             let self = this;
             self.text = ko.observable("");
             self.visible = ko.observable(false);
-            self.selectedSwitch = ko.observable(0);
+            self.selectedSwitch = ko.observable(1);
         }
 
         /**
@@ -24,7 +24,7 @@ module nts.uk.at.view.ktg001.a.viewmodel {
             let cacheCcg008 = windows.getShared("cache");
             let closureId = 1;
             if(!cacheCcg008 || !cacheCcg008.currentOrNextMonth){
-                self.selectedSwitch(0);
+                self.selectedSwitch(1);
             }else{
                 self.selectedSwitch(cacheCcg008.currentOrNextMonth);
                 closureId = cacheCcg008.closureId;
