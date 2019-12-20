@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -232,7 +233,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				useAbsMng,
 				interimMngAbsRec,
 				useRecMng,
-				Optional.empty());
+				Optional.empty(),
+				Optional.of(CreateAtr.RECORD),
+				Optional.of(param.getObjDate()));
 		AbsRecRemainMngOfInPeriod absRecCheck = absRecDataService.getAbsRecMngInPeriod(checkParam);
 		List<EmployeeMonthlyPerError> lstAbsRec = annualErrorsService.fromPause(param.getSid(),
 					YearMonth.of(999912),
@@ -256,7 +259,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				interimMngBreakDayOff,
 				breakMng,
 				dayOffMng,
-				Optional.empty());
+				Optional.empty(),
+				Optional.of(CreateAtr.RECORD),
+				Optional.of(param.getObjDate()));
 		BreakDayOffRemainMngOfInPeriod dataCheck = breakDayoffService.getBreakDayOffMngInPeriod(remainParam);
 		List<EmployeeMonthlyPerError> lstDayoff = annualErrorsService.fromDayOff(param.getSid(),
 					YearMonth.of(999912),

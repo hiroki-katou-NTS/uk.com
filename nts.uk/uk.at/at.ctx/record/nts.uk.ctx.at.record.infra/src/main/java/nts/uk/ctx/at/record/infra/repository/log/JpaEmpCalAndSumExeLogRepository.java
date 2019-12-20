@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +16,15 @@ import javax.ejb.TransactionAttributeType;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 //import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 //import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -99,6 +106,28 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
 		return data;
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public boolean checkStopByID(String empCalAndSumExecLogID) {
+		Optional<EmpCalAndSumExeLog> data = Optional.empty();
+		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EMP_EXECUTION_LOG"
+				+ " where EMP_EXECUTION_LOG_ID = ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, empCalAndSumExecLogID);
+			data = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+				EmpCalAndSumExeLog ent = new EmpCalAndSumExeLog(rec.getString("EMP_EXECUTION_LOG_ID"),rec.getInt("EXECUTED_STATUS"));
+				return ent;
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		if (!data.isPresent() || !data.get().getExecutionStatus().isPresent()
+				|| (data.get().getExecutionStatus().get() != ExeStateOfCalAndSum.START_INTERRUPTION)) {
+			return false;
+		}
+		return true;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

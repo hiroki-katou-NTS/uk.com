@@ -531,11 +531,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
 				datePeriod);
 
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriod(sIds, datePeriod);
+				.getBySidsAndDatePeriodNew(sIds, datePeriod);
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
 		List<WorkCondItemDto> listWorkCondItemDto = new ArrayList<>();

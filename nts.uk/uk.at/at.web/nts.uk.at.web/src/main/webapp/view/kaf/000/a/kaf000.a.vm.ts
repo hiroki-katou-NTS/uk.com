@@ -137,8 +137,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 self.messageArea(deadlineMsg.chkShow);
                 if(self.appType() == 0){
                      if(deadlineMsg.chkShow) {  
+                        $('#message_ct').removeClass();
                         $('#message_ct').addClass("message");
                     } else {
+                        $('#message_ct').removeClass();
                         $('#message_ct').addClass("message_none");
                     }
                 }

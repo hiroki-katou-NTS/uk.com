@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusInfoEmp;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmInfoResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.InformationMonth;
@@ -74,13 +75,16 @@ public class ApprovalStatusMonthly {
 
 	@Inject
 	private ApprovalStatusInfoEmp approvalStatusInfoEmp;
+	
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;
 
 	public Optional<ApprovalStatusMonth> getApprovalStatusMonthly(String companyId, String approverId,
 			Integer closureId, List<String> listEmployeeId, YearMonth yearmonthInput,
-			List<MonthlyModifyResultDto> results) {
-		iFindDataDCRecord.clearAllStateless();
+			List<MonthlyModifyResultDto> results, boolean clearState) {
+		if(clearState) iFindDataDCRecord.clearAllStateless();
 		// ドメインモデル「承認処理の利用設定」を取得する
-		Optional<ApprovalProcessingUseSetting> optApprovalUse = iFindDataDCRecord.findApprovalByCompanyId(companyId);
+		Optional<ApprovalProcessingUseSetting> optApprovalUse = approvalProcessingUseSettingRepository.findByCompanyId(companyId);
 		if (!optApprovalUse.isPresent()) {
 			return Optional.empty();
 		}
@@ -94,6 +98,7 @@ public class ApprovalStatusMonthly {
 		String employeeLogin = AppContexts.user().employeeId();
 		List<ConfirmInfoResult> listApprovalInfoResult = this.approvalInfoAcquisitionProcess(companyId, employeeLogin,
 				listEmployeeId, true, Optional.empty(), Optional.of(yearmonthInput));
+		if(clearState) iFindDataDCRecord.clearAllStateless();
 		if (listApprovalInfoResult.isEmpty()) {
 			return Optional.empty();
 		}
@@ -101,6 +106,12 @@ public class ApprovalStatusMonthly {
 		List<ApprovalStatusResult> result = this.checkProcessMonthApprove(listEmployeeId, listApprovalInfoResult,
 				identityProcessUseSet.get(), optApprovalUse.get(), closureId);
 		return Optional.of(new ApprovalStatusMonth(result));
+	}
+	
+	public Optional<ApprovalStatusMonth> getApprovalStatusMonthly(String companyId, String approverId,
+			Integer closureId, List<String> listEmployeeId, YearMonth yearmonthInput,
+			List<MonthlyModifyResultDto> results) {
+		return getApprovalStatusMonthly(companyId, approverId, closureId, listEmployeeId, yearmonthInput, results, true);
 	}
 
 	/**
