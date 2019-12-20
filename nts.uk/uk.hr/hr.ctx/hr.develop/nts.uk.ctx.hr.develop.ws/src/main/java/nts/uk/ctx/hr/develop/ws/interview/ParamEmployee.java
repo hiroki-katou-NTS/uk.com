@@ -2,22 +2,21 @@ package nts.uk.ctx.hr.develop.ws.interview;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Value;
-import nts.arc.time.GeneralDate;
+import lombok.NoArgsConstructor;
 
-@Value
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParamEmployee {
-	List<String> listEmployeeID ;
-	GeneralDate date;
-	public ParamEmployee(List<String> listEmployeeID, GeneralDate date) {
-		super();
-		this.listEmployeeID = listEmployeeID;
-		this.date = date;
-	}
 	
-	
-	
+	String companyID;
+	int interviewCate;
+	List<String> listEmployeeID;
+	boolean getSubInterview; 
+	boolean getDepartment; 
+	boolean getPosition; 
+	boolean getEmployment;
 	
 }

@@ -28,11 +28,11 @@ public class InterviewRecordContent extends DomainObject{
 	private long analysisCategoryId;
 	/** 分析区分カテゴリ名 **/
 	private Optional<String> analysisCategoryName;
-	
 	/**分析区分項目 **/ 
 	private List<AnalysisItem> listAnalysisItemId;
 	/** 確認結果 **/
 	private Optional<String> recordContent;
+	
 	public InterviewRecordContent(long interviewItemId, int displayNumber, String interviewItemCd,
 			String interviewItemName,String analysisCategoryCd, long analysisCategoryId,
 			String analysisCategoryName, List<AnalysisItem> listAnalysisItemId,
