@@ -177,7 +177,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.kaf000_a.start(self.employeeID(), 1, 0, self.targetDate, self.overtimeAtr()).done(function() {
                     self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
                     for(let i = self.overtimeHours().length - 1; i > 0; i--){
-                        self.tmpOverTime.children('tbody').children('tr')[i].remove();
+                        self.tmpOverTime.children('tbody').children('tr').eq(i).remove();
                     }
                     $("#fixed-overtime-hour-table").remove();
                     self.timeTableEdit(self.prePostSelected());
@@ -301,7 +301,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     $('#kaf005-pre-post-select').ntsError('clear');
                     self.clearErrorA6_8();
                     
-                    $("#fixed-overtime-hour-table").parents('div')[2].remove();
+                    $("#fixed-overtime-hour-table").parents('div').eq(2).remove();
                     self.timeTableEdit(value);
                     ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
                     ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
@@ -359,7 +359,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                         self.preAppPanelFlg(data.preAppPanelFlg);
                         self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-                        $("#fixed-overtime-hour-table").parents('div')[2].remove();
+                        $("#fixed-overtime-hour-table").parents('div').eq(2).remove();
                         self.timeTableEdit(value);
                         ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
                         ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
@@ -392,12 +392,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         timeTableEdit(value) {
             var self = this;
             if (value == 1) {
-                self.tmpOverTime.children('colgroup').children()[2].width = '110px';
-                self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+                self.tmpOverTime.children('colgroup').children().eq(2).attr('width',110);
+                self.tmpOverTime.children('colgroup').children().eq(3).attr('width',110);
                 
             } else if (value == 0) {
-                self.tmpOverTime.children('colgroup').children()[2].width = '0px';
-                self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                self.tmpOverTime.children('colgroup').children().eq(2).attr('width',0);
+                self.tmpOverTime.children('colgroup').children().eq(3).attr('width',0);
             }
             $("#overtime-container").append(self.tmpOverTime.clone(true));
         }
@@ -959,8 +959,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 });          
                 if(!nts.uk.util.isNullOrUndefined(calcOT)){
                     overtimeHour.applicationTime(calcOT.appTime);
-                    overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
-                    overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
+                    overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.preAppTime));
+                    overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.actualTime));
                     if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                         if(self.editable()&& self.enableOvertimeInput()){
                             $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');

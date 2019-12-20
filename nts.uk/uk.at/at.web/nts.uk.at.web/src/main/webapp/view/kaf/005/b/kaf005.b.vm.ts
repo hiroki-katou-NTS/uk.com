@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf005.b {
                         if (rebind == true) {
                             self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
                             for(let i = self.overtimeHours().length - 1; i > 0; i--){
-                                self.tmpOverTime.children('tbody').children('tr')[i].remove();
+                                self.tmpOverTime.children('tbody').children('tr').eq(i).remove();
                             }
                             $("#fixed-overtime-hour-table").remove();
                             self.timeTableEdit(self.prePostSelected());
@@ -162,12 +162,12 @@ module nts.uk.at.view.kaf005.b {
             timeTableEdit(value) {
                 var self = this;
                 if (value == 1) {
-                    self.tmpOverTime.children('colgroup').children()[2].width = '110px';
-                    self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+                    self.tmpOverTime.children('colgroup').children().eq(2).attr('width',110);
+                    self.tmpOverTime.children('colgroup').children().eq(3).attr('width',110);
 
                 } else if (value == 0) {
-                    self.tmpOverTime.children('colgroup').children()[2].width = '0px';
-                    self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                    self.tmpOverTime.children('colgroup').children().eq(2).attr('width',0);
+                    self.tmpOverTime.children('colgroup').children().eq(3).attr('width',0);
                 }
                 $("#overtime-container").append(self.tmpOverTime.clone(true));
             }
