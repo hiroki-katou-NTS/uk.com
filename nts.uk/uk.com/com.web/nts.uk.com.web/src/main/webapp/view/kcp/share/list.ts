@@ -934,7 +934,7 @@ module kcp.share.list {
                 var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
                 optionalColumnSize = data.maxWidth ? '20%' : 150;
             } else {
-                codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
+                codeColumnSize = data.maxWidth ? '30%' : codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '30%' : 150;
                 var alreadySetColumnSize = data.maxWidth ? '15%' : 40;

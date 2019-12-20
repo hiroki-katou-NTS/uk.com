@@ -92,11 +92,21 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
-		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours(),param.getWorkTypeCode(),
+		return this.checkConvertPrePost.convertPrePost(
+				param.getPrePostAtr(),
+				param.getAppDate(),
+				param.getSiftCD(),
+				param.getOvertimeHours(),
+				param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
 				param.getStartTimeRests(),
-				param.getEndTimeRests());
+				param.getEndTimeRests(),
+				param.getOvertimeSettingDataDto(),
+				param.getOpAppBefore(), 
+				param.isBeforeAppStatus(), 
+				param.getActualStatus(), 
+				param.getActualLst());
 	}
 	
 	@POST
@@ -132,19 +142,29 @@ public class OvertimeWebService extends WebService{
 				param.startTime, 
 				param.endTime, 
 				param.getStartTimeRests(), 
-				param.getEndTimeRests());
+				param.getEndTimeRests(),
+				param.opAppBefore,
+				param.beforeAppStatus,
+				param.actualStatus,
+				param.actualLst,
+				param.overtimeSettingDataDto);
 	}
 	
 	@POST
 	@Path("getCalculationResultMob")
-	public OverTimeDto getCalculationResultMob(ParamCaculationOvertime param){
+	public PreActualColorResult getCalculationResultMob(ParamCaculationOvertime param){
 		return this.overtimeFinder.getCalculationResultMob(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD(),param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
 				param.isDisplayCaculationTime(),
-				param.isFromStepOne());
+				param.isFromStepOne(),
+				param.opAppBefore,
+				param.beforeAppStatus,
+				param.actualStatus,
+				param.actualLst,
+				param.overtimeSettingDataDto);
 	}
 	
 	@POST
@@ -189,7 +209,8 @@ public class OvertimeWebService extends WebService{
 		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours(),param.getWorkTypeCode(),
 				param.getStartTimeRests(),
 				param.getEndTimeRests(),
-				param.isRestTimeDisFlg());
+				param.isRestTimeDisFlg(),
+				param.getOvertimeSettingDataDto());
 	}
 	
 	@POST

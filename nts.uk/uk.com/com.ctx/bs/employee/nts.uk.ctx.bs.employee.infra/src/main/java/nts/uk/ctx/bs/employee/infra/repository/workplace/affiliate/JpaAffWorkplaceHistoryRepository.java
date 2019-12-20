@@ -232,10 +232,39 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		
 		List<BsymtAffiWorkplaceHist> workPlaceEntities = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
-			List<BsymtAffiWorkplaceHist> subEntities = this.queryProxy()
-					.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", subIds)
-					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
-			workPlaceEntities.addAll(subEntities);
+			String sql = "select * from BSYMT_AFF_WORKPLACE_HIST h"
+					+ " where h.SID in (" + NtsStatement.In.createParamsString(subIds) + ")"
+					+ " and h.START_DATE <= ?"
+					+ " and h.END_DATE >= ?";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				
+				int i = 0;
+				for (; i < subIds.size(); i++) {
+					stmt.setString(1 + i, subIds.get(i));
+				}
+
+				stmt.setDate(1 + i, Date.valueOf(period.end().localDate()));
+				stmt.setDate(2 + i, Date.valueOf(period.start().localDate()));
+				
+				List<BsymtAffiWorkplaceHist> ents = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffiWorkplaceHist ent = new BsymtAffiWorkplaceHist();
+					ent.setHisId(rec.getString("HIST_ID"));
+					ent.setCid(rec.getString("CID"));
+					ent.setSid(rec.getString("SID"));
+					ent.setStrDate(rec.getGeneralDate("START_DATE"));
+					ent.setEndDate(rec.getGeneralDate("END_DATE"));
+					return ent;
+				});
+				workPlaceEntities.addAll(ents);
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+//			List<BsymtAffiWorkplaceHist> subEntities = this.queryProxy()
+//					.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", subIds)
+//					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+//			workPlaceEntities2.addAll(subEntities);
 		});
 		
 		
@@ -501,9 +530,9 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<AffWorkplaceHistory> result = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 
-			String sql = "SELECT * FROM  BSYMT_AFF_WORKPLACE_HIST h" + " WHERE h.START_DATE > ? AND SID IN (" +  NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM  BSYMT_AFF_WORKPLACE_HIST h" + " WHERE h.START_DATE >= ? AND SID IN (" +  NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				stmt.setDate(1, Date.valueOf(baseDate.addDays(1).toLocalDate()));
+				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}

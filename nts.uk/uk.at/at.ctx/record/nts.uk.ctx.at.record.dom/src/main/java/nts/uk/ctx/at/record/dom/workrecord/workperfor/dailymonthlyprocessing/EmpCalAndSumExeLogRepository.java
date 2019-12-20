@@ -35,6 +35,15 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @return
 	 */
 	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
+	
+	boolean checkStopByID (String empCalAndSumExecLogID);
+	
+	/**
+	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * @param empCalAndSumExecLogID
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogIDByJDBC (String empCalAndSumExecLogID);
 
 	/**
 	 * KIF 001 3 日別実績の作成処理

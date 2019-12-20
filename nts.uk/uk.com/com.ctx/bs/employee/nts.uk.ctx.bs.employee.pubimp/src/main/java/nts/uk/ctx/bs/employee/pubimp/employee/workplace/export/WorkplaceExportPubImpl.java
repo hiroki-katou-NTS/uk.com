@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.export.WorkplaceExport;
+import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WkpExport;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPub;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPubDto;
 
@@ -35,5 +36,10 @@ public class WorkplaceExportPubImpl implements WorkplaceExportPub {
 				.map(x -> new WorkplaceExportPubDto(x.getWorkplaceId(), x.getHierarchyCd()))
 				.collect(Collectors.toList());
 	}
-
+	@Override
+	public List<WkpExport> getWkpConfigRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate) {
+		return this.workplaceExport.getWkpConfigRQ560(companyId, listWkpId, baseDate).stream()
+				.map(x -> new WkpExport(x.getWorkplaceId(), x.getWorkplaceName()))
+				.collect(Collectors.toList());
+	}
 }

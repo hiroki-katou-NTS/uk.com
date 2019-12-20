@@ -288,10 +288,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public boolean displayDivergenceReasonInput(PrePostAtr prePostAtr, UseAtr divergenceReasonInputAtr) {
-		// 事前事後区分チェック
-		if (prePostAtr == PrePostAtr.PREDICT) {
-			return false;
-		}
 		// Input．乖離理由入力区分チェック
 		if (divergenceReasonInputAtr == UseAtr.USE) {
 			return true;

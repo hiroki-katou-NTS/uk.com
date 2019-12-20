@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -253,7 +254,16 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		ScheduleExecutionLog scheduleExecutionLogAuto = ScheduleExecutionLog.creator(companyId,
 				command.getScheduleExecutionLog().getExecutionId(), loginUserContext.employeeId(),
 				command.getScheduleExecutionLog().getPeriod(), command.getScheduleExecutionLog().getExeAtr());
+		try {
 		this.registerPersonalSchedule(command, scheduleExecutionLogAuto, context, companyId);
+		} catch(Exception ex) {
+			command.setIsExForKBT(true);
+			if(command.getCountDownLatch() != null)
+				command.getCountDownLatch().countDown();
+			throw ex;
+		}
+		if(command.getCountDownLatch() != null)
+			command.getCountDownLatch().countDown();
 	}
 
 	@Inject
@@ -294,15 +304,21 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
-		
+		AtomicBoolean checkStop = new AtomicBoolean(false);
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
 				scheduleCreator -> {
-			
+				if(scheduleCreator ==null) 
+					return;
 			if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+				if(checkStop.get()) {
+					return;
+				}
 				Optional<ExeStateOfCalAndSumImportSch> exeStateOfCalAndSumImportSch = dailyMonthlyprocessAdapterSch.executionStatus(exeId);
 				if(exeStateOfCalAndSumImportSch.isPresent())
 					if(exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
+						checkStop.set(true);
+						this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
 						return;
 					}
 			}else {
@@ -361,21 +377,26 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				if(exeStateOfCalAndSumImportSch.get() == ExeStateOfCalAndSumImportSch.START_INTERRUPTION) {
 					return;
 				}
+			// EA修正履歴　No2378
+			// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
+			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
+					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+			if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+			}
 		}else {
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 			}
+			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
+					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+			if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+				System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="
+						+ scheduleExecutionLog.getExecutionId());
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+			}
 		}
 		
-		// EA修正履歴　No2378
-		// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
-		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-				.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-		if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-			System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="
-					+ scheduleExecutionLog.getExecutionId());
-			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-		}
 	}
 	
 	/**
@@ -510,11 +531,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
 				datePeriod);
 
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriod(sIds, datePeriod);
+				.getBySidsAndDatePeriodNew(sIds, datePeriod);
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
 		List<WorkCondItemDto> listWorkCondItemDto = new ArrayList<>();

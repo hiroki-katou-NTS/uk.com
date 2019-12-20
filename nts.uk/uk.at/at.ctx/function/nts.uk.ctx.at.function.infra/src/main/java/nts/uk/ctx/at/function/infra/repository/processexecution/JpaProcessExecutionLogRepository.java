@@ -132,13 +132,21 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : updateData.taskLogList) {
 				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
 						+ " STATUS = ?"
+						+ " ,LAST_EXEC_DATETIME = ?"
+						+ " ,LAST_END_EXEC_DATETIME = ?"
+						+ " ,ERROR_SYSTEM = ?"
+						+ " ,ERROR_BUSINESS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(3, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(4, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(2, kfnmtExecutionTaskLog.lastExecDateTime ==null?null:kfnmtExecutionTaskLog.lastExecDateTime.toString());
+					ps.setString(3, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
+					ps.setString(4, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
+					ps.setString(5, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(9, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}
@@ -184,6 +192,10 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 						KfnmtExecutionTaskLog entity = new KfnmtExecutionTaskLog();
 						entity.setKfnmtExecTaskLogPK(pk);
 						entity.setStatus(rec.getInt("STATUS"));
+						entity.setLastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"));
+						entity.setLastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"));
+						entity.setErrorBusiness(rec.getInt("ERROR_BUSINESS"));
+						entity.setErrorSystem(rec.getInt("ERROR_SYSTEM"));
 						entity.setUpdDate(rec.getGeneralDateTime("UPD_DATE"));
 						return entity;
 					}));

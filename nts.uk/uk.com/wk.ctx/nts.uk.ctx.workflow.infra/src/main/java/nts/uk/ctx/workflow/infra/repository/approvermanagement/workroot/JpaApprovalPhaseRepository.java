@@ -101,8 +101,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 						"ON phase.CID = approver.CID " +
 						"AND phase.BRANCH_ID = approver.BRANCH_ID " +
 						"AND phase.APPROVAL_PHASE_ID = approver.APPROVAL_PHASE_ID " +
-						"WHERE phase.CID = 'companyID' " +
-						"AND phase.BRANCH_ID = 'branchID' ";
+						"WHERE phase.BRANCH_ID = 'branchID' "+
+						"AND phase.CID = 'companyID' " ;
 		query = query.replaceAll("companyID", companyId);
 		query = query.replaceAll("branchID", branchId);
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {

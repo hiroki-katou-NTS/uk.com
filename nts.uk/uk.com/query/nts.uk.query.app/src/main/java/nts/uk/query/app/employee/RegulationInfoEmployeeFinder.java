@@ -4,7 +4,11 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,8 +34,8 @@ import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
-import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
 import nts.uk.query.model.operationrule.OperationRuleImport;
+import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
 import nts.uk.query.model.person.QueryPersonAdapter;
 import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
@@ -426,9 +430,12 @@ public class RegulationInfoEmployeeFinder {
 				.employeeCode(model.getEmployeeCode())
 				.employeeId(model.getEmployeeID())
 				.employeeName(model.getName().orElse(""))
-				.affiliationId(model.getWorkplaceId().orElse(""))
-				.affiliationCode(model.getWorkplaceCode().orElse(""))
-				.affiliationName(model.getWorkplaceName().orElse(""))
+				.workplaceId(model.getWorkplaceId().orElse(""))
+				.workplaceCode(model.getWorkplaceCode().orElse(""))
+				.workplaceName(model.getWorkplaceName().orElse(""))
+//				.affiliationId(model.getWorkplaceId().orElse(""))
+//				.affiliationCode(model.getWorkplaceCode().orElse(""))
+//				.affiliationName(model.getWorkplaceName().orElse(""))
 				.build();
 	}
 
@@ -452,22 +459,28 @@ public class RegulationInfoEmployeeFinder {
 						.employeeCode(loginEmployee.getEmployeeCode())
 						.employeeId(loginEmployee.getEmployeeID())
 						.employeeName(loginEmployee.getName().orElse(""))
-						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
-						.affiliationCode(loginEmployee.getDepartmentCode().orElse(""))
-						.affiliationName(departmentInfoImports.get(0).getDepartmentName())
+						.workplaceId(loginEmployee.getDepartmentId().orElse(""))
+						.workplaceCode(loginEmployee.getDepartmentCode().orElse(""))
+						.workplaceName(departmentInfoImports.get(0).getDepartmentName())
+//						.affiliationId(loginEmployee.getDepartmentId().orElse(""))
+//						.affiliationCode(loginEmployee.getDepartmentCode().orElse(""))
+//						.affiliationName(departmentInfoImports.get(0).getDepartmentName())
 						.build();
 			default:
 				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
+				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWkpInfoByWkpIds_OLD(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
 					.employeeId(loginEmployee.getEmployeeID())
 					.employeeName(loginEmployee.getName().orElse(""))
-					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
-					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
-					.affiliationName(workplaceInfoImports.get(0).getWorkplaceName())
+					.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
+					.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
+					.workplaceName(workplaceInfoImports.get(0).getWorkplaceName())
+//					.affiliationId(loginEmployee.getWorkplaceId().orElse(""))
+//					.affiliationCode(loginEmployee.getWorkplaceCode().orElse(""))
+//					.affiliationName(workplaceInfoImports.get(0).getWorkplaceName())
 					.build();
 		}
 	}
@@ -512,9 +525,12 @@ public class RegulationInfoEmployeeFinder {
                                 .employeeCode(e.getEmployeeCode())
                                 .employeeId(e.getEmployeeID())
                                 .employeeName(e.getName().orElse(""))
-                                .affiliationId(e.getDepartmentId().orElse(""))
-                                .affiliationCode(e.getDepartmentCode().orElse(""))
-                                .affiliationName(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : e.getDepartmentName().get())
+                                .workplaceId(e.getDepartmentId().orElse(""))
+                                .workplaceCode(e.getDepartmentCode().orElse(""))
+                                .workplaceName(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : e.getDepartmentName().get())
+//                                .affiliationId(e.getDepartmentId().orElse(""))
+//                                .affiliationCode(e.getDepartmentCode().orElse(""))
+//                                .affiliationName(depInfoImports.containsKey(e.getDepartmentId().get()) ? depInfoImports.get(e.getDepartmentId().get()).getDepartmentName() : e.getDepartmentName().get())
                                 .build())
 						.collect(Collectors.toList());
 		} else {
@@ -530,7 +546,7 @@ public class RegulationInfoEmployeeFinder {
 					.distinct()
 					.collect(Collectors.toList());
             // Request list 560
-			Map<String, WorkplaceInfoImport> wkpInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, noDataWkpIds, baseDate)
+			Map<String, WorkplaceInfoImport> wkpInfoImports = queryWorkplaceAdapter.getWkpInfoByWkpIds_OLD(companyId, noDataWkpIds, baseDate)
 					.stream().collect(Collectors.toMap(WorkplaceInfoImport::getWorkplaceId, Function.identity()));
 
 			// Set return data
@@ -540,9 +556,12 @@ public class RegulationInfoEmployeeFinder {
 							.employeeCode(e.getEmployeeCode())
 							.employeeId(e.getEmployeeID())
 							.employeeName(e.getName().orElse(""))
-							.affiliationId(e.getWorkplaceId().orElse(""))
-							.affiliationCode(e.getWorkplaceCode().orElse(""))
-							.affiliationName(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : e.getWorkplaceName().get())
+							.workplaceId(e.getWorkplaceId().orElse(""))
+							.workplaceCode(e.getWorkplaceCode().orElse(""))
+							.workplaceName(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : e.getWorkplaceName().get())
+//							.affiliationId(e.getWorkplaceId().orElse(""))
+//							.affiliationCode(e.getWorkplaceCode().orElse(""))
+//							.affiliationName(wkpInfoImports.containsKey(e.getWorkplaceId().get()) ? wkpInfoImports.get(e.getWorkplaceId().get()).getWorkplaceName() : e.getWorkplaceName().get())
 							.build())
 					.collect(Collectors.toList());
 		}

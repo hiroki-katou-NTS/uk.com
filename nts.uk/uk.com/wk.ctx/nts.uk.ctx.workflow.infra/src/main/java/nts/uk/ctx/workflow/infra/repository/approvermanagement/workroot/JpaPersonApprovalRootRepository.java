@@ -1,5 +1,8 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +10,12 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -440,12 +447,50 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID,
 			ConfirmationRootType confirmType, GeneralDate date) {
-		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtPsApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("employeeId", employeeID)
-				.setParameter("baseDate", date)
-				.setParameter("confirmationRootType", confirmType.value)
-				.getList(c->toDomainPsApR(c));
+		
+//		List<PersonApprovalRoot> data =  this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtPsApprovalRoot.class)
+//				.setParameter("companyId", companyID)
+//				.setParameter("employeeId", employeeID)
+//				.setParameter("baseDate", date)
+//				.setParameter("confirmationRootType", confirmType.value)
+//				.getList(c->toDomainPsApR(c));
+		
+		List<PersonApprovalRoot> data = new ArrayList<>();
+		String sql = "select * from WWFMT_PS_APPROVAL_ROOT "
+				+ " where SID = ? "
+				+ " and START_DATE <= ?"
+				+ " and END_DATE >= ?"
+				+ " and CONFIRMATION_ROOT_TYPE = ?"
+				+ " and EMPLOYMENT_ROOT_ATR = 2"
+				+ " and CID = ? ";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+						
+			stmt.setString(1 , employeeID);
+
+			stmt.setDate(2, Date.valueOf(date.localDate()));
+			stmt.setDate(3, Date.valueOf(date.localDate()));
+			stmt.setInt(4, confirmType.value);
+			stmt.setString(5, companyID);
+			data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				PersonApprovalRoot ent = PersonApprovalRoot.createSimpleFromJavaType(
+						rec.getString("CID"), 
+						rec.getString("APPROVAL_ID"), 
+						rec.getString("SID"), 
+						rec.getString("HIST_ID"), 
+						rec.getInt("APP_TYPE"), 
+						rec.getGeneralDate("START_DATE").toString().replace('/', '-'), 
+						rec.getGeneralDate("END_DATE").toString().replace('/', '-'), 
+						rec.getString("BRANCH_ID"), 
+						rec.getString("ANYITEM_APP_ID"), 
+						rec.getInt("CONFIRMATION_ROOT_TYPE"), 
+						rec.getInt("EMPLOYMENT_ROOT_ATR"));
+				return ent;
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return data;
 	}
 	@Override
 	public Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId) {

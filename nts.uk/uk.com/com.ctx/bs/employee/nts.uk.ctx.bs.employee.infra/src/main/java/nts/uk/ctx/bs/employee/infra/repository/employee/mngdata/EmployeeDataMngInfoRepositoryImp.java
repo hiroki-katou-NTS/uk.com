@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -698,8 +700,34 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	 */
 	@Override
 	public List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId) {
-		return this.queryProxy().query(SELECT_EMPL_NOT_DELETE_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", companyId)
-				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
+//		List<EmployeeDataMngInfo> data =  this.queryProxy().query(SELECT_EMPL_NOT_DELETE_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", companyId)
+//				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
+		List<EmployeeDataMngInfo> data = new ArrayList<>();
+			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO "
+					  + " WHERE CID = ?";
+					  
+				try(PreparedStatement statement = this.connection().prepareStatement(sql)){
+					statement.setString(1, companyId);
+					data = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						EmployeeDataMngInfo e = EmployeeDataMngInfo.createFromJavaType(
+								rec.getString("CID"), 
+								rec.getString("PID"), 
+								rec.getString("SID"),
+								rec.getString("SCD"), 
+								rec.getInt("DEL_STATUS_ATR"),
+								rec.getGeneralDateTime("DEL_DATE"), 
+								rec.getString("REMV_REASON"), 
+								rec.getString("EXT_CD"))
+								;
+						return e;
+					});
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				};
+		
+		
+		return data;
 	}
 	// laitv code end
 	

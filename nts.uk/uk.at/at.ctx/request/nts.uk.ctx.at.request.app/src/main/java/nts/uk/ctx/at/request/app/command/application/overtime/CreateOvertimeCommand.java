@@ -4,6 +4,9 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 
 @Getter
 public class CreateOvertimeCommand {
@@ -69,19 +72,6 @@ public class CreateOvertimeCommand {
 	 * 残業申請.勤務終了時刻1
 	 */
 	private Integer workClockTo1;
-	/**
-	 * 残業申請.勤務開始時刻2
-	 */
-	private Integer workClockFrom2;
-	/**
-	 * 残業申請.勤務終了時刻2
-	 */
-	private Integer workClockTo2;
-	/**
-	 * 休出時間
-	 * ATTENDANCE_ID = 2
-	 */
-	private List<OvertimeInputCommand> breakTimes;
 	
 	/**
 	 *  残業時間
@@ -93,11 +83,6 @@ public class CreateOvertimeCommand {
 	 * ATTENDANCE_ID = 0
 	 */
 	private List<OvertimeInputCommand> restTime;
-	/**
-	 * 加給時間
-	 * ATTENDANCE_ID = 3
-	 */
-	private List<OvertimeInputCommand> bonusTimes;
 	/**
 	 * 残業申請.残業区分
 	 */
@@ -137,4 +122,29 @@ public class CreateOvertimeCommand {
 	private boolean checkOver1Year;
 	
 	private boolean checkAppDate;
+	
+	/**
+	 * 事前申請
+	 */
+	private ApplicationDto_New opAppBefore;
+	
+	/**
+	 * 事前申請状態
+	 */
+	private boolean beforeAppStatus;
+	
+	/**
+	 * 実績状態
+	 */
+	private int actualStatus;
+	
+	/**
+	 * 実績
+	 */
+	private List<OvertimeColorCheck> actualLst;
+	
+	/**
+	 * 申請共通設定
+	 */
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 }
