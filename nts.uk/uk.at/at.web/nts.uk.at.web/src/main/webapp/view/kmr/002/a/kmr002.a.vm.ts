@@ -54,25 +54,41 @@ module nts.uk.at.view.kmr002.a.model {
         }
 
         public startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            self.date.subscribe(() => {
-                if (self.date().isValid()) {
-                    self.enableButton(true);
-                    service.startScreen({
-                        date: moment(self.date()).format("YYYY/MM/DD"),
-                        closingTimeFrame: self.mealSelected()
-                    }).done((data) => {
-                        self.clearData();
-                        self.initData(data);
-                    }).fail(() => {
-                        error({ messageId: "Msg_1589" }).then(() => {
-                            uk.request.jumpToTopPage();
-                        });
-                    });
-                } else {
-                    self.enableButton(false);
+            let self = this,
+                dfd = $.Deferred<any>();
+            
+            self.date.subscribe((value) => {
+                
+                let momentDate = moment(value);
+                
+                if (momentDate instanceof moment && !momentDate.isValid()){
+                    
+                    self.enableButton(false); return;
+                    
                 }
+                
+                self.enableButton(true);
+                
+                service.startScreen({
+                    
+                    date: moment(self.date()).format("YYYY/MM/DD"),
+                    
+                    closingTimeFrame: self.mealSelected()
+                    
+                }).done((data) => {
+                    
+                    self.clearData();
+                    
+                    self.initData(data);
+                    
+                }).fail(() => {
+                    
+                    error({ messageId: "Msg_1589" }).then(() => {
+                        
+                        uk.request.jumpToTopPage();
+                         
+                    });
+                });
             });
             dfd.resolve();
             return dfd.promise();
