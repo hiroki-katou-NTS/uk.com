@@ -47,7 +47,8 @@ module nts.uk.at.view.kmr002.a.model {
         isVisibleDinner: KnockoutObservable<boolean> = ko.observable(false);
         isVisibleLunch: KnockoutObservable<boolean> = ko.observable(false);
         textError: KnockoutObservable<string> = ko.observable(getText('KMR002_6'));
-
+        enableButton: KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor() {
             let self = this;
         }
@@ -56,7 +57,8 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this;
             let dfd = $.Deferred<any>();
             self.date.subscribe(() => {
-                if (self.date()) {
+                if (self.date().isValid()) {
+                    self.enableButton(true);
                     service.startScreen({
                         date: moment(self.date()).format("YYYY/MM/DD"),
                         closingTimeFrame: self.mealSelected()
@@ -68,6 +70,8 @@ module nts.uk.at.view.kmr002.a.model {
                             uk.request.jumpToTopPage();
                         });
                     });
+                } else {
+                    self.enableButton(false);
                 }
             });
             dfd.resolve();
@@ -94,8 +98,13 @@ module nts.uk.at.view.kmr002.a.model {
 
         public initData(data: any): void {
             let self = this;
-            self.start(data.bentoMenuByClosingTimeDto.closingTime1.start);
-            self.end(data.bentoMenuByClosingTimeDto.closingTime1.finish);
+            if (self.mealSelected == 1) {
+                self.start(data.bentoMenuByClosingTimeDto.closingTime1.start);
+                self.end(data.bentoMenuByClosingTimeDto.closingTime1.finish);
+            } else {
+                self.start(data.bentoMenuByClosingTimeDto.closingTime2.start);
+                self.end(data.bentoMenuByClosingTimeDto.closingTime2.finish);
+            }
             self.lunchText(data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName);
             self.dinnerText(data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName);
             self.optionMenu.push({ code: 1, name: self.lunchText() });
@@ -455,12 +464,15 @@ module nts.uk.at.view.kmr002.a.model {
 
         public outputData(): void {
             let self = this;
-
+            service.print().done(() => {
+            }).fail((res: any) => {
+                error({ messageId : res.messageId }).then(() => {
+                    nts.uk.ui.block.clear();
+                });   
+            });
         }
-
     }
-
-
+    
     export interface IBentoOrder {
         bentoCount: number;
         frameNo: number;

@@ -19,7 +19,7 @@ public class ReservationExportService extends WebService {
 	@POST
 	@Path("startup")
 	public JavaTypeResult<String> startup() {
-		return reservationExportQuery.startup();
+		return new JavaTypeResult<String>(reservationExportQuery.startup().toString());
 	} 
 	
 }
