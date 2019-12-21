@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
@@ -53,23 +54,26 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
 		
-		AtomTask persist1 = BentoReserveModifyService.reserve(
-				require, 
-				reservationRegisterInfo, 
-				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
-				datetime,
-				command.getFrame1Bentos());
-		
-		AtomTask persist2 = BentoReserveModifyService.reserve(
-				require, 
-				reservationRegisterInfo, 
-				new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2),
-				datetime,
-				command.getFrame2Bentos());
-		
 		transaction.execute(() -> {
-			persist1.run();
-			persist2.run();
+			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values())) {
+				AtomTask persist1 = BentoReserveModifyService.reserve(
+						require, 
+						reservationRegisterInfo, 
+						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
+						datetime,
+						command.getFrame1Bentos());
+				persist1.run();
+			}
+			
+			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values())) {
+				AtomTask persist2 = BentoReserveModifyService.reserve(
+						require, 
+						reservationRegisterInfo, 
+						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
+						datetime,
+						command.getFrame2Bentos());
+				persist2.run();
+			}
 		});
 		
 	}

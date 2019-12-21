@@ -19,6 +19,6 @@ module nts.uk.at.view.kmr002.a.service {
     }
     
     export function print(): JQueryPromise<void> {
-       return nts.uk.request.ajax("at", paths.printdata);
+       return nts.uk.request.exportFile("at", paths.printdata);
     }
 }

@@ -114,7 +114,7 @@ module nts.uk.at.view.kmr002.a.model {
 
         public initData(data: any): void {
             let self = this;
-            if (self.mealSelected == 1) {
+            if (self.mealSelected() == 1) {
                 self.start(data.bentoMenuByClosingTimeDto.closingTime1.start);
                 self.end(data.bentoMenuByClosingTimeDto.closingTime1.finish);
             } else {
@@ -320,8 +320,10 @@ module nts.uk.at.view.kmr002.a.model {
                 }
                 if (timeSt <= timeNow && timeNow <= self.end()) {
                     self.isVisible(false);
+                    self.setDisPlay(true);
                 } else {
                     self.isVisible(true);
+                    self.setDisPlay(true);
                 }
             } else {
                 self.isVisible(false);
@@ -480,7 +482,8 @@ module nts.uk.at.view.kmr002.a.model {
 
         public outputData(): void {
             let self = this;
-            service.print().done(() => {
+            service.print().done((data) => {
+                console.log(data);
             }).fail((res: any) => {
                 error({ messageId : res.messageId }).then(() => {
                     nts.uk.ui.block.clear();

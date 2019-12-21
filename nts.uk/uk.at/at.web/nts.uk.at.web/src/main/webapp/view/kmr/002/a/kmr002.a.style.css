@@ -60,5 +60,5 @@ button.nts-switch-button {
    background-color: #A4EEB0;
 }
 .fixed-flex-layout-left {
-	min-width:1500px;
+    width: calc(100vw - 150px);
 }
