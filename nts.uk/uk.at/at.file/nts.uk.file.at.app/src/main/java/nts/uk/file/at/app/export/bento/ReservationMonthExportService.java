@@ -180,7 +180,11 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 				totalBentoAmount2 += bentoAmountTotal.getTotalAmount2();
 				for(BentoReservationDetail z : y.getBentoReservationDetails()) {
 					totalBentoQuantity += z.getBentoCount().v();
-					dateFrameQuantityMap.put(Pair.of(x.getKey(), z.getFrameNo()), z.getBentoCount().v());
+					int currentQuantity = 0;
+					if(dateFrameQuantityMap.containsKey(Pair.of(x.getKey(), z.getFrameNo()))) {
+						currentQuantity = dateFrameQuantityMap.get(Pair.of(x.getKey(), z.getFrameNo()));
+					} 
+					dateFrameQuantityMap.put(Pair.of(x.getKey(), z.getFrameNo()), currentQuantity + z.getBentoCount().v());
 					frameMap.put(z.getFrameNo(), bentoMenu.getMenu().stream().filter(t -> t.getFrameNo()==z.getFrameNo()).findAny().get().getName().toString());
 				}
 				
