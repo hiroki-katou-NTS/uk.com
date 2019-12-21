@@ -875,8 +875,8 @@ module nts.uk.at.view.kaf005.b {
                     });          
                     if(!nts.uk.util.isNullOrUndefined(calcOT)){
                         overtimeHour.applicationTime(calcOT.appTime);
-                        overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
-                        overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
+                        overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.preAppTime));
+                        overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.actualTime));
                         if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                             if(self.editable()&& self.enableOvertimeInput()){
                                 $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
@@ -977,17 +977,10 @@ module nts.uk.at.view.kaf005.b {
             }
             
             convertIntToTime(data : number) : string{
-                let hourMinute : string = "";
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return null;
-                }else if (data == 0) {
-                    hourMinute = "0:00";
-                }else if(data != null){
-                    let hour = Math.floor(Math.abs(data)/60);
-                    let minutes = Math.floor(Math.abs(data)%60);
-                    hourMinute =  hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                if(nts.uk.util.isNullOrEmpty(data)) {
+                    return null;    
                 }
-                return hourMinute;
+                return nts.uk.time.format.byId("Time_Short_HM", data);
             }
             
             getErrorCode(calcError, preAppError, actualError){
