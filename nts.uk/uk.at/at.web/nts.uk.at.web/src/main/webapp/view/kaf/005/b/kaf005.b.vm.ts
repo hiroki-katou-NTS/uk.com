@@ -150,9 +150,11 @@ module nts.uk.at.view.kaf005.b {
                             self.timeTableEdit(self.prePostSelected());
                             ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
                             ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
+                            /*
                             $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
                             $("#fixed-table-indicate").ntsFixedTable({ height: 96 });
                             $("#fixed-table").ntsFixedTable({ height: 96 });
+                            */
                             $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');  
                         }    
                     }
