@@ -10,7 +10,7 @@ public interface ApproverRepository {
 	 * @param approvalPhaseId
 	 * @return
 	 */
-	List<Approver> getAllApproverByCode(String companyId, String approvalPhaseId);
+	List<Approver> getAllApproverByCode(String companyId, String approvalId, int phaseOrder);
 	/**
 	 * add All Approver
 	 * @param lstApprover
@@ -21,7 +21,7 @@ public interface ApproverRepository {
 	 * @param companyId
 	 * @param approvalPhaseId
 	 */
-	void deleteAllApproverByAppPhId(String companyId, String approvalPhaseId);
+	void deleteAllApproverByAppPhId(String companyId, String approvalId, int phaseOrder);
 	/**
 	 * updateEmployeeIdApprover
 	 * @param updateApprover

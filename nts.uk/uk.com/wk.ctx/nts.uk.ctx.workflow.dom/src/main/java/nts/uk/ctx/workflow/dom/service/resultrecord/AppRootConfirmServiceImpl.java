@@ -18,7 +18,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseConfirm;
@@ -216,7 +216,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			approvalFrame.setConfirmAtr(frameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
 			approvalFrame.setListApproverState(new ArrayList<>());
 			frameInstance.getListApprover().forEach(approver -> {
-				ApproverState approverState = new ApproverState();
+				ApproverInfor approverState = new ApproverInfor();
 				approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 				approverState.setFrameOrder(frameInstance.getFrameOrder());
 				approverState.setApproverID(approver);

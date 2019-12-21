@@ -263,7 +263,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				.collect(Collectors.groupingBy(x -> x.getSid()));
 		for (Map.Entry<String, List<ApproverInfo>> info : approversBySid.entrySet()) {
 			List<ApproverInfo> values = info.getValue();
-			values.sort((a, b) -> Integer.compare(a.getOrderNumber(), b.getOrderNumber()));
+			values.sort((a, b) -> Integer.compare(a.getApproverOrder(), b.getApproverOrder()));
 			Optional<ApproverInfo> value = values.stream().filter(x -> x.getIsConfirmPerson()).findFirst();
 			if (value.isPresent()) {
 				result.add(value.get());

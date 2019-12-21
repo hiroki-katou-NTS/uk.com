@@ -167,14 +167,14 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				phaseLst.stream().forEach(w -> {
 					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(b.getJobTitleId(),
 							b.getEmployeeId(),
-							b.getApprovalPhaseId(), 
+							b.getPhaseOrder(), 
+							b.getApproverOrder(),
 							b.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, 
-							b.getOrderNumber(),
 							null,
 							b.getApprovalAtr())).collect(Collectors.toList());
 					adjustmentPhase
-							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(), w.getApprovalPhaseId(),
-									w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(), approvers));
+							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getApprovalId(), w.getPhaseOrder(),
+									w.getApprovalForm().value, w.getBrowsingPhase(), approvers));
 				});
 			});
 			for (ApprovalPhaseOutput phase : adjustmentPhase) {
@@ -184,19 +184,19 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 					//ドメインモデル「承認者」．区分をチェックする(check thong tin domain「承認者」．区分)
 					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON) {
 						name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
-						employIn.add(new EmpOrderApproverAsApp(appInfo.getOrderNumber(),name, appInfo.getIsConfirmPerson()));
+						employIn.add(new EmpOrderApproverAsApp(appInfo.getApproverOrder(),name, appInfo.getIsConfirmPerson()));
 					}else {
 						//3.職位から承認者へ変換する
 						String employeeID = AppContexts.user().employeeId();
 						List<ApproverInfo> lstApEm = collectApprRootService.convertPositionToApprover(companyID, employeeID, baseDate, appInfo.getJobId());
 						for (ApproverInfo approver : lstApEm) {
-							employIn.add(new EmpOrderApproverAsApp(appInfo.getOrderNumber(),approver.getName(),appInfo.getIsConfirmPerson()));
+							employIn.add(new EmpOrderApproverAsApp(appInfo.getApproverOrder(),approver.getName(),appInfo.getIsConfirmPerson()));
 						}
 					}
 					
 				}
 				ApproverAsAppInfor appAsAppInfor = new ApproverAsAppInfor(
-						phase.getOrderNumber(), EnumAdaptor.valueOf(phase.getApprovalForm(), ApprovalForm.class).name,
+						phase.getPhaseOrder(), EnumAdaptor.valueOf(phase.getApprovalForm(), ApprovalForm.class).name,
 						employIn);
 
 				phaseInfors.add(appAsAppInfor);
@@ -209,9 +209,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				}
 				List<Approver> lstAppr = new ArrayList<>();
 				for (EmpOrderApproverAsApp c : appr.getLstEmpInfo()) {
-					lstAppr.add(Approver.createSimpleFromJavaType("", "", "", "", "", c.getEmployeeName(), 0, 0, c.isConfirmPerson() ? 1:0, null));
+					lstAppr.add(Approver.createSimpleFromJavaType("", "", 1, 1, "", c.getEmployeeName(), 0, c.isConfirmPerson() ? 1:0, null));
 				}
-				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", "", 1, 1, appr.getPhaseNumber(), lstAppr));
+				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", appr.getPhaseNumber(), 1, 1, lstAppr));
 			}
 			err = collectApprRootService.checkApprovalRoot(approvalPhases, lstadjutst);
 		} else {

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -48,7 +48,7 @@ public class WwfdtApproverMonth extends UkJpaEntity {
 		return wwfdpApproverMonthPK;
 	}
 	
-	public static WwfdtApproverMonth fromDomain(String companyID, GeneralDate date, ApproverState approverState){
+	public static WwfdtApproverMonth fromDomain(String companyID, GeneralDate date, ApproverInfor approverState){
 		return WwfdtApproverMonth.builder()
 				.wwfdpApproverMonthPK(
 						new WwfdpApproverMonthPK(
@@ -61,8 +61,8 @@ public class WwfdtApproverMonth extends UkJpaEntity {
 				.build();
 	}
 	
-	public ApproverState toDomain(){
-		return ApproverState.builder()
+	public ApproverInfor toDomain(){
+		return ApproverInfor.builder()
 				.rootStateID(this.wwfdpApproverMonthPK.rootStateID)
 				.phaseOrder(this.wwfdpApproverMonthPK.phaseOrder)
 				.frameOrder(this.wwfdpApproverMonthPK.frameOrder)

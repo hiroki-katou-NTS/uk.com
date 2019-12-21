@@ -36,9 +36,6 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	/**社員ID*/
 	@Column(name = "SID")
 	public String employeeId;
-	/**順序*/
-	@Column(name = "DISPORDER")
-	public int displayOrder;
 	/**区分*/
 	@Column(name = "APPROVAL_ATR")
 	public int approvalAtr;
@@ -52,8 +49,8 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", insertable = false, updatable = false),
-        @JoinColumn(name = "APPROVAL_PHASE_ID", referencedColumnName = "APPROVAL_PHASE_ID", insertable = false, updatable = false)
+        @JoinColumn(name = "APPROVAL_ID", referencedColumnName = "APPROVAL_ID", insertable = false, updatable = false),
+        @JoinColumn(name = "PHASE_ORDER", referencedColumnName = "PHASE_ORDER", insertable = false, updatable = false)
     })
 	public WwfmtApprovalPhase wwfmtApprovalPhase;
 	

@@ -18,10 +18,10 @@ public class WwfmtApprovalPhasePK implements Serializable{
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/**分岐ID*/
-	@Column(name = "BRANCH_ID")
-	public String branchId;
-	/**承認フェーズID*/
-	@Column(name = "APPROVAL_PHASE_ID")
-	public String approvalPhaseId;
+	/**承認ID*/
+	@Column(name = "APPROVAL_ID")
+	public String approvalId;
+	/**承認フェーズ順序*/
+	@Column(name = "PHASE_ORDER")
+	public int phaseOrder;
 }

@@ -99,14 +99,14 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoCom.updateComApprovalRoot(comAppRoot);
 				}else{//TH: delete
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getApprovalId());
 					for (ApprovalPhase approvalPhase : lstAPhase) {
 						//delete All Approver By Approval Phase Id
-						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 					}
-					//delete All Approval Phase By Branch Id
-					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getApprRoot().getBranchId());
+					//delete All Approval Phase By approvalId
+					repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, comAppRoot.getApprovalId());
 					//delete ComApprovalRoot
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
@@ -136,16 +136,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 //						//update history previous
 //						repoCom.updateComApprovalRoot(comAppRootUpdate);
 //				    }
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getApprRoot().getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, comAppRoot.getApprovalId());
 					}
 					//delete history current
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
@@ -229,16 +229,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete() == EDIT){//TH: edit
 					repoWorkplace.updateWpApprovalRoot(wpAppRoot);
 				}else{//TH: delete
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getApprRoot().getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, wpAppRoot.getApprovalId());
 					}
 					//delete WpApprovalRoot
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
@@ -271,16 +271,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 //						//update history previous
 //						repoWorkplace.updateWpApprovalRoot(wpAppRootUpdate);
 //					}
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getApprRoot().getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, wpAppRoot.getApprovalId());
 					}
 					//delete history current
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
@@ -376,16 +376,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete() == EDIT){//TH: edit hist (J)
 					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//TH: delete hist (J)
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getApprRoot().getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, psAppRoot.getApprovalId());
 					}
 					//delete PsApprovalRoot
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
@@ -405,16 +405,16 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//update history current
 					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//delete 
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getApprRoot().getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getApprRoot().getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, psAppRoot.getApprovalId());
 					}
 					//delete history current
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getApprRoot().getHistoryItems().get(0).getHistoryId());

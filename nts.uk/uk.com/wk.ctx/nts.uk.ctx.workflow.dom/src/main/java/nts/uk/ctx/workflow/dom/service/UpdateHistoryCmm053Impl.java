@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -87,11 +86,11 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
 		if(Strings.isNotBlank(employeeIdApprover)){
 			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-					psAppRoot.getApprRoot().getBranchId());
+					psAppRoot.getApprovalId());
 			if (approvalPhase.isPresent()) {
 				ApprovalPhase updateApprovalPhase = approvalPhase.get();
 				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
-				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
+				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getApproverOrder() == 1).findFirst();
 				if (firstApprover.isPresent()) {
 					firstApprover.get().setEmployeeId(employeeIdApprover);
 					this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
@@ -102,8 +101,11 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	@Override
 	public void updateRootCMM053(String companyId, String a27, String a210,PersonApprovalRoot commonRoot, PersonApprovalRoot monthlyRoot, boolean dailyDisplay) {
 		List<Approver> lstApprNew = new ArrayList<>();
+		int phaseOrder = 1;
+		int approverOrder1 = 1;
+		int approverOrder2 = 2;
 		if(commonRoot != null){
-			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getApprRoot().getBranchId());
+			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getApprovalId());
 			//common
 			if(commonPhase.isPresent()){
 				//承認フェーズ・承認形態　＝　誰か一人
@@ -112,25 +114,24 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 					phase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
 					repoAppPhase.updateApprovalPhase(phase);
 				}
-				String phaseId = phase.getApprovalPhaseId();
+				String approvalId = commonRoot.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, phaseId);
+				repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
 				//insert approver moi
-				String branchId = commonRoot.getApprRoot().getBranchId();
 				//common
 				if(dailyDisplay){//common insert 2 record
 					//a210
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a210, 0, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder1, null, a210, 0, 0, null));
 					//a27
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 1, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder2, null, a27, 0, 0, null));
 				}else{//common insert 1 record
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder1, null, a27, 0, 0, null));
 				}
 	 		}
 		}
 		if(monthlyRoot != null){
 			//monthly A27
-			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getApprRoot().getBranchId());
+			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getApprovalId());
 			if(monthlyPhase.isPresent()){
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
@@ -138,10 +139,11 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 					mphase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
 					repoAppPhase.updateApprovalPhase(mphase);
 				}
-				String mphaseId = mphase.getApprovalPhaseId();
+				String approvalId = mphase.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, mphaseId);
-				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getApprRoot().getBranchId(), mphaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0, null));
+				repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
+				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getApprovalId(), phaseOrder, 
+						approverOrder1, null, a27, 0, 0, null));
 			}
 		}
 		if(!lstApprNew.isEmpty()){

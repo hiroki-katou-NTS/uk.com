@@ -293,7 +293,7 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
-				listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+				listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 				lstApproverDto = listApprover.stream()
 							.map(c->{
 								String name = c.getApprovalAtr().value == 0 ? 
@@ -304,8 +304,8 @@ public class CommonApprovalRootFinder {
 								})
 							.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
+						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase()));
 			}
 			//add in lstAppRoot
 			lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
@@ -343,7 +343,7 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getBranchId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
-				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 				lstApproverDto = lstApprover.stream()
 						.map(c->{
 							String name = c.getApprovalAtr().value == 0 ? 
@@ -354,8 +354,8 @@ public class CommonApprovalRootFinder {
 							})
 						.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
+						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase()));
 			}
 			//add in lstAppRoot
 			lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
@@ -386,7 +386,7 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getBranchId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
-				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 				lstApproverDto = lstApprover.stream()
 						.map(c->{
 							String name = c.getApprovalAtr().value == 0 ? 
@@ -397,8 +397,8 @@ public class CommonApprovalRootFinder {
 							})
 						.collect(Collectors.toList());
 				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
+						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase()));
 			}
 			//add in lstAppRoot
 			lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
@@ -584,7 +584,7 @@ public class CommonApprovalRootFinder {
 					endDate   = psAppRoot.getApprRoot().getHistoryItems().get(0).end();
 					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
 					if(psAppPhase.isPresent()){
-						Optional<Approver> approver1 = psAppPhase.get().getApprovers().stream().filter(x-> x.getOrderNumber() == 0).findFirst();
+						Optional<Approver> approver1 = psAppPhase.get().getApprovers().stream().filter(x-> x.getApproverOrder() == 1).findFirst();
 						PersonImport person = null;
 						if(approver1.isPresent()){
 							person = this.employeeAdapter.getEmployeeInformation(approver1.get().getEmployeeId());
@@ -594,7 +594,7 @@ public class CommonApprovalRootFinder {
 								codeB110 = person.getEmployeeCode();
 								nameB111 = person.getEmployeeName();
 							}
-							Optional<Approver> approver2 = psAppPhase.get().getApprovers().stream().filter(x-> x.getOrderNumber() == 1).findFirst();
+							Optional<Approver> approver2 = psAppPhase.get().getApprovers().stream().filter(x-> x.getApproverOrder() == 2).findFirst();
 							if(approver2.isPresent()){
 								PersonImport person2 = this.employeeAdapter.getEmployeeInformation(approver2.get().getEmployeeId());
 								if(person2 != null){

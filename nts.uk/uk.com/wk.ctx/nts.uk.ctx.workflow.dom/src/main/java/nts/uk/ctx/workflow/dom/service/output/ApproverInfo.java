@@ -17,17 +17,14 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 public class ApproverInfo {
 	/**職位ID*/
 	private String jobId;
-	/**
-	 * 社員ID
-	 */
+	/**社員ID*/
 	private String sid;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
+	/**承認フェーズ順序*/
+	private int phaseOrder;
+	/**承認者順序*/
+	private int approverOrder;
 	/**確定者*/
 	private Boolean isConfirmPerson;
-	/**順序*/
-	private Integer orderNumber;
-	
 	private String name;
 	/**区分*/
 	private ApprovalAtr approvalAtr;
@@ -35,9 +32,9 @@ public class ApproverInfo {
 	public static ApproverInfo create(Approver x, String employeeName) {
 		return new ApproverInfo(x.getJobTitleId(),
 				x.getEmployeeId(), 
-				x.getApprovalPhaseId(), 
+				x.getPhaseOrder(),
+				x.getApproverOrder(),
 				true, 
-				x.getOrderNumber(),
 				employeeName,
 				x.getApprovalAtr());
 	}
@@ -46,8 +43,8 @@ public class ApproverInfo {
 		return new ApproverInfo(
 				emp.getJobId(),
 				emp.getEmployeeId(),
-				null,
-				null,
+				1,
+				1,
 				null,
 				emp.getPersonName(),
 				ApprovalAtr.JOB_TITLE);

@@ -290,7 +290,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			List<String> lstApprovers = new ArrayList<>();
 			List<Approver> lstApprover  = phase.getApprovers();
 			if(!CollectionUtil.isEmpty(lstApprover)) {
-				Collections.sort(lstApprover, Comparator.comparing(Approver:: getOrderNumber));
+				Collections.sort(lstApprover, Comparator.comparing(Approver:: getApproverOrder));
 			}
 			for(Approver approver: lstApprover) {
 				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
@@ -300,7 +300,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobTitleId(), baseDate).getPositionName());
 				}
 			}
-			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
+			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getPhaseOrder(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
 		}
 		if(!CollectionUtil.isEmpty(lstMatter)) {

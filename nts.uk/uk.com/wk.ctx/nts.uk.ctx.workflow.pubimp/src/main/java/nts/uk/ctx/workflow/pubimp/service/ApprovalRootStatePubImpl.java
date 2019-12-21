@@ -35,7 +35,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
 import nts.uk.ctx.workflow.dom.service.ApproveService;
@@ -432,7 +432,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			for(int i =0; i < listApprovalPhaseState.size();i++){
 				// add approver
 				for(ApprovalFrame approvalFrame : listApprovalPhaseState.get(i).getListApprovalFrame()){
-					for(ApproverState approverState : approvalFrame.getListApproverState())	{
+					for(ApproverInfor approverState : approvalFrame.getListApproverState())	{
 						// xu li lay list phase chua approverID
 						for(String employeeID : employeeApproverID ){
 							if(approverState.getApproverID().equals(employeeID)){
@@ -739,7 +739,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					c.getFrameOrder(),
 					EnumAdaptor.valueOf(c.getApprovalAtr(), ApprovalBehaviorAtr.class),
 					EnumAdaptor.valueOf(c.getConfirmAtr(), ConfirmPerson.class),
-					c.getListApproverState().stream().map(x -> new ApproverState(x.getRootStateID(),
+					c.getListApproverState().stream().map(x -> new ApproverInfor(x.getRootStateID(),
 						x.getPhaseOrder(),
 						x.getFrameOrder(),
 						x.getApproverID(),

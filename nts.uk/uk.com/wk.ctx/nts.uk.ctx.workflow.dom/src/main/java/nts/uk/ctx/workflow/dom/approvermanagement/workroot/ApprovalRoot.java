@@ -45,7 +45,6 @@ public class ApprovalRoot implements UnduplicatableHistory<EmploymentAppHistoryI
 	}
 	@Override
 	public List<EmploymentAppHistoryItem> items() {
-		// TODO Auto-generated method stub
 		return historyItems;
 	}
 }

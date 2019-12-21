@@ -19,39 +19,36 @@ public class ApprovalPhase extends AggregateRoot{
 	/**会社ID*/
 	private String companyId;
 	/**分岐ID*/
-	private String branchId;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
+	private String approvalId;
+	/**順序*/
+	private int phaseOrder;
 	/**承認形態*/
 	private ApprovalForm approvalForm;
 	/**閲覧フェーズ*/
 	private int browsingPhase;
-	/**順序*/
-	private int orderNumber;
 	
 	/**承認者*/
 	private List<Approver>  approvers;
 	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
-			String branchId,
-			String approvalPhaseId,
+			String approvalId,
 			int approvalForm,
 			int browsingPhase,
-			int orderNumber,
+			int phaseOrder,
 			List<Approver>  approvers){
 		return new ApprovalPhase(companyId,
-				branchId,
-				approvalPhaseId,
+				approvalId,
+				phaseOrder,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber, approvers);
+				approvers);
 	}
-	public void updateBranchId(String branchId){
-		this.branchId = branchId;
-	}
-	public void updateAppPhaseId(String approvalPhaseId){
-		this.approvalPhaseId = approvalPhaseId;
-	}
+//	public void updateBranchId(String branchId){
+//		this.branchId = branchId;
+//	}
+//	public void updateAppPhaseId(String approvalPhaseId){
+//		this.approvalPhaseId = approvalPhaseId;
+//	}
 	
 	public void addApproverList(List<Approver> approvers) {
 		this.approvers = approvers;

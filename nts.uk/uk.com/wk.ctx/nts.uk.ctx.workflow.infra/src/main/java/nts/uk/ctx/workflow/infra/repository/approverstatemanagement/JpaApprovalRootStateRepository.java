@@ -29,14 +29,14 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalFramePK;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalPhaseStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalRootStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppRootStateSimple;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalFrame;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApproverState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalPhaseState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalRootState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApproverState;
@@ -474,11 +474,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 											GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
 											String approvalReason = z.getValue().get(0).getApprovalReason();
 											ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
-											List<ApproverState> listApprover = z.getValue().stream()
+											List<ApproverInfor> listApprover = z.getValue().stream()
 													.collect(Collectors
 															.groupingBy(WwfdtFullJoinState::getApproverChildID))
 													.entrySet().stream().map(t -> {
-														return new ApproverState(rootStateID, phaseOrder, frameOrder,
+														return new ApproverInfor(rootStateID, phaseOrder, frameOrder,
 																t.getValue().get(0).getApproverChildID(), companyID,
 																recordDate);
 													}).collect(Collectors.toList());
@@ -573,10 +573,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalPhaseState;
 	}
 
-	private WwfdtApprovalFrame updateEntityWwfdtApprovalFrame(ApprovalFrame approvalFrame) {
-		WwfdtApprovalFrame wwfdtApprovalFrame = this.queryProxy()
-				.find(new WwfdpApprovalFramePK(approvalFrame.getRootStateID(), approvalFrame.getPhaseOrder(),
-						approvalFrame.getFrameOrder()), WwfdtApprovalFrame.class)
+	private WwfdtApproverState updateEntityWwfdtApprovalFrame(ApprovalFrame approvalFrame) {
+		WwfdtApproverState wwfdtApprovalFrame = this.queryProxy()
+				.find(new WwfdpApproverStatePK(approvalFrame.getRootStateID(), approvalFrame.getPhaseOrder(),
+						approvalFrame.getFrameOrder()), WwfdtApproverState.class)
 				.get();
 		wwfdtApprovalFrame.approvalAtr = approvalFrame.getApprovalAtr().value;
 		wwfdtApprovalFrame.confirmAtr = approvalFrame.getConfirmAtr().value;
@@ -589,7 +589,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalFrame;
 	}
 
-	private WwfdtApproverState updateEntityWwfdtApproverState(ApproverState approverState) {
+	private WwfdtApproverState updateEntityWwfdtApproverState(ApproverInfor approverState) {
 		WwfdtApproverState wwfdtApproverState = this.queryProxy()
 				.find(new WwfdpApproverStatePK(approverState.getRootStateID(), approverState.getPhaseOrder(),
 						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverState.class)
@@ -624,7 +624,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalFrameDay;
 	}
 
-	private WwfdtApproverDay updateEntityWwfdtApproverDay(ApproverState approverState) {
+	private WwfdtApproverDay updateEntityWwfdtApproverDay(ApproverInfor approverState) {
 		WwfdtApproverDay wwfdtApproverDay = this.queryProxy()
 				.find(new WwfdpApproverDayPK(approverState.getRootStateID(), approverState.getPhaseOrder(),
 						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverDay.class)
@@ -659,7 +659,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		return wwfdtApprovalFrameMonth;
 	}
 
-	private WwfdtApproverMonth updateEntityWwfdtApproverMonth(ApproverState approverState) {
+	private WwfdtApproverMonth updateEntityWwfdtApproverMonth(ApproverInfor approverState) {
 		WwfdtApproverMonth wwfdtApproverMonth = this.queryProxy()
 				.find(new WwfdpApproverMonthPK(approverState.getRootStateID(), approverState.getPhaseOrder(),
 						approverState.getFrameOrder(), approverState.getApproverID()), WwfdtApproverMonth.class)
@@ -884,11 +884,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 											GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
 											String approvalReason = z.getValue().get(0).getApprovalReason();
 											ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
-											List<ApproverState> listApprover = z.getValue().stream()
+											List<ApproverInfor> listApprover = z.getValue().stream()
 													.collect(Collectors
 															.groupingBy(WwfdtFullJoinState::getApproverChildID))
 													.entrySet().stream().map(t -> {
-														return new ApproverState(rootStateID, phaseOrder, frameOrder,
+														return new ApproverInfor(rootStateID, phaseOrder, frameOrder,
 																t.getValue().get(0).getApproverChildID(),
 																t.getValue().get(0).getCompanyID(), recordDate);
 													}).collect(Collectors.toList());
@@ -1103,11 +1103,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 											GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
 											String approvalReason = z.getValue().get(0).getApprovalReason();
 											ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
-											List<ApproverState> listApprover = z.getValue().stream()
+											List<ApproverInfor> listApprover = z.getValue().stream()
 													.collect(Collectors
 															.groupingBy(WwfdtFullJoinState::getApproverChildID))
 													.entrySet().stream().map(t -> {
-														return new ApproverState(rootStateID, phaseOrder, frameOrder,
+														return new ApproverInfor(rootStateID, phaseOrder, frameOrder,
 																t.getValue().get(0).getApproverChildID(), companyID,
 																recordDate);
 													}).collect(Collectors.toList());

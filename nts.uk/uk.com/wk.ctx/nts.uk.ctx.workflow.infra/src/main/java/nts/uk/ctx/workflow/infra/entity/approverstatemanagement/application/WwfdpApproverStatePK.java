@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -21,10 +22,9 @@ public class WwfdpApproverStatePK {
 	@Column(name="PHASE_ORDER")
 	public Integer phaseOrder;
 	
-	@Column(name="FRAME_ORDER")
-	public Integer frameOrder;
+	@Column(name="APPROVER_ORDER")
+	public Integer approverOrder;
 	
-	@Column(name="APPROVER_CHILD_ID")
-	public String approverID;
-	
+	@Column(name="APPROVER_ID")
+	public String approverId;
 }

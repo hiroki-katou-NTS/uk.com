@@ -36,7 +36,7 @@ public class ApprovalFrame extends DomainObject {
 	
 	private ConfirmPerson confirmAtr;
 	@Setter
-	private List<ApproverState> listApproverState;
+	private List<ApproverInfor> listApproverState;
 	
 	@Setter
 	private String approverID;
@@ -50,7 +50,7 @@ public class ApprovalFrame extends DomainObject {
 	@Setter
 	private String approvalReason;
 	
-	public static ApprovalFrame firstCreate(String rootStateID, Integer phaseOrder, Integer frameOrder, ConfirmPerson confirmPerson, List<ApproverState> listApproverState){
+	public static ApprovalFrame firstCreate(String rootStateID, Integer phaseOrder, Integer frameOrder, ConfirmPerson confirmPerson, List<ApproverInfor> listApproverState){
 		return ApprovalFrame.builder()
 				.rootStateID(rootStateID)
 				.phaseOrder(phaseOrder)
@@ -70,7 +70,7 @@ public class ApprovalFrame extends DomainObject {
 					.approvalAtr(approvalFrame.getApprovalAtr())
 					.confirmAtr(approvalFrame.getConfirmAtr())
 					.listApproverState(approvalFrame.getListApproverState().stream()
-							.map(x -> ApproverState.createFromFirst(companyID, date, rootStateID, x)).collect(Collectors.toList()))
+							.map(x -> ApproverInfor.createFromFirst(companyID, date, rootStateID, x)).collect(Collectors.toList()))
 					.approverID(approvalFrame.getApproverID())
 					.representerID(approvalFrame.getRepresenterID())
 					.approvalDate(approvalFrame.getApprovalDate())

@@ -110,21 +110,22 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			for (CompanyAppRootADto commonRoot : rootInsert) {
 				Integer type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
+				String approvalId = UUID.randomUUID().toString();
 				String branchId = UUID.randomUUID().toString();
 				//root right
 				CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
-									UUID.randomUUID().toString(), historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
-									employRootAtr, SystemAtr.WORK.value, null, null);
+						approvalId, historyId, type, startDate, endDateS,
+						branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
+						employRootAtr, SystemAtr.WORK.value, null, null);
 				//branch
-				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
+				ApprovalBranch branch = new ApprovalBranch(companyId, branchId, 1);
 				lstBranch.add(branch);
 				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
 					throw new BusinessException("Msg_156");
 				}
 				listCom.add(com);
 				//Add approval
-				addApproval(commonRoot, branchId);
+				addApproval(commonRoot, approvalId);
 			}
 			//find history by type and EmployRootAtr
 			if(data.getCheckMode() == 1){
@@ -165,7 +166,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstCom.isEmpty()){
 						CompanyApprovalRoot com = lstCom.get(0);
 						//==========
-						deleteAppPh(com.getApprRoot().getBranchId());
+						deleteAppPh(com.getApprovalId());
 						//=======
 						//delete root
 						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getApprRoot().getHistoryItems().get(0).getHistoryId());
@@ -178,15 +179,16 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (AppType type : lstAppTypeUi) {
 				CompanyAppRootADto commonRoot = findRoot(root, type);
-				String branchId = commonRoot.getBranchId();
+				String approvalId = commonRoot.getApprovalId();
 				//root create new
-				if(StringUtil.isNullOrEmpty(branchId, true)){
-					branchId = UUID.randomUUID().toString();
+				if(StringUtil.isNullOrEmpty(approvalId, true)){
+					approvalId = UUID.randomUUID().toString();
+					String branchId = UUID.randomUUID().toString();
 					Integer typeCom = commonRoot.getAppTypeValue();
 					int employRootAtr = commonRoot.getEmployRootAtr();
 					//root right
 					CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
-										UUID.randomUUID().toString(), historyId, type.getValue(), startDate, endDateOld,
+										approvalId, historyId, type.getValue(), startDate, endDateOld,
 										branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? typeCom : null,
 										employRootAtr, SystemAtr.WORK.value, null, null);
 					//branch
@@ -196,7 +198,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						throw new BusinessException("Msg_156");
 					}
 					listCom.add(com);
-					addApproval(commonRoot,branchId);
+					addApproval(commonRoot, approvalId);
 				}
 			}
 			//Add ls new
@@ -252,8 +254,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				Integer type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
 				String branchId = UUID.randomUUID().toString();
+				String approvalId = UUID.randomUUID().toString();
 				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
-									UUID.randomUUID().toString(), workplaceId, historyId, type, startDate, endDateS,
+									approvalId, workplaceId, historyId, type, startDate, endDateS,
 									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
 									employRootAtr, SystemAtr.WORK.value, null, null);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
@@ -264,7 +267,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				listWp.add(com);
 				
 				//Add approval
-				addApproval(commonRoot, branchId);
+				addApproval(commonRoot, approvalId);
 			}
 			//find history by type and 
 			if(data.getCheckMode() == 1){
@@ -303,7 +306,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstWp.isEmpty()){
 						WorkplaceApprovalRoot wp = lstWp.get(0);
 						//==========
-						deleteAppPh(wp.getApprRoot().getBranchId());
+						this.deleteAppPh(wp.getApprovalId());
 						//=======
 						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getApprRoot().getHistoryItems().get(0).getHistoryId());
 						//delete branch
@@ -315,12 +318,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (AppType type : lstAppTypeUi) {
 				CompanyAppRootADto commonRoot = findRoot(root, type);
-				String branchId = commonRoot.getBranchId();
-				if(StringUtil.isNullOrEmpty(branchId, true)){
-					branchId = UUID.randomUUID().toString();
+				String approvalId = commonRoot.getApprovalId();
+				if(StringUtil.isNullOrEmpty(approvalId, true)){
+					approvalId = UUID.randomUUID().toString();
+					String branchId = UUID.randomUUID().toString();
 					int employRootAtr = commonRoot.getEmployRootAtr();
 					//root right
-					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),workplaceId,
+					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, approvalId, workplaceId,
 							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
 							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
 							SystemAtr.WORK.value, null, null);
@@ -331,7 +335,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						throw new BusinessException("Msg_156");
 					}
 					listWp.add(wp);
-					addApproval(commonRoot,branchId);
+					addApproval(commonRoot, approvalId);
 				}
 			}
 			//Add ls new
@@ -380,8 +384,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				Integer type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
 				String branchId = UUID.randomUUID().toString();
+				String approvalId = UUID.randomUUID().toString();
 				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
-									UUID.randomUUID().toString(), employeeId, historyId, type, startDate, endDateS,
+									approvalId, employeeId, historyId, type, startDate, endDateS,
 									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
 									employRootAtr, SystemAtr.WORK.value, null, null);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
@@ -392,7 +397,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				listPs.add(com);
 				
 				//Add approval
-				addApproval(commonRoot, branchId);
+				addApproval(commonRoot, approvalId);
 			}
 			//find history by type and
 			if(data.getCheckMode() == 1){
@@ -431,7 +436,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					if(!lstPs.isEmpty()){
 						PersonApprovalRoot ps = lstPs.get(0);
 						//==========
-						deleteAppPh(ps.getApprRoot().getBranchId());
+						this.deleteAppPh(ps.getApprovalId());
 						//=======
 						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getApprRoot().getHistoryItems().get(0).getHistoryId());
 						//delete branch
@@ -443,12 +448,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (AppType type : lstAppTypeUi) {
 				CompanyAppRootADto commonRoot = findRoot(root, type);
-				String branchId = commonRoot.getBranchId();
-				if(StringUtil.isNullOrEmpty(branchId, true)){
-					branchId = UUID.randomUUID().toString();
+				String approvalId = commonRoot.getApprovalId();
+				if(StringUtil.isNullOrEmpty(approvalId, true)){
+					approvalId = UUID.randomUUID().toString();
+					String branchId = UUID.randomUUID().toString();
 					int employRootAtr = commonRoot.getEmployRootAtr();
 					//root right
-					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, UUID.randomUUID().toString(),employeeId,
+					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, approvalId, employeeId,
 							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
 							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
 									SystemAtr.WORK.value, null, null);
@@ -459,7 +465,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						throw new BusinessException("Msg_156");
 					}
 					listPs.add(ps);
-					addApproval(commonRoot,branchId);
+					addApproval(commonRoot, approvalId);
 				}
 			}
 			//Add ls new
@@ -489,44 +495,35 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @param rootType
 	 * @param startDate
 	 * @param endDate
-	 * @param branchId
+	 * @param approvalId
 	 */
-	private void addApproval(CompanyAppRootADto commonRoot, String branchId){
+	private void addApproval(CompanyAppRootADto commonRoot, String approvalId){
 		if(commonRoot == null){
 			return;
 		}
 		List<ApprovalPhase> listAppPhase = new ArrayList<>();
-		deleteAppPh(branchId);
-		ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
-		ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), branchId);
-		ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), branchId);
-		ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
-		ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
+		this.deleteAppPh(approvalId);
+		ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), approvalId);
+		ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), approvalId);
+		ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), approvalId);
+		ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), approvalId);
+		ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), approvalId);
 		if(appPhaseN1 != null){
-			appPhaseN1.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN1);
 		}
 		if(appPhaseN2 != null){
-			appPhaseN2.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN2);
 		}
 		if(appPhaseN3 != null){
-			appPhaseN3.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN3);
 		}
 		if(appPhaseN4 != null){
-			appPhaseN4.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN4);
 		}
 		if(appPhaseN5 != null){
-			appPhaseN5.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN5);
 		}
 		for (ApprovalPhase approvalPhase : listAppPhase) {
-			String approvalPhaseId = approvalPhase.getApprovalPhaseId();
-			for (Approver approver : approvalPhase.getApprovers()) {
-				approver.updateApprovalPhaseId(approvalPhaseId);
-			}
 			repoApprover.addAllApprover(approvalPhase.getApprovers());
 		}
 		repoAppPhase.addAllApprovalPhase(listAppPhase);
@@ -540,55 +537,49 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		//update root display in screen
 		for (AppType type : lstAppTypeUi) {
 			CompanyAppRootADto commonRoot = findRoot(root, type);
-			String branchId = commonRoot.getBranchId();
-			if(StringUtil.isNullOrEmpty(branchId, true)){
+			String approvalId = commonRoot.getApprovalId();
+			if(StringUtil.isNullOrEmpty(approvalId, true)){
 				continue;
 			}
 			//xoa app Phase
-			deleteAppPh(branchId);
-			ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
-			ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), branchId);
-			ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), branchId);
-			ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
-			ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
+			this.deleteAppPh(approvalId);
+			ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), approvalId);
+			ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), approvalId);
+			ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), approvalId);
+			ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), approvalId);
+			ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), approvalId);
 			//Xu ly them,sua,xoa appPh and approver
 			if(appPhaseN1 != null){
-				addAppPhase(appPhaseN1,branchId);
+				addAppPhase(appPhaseN1, approvalId);
 			}
 			if(appPhaseN2 != null && appPhaseN2.getApprovalForm().value != 0){
-				addAppPhase(appPhaseN2,branchId);
-				addAppPhase(appPhaseN2,branchId);
+				addAppPhase(appPhaseN2, approvalId);
+				addAppPhase(appPhaseN2, approvalId);
 			}
 			if(appPhaseN3 != null && appPhaseN3.getApprovalForm().value != 0){
-				addAppPhase(appPhaseN3,branchId);
+				addAppPhase(appPhaseN3, approvalId);
 			}
 			if(appPhaseN4 != null && appPhaseN4.getApprovalForm().value != 0){
-				addAppPhase(appPhaseN4,branchId);
+				addAppPhase(appPhaseN4, approvalId);
 			}
 			if(appPhaseN5 != null && appPhaseN5.getApprovalForm().value != 0){
-				addAppPhase(appPhaseN5,branchId);
+				addAppPhase(appPhaseN5, approvalId);
 			}
 		}
 	}
 	/**
 	 * add appPhase
 	 * @param appPhaseN1
-	 * @param branchId
+	 * @param approvalId
 	 */
-	private void addAppPhase(ApprovalPhase appPhaseN1, String branchId){
+	private void addAppPhase(ApprovalPhase appPhaseN1, String approvalId){
 		if(appPhaseN1 == null){
 			return;
 		}
 		String companyId = AppContexts.user().companyId();
-		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(companyId, branchId, appPhaseN1.getApprovalPhaseId());
+		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(companyId, approvalId, appPhaseN1.getPhaseOrder());
 		if(!appPh1.isPresent()){//add new appPh and Approver
-			String approvalPhaseId = UUID.randomUUID().toString();
-			appPhaseN1.updateAppPhaseId(approvalPhaseId);
 			List<Approver>  approvers = appPhaseN1.getApprovers();
-			for (Approver approver : approvers) {
-				approver.updateApprovalPhaseId(approvalPhaseId);
-				approver.updateApproverId(UUID.randomUUID().toString());
-			}
 			repoApprover.addAllApprover(approvers);
 			repoAppPhase.addApprovalPhase(appPhaseN1);
 		}
@@ -596,25 +587,24 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	/**
 	 * check AppPhase(add or not add)
 	 * @param appPhase
-	 * @param branchId
+	 * @param approvalId
 	 * @return
 	 */
-	private ApprovalPhase checkAppPh(ApprovalPhaseDto appPhase, String branchId){
+	private ApprovalPhase checkAppPh(ApprovalPhaseDto appPhase, String approvalId){
 		if(appPhase.getApprovalForm() == null || appPhase.getApprovalForm().intValue() == 0){//khong co
 			return null;
 		}
 		List<Approver> lstApp = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		String approvalPhaseId = appPhase.getApprovalPhaseId();
 		List<ApproverDto> approver = appPhase.getApprover();
 		for (ApproverDto approverDto : approver) {
-			lstApp.add(Approver.createSimpleFromJavaType(companyId, branchId,
-					approvalPhaseId, UUID.randomUUID().toString(), approverDto.getJobTitleId(), approverDto.getEmployeeId(),
-					approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson(), null));
+			lstApp.add(Approver.createSimpleFromJavaType(companyId, approvalId,
+					appPhase.getPhaseOrder(), approverDto.getApproverOrder(), approverDto.getJobTitleId(), 
+					approverDto.getEmployeeId(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson(), null));
 		}
-		return ApprovalPhase.createSimpleFromJavaType(companyId, branchId,
-				approvalPhaseId , appPhase.getApprovalForm(),
-				appPhase.getBrowsingPhase(), appPhase.getOrderNumber(),lstApp);
+		return ApprovalPhase.createSimpleFromJavaType(companyId, approvalId,
+				appPhase.getPhaseOrder() , appPhase.getApprovalForm(),
+				appPhase.getBrowsingPhase(), lstApp);
 	}
 	/**
 	 * find root
@@ -632,18 +622,18 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	}
 	/**
 	 * delete
-	 * @param branchId
+	 * @param approvalId
 	 */
-	private void deleteAppPh(String branchId){
+	private void deleteAppPh(String approvalId){
 		String companyId = AppContexts.user().companyId();
-		List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, branchId);
+		List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, approvalId);
 		if(!lstAppPhase.isEmpty()){
-			for (ApprovalPhase approvalPhase : lstAppPhase) {
+			for (ApprovalPhase phase : lstAppPhase) {
 				//delete All Approver By Approval Phase Id
-				repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+				repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phase.getPhaseOrder());
 			}
-			//delete All Approval Phase By Branch Id
-			repoAppPhase.deleteAllAppPhaseByBranchId(companyId, branchId);
+			//delete All Approval Phase By approvalId
+			repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, approvalId);
 		}
 	}
 }

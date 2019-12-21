@@ -51,7 +51,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
@@ -180,7 +180,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			// ドメインモデル「承認フェーズ」．承認形態をメモリ上保持する(luu thong tin 「承認フェーズ」．承認形態 vao cache) ??
 			
 			List<Approver> listApprover = new ArrayList<>();
-			approvalPhase.getApprovers().sort(Comparator.comparing(Approver::getOrderNumber));
+			approvalPhase.getApprovers().sort(Comparator.comparing(Approver::getApproverOrder));
 			approvalPhase.getApprovers().forEach(approver -> {
 				
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
@@ -204,12 +204,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				List<Approver> listApproverJob = this.convertPositionToApprover(companyID, employeeID, baseDate, approver.getJobTitleId())
 								.stream().map(x -> new Approver(
 										approver.getCompanyId(), 
-										approver.getBranchId(), 
-										approver.getApprovalPhaseId(), 
-										approver.getApproverId(), 
+										approver.getApprovalId(), 
+										approver.getPhaseOrder(), 
+										approver.getApproverOrder(), 
 										x.getJobId(), 
 										x.getSid(), 
-										approver.getOrderNumber(), 
 										approver.getApprovalAtr(), 
 										approver.getConfirmPerson(),
 										approver.getSpecWkpId()))
@@ -356,7 +355,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		for(int i = 0; i < listApprovalPhaseBefore.size(); i++){
 			ApprovalPhase approvalPhaseBefore = listApprovalPhaseBefore.get(i);
-			Optional<ApprovalPhase> opApprovalPhase = listApprovalPhaseAfter.stream().filter(x -> x.getOrderNumber()==approvalPhaseBefore.getOrderNumber()).findAny();
+			Optional<ApprovalPhase> opApprovalPhase = listApprovalPhaseAfter.stream().filter(x -> x.getPhaseOrder() == approvalPhaseBefore.getPhaseOrder()).findAny();
 			if(!opApprovalPhase.isPresent()){
 				continue;
 			}
@@ -416,16 +415,16 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
 			.filter(approver -> Strings.isBlank(approver.getJobTitleId()))
 			.map(approver -> {
-				List<ApproverState> listApproverState = new ArrayList<>();
+				List<ApproverInfor> listApproverState = new ArrayList<>();
 				listApproverState.add(
-						new ApproverState(
+						new ApproverInfor(
 								null, 
-								approvalPhase.getOrderNumber(), 
-								approver.getOrderNumber()+1, 
+								approvalPhase.getPhaseOrder(), 
+								approver.getApproverOrder(), 
 								approver.getEmployeeId(),
 								companyID,
 								date));
-				return ApprovalFrame.firstCreate(null, approvalPhase.getOrderNumber(), approver.getOrderNumber()+1, approver.getConfirmPerson(), listApproverState);
+				return ApprovalFrame.firstCreate(null, approvalPhase.getPhaseOrder(), approver.getApproverOrder(), approver.getConfirmPerson(), listApproverState);
 			}).collect(Collectors.toList());
 			resultApprovalFrame.addAll(listApprovalFrameByPerson);
 			
@@ -435,11 +434,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			Map<String, List<Approver>> findMap = allListApproverByJob.stream()
 					.collect(Collectors.groupingBy(Approver::getJobTitleId));
 			findMap.forEach((k,v) -> {
-				List<ApproverState> listApproverStateByJob = v.stream()
-						.map(approver -> new ApproverState(
+				List<ApproverInfor> listApproverStateByJob = v.stream()
+						.map(approver -> new ApproverInfor(
 								null, 
-								approvalPhase.getOrderNumber(), 
-								approver.getOrderNumber()+1, 
+								approvalPhase.getPhaseOrder(), 
+								approver.getApproverOrder(), 
 								approver.getEmployeeId(),
 								companyID,
 								date))
@@ -448,7 +447,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							ApprovalFrame approvalFrameByJob = 
 									ApprovalFrame.firstCreate(
 											null, 
-											approvalPhase.getOrderNumber(), 
+											approvalPhase.getPhaseOrder(), 
 											listApproverStateByJob.get(0).getFrameOrder(), 
 											v.get(0).getConfirmPerson(), 
 											listApproverStateByJob);
@@ -459,7 +458,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			resultApprovalFrame.sort((a,b)-> a.getFrameOrder().compareTo(b.getFrameOrder()));
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState(
 					null, 
-					approvalPhase.getOrderNumber(), 
+					approvalPhase.getPhaseOrder(), 
 					ApprovalBehaviorAtr.UNAPPROVED, 
 					EnumAdaptor.valueOf(approvalPhase.getApprovalForm().value, ApprovalForm.class), 
 					resultApprovalFrame);

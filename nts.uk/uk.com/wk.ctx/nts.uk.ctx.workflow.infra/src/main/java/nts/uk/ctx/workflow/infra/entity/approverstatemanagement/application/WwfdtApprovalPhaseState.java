@@ -52,9 +52,9 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	})
 	private WwfdtApprovalRootState wwfdtApprovalRootState;
 	
-	@OneToMany(targetEntity=WwfdtApprovalFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(targetEntity=WwfdtApproverState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(name = "WWFDT_APPROVAL_FRAME")
-	public List<WwfdtApprovalFrame> listWwfdtApprovalFrame;
+	public List<WwfdtApproverState> listWwfdtApprovalFrame;
 
 	@Override
 	protected Object getKey() {
@@ -71,7 +71,7 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 				.approvalForm(approvalPhaseState.getApprovalForm().value)
 				.listWwfdtApprovalFrame(
 						approvalPhaseState.getListApprovalFrame().stream()
-						.map(x -> WwfdtApprovalFrame.fromDomain(companyID, date, x)).collect(Collectors.toList()))
+						.map(x -> WwfdtApproverState.fromDomain(companyID, date, x)).collect(Collectors.toList()))
 				.build();
 	}
 	

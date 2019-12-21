@@ -32,7 +32,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
@@ -228,7 +228,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				approvalFrame.setListApproverState(new ArrayList<>());
 				appFrameInstance.getListApprover().forEach(approver -> {
-					ApproverState approverState = new ApproverState();
+					ApproverInfor approverState = new ApproverInfor();
 					approverState.setRootStateID("");
 					approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 					approverState.setFrameOrder(appFrameInstance.getFrameOrder());

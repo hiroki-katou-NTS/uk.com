@@ -47,14 +47,16 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 			for (PersonApprovalRoot deleteItem : deletePersonApproval) {
 				String approvalId = deleteItem.getApprovalId();
 				String historyId  = deleteItem.getApprRoot().getHistoryItems().get(0).getHistoryId();
-				String branchId   = deleteItem.getApprRoot().getBranchId();
-				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, branchId);
+				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, approvalId);
 				if (approvalPhase.isPresent()) {
-					String phaseId = approvalPhase.get().getApprovalPhaseId();
+					int phaseOrder = approvalPhase.get().getPhaseOrder();
 					// 「個人別就業承認ルート」に紐付く「分岐」「承認ルート」を削除する
-					this.repoApprover.deleteAllApproverByAppPhId(companyId, phaseId);
-					this.repoAppPhase.deleteAllAppPhaseByBranchId(companyId, branchId);
-					this.repoBranch.deleteBranch(companyId, branchId);
+					//Delete table Approver
+					this.repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
+					//Delete table Approver
+					this.repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, approvalId);
+					//Delete table Branch
+					this.repoBranch.deleteBranch(companyId, deleteItem.getApprRoot().getBranchId());
 				}
 				// 「個人別就業承認ルート」を削除する
 				this.repoPerson.deletePsApprovalRoot(companyId, approvalId, employeeId, historyId);

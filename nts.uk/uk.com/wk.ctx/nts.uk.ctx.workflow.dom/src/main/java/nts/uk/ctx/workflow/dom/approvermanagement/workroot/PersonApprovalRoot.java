@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
- * 個人別就業承認ルート
+ * 個人別承認ルート
  * @author hoatt
  *
  */
@@ -87,12 +87,6 @@ public class PersonApprovalRoot extends AggregateRoot{
 		return ps;
 	}
 
-//	public static boolean isCommonPsApprovalRoot(PersonApprovalRoot psAppRoot) {
-//		if (psAppRoot.getEmploymentRootAtr().value == 0 && Objects.isNull(psAppRoot.getApplicationType())) {
-//			return true;
-//		}
-//		return false;
-//	}
 	public boolean isCommon(){
 		return this.apprRoot.getEmploymentRootAtr() == EmploymentRootAtr.COMMON;
 	}

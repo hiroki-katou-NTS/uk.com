@@ -63,12 +63,13 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 	 */
 	private List<ApprovalPhaseExport> convertApprovalPhaseListBefore(List<ApprovalPhase> beforePhases) {
 		return beforePhases.stream().map(m -> {
-			ApprovalPhaseExport phase = new ApprovalPhaseExport(m.getCompanyId(), m.getBranchId(),
-					m.getApprovalPhaseId(), m.getApprovalForm().value, m.getBrowsingPhase(), m.getOrderNumber());
+			ApprovalPhaseExport phase = new ApprovalPhaseExport(m.getCompanyId(), m.getApprovalId(),
+					m.getPhaseOrder(), m.getApprovalForm().value, m.getBrowsingPhase());
 
 			phase.addApproverList(m.getApprovers().stream()
-					.map(a -> new ApproverInfoExport(a.getJobTitleId(), a.getEmployeeId(), a.getApprovalPhaseId(),
-							a.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, a.getOrderNumber(),
+					.map(a -> new ApproverInfoExport(a.getJobTitleId(), a.getEmployeeId(),
+							a.getPhaseOrder(), a.getApproverOrder(),
+							a.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, 
 							a.getApprovalAtr().value))
 					.collect(Collectors.toList()));
 			return phase;
@@ -83,12 +84,12 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 	 */
 	private List<ApprovalPhaseExport> convertApprovalPhaseListAfter(AdjustedApprovalPhases afterPhases) {
 		return afterPhases.getPhases().stream().map(m -> {
-			ApprovalPhaseExport phase = new ApprovalPhaseExport(m.getCompanyId(), m.getBranchId(),
-					m.getApprovalPhaseId(), m.getApprovalForm(), m.getBrowsingPhase(), m.getOrderNumber());
+			ApprovalPhaseExport phase = new ApprovalPhaseExport(m.getCompanyId(), m.getApprovalId(),
+					m.getPhaseOrder(), m.getApprovalForm(), m.getBrowsingPhase());
 
 			phase.addApproverList(m.getApprovers().stream().map(a -> {
-				ApproverInfoExport export = new ApproverInfoExport(a.getJobId(), a.getSid(), a.getApprovalPhaseId(),
-						a.getIsConfirmPerson(), a.getOrderNumber(), a.getApprovalAtr().value);
+				ApproverInfoExport export = new ApproverInfoExport(a.getJobId(), a.getSid(), a.getPhaseOrder(),
+						a.getApproverOrder(), a.getIsConfirmPerson(), a.getApprovalAtr().value);
 				export.addEmployeeName(a.getName());
 				return export;
 			}).collect(Collectors.toList()));
@@ -105,8 +106,8 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 		}
 		
 		return approvers.stream().map(x -> {
-			ApproverInfoExport export = new ApproverInfoExport(x.getJobId(), x.getSid(), x.getApprovalPhaseId(),
-					x.getIsConfirmPerson(), x.getOrderNumber(), x.getApprovalAtr().value);
+			ApproverInfoExport export = new ApproverInfoExport(x.getJobId(), x.getSid(), x.getPhaseOrder(),
+					x.getApproverOrder(), x.getIsConfirmPerson(), x.getApprovalAtr().value);
 			export.addEmployeeName(x.getName());
 			return export;
 		}).collect(Collectors.toList());
