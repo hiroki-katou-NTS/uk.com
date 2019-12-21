@@ -637,11 +637,11 @@ public class RetirementInformationFinder {
 			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_7"));
 		}
 		// 部門チェック(check department)
-		if (query.isAllSelectDepartment() && query.getSelectDepartment().isEmpty()) {
+		if (!query.isAllSelectDepartment() && query.getSelectDepartment().isEmpty()) {
 			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_3"));
 		}
 		// 雇用チェック(check employment)
-		if (query.isAllSelectEmployment() && query.getSelectEmployment().isEmpty()) {
+		if (!query.isAllSelectEmployment() && query.getSelectEmployment().isEmpty()) {
 			bundleExeption.addMessage(new BusinessException("MsgJ_JCM008_4"));
 		}
 		if (!bundleExeption.getMessageId().isEmpty()) {

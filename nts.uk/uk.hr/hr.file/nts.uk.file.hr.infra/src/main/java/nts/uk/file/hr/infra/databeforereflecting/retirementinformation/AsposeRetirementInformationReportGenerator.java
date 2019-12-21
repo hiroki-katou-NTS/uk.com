@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
@@ -17,7 +19,6 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
@@ -28,6 +29,7 @@ import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+@Stateless
 public class AsposeRetirementInformationReportGenerator extends AsposeCellsReportGenerator
 		implements RetirementInformationGenerator {
 
@@ -38,7 +40,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 	private static final String REPORT_FILE_EXTENSION = ".xlxs";
 
 	private static final String FORMAT_DATE = "yyyy/MM/dd";
-	
+
 	private static final String TITLE = "定年退職者一覧";
 
 	private static final int FIRST_ROW_FILL = 8;
@@ -94,19 +96,18 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		}
 	}
 
-	private void writeFileExcel(WorksheetCollection wsc, SearchRetiredResultDto dto,
-			SearchRetiredEmployeesQuery query,String companyName) {
+	private void writeFileExcel(WorksheetCollection wsc, SearchRetiredResultDto dto, SearchRetiredEmployeesQuery query,
+			String companyName) {
 		try {
-			
+
 			List<PlannedRetirementDto> exportData = dto.getRetiredEmployees();
 			List<InterviewRecordInfo> interviewRecords = dto.getInterView().listInterviewRecordInfo;
 			int rowIndex = FIRST_ROW_FILL;
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
-			this.settingHeader(ws, query,companyName);
+			this.settingHeader(ws, query, companyName);
 			for (int i = 0; i < exportData.size(); i++) {
-			
-				
+
 				PlannedRetirementDto entity = exportData.get(i);
 				Optional<InterviewRecordInfo> interViewOpt = interviewRecords.stream()
 						.filter(x -> x.getEmployeeID().equals(entity.getSId())).findFirst();
@@ -156,7 +157,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			}
 
 			if (exportData.size() % 2 == 0 && exportData.size() > 1) {
-				int totalColumn = 27;
+				int totalColumn = 29;
 				int columnStart = 1;
 				for (int column = columnStart; column < totalColumn + columnStart; column++) {
 					Style style = wsc.get(0).getCells().get(rowIndex - 1, column).getStyle();
@@ -170,16 +171,16 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		}
 	}
 
-	private void settingHeader(Worksheet ws, SearchRetiredEmployeesQuery query,String companyName) {
-		
+	private void settingHeader(Worksheet ws, SearchRetiredEmployeesQuery query, String companyName) {
+
 		// Set print page
-        PageSetup pageSetup = ws.getPageSetup();
-        pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
-        pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
-        // Set header date
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
-        pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-		
+		PageSetup pageSetup = ws.getPageSetup();
+		pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
+		pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
+		// Set header date
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
+		pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
+
 		ws.getCells().get(1, 3).putValue(query.getStartDate() + "~" + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
 		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
