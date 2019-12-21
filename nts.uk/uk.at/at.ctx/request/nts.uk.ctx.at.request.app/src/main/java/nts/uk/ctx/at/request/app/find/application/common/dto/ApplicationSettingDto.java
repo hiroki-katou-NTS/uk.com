@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -113,6 +114,10 @@ public class ApplicationSettingDto {
 				EnumAdaptor.valueOf(priorityTimeReflectFlg, PriorityFLg.class),
 				EnumAdaptor.valueOf(attendentTimeReflectFlg, ReflectionFlg.class),
 				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class),
-				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class),
+				new ApproverRegisterSet(EnumAdaptor.valueOf(companyUnit, DisplayAtr.class),
+						EnumAdaptor.valueOf(workplaceUnit, DisplayAtr.class),
+						EnumAdaptor.valueOf(employeeUnit, DisplayAtr.class))
+				);
 	}
 }
