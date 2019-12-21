@@ -166,7 +166,7 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	
 	private Integer printWorkPlace(Cells cells, ReservationWkpLedger wkpLedger, DatePeriod period, Integer dataRow) throws Exception {
 		int startDataRow = dataRow + 1;
-		cells.get(startDataRow, EMPLOYEE_COLUMN).setValue(wkpLedger.getWkpName());
+		cells.get(startDataRow, EMPLOYEE_COLUMN).setValue(wkpLedger.getWkpCD() + " " + wkpLedger.getWkpName());
 		for(ReservationEmpLedger empLedger : wkpLedger.getEmpLedgerLst()) {
 			startDataRow = printEmployee(cells, empLedger, period, startDataRow);
 		}
@@ -175,7 +175,7 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	
 	private Integer printEmployee(Cells cells, ReservationEmpLedger empLedger, DatePeriod period, Integer dataRow) throws Exception {
 		int startDataRow = dataRow + 1;
-		cells.get(startDataRow, EMPLOYEE_COLUMN).setValue(empLedger.getEmpName());
+		cells.get(startDataRow, EMPLOYEE_COLUMN).setValue(empLedger.getEmpCD() + " " + empLedger.getEmpName());
 		for(ReservationBentoLedger bentoLedger : empLedger.getBentoLedgerLst()) {
 			printBento(cells, bentoLedger, period, startDataRow);
 			startDataRow += 1;
