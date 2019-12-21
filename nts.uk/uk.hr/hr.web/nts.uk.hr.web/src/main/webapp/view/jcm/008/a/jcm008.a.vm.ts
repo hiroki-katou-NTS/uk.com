@@ -12,19 +12,15 @@ module jcm008.a {
 
     export class ViewModel {
         searchFilter: SearchFilterModel;
-        retirementSettings: KnockoutObservable<Array<RetirementSetting>>;
-        selectedRetirementSetting: KnockoutObservable<string>;
+        retirementSettings: KnockoutObservable<Array<string>>;
+        
         selectedRetirementEmployee: KnockoutObservable<any>;
         retirementDateSetting: KnockoutObservable<Array<any>>;
         employeeInfo: KnockoutObservable<IEmployee>;
+       
         constructor() {
             let self = this;
             self.searchFilter = new SearchFilterModel();
-            self.retirementSettings = ko.observableArray([
-                new RetirementSetting('1', '基本給'),
-                new RetirementSetting('2', '役職手当'),
-                new RetirementSetting('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
             self.retirementDateSetting = [
                 { employeeCode: 'S100001', employeeName: '社員名', employeeKanaName: '社員名', employeeDob: '1954/11/11', employeeAge: '65分', department: '局売り場', employment: '雇用', hireDate: '1954/11/11', retirementDate: '1954/11/11', releaseDate: '1954/11/11', inputDate: '1954/11/11', retirementStatus: '1', registrationStatus: '登録状況', desiredWorkingCourse: '1', personnelAssessment1: 'A', personnelAssessment2: 'B', personnelAssessment3: 'C', healthCondition1: 'A', healthCondition2: 'A', healthCondition3: 'A', stressCheck1: 'A', stressCheck2: 'A', stressCheck3: 'B', interviewRecord: getText('JCM008_A222_57'), flag: false },
                 { employeeCode: 'S100002', employeeName: '社員名', employeeKanaName: '社員名', employeeDob: '1954/11/11', employeeAge: '65分', department: '局売り場', employment: '雇用', hireDate: '1954/11/11', retirementDate: '1954/11/11', releaseDate: '1954/11/11', inputDate: '1954/11/11', retirementStatus: '1', registrationStatus: '登録状況', desiredWorkingCourse: '1', personnelAssessment1: 'A', personnelAssessment2: 'B', personnelAssessment3: 'C', healthCondition1: 'A', healthCondition2: 'A', healthCondition3: 'A', stressCheck1: 'A', stressCheck2: 'A', stressCheck3: 'B', interviewRecord: getText('JCM008_A222_57'), flag: false },
@@ -38,9 +34,8 @@ module jcm008.a {
                 { employeeCode: 'S100010', employeeName: '社員名', employeeKanaName: '社員名', employeeDob: '1954/11/11', employeeAge: '65分', department: '局売り場', employment: '雇用', hireDate: '1954/11/11', retirementDate: '1954/11/11', releaseDate: '1954/11/11', inputDate: '1954/11/11', retirementStatus: '1', registrationStatus: '登録状況', desiredWorkingCourse: '1', personnelAssessment1: 'A', personnelAssessment2: 'B', personnelAssessment3: 'C', healthCondition1: 'A', healthCondition2: 'A', healthCondition3: 'A', stressCheck1: 'A', stressCheck2: 'A', stressCheck3: 'B', interviewRecord: getText('JCM008_A222_57'), flag: false },
                 { employeeCode: 'S100011', employeeName: '社員名', employeeKanaName: '社員名', employeeDob: '1954/11/11', employeeAge: '65分', department: '局売り場', employment: '雇用', hireDate: '1954/11/11', retirementDate: '1954/11/11', releaseDate: '1954/11/11', inputDate: '1954/11/11', retirementStatus: '1', registrationStatus: '登録状況', desiredWorkingCourse: '1', personnelAssessment1: 'A', personnelAssessment2: 'B', personnelAssessment3: 'C', healthCondition1: 'A', healthCondition2: 'A', healthCondition3: 'A', stressCheck1: 'A', stressCheck2: 'A', stressCheck3: 'B', interviewRecord: getText('JCM008_A222_57'), flag: false }
             ];
-            self.bindRetirementAgeGrid();
+            self.searchFilter.retirementCourses = ko.observableArray([]);
             self.bindRetirementDateSettingGrid();
-            self.selectedRetirementSetting = self.retirementSettings()[0].code;
             self.employeeInfo = ko.observable({});
             $(".employee-info-pop-up").ntsPopup("hide");
         }
@@ -54,12 +49,24 @@ module jcm008.a {
                 console.log(data);
                 let dateDisplaySet = data.dateDisplaySettingPeriod;
                 self.searchFilter.retirementPeriod({startDate: dateDisplaySet.periodStartdate, endDate: dateDisplaySet.periodEnddate});
+                _.map(data.retirementCourses, (c) => {
+                    c.retirementAge = c.retirementAge + '分';
+                    return c;
+                })
+                self.searchFilter.retirementCourses(data.retirementCourses);
+
+                let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
+                    return new RetirementAgeSetting(rc.retirementAge.replace('分', '') ,rc.retirementAge);
+                });
+
+                self.searchFilter.retirementAges(_.uniqBy(retirementAge, 'code'));
+                self.bindRetirementAgeGrid();
                 dfd.resolve();
                 // block.clear();
             }).fail((error) => {
                 console.log('Get Data Fail');
                 dfd.reject();
-                nts.uk.ui.dialog.info(error);
+                dialog.info(error);
             }).always(() => {
                 block.clear();
             });
@@ -83,34 +90,49 @@ module jcm008.a {
                     dfd.reject();
                     console.log(error);
                     if(error.messageId == "MsgJ_JCM008_5") {
-                        nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM008_5" }).ifYes(() => {
+                        confirm({ messageId: "MsgJ_JCM008_5" }).ifYes(() => {
                             self.searchFilter.confirmCheckRetirementPeriod(true);
                             self.getRetirementData();
                         });
                     } else {
-                        nts.uk.ui.dialog.info(error);
+                        dialog.info(error);
                     }
                 })
                 .always(() => {
                     block.clear();
+                });
+        }
+
+        public register() {
+            let self = this;
+            let data = {
+                retiInfos: []
+            };
+            block.grayout();
+            service.register(data)
+                .done(() => {
+                    dialog.info({ messageId: "Msg_15" });
                 })
+                .fail((error) => {
+                    dialog.info(error);
+                })
+                .always(() => {
+                    block.clear();
+                });
+
         }
 
         public bindRetirementAgeGrid(): void {
+            let self = this;
             $('#retirementAgeInfo').ntsGrid({
                 autoGenerateColumns: false,
                 columns: [
-                    { headerText: getText('JCM008_A222_13'), key: 'classification', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_14'), key: 'age', dataType: 'string', width: '70px' },
-                    { headerText: getText('JCM008_A222_15'), key: 'standard', dataType: 'string', width: '220px' },
+                    { headerText: getText('JCM008_A222_13'), key: 'employmentName', dataType: 'string', width: '80px' },
+                    { headerText: getText('JCM008_A222_14'), key: 'retirementAge', dataType: 'string', width: '70px' },
+                    { headerText: getText('JCM008_A222_15'), key: 'retireDateBase', dataType: 'string', width: '280px' },
 
                 ],
-                dataSource: [
-                    { classification: '雇用区分', age: '65分', standard: '退職日基準 退職日基準' },
-                    { classification: '雇用区分', age: '65分', standard: '退職日基準 退職日基準' },
-                    { classification: '雇用区分', age: '65分', standard: '退職日基準 退職日基準' },
-                    { classification: '雇用区分', age: '65分', standard: '退職日基準 退職日基準' }
-                ],
+                dataSource: self.searchFilter.retirementCourses(),
                 dataSourceType: 'json',
                 responseDataKey: 'results'
             });
@@ -191,7 +213,7 @@ module jcm008.a {
                             // $('#retirementDateSetting').css('height', '425px');
                         }
                     },
-                    {name: 'Paging',pageSize: 10,currentPageIndex: 0},
+                    {name: 'Paging', pageSize: 10,currentPageIndex: 0},
                     {name: 'Resizing'},
                     {name: 'MultiColumnHeaders'}
                 ],

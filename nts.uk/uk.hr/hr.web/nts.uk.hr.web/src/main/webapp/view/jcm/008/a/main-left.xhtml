@@ -24,10 +24,11 @@
             class="mr-20 help-button">?</button>
         <!-- A222_5_1 -->
         <div id="combo-box" data-bind="ntsComboBox: {
-            options: retirementSettings,
+            options: searchFilter.retirementAges(),
             optionsValue: 'code',
             visibleItemsCount: 5,
-            value: selectedRetirementSetting,
+            value: searchFilter.selectedRetirementAge,
+            enable: searchFilter.retirementAgeDesignation(),
             optionsText: 'name',
             columns: [
 				{ prop: 'name', length: 15 }

@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.command.RetirementInformationRegisterCommand;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.command.RetirementInformationRegisterCommandHandler;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetiDateDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementInformationFinder;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
@@ -17,6 +19,9 @@ public class RetirementInformationWebService {
 
 	@Inject
 	private RetirementInformationFinder finder;
+	
+	@Inject
+	private RetirementInformationRegisterCommandHandler cmmd;
 
 	@POST
 	@Path("startPage")
@@ -28,6 +33,12 @@ public class RetirementInformationWebService {
 	@Path("search-retired")
 	public SearchRetiredResultDto searchRetiredEmployees(SearchRetiredEmployeesQuery query) {
 		return this.finder.searchRetiredEmployees(query);
+	}
+	
+	@POST
+	@Path("register-retired")
+	public void registerRetiredEmployees(RetirementInformationRegisterCommand ccmd) {
+		cmmd.handle(ccmd);
 	}
 	
 }

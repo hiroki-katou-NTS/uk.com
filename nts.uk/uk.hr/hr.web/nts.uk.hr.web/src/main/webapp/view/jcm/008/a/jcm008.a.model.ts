@@ -38,7 +38,7 @@ class ScreenSetting {
     }
 }
 
-class RetirementSetting {
+class RetirementAgeSetting {
     code: string;
     name: string;
 
@@ -63,7 +63,8 @@ interface IRetirementCourses {
     employmentCode: string;
     employmentName: string;
     retirePlanCourseClass: 0;
-    retirementAge: number;
+    retirementAge: string;
+    retireDateBase: string;
     retireDateTerm: IRetireDateTerm;
     retirePlanCourseId: number;
     retirePlanCourseCode: string;
@@ -124,6 +125,9 @@ class SearchFilterModel {
     })
     selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
     confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
+    retirementCourses: KnockoutObservable<IRetirementCourses>;
+    retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
+    selectedRetirementAge: KnockoutObservable<string> = ko.observable({});
     constructor() {
 
     }
@@ -139,7 +143,13 @@ class ISearchParams {
     selectDepartment: Array<string>;
     allSelectEmployment: boolean;
     selectEmployment: Array<string>;
+    includingReflected: boolean;
     constructor(param: SearchFilterModel) {
+        this.includingReflected = param.includingReflected();
+        this.retirementAgeSetting = param.retirementAgeDesignation();
+        if(this.retirementAgeSetting) {
+            this.retirementAge = parseInt(param.selectedRetirementAge());
+        }
         this.startDate = param.retirementPeriod().startDate;
         this.endDate = param.retirementPeriod().endDate;
         this.allSelectDepartment = param.selectAllDepartment();
@@ -165,7 +175,18 @@ interface IEmployeeInformationImport {
     classification: Classification;
     department: Department;
     position: Position;
+    employment: Employment;
+    employmentCls: number;
+    personID: string;
+    employeeName: string;
+    avatarFile: FacePhotoFile;
+    birthday: string;
+    age: number;
+}
 
+interface FacePhotoFile {
+    thumbnailFileID: string;
+    facePhotoFileID: string;
 }
 
 interface Employment {

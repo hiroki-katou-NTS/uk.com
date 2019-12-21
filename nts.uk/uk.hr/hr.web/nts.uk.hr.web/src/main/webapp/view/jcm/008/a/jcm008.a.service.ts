@@ -5,11 +5,16 @@ module jcm008.a.service {
     var paths = {
         getData: 'databeforereflecting/startPage',
         searchRetirementInfo: 'databeforereflecting/search-retired',
-        export: 'file/hr/report/retirementinformation/export'
+        export: 'file/hr/report/retirementinformation/export',
+        register: 'databeforereflecting/register-retired'
     }
        
     export function getData() : JQueryPromise<any>{
         return ajax(paths.getData);
+    }
+
+    export function register(data: any) : JQueryPromise<any>{
+        return ajax(paths.register, data);
     }
 
     export function searchRetireData(data: ISearchParams) : JQueryPromise<any>{

@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.com
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -15,6 +16,7 @@ import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInf
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
 
+@Stateless
 public class RetirementInformationRegisterCommandHandler extends CommandHandler<RetirementInformationRegisterCommand> {
 
 	public static final String TIME_DAY_START = " 00:00:00";
