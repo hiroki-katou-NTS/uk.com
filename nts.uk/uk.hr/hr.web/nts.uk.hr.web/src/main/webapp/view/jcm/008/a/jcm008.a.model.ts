@@ -157,19 +157,46 @@ interface ISearchResult {
 }
 
 interface IEmployeeInformationImport {
-     employeeID : string;
-     interviewRecordId : string;
-     interviewDate : string;
-     mainInterviewerEmployeeID : string;
-     employeeCD : string;
-     businessName : string;
-     businessNameKana : string;
-     departmentCd : string;
-     departmentDisplayName : string;
-     positionCd : string;
-     positionName : string;
-     employmentCd : string;
-     employmentName : string;
+    employeeId : string;
+    employeeCode : string;
+    businessName : string;
+    businessNameKana : string;
+    workplace: WorkPlace;
+    classification: Classification;
+    department: Department;
+    position: Position;
+
+}
+
+interface Employment {
+    employmentCode: string;
+    employmentName: string;
+}
+
+interface Position {
+    positionId: string;
+    positionCode: string;
+    positionName: string;
+}
+
+interface Department {
+    departmentCode: string;
+    departmentName: string;
+    departmentDisplayName: string;
+}
+
+interface WorkPlace {
+    workplaceId: string;
+    workplaceCode: string;
+    workplaceGenericName: string;
+    workplaceName: string;
+}
+
+
+
+interface Classification {
+    classificationCode: string;
+    classificationName: string;
 }
 
 class PlannedRetirementDto {
@@ -191,6 +218,24 @@ class PlannedRetirementDto {
     age : number;
     retirementDate : string;
     releaseDate : string;
+    inputDate: string;
+    pendingFlag: number;
+    status:number;
+    dst_HistId: string;
+    desiredWorkingCourseCd: string;
+    extendEmploymentFlg: string;
+    companyId: string;
+    companyCode: string;
+    contractCode: string;
+    workId: string;
+    workName: string;
+    desiredWorkingCourseId: string;
+    desiredWorkingCourseName: string;
+    retirementCategory: string;
+    notificationCategory: number;
+    retirementReasonCtgID1: number;
+    retirementReasonCtgCd1: string;
+    retirementReasonCtgName1: string;
     hrEvaluation1 : string;
     hrEvaluation2 : string;
     hrEvaluation3 : string;

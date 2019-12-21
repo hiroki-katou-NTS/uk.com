@@ -189,7 +189,6 @@ public class RetirementInformationFinder {
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
 		
 		String cId = AppContexts.user().companyId();
-		employeeIds.add("-1");
 		InterviewSummary interView = this.interviewSum.getInterviewInfo(cId, InterviewCategory.RETIREMENT_AGE.value,
 				employeeIds, false, true, true, true);
 		
