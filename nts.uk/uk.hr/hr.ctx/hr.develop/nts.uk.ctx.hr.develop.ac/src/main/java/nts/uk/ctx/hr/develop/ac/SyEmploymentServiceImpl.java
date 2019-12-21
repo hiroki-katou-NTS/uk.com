@@ -8,10 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.pub.workrule.closure.workday.IWorkDayPub;
 import nts.uk.ctx.bs.employee.pub.employment.ObjectParam;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeBasicInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeInformationImport;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.SearchCondition;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.SyEmploymentService;
@@ -26,6 +28,9 @@ public class SyEmploymentServiceImpl implements SyEmploymentService{
 	
 	@Inject
 	private EmployeeInformationPub employeeInformationPub;
+	
+	@Inject
+	private IWorkDayPub iWorkDayPub;
 	
 	@Override
 	public List<EmploymentInfoImport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentName,
@@ -69,6 +74,12 @@ public class SyEmploymentServiceImpl implements SyEmploymentService{
 					c.getEmployment().getEmploymentCode(), 
 					c.getEmployment().getEmploymentName());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmploymentDateDto> getClosureDate(String companyId) {
+		// TODO Auto-generated method stub
+		return iWorkDayPub.getClosureDate(companyId).stream().map(c-> new EmploymentDateDto(c.getEmploymentCd(), c.getClosureDate())).collect(Collectors.toList());
 	}
 
 }

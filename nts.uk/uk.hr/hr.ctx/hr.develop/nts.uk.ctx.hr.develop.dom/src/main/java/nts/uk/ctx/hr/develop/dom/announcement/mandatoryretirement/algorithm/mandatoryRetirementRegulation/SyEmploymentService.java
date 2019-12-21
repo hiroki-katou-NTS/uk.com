@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeBasicInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmployeeInformationImport;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentInfoImport;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.SearchCondition;
 
@@ -19,4 +20,6 @@ public interface SyEmploymentService {
 	List<EmployeeInformationImport> getEmployeeInfor(List<String> employeeIds, GeneralDate referenceDate, boolean toGetWorkplace,
 			boolean toGetDepartment, boolean toGetPosition, boolean toGetEmployment, boolean toGetClassification,
 			boolean toGetEmploymentCls);
+	
+	List<EmploymentDateDto> getClosureDate(String companyId);
 }
