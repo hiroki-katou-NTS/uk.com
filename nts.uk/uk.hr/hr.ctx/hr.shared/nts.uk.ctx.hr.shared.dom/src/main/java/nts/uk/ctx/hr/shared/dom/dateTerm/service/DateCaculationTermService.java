@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
@@ -21,16 +22,28 @@ public class DateCaculationTermService {
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.SAME_AS_TARGET_DATE) {
 			return date;
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.DAYS_BEFORE_THE_TARGET_DATE) {
+			if(dateCaculationTerm.getDateSettingNum() == null) {
+				throw new BusinessException("MsgJ_JMM018_20");
+			}
 			return date.stream().map(c-> new EmployeeDateDto(c.getEmployeeId(), c.getTargetDate().addDays(dateCaculationTerm.getDateSettingNum()*-1))).collect(Collectors.toList());
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.DAYS_AFTER_THE_TARGET_DATE) {
+			if(dateCaculationTerm.getDateSettingNum() == null) {
+				throw new BusinessException("MsgJ_JMM018_21");
+			}
 			return date.stream().map(c-> new EmployeeDateDto(c.getEmployeeId(), c.getTargetDate().addDays(dateCaculationTerm.getDateSettingNum()))).collect(Collectors.toList());
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.MONTHS_BEFORE_THE_TARGET_DATE) {
+			if(dateCaculationTerm.getDateSettingNum() == null) {
+				throw new BusinessException("MsgJ_JMM018_20");
+			}
 			return date.stream().map(c-> new EmployeeDateDto(c.getEmployeeId(), c.getTargetDate().addMonths(dateCaculationTerm.getDateSettingNum()*-1))).collect(Collectors.toList());
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.MONTHS_AFTER_THE_TARGET_DATE) {
+			if(dateCaculationTerm.getDateSettingNum() == null) {
+				throw new BusinessException("MsgJ_JMM018_21");
+			}
 			return date.stream().map(c-> new EmployeeDateDto(c.getEmployeeId(), c.getTargetDate().addMonths(dateCaculationTerm.getDateSettingNum()))).collect(Collectors.toList());
 		}else if(dateCaculationTerm.getCalculationTerm() == DateRule.DESIGNATED_DATE) {
 			if(!dateCaculationTerm.getDateSettingDate().isPresent()) {
-				return new ArrayList<EmployeeDateDto>();
+				throw new BusinessException("MsgJ_JMM018_22");
 			}
 			return date.stream().map(c-> {
 				GeneralDate targetDate = c.getTargetDate();

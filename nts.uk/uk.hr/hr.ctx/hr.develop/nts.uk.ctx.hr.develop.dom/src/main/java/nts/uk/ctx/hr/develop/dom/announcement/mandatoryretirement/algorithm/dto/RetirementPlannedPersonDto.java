@@ -2,7 +2,6 @@ package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
