@@ -5,7 +5,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -20,7 +19,7 @@ public class ReservationExportQuery {
 	@Inject
 	private ClosureService closureService;
 	
-	public JavaTypeResult<String> startup() {
+	public DatePeriod startup() {
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
 		
@@ -33,7 +32,7 @@ public class ReservationExportQuery {
 		// 当月の期間を算出する
 		DatePeriod period = closureService.getClosurePeriod(closure.getClosureId().value, processingYm);
 		
-		return new JavaTypeResult<String>(period.toString());
+		return period;
 	}
 	
 }

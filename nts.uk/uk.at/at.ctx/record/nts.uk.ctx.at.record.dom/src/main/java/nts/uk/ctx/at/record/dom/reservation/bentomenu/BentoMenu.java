@@ -76,7 +76,6 @@ public class BentoMenu extends AggregateRoot {
 		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr())
 				.map(x -> x.itemByClosingTime())
 				.collect(Collectors.toList());
-		menu1.addAll(menu2);
 		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
 	}
 	

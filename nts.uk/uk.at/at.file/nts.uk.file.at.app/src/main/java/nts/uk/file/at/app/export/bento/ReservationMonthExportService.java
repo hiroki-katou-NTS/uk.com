@@ -16,7 +16,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
@@ -98,10 +97,12 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		// get(年月日)
 		BentoMenu bentoMenu = bentoMenuRepository.getBentoMenu(companyID, period.end());
 		
+		/*
 		// 社員を並べ替える
 		List<String> sortEmpLst = regulationInfoEmployeeAdapter.sortEmployee(companyID, empLst, 2, null, 1, 
 				GeneralDateTime.fromString(period.end().toString("yyyy/MM/dd") + " 00:00", "yyyy/MM/dd HH:mm"));
-		
+		*/
+		List<String> sortEmpLst = empLst;
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationExport> empInfoLst = employeeInformationPub.find(
 				EmployeeInformationQueryDto
@@ -132,7 +133,9 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		dataSource.setPeriod(period);
 		Map<WorkplaceExport, List<EmployeeInformationExport>> wkpMap = empInfoLst.stream().collect(Collectors.groupingBy(EmployeeInformationExport::getWorkplace));
 		List<ReservationWkpLedger> reservationWkpLedgerLst = wkpMap.entrySet().stream()
-				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst)).collect(Collectors.toList());
+				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst))
+				.filter(x -> !CollectionUtil.isEmpty(x.getEmpLedgerLst()))
+				.collect(Collectors.toList());
 		dataSource.setWkpLedgerLst(reservationWkpLedgerLst);
 		return dataSource;
 	}
@@ -149,6 +152,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 						bentoReservationLst, 
 						bentoMenu,
 						stampCardLst.stream().filter(y -> y.getEmployeeId().equals(x.getKey())).findAny().get().getStampNumber().toString()))
+				.filter(x -> !CollectionUtil.isEmpty(x.getBentoLedgerLst()))
 				.collect(Collectors.toList());
 		wkpLedger.setEmpLedgerLst(reservationEmpLedgerLst);
 		return wkpLedger;
@@ -179,7 +183,11 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 				totalBentoAmount2 += bentoAmountTotal.getTotalAmount2();
 				for(BentoReservationDetail z : y.getBentoReservationDetails()) {
 					totalBentoQuantity += z.getBentoCount().v();
-					dateFrameQuantityMap.put(Pair.of(x.getKey(), z.getFrameNo()), z.getBentoCount().v());
+					int currentQuantity = 0;
+					if(dateFrameQuantityMap.containsKey(Pair.of(x.getKey(), z.getFrameNo()))) {
+						currentQuantity = dateFrameQuantityMap.get(Pair.of(x.getKey(), z.getFrameNo()));
+					} 
+					dateFrameQuantityMap.put(Pair.of(x.getKey(), z.getFrameNo()), currentQuantity + z.getBentoCount().v());
 					frameMap.put(z.getFrameNo(), bentoMenu.getMenu().stream().filter(t -> t.getFrameNo()==z.getFrameNo()).findAny().get().getName().toString());
 				}
 				

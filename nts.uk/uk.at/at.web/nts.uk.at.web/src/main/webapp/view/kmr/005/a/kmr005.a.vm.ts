@@ -84,7 +84,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
             });
             
             nts.uk.characteristics.restore("ordered").done((data) => {
-                self.selectedOrdered(_.isEmpty(data) ? 0 : data);            
+                self.selectedOrdered(_.isNumber(data) ? data : 0);            
             });
             
             self.title.subscribe(value => {
@@ -171,7 +171,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 return;    
             }
             let param = {
-                empLst: _.map(self.employeeList(), (o) => o.id),
+                empLst: _(self.employeeList()).filter((o) => self.selectedEmployeeCode().includes(o.code)).map((o) => o.id).value(),
                 title: self.title(),
                 startDate: self.dateValue().startDate,
                 endDate: self.dateValue().endDate,

@@ -4,7 +4,6 @@ import java.util.Map;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 /**
@@ -24,10 +23,8 @@ public class BentoReserveService {
 		BentoReservation bentoReservation = bentoMenu.reserve(registerInfor, reservationDate, dateTime, bentoDetails);
 		
 		return AtomTask.of(() -> {
-			if(!CollectionUtil.isEmpty(bentoDetails.values())) {
-				// 3: persist
-				require.reserve(bentoReservation);
-			}
+			// 3: persist
+			require.reserve(bentoReservation);
 		});
 	}
 	
