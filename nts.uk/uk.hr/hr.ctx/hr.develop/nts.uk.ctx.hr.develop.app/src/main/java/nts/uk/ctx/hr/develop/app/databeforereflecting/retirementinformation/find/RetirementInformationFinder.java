@@ -21,7 +21,6 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCour
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.ComprehensiveEvaluationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
@@ -40,8 +39,8 @@ import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.ClosureDateOfEmploymen
 import nts.uk.ctx.hr.develop.dom.workrule.closure.workday.GetClosureDateAdaptor;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
-import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.DateCaculationTermDto;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.ctx.hr.shared.dom.employment.EmployeeBasicInfoImport;
@@ -132,7 +131,7 @@ public class RetirementInformationFinder {
 		// アルゴリズム[定年退職者一覧の取得]を実行する(Thực hiện thuật toán [lấy danh sách người
 		// nghỉ hưu])
 		SearchRetiredResultDto result = getListRetiredEmployees(query);
-		// アルゴリズム[社員情報リストを取得]を実行する 
+		// アルゴリズム[社員情報リストを取得]を実行する
 
 		List<String> sIDs = result.getRetiredEmployees().stream().map(x -> x.getSId()).collect(Collectors.toList());
 
@@ -178,20 +177,19 @@ public class RetirementInformationFinder {
 		retiredEmployees.forEach(item -> {
 			retirementEmployees.stream().filter(retirement -> retirement.getSId().equals(item.getSId())).findFirst()
 					.ifPresent(retirement -> {
-						setRetiredInfo(item,retirement);
+						setRetiredInfo(item, retirement);
 					});
 
-			
 		});
 		// アルゴリズム[面談記録チェック]を実行する(Thực hiện thuật toán [check báo cáo kết quả
 		// phỏng vấn])
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
-		
+
 		String cId = AppContexts.user().companyId();
 		InterviewSummary interView = this.interviewSum.getInterviewInfo(cId, InterviewCategory.RETIREMENT_AGE.value,
 				employeeIds, false, true, true, true);
-		
+
 		return SearchRetiredResultDto.builder().retiredEmployees(result).interView(interView).build();
 
 	}
@@ -227,10 +225,9 @@ public class RetirementInformationFinder {
 		MandatoryRetirementRegulation mada = getRetirementRules(cId, hisId, baseDate);
 
 		YearStartEnd yearStartEnd = new YearStartEnd(null, null);
-		
-		List<EmploymentDateDto> salaryClosingDate =  new ArrayList<EmploymentDateDto>();
-		
-		
+
+		List<EmploymentDateDto> salaryClosingDate = new ArrayList<EmploymentDateDto>();
+
 		List<EmploymentDateDto> closureDates = new ArrayList<EmploymentDateDto>();
 		switch (mada.getRetireDateTerm().getRetireDateTerm().value) {
 		case 0:
@@ -271,8 +268,8 @@ public class RetirementInformationFinder {
 		}
 
 		// 検索条件リストを生成する ( Tạo list điều kiện tìm kiếm/Search condition list)
-		List<ObjectParam> listObjParam = createSearchConditionList(mada.getReachedAgeTerm(), query.getStartDate(), query.getEndDate(),
-				retirePlanCourses);
+		List<ObjectParam> listObjParam = createSearchConditionList(mada.getReachedAgeTerm(), query.getStartDate(),
+				query.getEndDate(), retirePlanCourses);
 
 		// アルゴリズム [基準日、検索条件リストから該当する在籍社員を取得する] を実行する ( Thực hiện thuật toán "Lấy
 
@@ -307,30 +304,26 @@ public class RetirementInformationFinder {
 		List<RetirePlanParam> retirePlans = createRetirePlanList(retireInfos, retirePlanCourses);
 		// アルゴリズム [退職日の取得] を実行する (Thực hiện thuật toán [Lấy Retirement date])
 
-		RetireDateTermParam retireDateTerm = new RetireDateTermParam(mada.getRetireDateTerm().getRetireDateTerm(),
-				mada.getRetireDateTerm().getRetireDateSettingDate().isPresent()
-						? mada.getRetireDateTerm().getRetireDateSettingDate().get() : null);
-		
-		List<RetirementDateDto> retiDtos = this.madaRepo.getRetireDateBySidList(retirePlans, mada.getReachedAgeTerm(), retireDateTerm,
-				Optional.ofNullable(yearStartEnd.getYearEndYMD()), salaryClosingDate, closureDates);
+		List<RetirementDateDto> retiDtos = this.madaRepo.getRetireDateBySidList(retirePlans, mada.getReachedAgeTerm(),
+				mada.getRetireDateTerm(), Optional.ofNullable(yearStartEnd.getYearEndYMD()), salaryClosingDate,
+				closureDates);
 		// 社員年齢リストを生成する (Tạo Employee age list)
-		
+
 		List<RetiredDto> retireds = createRetireds(mada.getReachedAgeTerm(), retireInfos, retiDtos);
-		
+
 		// アルゴリズム [算出日の取得] を実行する (Thực hiện thuật toán "Get CalculationDate")
 		List<EmployeeDateDto> date = retiDtos.stream()
 				.map(x -> new EmployeeDateDto(x.getEmployeeId(), x.getRetirementDate())).collect(Collectors.toList());
-		
-		DateCaculationTermDto calDto = new DateCaculationTermDto(mada.getPublicTerm().getCalculationTerm(),
-				mada.getPublicTerm().getDateSettingNum(), mada.getPublicTerm().getDateSettingDate().isPresent()
-						? mada.getPublicTerm().getDateSettingDate().get() : null);
+
+		DateCaculationTerm calDto = new DateCaculationTerm(mada.getPublicTerm().getCalculationTerm(),
+				mada.getPublicTerm().getDateSettingNum(), mada.getPublicTerm().getDateSettingDate());
 
 		List<EmployeeDateDto> empDates = this.dateCal.getDateBySidList(date, calDto);
-		 
+
 		// アルゴリズム [評価情報の取得] を実行する (THực hiện thuật toán " Lấy thông tin đánh
 		// giá")
-		List<String> retiredEmployeeId = retireInfos.stream().map(x-> x.getEmployeeId()).collect(Collectors.toList());
-		
+		List<String> retiredEmployeeId = retireInfos.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+
 		EvaluationInfoDto evaDto = this.madaRepo.getEvaluationInfoBySidList(retiredEmployeeId,
 				mada.getReferEvaluationTerm());
 		// 定年退職予定者リストを生成する (Tạo List of retired employees)
@@ -342,45 +335,36 @@ public class RetirementInformationFinder {
 			List<RetiredDto> retireds, List<RetirementDateDto> retiDtos, List<EmployeeDateDto> empDates,
 			List<ComprehensiveEvaluationDto> hrEvaluationList, List<ComprehensiveEvaluationDto> healthStatusList,
 			List<ComprehensiveEvaluationDto> stressStatusList) {
-		
+
 		List<PlannedRetirementDto> result = new ArrayList<PlannedRetirementDto>();
-		
+
 		retireInfos.forEach(plan -> {
-			
+
 			Optional<RetiredDto> retiredOpt = retireds.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeId())).findFirst();
-			
+
 			Optional<RetirementDateDto> retiDateOpt = retiDtos.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeId())).findFirst();
-			
+
 			Optional<EmployeeDateDto> empDateOpt = empDates.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeId())).findFirst();
-			
+
 			Optional<ComprehensiveEvaluationDto> hreOpt = hrEvaluationList.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeID())).findFirst();
-			
+
 			Optional<ComprehensiveEvaluationDto> heathOpt = healthStatusList.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeID())).findFirst();
-			
+
 			Optional<ComprehensiveEvaluationDto> streeOpt = stressStatusList.stream()
 					.filter(x -> plan.getEmployeeId().equals(x.getEmployeeID())).findFirst();
-			
-			PlannedRetirementDto planed = PlannedRetirementDto
-					.builder()
-					.pId(plan.getPId())
-					.sId(plan.getEmployeeId())
-					.scd(plan.getEmployeeCode())
-					.businessName(plan.getBusinessName())
-					.businessnameKana(plan.getBusinessNameKana())
-					.birthday(plan.getBirthday())
-					.dateJoinComp(plan.getDateJoinComp())
-					.departmentId(plan.getDepartmentId())
-					.departmentCode(plan.getDepartmentCode())
-					.departmentName(plan.getDepartmentName())
-					.jobTitleId(plan.getPositionId())
-					.jobTitleCd(plan.getPositionCode())
-					.jobTitleName(plan.getPositionName())
-					.employmentCode(plan.getEmploymentCode())
+
+			PlannedRetirementDto planed = PlannedRetirementDto.builder().pId(plan.getPId()).sId(plan.getEmployeeId())
+					.scd(plan.getEmployeeCode()).businessName(plan.getBusinessName())
+					.businessnameKana(plan.getBusinessNameKana()).birthday(plan.getBirthday())
+					.dateJoinComp(plan.getDateJoinComp()).departmentId(plan.getDepartmentId())
+					.departmentCode(plan.getDepartmentCode()).departmentName(plan.getDepartmentName())
+					.jobTitleId(plan.getPositionId()).jobTitleCd(plan.getPositionCode())
+					.jobTitleName(plan.getPositionName()).employmentCode(plan.getEmploymentCode())
 					.employmentName(plan.getEmploymentName())
 					.age(retiredOpt.isPresent() ? retiredOpt.get().getAge() : null)
 					.retirementDate(retiDateOpt.isPresent() ? retiDateOpt.get().getRetirementDate() : null)
@@ -393,23 +377,24 @@ public class RetirementInformationFinder {
 					.healthStatus3(heathOpt.isPresent() ? heathOpt.get().getOverallResult3() : null)
 					.stressStatus1(streeOpt.isPresent() ? streeOpt.get().getOverallResult1() : null)
 					.stressStatus2(streeOpt.isPresent() ? streeOpt.get().getOverallResult2() : null)
-					.stressStatus3(streeOpt.isPresent() ? streeOpt.get().getOverallResult3() : null)
-					.build();
+					.stressStatus3(streeOpt.isPresent() ? streeOpt.get().getOverallResult3() : null).build();
 			result.add(planed);
-			
+
 		});
-		
+
 		return result;
 	}
 
-	private List<RetiredDto> createRetireds(ReachedAgeTerm reachedAgeTerm, List<RetirementInformationDto> retireInfos, List<RetirementDateDto> retiDtos) {
-		
-		return retiDtos.stream().map(x -> RetiredDto.builder().employeeId(x.getEmployeeId()).age(createAge(reachedAgeTerm,x,retireInfos)).build())
-				.collect(Collectors.toList());
+	private List<RetiredDto> createRetireds(ReachedAgeTerm reachedAgeTerm, List<RetirementInformationDto> retireInfos,
+			List<RetirementDateDto> retiDtos) {
+
+		return retiDtos.stream().map(x -> RetiredDto.builder().employeeId(x.getEmployeeId())
+				.age(createAge(reachedAgeTerm, x, retireInfos)).build()).collect(Collectors.toList());
 	}
 
-	private int createAge(ReachedAgeTerm reachedAgeTerm,RetirementDateDto dto, List<RetirementInformationDto> retireInfos) {
-		
+	private int createAge(ReachedAgeTerm reachedAgeTerm, RetirementDateDto dto,
+			List<RetirementInformationDto> retireInfos) {
+
 		int result = 0;
 		Optional<RetirementInformationDto> retiOpt = retireInfos.stream()
 				.filter(X -> dto.getEmployeeId().equals(dto.getEmployeeId())).findFirst();
@@ -420,8 +405,7 @@ public class RetirementInformationFinder {
 				result = dto.getRetirementDate().compareTo(retiOpt.get().getBirthday());
 			}
 		}
-		
-		
+
 		return result;
 	}
 
@@ -448,12 +432,10 @@ public class RetirementInformationFinder {
 
 		empBasicInfos.forEach(x -> {
 			empInfoImports.stream().filter(ei -> ei.getEmployeeId().equals(x.getSid())).findFirst().ifPresent(ei -> {
-				result.add(RetirementInformationDto.builder()
-						.pId(x.getPid())
-						.employeeId(x.getSid())
-						.employeeCode(x.getEmploymentCode())
-						.businessName(ei.getBusinessName()).businessNameKana(ei.getBusinessNameKana())
-						.birthday(x.getBirthday()).dateJoinComp(x.getDateJoinComp())
+				result.add(RetirementInformationDto.builder().pId(x.getPid()).employeeId(x.getSid())
+						.employeeCode(x.getEmploymentCode()).businessName(ei.getBusinessName())
+						.businessNameKana(ei.getBusinessNameKana()).birthday(x.getBirthday())
+						.dateJoinComp(x.getDateJoinComp())
 						.departmentId(ei.getDepartment() == null ? null : ei.getDepartment().getDepartmentId())
 						.departmentCode(ei.getDepartment() == null ? null : ei.getDepartment().getDepartmentCode())
 						.departmentName(ei.getDepartment() == null ? null : ei.getDepartment().getDepartmentName())
@@ -470,11 +452,11 @@ public class RetirementInformationFinder {
 		return result;
 	}
 
-	private List<ObjectParam> createSearchConditionList(ReachedAgeTerm reachedAgeTerm, GeneralDate startDate, GeneralDate endDate,
-			List<RetirementCourseDto> retirePlanCourses) {
-		
-		 List<ObjectParam> result = new ArrayList<ObjectParam>();
-		 
+	private List<ObjectParam> createSearchConditionList(ReachedAgeTerm reachedAgeTerm, GeneralDate startDate,
+			GeneralDate endDate, List<RetirementCourseDto> retirePlanCourses) {
+
+		List<ObjectParam> result = new ArrayList<ObjectParam>();
+
 		retirePlanCourses.forEach(x -> {
 
 			if (reachedAgeTerm.equals(ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY)) {
@@ -499,8 +481,7 @@ public class RetirementInformationFinder {
 
 			result.add(new ObjectParam(x.getEmploymentCode(), new DatePeriod(startDate, endDate)));
 		});
-		
-				 
+
 		return result;
 	}
 
@@ -739,22 +720,17 @@ public class RetirementInformationFinder {
 
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
 
-		Optional<EmploymentInfoImport> empInfo = empInfos.stream()
-				.filter(emp -> emp.getEmpCommonMasterItemId() != null 
-							&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId()))
-				.findFirst();
+		Optional<EmploymentInfoImport> empInfo = empInfos.stream().filter(emp -> emp.getEmpCommonMasterItemId() != null
+				&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId())).findFirst();
 
 		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
 		String employmentName = empInfo.isPresent() ? empInfo.get().getEmploymentName() : null;
 
 		retireTerm.getEnableRetirePlanCourse().forEach(x -> {
 
-			RetirementCourseDto dto = RetirementCourseDto.builder()
-					.employmentCode(employmentCode)
-					.employmentName(employmentName)
-					.retireDateBase(jugDateBase(mada.getRetireDateTerm()))
-					.retireDateTerm(new RetireDateTermDto(mada.getRetireDateTerm()))
-					.build();
+			RetirementCourseDto dto = RetirementCourseDto.builder().employmentCode(employmentCode)
+					.employmentName(employmentName).retireDateBase(jugDateBase(mada.getRetireDateTerm()))
+					.retireDateTerm(new RetireDateTermDto(mada.getRetireDateTerm())).build();
 
 			Optional<RetirePlanCource> retire = retires.stream()
 					.filter(re -> re.getRetirePlanCourseId() == x.getRetirePlanCourseId()).findFirst();
@@ -776,25 +752,24 @@ public class RetirementInformationFinder {
 	}
 
 	private String jugDateBase(RetireDateTerm retireDateTerm) {
-		
+
 		String result = null;
-		
+
 		if (retireDateTerm == null) {
 			return result;
 		}
 		switch (retireDateTerm.getRetireDateTerm()) {
-		
+
 		case RETIREMENT_DATE_DESIGNATED_DATE:
 			result = retireDateTerm.getRetireDateSettingDate().isPresent()
 					? retireDateTerm.getRetireDateSettingDate().get().name : null;
 			break;
-			
+
 		default:
 			result = retireDateTerm.getRetireDateTerm().name;
 			break;
 		}
-		
-		
+
 		return result;
 	}
 }
