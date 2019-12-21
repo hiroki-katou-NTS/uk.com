@@ -5,10 +5,12 @@
 package nts.uk.ctx.bs.employee.app.find.employment;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface EmploymentFinder.
@@ -49,4 +51,16 @@ public interface EmploymentFinder {
 	
 	
 	GroupCommonMasterImport findGroupCommonMaster();
+
+	
+	// dung để test reqList
+	List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, DatePeriod baseDatePeriod);
+	
+	// dung để test reqList
+	List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam,
+			Optional<Boolean> getEmpExternalCodeParam, Optional<Boolean> getMemoParam,
+			Optional<Boolean> getempCommonMasterIDParam, Optional<Boolean> getempCommonMasterItemIDParam);
+
+	// dung để test reqList
+	List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid);
 }
