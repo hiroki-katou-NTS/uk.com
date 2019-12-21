@@ -133,7 +133,9 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		dataSource.setPeriod(period);
 		Map<WorkplaceExport, List<EmployeeInformationExport>> wkpMap = empInfoLst.stream().collect(Collectors.groupingBy(EmployeeInformationExport::getWorkplace));
 		List<ReservationWkpLedger> reservationWkpLedgerLst = wkpMap.entrySet().stream()
-				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst)).collect(Collectors.toList());
+				.map(x -> createReservationWkpLedger(x, bentoReservationLst, bentoMenu, stampCardLst))
+				.filter(x -> !CollectionUtil.isEmpty(x.getEmpLedgerLst()))
+				.collect(Collectors.toList());
 		dataSource.setWkpLedgerLst(reservationWkpLedgerLst);
 		return dataSource;
 	}
@@ -150,6 +152,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 						bentoReservationLst, 
 						bentoMenu,
 						stampCardLst.stream().filter(y -> y.getEmployeeId().equals(x.getKey())).findAny().get().getStampNumber().toString()))
+				.filter(x -> !CollectionUtil.isEmpty(x.getBentoLedgerLst()))
 				.collect(Collectors.toList());
 		wkpLedger.setEmpLedgerLst(reservationEmpLedgerLst);
 		return wkpLedger;
