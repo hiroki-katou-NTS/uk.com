@@ -233,6 +233,7 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
+		result.setOvertimeAtr(Integer.parseInt(url));
 		return result;
 	}
 	
@@ -783,6 +784,13 @@ public class AppOvertimeFinder {
 							.findAny().map(y -> y.actualTime).orElse(null));
 				}
 				appOvertimeReference.setOverTimeInputsRefer(overTimeInputsRefer);
+				appOvertimeReference.setOverTimeShiftNightRefer(actualStatusCheckResult.actualLst.stream()
+						.filter(x -> x.attendanceID == 1 && x.frameNo == 11)
+						.findAny().map(y -> y.actualTime).orElse(null));
+				appOvertimeReference.setFlexExessTimeRefer(actualStatusCheckResult.actualLst.stream()
+						.filter(x -> x.attendanceID == 1 && x.frameNo == 12)
+						.findAny().map(y -> y.actualTime).orElse(null));
+				overTimeDto.setAppOvertimeReference(appOvertimeReference);
 			}
 		}
 		overTimeDto.setAppOvertimeReference(appOvertimeReference);

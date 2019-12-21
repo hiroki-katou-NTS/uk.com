@@ -173,3 +173,6 @@ div.form-label.broken {
 	text-align: center;
 	border: 1px solid #CCC;
 }
+#overtime-container .nts-fixed-body-container.ui-iggrid {
+	overflow: hidden;		
+}
