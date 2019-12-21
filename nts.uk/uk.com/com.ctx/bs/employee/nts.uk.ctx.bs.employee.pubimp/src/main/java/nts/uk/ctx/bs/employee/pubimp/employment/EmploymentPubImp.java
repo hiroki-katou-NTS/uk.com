@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -333,9 +331,9 @@ public class EmploymentPubImp implements SyEmploymentPub {
 						EmployeeBasicInfoExport empInfo =  EmployeeBasicInfoExport.builder()
 								.employmentCode(data.get(i)[0] == null ? null : data.get(i)[0].toString())
 								.dateJoinComp(data.get(i)[1] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
-								.sid(data.get(i)[2] == null ? null : data.get(i)[0].toString())
-								.pid(data.get(i)[3] == null ? null : data.get(i)[0].toString())
-								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.sid(data.get(i)[2] == null ? null : data.get(i)[2].toString())
+								.pid(data.get(i)[3] == null ? null : data.get(i)[3].toString())
+								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[4].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
 								.build();
 						result.add(empInfo);
 					}
