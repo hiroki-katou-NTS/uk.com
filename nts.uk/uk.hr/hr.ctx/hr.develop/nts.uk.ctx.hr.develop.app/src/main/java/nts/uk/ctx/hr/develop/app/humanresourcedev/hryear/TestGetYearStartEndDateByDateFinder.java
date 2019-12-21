@@ -14,8 +14,7 @@ public class TestGetYearStartEndDateByDateFinder {
 	private IGetYearStartEndDateByDate getYearStartEndDateByDateImpl;
 	
 	
-	public YearStartEnd getByDate(String companyId, GeneralDate baseDate) {
-		Optional<YearStartEnd> res = getYearStartEndDateByDateImpl.getYearStartEndDateByDate(companyId, baseDate);
-		return res.get();
+	public Optional<YearStartEnd> getByDate(String companyId, GeneralDate baseDate) {
+		return getYearStartEndDateByDateImpl.getYearStartEndDateByDate(companyId, baseDate);
 	}
 }

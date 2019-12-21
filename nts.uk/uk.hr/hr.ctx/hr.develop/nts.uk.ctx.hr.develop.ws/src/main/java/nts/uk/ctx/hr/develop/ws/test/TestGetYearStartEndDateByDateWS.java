@@ -18,7 +18,7 @@ public class TestGetYearStartEndDateByDateWS {
 	@POST
 	@Path("/YearStartEnd")
 	public YearStartEnd getDate(ParamDate param){
-		YearStartEnd data = finder.getByDate(param.companyId, param.getBaseDate());
+		YearStartEnd data = finder.getByDate(param.companyId, param.getBaseDate()).orElse(null);
 		return data;
 	}
 }

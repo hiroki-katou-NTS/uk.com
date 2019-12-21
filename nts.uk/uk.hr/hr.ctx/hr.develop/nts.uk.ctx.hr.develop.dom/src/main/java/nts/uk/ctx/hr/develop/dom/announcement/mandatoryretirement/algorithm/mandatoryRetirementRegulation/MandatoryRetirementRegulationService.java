@@ -10,7 +10,6 @@ import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseAppl
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EmploymentDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetireDateTermParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirePlanParam;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
@@ -40,10 +39,10 @@ public interface MandatoryRetirementRegulationService {
 	List<RetirementCourseInformationDto> getAppliedRetireCourseByDate(String companyId, GeneralDate baseDate);
 	
 	//指定期間、部門、雇用から定年退職者情報の取得
-	List<RetirementPlannedPersonDto> getMandatoryRetirementListByPeriodDepartmentEmployment(String companyId, GeneralDate baseDate, GeneralDate endDate, Optional<RetirementAge> retirementAge, List<String> departmentId, List<String> employmentCode);
+	List<RetirementPlannedPersonDto> getMandatoryRetirementListByPeriodDepartmentEmployment(String companyId, GeneralDate startDate, GeneralDate endDate, Optional<RetirementAge> retirementAge, List<String> departmentId, List<String> employmentCode);
 	
 	//退職日の取得
-	List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm, RetireDateTermParam retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate, List<EmploymentDateDto> attendanceDate);
+	List<RetirementDateDto> getRetireDateBySidList(List<RetirePlanParam> retirePlan, ReachedAgeTerm reachedAgeTerm, RetireDateTerm retireDateTerm, Optional<GeneralDate> endDate, List<EmploymentDateDto> closingDate, List<EmploymentDateDto> attendanceDate);
 	
 	//評価情報の取得
 	EvaluationInfoDto getEvaluationInfoBySidList(List<String> retiredEmployeeId, List<ReferEvaluationItem> evaluationReferInfo);
