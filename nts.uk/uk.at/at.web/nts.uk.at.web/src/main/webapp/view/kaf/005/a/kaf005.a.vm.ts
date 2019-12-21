@@ -1249,17 +1249,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         
         convertIntToTime(data : any) : string{
-            let hourMinute : string = "";
-            if(nts.uk.util.isNullOrEmpty(data)){
-                return null;
-            }else if (data == 0) {
-                hourMinute = "0:00";
-            }else if(data != null){
-                let hour = Math.floor(Math.abs(data)/60);
-                    let minutes = Math.floor(Math.abs(data)%60);
-                hourMinute = hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+            if(nts.uk.util.isNullOrEmpty(data)) {
+                return null;    
             }
-            return hourMinute;
+            return nts.uk.time.format.byId("Time_Short_HM", data);
         } 
         
         getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string{
