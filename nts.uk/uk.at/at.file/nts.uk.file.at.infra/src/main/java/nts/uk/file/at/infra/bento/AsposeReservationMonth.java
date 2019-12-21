@@ -8,9 +8,14 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
 import com.aspose.cells.CellArea;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -182,8 +187,17 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 			startDataRow += 1;
 		}
 		cells.get(startDataRow, QUANTITY_COLUMN).setValue(empLedger.getTotalBentoQuantity());
+		Style style1= cells.get(startDataRow, QUANTITY_COLUMN).getStyle();
+		style1.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+		cells.get(startDataRow, QUANTITY_COLUMN).setStyle(style1);
 		cells.get(startDataRow, AMOUNT1_COLUMN).setValue(empLedger.getTotalBentoAmount1());
+		Style style2= cells.get(startDataRow, AMOUNT1_COLUMN).getStyle();
+		style2.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+		cells.get(startDataRow, AMOUNT1_COLUMN).setStyle(style2);
 		cells.get(startDataRow, AMOUNT2_COLUMN).setValue(empLedger.getTotalBentoAmount2());
+		Style style3= cells.get(startDataRow, AMOUNT2_COLUMN).getStyle();
+		style3.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+		cells.get(startDataRow, AMOUNT2_COLUMN).setStyle(style3);
 		return startDataRow;
 	}
 	
