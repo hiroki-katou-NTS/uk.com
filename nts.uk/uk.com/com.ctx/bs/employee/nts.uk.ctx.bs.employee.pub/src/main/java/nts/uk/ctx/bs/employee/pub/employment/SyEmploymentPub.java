@@ -76,8 +76,8 @@ public interface SyEmploymentPub {
 	Map<String, SEmpHistExport> findSEmpHistBySidVer2(String companyId, List<String> lstSID, GeneralDate baseDate);
 	
 	
-	// RequestList638 [RQ638]雇用と期間からその期間に生年月日がある社員を取得する
 	/**
+	 * RequestList638 [RQ638]雇用と期間からその期間に生年月日がある社員を取得する
 	 * @param listObjParam  List＜雇用コード、誕生日期間＞
 	 * @param baseDate 基準日
 	 * @param cid  会社ID
