@@ -153,7 +153,8 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 			startDataRow += 1;
 		}
 		cells.copyRow(cells, 6, startDataRow);
-		cells.merge(dataRow + 1, 1, 41, 1);
+		int empRowNo = empLedger.getBentoLedgerLst().size() + 1;
+		cells.merge(dataRow + 1, 1, empRowNo, 1);
 		return startDataRow;
 	}
 	
