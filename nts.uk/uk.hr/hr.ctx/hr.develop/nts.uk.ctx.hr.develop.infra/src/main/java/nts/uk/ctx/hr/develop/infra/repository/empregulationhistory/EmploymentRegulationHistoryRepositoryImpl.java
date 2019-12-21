@@ -3,6 +3,8 @@ package nts.uk.ctx.hr.develop.infra.repository.empregulationhistory;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
@@ -12,6 +14,7 @@ import nts.uk.ctx.hr.develop.infra.entity.empregulationhistory.JshmtEmpRegHistor
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository implements EmploymentRegulationHistoryRepository{
 
 	private static final String SELECT_LIST_DATE_HIS_ID = "SELECT c FROM JshmtEmpRegHistory c "
