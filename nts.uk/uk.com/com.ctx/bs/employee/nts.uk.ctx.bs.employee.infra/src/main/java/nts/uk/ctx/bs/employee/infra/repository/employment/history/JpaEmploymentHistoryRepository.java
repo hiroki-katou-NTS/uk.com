@@ -60,7 +60,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " AND ach.startDate <= :baseDate AND ach.endDate >= :baseDate AND ach.destinationData = 0 " 
 			+ " AND e.delStatus = 0 "
 			+ " AND ps.birthday <= :endDate " 
-			+ " AND ps.birthday >= :startDate ";
+			+ " AND ps.birthday >= :startDate AND e.companyId = :cid";
 	
 	private static final String SELECT_DATA_REQ640 = "SELECT eht "
 			+ " FROM BsymtEmploymentHistItem  eht  "
