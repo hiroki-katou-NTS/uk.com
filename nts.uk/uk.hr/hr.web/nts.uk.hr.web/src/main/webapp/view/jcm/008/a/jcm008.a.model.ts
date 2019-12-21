@@ -227,7 +227,6 @@ class PlannedRetirementDto {
     businessName : string;
     businessnameKana : string;
     birthday : string;
-    dateJoinComp : string;
     departmentId : string;
     departmentCode : string;
     departmentName : string;
@@ -237,6 +236,7 @@ class PlannedRetirementDto {
     employmentCode : string;
     employmentName : string;
     age : number;
+    dateJoinComp : string;
     retirementDate : string;
     releaseDate : string;
     inputDate: string;
