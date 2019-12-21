@@ -48,7 +48,7 @@ module nts.uk.at.view.kmr002.a.model {
         isVisibleLunch: KnockoutObservable<boolean> = ko.observable(false);
         textError: KnockoutObservable<string> = ko.observable(getText('KMR002_6'));
         checkUpdate: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
             let self = this;
         }
@@ -258,16 +258,20 @@ module nts.uk.at.view.kmr002.a.model {
             self.priceSum(0);
             self.lunchCount(0);
             self.sumCount(0);
+//            self.txtPriceLunch('');
+//            self.lunch('');
+//            self.sum('');
+//            self.txtPriceSum('');
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 self.priceLunch(self.priceLunch() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
                 self.lunchCount(self.lunchCount() + item.bentoCount());
                 self.sumCount(self.lunchCount() + self.dinnerCount());
+                self.txtPriceLunch(getText('KMR002_11', [self.priceLunch()]));
+                self.lunch(getText('KMR002_10', [self.lunchText(), self.lunchCount()]));
+                self.sum(getText('KMR002_12', [self.sumCount()]));
+                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
             });
-            self.txtPriceLunch(getText('KMR002_11', [self.priceLunch()]));
-            self.lunch(getText('KMR002_10', [self.lunchText(), self.lunchCount()]));
-            self.sum(getText('KMR002_12', [self.sumCount()]));
-            self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
         }
 
         public caculatorDinner(): void {
@@ -276,16 +280,20 @@ module nts.uk.at.view.kmr002.a.model {
             self.priceSum(0);
             self.dinnerCount(0);
             self.sumCount(0);
+//            self.txtPriceDinner('');
+//            self.txtPriceSum('');
+//            self.dinner('');
+//            self.sum('');
             _.forEach(self.listBentoOrderDinner(), (item) => {
                 self.priceDinner(self.priceDinner() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
                 self.dinnerCount(self.dinnerCount() + item.bentoCount());
                 self.sumCount(self.lunchCount() + self.dinnerCount());
+                self.txtPriceDinner(getText('KMR002_11', [self.priceDinner()]));
+                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
+                self.dinner(getText('KMR002_10', [self.dinnerText(), self.dinnerCount()]));
+                self.sum(getText('KMR002_12', [self.sumCount()]));
             });
-            self.txtPriceDinner(getText('KMR002_11', [self.priceDinner()]));
-            self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
-            self.dinner(getText('KMR002_10', [self.dinnerText(), self.dinnerCount()]));
-            self.sum(getText('KMR002_12', [self.sumCount()]));
         }
 
         public initTime(data: any, index: number) {
@@ -365,6 +373,7 @@ module nts.uk.at.view.kmr002.a.model {
                 }
             });
             self.listBentoOrderDinner.valueHasMutated();
+
         }
 
         public updateCountOrderLunch(frameNo: number, count: number): void {
@@ -436,17 +445,7 @@ module nts.uk.at.view.kmr002.a.model {
         public registerFood(): void {
             let self = this, dateSelect = moment(self.date()).format("YYYY/MM/DD"),
                 dateNow = moment(new Date()).format("YYYY/MM/DD"), timeNow = (new Date()).getHours() * 60 + (new Date()).getMinutes(),
-                 detailLst = [], detailLunchLst = [], detailDinnerLst = [];
-            _.forEach(self.listBentoOrderLunch(), (item) => {
-                let value = { closingTimeFrame: 1, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
-                detailLunchLst.push(value);
-                detailLst.push(value);
-            });
-            _.forEach(self.listBentoOrderDinner(), (item) => {
-                let value = { closingTimeFrame: 2, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
-                detailDinnerLst.push(value);
-                detailLst.push(value);
-            });
+                detailLst = [];
             if (dateNow > dateSelect) {
                 error({ messageId: "Msg_1584" });
                 return;
@@ -455,13 +454,20 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1585" });
                 return;
             }
-           
+             _.forEach(self.listBentoOrderLunch(), (item) => {
+                let value = { closingTimeFrame: 1, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
+                detailLst.push(value);
+            });
+            _.forEach(self.listBentoOrderDinner(), (item) => {
+                let value = { closingTimeFrame: 2, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
+                detailLst.push(value);
+            });
             self.register(detailLst);
-
         }
 
         public register(detailLst: any): void {
-            let bentoReservation = { date: self.date(), details: detailLst };
+            
+            let self = this, bentoReservation = { date: self.date(), details: detailLst };
             if (self.isUpdate() && self.date()) {
                 service.update(bentoReservation).done((data) => {
                     info({ messageId: "Msg_15" });
