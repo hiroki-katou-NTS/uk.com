@@ -21,7 +21,7 @@
 					<div style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
 					<!--A1_2 受取日-->
 					<div style="float: left"
-						data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
+						data-bind="ntsDatePicker: { name: '#[#KMR002_1]', value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
 					<br />
 					<!-- A1_3注文エラー -->
 					<span class="label warning" style="float: left;"
@@ -55,11 +55,11 @@
 				<!--A1_5予約する-->
 				<div data-bind="if: !isUpdate()">
 					<button class="proceed" style="float: left"
-						data-bind="click: registerFood,  enable: enableButton">#{i18n.getText('KMR002_2')}</button>
+						data-bind="click: registerFood,  enable: $root.errors.isEmpty">#{i18n.getText('KMR002_2')}</button>
 				</div>
 				<div data-bind="if: isUpdate()">
 					<button class="proceed" style="float: left"
-						data-bind="click: registerFood,  enable: enableButton">#{i18n.getText('KMR002_8')}</button>
+						data-bind="click: registerFood, enable: $root.errors.isEmpty">#{i18n.getText('KMR002_8')}</button>
 				</div>
 				<button style="float: right; margin-right: 15px"
 					data-bind="click: outputData">#{i18n.getText('KMR002_4')}</button>

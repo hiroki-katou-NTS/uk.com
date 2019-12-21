@@ -53,27 +53,23 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
+        AtomTask persist1 = BentoReserveModifyService.reserve(
+                require, 
+                reservationRegisterInfo, 
+                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
+                datetime,
+                command.getFrame1Bentos());
+        
+        AtomTask persist2 = BentoReserveModifyService.reserve(
+                require, 
+                reservationRegisterInfo, 
+                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2),
+                datetime,
+                command.getFrame2Bentos());
 		
 		transaction.execute(() -> {
-			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values())) {
-				AtomTask persist1 = BentoReserveModifyService.reserve(
-						require, 
-						reservationRegisterInfo, 
-						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
-						datetime,
-						command.getFrame1Bentos());
-				persist1.run();
-			}
-			
-			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values())) {
-				AtomTask persist2 = BentoReserveModifyService.reserve(
-						require, 
-						reservationRegisterInfo, 
-						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
-						datetime,
-						command.getFrame2Bentos());
-				persist2.run();
-			}
+            persist1.run();
+            persist2.run();
 		});
 		
 	}
