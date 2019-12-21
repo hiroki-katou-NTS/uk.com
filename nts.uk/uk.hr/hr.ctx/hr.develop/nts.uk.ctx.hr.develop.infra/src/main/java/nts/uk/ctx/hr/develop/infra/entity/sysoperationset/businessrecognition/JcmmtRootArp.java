@@ -1,8 +1,8 @@
 package nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 public class JcmmtRootArp extends UkJpaEntity {
 	
-	@EmbeddedId
+	@Id
 	@Column(name = "CID")
     public String cid;  //
 	
