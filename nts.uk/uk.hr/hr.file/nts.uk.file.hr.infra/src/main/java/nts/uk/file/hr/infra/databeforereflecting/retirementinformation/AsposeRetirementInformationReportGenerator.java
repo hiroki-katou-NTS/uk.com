@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
@@ -19,6 +21,7 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
@@ -33,47 +36,47 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeRetirementInformationReportGenerator extends AsposeCellsReportGenerator
 		implements RetirementInformationGenerator {
 
-	private static final String TEMPLATE_FILE = "定年退職者一覧_Template.xlsx";
+	private static final String TEMPLATE_FILE = "report/定年退職者一覧_Template.xlsx";
 
 	private static final String REPORT_FILE_NAME = "定年退職者一覧_";
 
-	private static final String REPORT_FILE_EXTENSION = ".xlxs";
+	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 
 	private static final String FORMAT_DATE = "yyyy/MM/dd";
 
 	private static final String TITLE = "定年退職者一覧";
 
-	private static final int FIRST_ROW_FILL = 8;
+	private static final int FIRST_ROW_FILL = 7;
 
-	private static final int RETENTION = 1;
-	private static final int RETIREMENT = 2;
-	private static final int STATUS = 3;
-	private static final int DESIRED_CODE = 4;
-	private static final int DESIRED_NAME = 5;
-	private static final int EMPLOYEE_CD = 6;
-	private static final int EMPLOYEE_NAME = 7;
-	private static final int EMPLOYEE_NAME_KANA = 8;
-	private static final int BIRTH_DAY = 9;
-	private static final int AGE = 10;
-	private static final int DEPARTMENT_CODE = 11;
-	private static final int DEPARTMENT_NAME = 12;
-	private static final int EMPLOYMENT_CODE = 13;
-	private static final int EMPLOYMENT_NAME = 14;
-	private static final int JOIN_DATE = 15;
-	private static final int RETI_DATE = 16;
-	private static final int RELEASE_DATE = 17;
-	private static final int INPUT_DATE = 18;
-	private static final int PER_EVAL_1 = 19;
-	private static final int PER_EVAL_2 = 20;
-	private static final int PER_EVAL_3 = 21;
-	private static final int HEATH_STATUS_1 = 22;
-	private static final int HEATH_STATUS_2 = 23;
-	private static final int HEATH_STATUS_3 = 24;
-	private static final int STRESS_CHECK_1 = 25;
-	private static final int STRESS_CHECK_2 = 26;
-	private static final int STRESS_CHECK_3 = 27;
-	private static final int INTERVIEW_DATE = 28;
-	private static final int INTERVIEWER = 29;
+	private static final int RETENTION = 0;
+	private static final int RETIREMENT = 1;
+	private static final int STATUS = 2;
+	private static final int DESIRED_CODE = 3;
+	private static final int DESIRED_NAME = 4;
+	private static final int EMPLOYEE_CD = 5;
+	private static final int EMPLOYEE_NAME = 6;
+	private static final int EMPLOYEE_NAME_KANA = 7;
+	private static final int BIRTH_DAY = 8;
+	private static final int AGE = 9;
+	private static final int DEPARTMENT_CODE = 10;
+	private static final int DEPARTMENT_NAME = 11;
+	private static final int EMPLOYMENT_CODE = 12;
+	private static final int EMPLOYMENT_NAME = 13;
+	private static final int JOIN_DATE = 14;
+	private static final int RETI_DATE = 15;
+	private static final int RELEASE_DATE = 16;
+	private static final int INPUT_DATE = 17;
+	private static final int PER_EVAL_1 = 18;
+	private static final int PER_EVAL_2 = 19;
+	private static final int PER_EVAL_3 = 20;
+	private static final int HEATH_STATUS_1 = 21;
+	private static final int HEATH_STATUS_2 = 22;
+	private static final int HEATH_STATUS_3 = 23;
+	private static final int STRESS_CHECK_1 = 24;
+	private static final int STRESS_CHECK_2 = 25;
+	private static final int STRESS_CHECK_3 = 26;
+	private static final int INTERVIEW_DATE = 27;
+	private static final int INTERVIEWER = 28;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, SearchRetiredResultDto dataSource,
@@ -127,16 +130,16 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, EMPLOYEE_CD).putValue(entity.getScd());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME).putValue(entity.getBusinessName());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME_KANA).putValue(entity.getBusinessnameKana());
-				ws.getCells().get(rowIndex, BIRTH_DAY).putValue(entity.getBirthday().toString(FORMAT_DATE));
+				ws.getCells().get(rowIndex, BIRTH_DAY).putValue(convertToString(entity.getBirthday()));
 				ws.getCells().get(rowIndex, AGE).putValue(entity.getAge());
 				ws.getCells().get(rowIndex, DEPARTMENT_CODE).putValue(entity.getDepartmentCode());
 				ws.getCells().get(rowIndex, DEPARTMENT_NAME).putValue(entity.getDepartmentName());
 				ws.getCells().get(rowIndex, EMPLOYMENT_CODE).putValue(entity.getEmploymentCode());
 				ws.getCells().get(rowIndex, EMPLOYMENT_NAME).putValue(entity.getEmploymentName());
-				ws.getCells().get(rowIndex, JOIN_DATE).putValue(entity.getDateJoinComp().toString(FORMAT_DATE));
-				ws.getCells().get(rowIndex, RETI_DATE).putValue(entity.getRetirementDate().toString(FORMAT_DATE));
-				ws.getCells().get(rowIndex, RELEASE_DATE).putValue(entity.getReleaseDate().toString(FORMAT_DATE));
-				ws.getCells().get(rowIndex, INPUT_DATE).putValue(entity.getInputDate().toString(FORMAT_DATE));
+				ws.getCells().get(rowIndex, JOIN_DATE).putValue(convertToString(entity.getDateJoinComp()));
+				ws.getCells().get(rowIndex, RETI_DATE).putValue(convertToString(entity.getRetirementDate()));
+				ws.getCells().get(rowIndex, RELEASE_DATE).putValue(entity.getReleaseDate());
+				ws.getCells().get(rowIndex, INPUT_DATE).putValue(convertToString(entity.getInputDate()));
 				ws.getCells().get(rowIndex, PER_EVAL_1).putValue(entity.getHrEvaluation1());
 				ws.getCells().get(rowIndex, PER_EVAL_2).putValue(entity.getHrEvaluation2());
 				ws.getCells().get(rowIndex, PER_EVAL_3).putValue(entity.getHrEvaluation3());
@@ -147,7 +150,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, STRESS_CHECK_2).putValue(entity.getStressStatus2());
 				ws.getCells().get(rowIndex, STRESS_CHECK_3).putValue(entity.getStressStatus3());
 				ws.getCells().get(rowIndex, INTERVIEW_DATE).putValue(
-						interViewOpt.isPresent() ? interViewOpt.get().getInterviewDate().toString(FORMAT_DATE) : "");
+						interViewOpt.isPresent() ? convertToString(interViewOpt.get().getInterviewDate()) : "");
 				ws.getCells().get(rowIndex, INTERVIEWER)
 						.putValue(interViewOpt.isPresent() ? interViewOpt.get().getBusinessName() : "");
 				rowIndex++;
@@ -157,13 +160,13 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			}
 
 			if (exportData.size() % 2 == 0 && exportData.size() > 1) {
-				int totalColumn = 29;
-				int columnStart = 1;
+				int totalColumn = 28;
+				int columnStart = 0;
 				for (int column = columnStart; column < totalColumn + columnStart; column++) {
 					Style style = wsc.get(0).getCells().get(rowIndex - 1, column).getStyle();
 					style.setPattern(BackgroundType.SOLID);
-					style.setForegroundColor(Color.fromArgb(216, 228, 188));
-					wsc.get(0).getCells().get(rowIndex - 1, column).setStyle(style);
+					style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+					style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 				}
 			}
 		} catch (Exception e) {
@@ -171,10 +174,20 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		}
 	}
 
+	private String convertToString(GeneralDate date) {
+		if (date == null) {
+			return null;
+		}
+		return date.toString(FORMAT_DATE);
+	}
+
 	private void settingHeader(Worksheet ws, SearchRetiredEmployeesQuery query, String companyName) {
 
 		// Set print page
 		PageSetup pageSetup = ws.getPageSetup();
+		
+		pageSetup.setFirstPageNumber(1);
+		pageSetup.setPrintArea("A1:G");
 		pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
 		pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
 		// Set header date

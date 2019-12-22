@@ -313,7 +313,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		
 		List<SearchCondition> searchConditionList = new ArrayList<>();
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
-			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(c.getRetirementAge().v()).addDays(-1), endDate.addYears(c.getRetirementAge().v()).addDays(-1)))).collect(Collectors.toList()));
+			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(-c.getRetirementAge().v()).addDays(-1), endDate.addYears(-c.getRetirementAge().v()).addDays(-1)))).collect(Collectors.toList()));
 		}else {
 			searchConditionList.addAll(retireTermList.stream().map(c-> {
 				GeneralDate s = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day());
