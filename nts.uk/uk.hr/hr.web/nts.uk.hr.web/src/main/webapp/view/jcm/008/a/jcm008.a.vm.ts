@@ -310,8 +310,9 @@ module jcm008.a {
             let self = this;
             self.searchFilter.confirmCheckRetirementPeriod(true);
             let param = new ISearchParams(self.searchFilter);
+            block.grayout();
             service.outPutFileExcel(param).done((data1) => {
-                console.log(data1);
+                block.clear();
             })
 
 
