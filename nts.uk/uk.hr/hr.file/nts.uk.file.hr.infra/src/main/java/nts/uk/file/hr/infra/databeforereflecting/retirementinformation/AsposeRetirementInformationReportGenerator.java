@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
@@ -22,7 +23,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
@@ -92,7 +92,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			designer.processDesigner();
 
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(
-					REPORT_FILE_NAME + GeneralDateTime.now().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION)));
+					REPORT_FILE_NAME + REPORT_FILE_EXTENSION)));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -153,24 +153,32 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 						interViewOpt.isPresent() ? convertToString(interViewOpt.get().getInterviewDate()) : "");
 				ws.getCells().get(rowIndex, INTERVIEWER)
 						.putValue(interViewOpt.isPresent() ? interViewOpt.get().getBusinessName() : "");
+				setBorder(wsc.get(0),rowIndex);
 				rowIndex++;
 			}
 			if (exportData.size() == 0) {
 				ws.getCells().deleteRows(rowIndex, 2);
 			}
-
-			if (exportData.size() % 2 == 0 && exportData.size() > 1) {
-				int totalColumn = 28;
-				int columnStart = 0;
-				for (int column = columnStart; column < totalColumn + columnStart; column++) {
-					Style style = wsc.get(0).getCells().get(rowIndex - 1, column).getStyle();
-					style.setPattern(BackgroundType.SOLID);
-					style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-					style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-				}
-			}
+			
+				
+				
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	private void setBorder(Worksheet worksheet, int rowIndex) {
+		int totalColumn = 29;
+		int columnStart = 0;
+		for (int column = columnStart; column < totalColumn; column++) {
+			Cell cell = worksheet.getCells().get(rowIndex, column);
+			Style style = cell.getStyle();
+			style.setPattern(BackgroundType.SOLID);
+			style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+			style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+			cell.setStyle(style);
 		}
 	}
 
@@ -185,16 +193,14 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 		// Set print page
 		PageSetup pageSetup = ws.getPageSetup();
-		
-		pageSetup.setFirstPageNumber(1);
-		pageSetup.setPrintArea("A1:G");
+		pageSetup.setPrintArea("A1:AC");
 		pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&10 " + companyName);
 		pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + TITLE);
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
 		pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&10 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
 
-		ws.getCells().get(1, 3).putValue(query.getStartDate() + "~" + query.getEndDate());
+		ws.getCells().get(1, 3).putValue(query.getStartDate() + " ～ " + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
 		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
 		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "と表示" : "全て");
