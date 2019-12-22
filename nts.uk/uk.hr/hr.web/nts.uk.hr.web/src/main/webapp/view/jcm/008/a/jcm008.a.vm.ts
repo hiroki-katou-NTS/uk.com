@@ -35,6 +35,7 @@ module jcm008.a {
             //     { employeeCode: 'S100011', employeeName: '社員名', businessnameKana: '社員名', birthday: '1954/11/11', age: '65分', departmentName: '局売り場', employmentName: '雇用', dateJoinComp: '1954/11/11', retirementDate: '1954/11/11', releaseDate: '1954/11/11', inputDate: '1954/11/11', retirementStatus: '1', registrationStatus: '登録状況', desiredWorkingCourseName: '1', hrEvaluation1: 'A', hrEvaluation2: 'B', hrEvaluation3: 'C', healthStatus1: 'A', healthStatus2: 'A', healthStatus3: 'A', stressStatus1: 'A', stressStatus2: 'A', stressStatus3: 'B', interviewRecord: getText('JCM008_A222_57'), flag: false }
             // ];
             self.plannedRetirements = ko.observableArray([]);
+            self.bindRetirementDateSettingGrid();
             self.searchFilter.retirementCourses = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
             $(".employee-info-pop-up").ntsPopup("hide");
@@ -147,11 +148,11 @@ module jcm008.a {
                 autoGenerateColumns: false,
                 width: '1200px',
                 height: '500px',
-                primaryKey: 'employeeCode',
+                primaryKey: 'sid',
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                hidePrimaryKey: false,
+                hidePrimaryKey: true,
                 // autoFitWindow: true,
                 columns: [
                     { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
@@ -195,7 +196,7 @@ module jcm008.a {
                     },
                     { headerText: getText('JCM008_A222_39'), key: 'interviewRecord', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' },
                 ],
-                dataSource: self.plannedRetirements,
+                dataSource: self.plannedRetirements(),
                 dataSourceType: 'json',
                 responseDataKey: 'results',
                 tabIndex: 11,
