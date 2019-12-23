@@ -46,40 +46,25 @@ public class BentoInstanceHelper {
 		return new BentoMenu(
 				"historyID",
 				Collections.emptyList(),
-				new BentoReservationClosingTime(
-						new ReservationClosingTime(
-								new BentoReservationTimeName("name1"), 
-								new BentoReservationTime(600), 
-								Optional.empty()), 
-						Optional.empty()));
+				closingTimes(closingTime(600)));
 	}
 	
 	public static BentoMenu getBentoMenu() {
 		return new BentoMenu(
 				"historyID",
-				Arrays.asList(new Bento(1, new BentoName("name1"), new BentoAmount(20), new BentoAmount(10), new BentoReservationUnitName("money"), true, false)),
-				new BentoReservationClosingTime(
-						new ReservationClosingTime(
-								new BentoReservationTimeName("name1"), 
-								new BentoReservationTime(600), 
-								Optional.empty()), 
-						Optional.empty()));
+				Arrays.asList(bento(1, 20, 10)),
+				closingTimes(closingTime(600)));
 	}
 	
 	public static BentoMenu getBentoMenuFull() {
 		List<Bento> bentoLst = new ArrayList<>();
 		for(int i = 0; i <= 40; i++) {
-			bentoLst.add(new Bento(1, new BentoName("name"+i), new BentoAmount(1), new BentoAmount(1), new BentoReservationUnitName("money"), true, false));
+			bentoLst.add(bento(i, 1, 1));
 		}
 		return new BentoMenu(
 				"historyID",
 				bentoLst,
-				new BentoReservationClosingTime(
-						new ReservationClosingTime(
-								new BentoReservationTimeName("name1"), 
-								new BentoReservationTime(600), 
-								Optional.empty()), 
-						Optional.empty()));
+				closingTimes(closingTime(600)));
 	}
 	
 	public static ReservationDate getPastDate() {
@@ -94,4 +79,54 @@ public class BentoInstanceHelper {
 				ReservationClosingTimeFrame.FRAME1);
 	}
 	
+	public static BentoMenu menu(Bento... menu) {
+		return menu(closingTimes(closingTime(600)), menu);
+	}
+	
+	public static BentoMenu menu(BentoReservationClosingTime closingTime, Bento... menu) {
+		return new BentoMenu("historyID", Arrays.asList(menu), closingTime);
+	}
+	
+	public static Bento bento(int frameNo, Integer amount1, Integer amount2) {
+		return new Bento(
+				frameNo,
+				name("name" + frameNo),
+				amount(amount1 != null ? amount1 : 0),
+				amount(amount2 != null ? amount2 : 0),
+				unit("unit"),
+				amount1 != null,
+				amount2 != null);
+	}
+	
+	public static BentoAmount amount(int value) {
+		return new BentoAmount(value);
+	}
+	
+	public static BentoName name(String value) {
+		return new BentoName(value);
+	}
+	
+	public static BentoReservationUnitName unit(String value) {
+		return new BentoReservationUnitName(value);
+	}
+	
+	public static BentoReservationTimeName timeName(String value) {
+		return new BentoReservationTimeName(value);
+	}
+	
+	public static BentoReservationTime time(int value) {
+		return new BentoReservationTime(value);
+	}
+	
+	public static ReservationClosingTime closingTime(int finish) {
+		return new ReservationClosingTime(timeName("time"), time(finish), Optional.empty());
+	}
+	
+	public static ReservationClosingTime closingTime(int start, int finish) {
+		return new ReservationClosingTime(timeName("time"), time(finish), Optional.of(time(start)));
+	}
+	
+	public static BentoReservationClosingTime closingTimes(ReservationClosingTime closingTime1) {
+		return new BentoReservationClosingTime(closingTime1, Optional.empty());
+	}
 }
