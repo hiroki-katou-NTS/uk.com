@@ -447,7 +447,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>() {
 			},
 			//CS00075
-			new TypeLiteral<PeregAddCommandHandler<UpdateEmpCorpHealthOffHisCommand>>() {
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpCorpHealthOffHisCommand>>() {
 			},
 			// CS00082
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>() {
@@ -500,7 +500,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>() {
 			},
 			//CS00075
-			new TypeLiteral<PeregAddCommandHandler<DeleteEmpCorpHealthOffHisCommand>>() {
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpCorpHealthOffHisCommand>>() {
 			},
 			// CS00082
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpHealInsQualifiInfoCommand>>() {
