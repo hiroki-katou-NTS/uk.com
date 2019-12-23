@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.shr.com.context.AppContexts;
 import test.FinderTest;
 import test.dto.EmpRegulationHistListDto;
 import test.dto.EmploymentRegulationHistoryDto;
@@ -23,8 +22,12 @@ public class EmploymentRegulationHistoryWS {
 	
 	@POST
 	@Path("/getLatest")
-	public Optional<EmploymentRegulationHistoryDto> getLatestEmpRegulationHist(){
-		return finder.getLatestEmpRegulationHist(AppContexts.user().companyId());
+	public EmploymentRegulationHistoryDto getLatestEmpRegulationHist(EmpRegHisParamDto param){
+		Optional<EmploymentRegulationHistoryDto> result = finder.getLatestEmpRegulationHist(param.cId);
+		if(result.isPresent()) {
+			return result.get();
+		}
+		return null;
 	}
 	
 	@POST
@@ -35,7 +38,7 @@ public class EmploymentRegulationHistoryWS {
 	
 	@POST
 	@Path("/add")
-	public String addEmpRegulationHist(EmpRegHisParamDto param){
+	public EmpRegHisParamDto addEmpRegulationHist(EmpRegHisParamDto param){
 		return finder.addEmpRegulationHist(param.cId, param.startDate);
 	}
 	
@@ -49,5 +52,11 @@ public class EmploymentRegulationHistoryWS {
 	@Path("/remove")
 	public void removeEmpRegulationHist(EmpRegHisParamDto param){
 		finder.removeEmpRegulationHist(param.cId, param.historyId);
+	}
+	
+	@POST
+	@Path("/getByDate")
+	public EmpRegHisParamDto getHistoryIdByDate(EmpRegHisParamDto param){
+		return finder.getHistoryIdByDate(param.cId, param.startDate);
 	}
 }
