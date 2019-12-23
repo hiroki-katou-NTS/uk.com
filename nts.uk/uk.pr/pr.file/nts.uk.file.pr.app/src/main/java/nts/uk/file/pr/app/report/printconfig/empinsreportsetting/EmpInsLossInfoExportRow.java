@@ -142,8 +142,13 @@ public class EmpInsLossInfoExportRow {
 	/**
 	 * 外国人在留履歴情報
 	 */
-	private String statusOfResidence;
-	
+	private String statusOfResidenceCode;
+
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String statusOfResidenceName;
+
 	/**
 	 * 外国人在留履歴情報
 	 */
@@ -179,7 +184,7 @@ public class EmpInsLossInfoExportRow {
 		this.personReportNameKana = personInfo.getPersonNameGroup().getTodokedeFullName().getFullNameKana();
 		this.personName = personInfo.getPersonNameGroup().getPersonName().getFullName();
 		this.personReportName = personInfo.getPersonNameGroup().getTodokedeFullName().getFullName();
-		this.personNameRomanji = personInfo.getPersonNameGroup().getPersonRomanji().getFullName();
+		this.personNameRomanji = personInfo.getPersonNameGroup().getPersonRomanji().getFullName().replaceAll("　", " ");
 		this.personGender = personInfo.getGender();
 		this.personBirthDay = personInfo.getBirthDate();
 		this.personCurrentAddress = currentAddressInfo.getAddress1() + currentAddressInfo.getAddress2();
@@ -190,10 +195,10 @@ public class EmpInsLossInfoExportRow {
 		this.publicEmploymentSecurityOfficeName = pubEmpSecOffice != null ? pubEmpSecOffice.getPublicEmploymentSecurityOfficeName().v() : "";
 		this.laborInsuranceOffice = laborInsuranceOffice;
 		this.nationalityCode = "";
-		this.nationalityName = forResHistInfo.getNationalityRegion();
-		this.statusOfResidence = forResHistInfo.getResidenceStatus();
+		this.nationalityName = forResHistInfo.getNationalityCode();
+		this.statusOfResidenceCode = forResHistInfo.getResidenceStatusCode();
 		this.periodOfStayEnd = forResHistInfo.getEndDate();
-		this.unqualifiedActivityPermission = forResHistInfo.getNonQualificationPermission();
+		this.unqualifiedActivityPermission = forResHistInfo.getUnqualifiedActivityPermission();
 		this.contractWorkAtr = forResHistInfo.getContractWorkAtr();
 	}
 }

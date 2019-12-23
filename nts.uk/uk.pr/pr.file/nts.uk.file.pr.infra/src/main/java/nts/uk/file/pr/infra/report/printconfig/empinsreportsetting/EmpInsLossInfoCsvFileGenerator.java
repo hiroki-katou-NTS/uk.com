@@ -434,8 +434,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getNationalityCode();
 				}
 				if (c == 43) {
-					value = row.getStatusOfResidence();
+					value = row.getStatusOfResidenceCode();
 				}
+                if (c == 44) {
+                    value = row.getStatusOfResidenceName();
+                }
 				if (c == 45 && row.getPeriodOfStayEnd() != null) {
 					value = row.getPeriodOfStayEnd().year() + "";
 				}
@@ -446,10 +449,10 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPeriodOfStayEnd().day() < 10 ? "0" + row.getPeriodOfStayEnd().day() : row.getPeriodOfStayEnd().day() + "";
 				}
 				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
-					value = row.getUnqualifiedActivityPermission() + "";
+					value = "00" + row.getUnqualifiedActivityPermission();
 				}
 				if (c == 49) {
-					value = row.getContractWorkAtr() + "";
+					value = "00" + row.getContractWorkAtr();
 				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {

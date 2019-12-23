@@ -13,7 +13,6 @@ import nts.uk.shr.infra.file.report.aspose.pdf.AsposePdfReportGenerator;
 import javax.ejb.Stateless;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
@@ -135,7 +134,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 String stayPeriod = data.getStayPeriod() == null ? "" : data.getStayPeriod();
                 detachText(85, 291, stayPeriod, 8, textBuilder);
                 // A2_6
-                String nonQualificationPermission = data.getNonQualifPermission() == null ? "" : data.getNonQualifPermission().toString();
+                String nonQualificationPermission = data.getUnqualifiedActivityPermission() == null ? "" : data.getUnqualifiedActivityPermission().toString();
                 textBuilder.appendText(setValue(305, 291, nonQualificationPermission, 16, false));
                 // A2_7
                 String contractWorkAtr = data.getContractWorkAtr() == null ? "" : data.getContractWorkAtr().toString();

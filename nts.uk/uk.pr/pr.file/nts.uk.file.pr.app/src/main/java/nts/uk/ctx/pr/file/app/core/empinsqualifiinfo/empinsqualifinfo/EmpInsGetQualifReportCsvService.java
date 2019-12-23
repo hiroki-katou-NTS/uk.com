@@ -133,8 +133,13 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         Map<String, PublicEmploymentSecurityOffice> pubEmpSecOffices = pubEmpSecOfficeRepository.getByCidAndCodes(cid, laborInsOffCodes.stream().map(e -> e.length() >= 4 ? e.substring(0, 4) : e).collect(Collectors.toList())).stream().collect(Collectors.toMap(e -> e.getPublicEmploymentSecurityOfficeCode().v(), Function.identity()));
 
         // dummy param
-        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
-        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
+        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
+        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"),
+                "技能", "14", "ベトナム", "704");
 
         Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(empInsHistEmpIds).stream().collect(Collectors.toMap(EmployeeInfoEx::getEmployeeId, Function.identity()));
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
