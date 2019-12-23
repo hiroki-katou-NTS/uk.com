@@ -53,6 +53,16 @@ public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHi
 
     @Override
     public PeregDomainDto getSingleData(PeregQuery peregQuery) {
+        if (peregQuery.getInfoId() == null) {
+            val getBySid = empCorpHealthOffHisRepository.getBySidAndBaseDate(peregQuery.getEmployeeId(), peregQuery.getStandardDate());
+            if (getBySid.isPresent()){
+                val firstItem = getBySid.get().getPeriod().get(0);
+                val firstItemInfo = affOfficeInformationRepository.getAffOfficeInformationById(peregQuery.getEmployeeId(), firstItem.identifier());
+                return EmpCorpHealthOffHisDto.createFromDomain(getBySid.get(), firstItemInfo.get());
+            } else {
+                return null;
+            }
+        }
         val item = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(peregQuery.getEmployeeId(), peregQuery.getInfoId());
         val itemInfo = affOfficeInformationRepository.getAffOfficeInformationById(peregQuery.getEmployeeId(), peregQuery.getInfoId());
         if (item.isPresent() && itemInfo.isPresent()){

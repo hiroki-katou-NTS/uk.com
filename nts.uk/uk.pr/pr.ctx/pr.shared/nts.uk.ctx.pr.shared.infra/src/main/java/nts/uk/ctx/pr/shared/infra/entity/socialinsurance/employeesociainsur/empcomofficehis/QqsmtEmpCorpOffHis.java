@@ -21,11 +21,11 @@ import java.util.List;
 /**
 * 社員社保事業所所属履歴
 */
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Getter
-@Setter
 @Table(name = "QQSDT_SYAHO_OFFICE_INFO")
 public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
 {

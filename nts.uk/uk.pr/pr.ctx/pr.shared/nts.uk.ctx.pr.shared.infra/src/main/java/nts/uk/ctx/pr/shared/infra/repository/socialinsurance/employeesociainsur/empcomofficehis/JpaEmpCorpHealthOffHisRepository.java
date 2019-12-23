@@ -26,12 +26,12 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpCorpOffHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND  f.empCorpOffHisPk.historyId =:hisId ";
     private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId ";
     private static final String SELECT_BY_KEY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId IN :employeeIds  AND f.empCorpOffHisPk.cid =:cid AND f.startDate <= :startDate AND f.endDate >= :startDate ";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.cid =:cid AND f.empCorpOffHisPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
     private static final String SELECT_BY_SIDS = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId IN :sids AND f.empCorpOffHisPk.cid =:cid";
-    private static final String SELECT_BY_IDS_AND_BASE_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId IN :sids AND f.empCorpOffHisPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
+    private static final String SELECT_BY_ID_AND_BASE_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId =:sid AND f.empCorpOffHisPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
 
     @Override
     public List<EmpCorpHealthOffHis> getAllEmpCorpHealthOffHis(){
@@ -40,7 +40,11 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 
     @Override
     public Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId, String hisId){
-        return null;
+        val result = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeId", employeeId)
+                .setParameter("hisId", hisId)
+                .getList();
+        return result.isEmpty() ? Optional.empty() : Optional.of(QqsmtEmpCorpOffHis.toDomain(result));
     }
 
     @Override
@@ -75,19 +79,13 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     }
 
     @Override
-    public List<EmpCorpHealthOffHis> getBySidsAndBaseDate(List<String> sids, GeneralDate baseDate){
-        List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_IDS_AND_BASE_DATE, QqsmtEmpCorpOffHis.class)
-                .setParameter("sids", sids)
+    public Optional<EmpCorpHealthOffHis> getBySidAndBaseDate(String sid, GeneralDate baseDate){
+        List<QqsmtEmpCorpOffHis> result =  this.queryProxy().query(SELECT_BY_ID_AND_BASE_DATE, QqsmtEmpCorpOffHis.class)
+                .setParameter("sid", sid)
                 .setParameter("cid", AppContexts.user().companyId())
                 .setParameter("baseDate", baseDate)
                 .getList();
-        Map<String, List<QqsmtEmpCorpOffHis>> mapResult = qqsmtEmpCorpOffHis
-                .stream().collect(Collectors.groupingBy(e -> e.empCorpOffHisPk.employeeId));
-        List<EmpCorpHealthOffHis> result = new ArrayList<>();
-        mapResult.forEach( (key,value) -> {
-            result.add(QqsmtEmpCorpOffHis.toDomain(value));
-        });
-        return result;
+        return result.isEmpty() ? Optional.empty() : Optional.of(QqsmtEmpCorpOffHis.toDomain(result));
     }
 
     @Override
@@ -108,7 +106,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     @Override
     public void add(EmpCorpHealthOffHis domain, DateHistoryItem itemAdded, AffOfficeInformation itemInfo) {
         this.commandProxy().insert(new QqsmtEmpCorpOffHis(
-                new QqsmtEmpCorpOffHisPk(domain.getEmployeeId(), AppContexts.user().companyId(), itemAdded.identifier()),
+                new QqsmtEmpCorpOffHisPk(),
                 itemAdded.start(),
                 itemAdded.end(),
                 itemInfo.getSocialInsurOfficeCode().v()

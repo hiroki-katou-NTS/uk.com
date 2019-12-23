@@ -22,7 +22,7 @@ public interface EmpCorpHealthOffHisRepository
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(List<String> employeeIds, GeneralDate startDate);
 
-    List<EmpCorpHealthOffHis> getBySidsAndBaseDate(List<String> sids, GeneralDate baseDate);
+    Optional<EmpCorpHealthOffHis> getBySidAndBaseDate(String sid, GeneralDate baseDate);
 
     List<EmpCorpHealthOffHis> getByCidAndSids(List<String> sids);
 
