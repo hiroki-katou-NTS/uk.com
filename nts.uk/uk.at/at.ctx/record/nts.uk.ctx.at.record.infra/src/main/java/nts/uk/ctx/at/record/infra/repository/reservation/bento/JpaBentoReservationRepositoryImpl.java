@@ -95,7 +95,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					GeneralDate.fromString(rs.getString("RESERVATION_YMD"), DATE_FORMAT), 
 					Integer.valueOf(rs.getString("RESERVATION_FRAME")), 
 					rs.getString("CARD_NO"), 
-					Boolean.valueOf(rs.getString("ORDERED")), 
+					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false, 
 					Integer.valueOf(rs.getString("MANU_FRAME")), 
 					GeneralDateTime.fromString(rs.getString("REGIST_DATETIME"), DATE_TIME_FORMAT), 
 					Integer.valueOf(rs.getString("QUANTITY")), 

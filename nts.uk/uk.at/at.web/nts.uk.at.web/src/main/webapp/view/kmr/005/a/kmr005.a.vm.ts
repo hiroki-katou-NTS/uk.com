@@ -20,10 +20,6 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         title: KnockoutObservable<string> = ko.observable('');
         
         // enum
-        orderedRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '注文済' },
-            { code: 0, name: 'すべて' }
-        ]);
         selectedOrdered: any = ko.observable(0);
         
         constructor() {
@@ -171,7 +167,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
                 return;    
             }
             let param = {
-                empLst: _(self.employeeList()).filter((o) => self.selectedEmployeeCode().includes(o.code)).map((o) => o.id).value(),
+                empLst: _(self.employeeList()).filter((o) => _.includes(self.selectedEmployeeCode(), o.code)).map((o) => o.id).value(),
                 title: self.title(),
                 startDate: self.dateValue().startDate,
                 endDate: self.dateValue().endDate,
