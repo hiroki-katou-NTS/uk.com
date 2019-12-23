@@ -45,6 +45,7 @@ import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
@@ -511,7 +512,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
