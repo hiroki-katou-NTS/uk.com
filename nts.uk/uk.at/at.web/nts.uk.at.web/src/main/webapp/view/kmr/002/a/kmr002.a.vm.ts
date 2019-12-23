@@ -51,7 +51,7 @@ module nts.uk.at.view.kmr002.a.model {
         finishLunch: KnockoutObservable<number> = ko.observable(0);
         startDinner: KnockoutObservable<number> = ko.observable(0);
         finishDinner: KnockoutObservable<number> = ko.observable(0);
-        
+
         constructor() {
             let self = this;
         }
@@ -75,7 +75,7 @@ module nts.uk.at.view.kmr002.a.model {
 
                 }).done((data) => {
                     nts.uk.ui.block.clear();
-                    
+
                     self.clearData();
 
                     self.initData(data);
@@ -295,7 +295,7 @@ module nts.uk.at.view.kmr002.a.model {
             self.txtPriceSum('');
             self.dinner('');
             self.sum('');
-                        if (self.priceLunch() == 0 && self.priceDinner() == 0) {
+            if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
 
@@ -327,16 +327,16 @@ module nts.uk.at.view.kmr002.a.model {
                 self.endTime('');
             }
             let timeSt = self.start() != null ? self.start() : 0;
+            if (data.listOrder.length > index && data.listOrder[index].ordered) {
+                self.isVisible(true);
+                self.textError(getText('KMR002_6'));
+                self.setDisPlay(false);
+            }
             if (dateSelect < dateNow) {
                 self.isVisible(true);
                 self.setDisPlay(false);
                 self.textError(getText('KMR002_9'));
             } else if (dateSelect == dateNow) {
-                if (data.listOrder.length > index && data.listOrder[index].ordered) {
-                    self.isVisible(true);
-                    self.textError(getText('KMR002_6'));
-                    self.setDisPlay(false);
-                }
                 if (timeSt <= timeNow && timeNow <= self.end()) {
                     self.isVisible(false);
                     self.setDisPlay(true);
@@ -465,7 +465,8 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1584" });
                 return;
             }
-            if (dateNow == dateSelect && ((!self.isUpdate() && (dateNow < self.start() || dateNow > self.end()))||(self.isUpdate() && (timeNow < self.startLunch() || timeNow < self.startDinner() || timeNow > self.finishLunch() || timeNow > self.finishDinner())))) {
+            if (dateNow == dateSelect && ((!self.isUpdate() && (dateNow < self.start() || dateNow > self.end()))
+                || (self.isUpdate() && self))) {
                 error({ messageId: "Msg_1585" });
                 return;
             }
