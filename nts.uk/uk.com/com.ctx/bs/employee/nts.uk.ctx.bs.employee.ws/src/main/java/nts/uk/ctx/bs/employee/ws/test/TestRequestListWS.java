@@ -28,8 +28,8 @@ public class TestRequestListWS {
 	@Path("/638") // test service
 	public List<EmployeeBasicInfoExport> get638(ParamTest1 param) {
 		List<ObjectParam> listObjParam = Arrays.asList(new ObjectParam(param.employmentCode1, new DatePeriod(param.birthDayStart1, param.endDayStart1)),
-													   new ObjectParam(param.employmentCode1, new DatePeriod(param.birthDayStart1, param.endDayStart1)),
-													   new ObjectParam(param.employmentCode1, new DatePeriod(param.birthDayStart1, param.endDayStart1)));
+													   new ObjectParam(param.employmentCode2, new DatePeriod(param.birthDayStart2, param.endDayStart2)),
+													   new ObjectParam(param.employmentCode3, new DatePeriod(param.birthDayStart3, param.endDayStart3)));
 		List<EmployeeBasicInfoExport> result = finder.getEmploymentBasicInfo(listObjParam, param.baseDate, param.cid);
 		return result;
 	}
