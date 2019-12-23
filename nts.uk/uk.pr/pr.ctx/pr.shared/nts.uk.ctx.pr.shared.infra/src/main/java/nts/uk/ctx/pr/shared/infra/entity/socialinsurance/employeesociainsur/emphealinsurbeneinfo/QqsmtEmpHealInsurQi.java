@@ -1,11 +1,12 @@
 package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -14,36 +15,38 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 /**
-* 社員健康保険資格情報
-*/
+ * 社員健康保険資格情報
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "QQSDT_KENHO_INFO")
-public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
-{
+public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * ID
-    */
+     * ID
+     */
     @EmbeddedId
     public QqsmtEmpHealInsurQiPk empHealInsurQiPk;
-    
+
     /**
-    * 健康保険資格取得日
-    */
+     * 健康保険資格取得日
+     */
     @Basic(optional = false)
     @Column(name = "START_DATE")
     public GeneralDate startDate;
-    
+
     /**
-    * 健康保険資格喪失日
-    */
+     * 健康保険資格喪失日
+     */
     @Basic(optional = false)
     @Column(name = "END_DATE")
     public GeneralDate endDate;
@@ -61,17 +64,16 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
     @Basic(optional = true)
     @Column(name = "KENHO_NUM")
     public String healInsurNumber;
-    
+
     @Override
-    protected Object getKey()
-    {
+    protected Object getKey() {
         return empHealInsurQiPk;
     }
 
     public static EmplHealInsurQualifiInfor toDomain(List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi) {
         return new EmplHealInsurQualifiInfor(
                 qqsmtEmpHealInsurQi.get(0).empHealInsurQiPk.employeeId,
-                qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId , new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
+                qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId, new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
                         .collect(Collectors.toList()));
     }
 
@@ -82,12 +84,20 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable
                 this.empHealInsurQiPk.employeeId, date);
     }
 
-    public  HealInsurNumberInfor toHealInsurNumberInfor(){
-        return new HealInsurNumberInfor(this.empHealInsurQiPk.hisId,this.careIsNumber,this.healInsurNumber);
+    public HealInsurNumberInfor toHealInsurNumberInfor() {
+        return new HealInsurNumberInfor(this.empHealInsurQiPk.hisId, this.careIsNumber, this.healInsurNumber);
     }
 
-    public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor domain) {
-        return null;
+    public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor) {
+        return new QqsmtEmpHealInsurQi(
+                new QqsmtEmpHealInsurQiPk(
+                        qualifiInfor.getEmployeeId(),
+                        numberInfor.getHistoryId(),
+                        AppContexts.user().companyId()
+                ),
+                qualifiInfor.getMourPeriod().get(0).start(),
+                qualifiInfor.getMourPeriod().get(0).end(),
+                numberInfor.getCareInsurNumber().map(e -> e.v()).orElse(null),
+                numberInfor.getHealInsNumber().map(e -> e.v()).orElse(null));
     }
-
 }

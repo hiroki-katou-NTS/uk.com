@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 import javax.ejb.Stateless;
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 @Stateless
 public class DeleteEmpHealInsQualifiInfoCommandHandler
         extends CommandHandler<DeleteEmpHealInsQualifiInfoCommand>
-        implements PeregUpdateCommandHandler<DeleteEmpHealInsQualifiInfoCommand>{
+        implements PeregDeleteCommandHandler<DeleteEmpHealInsQualifiInfoCommand> {
     @Inject
     private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
 
