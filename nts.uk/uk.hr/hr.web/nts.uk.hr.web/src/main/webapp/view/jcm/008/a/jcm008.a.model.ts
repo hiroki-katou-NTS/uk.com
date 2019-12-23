@@ -184,41 +184,7 @@ interface IEmployeeInformationImport {
     age: number;
 }
 
-interface FacePhotoFile {
-    thumbnailFileID: string;
-    facePhotoFileID: string;
-}
 
-interface Employment {
-    employmentCode: string;
-    employmentName: string;
-}
-
-interface Position {
-    positionId: string;
-    positionCode: string;
-    positionName: string;
-}
-
-interface Department {
-    departmentCode: string;
-    departmentName: string;
-    departmentDisplayName: string;
-}
-
-interface WorkPlace {
-    workplaceId: string;
-    workplaceCode: string;
-    workplaceGenericName: string;
-    workplaceName: string;
-}
-
-
-
-interface Classification {
-    classificationCode: string;
-    classificationName: string;
-}
 
 class PlannedRetirementDto {
     pId : string;
@@ -270,6 +236,42 @@ class PlannedRetirementDto {
     constructor() {
         
     }
+}
+
+interface FacePhotoFile {
+    thumbnailFileID: string;
+    facePhotoFileID: string;
+}
+
+interface Employment {
+    employmentCode: string;
+    employmentName: string;
+}
+
+interface Position {
+    positionId: string;
+    positionCode: string;
+    positionName: string;
+}
+
+interface Department {
+    departmentCode: string;
+    departmentName: string;
+    departmentDisplayName: string;
+}
+
+interface WorkPlace {
+    workplaceId: string;
+    workplaceCode: string;
+    workplaceGenericName: string;
+    workplaceName: string;
+}
+
+
+
+interface Classification {
+    classificationCode: string;
+    classificationName: string;
 }
 
 interface IInterviewSummary {
