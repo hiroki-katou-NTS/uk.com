@@ -40,7 +40,7 @@ public class AddEmpCorpHealthOffHisCommandHandler
 
     @Override
     public Class<?> commandClass() {
-        return AddEmpCorpHealthOffHisCommandHandler.class;
+        return AddEmpCorpHealthOffHisCommand.class;
     }
 
     public static final String MAX_DATE = "9999/12/31";
@@ -61,6 +61,6 @@ public class AddEmpCorpHealthOffHisCommandHandler
             domain = listHist.get();
         }
         empCorpHealthOffHisService.add(domain, itemAdded, newHistInfo);
-        return null;
+        return new PeregAddCommandResult(command.getSid());
     }
 }
