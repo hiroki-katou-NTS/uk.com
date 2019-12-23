@@ -505,7 +505,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			}else if(item.getEvaluationItem() == EvaluationItem.HEALTH_CONDITION) {
 				outputObject.setHealthStatusRefer(item.isUsageFlg());
 				outputObject.setHealthStatusDispNumber(item.getDisplayNum());
-			}else if(item.getEvaluationItem() == EvaluationItem.HEALTH_CONDITION) {
+			}else if(item.getEvaluationItem() == EvaluationItem.STRESS_CHECK) {
 				outputObject.setStressStatusRefer(item.isUsageFlg());
 				outputObject.setStressStatusDispNumber(item.getDisplayNum());
 			}
