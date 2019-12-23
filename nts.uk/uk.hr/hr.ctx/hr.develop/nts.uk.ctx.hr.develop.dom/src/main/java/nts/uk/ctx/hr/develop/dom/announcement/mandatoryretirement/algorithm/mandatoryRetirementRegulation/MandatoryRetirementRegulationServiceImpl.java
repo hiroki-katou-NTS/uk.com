@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.man
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,9 +48,12 @@ import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessmentResults;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItemResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
@@ -518,16 +522,70 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
 			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			Map<String, List<PersonnelAssessmentResults>> mapSid = HREvaluation.getPersonnelAssessmentsResult().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<PersonnelAssessmentResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					hrEvaluationList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getHrEvaluationDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getHrEvaluationDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					hrEvaluationList.add(dto);
+				}
+			}
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHealthStatusRefer()) {
 			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1));
+			Map<String, List<MedicalhistoryItemResults>> mapSid = medicalhistoryManagement.getMedicalhistoryItemResults().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<MedicalhistoryItemResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getHealthStatusDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getHealthStatusDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					healthStatusList.add(dto);
+				}
+			}
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isStressStatusRefer()) {
 			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			Map<String, List<StressCheckResults>> mapSid = stressCheckManagement.getStressChecks().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<StressCheckResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getStressStatusDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getStressStatusDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					healthStatusList.add(dto);
+				}
+			}
+			
 		}
-		
 		return new EvaluationInfoDto(hrEvaluationList, healthStatusList, stressStatusList);
 		
 	}
