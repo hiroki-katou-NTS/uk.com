@@ -3,6 +3,8 @@ package nts.uk.ctx.hr.develop.infra.repository.empregulationhistory;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
@@ -12,11 +14,20 @@ import nts.uk.ctx.hr.develop.infra.entity.empregulationhistory.JshmtEmpRegHistor
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository implements EmploymentRegulationHistoryRepository{
 
 	private static final String SELECT_LIST_DATE_HIS_ID = "SELECT c FROM JshmtEmpRegHistory c "
 			+ "WHERE c.cId = :cId "
-			+ "ORDER BY c.startDate ASC";
+			+ "ORDER BY c.startDate DESC";
+	
+	private static final String SELECT_BY_ID = "SELECT c FROM JshmtEmpRegHistory c "
+			+ "WHERE c.cId = :cId "
+			+ "AND c.historyId = :historyId";
+	
+	private static final String DELETE = "DELETE FROM JshmtEmpRegHistory c "
+			+ "WHERE c.cId = :cId "
+			+ "AND c.historyId = :historyId";
 	
 	@Override
 	public Optional<RegulationHistoryDto> getLatestEmpRegulationHist(String cId) {
@@ -47,7 +58,11 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 
 	@Override
 	public void updateEmpRegulationHist(String cId, String historyId, GeneralDate startDate) {
-		Optional<JshmtEmpRegHistory> entity = this.queryProxy().find(historyId , JshmtEmpRegHistory.class);
+		Optional<JshmtEmpRegHistory> entity = 
+				this.queryProxy().query(SELECT_BY_ID, JshmtEmpRegHistory.class)
+				.setParameter("cId", cId)
+				.setParameter("historyId", historyId)
+				.getSingle();
 		if(entity.isPresent()) {
 			entity.get().startDate = startDate;
 			this.commandProxy().update(entity.get());
@@ -56,7 +71,10 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 
 	@Override
 	public void removeEmpRegulationHist(String cId, String historyId) {
-		this.commandProxy().remove(JshmtEmpRegHistory.class, historyId);
+		this.getEntityManager().createQuery(DELETE, JshmtEmpRegHistory.class)
+		.setParameter("cId", cId)
+		.setParameter("historyId", historyId)
+		.executeUpdate();
 	}
 
 }

@@ -54,7 +54,7 @@ public interface EmploymentFinder {
 
 	
 	// dung để test reqList
-	List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, DatePeriod baseDatePeriod);
+	List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, GeneralDate baseDate);
 	
 	// dung để test reqList
 	List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam,

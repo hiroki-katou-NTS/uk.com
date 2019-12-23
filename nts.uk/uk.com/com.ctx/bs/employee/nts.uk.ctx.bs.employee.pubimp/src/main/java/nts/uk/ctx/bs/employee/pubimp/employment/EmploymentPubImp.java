@@ -345,12 +345,12 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	
 
 	@Override
-	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, DatePeriod baseDatePeriod) {
+	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, GeneralDate baseDate) {
 		
 		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
 		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
 
-		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, baseDatePeriod);
+		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, new DatePeriod(baseDate, baseDate) );
 		
 		if (listEmpHistItem.isEmpty()) {
 			return new ArrayList<>();

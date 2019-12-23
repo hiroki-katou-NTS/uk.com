@@ -70,7 +70,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private static final String SELECT_DATA_REQ640_2 = "SELECT eh "
 			+ " FROM BsymtEmploymentHist  eh  "
 			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
-			+ " WHERE eh.sid IN :histIds";
+			+ " WHERE eh.hisId IN :histIds";
 	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
