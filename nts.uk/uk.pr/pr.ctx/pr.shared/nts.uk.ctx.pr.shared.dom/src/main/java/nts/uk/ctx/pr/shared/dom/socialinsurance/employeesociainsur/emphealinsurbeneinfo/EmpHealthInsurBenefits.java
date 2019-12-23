@@ -3,6 +3,7 @@ import java.util.Optional;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,8 @@ import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 * 社員健康保険得喪期間項目
 */
 @Getter
+@Setter
+@NoArgsConstructor
 public class EmpHealthInsurBenefits extends HistoryItem<DatePeriod, GeneralDate>
 {
     

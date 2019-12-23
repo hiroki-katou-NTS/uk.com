@@ -11,6 +11,9 @@ public class EmpHealInsQualifiInfoService {
     @Inject
     private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
 
+    @Inject
+    private HealInsurNumberInforRepository healInsurNumberInforRepository;
+
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate){
         emplHealInsurQualifiInforRepository.update(itemToBeUpdate);
         updateItemBefore(domain, itemToBeUpdate);
@@ -32,6 +35,11 @@ public class EmpHealInsQualifiInfoService {
         if (items.isEmpty()){
             emplHealInsurQualifiInforRepository.updateAll(items);
         }
+    }
+
+    public void add(EmplHealInsurQualifiInfor domain){
+        EmpHealthInsurBenefits itemToBeAdded = domain.getMourPeriod().get(domain.getMourPeriod().size()-1);
+        emplHealInsurQualifiInforRepository.add(domain.getEmployeeId(), itemToBeAdded);
     }
 
     public void addAll (List<HealInsQualifiAndNumber> domains){
@@ -69,5 +77,9 @@ public class EmpHealInsQualifiInfoService {
             return;
         }
         emplHealInsurQualifiInforRepository.updateAll(itemToBeUpdateLst);
+    }
+
+    public void delete(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeDeleted){
+        emplHealInsurQualifiInforRepository.remove(domain.getEmployeeId(), itemToBeDeleted.identifier());
     }
 }

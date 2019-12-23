@@ -4,11 +4,12 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInforRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -67,8 +68,16 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
     }
 
     @Override
-    public void add(HealInsurNumberInfor numberInfor, EmplHealInsurQualifiInfor qualifiInfor) {
-        this.commandProxy().insert(QqsmtEmpHealInsurQi.toEntity(qualifiInfor, numberInfor));
+    public void add(HealInsurNumberInfor numberInfor) {
+        commandProxy().insert(toEntity(numberInfor));
+        this.getEntityManager().flush();
+    }
+
+    private QqsmtEmpHealInsurQi toEntity(HealInsurNumberInfor domain){
+        String cId = AppContexts.user().companyId();
+        QqsmtEmpHealInsurQiPk entityPk = new QqsmtEmpHealInsurQiPk(null,domain.getHistoryId(), cId);
+
+        return new QqsmtEmpHealInsurQi(entityPk, null, null, domain.getCareInsurNumber().map(e->e.v()).orElse(null), domain.getHealInsNumber().map(e->e.v()).orElse(null));
     }
 
     @Override

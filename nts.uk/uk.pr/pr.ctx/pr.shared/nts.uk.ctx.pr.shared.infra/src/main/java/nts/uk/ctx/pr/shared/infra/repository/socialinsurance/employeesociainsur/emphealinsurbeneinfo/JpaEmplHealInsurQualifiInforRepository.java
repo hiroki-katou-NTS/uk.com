@@ -22,7 +22,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
 
     private static final String SELECT_BY_LIST_EMP_START = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.endDate >= :startDate AND f.endDate <= :endDate";
-    private static final String SELECT_BY_EMPLID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
+    private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId ";
     private static final String SELECT_BY_LIST_EMP = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.startDate >= :startDate AND f.startDate <= :endDate";
     private static final String SELECT_BY_ID_AND_DATE = SELECT_ALL_QUERY_STRING + "f.empHealInsurQiPk.cid =:cid WHERE AND f.startDate <= :date AND f.endDate >= date";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
@@ -121,6 +121,42 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
+    public EmplHealInsurQualifiInfor getEmpHealInsQualifiInfoOfEmp(String empId) {
+        List<QqsmtEmpHealInsurQi> listInsQi = this.queryProxy()
+                .query(SELECT_BY_EMP_ID, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeId", empId)
+                .getList();
+        return toDomain(listInsQi);
+    }
+
+    private EmplHealInsurQualifiInfor toDomain(List<QqsmtEmpHealInsurQi> entities){
+        if (entities.isEmpty()){
+            return null;
+        }
+
+        EmplHealInsurQualifiInfor domain = new EmplHealInsurQualifiInfor();
+
+        for (QqsmtEmpHealInsurQi item : entities) {
+            if (domain.getEmployeeId() == null) {
+                domain.setEmployeeId(item.empHealInsurQiPk.employeeId);
+            }
+
+            EmpHealthInsurBenefits empHealthInsurBenefits = domain.getEmpHealthInsurBenefits(item.empHealInsurQiPk.hisId);
+
+            if (empHealthInsurBenefits == null) {
+                empHealthInsurBenefits = new EmpHealthInsurBenefits();
+                empHealthInsurBenefits.setDatePeriod(
+                        new DateHistoryItem(item.empHealInsurQiPk.hisId,
+                                new DatePeriod(item.startDate, item.endDate)
+                        )
+                );
+                domain.addEmpHealInsBenefits(empHealthInsurBenefits);
+            }
+        }
+        return domain;
+    }
+
+    @Override
     public Optional<EmplHealInsurQualifiInfor> getByHistoryId(String historyId) {
         Optional<QqsmtEmpHealInsurQi> data = this.queryProxy().find(historyId, QqsmtEmpHealInsurQi.class);
         if (data.isPresent()) {
@@ -136,34 +172,18 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
         return domain;
     }
 
-    private List<EmpHealthInsurBenefits> toDomain(List<QqsmtEmpHealInsurQi> entities) {
-        List<EmpHealthInsurBenefits> dateHistoryItems = new ArrayList<EmpHealthInsurBenefits>();
-        if (entities == null || entities.isEmpty()) {
-            return dateHistoryItems;
-        }
-
-        entities.forEach(entity -> {
-            dateHistoryItems.add(new EmpHealthInsurBenefits(entity.empHealInsurQiPk.hisId,
-                    new DateHistoryItem(entity.empHealInsurQiPk.hisId, new DatePeriod(entity.startDate,
-                            entity.endDate))));
-        });
-        return dateHistoryItems;
-    }
-
-
     @Override
-    public void add(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor) {
-        this.commandProxy().insert(toEntity(qualifiInfor, numberInfor));
+    public void add(String empId, EmpHealthInsurBenefits item) {
+        this.commandProxy().insert(toEntity(item, empId));
     }
 
-    private QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor){
+    private QqsmtEmpHealInsurQi toEntity(EmpHealthInsurBenefits benefits, String empId){
         String cId = AppContexts.user().companyId();
         return new QqsmtEmpHealInsurQi(
-                new QqsmtEmpHealInsurQiPk(qualifiInfor.getEmployeeId(), numberInfor.getHistoryId(), cId),
-                qualifiInfor.getMourPeriod().get(0).start(),
-                qualifiInfor.getMourPeriod().get(0).getDatePeriod().end(),
-                numberInfor.getCareInsurNumber().map(e->e.v()).orElse(null),
-                numberInfor.getHealInsNumber().map(e->e.v()).orElse(null)
+                new QqsmtEmpHealInsurQiPk(empId, benefits.identifier(), cId),
+                benefits.getDatePeriod().start(),
+                benefits.getDatePeriod().end(),
+                null, null
         );
     }
 
