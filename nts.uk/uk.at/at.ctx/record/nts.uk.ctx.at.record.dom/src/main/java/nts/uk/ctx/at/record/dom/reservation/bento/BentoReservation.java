@@ -43,6 +43,10 @@ public class BentoReservation extends AggregateRoot{
 	
 	public BentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered, 
 			List<BentoReservationDetail> bentoReservationDetails) {
+		// [inv-1] @明細リスト.size > 0
+		if(bentoReservationDetails.size() <= 0) {
+			throw new RuntimeException("System error");
+		}
 		this.registerInfor = registerInfor;
 		this.reservationDate = reservationDate;
 		this.ordered = ordered;

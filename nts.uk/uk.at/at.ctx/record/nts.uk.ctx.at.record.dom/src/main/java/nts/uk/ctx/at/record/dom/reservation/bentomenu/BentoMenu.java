@@ -45,6 +45,10 @@ public class BentoMenu extends AggregateRoot {
 	private final BentoReservationClosingTime closingTime;
 	
 	public BentoMenu(String historyID, List<Bento> menu, BentoReservationClosingTime closingTime) {
+		// inv-1	1 <= ＠メニュー.size <= 40
+		if(menu.size() <= 0 || menu.size() > 40) {
+			throw new RuntimeException("System error");
+		}
 		this.historyID = historyID;
 		this.menu = menu;
 		this.closingTime = closingTime;
