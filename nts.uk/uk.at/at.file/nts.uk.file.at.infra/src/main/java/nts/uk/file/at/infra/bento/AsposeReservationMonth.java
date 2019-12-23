@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.bento;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.CellArea;
 import com.aspose.cells.CellBorderType;
@@ -149,11 +149,12 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 	
 	private Integer printEmpFormat(Cells cells, ReservationEmpLedger empLedger, DatePeriod period, Integer dataRow) throws Exception {
 		int startDataRow = dataRow + 1;
-		for(ReservationBentoLedger bentoLedger : empLedger.getBentoLedgerLst()) {
-			if(bentoLedger.getBentoNumber().intValue()%2==0) {
-				cells.copyRow(cells, 5, startDataRow);
-			} else {
+		List<ReservationBentoLedger> bentoLedgerLst = empLedger.getBentoLedgerLst();
+		for (int i = 0; i < bentoLedgerLst.size(); i++) {
+			if(i%2==0) {
 				cells.copyRow(cells, 4, startDataRow);
+			} else {
+				cells.copyRow(cells, 5, startDataRow);
 			}
 			startDataRow += 1;
 		}
