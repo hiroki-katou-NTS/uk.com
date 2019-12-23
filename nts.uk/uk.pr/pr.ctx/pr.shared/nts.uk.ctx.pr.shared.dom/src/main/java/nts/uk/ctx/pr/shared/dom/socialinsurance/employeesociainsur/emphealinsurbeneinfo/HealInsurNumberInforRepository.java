@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +15,17 @@ public interface HealInsurNumberInforRepository
 
     Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String historyId);
 
-    void add(HealInsurNumberInfor domain);
+    List<HealInsurNumberInfor> findByHistoryId(List<String> hisId);
+
+    Optional<HealInsurNumberInfor> getHealInsNumberInfoById(String cid, String empId);
+
+    void add(HealInsurNumberInfor numberInfor, EmplHealInsurQualifiInfor qualifiInfor);
+
+    void addAll(List<HealInsurNumberInfor> domains);
 
     void update(HealInsurNumberInfor domain);
+
+    void updateAll (List<HealInsurNumberInfor> numberInfors);
 
     void remove(String historyId);
 

@@ -13,6 +13,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * 社員健康保険資格情報
@@ -38,5 +39,9 @@ public class EmplHealInsurQualifiInfor extends AggregateRoot implements Continuo
     @Override
     public List<EmpHealthInsurBenefits> items() {
         return mourPeriod;
+    }
+
+    public List<String> getHistoryIds() {
+        return mourPeriod.stream().map(x -> x.identifier()).collect(Collectors.toList());
     }
 }
