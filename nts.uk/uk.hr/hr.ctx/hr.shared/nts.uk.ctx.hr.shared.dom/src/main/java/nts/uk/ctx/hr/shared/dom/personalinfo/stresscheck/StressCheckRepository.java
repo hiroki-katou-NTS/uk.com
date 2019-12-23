@@ -8,6 +8,6 @@ public interface StressCheckRepository {
 
 	List<StressCheck> getPersonnelAssessmentByEmployeeId(String employeeId);
 
-	List<StressCheck> getPersonnelAssessmentByEmployeeIds(List<String> employeeIds, GeneralDate startDate);
+	List<StressCheckResults> getPersonnelAssessmentByEmployeeIds(List<String> employeeIds, GeneralDate startDate);
 
 }

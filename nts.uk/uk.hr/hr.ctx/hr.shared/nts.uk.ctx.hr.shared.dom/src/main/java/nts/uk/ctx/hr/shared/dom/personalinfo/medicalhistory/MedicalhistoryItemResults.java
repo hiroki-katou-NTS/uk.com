@@ -1,15 +1,15 @@
-package nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation;
+package nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 /**
- * @author THanhPV 人事評価結果
+ * @author THanhPV 受診履歴
  */
 @Getter
 @AllArgsConstructor
-public class PersonnelAssessmentResults {
+public class MedicalhistoryItemResults {
 
 	/** 会社ID */
 	private String companyID;
@@ -23,7 +23,7 @@ public class PersonnelAssessmentResults {
 	/** 終了日 */
 	private GeneralDate endDate;
 	
-	/** 総合評価  */
+	/** 総合結果  */
 	private String evaluation;
 
 }

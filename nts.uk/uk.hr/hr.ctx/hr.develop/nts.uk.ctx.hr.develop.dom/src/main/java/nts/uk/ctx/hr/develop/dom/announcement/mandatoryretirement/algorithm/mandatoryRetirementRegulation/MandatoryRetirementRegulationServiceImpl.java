@@ -49,6 +49,8 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResour
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -73,6 +75,9 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	
 	@Inject
 	private MedicalhistoryServices medicalhistoryServices;
+	
+	@Inject
+	private StressCheckService stressCheckService;
 	
 	@Inject
 	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
@@ -515,13 +520,12 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
-		if(outputObject.isHrEvaluationRefer()) {
-			MedicalhistoryManagement medicalhistoryManagement = new MedicalhistoryManagement();
-			medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1), medicalhistoryManagement);
+		if(outputObject.isHealthStatusRefer()) {
+			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1));
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
-		if(outputObject.isHrEvaluationRefer()) {
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+		if(outputObject.isStressStatusRefer()) {
+			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
 		}
 		
 		return new EvaluationInfoDto(hrEvaluationList, healthStatusList, stressStatusList);

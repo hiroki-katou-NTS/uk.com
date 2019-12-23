@@ -10,10 +10,9 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
-import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessmentResults;
-import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheck;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 
 @Path("hrtest")
@@ -42,15 +41,13 @@ public class TestWs {
 	@POST
 	@Path("/teststress/1") // test service
 	public StressCheckManagement testStress1(TestDto dto) {
-		StressCheckManagement domain = new StressCheckManagement();
-		return stressCheckSv.loadStressCheck(dto.getListSid(), dto.getBaseDate().addMonths(-1), domain);
+		return stressCheckSv.loadStressCheck(dto.getListSid(), dto.getBaseDate().addMonths(-1));
 	}
 
 	@POST
 	@Path("/teststress/2") // test service
-	public List<StressCheck> testStress2(TestDto dto) {
-		StressCheckManagement domain = testStress1(dto);
-		return stressCheckSv.getStressCheck(dto.getSid(), dto.getBaseDate().addMonths(-1), domain);
+	public List<StressCheckResults> testStress2(TestDto dto) {
+		return stressCheckSv.getStressCheck(dto.getSid(), dto.getBaseDate().addMonths(-1));
 	}
 
 }

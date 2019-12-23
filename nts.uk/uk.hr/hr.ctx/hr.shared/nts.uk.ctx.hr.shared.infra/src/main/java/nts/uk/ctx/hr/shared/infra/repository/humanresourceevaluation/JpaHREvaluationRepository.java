@@ -37,6 +37,11 @@ public class JpaHREvaluationRepository extends JpaRepository implements HumanRes
 	 */
 	@Override
 	public List<PersonnelAssessmentResults> getPersonnelAssessmentByEmployeeIds(List<String> employeeIds, GeneralDate startDate) {
+		
+		if (employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
 		List<PersonnelAssessmentResults> result = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, d -> {
