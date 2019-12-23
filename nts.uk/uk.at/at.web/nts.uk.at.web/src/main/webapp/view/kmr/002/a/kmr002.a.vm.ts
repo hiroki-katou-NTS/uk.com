@@ -47,8 +47,11 @@ module nts.uk.at.view.kmr002.a.model {
         isVisibleDinner: KnockoutObservable<boolean> = ko.observable(false);
         isVisibleLunch: KnockoutObservable<boolean> = ko.observable(false);
         textError: KnockoutObservable<string> = ko.observable(getText('KMR002_6'));
-        checkUpdate: KnockoutObservable<boolean> = ko.observable(false);
-
+        startLunch: KnockoutObservable<number> = ko.observable(0);
+        finishLunch: KnockoutObservable<number> = ko.observable(0);
+        startDinner: KnockoutObservable<number> = ko.observable(0);
+        finishDinner: KnockoutObservable<number> = ko.observable(0);
+        
         constructor() {
             let self = this;
         }
@@ -71,7 +74,8 @@ module nts.uk.at.view.kmr002.a.model {
                     closingTimeFrame: self.mealSelected()
 
                 }).done((data) => {
-
+                    nts.uk.ui.block.clear();
+                    
                     self.clearData();
 
                     self.initData(data);
@@ -116,6 +120,10 @@ module nts.uk.at.view.kmr002.a.model {
                 self.start(data.bentoMenuByClosingTimeDto.closingTime2.start);
                 self.end(data.bentoMenuByClosingTimeDto.closingTime2.finish);
             }
+            self.startLunch(data.bentoMenuByClosingTimeDto.closingTime1.start);
+            self.finishLunch(data.bentoMenuByClosingTimeDto.closingTime1.finish);
+            self.startDinner(data.bentoMenuByClosingTimeDto.closingTime2.start);
+            self.finishDinner(data.bentoMenuByClosingTimeDto.closingTime2.finish);
             self.lunchText(data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName);
             self.dinnerText(data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName);
             self.optionMenu.push({ code: 1, name: self.lunchText() });
@@ -258,10 +266,13 @@ module nts.uk.at.view.kmr002.a.model {
             self.priceSum(0);
             self.lunchCount(0);
             self.sumCount(0);
-//            self.txtPriceLunch('');
-//            self.lunch('');
-//            self.sum('');
-//            self.txtPriceSum('');
+            self.txtPriceLunch('');
+            self.lunch('');
+            if (self.priceLunch() == 0 && self.priceDinner() == 0) {
+                self.sum('');
+                self.txtPriceSum('');
+
+            }
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 self.priceLunch(self.priceLunch() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
@@ -280,10 +291,15 @@ module nts.uk.at.view.kmr002.a.model {
             self.priceSum(0);
             self.dinnerCount(0);
             self.sumCount(0);
-//            self.txtPriceDinner('');
-//            self.txtPriceSum('');
-//            self.dinner('');
-//            self.sum('');
+            self.txtPriceDinner('');
+            self.txtPriceSum('');
+            self.dinner('');
+            self.sum('');
+                        if (self.priceLunch() == 0 && self.priceDinner() == 0) {
+                self.sum('');
+                self.txtPriceSum('');
+
+            }
             _.forEach(self.listBentoOrderDinner(), (item) => {
                 self.priceDinner(self.priceDinner() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
@@ -389,7 +405,6 @@ module nts.uk.at.view.kmr002.a.model {
 
         public updateCountOrderDinner(frameNo: number, count: number): void {
             let self = this;
-            self.checkUpdate(true);
             _.each(self.listBentoOrderDinner(), (item) => {
                 let bentoCount = item.bentoCount() + count;
                 if (item.frameNo == frameNo && !item.status && bentoCount > 0) {
@@ -450,11 +465,11 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1584" });
                 return;
             }
-            if (dateNow == dateSelect && ((timeNow < self.start() || timeNow > self.end()) || self.checkUpdate)) {
+            if (dateNow == dateSelect && (timeNow < self.startLunch() || timeNow < self.finishLunch() || timeNow > self.end() || timeNow > self.finishDinner())) {
                 error({ messageId: "Msg_1585" });
                 return;
             }
-             _.forEach(self.listBentoOrderLunch(), (item) => {
+            _.forEach(self.listBentoOrderLunch(), (item) => {
                 let value = { closingTimeFrame: 1, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
                 detailLst.push(value);
             });
@@ -466,10 +481,11 @@ module nts.uk.at.view.kmr002.a.model {
         }
 
         public register(detailLst: any): void {
-            
+
             let self = this, bentoReservation = { date: self.date(), details: detailLst };
             if (self.isUpdate() && self.date()) {
                 service.update(bentoReservation).done((data) => {
+                    nts.uk.ui.block.clear();
                     info({ messageId: "Msg_15" });
                     if (detailLst.length == 0) {
                         self.isUpdate(false);
@@ -482,6 +498,7 @@ module nts.uk.at.view.kmr002.a.model {
                     error({ messageId: "Msg_1589" });
                 } else {
                     service.register(bentoReservation).done((data) => {
+                        nts.uk.ui.block.clear();
                         info({ messageId: "Msg_15" });
                         self.isUpdate(true);
                     });
@@ -492,7 +509,7 @@ module nts.uk.at.view.kmr002.a.model {
         public outputData(): void {
             let self = this;
             service.print().done((data) => {
-                console.log(data);
+                nts.uk.ui.block.clear();
             }).fail((res: any) => {
                 error({ messageId: res.messageId }).then(() => {
                     nts.uk.ui.block.clear();
