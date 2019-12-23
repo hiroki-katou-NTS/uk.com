@@ -223,9 +223,9 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 						EmployeeBasicInfoExport empInfo =  EmployeeBasicInfoExport.builder()
 								.employmentCode(data.get(i)[0] == null ? null : data.get(i)[0].toString())
 								.dateJoinComp(data.get(i)[1] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
-								.sid(data.get(i)[2] == null ? null : data.get(i)[0].toString())
-								.pid(data.get(i)[3] == null ? null : data.get(i)[0].toString())
-								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.sid(data.get(i)[2] == null ? null : data.get(i)[2].toString())
+								.pid(data.get(i)[3] == null ? null : data.get(i)[3].toString())
+								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[4].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
 								.build();
 						result.add(empInfo);
 					}
@@ -303,12 +303,12 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	}
 	
 	@Override
-	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, DatePeriod baseDatePeriod) {
+	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, GeneralDate baseDate) {
 		
 		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
 		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
 
-		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, baseDatePeriod);
+		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, new DatePeriod(baseDate, baseDate));
 		
 		if (listEmpHistItem.isEmpty()) {
 			return new ArrayList<>();

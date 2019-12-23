@@ -102,6 +102,6 @@ public interface SyEmploymentPub {
 	 * @param listSId : List<社員ID>
 	 * @param baseDatePeriod : 期間
 	 */
-	List<DataEmployeeExport> getEmployeeInfo(List<String> listSId , DatePeriod baseDatePeriod);
+	List<DataEmployeeExport> getEmployeeInfo(List<String> listSId , GeneralDate baseDate);
 
 }
