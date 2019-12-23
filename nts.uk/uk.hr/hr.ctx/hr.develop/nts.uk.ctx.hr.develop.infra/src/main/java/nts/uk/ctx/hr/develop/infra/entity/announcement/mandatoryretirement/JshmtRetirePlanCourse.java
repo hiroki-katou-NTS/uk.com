@@ -88,12 +88,12 @@ public class JshmtRetirePlanCourse extends UkJpaEntity implements Serializable {
 		this.retirePlanCourseName = retirePlanCource.getRetirePlanCourseName();
 		this.retirePlanCourseClass = retirePlanCource.getRetirePlanCourseClass().value;
 		this.retirementAge = retirePlanCource.getRetirementAge().v();
-		this.durationFlg = retirePlanCource.isDurationFlg()?1:0;
+		this.durationFlg = retirePlanCource.getDurationFlg().value;
 		this.resignmentReason1Id = retirePlanCource.getResignmentReason1Id();
 		this.notUsageFlg = retirePlanCource.isNotUsageFlg()?1:0;
 		this.usageStartDate = retirePlanCource.getUsageStartDate();
 		this.usageEndDate = retirePlanCource.getUsageEndDate();
-		this.recontractEmpCode = retirePlanCource.getRecontractEmpCode();
+		this.recontractEmpCode = retirePlanCource.getRecontractEmpCode().orElse(null);
 		if(retirePlanCource.getPlanCourseApplyTerm().isPresent()) {
 			this.applicationEnableStartAge = retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableStartAge().v();
 			this.applicationEnableEndAge = retirePlanCource.getPlanCourseApplyTerm().get().getApplicationEnableEndAge().v();
@@ -114,12 +114,12 @@ public class JshmtRetirePlanCourse extends UkJpaEntity implements Serializable {
 				this.retirePlanCourseName, 
 				this.retirePlanCourseClass, 
 				this.retirementAge, 
-				this.durationFlg == 1, 
+				this.durationFlg, 
 				this.resignmentReason1Id, 
 				this.notUsageFlg == 1, 
 				this.usageStartDate, 
 				this.usageEndDate, 
 				Optional.ofNullable(planCourseApplyTerm),
-				recontractEmpCode);
+				Optional.ofNullable(this.recontractEmpCode));
 	}
 }

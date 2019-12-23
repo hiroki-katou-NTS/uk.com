@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessment;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessmentResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheck;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
@@ -28,13 +29,12 @@ public class TestWs {
 	@POST
 	@Path("/testhr/1") // test service
 	public HumanResourceEvaluation testDomain1(TestDto dto) {
-		HumanResourceEvaluation domain = new HumanResourceEvaluation();
-		return hrSv.loadHRevaluation(dto.getListSid(), dto.getBaseDate().addMonths(-1), domain);
+		return hrSv.loadHRevaluation(dto.getListSid(), dto.getBaseDate().addMonths(-1));
 	}
 	
 	@POST
 	@Path("/testhr/2") // test service
-	public List<PersonnelAssessment> testDomain2(TestDto dto) {
+	public List<PersonnelAssessmentResults> testDomain2(TestDto dto) {
 		HumanResourceEvaluation domain = testDomain1(dto);
 		return hrSv.getHRevaluationBySid(dto.getSid(), dto.getBaseDate().addMonths(-1), domain);
 	}

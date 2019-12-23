@@ -45,7 +45,6 @@ import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.service.YearStartEnd;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
-import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
@@ -188,7 +187,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 							retirePlanCource.get().getRetirePlanCourseId(), 
 							retirePlanCource.get().getRetirePlanCourseCode(), 
 							retirePlanCource.get().getRetirePlanCourseName(), 
-							retirePlanCource.get().isDurationFlg()));
+							retirePlanCource.get().getDurationFlg()));
 				}
 			}
 		}
@@ -512,8 +511,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
+			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
@@ -522,8 +520,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
+			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
 		}
 		
 		return new EvaluationInfoDto(hrEvaluationList, healthStatusList, stressStatusList);
