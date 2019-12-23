@@ -68,6 +68,7 @@ import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
 @Stateless
@@ -194,7 +195,10 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00069 打刻カード番号
 			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){},
 			// CS00070  労働条件２
-			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>(){});
+			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>(){},
+			//CS00075 社員社保事業所
+			new TypeLiteral<PeregFinder<EmpCorpHealthOffHisDto>>(){}
+			);
 
 	@Override
 	public Set<PeregFinder<?>> peregFinderCollect() {

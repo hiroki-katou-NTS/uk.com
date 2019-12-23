@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empcomofficehis;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
@@ -17,6 +18,8 @@ public class JpaAffOfficeInformationRepository extends JpaRepository implements 
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpCorpOffHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND f.empCorpOffHisPk.historyId =:hisId AND  f.empCorpOffHisPk.cid =:cid ";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.historyId IN :hisIds AND  f.empCorpOffHisPk.cid =:cid";
+
 
     @Override
     public List<AffOfficeInformation> getAllAffOfficeInformation() {
@@ -31,6 +34,13 @@ public class JpaAffOfficeInformationRepository extends JpaRepository implements 
                 .setParameter("hisId",hisId)
                 .setParameter("cid", AppContexts.user().companyId())
                 .getSingle(x -> x.toDomain());
+    }
+
+    @Override
+    public List<AffOfficeInformation> getByHistIds(List<String> histIds){
+        return this.queryProxy().query(SELECT_BY_HIST_IDS, QqsmtEmpCorpOffHis.class)
+                .setParameter("hisIds", histIds).setParameter("cid", AppContexts.user().companyId())
+                .getList(x -> x.toDomain());
     }
 
     @Override

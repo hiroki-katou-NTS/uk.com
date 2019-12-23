@@ -65,6 +65,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -130,6 +131,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
+
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	private static final Map<String, Class<?>> enumMap;
 	static {
@@ -381,6 +385,11 @@ public class ComboBoxRetrieveFactory {
 					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getGrantDateCode().v(),
 							yearServicePer.getGrantDateName().v()))
 					.collect(Collectors.toList());
+		case "M00019":
+		    //社会保険事業所
+			return socialInsuranceOfficeRepository.findByCid(companyId)
+					.stream()
+					.map(x -> new ComboBoxObject(x.getCode().v(), "000000000000" + "　" + x.getName().v())).collect(Collectors.toList());
 		default:
 			break;
 		}
