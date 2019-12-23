@@ -150,7 +150,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		if(!mandatoryRetirementRegulation.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
-		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->c.isUsageFlg());
+		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->!c.isUsageFlg());
 		
 		//退職日条件
 		RetireDateTerm retireDateTerm = mandatoryRetirementRegulation.get().getRetireDateTerm();
@@ -213,7 +213,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 		//※）List<MandatoryRetireTerm>．xac dinh tuoi nghi huu = 1
-		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->c.isUsageFlg());
+		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->!c.isUsageFlg());
 		
 		//・年齢到達条件
 		ReachedAgeTerm reachedAgeTerm = mandatoryRetirementRegulation.get().getReachedAgeTerm();
