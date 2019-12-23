@@ -25,6 +25,10 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 			+ "WHERE c.cId = :cId "
 			+ "AND c.historyId = :historyId";
 	
+	private static final String DELETE = "DELETE FROM JshmtEmpRegHistory c "
+			+ "WHERE c.cId = :cId "
+			+ "AND c.historyId = :historyId";
+	
 	@Override
 	public Optional<RegulationHistoryDto> getLatestEmpRegulationHist(String cId) {
 		List<DateHistoryItem> lis = this.queryProxy().query(SELECT_LIST_DATE_HIS_ID, JshmtEmpRegHistory.class)
@@ -67,7 +71,10 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 
 	@Override
 	public void removeEmpRegulationHist(String cId, String historyId) {
-		this.commandProxy().remove(JshmtEmpRegHistory.class, historyId);
+		this.getEntityManager().createQuery(DELETE, JshmtEmpRegHistory.class)
+		.setParameter("cId", cId)
+		.setParameter("historyId", historyId)
+		.executeUpdate();
 	}
 
 }
