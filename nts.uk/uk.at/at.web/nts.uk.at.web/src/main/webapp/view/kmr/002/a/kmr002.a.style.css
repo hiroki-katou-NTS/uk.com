@@ -62,3 +62,6 @@ button.nts-switch-button {
 .fixed-flex-layout-left {
     width: calc(100vw - 150px);
 }
+.fixed-flex-layout{
+	height: calc(100vh - 161px);
+}
