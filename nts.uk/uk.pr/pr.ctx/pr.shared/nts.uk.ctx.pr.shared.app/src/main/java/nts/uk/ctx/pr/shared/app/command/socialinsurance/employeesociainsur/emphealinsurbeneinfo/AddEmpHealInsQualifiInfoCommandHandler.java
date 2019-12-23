@@ -46,9 +46,11 @@ public class AddEmpHealInsQualifiInfoCommandHandler
         String companyId = AppContexts.user().companyId();
         String hisId = IdentifierUtil.randomUniqueId();
 
-        EmpHealthInsurBenefits dateItem = new EmpHealthInsurBenefits(hisId, new DateHistoryItem(hisId, new DatePeriod(
-                command.getStartDate() != null ? command.getStartDate() : GeneralDate.min(),
-                command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()
+        EmpHealthInsurBenefits dateItem = new EmpHealthInsurBenefits(hisId,
+                new DateHistoryItem(hisId,
+                        new DatePeriod(
+                                command.getStartDate() != null ? command.getStartDate() : GeneralDate.min(),
+                                command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()
         )));
 
         Optional<EmplHealInsurQualifiInfor> exitHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(companyId, command.getEmployeeId());
@@ -59,9 +61,15 @@ public class AddEmpHealInsQualifiInfoCommandHandler
         }
         qualifiInfor.add(dateItem);
 
-        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(hisId, command.getHealInsNumber(), command.getNurCaseInsNumber());
+        empHealInsQualifiInfoService.add(qualifiInfor);
 
-        emplHealInsurQualifiInforRepository.add(qualifiInfor, numberInfor);
+        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(
+                hisId,
+                command.getHealInsNumber(),
+                command.getNurCaseInsNumber()
+        );
+        healInsurNumberInforRepository.add(numberInfor);
+
         return new PeregAddCommandResult(hisId);
     }
 }

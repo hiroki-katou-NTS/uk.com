@@ -88,16 +88,16 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable {
         return new HealInsurNumberInfor(this.empHealInsurQiPk.hisId, this.careIsNumber, this.healInsurNumber);
     }
 
-    public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor) {
-        return new QqsmtEmpHealInsurQi(
-                new QqsmtEmpHealInsurQiPk(
-                        qualifiInfor.getEmployeeId(),
-                        numberInfor.getHistoryId(),
-                        AppContexts.user().companyId()
-                ),
-                qualifiInfor.getMourPeriod().get(0).start(),
-                qualifiInfor.getMourPeriod().get(0).end(),
-                numberInfor.getCareInsurNumber().map(e -> e.v()).orElse(null),
-                numberInfor.getHealInsNumber().map(e -> e.v()).orElse(null));
-    }
+//    public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor) {
+//        return new QqsmtEmpHealInsurQi(
+//                new QqsmtEmpHealInsurQiPk(
+//                        qualifiInfor.getEmployeeId(),
+//                        numberInfor.getHistoryId(),
+//                        AppContexts.user().companyId()
+//                ),
+//                qualifiInfor.getMourPeriod().get(0).start(),
+//                qualifiInfor.getMourPeriod().get(0).end(),
+//                numberInfor.getCareInsurNumber().map(e -> e.v()).orElse(null),
+//                numberInfor.getHealInsNumber().map(e -> e.v()).orElse(null));
+//    }
 }

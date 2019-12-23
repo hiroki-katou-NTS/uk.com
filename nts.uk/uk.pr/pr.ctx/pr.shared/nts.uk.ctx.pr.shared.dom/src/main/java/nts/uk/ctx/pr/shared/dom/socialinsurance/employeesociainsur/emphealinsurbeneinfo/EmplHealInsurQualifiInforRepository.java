@@ -27,11 +27,13 @@ public interface EmplHealInsurQualifiInforRepository {
 
     Optional<EmplHealInsurQualifiInfor> getEmpHealInsQualifiinfoById(String cid, String empId);
 
+    EmplHealInsurQualifiInfor getEmpHealInsQualifiInfoOfEmp(String empId);
+
     Optional<EmplHealInsurQualifiInfor> getByHistoryId(String historyId);
 
     Optional<EmplHealInsurQualifiInfor> getByEmpIdAndBaseDate(String empId, GeneralDate baseDate);
 
-    void add(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor);
+    void add(String empId, EmpHealthInsurBenefits item);
 
     void addAll(Map<String, EmpHealthInsurBenefits> qualifiInfors);
 
@@ -40,5 +42,4 @@ public interface EmplHealInsurQualifiInforRepository {
     void updateAll (List<EmpHealthInsurBenefits> qualifiInfors);
 
     void remove(String employeeId, String hisId);
-
 }

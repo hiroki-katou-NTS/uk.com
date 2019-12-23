@@ -19,7 +19,7 @@ public interface HealInsurNumberInforRepository
 
     Optional<HealInsurNumberInfor> getHealInsNumberInfoById(String cid, String empId);
 
-    void add(HealInsurNumberInfor numberInfor, EmplHealInsurQualifiInfor qualifiInfor);
+    void add(HealInsurNumberInfor numberInfor);
 
     void addAll(List<HealInsurNumberInfor> domains);
 
@@ -28,5 +28,4 @@ public interface HealInsurNumberInforRepository
     void updateAll (List<HealInsurNumberInfor> numberInfors);
 
     void remove(String historyId);
-
 }

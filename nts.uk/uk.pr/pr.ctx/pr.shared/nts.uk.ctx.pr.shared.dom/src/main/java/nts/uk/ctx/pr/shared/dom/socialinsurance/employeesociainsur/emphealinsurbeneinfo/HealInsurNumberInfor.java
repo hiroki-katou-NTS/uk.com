@@ -1,14 +1,19 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
 * 健保番号情報
 */
 @Getter
+@Setter
+@NoArgsConstructor
 public class HealInsurNumberInfor extends AggregateRoot {
     
     /**
@@ -35,5 +40,4 @@ public class HealInsurNumberInfor extends AggregateRoot {
     public static HealInsurNumberInfor createFromJavaType(String historyId, String careInsurNumber, String healInsNumber){
         return new HealInsurNumberInfor(historyId, careInsurNumber, healInsNumber);
     }
-    
 }
