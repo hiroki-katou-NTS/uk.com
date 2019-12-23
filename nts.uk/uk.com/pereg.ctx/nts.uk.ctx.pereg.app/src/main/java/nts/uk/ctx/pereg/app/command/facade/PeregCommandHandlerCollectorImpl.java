@@ -123,6 +123,9 @@ import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenc
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.DeleteAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.AddEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.DeleteEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.UpdateEmpCorpHealthOffHisCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.DeleteEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
@@ -317,6 +320,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00069 打刻カード番号
 			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>() {
 			},
+			//CS00075
+			new TypeLiteral<PeregAddCommandHandler<AddEmpCorpHealthOffHisCommand>>() {
+			},
 			// CS00082
 			new TypeLiteral<PeregAddCommandHandler<AddEmpHealInsQualifiInfoCommand>>() {
 			}
@@ -440,6 +446,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00070  労働条件2
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>() {
 			},
+			//CS00075
+			new TypeLiteral<PeregAddCommandHandler<UpdateEmpCorpHealthOffHisCommand>>() {
+			},
 			// CS00082
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>() {
 			}
@@ -489,6 +498,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			//CS00035	その他休暇情報
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregAddCommandHandler<DeleteEmpCorpHealthOffHisCommand>>() {
 			},
 			// CS00082
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpHealInsQualifiInfoCommand>>() {

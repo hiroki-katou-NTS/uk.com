@@ -68,6 +68,7 @@ import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealInsQualifiInfoDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
@@ -254,6 +255,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			},
 			// CS00070  労働条件２
 			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregFinder<EmpCorpHealthOffHisDto>>() {
 			},
 			// CS00082
 			new TypeLiteral<PeregFinder<EmpHealInsQualifiInfoDto>>() {
