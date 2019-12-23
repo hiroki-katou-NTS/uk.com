@@ -19,7 +19,7 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 
 	private static final String SELECT_LIST_DATE_HIS_ID = "SELECT c FROM JshmtEmpRegHistory c "
 			+ "WHERE c.cId = :cId "
-			+ "ORDER BY c.startDate ASC";
+			+ "ORDER BY c.startDate DESC";
 	
 	@Override
 	public Optional<RegulationHistoryDto> getLatestEmpRegulationHist(String cId) {
