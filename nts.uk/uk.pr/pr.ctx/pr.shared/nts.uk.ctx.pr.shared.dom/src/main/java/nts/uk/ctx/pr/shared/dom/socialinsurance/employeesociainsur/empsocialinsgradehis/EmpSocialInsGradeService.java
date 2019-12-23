@@ -9,7 +9,6 @@ import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProc
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;

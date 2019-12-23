@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface SystemEmploymentAdapter {
+public interface SyEmploymentAdapter {
 
     // RequestList31
     Optional<SEmpHistImport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
