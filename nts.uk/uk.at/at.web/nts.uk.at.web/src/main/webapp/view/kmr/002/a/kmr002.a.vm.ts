@@ -465,7 +465,7 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1584" });
                 return;
             }
-            if (dateNow == dateSelect && (timeNow < self.startLunch() || timeNow < self.finishLunch() || timeNow > self.end() || timeNow > self.finishDinner())) {
+            if (dateNow == dateSelect && ((!self.isUpdate() && (dateNow < self.start() || dateNow > self.end()))||(self.isUpdate() && (timeNow < self.startLunch() || timeNow < self.startDinner() || timeNow > self.finishLunch() || timeNow > self.finishDinner())))) {
                 error({ messageId: "Msg_1585" });
                 return;
             }
