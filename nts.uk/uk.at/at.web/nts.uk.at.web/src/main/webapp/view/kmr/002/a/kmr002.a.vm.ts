@@ -38,9 +38,9 @@ module nts.uk.at.view.kmr002.a.model {
         isError: KnockoutObservable<boolean> = ko.observable(false);
         lunchText: KnockoutObservable<string> = ko.observable('');
         dinnerText: KnockoutObservable<string> = ko.observable('');
-        isEnable: KnockoutObservable<boolean> = ko.observable(true);
-        isEnableLunch: KnockoutObservable<boolean> = ko.observable(true);
-        isEnableDinner: KnockoutObservable<boolean> = ko.observable(true);
+        isEnable: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableLunch: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableDinner: KnockoutObservable<boolean> = ko.observable(false);
         start: KnockoutObservable<number> = ko.observable(0);
         end: KnockoutObservable<number> = ko.observable(0);
         isVisible: KnockoutObservable<boolean> = ko.observable(false);
@@ -65,8 +65,6 @@ module nts.uk.at.view.kmr002.a.model {
                 let momentDate = moment(value);
 
                 if (momentDate instanceof moment && !momentDate.isValid()) return;
-
-
                 service.startScreen({
 
                     date: moment(self.date()).format("YYYY/MM/DD"),
