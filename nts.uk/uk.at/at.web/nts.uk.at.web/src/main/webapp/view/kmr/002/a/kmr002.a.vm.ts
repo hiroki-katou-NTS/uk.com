@@ -292,9 +292,7 @@ module nts.uk.at.view.kmr002.a.model {
             self.dinnerCount(0);
             self.sumCount(0);
             self.txtPriceDinner('');
-            self.txtPriceSum('');
             self.dinner('');
-            self.sum('');
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
