@@ -20,10 +20,6 @@ module nts.uk.at.view.kmr005.a.viewmodel {
         title: KnockoutObservable<string> = ko.observable('');
         
         // enum
-        orderedRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '注文済' },
-            { code: 0, name: 'すべて' }
-        ]);
         selectedOrdered: any = ko.observable(0);
         
         constructor() {

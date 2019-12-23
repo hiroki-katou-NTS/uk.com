@@ -67,7 +67,10 @@
 							<div class="cell">
 								<div class="cf" data-bind="ntsSwitchButton: {
 												name: '#{i18n.getText('KMR005_5')}',
-												options: orderedRules,
+												options: ko.observableArray([
+							                		{ code: 1, name: '#{i18n.getText('KMR005_6')}' },
+							                		{ code: 0, name: '#{i18n.getText('KMR005_7')}' }
+							                	]),
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedOrdered,
