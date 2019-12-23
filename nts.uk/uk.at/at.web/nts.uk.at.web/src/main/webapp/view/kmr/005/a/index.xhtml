@@ -38,6 +38,7 @@
 							</div>
 							<div class="cell">
 								<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+												name: '#{i18n.getText('KMR005_3')}',
 												required: true, 
 												enable: true, 
 												showNextPrevious: true, 
@@ -52,6 +53,7 @@
 							</div>
 							<div class="cell">
 								<input id="exportTitle" data-bind="ntsTextEditor: {
+												name: '#{i18n.getText('KMR005_4')}',
 												value: title,
 												required: true,
 												constraint: 'BentoExportTitle' }" />
@@ -64,6 +66,7 @@
 							</div>
 							<div class="cell">
 								<div class="cf" data-bind="ntsSwitchButton: {
+												name: '#{i18n.getText('KMR005_5')}',
 												options: orderedRules,
 												optionsValue: 'code',
 												optionsText: 'name',
