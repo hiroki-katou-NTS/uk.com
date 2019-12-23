@@ -194,9 +194,10 @@ public class EmpInsLossInfoExportRow {
 		this.scheduleWorkingHourPerWeek = empInsLossInfo != null ? empInsLossInfo.getScheduleWorkingHourPerWeek().orElse(null) : null;
 		this.publicEmploymentSecurityOfficeName = pubEmpSecOffice != null ? pubEmpSecOffice.getPublicEmploymentSecurityOfficeName().v() : "";
 		this.laborInsuranceOffice = laborInsuranceOffice;
-		this.nationalityCode = "";
-		this.nationalityName = forResHistInfo.getNationalityCode();
+		this.nationalityCode = forResHistInfo.getNationalityCode();
+		this.nationalityName = forResHistInfo.getNationalityName();
 		this.statusOfResidenceCode = forResHistInfo.getResidenceStatusCode();
+        this.statusOfResidenceName = forResHistInfo.getResidenceStatusName();
 		this.periodOfStayEnd = forResHistInfo.getEndDate();
 		this.unqualifiedActivityPermission = forResHistInfo.getUnqualifiedActivityPermission();
 		this.contractWorkAtr = forResHistInfo.getContractWorkAtr();

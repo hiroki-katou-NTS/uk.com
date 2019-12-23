@@ -260,7 +260,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_2
                         tempReport.setOfficeLocation(companyInfo.getAdd_1() + " " + companyInfo.getAdd_2());
                         // A3_3
-                        tempReport.setBusinessOwnerName(companyInfo.getCompanyName());
+                        tempReport.setBusinessOwnerName(companyInfo.getRepname());
                         // A3_4
                         tempReport.setOfficePhoneNumber(companyInfo.getPhoneNum());
                     } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
