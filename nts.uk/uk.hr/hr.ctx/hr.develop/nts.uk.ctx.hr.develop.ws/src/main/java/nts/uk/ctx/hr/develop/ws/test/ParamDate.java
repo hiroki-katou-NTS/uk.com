@@ -2,7 +2,6 @@ package nts.uk.ctx.hr.develop.ws.test;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Getter
