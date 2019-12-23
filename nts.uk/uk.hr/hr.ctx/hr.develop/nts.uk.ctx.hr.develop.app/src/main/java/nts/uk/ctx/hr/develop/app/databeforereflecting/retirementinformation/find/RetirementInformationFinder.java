@@ -141,7 +141,7 @@ public class RetirementInformationFinder {
 	}
 	
 	private PlannedRetirementDto toPlannedRetirementDto(RetirementPlannedPersonDto plan) {
-		return PlannedRetirementDto.builder().pId(plan.getEmployeeId()).sId(plan.getEmployeeId())
+		return PlannedRetirementDto.builder().pId(plan.getPersonalId()).sId(plan.getEmployeeId())
 				.scd(plan.getEmployeeCode()).businessName(plan.getBusinessName())
 				.businessnameKana(plan.getBusinessNameKana()).birthday(plan.getBirthday())
 				.dateJoinComp(plan.getDateJoinComp()).departmentId(plan.getDepartmentId())
