@@ -329,8 +329,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.isVisible(true);
                 self.textError(getText('KMR002_6'));
                 self.setDisPlay(false);
-            }
-            if (dateSelect < dateNow) {
+            } else if (dateSelect < dateNow) {
                 self.isVisible(true);
                 self.setDisPlay(false);
                 self.textError(getText('KMR002_9'));
