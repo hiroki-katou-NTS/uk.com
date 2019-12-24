@@ -351,7 +351,7 @@ public class RetirementInformationFinder {
 				dto.setRetirePlanCourseId(retire.get().getRetirePlanCourseId());
 				dto.setRetirePlanCourseCode(retire.get().getRetirePlanCourseCode());
 				dto.setRetirePlanCourseName(retire.get().getRetirePlanCourseName());
-				dto.setDurationFlg(retire.get().isDurationFlg());
+				dto.setDurationFlg(retire.get().getDurationFlg().value);
 			}
 
 			dtos.add(dto);

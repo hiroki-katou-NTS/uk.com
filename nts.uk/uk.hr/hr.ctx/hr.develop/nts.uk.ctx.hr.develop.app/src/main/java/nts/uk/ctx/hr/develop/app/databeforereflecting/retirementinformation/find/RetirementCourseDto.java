@@ -21,9 +21,9 @@ public class RetirementCourseDto {
 	// 定年退職コースID
 	private long retirePlanCourseId;
 	// 定年退職コースCD
-	private String retirePlanCourseCode;
+	private String retirePlanCourseCode;	
 	// 定年退職コース名
 	private String retirePlanCourseName;
 	// 継続区分
-	private boolean durationFlg;
+	private Integer durationFlg;
 }
