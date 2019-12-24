@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
@@ -20,16 +23,19 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 
 public class BentoInstanceHelper {
 	
 	public static BentoReservation getBentoReservationEmpty() {
 		return new BentoReservation(
 				new ReservationRegisterInfo("cardNo"), 
-				new ReservationDate(GeneralDate.today(), ReservationClosingTimeFrame.FRAME1), 
+				reservationDate(GeneralDate.today(), 1), 
 				false, 
 				Collections.emptyList());
 	}
@@ -37,9 +43,36 @@ public class BentoInstanceHelper {
 	public static BentoReservation getBentoReservation() {
 		return new BentoReservation(
 				new ReservationRegisterInfo("cardNo"), 
-				new ReservationDate(GeneralDate.today(), ReservationClosingTimeFrame.FRAME1), 
+				reservationDate(GeneralDate.today(), 1), 
 				false, 
 				Arrays.asList(new BentoReservationDetail(1, GeneralDateTime.fromString("2019/12/21 00:00", "yyyy/MM/dd HH:mm"), false, new BentoReservationCount(1))));
+	}
+	
+	public static BentoReservation getBentoReservation(String registerInfo, GeneralDate date, int frame, boolean ordered) {
+		return getBentoReservation(
+				new ReservationRegisterInfo(registerInfo), 
+				reservationDate(date, frame), 
+				ordered); 
+	}
+	
+	public static BentoReservation getBentoReservation(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, boolean ordered) {
+		return new BentoReservation(registerInfor, reservationDate, ordered, Arrays.asList(reservationDetail(1, GeneralDateTime.now(), false, 1)));
+	}
+	
+	public static BentoReservationDetail reservationDetail(int frameNo, GeneralDateTime dateTime, boolean autoReservation, int bentoCount) {
+		return new BentoReservationDetail(frameNo, dateTime, autoReservation, bentoCount(bentoCount));
+	} 
+	
+	public static BentoReservationCount bentoCount(int bentoCount) {
+		return new BentoReservationCount(bentoCount);
+	}
+	
+	public static ReservationDate reservationDate(GeneralDate date, int frame) {
+		return new ReservationDate(date, EnumAdaptor.valueOf(frame, ReservationClosingTimeFrame.class));
+	}
+	
+	public static ReservationDate reservationDate(String date, int frame) {
+		return new ReservationDate(GeneralDate.fromString(date, "yyyy/MM/dd"), EnumAdaptor.valueOf(frame, ReservationClosingTimeFrame.class));
 	}
 	
 	public static BentoMenu getBentoMenuEmpty() {
@@ -67,9 +100,9 @@ public class BentoInstanceHelper {
 				closingTimes(closingTime(600)));
 	}
 	
-	public static ReservationDate getPastDate() {
+	public static ReservationDate getDate(String date) {
 		return new ReservationDate(
-				GeneralDate.fromString("2019/12/21", "yyyy/MM/dd"), 
+				GeneralDate.fromString(date, "yyyy/MM/dd"), 
 				ReservationClosingTimeFrame.FRAME1);
 	}
 	
@@ -96,6 +129,17 @@ public class BentoInstanceHelper {
 				unit("unit"),
 				amount1 != null,
 				amount2 != null);
+	}
+	
+	public static Bento bentoFrame2(int frameNo, Integer amount1, Integer amount2) {
+		return new Bento(
+				frameNo,
+				name("name" + frameNo),
+				amount(amount1 != null ? amount1 : 0),
+				amount(amount2 != null ? amount2 : 0),
+				unit("unit"),
+				false,
+				true);
 	}
 	
 	public static BentoAmount amount(int value) {
@@ -128,5 +172,30 @@ public class BentoInstanceHelper {
 	
 	public static BentoReservationClosingTime closingTimes(ReservationClosingTime closingTime1) {
 		return new BentoReservationClosingTime(closingTime1, Optional.empty());
+	}
+	
+	public static List<BentoDetailsAmountTotal> getDetailsAmountTotalLst(BentoDetailsAmountTotal... detail) {
+		return Arrays.asList(detail);
+	}
+	
+	public static List<BentoItemByClosingTime> getMenu1(BentoMenu bentoMenu) {
+		return bentoMenu.getMenu().stream()
+				.filter(x -> x.isReservationTime1Atr())
+				.map(x -> new BentoItemByClosingTime(x.getFrameNo(), x.getName(), x.getAmount1(), x.getAmount2(), x.getUnit()))
+				.collect(Collectors.toList());
+	} 
+	
+	public static Map<Integer, BentoReservationCount> bentoDetails(Map<Integer, Integer> map) {
+		Map<Integer, BentoReservationCount> result = map.entrySet().stream()
+				.collect(Collectors.toMap(x -> x.getKey(), x -> new BentoReservationCount(x.getValue())));
+		return result;
+	}
+	
+	public static Optional<BentoReservation> getBeforeOrdered(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+		return Optional.of(getBentoReservation(registerInfor, reservationDate, true));
+	}
+	
+	public static Optional<BentoReservation> getBefore(ReservationRegisterInfo registerInfor, ReservationDate reservationDate) {
+		return Optional.of(getBentoReservation(registerInfor, reservationDate, false));
 	}
 }

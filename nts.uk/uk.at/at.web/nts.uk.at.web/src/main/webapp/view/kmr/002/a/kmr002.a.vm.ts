@@ -65,6 +65,7 @@ module nts.uk.at.view.kmr002.a.model {
                 let momentDate = moment(value);
 
                 if (momentDate instanceof moment && !momentDate.isValid()) return;
+                nts.uk.ui.block.invisible();
                 service.startScreen({
 
                     date: moment(self.date()).format("YYYY/MM/DD"),
@@ -85,6 +86,8 @@ module nts.uk.at.view.kmr002.a.model {
                         uk.request.jumpToTopPage();
 
                     });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             });
             dfd.resolve();
@@ -275,7 +278,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.sumCount(self.dinnerCount());
                 self.sum(getText('KMR002_12', [self.sumCount()]));
             }
-        
+
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 self.priceLunch(self.priceLunch() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
@@ -305,7 +308,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.sumCount(self.lunchCount());
                 self.sum(getText('KMR002_12', [self.sumCount()]));
             }
-            
+
             _.forEach(self.listBentoOrderDinner(), (item) => {
                 self.priceDinner(self.priceDinner() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
@@ -482,6 +485,7 @@ module nts.uk.at.view.kmr002.a.model {
         public register(detailLst: any): void {
 
             let self = this, bentoReservation = { date: self.date(), details: detailLst };
+            nts.uk.ui.block.invisible();
             if (self.isUpdate() && self.date()) {
                 service.update(bentoReservation).done((data) => {
                     nts.uk.ui.block.clear();
@@ -492,6 +496,8 @@ module nts.uk.at.view.kmr002.a.model {
                     }
                 }).fail(() => {
                     error({ messageId: "Msg_1585" });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             if (!self.isUpdate() && self.date()) {
@@ -499,11 +505,12 @@ module nts.uk.at.view.kmr002.a.model {
                     error({ messageId: "Msg_1589" });
                 } else {
                     service.register(bentoReservation).done((data) => {
-                        nts.uk.ui.block.clear();
                         info({ messageId: "Msg_15" });
                         self.isUpdate(true);
                     }).fail(() => {
                         error({ messageId: "Msg_1585" });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 }
             }
@@ -511,10 +518,13 @@ module nts.uk.at.view.kmr002.a.model {
 
         public outputData(): void {
             let self = this;
+            nts.uk.ui.block.invisible();
             service.print().done((data) => {
                 nts.uk.ui.block.clear();
             }).fail((res: any) => {
                 error({ messageId: res.messageId });
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
         }
     }
