@@ -7,6 +7,7 @@ module jhn001.a.viewmodel {
     import lv = nts.layout.validate;
     import format = nts.uk.text.format;
     import vc = nts.layout.validation;
+    import subModal = nts.uk.ui.windows.sub.modal;
 
     const __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -74,9 +75,8 @@ module jhn001.a.viewmodel {
         
         newMode(){
             let self = this;
-            self.
+            
         }
-        
 
         start(code?: string): JQueryPromise<any> {
             let self = this,
@@ -116,6 +116,9 @@ module jhn001.a.viewmodel {
                 layout = self.layout,
                 layouts = self.layouts;
             
+            subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
+                console.log('test open dialog B');
+            });
             
         }
         
