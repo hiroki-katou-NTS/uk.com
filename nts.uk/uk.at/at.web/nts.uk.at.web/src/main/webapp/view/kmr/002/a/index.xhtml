@@ -18,9 +18,9 @@
 			<div id="functions-area" style="height: 75px;">
 				<div style="float: left">
 					<!--A1_1 受取日-->
-					<div style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
 					<!--A1_2 受取日-->
-					<div style="float: left"
+					<div 
 						data-bind="ntsDatePicker: { name: '#[KMR002_1]', value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
 					<br />
 					<!-- A1_3注文エラー -->
@@ -236,7 +236,7 @@
 									</tr>
 									<tr>
 										<td class="table-food-td" colspan="3"><button
-												class="danger" style="width: 240px;"
+												class="danger"
 												data-bind="click: function(){$vm.cancelDinner(frameNo)}, enable: $vm.isEnableDinner()">#{i18n.getText('KMR002_14')}</button></td>
 									</tr>
 								</tbody>
