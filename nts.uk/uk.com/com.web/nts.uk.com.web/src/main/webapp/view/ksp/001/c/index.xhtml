@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 585, height: 500 };</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.sys.portal.dom.standardmenu.MenuDisplayName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksp001.c.main.css" />
+			<com:scriptfile path="ksp001.c.service.js" />
+			<com:scriptfile path="ksp001.c.vm.js" />
+			<com:scriptfile path="ksp001.c.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="table">
+					<table>
+						<thead>
+							<tr>
+								<td id="header-td-1">#{i18n.getText('KSP001_19')}</td>
+								<td id="header-td-2">#{i18n.getText('KSP001_20')}</td>
+								<td id="header-td-3"></td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: items">
+							<tr>
+								<td><span style="width: 181px; word-wrap: break-word; display: inline-block"
+									data-bind="text: targetItems"></span></td>
+								<td>
+									<div>
+										<input class="txtEditor"
+											data-bind="ntsTextEditor: {
+											constraint: 'MenuDisplayName' ,
+											required: true,
+											name: '#{i18n.getText('KSP001_20')}',
+											value: displayName,
+											option: {
+												textmode: 'text',
+												width: '280px',
+												textalign: 'left'
+												}}" />
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large"
+					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSP001_21')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSP001_22')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

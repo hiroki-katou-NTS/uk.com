@@ -1,61 +1,39 @@
-module qmm013.a.service {
-    var paths: any = {
-        getPersonalUnitPriceList: "pr/core/rule/employment/unitprice/personal/find/all",
-        getPersonalUnitPriceListNoneDisplay: "pr/core/rule/employment/unitprice/personal/find/all/nonedisplay",
-        getPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/find/",
-        addPersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/add",
-        updatePersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/update",
-        removePersonalUnitPrice: "pr/core/rule/employment/unitprice/personal/remove"
-    }
+module nts.uk.pr.view.qmm013.a {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
-    export function getPersonalUnitPriceList(display: boolean): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<any>();
-        var path = display ? paths.getPersonalUnitPriceList : paths.getPersonalUnitPriceListNoneDisplay;
-        nts.uk.request.ajax(path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
-    }
+    export module service {
+        
+        import exportFile = nts.uk.request.exportFile;
+        let paths = {
+            getUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/getUnitPriceData/{0}/{1}",
+            getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}",
+            registerUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/registerUnitPriceData",
+            removeUnitPriceData: "ctx/pr/core/wageprovision/unitpricename/removeUnitPriceData",
+            exportExcel: "file/core/wageprovision/salaryperunit/exportExcel"
+        }
 
-    export function getPersonalUnitPrice(code): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.getPersonalUnitPrice + "" + code)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
-    }
+        export function getUnitPriceData(cid: string, code: string): JQueryPromise<any> {
+            let _path = format(paths.getUnitPriceData, cid, code);
+            return ajax('pr', _path);
+        }
 
-    export function addPersonalUnitPrice(isCreated, data): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        var path = isCreated ? paths.addPersonalUnitPrice : paths.updatePersonalUnitPrice;
-        nts.uk.request.ajax(path, data)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
-    }
+        export function getAllUnitPriceName(isdisplayAbolition: boolean): JQueryPromise<any> {
+            let _path = format(paths.getAllUnitPriceName, isdisplayAbolition);
+            return ajax('pr', _path);
+        }
+        
+        export function registerUnitPriceData(command: any) : JQueryPromise<any> {
+            return nts.uk.request.ajax('pr', paths.registerUnitPriceData, command);
+        }
+        
+        export function removeUnitPriceData(command: any) : JQueryPromise<any> {
+            return nts.uk.request.ajax('pr', paths.removeUnitPriceData, command);
+        }
+        export function exportExcel(): JQueryPromise<any> {
+            let _path = format(paths.exportExcel);
+            return exportFile(_path);
+        }
 
-    export function removePersonalUnitPrice(data): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-
-        nts.uk.request.ajax(paths.removePersonalUnitPrice, data)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
     }
 }

@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 
 @Getter
 @Setter
@@ -16,7 +20,7 @@ public class CommonReflectParameter {
 	/**
 	 * 年月日
 	 */
-	private GeneralDate baseDate;
+	private GeneralDate appDate;
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
@@ -34,11 +38,9 @@ public class CommonReflectParameter {
 	 */
 	private String workTimeCode;
 	
-	private GeneralDate startDate;
-	
-	private GeneralDate endDate;
-	
 	private Integer startTime;
 	private Integer endTime;
-
+	private String excLogId;
+	Optional<IdentityProcessUseSet> iPUSOpt;
+	Optional<ApprovalProcessingUseSetting> approvalSet;
 }

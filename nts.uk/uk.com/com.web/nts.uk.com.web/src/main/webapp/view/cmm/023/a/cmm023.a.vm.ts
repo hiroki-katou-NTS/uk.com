@@ -28,15 +28,11 @@ module nts.uk.com.view.cmm023.a.viewmodel {
 
             self.commonMasterId.subscribe((commonMasterId) => {
 
-                if (!commonMasterId) {
-                    return;
-                }
-
                 self.selectedCommonMaster(_.find(self.master(), ['commonMasterId', commonMasterId]));
 
                 block.grayout();
 
-                service.getItems(commonMasterId).done((data) => {
+                service.getItems({ commonMasterId: commonMasterId }).done((data) => {
                     block.clear();
 
                     self.items(_.map(data, x => new GroupCommonItem(x)));
@@ -52,12 +48,12 @@ module nts.uk.com.view.cmm023.a.viewmodel {
                         virtualization: true,
                         virtualizationMode: 'continuous',
                         columns: [
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemId', dataType: 'text', width: '80px', hidden: true },
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemCode', dataType: 'text', width: '80px' },
-                            { headerText: getText('CMM023_A221_5'), key: 'commonMasterItemName', dataType: 'text', width: '180px' },
-                            { headerText: getText('CMM023_A221_5'), key: 'useSetting', dataType: 'boolean', width: '70px', ntsControl: 'Checkbox' },
-                            { headerText: getText('CMM023_A221_5'), key: 'usageStartDate', dataType: 'text', width: '260px', formatter: genDate },
-                            { headerText: getText('CMM023_A221_5'), key: 'usageEndDate', dataType: 'text', width: '250px', hidden: true },
+                            { headerText: getText('CMM023_A222_5'), key: 'commonMasterItemId', dataType: 'text', width: '80px', hidden: true },
+                            { headerText: getText('CMM023_A222_6'), key: 'commonMasterItemCode', dataType: 'text', width: '80px' },
+                            { headerText: getText('CMM023_A222_7'), key: 'commonMasterItemName', dataType: 'text', width: '180px' },
+                            { headerText: getText('CMM023_A222_8'), key: 'useSetting', dataType: 'boolean', width: '70px', ntsControl: 'Checkbox' },
+                            { headerText: getText('CMM023_A222_9'), key: 'usageStartDate', dataType: 'text', width: '260px', formatter: genDate },
+                            { headerText: getText('CMM023_A222_9'), key: 'usageEndDate', dataType: 'text', width: '250px', hidden: true },
 
                         ],
 
@@ -68,10 +64,8 @@ module nts.uk.com.view.cmm023.a.viewmodel {
 
                         ]
                     });
-
-                    if (_.isEmpty(data)) {
+                    if (_.isEmpty(data) && commonMasterId) {
                         alert({ messageId: "Msg_672" });
-                        return;
                     }
 
                 }).fail(function(res) {

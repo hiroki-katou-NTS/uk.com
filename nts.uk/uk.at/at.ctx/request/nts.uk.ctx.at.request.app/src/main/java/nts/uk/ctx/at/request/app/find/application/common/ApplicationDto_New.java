@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 public class ApplicationDto_New {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+    private static final String DATE_TIME_FORMAT_045 = "yyyy/MM/dd HH:mm:ss";
 	private Long version;
 	
 	// 会社ID
@@ -151,4 +152,33 @@ public class ApplicationDto_New {
 						.build());
 		return app;
 	}
+    public static ApplicationDto_New fromDomainCMM045(Application_New domain) {
+        return new ApplicationDto_New(
+                domain.getVersion(),
+                domain.getCompanyID(),
+                domain.getAppID(),
+                domain.getPrePostAtr().value,
+                domain.getInputDate() == null ? null :domain.getInputDate().toString(DATE_TIME_FORMAT_045), 
+                domain.getEnteredPersonID(), 
+                domain.getReversionReason().v(), 
+                domain.getAppDate() == null ? null :domain.getAppDate().toString(DATE_FORMAT), 
+                domain.getAppReason().v(),
+                domain.getAppType().value, 
+                domain.getEmployeeID(), 
+                domain.getReflectionInformation().getNotReason().isPresent() ? domain.getReflectionInformation().getNotReason().get().value : null, 
+                domain.getReflectionInformation().getDateTimeReflection().isPresent() ? domain.getReflectionInformation().getDateTimeReflection().get().toString(DATE_FORMAT) : null, 
+                domain.getReflectionInformation().getStateReflection().value, 
+                domain.getReflectionInformation().getForcedReflection().value, 
+                domain.getReflectionInformation().getNotReasonReal().isPresent() ? domain.getReflectionInformation().getNotReasonReal().get().value : null, 
+                domain.getReflectionInformation().getDateTimeReflectionReal().isPresent() ? domain.getReflectionInformation().getDateTimeReflectionReal().get().toString(DATE_FORMAT) : null, 
+                domain.getReflectionInformation().getStateReflectionReal().value, 
+                domain.getReflectionInformation().getForcedReflectionReal().value,
+                domain.getStartDate().isPresent() ? domain.getStartDate().get().toString(DATE_FORMAT) : null,
+                domain.getEndDate().isPresent() ? domain.getEndDate().get().toString(DATE_FORMAT) : null
+        );
+    }
+    public ApplicationDto_New convertInputDate(ApplicationDto_New dto) {
+        dto.inputDate = GeneralDateTime.fromString(dto.inputDate, DATE_TIME_FORMAT_045).toString(DATE_TIME_FORMAT);
+        return dto;
+    }
 }

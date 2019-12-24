@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto11;
@@ -32,6 +35,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
+import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
@@ -224,6 +230,471 @@ public class SpecialLeaveGrantFinder {
 
 		default:
 			return null;
+		}
+	}
+	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query, int specialLeaveCD) {
+		List<String> sids = query.getEmpInfos().stream().map( c ->c.getEmployeeId()).collect(Collectors.toList());
+		List<GridPeregDomainDto> result = new ArrayList<>();
+		query.getEmpInfos().stream().forEach(c ->{
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+		});
+		Map<String, List<SpecialLeaveGrantRemainingData>> data = repo.getAllByListEmpID(sids, specialLeaveCD).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveGrantCode.class)) {
+		case CS00039:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto1.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00040:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto2.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00041:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto3.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00042:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto4.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00043:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto5.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00044:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto6.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00045:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto7.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00046:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto8.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00047:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto9.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00048:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto10.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00059:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto11.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00060:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto12.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00061:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto13.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00062:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto14.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00063:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto15.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00064:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto16.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00065:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto17.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00066:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto18.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00067:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto19.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		case CS00068:
+			result.stream().forEach(c ->{
+				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
+				if(remainingDataLst != null){
+					if (!remainingDataLst.isEmpty()) {
+						c.setPeregDomainDto(SpecialLeaveGrantDto20.createFromDomain(remainingDataLst.get(0)));
+					}
+				}
+			});
+			return result;
+		default:
+			return result;
+		}
+	}
+	
+	public List<GridPeregDomainBySidDto> getListData(PeregQueryByListEmp query, int specialLeaveCD){
+		List<String> sids = query.getEmpInfos().stream().map( c ->c.getEmployeeId()).collect(Collectors.toList());
+		List<GridPeregDomainBySidDto> result = new ArrayList<>();
+		query.getEmpInfos().stream().forEach(c ->{
+			result.add(new GridPeregDomainBySidDto(c.getEmployeeId(), c.getPersonId(), new ArrayList<>()));
+		});
+		Map<String, List<Object[]>> data = repo.getAllBySids(sids, specialLeaveCD).stream().collect(Collectors.groupingBy(c -> c[2].toString()));
+		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveGrantCode.class)) {
+		case CS00039:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto1.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00040:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto2.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00041:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto3.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00042:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto4.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00043:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto5.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00044:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto6.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00045:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto7.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00046:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto8.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00047:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto9.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00048:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto10.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00059:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto11.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00060:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto12.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00061:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto13.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00062:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto14.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00063:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto15.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00064:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto16.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00065:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto17.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00066:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto18.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00067:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto19.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		case CS00068:
+			result.stream().forEach(c ->{
+				List<PeregDomainDto> peregDto = new ArrayList<>();
+				List<Object[]> remainingDataLst = data.get(c.getEmployeeId());
+				if (!CollectionUtil.isEmpty(remainingDataLst)) {
+					remainingDataLst.stream().forEach(r -> {
+						peregDto.add(SpecialLeaveGrantDto20.createFromDomain(r));
+					});
+				}
+				c.setPeregDomainDto(peregDto);
+			});
+			return result;
+		default:
+			return result;
 		}
 	}
 }

@@ -465,17 +465,16 @@ public class PerInfoItemDefFinder {
 			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
 			itemNameRequired.setRowId(item);
 			itemNameRequired.setColumnKey("itemName");
-			itemNameRequired.setState(toList("ntsgrid-alarm"));
+			itemNameRequired.setState(toList("ntsgrid-alarm1"));
 
 			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
 			setting.setRowId(item);
 			setting.setColumnKey("setting");
-			setting.setState(toList("ntsgrid-alarm"));
+			setting.setState(toList("ntsgrid-alarm1"));
 
 			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
 			other.setRowId(item);
 			other.setColumnKey("otherAuth");
-			other.setState(toList("ntsgrid-alarm"));
 
 			itemRequiredLst.add(itemNameRequired);
 			itemRequiredLst.add(setting);
@@ -500,17 +499,16 @@ public class PerInfoItemDefFinder {
 			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
 			itemNameRequired.setRowId(item);
 			itemNameRequired.setColumnKey("itemName");
-			itemNameRequired.setState(toList("ntsgrid-alarm"));
+			itemNameRequired.setState(toList("ntsgrid-alarm1"));
 
 			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
 			setting.setRowId(item);
 			setting.setColumnKey("setting");
-			setting.setState(toList("ntsgrid-alarm"));
+			setting.setState(toList("ntsgrid-alarm1"));
 
 			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
 			other.setRowId(item);
 			other.setColumnKey("otherAuth");
-			other.setState(toList("ntsgrid-alarm"));
 
 			itemRequiredLst.add(itemNameRequired);
 			itemRequiredLst.add(setting);
@@ -586,5 +584,14 @@ public class PerInfoItemDefFinder {
 						c.getItemParentCode().v(), io.getDispOrder().v(), io.getDisplayOrder().v());
 		}).collect(Collectors.toList());
 
+	}
+	
+	/**
+	 * Get listName by itemCode 4 CPS003F
+	 * @param itemCodes
+	 * @return List<{ itemCode: string; itemName: string; }>
+	 */
+	public Map<String, String> getNamesByCodes(List<String> itemCodes) {
+		return pernfoItemDefRep.getNamesByCodes(itemCodes);
 	}
 }

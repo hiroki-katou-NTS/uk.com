@@ -255,6 +255,9 @@ project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac') {
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 		compile project(':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
+		
+		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 	}
 }
 
@@ -406,6 +409,8 @@ project (':hr.file:nts.uk.file.hr.app') {
 
 project (':hr.file:nts.uk.file.hr.infra') {
 	dependencies {
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
 		compile project (':hr.file:nts.uk.file.hr.app')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
@@ -426,6 +431,7 @@ project (':hr.web:nts.uk.hr.web') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		runtime group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 		
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'

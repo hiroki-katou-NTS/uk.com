@@ -11,7 +11,7 @@
 				<div id="title_b">
 				   <label style="width: 220px;">#{i18n.getText('CLI003_9')}</label>
 				  <com:ko-if bind="logTypeSelectedCode() === '6'">					
-				    <label style="margin-left: 25px;">#{i18n.getText('CLI003_65')}</label>						
+				    <label style="margin-left: 58px;">#{i18n.getText('CLI003_65')}</label>						
 				</com:ko-if>		
 				</div>
 				
@@ -55,10 +55,11 @@
 			   </com:ko-if>
 		       
 		     <!--    <span data-bind="text: selectedCode()"></span>	      -->     
-		       <div id="button_next_b">
-		             <button tabindex="3" class="x-large proceed" data-bind="click: nextScreenCD">#{i18n.getText('CLI003_13')}</button>		     
-		       </div>		      
+		       	      
 	     </div> 
+	 	<div id="button_next_b" style="position: absolute; bottom: -20px; left: 616px;">
+             <button tabindex="3" class="x-large proceed" data-bind="click: nextScreenCD">#{i18n.getText('CLI003_13')}</button>		     
+       	</div>	
 	</ui:composition>
 </body>
 </html>

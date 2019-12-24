@@ -15,7 +15,7 @@
 
 .screen-content-right {
 	width: 920px;
-	padding: 10px;
+	padding: 2px;
 }
 
 .td-cell {
@@ -36,7 +36,7 @@
 
 .setting_header {
 	margin-left: 10px;
-	width: 910px;
+	width: 863px;
 }
 
 .setting_header_br {
@@ -82,7 +82,7 @@
 }
 
 .tab-inline-rows {
-	padding: 5px 0px;
+	padding: 4px 0px;
 	width: 100%;
 	display: flex;
     align-items: center;
@@ -99,4 +99,20 @@
 
 #tab-3, #tab-5 {
 	overflow-x: visible;
+}
+
+#tab-1{
+	padding: 1em 0.5em 1em 0.5em !important;
+}
+#tab-3{
+    width: 739px;
+}
+#tab-3 .fixed-table-button{
+	width: 673px !important;
+}
+.tab-a3 {
+    margin-left: -7px;
+}
+html {
+	overflow: hidden;
 }

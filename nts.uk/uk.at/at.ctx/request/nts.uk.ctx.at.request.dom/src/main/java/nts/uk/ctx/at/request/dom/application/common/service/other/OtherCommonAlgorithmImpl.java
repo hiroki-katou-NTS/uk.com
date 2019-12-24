@@ -18,11 +18,20 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
@@ -35,6 +44,13 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
@@ -43,7 +59,10 @@ import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetti
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -59,6 +78,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
@@ -121,6 +142,34 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
+	@Inject
+	private ScBasicScheduleAdapter scBasicScheduleAdapter;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeSetRepo;
+	@Inject
+	private AppAbsenceRepository repoAbsence;
+	@Inject
+	private DisplayReasonRepository displayRep;
+	
+	@Inject
+	private ApplicationReasonRepository applicationReasonRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
+	@Inject
+	private OvertimeInputRepository overtimeInputRepository;
+	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -372,6 +421,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				throw new RuntimeException("no setting AppDispName 申請表示名");
 			}
 			AppDispName appDispName = opAppDispName.get();
+			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 			String appContent = applicationContentService.getApplicationContent(application);
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String mailContentToSend = I18NText.getText("Msg_703",
@@ -443,6 +493,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			throw new RuntimeException("no setting AppDispName 申請表示名");
 		}
 		AppDispName appDispName = opAppDispName.get();
+		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 		String appContent = applicationContentService.getApplicationContent(application);
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
@@ -466,7 +517,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList);
 	}
 	@Override
-	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates) {
+	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates) {
 		List<GeneralDate> lstOutput = new ArrayList<>();
 		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
 			GeneralDate loopDate = dates.start().addDays(i);
@@ -480,5 +531,129 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 		}
 		return lstOutput;
+	}
+	@Override
+	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate) {
+		// Imported(申請承認)「勤務実績」を取得する
+		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+		if(Strings.isNotBlank(recordWorkInfoImport.getWorkTypeCode())){
+			String workTypeCd = recordWorkInfoImport.getWorkTypeCode();
+			// ドメインモデル「勤務種類」を1件取得する
+			Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCd);
+			if(!opWorkType.isPresent()){
+				return null;
+			}
+			WorkType workType = opWorkType.get();
+			return workType;
+		}
+		// Imported(申請承認)「勤務予定」を取得する
+		Optional<ScBasicScheduleImport> opScBasicScheduleImport = scBasicScheduleAdapter.findByID(employeeID, appDate);
+		if(opScBasicScheduleImport.isPresent()){
+			String workTypeCd = opScBasicScheduleImport.get().getWorkTypeCode();
+			// ドメインモデル「勤務種類」を1件取得する
+			Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCd);
+			if(!opWorkType.isPresent()){
+				return null;
+			}
+			WorkType workType = opWorkType.get();
+			return workType;
+		}
+		return null;
+	}
+	/**
+	 * 申請理由出力_共通
+	 * @author hoatt
+	 * @param 申請 application
+	 * @param 休暇種類(Optional) holidayType
+	 * @return 結果(使用/未使用)
+	 */
+	@Override
+	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType) {
+		String companyId = application.getCompanyID();
+		if(application.isAppAbsence()){
+			if(!holidayType.isPresent()){
+				//ドメインモデル「休暇申請」を取得する
+				Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, application.getAppID());
+				if(absence.isPresent()){
+					holidayType = Optional.of(absence.get().getHolidayAppType().value);
+				}
+			}
+			if(holidayType.isPresent()){
+				//ドメインモデル「申請理由表示」を取得する
+				Optional<DisplayReason> disReason = displayRep.findByHdType(companyId, application.getAppType().value);
+				if(disReason.isPresent() && disReason.get().getDisplayFixedReason().equals(DisplayAtr.NOT_DISPLAY)
+						 && disReason.get().getDisplayAppReason().equals(DisplayAtr.NOT_DISPLAY)){
+					//定型理由の表示＝しない　AND 申請理由の表示＝しない
+					return false;//output：・結果＝未使用
+				}
+				return true;//output：・結果＝使用
+			}
+			return true;
+		}else{
+			//ドメインモデル「申請種類別設定」を取得する
+			Optional<AppTypeDiscreteSetting> appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyId, application.getAppType().value);
+			if(appTypeSet.isPresent() && appTypeSet.get().getTypicalReasonDisplayFlg().equals(AppDisplayAtr.NOTDISPLAY) &&
+					appTypeSet.get().getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)){
+				//定型理由の表示＝しない　AND 申請理由の表示＝しない
+				return false;//output：・結果＝未使用
+			}
+			return true;//output：・結果＝使用
+		}
+	}
+	
+	@Override
+	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+		// Input．定型理由の表示区分をチェック
+		if (typicalReasonDisplayFlg == AppDisplayAtr.DISPLAY) {
+			// ドメインモデル「申請定型理由」を取得
+			List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
+			return applicationReasons;
+		}
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
+		// Input．申請理由の表示区分をチェック
+		if (displayReasonFlg == AppDisplayAtr.DISPLAY) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
+		String companyID =  AppContexts.user().companyId();
+		AppOverTime result = new AppOverTime();
+		if (prePostAtr == PrePostAtr.POSTERIOR) {
+			if(preDisplayAtr == UseAtr.USE){
+				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
+				if(!CollectionUtil.isEmpty(applicationLst)){
+					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
+					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
+					Optional<AppOverTime> appOvertime = this.overtimeRepository
+							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
+					if (appOvertime.isPresent()) {
+						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
+						result.setSiftCode(appOvertime.get().getSiftCode());
+						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
+						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
+						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
+						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
+
+						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
+								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
+								AttendanceType.NORMALOVERTIME.value);
+						result.setOverTimeInput(overtimeInputs);
+						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
+						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
+						result.setApplication(applicationOvertime);
+						result.setAppID(appOvertime.get().getAppID());
+						return result;
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

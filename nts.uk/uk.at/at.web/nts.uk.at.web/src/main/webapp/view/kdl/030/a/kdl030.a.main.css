@@ -18,8 +18,8 @@
 	width: 240px;		
 }
 #A4_2 {
-	width: 500px;
-    height: 175px;
+	width: 640px;
+    height: 200px;
 }
 .message-td {
 	padding-left: 10px;
@@ -27,14 +27,11 @@
 }
 
 #table-phase, #table-phase td, #table-phase th { 
-	border: 1px solid black;
-	padding-left: 2px;
+	border: 1px solid #CCC;
 	height: 25px;
+    padding-left: 2px;
 }
 
-#table-phase td{
-	height: 25px;
-}
 #label-1{
 	margin-top: 20px;
     float: left;
@@ -56,5 +53,46 @@
 	padding-top: 5px;
 }
 .rowBorder{
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #CCC;
+}
+
+#table-applicant, #table-applicant td, #table-applicant th { 
+	border: 1px solid #CCC;
+	padding-left: 2px;
+	height: 25px;
+}
+.rowPer1{
+	height: 25px !important;
+	margin-top: 5px;
+	color: #FF0000;
+}
+#table-phase thead{
+	background-color: #E0F59E;
+}
+
+/* list approver */
+.phase-app{
+	width: 70px !important;
+}
+.order-app{
+	width: 100px !important;
+}
+.name-app{
+	width: 250px !important;
+}
+.status-app{
+	width: 70px !important;
+}
+.isMail-appr{
+	width: 170px !important;
+}
+/* list applicant */
+.applicant{
+	width: 173px !important;
+}
+.name-emp{
+	width: 323px !important;
+}
+.isMail-app{
+	width: 170px !important;
 }

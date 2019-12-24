@@ -31,12 +31,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         reasonOutputMessFull: KnockoutObservable<string> = ko.observable('');
         reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
         reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
-        messageArea : KnockoutObservable<boolean> = ko.observable(true);
+        messageArea : KnockoutObservable<boolean> = ko.observable(false);
         
         errorFlag: number = 0;
         errorMsg: string = '';
         
         approvalRootState: any = ko.observableArray([]);
+        messFullDisp: KnockoutObservable<boolean> = ko.observable(false);
+        messDealineFullDisp: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor(){
             let self = this;
@@ -96,20 +98,23 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                         switch(data.errorFlag){
                             case 1:
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
+                                $("#inputdate").ntsError('set', {messageId:"Msg_324"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
-                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                                    nts.uk.ui.block.clear();
                                 });
                                 break;
                             case 2: 
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
+                                $("#inputdate").ntsError('set', {messageId:"Msg_238"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
-                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                                    nts.uk.ui.block.clear();
                                 });
                                 break;
                             case 3:
                                 $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
+                                $("#inputdate").ntsError('set', {messageId:"Msg_237"});
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
-                                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                                    nts.uk.ui.block.clear();
                                 });
                                 break;
                             default: 
@@ -120,10 +125,23 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
                 }
+                if(!_.isEmpty(self.reasonOutputMessFull())){
+                    self.messFullDisp(true);    
+                }
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
+                if(!_.isEmpty(self.reasonOutputMessDealineFull())){
+                    self.messDealineFullDisp(true);    
+                }
                 self.messageArea(deadlineMsg.chkShow);
+                if(self.appType() == 0){
+                     if(deadlineMsg.chkShow) {  
+                        $('#message_ct').addClass("message");
+                    } else {
+                        $('#message_ct').addClass("message_none");
+                    }
+                }
                 dfd.resolve(data);
             }).fail((res)=>{
                 dfd.reject(res);    

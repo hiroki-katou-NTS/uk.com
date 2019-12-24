@@ -39,7 +39,7 @@ public interface RegulationInfoEmployeeRepository {
 	 * @param sid the sid
 	 * @return the regulation info employee
 	 */
-	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate);
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate, int systemType);
 
 	/**
 	 * Sort employees.

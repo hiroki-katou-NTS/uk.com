@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm008.a {
          *  Service paths
          */
         var paths = {
+            findGroupCommonMaster: 'bs/employee/employment/findGroupCommonMaster',
             findEmployment: 'bs/employee/employment/findByCode',
             saveEmployment: 'bs/employee/employment/save',
             removeEmployment: 'bs/employee/employment/remove',
@@ -17,7 +18,9 @@ module nts.uk.com.view.cmm008.a {
             return nts.uk.request.ajax(paths.findEmployment + "/" + employmentCode);
         }
         
-        
+        export function findGroupCommonMaster() {
+            return nts.uk.request.ajax(paths.findGroupCommonMaster);
+        }
 
         /**
          * Save Employment

@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -34,17 +36,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository implements SpecificDateAttrOfDailyPerforRepo {
 
-//	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
-
-	static {
-//		StringBuilder builderString = new StringBuilder();
-//		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDaiSpeDayCla a ");
-//		builderString.append("WHERE a.krcdtDaiSpeDayClaPK.sid = :employeeId ");
-//		builderString.append("AND a.krcdtDaiSpeDayClaPK.ymd = :ymd ");
-//		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
-	}
-
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<SpecificDateAttrOfDailyPerfor> find(String employeeId, GeneralDate baseDate) {
 		List<SpecificDateAttrSheet> shortTimeSheets = findEntities(employeeId, baseDate)
@@ -93,6 +85,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 				.setParameter("ymd", ymd);
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 		StringBuilder query = new StringBuilder();
@@ -111,6 +104,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 				.collect(Collectors.toList());
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
 		List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();
@@ -159,6 +153,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		}
 	}
 
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
 		List<SpecificDateAttrOfDailyPerfor> result = new ArrayList<>();

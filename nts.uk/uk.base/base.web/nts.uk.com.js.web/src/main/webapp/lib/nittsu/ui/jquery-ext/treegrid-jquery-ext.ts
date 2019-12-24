@@ -26,7 +26,7 @@ module nts.uk.ui.jqueryExtentions {
             let virtualization = !util.isNullOrUndefined(options.virtualization) ? options.virtualization : false;
             let virtualizationMode = !util.isNullOrUndefined(options.virtualizationMode) ? options.virtualizationMode : "";
             let multiple = !_.isNil(options.multiple) ? options.multiple : false;
-            let isFilter = ko.unwrap(!util.isNullOrUndefined(data.filter) ? data.filter : false);
+            let isFilter = ko.unwrap(!util.isNullOrUndefined(options.filter) ? options.filter : false);
             
             // Default.
             let showCheckBox = options.showCheckBox !== undefined ? options.showCheckBox : true;
@@ -195,10 +195,12 @@ module nts.uk.ui.jqueryExtentions {
                 dataSource: _.cloneDeep(dataSource),
                 primaryKey: optionsValue,
                 columns: cols,
+                autoCommit : true,
                 childDataKey: optionsChild,
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
                 features: features,
+//                autoCommit: true,
                 virtualization: virtualization,
                 virtualizationMode: virtualizationMode,
                 rowExpanded: function (evt, ui) {

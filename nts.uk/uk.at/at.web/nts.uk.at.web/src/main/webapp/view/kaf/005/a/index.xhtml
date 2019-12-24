@@ -43,7 +43,8 @@
 						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
 						<label data-bind="text : instructInfor,visible: instructInforFlag"></label>
 					</div>
-					<div data-bind="with: kaf000_a" class="" >
+					
+					<div id = 'message_ct' data-bind="with: kaf000_a">
 						<ui:include src="../../000/a/index1.xhtml" />
 					</div>
 				</div>	
@@ -51,11 +52,7 @@
 				<div class="mainScreen container cf" data-bind="">
 					<ui:include src="../cm/index.xhtml"></ui:include>
 				</div>
-				<!-- Footer -->
-				<div class="lstApprover" data-bind="with: kaf000_a">
-					<ui:include src="../../000/a/index2_New.xhtml" />
-					<BR />
-				</div>
+						
 			</div>
 		</ui:define>
 	</ui:composition>

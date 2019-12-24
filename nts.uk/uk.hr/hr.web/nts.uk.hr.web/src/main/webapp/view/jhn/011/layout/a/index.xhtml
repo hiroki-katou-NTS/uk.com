@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="layout.a.style.css" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="layout.a.service.js" />
+			<com:scriptfile path="layout.a.vm.js" />
+			<com:scriptfile path="layout.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button type="button" class="proceed" id="A_BTN_REGISTER"
+					data-bind="click: saveData">aaaâ</button>
+				<a class="goout"
+					data-bind="ntsLinkButton: { jump: '../../008/a/index.xhtml' }">#{i18n.getText('CPS007_4')}</a>
+			</div>
+			<div id="contents-area" class="cf" data-bind="with: layout">
+				<div
+					data-bind="ntsLayoutControl: { 
+					data: itemsClassification,
+					editAble: editable,
+					outData: outData }"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

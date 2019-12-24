@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -47,6 +49,7 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	 * アルゴリズム「社員から職場を取得する」を実行する
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
 		Optional<SWkpHistExport> wkpExport = wkpPub.findBySid(sID, date);
 		if (wkpExport.isPresent()) {
@@ -61,10 +64,16 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 		return wkpExport.stream().filter(w -> w.getDateRange().contains(date)).map(w -> toImport(w)).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<WkpHistImport> findWkpBySidAndBaseDate(List<String> sID, GeneralDate date) {
+		return wkpPub.findBySId(sID, date).stream().map(this::toImport).collect(Collectors.toList());
+	}
+
 	private WkpHistImport toImport(SWkpHistExport export) {
 		return new WkpHistImport(export.getDateRange(), export.getEmployeeId(), export.getWorkplaceId(),
 				export.getWorkplaceCode(), export.getWorkplaceName(), export.getWkpDisplayName());
 	}
+
 
 	@Override
 	public Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId,

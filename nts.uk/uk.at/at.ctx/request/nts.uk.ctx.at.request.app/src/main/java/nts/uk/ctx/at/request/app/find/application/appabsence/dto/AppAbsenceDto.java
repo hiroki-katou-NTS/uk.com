@@ -189,6 +189,7 @@ public class AppAbsenceDto {
 	private SettingNo65 setingNo65;
 	//No.376
 	private NumberOfRemainOutput numberRemain;
+	private boolean masterUnreg;
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -229,7 +230,8 @@ public class AppAbsenceDto {
 								Collections.emptyList(),
 								false,
 								null,
-								null);
+								null,
+								false);
 	}
 }
 

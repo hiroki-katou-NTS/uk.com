@@ -89,13 +89,13 @@ div#tab-panel {
 
 .grant-period {
 	float: left;
-	width: 300px;
+	width: 310px;
 	padding: 42px 0;
-    margin-left: -143px;
+    margin-left: -160px;
 }
 
 .years {
-	padding-right: 20px !important;
+	padding-right: 35px !important;
 }
 
 .years, .days, .year-lbl, .year-inp, .day-lbl, .day-inp {
@@ -213,4 +213,7 @@ div.ageBaseDate {
 }
 .ntsMonthDays_Container{
 	top: 0px;
+}
+#auto_grant .nts-switch-button {
+	width: 70px;
 }

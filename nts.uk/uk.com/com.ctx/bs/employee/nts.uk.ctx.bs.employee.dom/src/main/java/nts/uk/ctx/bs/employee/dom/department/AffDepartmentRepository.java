@@ -35,4 +35,7 @@ public interface AffDepartmentRepository {
 	 * @param domain
 	 */
 	void deleteAffDepartment(String	affiDepartmentID);
+
+	// for salary qmm016, 017
+	List<DepartmentInfo> getAllDepartmentByCompanyIdAndBaseDate(String companyId, GeneralDate baseDate);
 }

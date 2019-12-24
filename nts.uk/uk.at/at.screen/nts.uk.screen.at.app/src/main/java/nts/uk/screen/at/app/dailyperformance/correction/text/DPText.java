@@ -53,6 +53,8 @@ public class DPText {
 	
 	public static final String LOCK_HIST = "H";
 	
+	public static final List<String> LIST_LOCK_EDIT_FLEX = Arrays.asList(LOCK_EDIT_CELL_DAY, LOCK_EDIT_CELL_MONTH, LOCK_EDIT_CELL_WORK, LOCK_CHECK_MONTH, LOCK_CONFIRM_MONTH, LOCK_HIST);
+	
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	
 	public static final String LOCK_APPLICATION = "Application";
@@ -85,6 +87,8 @@ public class DPText {
 	
 	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44, 623, 625);
 	
+	public static final List<Integer> ITEM_CHANGE_MOBI = Arrays.asList(28, 29, 31, 34, 41, 44);
+	
 	public static final List<Integer> TMP_DATA_CHECK_ITEMS = Arrays.asList(28, 29, 227, 232, 237, 242, 247, 252, 257, 262, 267, 272, 277, 282,
 			287, 292, 297, 302, 307, 312, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516,
 			517, 539, 540, 541, 542, 543, 544, 545, 546, 547, 595, 596, 597, 601, 602, 603, 607, 608, 609, 613, 614, 615);
@@ -92,5 +96,9 @@ public class DPText {
 	public static final List<Integer> ITEM_REQUIRED = Arrays.asList(623, 624, 625, 626);
 	
 	public static final List<Integer> ITEM_COMBOBOX_CALC = Arrays.asList(628, 630, 631, 632);
-
+	
+	public static final List<Integer> ITEM_INSERT_STAMP_SOURCE = Arrays.asList(31, 34, 41, 44, 75, 79, 83, 77, 81, 85, 51, 59, 67, 53, 61, 69);
+	
+	public static final List<Integer> ALL_ITEM_TYPE_MASTER = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14);
+	
 }

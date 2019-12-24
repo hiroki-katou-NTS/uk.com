@@ -68,13 +68,13 @@ public class SpecialHolidayProcess {
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(companyId);
 		for (val specialHoliday : specialHolidays){
 			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
-			
+			int autoGrant = specialHoliday.getAutoGrant().value;
 			// 特別休暇残数計算
 			InPeriodOfSpecialLeave output = this.remainCalculation.calculateRemainSpecial(
 					period, empId, specialLeaveCode, interimMng, interimSpecialData);
 			
 			// 特別休暇残数更新
-			this.remainUpdate.updateRemainSpecialHoliday(output, empId, period.getPeriod(), specialLeaveCode);
+			this.remainUpdate.updateRemainSpecialHoliday(output, empId, period.getPeriod(), specialLeaveCode, autoGrant);
 		}
 		
 		// 特別休暇暫定データ削除

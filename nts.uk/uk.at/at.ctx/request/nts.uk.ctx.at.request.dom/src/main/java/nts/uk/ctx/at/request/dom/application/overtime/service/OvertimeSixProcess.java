@@ -3,20 +3,13 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface OvertimeSixProcess {
 	
-	/**
-	 * 06-01_色表示チェック
-	 * @param overTimeInputs
-	 * @param overtimeInputCaculations
-	 */
-	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
 	/**
 	 * 06-02_残業時間を取得
 	 * @param companyID
@@ -31,19 +24,6 @@ public interface OvertimeSixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> overtimeHours);
-	/**
-	 * @return
-	 * 06-02-2_申請時間を取得
-	 */
-	public List<CaculationTime> getAppOvertimeCaculation(List<CaculationTime> caculationTimes,List<OvertimeInputCaculation> overtimeInputCaculations);
-	/**
-	 * 06-03_加給時間を取得
-	 * @param companyID
-	 * @param employeeId
-	 * @param appDate
-	 * @param appType
-	 */
-	public List<CaculationTime> getCaculationBonustime(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> caculationTimes);
 	
 	/**
 	 * 06-03-1_加給事前申請を取得
@@ -85,4 +65,6 @@ public interface OvertimeSixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations);
+	
+	public List<OverTimeInput> convert(CaculationTime caculationTime);
 }

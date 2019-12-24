@@ -4,15 +4,8 @@
 
     <nts-text-area
         v-model="text"
-        :name="'Textarea Item'"/>
+        name='Textarea Item'/>
 
     <markdown/>
-
-    <br>
-    <label>
-      Tạo bởi:
-      <b>Phạm Văn Dân</b>
-    </label>
-    <br>
   </div>
 </template>

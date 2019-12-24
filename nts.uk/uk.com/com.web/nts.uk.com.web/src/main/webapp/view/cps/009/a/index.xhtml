@@ -44,25 +44,27 @@
 						tabindex="5">#{i18n.getText('CPS009_7')}</a>
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content">
+				<div id="content" class="table">
 					<!-- A2_001: 選択パネル -->
-					<div id="content-left"
-						data-bind="ntsPanel:{width: '260px', height: '407px',direction: 'right', showIcon: false, visible: true}">
-						<!-- A2_002: gridList 初期値設定一覧 -->
-						<table id="category_grid"
-							data-bind="ntsGridList: {
-							name: '#[CPS009_9]',	
-							dataSource: initValSettingLst ,
-							primaryKey: 'settingId' ,
-							columns: settingColums ,
-							multiple: false,
-							columnResize: true,
-							value: initSettingId,
-							rows:15 }"
-							tabindex="6">
-						</table>
+					<div class="cell" style="vertical-align: top">
+						<div id="content-left"
+							data-bind="ntsPanel:{width: '260px', height: '407px',direction: 'right', showIcon: false, visible: true}">
+							<!-- A2_002: gridList 初期値設定一覧 -->
+							<table id="category_grid"
+								data-bind="ntsGridList: {
+								name: '#[CPS009_9]',	
+								dataSource: initValSettingLst ,
+								primaryKey: 'settingId' ,
+								columns: settingColums ,
+								multiple: false,
+								columnResize: true,
+								value: initSettingId,
+								rows:15 }"
+								tabindex="6">
+							</table>
+						</div>
 					</div>
-					<div id="content-right">
+					<div id="content-right" class="cell">
 						<div
 							data-bind="template: { afterRender: function(){ $('#ctgName').focus();}}">
 							<!-- A3_001: label コード/名称 -->
@@ -92,7 +94,7 @@
 								tabindex="8"></input>
 						</div>
 
-						<div id='sub-content-right'>
+						<div id='sub-content-right' class="table">
 							<div id="search_his" class='flex valign-center'>
 								<!-- A3_004: カテゴリー検索
  -->
@@ -127,8 +129,8 @@
 										tabindex="13">#{i18n.getText('CPS009_20')}</button>
 								</div>
 							</div>
-
-							<div id='sub-left'>
+							<div class="valign-top control-group">
+							<div id='sub-left' class="cell">
 								<!-- A3_005: list カテゴリ一覧 -->
 								<table id="item_grid"
 									data-bind="ntsGridList: {	
@@ -138,7 +140,7 @@
 									multiple: false,
 									columnResize: true,
 									value: currentItemId,
-									rows:15 }"
+									rows: Math.round((window.screen.height - 492)/23) >= 15 ? 15 : Math.round((window.screen.height - 492)/23)}"
 									tabindex="10">
 								</table>
 								<div style="margin-top: 10px;">
@@ -146,11 +148,11 @@
 									<span>#{i18n.getText('CPS009_18')}</span>
 								</div>
 							</div>
-							<div id='sub-center'>
+							<div id='sub-center' class="cell">
 								<span class="caret-background caret-right direction-right"
 									style="margin-top: 135px;"></span>
 							</div>
-							<div id='sub-right' tabindex="14">
+							<div id='sub-right' class="cell" tabindex="14">
 								<!-- A3_016: table 項目初期値設定表 -->
 								<table class="contents-header">
 									<thead>
@@ -381,6 +383,7 @@
 										</tr>
 									</tbody>
 								</table>
+							</div>
 							</div>
 						</div>
 

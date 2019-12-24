@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -19,11 +21,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -44,6 +49,28 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
 	private static final String GET_BY_LSTSID_DATE = "SELECT c FROM BsymtEmploymentHist c where c.sid IN :lstSID" 
 			+ " AND c.strDate <= :date and c.endDate >= :date";
+
+	private static final String SELECT_DATA_REQ638 = "SELECT eht.empCode, ach.startDate , e.bsymtEmployeeDataMngInfoPk.sId, ps.bpsmtPersonPk.pId, ps.birthday "
+			+ " FROM BsymtEmploymentHist eh  "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
+			+ " INNER JOIN BsymtAffCompanyHist ach ON ach.bsymtAffCompanyHistPk.sId = eht.sid "
+			+ " INNER JOIN BsymtEmployeeDataMngInfo e ON e.bsymtEmployeeDataMngInfoPk.sId = eht.sid "
+			+ " INNER JOIN BpsmtPerson ps ON  ps.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId "
+			+ " WHERE eht.empCode = :employmentCode AND eh.strDate <= :baseDate AND eh.endDate >= :baseDate " 
+			+ " AND ach.startDate <= :baseDate AND ach.endDate >= :baseDate AND ach.destinationData = 0 " 
+			+ " AND e.delStatus = 0 "
+			+ " AND ps.birthday <= :endDate " 
+			+ " AND ps.birthday >= :startDate AND e.companyId = :cid";
+	
+	private static final String SELECT_DATA_REQ640 = "SELECT eht "
+			+ " FROM BsymtEmploymentHistItem  eht  "
+			+ " INNER JOIN BsymtEmploymentHist eh ON eh.hisId = eht.hisId "
+			+ " WHERE eh.sid IN :listSid AND eh.strDate <= :endDate AND eh.endDate >= :startDate ";
+	
+	private static final String SELECT_DATA_REQ640_2 = "SELECT eh "
+			+ " FROM BsymtEmploymentHist  eh  "
+			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
+			+ " WHERE eh.hisId IN :histIds";
 	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
@@ -84,6 +111,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		try (val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?")) {
 			statement.setString(1, employeeId);
@@ -224,6 +252,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmploymentHistory> getByListSid(List<String> employeeIds, DatePeriod datePeriod) {
 
 		// Split query.
@@ -316,10 +345,13 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate date) {
-		List<DateHistItem> lst =  this.queryProxy().query(GET_BY_LSTSID_DATE, BsymtEmploymentHist.class)
-				.setParameter("lstSID", lstSID)
-				.setParameter("date", date)
-				.getList(c -> new DateHistItem(c.sid, c.hisId, new DatePeriod(c.strDate, c.endDate)));
+		List<DateHistItem> lst = new ArrayList<>();
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			lst.addAll(this.queryProxy().query(GET_BY_LSTSID_DATE, BsymtEmploymentHist.class)
+					.setParameter("lstSID", splitData)
+					.setParameter("date", date)
+					.getList(c -> new DateHistItem(c.sid, c.hisId, new DatePeriod(c.strDate, c.endDate))));
+		});
 		Map<String, DateHistItem> mapResult = new HashMap<>();
 		for(String sid : lstSID){
 			List<DateHistItem> hist = lst.stream().filter(c -> c.getSid().equals(sid)).collect(Collectors.toList());
@@ -330,4 +362,276 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		}
 		return mapResult;
 	}
+
+	@Override
+	public List<Object[]> getEmploymentBasicInfo(String employmentCode, DatePeriod birthdayPeriod, GeneralDate baseDate,
+			String cid) {
+		
+		List<Object[]> result = queryProxy().query(SELECT_DATA_REQ638, Object[].class)
+				.setParameter("cid", cid)
+				.setParameter("employmentCode", employmentCode)
+				.setParameter("baseDate", baseDate)
+				.setParameter("startDate", birthdayPeriod.start())
+				.setParameter("endDate", birthdayPeriod.end()).getList();
+		
+		return result;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentHisItem(List<String> employeeIds, DatePeriod datePeriod) {
+		
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
+		
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BsymtEmploymentHistItem> optionDatas = this.queryProxy()
+					.query(SELECT_DATA_REQ640, BsymtEmploymentHistItem.class)
+					.setParameter("listSid", subList)
+					.setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList();
+			resultList.addAll(optionDatas);
+		});
+
+		return resultList.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());
+	}
+	
+	private EmploymentHistoryItem toDomainEmploymentHistoryItem(BsymtEmploymentHistItem entity) {
+		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
+	}
+
+	@Override
+	public List<EmploymentHistory> getByListHistId(List<String> histIds) {
+		
+		List<BsymtEmploymentHist> listEntity = new ArrayList<>();
+
+		// Split employeeId List if size of histIds List is greater than 1000
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BsymtEmploymentHist> optionDatas = this.queryProxy()
+					.query(SELECT_DATA_REQ640_2, BsymtEmploymentHist.class)
+					.setParameter("histIds", subList).getList();
+			listEntity.addAll(optionDatas);
+		});
+
+		Map<String, List<BsymtEmploymentHist>> mapSidWithListEntity = listEntity.stream().collect(Collectors.groupingBy(x -> x.sid)); 
+		
+		List<EmploymentHistory> result = new ArrayList<>();
+
+		for (Map.Entry<String, List<BsymtEmploymentHist>> info : mapSidWithListEntity.entrySet()) {
+			EmploymentHistory empHistory = new EmploymentHistory();
+			empHistory.setEmployeeId(info.getKey());
+			List<BsymtEmploymentHist> values = info.getValue();
+			if (!values.isEmpty()) {
+				empHistory.setHistoryItems(
+						values.stream().map(x -> new DateHistoryItem(x.hisId, new DatePeriod(x.strDate, x.endDate)))
+								.collect(Collectors.toList()));
+			} else {
+				empHistory.setHistoryItems(new ArrayList<>());
+			}
+			result.add(empHistory);
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<DateHistoryItem> getByEmployeeIdAndStandardDate(String cid, List<String> sids, GeneralDate standardDate) {
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST "
+					+ "WHERE CID =? and START_DATE <= ? "
+					+ "AND END_DATE >= ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
+				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
+				for (int i = 0 ; i < subList.size(); i++) {
+					stmt.setString( 4 + i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					result.add(new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
+				});
+				
+				
+			}catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+		});
+		return result;
+	}
+	
+	@Override
+	public List<DateHistoryItem> getByEmployeeIdAndNoStandardDate(String cid, List<String> sids) {
+		
+		List<DateHistoryItem> result = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC ";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					result.add(new DateHistoryItem(rec.getString("HIST_ID"), new DatePeriod(rec.getGeneralDate("START_DATE"),  rec.getGeneralDate("END_DATE"))));
+				});
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public List<EmploymentHistory> getAllByCidAndSids(String cid, List<String> sids) {
+		List<BsymtEmploymentHist> entities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSYMT_EMPLOYMENT_HIST WHERE CID = ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY SID, START_DATE DESC";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, cid);
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(2 + i, subList.get(i));
+				}
+
+				entities.addAll(new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					return new BsymtEmploymentHist(r.getString("HIST_ID"), r.getString("CID"), r.getString("SID"),
+							r.getGeneralDate("START_DATE"), r.getGeneralDate("END_DATE"));
+				}));
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		Map<String, List<BsymtEmploymentHist>> employmentHistMap = entities.stream().collect(Collectors.groupingBy(c -> c.sid));
+		List<EmploymentHistory> result = employmentHistMap.entrySet().stream().map(c -> {return toEmploymentHistory(c.getValue());}).collect(Collectors.toList());
+		return result;
+	}
+
+	@Override
+	public void addAll(List<EmploymentHistory> employmentHistories) {
+		String INS_SQL = "INSERT INTO BSYMT_EMPLOYMENT_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, CID, SID,"
+				+ " START_DATE, END_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		GeneralDateTime insertTime = GeneralDateTime.now();
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		employmentHistories.stream().forEach(c ->{
+			String sql = INS_SQL;
+			DateHistoryItem dateHistItem = c.getHistoryItems().get(0);
+			sql = sql.replace("INS_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + insertTime + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CID_VAL", "'" + c.getCompanyId() + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
+			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void addAll(Map<String, DateHistoryItem> employmentHists) {
+		String INS_SQL = "INSERT INTO BSYMT_EMPLOYMENT_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " HIST_ID, CID, SID,"
+				+ " START_DATE, END_DATE)"
+				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " HIST_ID_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		String cid = AppContexts.user().companyId();
+		String insCcd = AppContexts.user().companyCode();
+		String insScd = AppContexts.user().employeeCode();
+		String insPg = AppContexts.programId();
+		
+		String updCcd = insCcd;
+		String updScd = insScd;
+		String updPg = insPg;
+		StringBuilder sb = new StringBuilder();
+		employmentHists.entrySet().stream().forEach(c ->{
+			String sql = INS_SQL;
+			DateHistoryItem dateHistItem = c.getValue();
+			sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
+			sql = sql.replace("INS_SCD_VAL", "'" + insScd + "'");
+			sql = sql.replace("INS_PG_VAL", "'" + insPg + "'");
+
+			sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");
+			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
+			
+			sb.append(sql);
+		});
+		
+		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+		
+	}
+
+	@Override
+	public void updateAll(List<DateHistoryItem> itemToBeUpdateds) {	
+		
+		String UP_SQL = "UPDATE BSYMT_EMPLOYMENT_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+		String cid = AppContexts.user().companyId();
+		String updCcd = AppContexts.user().companyCode();
+		String updScd = AppContexts.user().employeeCode();
+		String updPg = AppContexts.programId();
+		
+		StringBuilder sb = new StringBuilder();
+		itemToBeUpdateds.stream().forEach(c ->{
+			String sql = UP_SQL;
+			sql = UP_SQL.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+			sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+			sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+			
+			sql = sql.replace("START_DATE_VAL", "'" + c.start() + "'");
+			sql = sql.replace("END_DATE_VAL","'" +  c.end() + "'");
+			
+			sql = sql.replace("HIST_ID_VAL", "'" + c.identifier() +"'");
+			sql = sql.replace("CID_VAL", "'" + cid +"'");
+			sb.append(sql);
+		});
+		int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+		System.out.println(records);
+	}
+
 }

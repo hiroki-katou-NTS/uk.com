@@ -1,16 +1,8 @@
-/// <reference path="../qmm005.ts"/>
-
-__viewContext.primitiveValueConstraints["processingYear"] = {
-    min: 1970,
-    max: 9999,
-    required: true,
-    charType: "Numeric",
-    valueType: "Numeric"
-}
-
-module qmm005.b {
-    __viewContext.ready(() => {
-        __viewContext["viewModel"] = new ViewModel();
-        __viewContext.bind(__viewContext["viewModel"]);
+module nts.uk.pr.view.qmm005.b {
+    __viewContext.ready(function() {
+        __viewContext['screenModel'] = new viewmodel.ScreenModel();
+        __viewContext['screenModel'].startPage().done(function() {
+            __viewContext.bind(__viewContext['screenModel']);
+        });
     });
 }
