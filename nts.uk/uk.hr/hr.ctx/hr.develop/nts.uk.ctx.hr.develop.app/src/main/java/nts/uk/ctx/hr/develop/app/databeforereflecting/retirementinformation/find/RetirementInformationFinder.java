@@ -204,6 +204,7 @@ public class RetirementInformationFinder {
 		item.setPendingFlag(reti.getPendingFlag().value);
 		item.setWorkId(reti.getWorkId());
 		item.setDst_HistId(reti.getDst_HistId());
+		item.setInputDate(reti.getInputDate());
 		item.setRetirementCategory(reti.getRetirementCategory().value);
 		item.setNotificationCategory(reti.getNotificationCategory().value);
 		item.setRetirementReasonCtgID1(reti.getRetirementReasonCtgID1());
