@@ -55,7 +55,7 @@ button.nts-switch-button {
 	margin-bottom: 20px;
 	margin-right: 20px;
 	text-align: left;
-	vertical-align: bottom;
+	vertical-align: text-top;
 }
 .button-radius:hover:enabled {
    background-color: #A4EEB0;
