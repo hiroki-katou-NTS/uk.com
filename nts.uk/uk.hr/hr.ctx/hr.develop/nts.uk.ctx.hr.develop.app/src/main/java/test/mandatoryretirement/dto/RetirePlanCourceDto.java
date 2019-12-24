@@ -71,7 +71,7 @@ public class RetirePlanCourceDto {
 				this.notUsageFlg,
 				this.usageStartDate,
 				this.usageEndDate,
-				Optional.ofNullable(this.planCourseApplyTerm.toDomain()),
+				Optional.ofNullable(this.planCourseApplyTerm == null?null: this.planCourseApplyTerm.toDomain()),
 				Optional.ofNullable(this.recontractEmpCode)
 				);
 	}
