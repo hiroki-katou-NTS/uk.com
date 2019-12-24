@@ -87,6 +87,16 @@ class ItemModel {
     }
 }
 
+class RetirementStatus {
+    code: number;
+    name: string;
+
+    constructor(code: number, name: string) {
+        this.code = code;
+        this.name = name;
+    }
+}
+
 interface IDateRange {
     startDate: string;
     endDate: string;
