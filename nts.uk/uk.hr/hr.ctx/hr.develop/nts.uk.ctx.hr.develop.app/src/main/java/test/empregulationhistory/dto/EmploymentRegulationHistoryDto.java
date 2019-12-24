@@ -1,4 +1,4 @@
-package test.dto;
+package test.empregulationhistory.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

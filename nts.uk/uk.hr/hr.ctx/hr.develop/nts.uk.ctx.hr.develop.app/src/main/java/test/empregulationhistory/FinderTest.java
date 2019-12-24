@@ -1,4 +1,4 @@
-package test;
+package test.empregulationhistory;
 
 import java.util.Optional;
 
@@ -9,9 +9,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryRepository;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.dto.RegulationHistoryDto;
-import test.dto.EmpRegulationHistListDto;
-import test.dto.EmploymentRegulationHistoryDto;
-import test.param.EmpRegHisParamDto;
+import test.empregulationhistory.dto.EmpRegulationHistListDto;
+import test.empregulationhistory.dto.EmploymentRegulationHistoryDto;
+import test.empregulationhistory.param.EmpRegHisParamDto;
 
 @Stateless
 public class FinderTest {
