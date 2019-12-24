@@ -77,8 +77,8 @@ module nts.uk.at.view.kmr002.a.model {
 
                     self.clearData();
 
-                    self.initData(data);
-
+                    self.initData(data); 
+                    dfd.resolve();
                 }).fail(() => {
 
                     error({ messageId: "Msg_1589" }).then(() => {
@@ -90,7 +90,6 @@ module nts.uk.at.view.kmr002.a.model {
                     nts.uk.ui.block.clear();
                 });
             });
-            dfd.resolve();
             return dfd.promise();
         }
 
