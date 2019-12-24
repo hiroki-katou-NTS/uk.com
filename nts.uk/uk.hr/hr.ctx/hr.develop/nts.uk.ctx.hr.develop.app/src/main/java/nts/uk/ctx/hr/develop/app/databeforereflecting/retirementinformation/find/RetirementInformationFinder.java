@@ -141,7 +141,7 @@ public class RetirementInformationFinder {
 	}
 	
 	private PlannedRetirementDto toPlannedRetirementDto(RetirementPlannedPersonDto plan) {
-		return PlannedRetirementDto.builder().pId(plan.getEmployeeId()).sId(plan.getEmployeeId())
+		return PlannedRetirementDto.builder().pId(plan.getPersonalId()).sId(plan.getEmployeeId())
 				.scd(plan.getEmployeeCode()).businessName(plan.getBusinessName())
 				.businessnameKana(plan.getBusinessNameKana()).birthday(plan.getBirthday())
 				.dateJoinComp(plan.getDateJoinComp()).departmentId(plan.getDepartmentId())
@@ -204,6 +204,7 @@ public class RetirementInformationFinder {
 		item.setPendingFlag(reti.getPendingFlag().value);
 		item.setWorkId(reti.getWorkId());
 		item.setDst_HistId(reti.getDst_HistId());
+		item.setInputDate(reti.getInputDate());
 		item.setRetirementCategory(reti.getRetirementCategory().value);
 		item.setNotificationCategory(reti.getNotificationCategory().value);
 		item.setRetirementReasonCtgID1(reti.getRetirementReasonCtgID1());
@@ -350,7 +351,7 @@ public class RetirementInformationFinder {
 				dto.setRetirePlanCourseId(retire.get().getRetirePlanCourseId());
 				dto.setRetirePlanCourseCode(retire.get().getRetirePlanCourseCode());
 				dto.setRetirePlanCourseName(retire.get().getRetirePlanCourseName());
-				dto.setDurationFlg(retire.get().isDurationFlg());
+				dto.setDurationFlg(retire.get().getDurationFlg().value);
 			}
 
 			dtos.add(dto);

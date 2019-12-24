@@ -110,4 +110,6 @@ public class PlannedRetirementDto {
 	private String retirementReasonCtgCd1;
 	// 退職理由区分1_名称
 	private String retirementReasonCtgName1;
+	
+	private boolean flag;
 }
