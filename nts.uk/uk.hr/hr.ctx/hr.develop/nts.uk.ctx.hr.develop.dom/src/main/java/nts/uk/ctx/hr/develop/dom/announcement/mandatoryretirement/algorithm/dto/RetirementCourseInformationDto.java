@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.DurationFlg;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetirePlanCourseClass;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 
@@ -40,5 +41,5 @@ public class RetirementCourseInformationDto {
 	private String retirePlanCourseName;
 	
 	/** 継続区分 */
-	private boolean durationFlg;
+	private DurationFlg durationFlg;
 }

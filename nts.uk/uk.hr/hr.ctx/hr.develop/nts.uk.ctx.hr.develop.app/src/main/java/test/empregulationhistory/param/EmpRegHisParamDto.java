@@ -1,4 +1,4 @@
-package test.param;
+package test.empregulationhistory.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

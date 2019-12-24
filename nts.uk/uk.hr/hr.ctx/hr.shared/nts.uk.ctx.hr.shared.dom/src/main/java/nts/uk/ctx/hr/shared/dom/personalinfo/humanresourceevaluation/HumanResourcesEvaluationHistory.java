@@ -30,11 +30,21 @@ public class HumanResourcesEvaluationHistory extends DomainEvent
 	/**
 	 * 社員ID
 	 */
-	private String careerTypeId;
+	private String employeeId;
 
 	@Override
 	public List<DateHistoryItem> items() {
 		return careerTypeHistory;
 	}
+
+	public HumanResourcesEvaluationHistory(String companyId, List<DateHistoryItem> careerTypeHistory,
+			String employeeId) {
+		super();
+		this.companyId = companyId;
+		this.careerTypeHistory = careerTypeHistory;
+		this.employeeId = employeeId;
+	}
+	
+	
 
 }

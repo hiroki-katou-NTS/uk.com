@@ -1,4 +1,4 @@
-package test.dto;
+package test.empregulationhistory.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;

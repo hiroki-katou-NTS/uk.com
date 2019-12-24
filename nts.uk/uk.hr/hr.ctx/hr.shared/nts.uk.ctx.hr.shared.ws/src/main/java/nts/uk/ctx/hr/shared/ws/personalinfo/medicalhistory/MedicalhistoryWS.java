@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItemResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
 
@@ -26,31 +26,17 @@ public class MedicalhistoryWS {
 
 		List<String> listSid = param.listSid;
 		GeneralDate baseDate = GeneralDate.legacyDate(param.baseDate.date()).addMonths(-1);
-		
-		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
 
-			medicalhisMng  = medicalhisServices.loadMedicalhistoryItem(listSid, baseDate, medicalhisMng);
-			return medicalhisMng;
+		return medicalhisServices.loadMedicalhistoryItem(listSid, baseDate);
 	}
 	
 	@POST
 	@Path("/get2") // test service
-	public MedicalhistoryItem getSingle(ParamTest param) {
+	public List<MedicalhistoryItemResults> getSingle(ParamTest param) {
 
-		List<String> listSid = param.listSid;
-		String sid = param.sid;
-		GeneralDate baseDate = GeneralDate.legacyDate(param.baseDate.date()).addMonths(-1);
-		
-		MedicalhistoryManagement medicalhisMng = new MedicalhistoryManagement();
-
-			medicalhisMng  = medicalhisServices.loadMedicalhistoryItem(listSid, baseDate, medicalhisMng);
-			
-			MedicalhistoryItem mItem1 = medicalhisServices.getMedicalhistoryItem(sid, baseDate, medicalhisMng);
-			
-			return mItem1;
-		}
+		return medicalhisServices.getMedicalhistoryItem(param.sid, param.baseDate);
 	}
-	
+}
 	/**
 	 * "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570",
 	 * "8f9edce4-e135-4a1e-8dca-ad96abe405d6",
