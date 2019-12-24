@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.DurationFlg;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetirePlanCourseClass;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 
@@ -39,7 +40,7 @@ public class RetirePlanCource extends AggregateRoot{
 	private RetirementAge retirementAge;
 	
 	/** 継続区分 */
-	private boolean durationFlg;
+	private DurationFlg durationFlg;
 	
 	/** 退職理由区分1 ID */
 	private long resignmentReason1Id;
@@ -57,10 +58,10 @@ public class RetirePlanCource extends AggregateRoot{
 	private Optional<PlanCourseApplyTerm> planCourseApplyTerm;
 	
 	/** 再契約の雇用区分 */
-	private String recontractEmpCode;
+	private Optional<String> recontractEmpCode;
 	
 	public static RetirePlanCource createFromJavaType(String companyId, long retirePlanCourseId, String retirePlanCourseCode, String retirePlanCourseName, int retirePlanCourseClass, 
-			int retirementAge, boolean durationFlg, long resignmentReason1Id, boolean notUsageFlg, GeneralDate usageStartDate, GeneralDate usageEndDate, Optional<PlanCourseApplyTerm> planCourseApplyTerm, String recontractEmpCode) {
+			int retirementAge, int durationFlg, long resignmentReason1Id, boolean notUsageFlg, GeneralDate usageStartDate, GeneralDate usageEndDate, Optional<PlanCourseApplyTerm> planCourseApplyTerm, Optional<String> recontractEmpCode) {
 		return new RetirePlanCource(
 				companyId,
 				retirePlanCourseId,
@@ -68,7 +69,7 @@ public class RetirePlanCource extends AggregateRoot{
 				retirePlanCourseName,
 				EnumAdaptor.valueOf(retirePlanCourseClass, RetirePlanCourseClass.class),
 				new RetirementAge(retirementAge),
-				durationFlg,
+				EnumAdaptor.valueOf(durationFlg, DurationFlg.class),
 				resignmentReason1Id,
 				notUsageFlg,
 				usageStartDate,

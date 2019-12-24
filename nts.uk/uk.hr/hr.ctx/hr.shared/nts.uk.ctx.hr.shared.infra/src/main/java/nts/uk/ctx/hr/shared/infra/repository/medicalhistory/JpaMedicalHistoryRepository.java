@@ -5,7 +5,6 @@ package nts.uk.ctx.hr.shared.infra.repository.medicalhistory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -14,38 +13,41 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItem;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItemResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryRepository;
+import nts.uk.ctx.hr.shared.infra.entity.medicalhistory.PpedtMedicalHis;
 import nts.uk.ctx.hr.shared.infra.entity.medicalhistory.PpedtMedicalHisItem;
 
 @Stateless
 public class JpaMedicalHistoryRepository extends JpaRepository implements MedicalhistoryRepository {
 	
-	private static final String SELECT_BY_LISTPID_AND_BASEDATE = "SELECT a FROM PpedtMedicalHisItem a "
-																+ "inner join PpedtMedicalHis b on a.PpedtMedicalHisItemPk.hisId = b.ppedtMedicalHisPk.hisId "
-																+ "WHERE a.sid IN :listSId and b.startDate >= :baseDate ";
+	private static final String SELECT_BY_LISTPID_AND_BASEDATE = "SELECT i, h FROM PpedtMedicalHisItem i inner join PpedtMedicalHis h "
+			+ "ON i.PpedtMedicalHisItemPk.hisId = h.ppedtMedicalHisPk.hisId "
+			+ "WHERE i.sid IN :listSId and h.startDate >= :baseDate ";
 
 	@Override
-	public List<MedicalhistoryItem> getListMedicalhistoryItem(List<String> listSId,
+	public List<MedicalhistoryItemResults> getListMedicalhistoryItem(List<String> listSId,
 			GeneralDate baseDate) {
 		
 		if (listSId.isEmpty() || baseDate == null) {
-			return new ArrayList<MedicalhistoryItem>();
+			return new ArrayList<>();
 		}
 		
-		List<PpedtMedicalHisItem> listEntity = new ArrayList<>();
+		List<MedicalhistoryItemResults> listEntity = new ArrayList<>();
 		CollectionUtil.split(listSId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			listEntity.addAll(this.getEntityManager().createQuery(SELECT_BY_LISTPID_AND_BASEDATE,PpedtMedicalHisItem.class)
+			listEntity.addAll(this.queryProxy().query(SELECT_BY_LISTPID_AND_BASEDATE,Object[].class)
 					.setParameter("baseDate", baseDate)				 
-					.setParameter("listSId", subList).getResultList());
+					.setParameter("listSId", subList)
+					.getList(c->joinObjectToDomain(c)));
 		});
 		
-		if (listEntity.isEmpty()) {
-			return new ArrayList<MedicalhistoryItem>();
-		}
-		
-		List<MedicalhistoryItem> result = listEntity.stream().map(e -> toDomain(e)).collect(Collectors.toList());
-		
-		return result;
+		return listEntity;
+	}
+	
+	private MedicalhistoryItemResults joinObjectToDomain(Object[] entity) {
+		PpedtMedicalHisItem item = (PpedtMedicalHisItem) entity[0];
+		PpedtMedicalHis hist = (PpedtMedicalHis) entity[1];
+		return new MedicalhistoryItemResults(item.cid, item.sid, hist.startDate, hist.endDate, item.resultNote);
 	}
 
 	private MedicalhistoryItem toDomain(PpedtMedicalHisItem entity) {

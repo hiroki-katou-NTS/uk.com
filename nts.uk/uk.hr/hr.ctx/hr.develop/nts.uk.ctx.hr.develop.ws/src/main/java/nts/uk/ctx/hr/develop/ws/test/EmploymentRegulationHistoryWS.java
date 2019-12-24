@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import test.FinderTest;
-import test.dto.EmpRegulationHistListDto;
-import test.dto.EmploymentRegulationHistoryDto;
-import test.param.EmpRegHisParamDto;
+import test.empregulationhistory.FinderTest;
+import test.empregulationhistory.dto.EmpRegulationHistListDto;
+import test.empregulationhistory.dto.EmploymentRegulationHistoryDto;
+import test.empregulationhistory.param.EmpRegHisParamDto;
 
 @Path("empRegHis")
 @Produces(MediaType.APPLICATION_JSON)

@@ -5,7 +5,8 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 public interface HumanResourceEvaluationRepository {
-	List<PersonnelAssessment> getPersonnelAssessmentByEmployeeIds(List<String> employeeIds, GeneralDate startDate);
+	
+	List<PersonnelAssessmentResults> getPersonnelAssessmentByEmployeeIds(List<String> employeeIds, GeneralDate startDate);
 
 	List<PersonnelAssessment> getPersonnelAssessmentByEmployeeId(String employeeId);
 	
