@@ -244,11 +244,8 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                 value.append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getCityCode().map(x -> x.v()).orElse(""))
                         .append(",").append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeCode().map(x -> x.v()).orElse(""))
                         .append(",");
-
-                value.append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(""))
-                        .append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(""))
-                        .append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(""))
-                        .append(",");
+                // dummy data
+                value.append("00001").append(",");
             } else {
                 value.append(",,,");
             }

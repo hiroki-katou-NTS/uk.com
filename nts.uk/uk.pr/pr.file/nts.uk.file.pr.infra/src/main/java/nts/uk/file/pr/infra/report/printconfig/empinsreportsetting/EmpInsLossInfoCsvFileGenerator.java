@@ -2,7 +2,6 @@ package nts.uk.file.pr.infra.report.printconfig.empinsreportsetting;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
@@ -207,11 +206,8 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
 			if (c == 2 && laborInsuranceOffice != null) {
-				String officeNumber1 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse("");
-				String officeNumber2 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse("");
-				String officeNumber3 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse("");
-				value = officeNumber1 + officeNumber2 + officeNumber3;
-				value = value.length() > 5 ? value.substring(0, 5) : value;
+				// dummy data
+				value = "00001";
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
