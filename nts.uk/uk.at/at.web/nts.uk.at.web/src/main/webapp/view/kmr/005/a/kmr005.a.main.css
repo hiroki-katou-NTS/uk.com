@@ -1,0 +1,30 @@
+.screenDisplay {
+	min-width: 1150px;
+	margin-left: 80px;
+}
+
+.panel.panel-frame {
+	margin-top: 15px;
+	display: inline-block;
+	width: 520px;
+}
+
+div.panel.panel-frame:nth-child(1) {
+	margin-right: 20px;	
+}
+
+div.panel.panel-frame:nth-child(2) > div.table:nth-child(1) {
+	margin-top: 20px;
+}
+
+.table {
+	margin-bottom: 15px;
+}
+
+.table > div.cell:nth-child(1) {
+	width: 120px;
+}
+
+.nts-switch-button {
+	width: 80px;
+}
