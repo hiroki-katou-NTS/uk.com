@@ -1,17 +1,5 @@
 package nts.uk.file.pr.infra.report.printconfig.empinsreportsetting;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.primitive.PrimitiveValueBase;
@@ -25,15 +13,26 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCodeAtr;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportData;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoCsvGenerator;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportData;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
@@ -105,8 +104,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 
 	private void saveAsCSV(OutputStream outputStream, String value) {
 		try {
-			OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-			writer.write("\ufeff"); // write UTF-8-BOM
+			OutputStreamWriter writer = new OutputStreamWriter(outputStream, Charset.forName("Shift_JIS"));
 			writer.write(value);
 			writer.close();
 		} catch (Exception e) {
