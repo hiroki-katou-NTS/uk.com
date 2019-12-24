@@ -168,7 +168,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 						page++;
 					}
 				} else {
-					if (rowIndex % MAX_LINE == 0) {
+					if ((rowIndex - (MAX_LINE + FIRST_ROW_FILL)) % MAX_LINE == 0) {
 						HorizontalPageBreakCollection hPageBreaks = ws.getHorizontalPageBreaks();
 						hPageBreaks.add(rowIndex);
 						page++;
