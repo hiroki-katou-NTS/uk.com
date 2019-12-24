@@ -13,6 +13,7 @@ import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
+import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
@@ -47,6 +48,8 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 	private static final String TITLE = "定年退職者一覧";
 
 	private static final int FIRST_ROW_FILL = 7;
+	
+	private static final int MAX_LINE = 26;
 
 	private static final int RETENTION = 0;
 	private static final int RETIREMENT = 1;
@@ -109,6 +112,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
 			this.settingHeader(ws, query, companyName);
+			int page = 1;
 			for (int i = 0; i < exportData.size(); i++) {
 
 				PlannedRetirementDto entity = exportData.get(i);
@@ -154,6 +158,22 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, INTERVIEWER)
 						.putValue(interViewOpt.isPresent() ? interViewOpt.get().getBusinessName() : "");
 				setBorder(wsc.get(0),rowIndex);
+				
+				
+				
+				if (page == 1) {
+					if (rowIndex % (MAX_LINE + FIRST_ROW_FILL) == 0) {
+						HorizontalPageBreakCollection hPageBreaks = ws.getHorizontalPageBreaks();
+						hPageBreaks.add(rowIndex);
+						page++;
+					}
+				} else {
+					if (rowIndex % MAX_LINE == 0) {
+						HorizontalPageBreakCollection hPageBreaks = ws.getHorizontalPageBreaks();
+						hPageBreaks.add(rowIndex);
+						page++;
+					}
+				}
 				rowIndex++;
 			}
 			if (exportData.size() == 0) {
