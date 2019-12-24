@@ -457,10 +457,7 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1584" });
                 return;
             }
-            if (dateNow == dateSelect && !self.isUpdate() && (timeNow < self.start() || timeNow > self.end())) {
-                error({ messageId: "Msg_1585" });
-                return;
-            }
+
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 let value = { closingTimeFrame: 1, frameNo: item.frameNo(), bentoCount: item.bentoCount() };
                 detailLst.push(value);
@@ -483,6 +480,8 @@ module nts.uk.at.view.kmr002.a.model {
                         self.isUpdate(false);
                         return;
                     }
+                }).fail(() => {
+                    error({ messageId: "Msg_1585" });
                 });
             }
             if (!self.isUpdate() && self.date()) {
@@ -493,6 +492,8 @@ module nts.uk.at.view.kmr002.a.model {
                         nts.uk.ui.block.clear();
                         info({ messageId: "Msg_15" });
                         self.isUpdate(true);
+                    }).fail(() => {
+                        error({ messageId: "Msg_1585" });
                     });
                 }
             }
