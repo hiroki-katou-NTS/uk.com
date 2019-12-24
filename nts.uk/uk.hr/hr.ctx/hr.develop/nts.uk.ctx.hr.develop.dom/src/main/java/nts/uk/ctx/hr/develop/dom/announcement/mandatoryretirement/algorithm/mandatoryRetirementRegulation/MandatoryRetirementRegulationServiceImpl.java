@@ -465,7 +465,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			return result;
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.RETIREMENT_DATE_DESIGNATED_DATE) {
 			if(!retireDateTerm.getRetireDateSettingDate().isPresent()) {
-				throw new BusinessException("MsgJ_JMM018_2");
+				throw new BusinessException("MsgJ_JMM018_22");
 			}
 			return result.stream().map(c->{
 					c.setDay(retireDateTerm.getRetireDateSettingDate().get().value);
