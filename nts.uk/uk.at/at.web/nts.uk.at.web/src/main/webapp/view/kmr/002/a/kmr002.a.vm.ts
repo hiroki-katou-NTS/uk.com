@@ -38,9 +38,9 @@ module nts.uk.at.view.kmr002.a.model {
         isError: KnockoutObservable<boolean> = ko.observable(false);
         lunchText: KnockoutObservable<string> = ko.observable('');
         dinnerText: KnockoutObservable<string> = ko.observable('');
-        isEnable: KnockoutObservable<boolean> = ko.observable(false);
-        isEnableLunch: KnockoutObservable<boolean> = ko.observable(false);
-        isEnableDinner: KnockoutObservable<boolean> = ko.observable(false);
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableLunch: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableDinner: KnockoutObservable<boolean> = ko.observable(true);
         start: KnockoutObservable<number> = ko.observable(0);
         end: KnockoutObservable<number> = ko.observable(0);
         isVisible: KnockoutObservable<boolean> = ko.observable(false);
@@ -350,11 +350,8 @@ module nts.uk.at.view.kmr002.a.model {
         public setDisPlay(value: boolean) {
             let self = this;
             self.isError(!value);
-            if (self.mealSelected() == 1) {
-                self.isEnableLunch(value);
-            } else {
-                self.isEnableDinner(value);
-            }
+            self.isEnableLunch(value);
+            self.isEnableDinner(value);
         }
 
         public updateOrderLunch(frameNo: number): void {
@@ -460,8 +457,7 @@ module nts.uk.at.view.kmr002.a.model {
                 error({ messageId: "Msg_1584" });
                 return;
             }
-            if (dateNow == dateSelect && ((!self.isUpdate() && (dateNow < self.start() || dateNow > self.end()))
-                || (self.isUpdate() && self))) {
+            if (dateNow == dateSelect && !self.isUpdate() && (timeNow < self.start() || timeNow > self.end())) {
                 error({ messageId: "Msg_1585" });
                 return;
             }

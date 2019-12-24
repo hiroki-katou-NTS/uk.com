@@ -41,7 +41,7 @@ button.nts-switch-button {
 .danger {
 	border: 0px solid #999999;
 	margin-bottom: 2px;
-	min-width: 241px;
+	width: 260px;
 }
 .menu-order {
 	padding-top: 10px; 
@@ -55,13 +55,11 @@ button.nts-switch-button {
 	margin-bottom: 20px;
 	margin-right: 20px;
 	text-align: left;
+	vertical-align: bottom;
 }
 .button-radius:hover:enabled {
    background-color: #A4EEB0;
 }
 .fixed-flex-layout-left {
-    width: calc(100vw - 150px);
-}
-.fixed-flex-layout{
-	height: calc(100vh - 161px);
+    width: 1000px;
 }
