@@ -118,10 +118,6 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             self.retirement = ko.observable(param.retirement);
             self.retirementAge = ko.observable(param.retirementAge);
             self.continuationCategory = ko.observable(param.continuationCategory);
-            self.checkBox.subscribe((value)=>{
-      
-                console.log("a");
-            })
         }
     }
 }

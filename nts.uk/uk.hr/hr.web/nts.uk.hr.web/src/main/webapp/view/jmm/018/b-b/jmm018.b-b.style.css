@@ -1,0 +1,79 @@
+@CHARSET "UTF-8";
+
+.linkRetire{
+	margin-left: 30px;
+}
+
+.frameRetire{
+	margin-top: 10px;
+}
+
+.typeRetire{
+	font-size: 18px;
+}
+
+.eachType{
+	margin-top: 15px;
+}
+
+.radioRetire{
+    margin-left: 30px;
+}
+
+.ntsRadioBox{
+	margin-left: 20px;
+}
+
+.B422_15_2{
+	display: inline-block;
+    vertical-align: bottom;
+}
+
+.comboRetire{
+	margin-left: 90px;
+}
+
+#inpDate{
+	width: 20px;
+}
+
+.ui-widget-header{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 25px;
+    background: #CFF1A5;
+}
+
+.idColumn{
+	width: 40px;
+}
+
+.course{
+	width: 80px;
+}
+
+.retireName{
+	width: 200px;
+}
+
+.retirementAge{
+	width: 100px;
+}
+
+.continueCategory{
+	width: 100px;
+}
+
+.column-row{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 40px;
+}
+
+#check-box{
+	margin-left: 27px;
+}
+
+.retireCourse{
+	width: 800px;
+}
