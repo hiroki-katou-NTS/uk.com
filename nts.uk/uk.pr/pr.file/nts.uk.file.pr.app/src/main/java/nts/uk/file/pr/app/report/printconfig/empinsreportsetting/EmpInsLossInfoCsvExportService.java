@@ -194,7 +194,7 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 			ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
 					GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
 					GeneralDate.fromString("2019/01/01", "yyy/MM/dd"),
-					"技能", "14", "ベトナム", "704");
+					"技能", "14", "704", "ベトナム");
 			EmployeeInfoEx employee = employeeInfos.get(employeeId);
 			rowsData.add(new EmpInsLossInfoExportRow(employeeId, employeeInfos.get(employeeId), history,
 					exportData.getCompanyInfo(), empInsNumInfo, laborInsuranceOffice, empInsLossInfos.get(employeeId),
