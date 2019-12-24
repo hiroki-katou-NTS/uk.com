@@ -1,9 +1,15 @@
 package test.mandatoryretirement.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseApplyTerm;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlanCourseApplyTermDto {
 
 	private Integer applicationEnableStartAge;
@@ -21,4 +27,13 @@ public class PlanCourseApplyTermDto {
 		this.endMonth = domain.getEndMonth().value;
 		this.endDate = domain.getEndDate().value;
 	}
+	
+	public PlanCourseApplyTerm toDomain() {
+		return PlanCourseApplyTerm.createFromJavaType(
+				this.applicationEnableStartAge, 
+				this.applicationEnableEndAge, 
+				this.endMonth, 
+				this.endDate);
+	}
+	
 }

@@ -1,12 +1,18 @@
 package test.mandatoryretirement.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
 
 @AllArgsConstructor
 @Getter
+@Setter
+@NoArgsConstructor
 public class RetirePlanCourceDto {
 
 	private String companyId;
@@ -50,5 +56,23 @@ public class RetirePlanCourceDto {
 		this.usageEndDate = domain.getUsageEndDate();
 		this.planCourseApplyTerm = domain.getPlanCourseApplyTerm().isPresent()?new PlanCourseApplyTermDto(domain.getPlanCourseApplyTerm().get()):null;
 		this.recontractEmpCode = domain.getRecontractEmpCode().orElse(null);
+	}
+	
+	public RetirePlanCource toDomain() {
+		return RetirePlanCource.createFromJavaType(
+				this.companyId,
+				this.retirePlanCourseId,
+				this.retirePlanCourseCode,
+				this.retirePlanCourseName,
+				this.retirePlanCourseClass,
+				this.retirementAge,
+				this.durationFlg,
+				this.resignmentReason1Id,
+				this.notUsageFlg,
+				this.usageStartDate,
+				this.usageEndDate,
+				Optional.ofNullable(this.planCourseApplyTerm.toDomain()),
+				Optional.ofNullable(this.recontractEmpCode)
+				);
 	}
 }
