@@ -171,7 +171,7 @@
 				</div>
 				<div class="fixed-flex-layout-right" style="float: right;">
 					<div>#{i18n.getText('KMR002_13')}</div>
-					<div data-bind="visible: isVisibleLunch">
+					<div data-bind="visible: isVisibleLunch" style="display: none;">
 						<div data-bind="text: lunchText()"></div>
 						<div class="menu-order" data-bind="foreach: listBentoOrderLunch">
 							<table>
@@ -208,7 +208,7 @@
 							<br />
 						</div>
 					</div>
-					<div data-bind="visible: isVisibleDinner">
+					<div data-bind="visible: isVisibleDinner" style="display: none;">
 						<div style="margin-top: 15px;" data-bind="text: dinnerText()"></div>
 						<div class="menu-order" data-bind="foreach: listBentoOrderDinner">
 							<table>

@@ -269,8 +269,13 @@ module nts.uk.at.view.kmr002.a.model {
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
-
+            } else if (self.listBentoOrderLunch().length == 0) {
+                self.priceSum(self.priceDinner());
+                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
+                self.sumCount(self.dinnerCount());
+                self.sum(getText('KMR002_12', [self.sumCount()]));
             }
+        
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 self.priceLunch(self.priceLunch() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
@@ -294,8 +299,13 @@ module nts.uk.at.view.kmr002.a.model {
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
-
+            } else if (self.listBentoOrderDinner().length == 0) {
+                self.priceSum(self.priceLunch());
+                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
+                self.sumCount(self.lunchCount());
+                self.sum(getText('KMR002_12', [self.sumCount()]));
             }
+            
             _.forEach(self.listBentoOrderDinner(), (item) => {
                 self.priceDinner(self.priceDinner() + item.price() * item.bentoCount());
                 self.priceSum(self.priceLunch() + self.priceDinner());
