@@ -80,13 +80,15 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     detachText(130,711,emInsNumInfo.length() > 4 ? emInsNumInfo.substring(4,emInsNumInfo.length()): "",6,textBuilder);
                     detachText(250,711,emInsNumInfo.length() > 10 ? emInsNumInfo.substring(10,emInsNumInfo.length()): "",1,textBuilder);
                 }
+                //A1_4
+                if (element.getLaborInsuranceOffice() != null) {
+                    detachText(276, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().get().v() : "", 4, textBuilder);
+                    detachText(362, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().get().v() : "", 6, textBuilder);
+                    detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
+                }
                 switch (element.getEmpInsReportSetting().getOfficeClsAtr()){
                     case OUTPUT_COMPANY: {
                         if (element.getCompanyInfor() != null) {
-                            companyCode = element.getCompanyInfor().getCompanyCode();
-                            detachText(276, 711,companyCode.length() > 4 ? companyCode.substring(0,4) : companyCode, 4, textBuilder);
-                            detachText(362, 711, companyCode.length() > 4 ? companyCode.substring(4,companyCode.length()) : "", 6, textBuilder);
-                            detachText(481, 711, companyCode.length() > 11 ? companyCode.substring(10,companyCode.length()) : "", 1, textBuilder);
                             //A2_7
                             textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getCompanyInfor().getCompanyName(), BUSINESS_NAME), 9, false));
                             //A3_1
@@ -105,11 +107,6 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                     }
                     case OUPUT_LABOR_OFFICE: {
                         if (element.getLaborInsuranceOffice() != null) {
-                            //A1_4
-                            detachText(276, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber1().get().v() : "", 4, textBuilder);
-                            detachText(362, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber2().get().v() : "", 6, textBuilder);
-                            detachText(481, 711, element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().isPresent() ? element.getLaborInsuranceOffice().getEmploymentInsuranceInfomation().getOfficeNumber3().get().v() : "", 1, textBuilder);
-
                             //A2_7
                             textBuilder.appendText(setValue(112, 290, formatTooLongText(element.getLaborInsuranceOffice().getLaborOfficeName().v(), BUSINESS_NAME), 9, false));
 

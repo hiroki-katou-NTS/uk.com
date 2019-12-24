@@ -200,8 +200,13 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
         CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
         // dummy param
-        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
-        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
+        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
+        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"),
+                "技能", "14", "ベトナム", "704");
 
         Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(insHistEmpIds).stream().collect(Collectors.toMap(EmployeeInfoEx::getEmployeeId, Function.identity()));
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
@@ -242,10 +247,11 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     String laborCode = empInsOffices.containsKey(histId) ? empInsOffices.get(histId).getLaborInsCd().v() : "";
 
                     // A1_10
-                    tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
-                    tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
-                    tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
-
+                    if (laborInsuranceOffices.containsKey(laborCode)) {
+                        tempReport.setOfficeNumber1(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber2(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse(""));
+                        tempReport.setOfficeNumber3(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse(""));
+                    }
                     if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUTPUT_COMPANY.value) {
                         // A1_23
                         tempReport.setOfficeName(companyInfo.getCompanyName());
@@ -254,7 +260,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_2
                         tempReport.setOfficeLocation(companyInfo.getAdd_1() + " " + companyInfo.getAdd_2());
                         // A3_3
-                        tempReport.setBusinessOwnerName(companyInfo.getCompanyName());
+                        tempReport.setBusinessOwnerName(companyInfo.getRepname());
                         // A3_4
                         tempReport.setOfficePhoneNumber(companyInfo.getPhoneNum());
                     } else if (reportSettingExport.getOfficeClsAtr() == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffices.containsKey(laborCode)) {
@@ -358,19 +364,19 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                     tempReport.setContractEndDateJp(toEraDate(contractEndDateJp, OTHER_DATE));
 
                     // A1_22
-                    tempReport.setContractRenewalProvision(dummyLaborContractHist.getWorkingSystem());
+                    tempReport.setContractRenewalProvision(dummyLaborContractHist.getContractRenewalProvision());
                 }
 
                 // A1_24 pending
 
                 // A2_3
-                tempReport.setNationalityRegion(dummyForResHistInfo.getNationalityRegion());
+                tempReport.setNationalityRegion(dummyForResHistInfo.getNationalityCode());
                 // A2_4
-                tempReport.setResidenceStatus(dummyForResHistInfo.getResidenceStatus());
+                tempReport.setResidenceStatus(dummyForResHistInfo.getResidenceStatusCode());
                 // A2_5
                 tempReport.setStayPeriod(dummyForResHistInfo.getEndDate().toString("yyyy/MM/dd").replace("/", ""));
                 // A2_6
-                tempReport.setNonQualifPermission(dummyForResHistInfo.getNonQualificationPermission());
+                tempReport.setUnqualifiedActivityPermission(dummyForResHistInfo.getUnqualifiedActivityPermission());
                 // A2_7
                 tempReport.setContractWorkAtr(dummyForResHistInfo.getContractWorkAtr());
 

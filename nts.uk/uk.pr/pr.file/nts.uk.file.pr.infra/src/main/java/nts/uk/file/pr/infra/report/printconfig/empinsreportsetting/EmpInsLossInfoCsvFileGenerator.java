@@ -1,20 +1,7 @@
 package nts.uk.file.pr.infra.report.printconfig.empinsreportsetting;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.KatakanaConverter;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
@@ -25,15 +12,26 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.LineFeedCodeAtr;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.OfficeCls;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportData;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoCsvGenerator;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportData;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportRow;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
@@ -49,7 +47,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 	private static final String FILE_NAME = "10191-soshitsu.csv";
 
 	// row 1
-	private static final List<String> ROW_1_HEADERS = Arrays.asList("都市区符号", "事業所記号", "ＦＤ通番", "作成年月日", "代表届書コード",
+	private static final List<String> ROW_1_HEADERS = Arrays.asList("郡市区符号", "事業所記号", "ＦＤ通番", "作成年月日", "代表届書コード",
 			"連記式項目バージョン");
 
 	// row 2
@@ -68,7 +66,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 	private static final String A1_17 = "001";
 
 	// row 6
-	private static final List<String> ROW_6_HEADERS = Arrays.asList("都市区符号", "事業所記号", "事業所番号", "親番号（郵便番号）", "子番号（郵便番号）",
+	private static final List<String> ROW_6_HEADERS = Arrays.asList("郡市区符号", "事業所記号", "事業所番号", "親番号（郵便番号）", "子番号（郵便番号）",
 			"事業所所在地", "事業所名称", "事業主氏名", "電話番号", "雇用保険適用事業所番号（安定所番号）", "雇用保険適用事業所番号（一連番号）", "雇用保険適用事業所番号（CD）");
 
 	// row 8
@@ -105,8 +103,7 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 
 	private void saveAsCSV(OutputStream outputStream, String value) {
 		try {
-			OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-			writer.write("\ufeff"); // write UTF-8-BOM
+			OutputStreamWriter writer = new OutputStreamWriter(outputStream, Charset.forName("Shift_JIS"));
 			writer.write(value);
 			writer.close();
 		} catch (Exception e) {
@@ -208,16 +205,9 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 			if (c == 1 && laborInsuranceOffice != null) {
 				value = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse("");
 			}
-			if (c == 2) {
-				if (officeCls == OfficeCls.OUTPUT_COMPANY.value) {
-                    value = companyInfo.getCompanyCode();
-                }
-				if (officeCls == OfficeCls.OUPUT_LABOR_OFFICE.value && laborInsuranceOffice != null) {
-                    String officeNumber1 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber1().map(PrimitiveValueBase::v).orElse("");
-                    String officeNumber2 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber2().map(PrimitiveValueBase::v).orElse("");
-                    String officeNumber3 = laborInsuranceOffice.getEmploymentInsuranceInfomation().getOfficeNumber3().map(PrimitiveValueBase::v).orElse("");
-                    value = officeNumber1 + officeNumber2 + officeNumber3;
-                }
+			if (c == 2 && laborInsuranceOffice != null) {
+				// dummy data
+				value = "00001";
 			}
 			if (c == 3) {
 				if (officeCls == OfficeCls.OUTPUT_COMPANY.value && !companyInfo.getPostCd().isEmpty())
@@ -438,8 +428,11 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getNationalityCode();
 				}
 				if (c == 43) {
-					value = row.getStatusOfResidence();
+					value = row.getStatusOfResidenceCode();
 				}
+                if (c == 44) {
+                    value = row.getStatusOfResidenceName();
+                }
 				if (c == 45 && row.getPeriodOfStayEnd() != null) {
 					value = row.getPeriodOfStayEnd().year() + "";
 				}
@@ -450,10 +443,10 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 					value = row.getPeriodOfStayEnd().day() < 10 ? "0" + row.getPeriodOfStayEnd().day() : row.getPeriodOfStayEnd().day() + "";
 				}
 				if (c == 48 && row.getUnqualifiedActivityPermission() != null) {
-					value = row.getUnqualifiedActivityPermission() + "";
+					value = "00" + row.getUnqualifiedActivityPermission();
 				}
 				if (c == 49) {
-					value = row.getContractWorkAtr() + "";
+					value = "00" + row.getContractWorkAtr();
 				}
 				valueBuilder.append(value);
 				if (c < ROW_9_HEADERS.size() - 1) {

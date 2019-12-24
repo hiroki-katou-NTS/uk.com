@@ -18,7 +18,7 @@ module nts.uk.pr.view.qui001.share.model {
     // 23: 出力順
     export function getEmpInsOutOrder(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
+            // new ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
             new ItemModel(1, getText('Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE')),
             new ItemModel(2, getText('Enum_EmpInsOutOrder_EMPLOYEE_CODE')),
             new ItemModel(3, getText('Enum_EmpInsOutOrder_EMPLOYEE'))

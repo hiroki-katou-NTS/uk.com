@@ -59,7 +59,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
             opts.setSeparator(',');
             opts.setQuoteType(TxtValueQuoteType.NEVER);
-            opts.setEncoding(Encoding.getUTF8());
+            opts.setEncoding(Encoding.getEncoding("Shift_JIS"));
             workbook.save(outputStream, opts);
         } catch (Exception e) {
             throw new RuntimeException(e);
