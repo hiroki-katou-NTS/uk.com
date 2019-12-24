@@ -32,10 +32,10 @@ public class BentoReportWebService {
 	@POST
 	@Path("reservation/data")
 	public ExportServiceResult printData() {
-		
+		String title = "月間予約台帳";
 		DatePeriod datePeriol = reservationExportQuery.startup();
 		ReservationMonthQuery query = new ReservationMonthQuery(
-						Arrays.asList(AppContexts.user().employeeId()), "",
+						Arrays.asList(AppContexts.user().employeeId()), title,
 						datePeriol.start().toString(), datePeriol.end().toString(), false);
 		return reservationMonthExportService.start(query);
 	}
