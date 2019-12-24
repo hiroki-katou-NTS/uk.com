@@ -514,9 +514,7 @@ module nts.uk.at.view.kmr002.a.model {
             service.print().done((data) => {
                 nts.uk.ui.block.clear();
             }).fail((res: any) => {
-                error({ messageId: res.messageId }).then(() => {
-                    nts.uk.ui.block.clear();
-                });
+                error({ messageId: res.messageId });
             });
         }
     }
