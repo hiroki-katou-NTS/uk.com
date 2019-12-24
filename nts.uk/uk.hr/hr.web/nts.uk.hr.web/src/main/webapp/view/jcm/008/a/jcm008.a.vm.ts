@@ -40,7 +40,7 @@ module jcm008.a {
                 _.map(data.retirementCourses, (c) => {
                     c.retirementAge = c.retirementAge + '分';
                     return c;
-                })
+                });
                 self.searchFilter.retirementCourses(data.retirementCourses);
 
                 let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
@@ -72,7 +72,6 @@ module jcm008.a {
             service.searchRetireData(param)
                 .done((res :ISearchResult) => {
                     console.log(res);
-
                     let merged = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
                     let values = _.values(merged);
                     console.log(values);
@@ -99,8 +98,10 @@ module jcm008.a {
 
         public register() {
             let self = this;
+            let selected = $("#retirementDateSetting").ntsGrid("updatedCells");
+            let retiInfos = _.filter(self.plannedRetirements(), (retire) => { return _.find(selected, {'rowId': retire.sid})});
             let data = {
-                retiInfos: []
+                retiInfos: retiInfos
             };
             block.grayout();
             service.register(data)
@@ -134,22 +135,29 @@ module jcm008.a {
 
         public bindRetirementDateSettingGrid(): void {
             let self = this;
-            let comboColumns = [{ prop: 'name', length: 2 }];
+            let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
+            if ($('#retirementDateSetting').data("igGrid")) {
+                $('#retirementDateSetting').ntsGrid("destroy");
+            };
+            let dataSources = self.plannedRetirements();
+
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
                 height: '500px',
                 primaryKey: 'sid',
-                rowVirtualization: true,
                 virtualization: true,
+                rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 // autoFitWindow: true,
                 columns: [
+                    { headerText: 'key', key: 'sid', dataType: 'string' },
                     { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                    { headerText: getText('JCM008_A222_23'), key: 'retirementStatus', dataType: 'string', width: '80px', ntsControl: 'RetirementStatusCb' },
+                    { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
                     { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px', ntsControl: 'WorkingCourseCb' },
+                    { headerText: getText('JCM008_A222_25'), key: 'retirePlanCourseId', dataType: 'string', width: '100px', ntsControl: 'WorkingCourseCb' },
+                    // { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px' },
                     { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
                     { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
@@ -164,43 +172,41 @@ module jcm008.a {
                     {
                         headerText: getText('JCM008_A222_36'),
                         group: [
-                            { headerText: '', key: 'hrEvaluation1', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'hrEvaluation2', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'hrEvaluation3', dataType: 'string', width: '40px' }
+                            { headerText: getText('JCM008_A222_54_1'), key: 'hrEvaluation1', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_54_2'), key: 'hrEvaluation2', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_54_3'), key: 'hrEvaluation3', dataType: 'string', width: '40px' }
                         ]
                     },
                     {
                         headerText: getText('JCM008_A222_37'),
                         group: [
-                            { headerText: '', key: 'healthStatus1', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'healthStatus2', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'healthStatus3', dataType: 'string', width: '40px' }
+                            { headerText: getText('JCM008_A222_55_1'), key: 'healthStatus1', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_55_2'), key: 'healthStatus2', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_55_3'), key: 'healthStatus3', dataType: 'string', width: '40px' }
                         ]
                     }, 
                     {
                         headerText: getText('JCM008_A222_38'),
                         group: [
-                            { headerText: '', key: 'stressStatus1', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'stressStatus2', dataType: 'string', width: '40px' },
-                            { headerText: '', key: 'stressStatus3', dataType: 'string', width: '40px' }
+                            { headerText: getText('JCM008_A222_56_1'), key: 'stressStatus1', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_56_2'), key: 'stressStatus2', dataType: 'string', width: '40px' },
+                            { headerText: getText('JCM008_A222_56_3'), key: 'stressStatus3', dataType: 'string', width: '40px' }
                         ]
                     },
                     { headerText: getText('JCM008_A222_39'), key: 'interviewRecord', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' },
                 ],
-                dataSource: self.plannedRetirements(),
-                dataSourceType: 'json',
-                responseDataKey: 'results',
+                dataSource: dataSources,
                 tabIndex: 11,
                 features: [
-                    {
-                        name: "Selection",mode: "row",multipleSelection: true,
-                        rowSelectionChanged: function (evt, ui) {
-                            let itemSelected = _.find(self.selectedRetirementEmployee, function (o) { return o.employeeCode == ui.row.employeeCode; });
-                            if (itemSelected) {
-                                self.selectedRetirementEmployee(itemSelected);
-                            }
-                        }
-                    },
+                   {
+                       name: "Selection", mode: "row",multipleSelection: true,
+                       rowSelectionChanged: function (evt, ui) {
+                           let itemSelected = _.find(self.selectedRetirementEmployee, function (o) { return o.sid == ui.row.sid; });
+                           if (itemSelected) {
+                               self.selectedRetirementEmployee(itemSelected);
+                           }
+                       }
+                   },
                     {
                         name: 'Filtering',type: 'local',mode: 'simple',
                         dataFiltered: function (evt, ui) {
@@ -211,10 +217,14 @@ module jcm008.a {
                     {name: 'Resizing'},
                     {name: 'MultiColumnHeaders'}
                 ],
+                ntsFeatures: [
+                      { name: 'CopyPaste' },
+                      { name: 'CellEdit' }
+                ],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'RetirementStatusCb', width: '75px', options: [new ItemModel('1', '退職'), new ItemModel('2', '継続')], optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '80px', options: [new ItemModel('1', '希望勤務'), new ItemModel('2', 'コース')], optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(1, '退職'), new RetirementStatus(2, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '80px', options: self.searchFilter.retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
                     
