@@ -38,6 +38,12 @@ public class RetirePlanCourceWS {
 	}
 	
 	@POST
+	@Path("/getAllList")
+	public List<RetirePlanCourceDto> getAllRetirePlanCource(RetirePlanCourceParamDto param){
+		return finder.getAllRetirePlanCource(param.cId);
+	}
+	
+	@POST
 	@Path("/getByListId")
 	public List<RetirePlanCourceDto> getRetireTermByRetirePlanCourceIdList(RetirePlanCourceParamDto param){
 		return finder.getRetireTermByRetirePlanCourceIdList(param.cId, param.retirePlanCourseId);
