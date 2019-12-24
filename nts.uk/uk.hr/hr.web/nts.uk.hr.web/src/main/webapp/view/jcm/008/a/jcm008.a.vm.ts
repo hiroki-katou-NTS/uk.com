@@ -141,6 +141,10 @@ module jcm008.a {
             };
             let dataSources = self.plannedRetirements();
 
+            dataSources = _.map(dataSources, (data) => {
+                data.sid = data.sid.(/[^\w\s]/gi,'');
+            });
+
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
