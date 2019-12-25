@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.notice.infra.repository.report.registration.person;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -19,8 +20,8 @@ import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportI
 public class JpaReportItemRepository extends JpaRepository implements ReportItemRepository{
 
 	private static final String getDetailReport = "select c FROM  JhndtReportItem c Where c.pk.cid = :cid and c.pk.reportID = :reportId  ORDER BY c.dspOrder ASC";
+	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportItem c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 
-	
 	private ReportItem toDomain(JhndtReportItem entity) {
 		return entity.toDomain();
 	}
@@ -80,7 +81,7 @@ public class JpaReportItemRepository extends JpaRepository implements ReportItem
 			add(domain);
 		}
 	}
-
+	
 	@Override
 	public void add(ReportItem domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -104,5 +105,18 @@ public class JpaReportItemRepository extends JpaRepository implements ReportItem
 			}
 			this.commandProxy().update(entity);
 		}
+	}
+
+	@Override
+	public void addAll(List<ReportItem> domains) {
+		List<JhndtReportItem> entities = domains.stream().map(dm -> toEntity(dm)).collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
+	}
+
+	@Override
+	public void deleteByReportId(String cid, int reportId) {
+		this.getEntityManager().createQuery(deleteListApprovalByReportId)
+		.setParameter("cid", cid)
+		.setParameter("reportId", reportId).executeUpdate();
 	}
 }

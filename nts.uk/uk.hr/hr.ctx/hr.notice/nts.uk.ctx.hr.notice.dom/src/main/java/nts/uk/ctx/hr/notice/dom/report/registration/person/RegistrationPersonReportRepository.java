@@ -22,5 +22,6 @@ public interface RegistrationPersonReportRepository {
 
 	void remove(String cid, int reportId);
 
-	
+	int getMaxReportId(String sid, String cid);
+
 }

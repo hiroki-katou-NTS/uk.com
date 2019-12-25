@@ -19,5 +19,9 @@ public interface ReportItemRepository {
 
 	void add(ReportItem domain);
 	
+	void addAll(List<ReportItem> domains);
+	
 	void update(ReportItem domain);
+	
+	void deleteByReportId(String cid, int reportId);
 }
