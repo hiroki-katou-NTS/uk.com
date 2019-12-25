@@ -261,8 +261,6 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                             .append(",").append(formatTooLongText(companyInfo.getRepname(), 25))
                             .append(",").append(companyInfo.getPhoneNum().length() > 12 ? companyInfo.getPhoneNum().substring(0, 12) : companyInfo.getPhoneNum())
                             .append(",");
-
-                    value.append(",,");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -278,19 +276,20 @@ public class EmpInsGetQualifAsposeCsvFileGenerator extends AsposeCellsReportGene
                                 .append(",").append(formatTooLongText(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(x -> x.v()).orElse(""), 25))
                                 .append(",").append(laborInsuranceOffices.get(laborCode).getBasicInformation().getStreetAddress().getPhoneNumber().map(x -> x.v().length() > 12 ? x.v().substring(0, 12) : x.v()).orElse(""))
                                 .append(",");
-
-                        value.append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(""))
-                                .append(",").append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(""))
-                                .append(",").append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(""));
                     } else {
-                        value.append(",,,,,,,,");
+                        value.append(",,,,,,");
                     }
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
-
+            if (laborInsuranceOffices.containsKey(laborCode)) {
+                value.append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse(""))
+                        .append(",").append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse(""))
+                        .append(",").append(laborInsuranceOffices.get(laborCode).getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse(""));
+            } else {
+                value.append(",,");
+            }
         } else {
             for (int i = 0; i < ROW_7_SIZE; i++) {
                 value.append(",");
