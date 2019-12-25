@@ -365,8 +365,8 @@ public class EmpInsLossInfoCsvFileGenerator extends AsposeCellsReportGenerator
 				}
 				if (c == 23) {
 					value = empInsRptSetting.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value
-							? KatakanaConverter.fullKatakanaToHalf(row.getPersonNameKana())
-							: KatakanaConverter.fullKatakanaToHalf(row.getPersonReportNameKana());
+							? KatakanaConverter.fullKatakanaToHalf(KatakanaConverter.hiraganaToKatakana(row.getPersonNameKana()))
+							: KatakanaConverter.fullKatakanaToHalf(KatakanaConverter.hiraganaToKatakana(row.getPersonReportNameKana()));
 				}
 				if (c == 24) {
 					value = empInsRptSetting.getSubmitNameAtr() == EmpSubNameClass.PERSONAL_NAME.value
