@@ -100,25 +100,22 @@ module jcm008.a {
             let self = this;
             
             let settingChanges = _.filter(self.plannedRetirements(), (p) => { 
-                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), {'rowId': p.sid.replace(/[^\w\s]/gi,'')}) 
+                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), {'rowId': p.key}) 
             });
 
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
             
             let retiInfos = _.map(settingChanges, (retire) => { 
                 let changed = _.find(groupChanges, (value, key) => { 
-                    return key == retire.sid.replace(/[^\w\s]/gi,'');
+                    return key == retire.key;
                 });
-                console.log(changed);
                 for (let row in changed) {
-                    retire[row.columnKey] = row.value;
+                    retire[changed[row].columnKey] = changed[row].value;
                 }
 
                 return retire;
             });
-
             console.log(retiInfos);
-
             let data = {
                 retiInfos: retiInfos
             };
@@ -133,7 +130,6 @@ module jcm008.a {
                 .always(() => {
                     block.clear();
                 });
-
         }
 
         public bindRetirementAgeGrid(): void {
@@ -161,8 +157,8 @@ module jcm008.a {
             let dataSources = self.plannedRetirements();
 
             dataSources = _.map(dataSources, (data) => {
-                data.sid = data.sid.replace(/[^\w\s]/gi,'');
-                data.retirementAge = data.retirementAge + '分';
+                data.key = data.sid.replace(/[^\w\s]/gi,'');
+                data.ageDisplay = data.age + '分';
                 return data;
             });
 
@@ -170,24 +166,24 @@ module jcm008.a {
                 autoGenerateColumns: false,
                 width: '1200px',
                 height: '500px',
-                primaryKey: 'sid',
+                primaryKey: 'key',
                 virtualization: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 // autoFitWindow: true,
                 columns: [
-                    { headerText: 'key', key: 'sid', dataType: 'string' },
+                    { headerText: 'key', key: 'key', dataType: 'string' },
                     { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                     { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
                     { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_25'), key: 'retirePlanCourseId', dataType: 'string', width: '100px', ntsControl: 'WorkingCourseCb' },
+                    { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' },
                     // { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px' },
                     { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
                     { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
                     { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px' },
-                    { headerText: getText('JCM008_A222_30'), key: 'age', dataType: 'string', width: '80px' },
+                    { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' },
                     { headerText: getText('JCM008_A222_32'), key: 'employmentName', dataType: 'string', width: '90px' },
                     { headerText: getText('JCM008_A222_33'), key: 'dateJoinComp', dataType: 'string', width: '95px' },
