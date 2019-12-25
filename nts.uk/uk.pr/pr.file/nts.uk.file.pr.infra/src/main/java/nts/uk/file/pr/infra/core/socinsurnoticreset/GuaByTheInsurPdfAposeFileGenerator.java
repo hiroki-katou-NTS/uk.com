@@ -114,12 +114,24 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_4"  , stt)).setValue(convertJpDate(startDate).charAt(3));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_5" , stt)).setValue(convertJpDate(startDate).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_6" , stt)).setValue(convertJpDate(startDate).charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(data.getMonRemunerationAmountInCurrency()+"");
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(data.getMonRemunerationAmountOfActualItem()+"");
-        int total = data.getMonRemunerationAmountInCurrency() + data.getMonRemunerationAmountOfActualItem();
-        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(total+""/*data.getCompenMonthlyAamountTotal()*/);
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(Objects.toString(data.getMonRemunerationAmountInCurrency(), ""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(Objects.toString(data.getMonRemunerationAmountOfActualItem(),""));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_26", stt)).setValue(total(data.getMonRemunerationAmountInCurrency(), data.getMonRemunerationAmountOfActualItem()));
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_39" : "A2_39_" + stt).setText(data.getReasonOtherContent());
         worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_35" : "A2_35_" + stt).setText(data.getRemarksOtherContent());
+    }
+
+    private String total(Integer a, Integer b){
+        if(a == null && b == null) {
+            return "";
+        }
+        if(a == null) {
+            return b.toString();
+        }
+        if(b == null) {
+            return a.toString();
+        }
+        return Integer.toString(a + b);
     }
 
     private String formatPhoneNumber(String phone, int stt) {
@@ -272,21 +284,26 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             case 3 :{
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18_" + stt));
-
                 break;
             }
             case 4 :{
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
-
                 break;
             }
-
+            default:
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18_" + stt));
         }
-
-        if(element.getDependentNo() == 0){
+        if(element.getDependentNo() == null) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
-        } else{
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_22" : "A2_22_" + stt));
+        }
+        if(element.getDependentNo() != null && element.getDependentNo() == 0){
+            worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
+        }
+        if(element.getDependentNo() != null && element.getDependentNo() == 1){
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_22" : "A2_22_" + stt));
         }
         // convert to japan date
