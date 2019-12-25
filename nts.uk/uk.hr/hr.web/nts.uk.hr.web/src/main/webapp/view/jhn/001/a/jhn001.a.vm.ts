@@ -127,6 +127,10 @@ module jhn001.a.viewmodel {
                 layout = self.layout,
                 layouts = self.layouts;
             
+            subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
+                console.log('test open dialog f');
+            });
+            
             
         }
         

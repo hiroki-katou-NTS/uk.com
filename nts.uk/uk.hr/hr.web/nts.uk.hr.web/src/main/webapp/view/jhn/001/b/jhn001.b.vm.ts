@@ -58,7 +58,7 @@ module jhn001.b.vm {
         
         deleteSaveDraft() {
             let self = this;
-            
+            let reportId = self.reportId();
         }
 
         close() {
