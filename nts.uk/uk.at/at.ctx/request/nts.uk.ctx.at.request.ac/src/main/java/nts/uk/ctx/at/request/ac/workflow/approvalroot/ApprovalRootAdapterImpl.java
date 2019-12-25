@@ -112,9 +112,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		});
 		approvalRootResult.stream().forEach(x -> {
 			x.getBeforeApprovers().stream().forEach(y ->{
-				Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getOrderNumber));
+				Collections.sort(y.getApprovers(), Comparator.comparing(ApproverInfoImport :: getApproverOrder));
 			});
-			Collections.sort(x.getBeforeApprovers(), Comparator.comparing(ApprovalPhaseImport::getOrderNumber));
+			Collections.sort(x.getBeforeApprovers(), Comparator.comparing(ApprovalPhaseImport::getPhaseOrder));
 		});
 		return approvalRootResult;
 	}
@@ -126,12 +126,14 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	private ApprovalRootImport convertApprovalRootImport(ApprovalRootExport export) {
 		List<ApprovalPhaseImport> beforeApprovers = new ArrayList<>();
 		export.getBeforeApprovers().stream().forEach(x ->{
-			ApprovalPhaseImport beforeApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getBranchId(), x.getApprovalPhaseId(), x.getApprovalForm(), x.getBrowsingPhase(), x.getOrderNumber());
+			ApprovalPhaseImport beforeApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getApprovalId(), 
+					x.getPhaseOrder(), x.getApprovalForm(), x.getBrowsingPhase());
 			beforeApprovers.add(beforeApprover);
 		});
 		List<ApprovalPhaseImport> afterApprovers = new ArrayList<>();
 		export.getAfterApprovers().stream().forEach(x -> {
-			ApprovalPhaseImport afterApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getBranchId(), x.getApprovalPhaseId(), x.getApprovalForm(), x.getBrowsingPhase(), x.getOrderNumber());
+			ApprovalPhaseImport afterApprover = new ApprovalPhaseImport(x.getCompanyId(), x.getApprovalId(),
+					x.getPhaseOrder(), x.getApprovalForm(), x.getBrowsingPhase());
 			afterApprovers.add(afterApprover);
 		});
 		ApprovalRootImport temp = new ApprovalRootImport(export.getCompanyId(),
@@ -169,11 +171,10 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	private ApprovalPhaseImport convertApprovalPhaseImport(ApprovalPhaseExport  approvalPhaseExport) {
 		ApprovalPhaseImport temp = new  ApprovalPhaseImport(
 				approvalPhaseExport.getCompanyId(),
-				approvalPhaseExport.getBranchId(),
-				approvalPhaseExport.getApprovalPhaseId(),
+				approvalPhaseExport.getApprovalId(),
+				approvalPhaseExport.getPhaseOrder(),
 				approvalPhaseExport.getApprovalForm(),
-				approvalPhaseExport.getBrowsingPhase(),
-				approvalPhaseExport.getOrderNumber()
+				approvalPhaseExport.getBrowsingPhase()
 				);
 		temp.addApproverList(approvalPhaseExport.getApprovers().stream().map(x -> this.convertApproverInfoImport(x)).collect(Collectors.toList()));
 		return temp;
@@ -186,9 +187,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		ApproverInfoImport temp = new  ApproverInfoImport(
 				approverInfoExport.getJobId(), // jobID 
 				approverInfoExport.getSid(),
-				approverInfoExport.getApprovalPhaseId(),
+				approverInfoExport.getPhaseOrder(),
 				approverInfoExport.getIsConfirmPerson(),
-				approverInfoExport.getOrderNumber(),
+				approverInfoExport.getApproverOrder(),
 				approverInfoExport.getApprovalAtr() // int approvalAtr  = 0,1
 				);
 		if(approverInfoExport.getApprovalAtr() ==0) {//if pesson

@@ -22,12 +22,12 @@ public class ApproverInfoImport {
 	 * 社員ID
 	 */
 	private String sid;
-	/** 承認フェーズID */
-	private String approvalPhaseId;
+	/** 承認フェーズ順序 */
+	private int phaseOrder;
 	/** 確定者 */
 	private boolean isConfirmPerson;
-	/** 順序 */
-	private int orderNumber;
+	/** 承認者順序 */
+	private int approverOrder;
 
 	private String name;
 	/**承認者指定区分*/
@@ -45,13 +45,13 @@ public class ApproverInfoImport {
 	
 	private List<String> representerNameList;
 
-	public ApproverInfoImport(String jobId,String sid, String approvalPhaseId, boolean isConfirmPerson, int orderNumber,int approvalAtr) {
+	public ApproverInfoImport(String jobId,String sid, int phaseOrder, boolean isConfirmPerson, int approverOrder,int approvalAtr) {
 		super();
 		this.jobId = jobId;
 		this.sid = sid;
-		this.approvalPhaseId = approvalPhaseId;
+		this.phaseOrder = phaseOrder;
 		this.isConfirmPerson = isConfirmPerson;
-		this.orderNumber = orderNumber;
+		this.approverOrder = approverOrder;
 		this.approvalAtr = approvalAtr;
 		this.approverSIDList = new ArrayList<String>();
 		this.approverNameList = new ArrayList<String>();
