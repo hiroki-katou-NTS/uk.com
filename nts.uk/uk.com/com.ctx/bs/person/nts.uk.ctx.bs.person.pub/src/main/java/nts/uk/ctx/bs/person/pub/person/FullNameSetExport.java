@@ -1,12 +1,11 @@
 package nts.uk.ctx.bs.person.pub.person;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
-@Getter
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class FullNameSetExport {

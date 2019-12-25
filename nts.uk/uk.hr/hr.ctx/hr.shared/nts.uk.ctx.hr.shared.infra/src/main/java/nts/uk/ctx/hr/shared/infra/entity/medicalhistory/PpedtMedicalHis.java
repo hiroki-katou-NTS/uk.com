@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -32,12 +32,12 @@ public class PpedtMedicalHis extends UkJpaEntity implements Serializable {
 	public String sId;
 
 	@Column(name = "START_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	public GeneralDateTime startDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate startDate;
 
 	@Column(name = "END_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	public GeneralDateTime endDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate endDate;
 
 	@Override
 	protected Object getKey() {

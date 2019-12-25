@@ -97,10 +97,11 @@ module jhn011.b.viewmodel {
                         layout.id(_data[0].id);
                     }
                     else {
-                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.reportCode == code);
+                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.id == code);
                         if (_item) {
                             layout.id(_item.id);
                         } else {
+                            // xử lý thêm phần selected khi không tìm thấy reportId
                             layout.id(_data[0].id);
                         }
                     }
@@ -166,7 +167,7 @@ module jhn011.b.viewmodel {
                 showDialog.info({ messageId: "MsgJ_36" }).then(function() {
                 });
 
-                self.start(data.reportCode);
+                self.start(command.id);
 
             }).fail((error: any) => {
                 
@@ -209,19 +210,15 @@ module jhn011.b.viewmodel {
                 let itemListLength = self.layouts().length;
                 service.removeData(data.id).done((data: any) => {
                     showDialog.info({ messageId: "Msg_16" }).then(function() {
-                        if (itemListLength === 1) {
-                            self.start().done(() => {
+                        if(!self.checkAbolition()){
+                            self.processSelected(itemListLength, indexItemDelete, layouts);                          
+                        }else{
+                            self.start(command.id).done(() => {
                                 unblock();
-                            });
-                        } else if (itemListLength - 1 === indexItemDelete) {
-                            self.start(layouts[indexItemDelete - 1].code).done(() => {
-                                unblock();
-                            });
-                        } else if (itemListLength - 1 > indexItemDelete) {
-                            self.start(layouts[indexItemDelete + 1].code).done(() => {
-                                unblock();
-                            });
+                            });                            
+                        
                         }
+
                     });
                     unblock();
                 }).fail((error: any) => {
@@ -230,6 +227,26 @@ module jhn011.b.viewmodel {
 
             }).ifCancel(() => {
             });
+        }
+        
+        
+        processSelected(itemListLength: number, indexItemDelete: number, layouts: any){
+            let self = this;
+            
+            if (itemListLength === 1) {
+                self.start().done(() => {
+                    unblock();
+                });
+            } else if (itemListLength - 1 === indexItemDelete) {
+                self.start(layouts[indexItemDelete - 1].id).done(() => {
+                    unblock();
+                });
+            } else if (itemListLength - 1 > indexItemDelete) {
+                self.start(layouts[indexItemDelete + 1].id).done(() => {
+                    unblock();
+                });
+            } 
+        
         }
 
         showDialogC() {

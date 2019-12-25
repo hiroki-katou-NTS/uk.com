@@ -19,12 +19,20 @@ import nts.uk.ctx.bs.employee.app.find.employment.dto.CommonMaterItemDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.IGroupCommonMaster;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class DefaultEmploymentFinder.
@@ -38,6 +46,15 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 
 	@Inject
 	private IGroupCommonMaster groupCommonMaster;
+	
+	@Inject
+	private EmploymentHistoryRepository empHistRepo;
+	
+	@Inject
+	private EmploymentRepository employmentRepository;
+	
+	@Inject
+	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -184,5 +201,171 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 				.collect(Collectors.toList()));
 		return dto;
 	}
+	
+	
+	// test requestList 638
+	@Override
+	public List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid) {
+		
+		if (listObjParam.isEmpty() || baseDate == null || cid == null || cid == "") {
+			return new ArrayList<>();
+		}
+		
+		List<EmployeeBasicInfoExport> result = new ArrayList<>();
+		
+		for (ObjectParam objectParam : listObjParam) {
+			if (objectParam.getEmploymentCode() != null && objectParam.getBirthdayPeriod().start() != null && objectParam.getBirthdayPeriod().end() != null) {
+				
+				// 条件に一致する情報をjoinして取得する (join và lấy thông tin phù hợp với điều kiện)
+				List<Object[]> data = empHistRepo.getEmploymentBasicInfo(objectParam.getEmploymentCode(), objectParam.getBirthdayPeriod(), baseDate, cid); 
+				if (!data.isEmpty()) {
+					for (int i = 0; i < data.size(); i++) {
+						EmployeeBasicInfoExport empInfo =  EmployeeBasicInfoExport.builder()
+								.employmentCode(data.get(i)[0] == null ? null : data.get(i)[0].toString())
+								.dateJoinComp(data.get(i)[1] == null ? null : GeneralDate.fromString(data.get(i)[1].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.sid(data.get(i)[2] == null ? null : data.get(i)[2].toString())
+								.pid(data.get(i)[3] == null ? null : data.get(i)[3].toString())
+								.birthday(data.get(i)[4] == null ? null : GeneralDate.fromString(data.get(i)[4].toString(), ConstantUtils.FORMAT_DATE_YYYYMMDD))
+								.build();
+						result.add(empInfo);
+					}
+				}
+			}
+		}
+		return result;
+	}
 
+	// test requestList 639
+	@Override
+	public List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam, Optional<Boolean> getEmpExternalCodeParam,
+			Optional<Boolean> getMemoParam, Optional<Boolean> getempCommonMasterIDParam,
+			Optional<Boolean> getempCommonMasterItemIDParam) {
+				
+		Boolean getEmploymentName = true;
+		Boolean getEmpExternalCode = false;
+		Boolean getMemo = false;
+		Boolean getempCommonMasterID = false;
+		Boolean getempCommonMasterItemID = false;
+		
+		if (!getEmploymentNameParam.isPresent()) {
+			getEmploymentName = true;
+		}else{
+			getEmploymentName = getEmploymentNameParam.get();
+		}
+		
+		if (!getEmpExternalCodeParam.isPresent()) {
+			getEmpExternalCode = false;
+		}else{
+			getEmpExternalCode = getEmpExternalCodeParam.get();
+		}
+		
+		if (!getMemoParam.isPresent()) {
+			getMemo = false;
+		}else{
+			getMemo = getMemoParam.get();
+		}
+		
+		if (!getempCommonMasterIDParam.isPresent()) {
+			getempCommonMasterID = false;
+		}else{
+			getempCommonMasterID = getempCommonMasterIDParam.get();
+		}
+		
+		if (!getempCommonMasterItemIDParam.isPresent()) {
+			getempCommonMasterItemID = false;
+		}else{
+			getempCommonMasterItemID = getempCommonMasterItemIDParam.get();
+		}
+		
+		// ドメインモデル [雇用] を取得する(Lấy domain [employment])
+		List<Employment> listEmployment = this.employmentRepository.findAll(cid);
+		if (listEmployment.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<EmploymentInfoExport> result = new ArrayList<>();
+		
+		for (Employment employment : listEmployment) {
+			EmploymentInfoExport employmentInfoExport = EmploymentInfoExport.builder()
+					.companyId(employment.getCompanyId().toString())
+					.employmentCode(employment.getEmpExternalCode().toString())
+					.employmentName(getEmploymentName == true ? employment.getEmploymentName().toString() : null)
+					.empExternalCode(getEmpExternalCode == true ? employment.getEmpExternalCode().toString() : null)
+					.memo(getMemo == true ? employment.getMemo().toString() : null)
+					.empCommonMasterId(getempCommonMasterID == true && employment.getEmpCommonMasterId().isPresent() ? employment.getEmpCommonMasterId().get() : null)
+					.empCommonMasterItemId(getempCommonMasterItemID == true && employment.getEmpCommonMasterItemId().isPresent() ? employment.getEmpCommonMasterItemId().get() : null)
+					.build();
+			
+			result.add(employmentInfoExport);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<DataEmployeeExport> getEmployeeInfo(List<String> listSIdParam, GeneralDate baseDate) {
+		
+		// アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する(Thực hiện thuật toán [Get
+		// EmploymentHistory của employee tu EmployeeID（List）and period chỉ định])
+
+		List<EmploymentHistoryItem> listEmpHistItem = this.empHistRepo.getEmploymentHisItem(listSIdParam, new DatePeriod(baseDate, baseDate));
+		
+		if (listEmpHistItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<String> listHistID = listEmpHistItem.stream().map(Item -> Item.getHistoryId()).collect(Collectors.toList());
+		
+		List<EmploymentHistory> listEmpHist =  this.empHistRepo.getByListHistId(listHistID);
+		
+		List<DataTemp> listDataTemp = new ArrayList<>();
+		
+		for (int i = 0; i < listEmpHist.size(); i++) {
+			DataTemp dataTemp = new DataTemp();
+			dataTemp.setSid(listEmpHist.get(i).getEmployeeId());
+			List<DataTemp1> listDataTemp1 = new ArrayList<>();
+			if (!listEmpHist.get(i).getHistoryIds().isEmpty()) {
+				for (int j = 0; j < listEmpHist.get(i).getHistoryItems().size(); j++) {
+					DateHistoryItem dateHistoryItem = listEmpHist.get(i).getHistoryItems().get(j);
+					String employmentCode = listEmpHistItem.stream()
+							.filter(it -> it.getHistoryId().equals(dateHistoryItem.identifier())).findFirst().get()
+							.getEmploymentCode().toString();
+					DataTemp1 temp1 = DataTemp1.builder()
+							.employmentCode(employmentCode)
+							.datePeriod(new DatePeriod(dateHistoryItem.start(), dateHistoryItem.end()))
+							.build();
+					listDataTemp1.add(temp1);
+				}
+			}
+			dataTemp.setListEmpCodeAndDatePeriod(listDataTemp1);
+			listDataTemp.add(dataTemp);
+		}
+	
+		List<String> listSid = listDataTemp.stream().map(e -> e.getSid()).collect(Collectors.toList());
+		
+		// アルゴリズム「社員ID(List)から削除されていない社員を取得する」を実行する(thực hiện thuật toán [lấy employee chưa bị xóa từ employeeID(List)])
+		List<EmployeeDataMngInfo> listEmpdataMng = empDataMngInfoRepo.findBySidNotDel(listSid);
+		
+		// set data Result
+		List<DataEmployeeExport> result = new ArrayList<>();
+		listEmpdataMng.forEach(emp -> {
+			
+			DataTemp dataHistoryItems = listDataTemp.stream()
+					.filter(e -> e.getSid().equals(emp.getEmployeeId()))
+					.findFirst().get();
+			if (!dataHistoryItems.getListEmpCodeAndDatePeriod().isEmpty()) {
+				for (int i = 0; i < dataHistoryItems.getListEmpCodeAndDatePeriod().size(); i++) {
+					DataTemp1 temp1 = dataHistoryItems.getListEmpCodeAndDatePeriod().get(i);
+					DataEmployeeExport dataEmployeeExport = DataEmployeeExport.builder()
+							.employmentCode(temp1.getEmploymentCode())
+							.sid(emp.getEmployeeId())
+							.pid(emp.getPersonId())
+							.build();
+					result.add(dataEmployeeExport);
+				}
+			}
+		});
+		
+		return result;
+	}
 }

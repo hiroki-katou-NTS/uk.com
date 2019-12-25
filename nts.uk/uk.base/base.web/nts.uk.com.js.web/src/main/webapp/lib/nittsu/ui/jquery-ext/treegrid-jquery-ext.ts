@@ -195,10 +195,12 @@ module nts.uk.ui.jqueryExtentions {
                 dataSource: _.cloneDeep(dataSource),
                 primaryKey: optionsValue,
                 columns: cols,
+                autoCommit : true,
                 childDataKey: optionsChild,
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
                 features: features,
+//                autoCommit: true,
                 virtualization: virtualization,
                 virtualizationMode: virtualizationMode,
                 rowExpanded: function (evt, ui) {
