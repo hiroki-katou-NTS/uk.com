@@ -23,7 +23,7 @@ public class DocumentSampleDto {
 	private int docID; //書類ID
 	private String docName; //書類名
 	private int dispOrder; //表示順
-	private boolean requiredDoc; //必須書類
+	private int requiredDoc; //必須書類
 	private String docRemarks; //備考
 	private int sampleFileId; //サンプルファイルID
 	private String sampleFileName; //サンプルファイル名
