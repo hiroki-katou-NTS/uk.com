@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentReqForReport {
+public class DocumentRequiredForReport {
 
 	private String cid; //会社ID
 	private int  reportLayoutID; // 個別届出種類ID
@@ -24,8 +24,8 @@ public class DocumentReqForReport {
 	private int dispOrder; //表示順
 	private boolean requiredDoc; //必須書類
 	
-	public static DocumentReqForReport createFromJavaType(String cid, int reportLayoutID, int docID, String docName, int dispOrder,
+	public static DocumentRequiredForReport createFromJavaType(String cid, int reportLayoutID, int docID, String docName, int dispOrder,
 			boolean requiredDoc){
-		return new DocumentReqForReport(cid, reportLayoutID, docID, docName, dispOrder, requiredDoc);
+		return new DocumentRequiredForReport(cid, reportLayoutID, docID, docName, dispOrder, requiredDoc);
 	}
 }

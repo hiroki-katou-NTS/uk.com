@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentReqForReport;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentRequiredForReport;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -37,8 +37,8 @@ public class JhndtReportDocument extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public DocumentReqForReport toDomain() {
-		return DocumentReqForReport.createFromJavaType(
+	public DocumentRequiredForReport toDomain() {
+		return DocumentRequiredForReport.createFromJavaType(
 				 this.pk.cid,
 				 this.pk.reportLayoutID,
 				 this.pk.docID,

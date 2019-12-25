@@ -120,7 +120,6 @@ public class JhndtReportRegis extends UkJpaEntity implements Serializable {
 	}
 
 	public RegistrationPersonReport toDomain() {
-
 		return RegistrationPersonReport.createFromJavaType(
 				this.pk.cid,
 				this.rootSateId,
@@ -154,5 +153,19 @@ public class JhndtReportRegis extends UkJpaEntity implements Serializable {
 				this.sendBackSID, 
 				this.sendBackComment, 
 				this.delFlg == 1 ? true : false);
+	}
+	
+	public static JhndtReportRegis toEntity(RegistrationPersonReport domain){
+		return new JhndtReportRegis(new JhndtReportRegisPK(domain.getCid(), domain.getReportID()), domain.getRootSateId(), domain.getWorkId(), 
+				domain.getReportLayoutID(), domain.getReportCode(), domain.getReportName(),
+				domain.getReportDetail(), domain.getRegStatus().value, domain.getAprStatus().value, 
+				domain.getDraftSaveDate(), domain.getMissingDocName(),
+				domain.getInputPid(), domain.getInputSid(),domain.getInputScd(), domain.getInputBussinessName(), 
+				domain.getInputDate(), domain.getAppPid(), domain.getAppSid(), domain.getAppScd(), domain.getAppBussinessName(), 
+				domain.getAppDate(), domain.getAppDevId(), domain.getAppDevCd(), domain.getAppDevName(),
+				domain.getAppPosId(), domain.getAppPosCd(), domain.getAppPosName(), 
+				domain.getReportType().value, domain.getSendBackSID(), domain.getSendBackComment(), domain.isDelFlg() == true ? 1 : 0);
+		
+		
 	}
 }
