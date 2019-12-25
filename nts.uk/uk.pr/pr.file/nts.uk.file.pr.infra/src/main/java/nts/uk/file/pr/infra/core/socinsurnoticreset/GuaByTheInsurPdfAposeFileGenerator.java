@@ -16,7 +16,9 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Stateless
@@ -75,7 +77,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, GeneralDate baseDate) {
+    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, GeneralDate baseDate) throws UnsupportedEncodingException {
         JapaneseDate dateJp = toJapaneseDate(baseDate);
         ws.getRangeByName(sheetName + "!A1_10_1").setValue(dateJp.year() + 1);
         ws.getRangeByName(sheetName + "!A1_10_2").setValue(dateJp.month());
@@ -85,7 +87,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
         ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getOfficePostalCode(),1));
         ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getOfficePostalCode(),2));
-        ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1()+"　"+element.getOfficeAddress2());
+        ws.getRangeByName(sheetName + "!A1_5").setValue(formatTooLongText(element.getOfficeAddress1() + element.getOfficeAddress2(), 60));
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
@@ -364,5 +366,23 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
     private String getShapeName(String sheetName, String pos, int stt){
         return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null) {
+            return "";
+        }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
+        int textLength = text.length();
+        int subLength = maxByteAllowed / 2;
+        while (subLength < textLength) {
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
+            subLength++;
+        }
+        return text.substring(0, subLength);
     }
 }
