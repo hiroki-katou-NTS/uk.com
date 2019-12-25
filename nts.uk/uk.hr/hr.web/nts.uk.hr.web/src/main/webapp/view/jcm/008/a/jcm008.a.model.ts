@@ -292,3 +292,23 @@ interface IInterviewRecordAvailability {
     employeeID: string;
     isPresence: boolean;
 }
+
+class RowState {
+    rowId: string;
+    disable: boolean;
+    constructor(rowId: string, disable: boolean) {
+        this.rowId = rowId;
+        this.disable = disable;
+    }
+}
+
+class CellState {
+    rowId: string;
+    columnKey: string;
+    state: Array<any>
+    constructor(rowId: string, columnKey: string, state: Array<any>) {
+        this.rowId = rowId;
+        this.columnKey = columnKey;
+        this.state = state;
+    }
+}

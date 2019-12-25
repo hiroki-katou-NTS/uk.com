@@ -13,11 +13,11 @@ module jcm008.a {
     export class ViewModel {
         searchFilter: SearchFilterModel;
         retirementSettings: KnockoutObservable<Array<string>>;
-        
+
         selectedRetirementEmployee: KnockoutObservable<any>;
         plannedRetirements: KnockoutObservable<Array<PlannedRetirementDto>>;
         employeeInfo: KnockoutObservable<IEmployee>;
-       
+
         constructor() {
             let self = this;
             self.searchFilter = new SearchFilterModel();
@@ -33,10 +33,10 @@ module jcm008.a {
             let self = this;
             block.grayout();
             let dfd = $.Deferred<any>();
-            service.getData().done((data : IStartPageDto) => {
+            service.getData().done((data: IStartPageDto) => {
                 console.log(data);
                 let dateDisplaySet = data.dateDisplaySettingPeriod;
-                self.searchFilter.retirementPeriod({startDate: dateDisplaySet.periodStartdate, endDate: dateDisplaySet.periodEnddate});
+                self.searchFilter.retirementPeriod({ startDate: dateDisplaySet.periodStartdate, endDate: dateDisplaySet.periodEnddate });
                 _.map(data.retirementCourses, (c) => {
                     c.retirementAge = c.retirementAge + '分';
                     return c;
@@ -44,7 +44,7 @@ module jcm008.a {
                 self.searchFilter.retirementCourses(data.retirementCourses);
 
                 let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
-                    return new RetirementAgeSetting(rc.retirementAge.replace('分', '') ,rc.retirementAge);
+                    return new RetirementAgeSetting(rc.retirementAge.replace('分', ''), rc.retirementAge);
                 });
 
                 self.searchFilter.retirementAges(_.uniqBy(retirementAge, 'code'));
@@ -58,7 +58,7 @@ module jcm008.a {
             }).always(() => {
                 block.clear();
             });
-            
+
             return dfd.promise();
         }
 
@@ -66,15 +66,14 @@ module jcm008.a {
         getRetirementData() {
             let self = this;
             let param = new ISearchParams(self.searchFilter);
-            
+
             block.grayout();
             let dfd = $.Deferred<any>();
             service.searchRetireData(param)
-                .done((res :ISearchResult) => {
+                .done((res: ISearchResult) => {
                     console.log(res);
                     let merged = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
                     let values = _.values(merged);
-                    console.log(values);
                     self.plannedRetirements(values);
                     self.bindRetirementDateSettingGrid();
                     self.searchFilter.confirmCheckRetirementPeriod(false);
@@ -82,7 +81,7 @@ module jcm008.a {
                 .fail((error) => {
                     dfd.reject();
                     console.log(error);
-                    if(error.messageId == "MsgJ_JCM008_5") {
+                    if (error.messageId == "MsgJ_JCM008_5") {
                         confirm({ messageId: "MsgJ_JCM008_5" }).ifYes(() => {
                             self.searchFilter.confirmCheckRetirementPeriod(true);
                             self.getRetirementData();
@@ -98,16 +97,15 @@ module jcm008.a {
 
         public register() {
             let self = this;
-            
-            let settingChanges = _.filter(self.plannedRetirements(), (p) => { 
-                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), {'rowId': p.key}) 
+
+            let settingChanges = _.filter(self.plannedRetirements(), (p) => {
+                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
             });
 
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
-            
-            let retiInfos = _.map(settingChanges, (retire) => { 
-                let changed = _.find(groupChanges, (value, key) => { 
-                    return key == retire.key;
+            let retiInfos = _.map(settingChanges, (retire) => {
+                let changed = _.find(groupChanges, (value, key) => {
+                    return key == retire.rKey;
                 });
                 for (let row in changed) {
                     retire[changed[row].columnKey] = changed[row].value;
@@ -115,6 +113,7 @@ module jcm008.a {
 
                 return retire;
             });
+
             console.log(retiInfos);
             let data = {
                 retiInfos: retiInfos
@@ -155,25 +154,30 @@ module jcm008.a {
                 $('#retirementDateSetting').ntsGrid("destroy");
             };
             let dataSources = self.plannedRetirements();
-
+            let rowStates = [];
+            let cellStates = []
             dataSources = _.map(dataSources, (data) => {
-                data.key = data.sid.replace(/[^\w\s]/gi,'');
+                data.rKey = data.sid.replace(/[^\w\s]/gi, '');
                 data.ageDisplay = data.age + '分';
+                if(data.status == 3 && data.status == 2) {
+                    cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                    cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                }
                 return data;
             });
-
+            console.log(rowStates);
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
                 height: '500px',
-                primaryKey: 'key',
+                primaryKey: 'rKey',
                 virtualization: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 // autoFitWindow: true,
                 columns: [
-                    { headerText: 'key', key: 'key', dataType: 'string' },
+                    { headerText: 'key', key: 'rKey', dataType: 'string' },
                     { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                     { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
                     { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
@@ -205,7 +209,7 @@ module jcm008.a {
                             { headerText: getText('JCM008_A222_55_2'), key: 'healthStatus2', dataType: 'string', width: '40px' },
                             { headerText: getText('JCM008_A222_55_3'), key: 'healthStatus3', dataType: 'string', width: '40px' }
                         ]
-                    }, 
+                    },
                     {
                         headerText: getText('JCM008_A222_38'),
                         group: [
@@ -219,28 +223,39 @@ module jcm008.a {
                 dataSource: dataSources,
                 tabIndex: 11,
                 features: [
-                   {
-                       name: "Selection", mode: "row",multipleSelection: true,
-                       rowSelectionChanged: function (evt, ui) {
-                           let itemSelected = _.find(self.selectedRetirementEmployee, function (o) { return o.sid == ui.row.sid; });
-                           if (itemSelected) {
-                               self.selectedRetirementEmployee(itemSelected);
-                           }
-                       }
-                   },
                     {
-                        name: 'Filtering',type: 'local',mode: 'simple',
+                        name: "Selection", mode: "row", multipleSelection: true,
+                        rowSelectionChanged: function (evt, ui) {
+                            let itemSelected = _.find(self.selectedRetirementEmployee, function (o) { return o.sid == ui.row.sid; });
+                            if (itemSelected) {
+                                self.selectedRetirementEmployee(itemSelected);
+                            }
+                        }
+                    },
+                    {
+                        name: 'Filtering', type: 'local', mode: 'simple',
                         dataFiltered: function (evt, ui) {
                             // $('#retirementDateSetting').css('height', '425px');
                         }
                     },
-                    {name: 'Paging', pageSize: 10,currentPageIndex: 0},
-                    {name: 'Resizing'},
-                    {name: 'MultiColumnHeaders'}
+                    { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
+                    { name: 'Resizing' },
+                    { name: 'MultiColumnHeaders' }
                 ],
                 ntsFeatures: [
-                      { name: 'CopyPaste' },
-                      { name: 'CellEdit' }
+                    { name: 'CopyPaste' },
+                    { name: 'CellEdit' },
+                    {
+                        name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: cellStates
+                    },
+                    {
+                        name: 'RowState',
+                        rows: rowStates
+                    }
                 ],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -248,7 +263,7 @@ module jcm008.a {
                     { name: 'WorkingCourseCb', width: '80px', options: self.searchFilter.retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
-                    
+
                 ]
             });
         }
@@ -262,12 +277,12 @@ module jcm008.a {
                 code: id,
                 name: '社員名 員名',
                 kanaName: '社員名 ',
-                sex:'性別',
-                dob:'1991/04/11',
-                age:'29分',
-                department:'部門 学科 局 部科売り場',
+                sex: '性別',
+                dob: '1991/04/11',
+                age: '29分',
+                department: '部門 学科 局 部科売り場',
                 position: '職位職位',
-                employment:'雇用雇用',
+                employment: '雇用雇用',
                 image: 'https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/s960x960/67660458_2163133103815091_6832643697729863680_o.jpg?_nc_cat=108&_nc_ohc=PzzrUkG6zBAAQkMqXJeoGd7dj9YkJUgyqnSPGDqzbcJ2uPPb_DzzpiSRw&_nc_ht=scontent.fhan2-3.fna&oh=51b9cc5985e9e57dcae281e966c62f20&oe=5E8674C7'
             };
 
@@ -283,43 +298,45 @@ module jcm008.a {
                 dismissible: true
             });
             // Toggle
-            
+
         };
 
-        public choseDepartment(){
+        public choseDepartment() {
             let self = this;
             block.grayout();
-            setShared('inputCDL008', {  
-                selectedCodes: self.searchFilter.department().map(function(elem){
+            setShared('inputCDL008', {
+                selectedCodes: self.searchFilter.department().map(function (elem) {
                     return elem.workplaceId;
                 }),
                 baseDate: moment(new Date()).toDate(),
-                isMultiple: true, 
-                selectedSystemType:1 , 
-                isrestrictionOfReferenceRange:false , 
-                showNoSelection:false , 
-                isShowBaseDate:true });
-            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function(){
+                isMultiple: true,
+                selectedSystemType: 1,
+                isrestrictionOfReferenceRange: false,
+                showNoSelection: false,
+                isShowBaseDate: true
+            });
+            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
                 block.clear();
                 let data = getShared('outputCDL008');
                 self.searchFilter.department(data);
             });
         }
 
-        public choseEmployment(){
+        public choseEmployment() {
             let self = this;
             block.grayout();
-            setShared('CDL002Params', {  
-                selectedCodes: self.searchFilter.employment().map(function(elem){
+            setShared('CDL002Params', {
+                selectedCodes: self.searchFilter.employment().map(function (elem) {
                     return elem.workplaceId;
                 }),
                 baseDate: moment(new Date()).toDate(),
-                isMultiple: true, 
-                selectedSystemType:1 , 
-                isrestrictionOfReferenceRange:false , 
-                showNoSelection:false , 
-                isShowBaseDate:true });
-            modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function(){
+                isMultiple: true,
+                selectedSystemType: 1,
+                isrestrictionOfReferenceRange: false,
+                showNoSelection: false,
+                isShowBaseDate: true
+            });
+            modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function () {
                 block.clear();
                 let data = getShared('CDL002Output');
                 self.searchFilter.employment(data);
@@ -329,7 +346,7 @@ module jcm008.a {
         /**
             * Export excel
             */
-           public exportExcel(): void {
+        public exportExcel(): void {
             let self = this;
             self.searchFilter.confirmCheckRetirementPeriod(true);
             let param = new ISearchParams(self.searchFilter);
