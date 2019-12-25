@@ -100,7 +100,6 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
             return null;
         }
         String empID = entity.get(0).empCorpOffHisPk.employeeId;
-        String historyID = entity.get(0).empCorpOffHisPk.historyId;
         List<DateHistoryItem> period = new ArrayList<>();
         entity.forEach(x -> {
             DatePeriod datePeriod = new DatePeriod(x.startDate,x.endDate);

@@ -12,6 +12,7 @@ import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
+
 @Stateless
 public class DeleteEmpCorpHealthOffHisCommandHandler extends CommandHandler<DeleteEmpCorpHealthOffHisCommand>
         implements PeregDeleteCommandHandler<DeleteEmpCorpHealthOffHisCommand> {
@@ -36,7 +37,7 @@ public class DeleteEmpCorpHealthOffHisCommandHandler extends CommandHandler<Dele
     @Override
     protected void handle(CommandHandlerContext<DeleteEmpCorpHealthOffHisCommand> context) {
         val command = context.getCommand();
-        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(command.getEmployeeId());
+        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getBySidDesc(command.getEmployeeId());
         if (!listHist.isPresent()) {
             throw new RuntimeException("invalid CorpHealthOffHistory");
         }
@@ -46,6 +47,7 @@ public class DeleteEmpCorpHealthOffHisCommandHandler extends CommandHandler<Dele
         if (!itemToBeDeleted.isPresent()) {
             throw new RuntimeException("invalid CorpHealthOffHistory");
         }
+        listHist.get().remove(itemToBeDeleted.get());
         empCorpHealthOffHisService.delete(listHist.get(), itemToBeDeleted.get());
     }
 

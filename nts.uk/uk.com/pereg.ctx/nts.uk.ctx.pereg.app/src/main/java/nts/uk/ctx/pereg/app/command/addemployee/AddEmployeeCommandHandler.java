@@ -79,7 +79,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private PerInfoCategoryRepositoty cateRepo;
 
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
-			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00075");
 
 	private static final Map<String, String> startDateItemCodes;
 	static {
@@ -104,6 +104,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00021", "IS00255");
 		// 労働条件２
 		aMap.put("CS00070", "IS00781");
+		// 社員社保事業所
+		aMap.put("CS00075", "IS00788");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -199,6 +201,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<ItemsByCategory> CS00020Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
 		
 		Optional<ItemsByCategory> CS00070Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
+
+		Optional<ItemsByCategory> CS00075Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00075")).findFirst();
 		
 		Optional<ItemsByCategory> affComHist = command.getInputs().stream()
 				.filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();

@@ -37,13 +37,12 @@ public class UpdateEmpCorpHealthOffHisCommandHandler
     }
 
     public static final String MAX_DATE = "9999/12/31";
-    public static final String MIN_DATE = "1900/01/01";
     public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
 
     @Override
     protected void handle(CommandHandlerContext<UpdateEmpCorpHealthOffHisCommand> context) {
         val command = context.getCommand();
-        Optional<EmpCorpHealthOffHis> existHist = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(command.getEmployeeId());
+        Optional<EmpCorpHealthOffHis> existHist = empCorpHealthOffHisRepository.getBySidDesc(command.getEmployeeId());
         Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getPeriod().stream()
                 .filter(h -> h.identifier().equals(command.getHistId()))
                 .findFirst();

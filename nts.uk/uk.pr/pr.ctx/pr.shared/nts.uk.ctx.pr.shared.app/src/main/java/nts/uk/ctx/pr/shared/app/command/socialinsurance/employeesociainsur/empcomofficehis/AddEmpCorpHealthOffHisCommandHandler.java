@@ -14,9 +14,7 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class AddEmpCorpHealthOffHisCommandHandler
@@ -51,7 +49,7 @@ public class AddEmpCorpHealthOffHisCommandHandler
 
         val command = context.getCommand();
         String newHistId = IdentifierUtil.randomUniqueId();
-        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getBySidDesc(command.getSid());
+        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getBySidAsc(command.getSid());
         DateHistoryItem itemAdded = new DateHistoryItem(newHistId,
                 new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate(): GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
         EmpCorpHealthOffHis domain = new EmpCorpHealthOffHis(command.getSid(), new ArrayList<>());
@@ -60,6 +58,7 @@ public class AddEmpCorpHealthOffHisCommandHandler
         if(listHist.isPresent()) {
             domain = listHist.get();
         }
+        domain.add(itemAdded);
         empCorpHealthOffHisService.add(domain, itemAdded, newHistInfo);
         return new PeregAddCommandResult(command.getSid());
     }

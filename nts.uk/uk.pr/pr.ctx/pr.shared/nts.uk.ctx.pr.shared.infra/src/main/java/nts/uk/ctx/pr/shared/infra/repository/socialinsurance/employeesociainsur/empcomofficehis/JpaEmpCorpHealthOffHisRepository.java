@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.command.CommandProxy;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
@@ -33,6 +34,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     private static final String SELECT_BY_SIDS = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId IN :sids AND f.empCorpOffHisPk.cid =:cid";
     private static final String SELECT_BY_ID_AND_BASE_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId =:sid AND f.empCorpOffHisPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
     private static final String SELECT_BY_EMPID_DESC = SELECT_BY_EMPID + " ORDER BY f.startDate DESC ";
+    private static final String SELECT_BY_EMPID_ASC = SELECT_BY_EMPID + " ORDER BY f.startDate ASC ";
 
 
     @Override
@@ -61,6 +63,15 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     @Override
     public Optional<EmpCorpHealthOffHis> getBySidDesc(String employeeId) {
         List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_EMPID_DESC, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeId", employeeId)
+                .getList();
+        return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomainCps(qqsmtEmpCorpOffHis));
+
+    }
+
+    @Override
+    public Optional<EmpCorpHealthOffHis> getBySidAsc(String employeeId) {
+        List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_EMPID_ASC, QqsmtEmpCorpOffHis.class)
                 .setParameter("employeeId", employeeId)
                 .getList();
         return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomainCps(qqsmtEmpCorpOffHis));
@@ -184,12 +195,9 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     }
 
     @Override
-    public void delete(String hisId) {
-        Optional<QqsmtEmpCorpOffHis> itemToBeDeleted = this.queryProxy().find(hisId, QqsmtEmpCorpOffHis.class);
-        if (!itemToBeDeleted.isPresent()){
-            throw new RuntimeException("Invalid QqsmtEmpCorpOffHis");
-        }
-        this.commandProxy().remove(QqsmtEmpCorpOffHis.class, hisId);
+    public void delete(String hisId, String sid) {
+        String cid = AppContexts.user().companyId();
+        this.commandProxy().remove(QqsmtEmpCorpOffHis.class, new QqsmtEmpCorpOffHisPk(cid, sid, hisId));
     }
 
     @Override

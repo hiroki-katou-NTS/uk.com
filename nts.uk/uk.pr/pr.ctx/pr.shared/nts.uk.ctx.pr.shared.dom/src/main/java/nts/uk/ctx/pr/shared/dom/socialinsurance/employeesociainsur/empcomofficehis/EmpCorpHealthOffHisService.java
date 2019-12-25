@@ -30,14 +30,10 @@ public class EmpCorpHealthOffHisService {
      * @param histItem
      */
     public void add(EmpCorpHealthOffHis domain, DateHistoryItem itemAdded, AffOfficeInformation histItem){
-        if(domain.getPeriod().isEmpty()){
-            empCorpHealthOffHisRepository.add(domain, itemAdded, histItem);
-        } else {
-            val lastItem = domain.getPeriod().get(0);
-            lastItem.changeSpan(new DatePeriod(lastItem.start(), itemAdded.start().addDays(-1)));
-            empCorpHealthOffHisRepository.add(domain, itemAdded, histItem);
-            empCorpHealthOffHisRepository.update(lastItem);
-        }
+        // Insert last element
+        DateHistoryItem lastItem = domain.getPeriod().get(domain.getPeriod().size()-1);
+        empCorpHealthOffHisRepository.add(domain, lastItem, histItem);
+        updateItemBefore(domain, lastItem);
     }
 
     /**
@@ -51,13 +47,14 @@ public class EmpCorpHealthOffHisService {
         int currentIndex = listHist.indexOf(itemUpdate);
         EmpCorpHealthOffParam itemToBeUpdate = new EmpCorpHealthOffParam(domain.getEmployeeId(), itemUpdate, updateInfo.getSocialInsurOfficeCode().v());
         empCorpHealthOffHisRepository.update(itemUpdate, updateInfo);
-        try {
-            DateHistoryItem itemBefore = listHist.get(currentIndex+1);
-            itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemUpdate.start().addDays(-1)));
-            empCorpHealthOffHisRepository.update(itemBefore);
-        } catch (IndexOutOfBoundsException e) {
-            return;
-        }
+//        try {
+//            DateHistoryItem itemBefore = listHist.get(currentIndex+1);
+//            itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemUpdate.start().addDays(-1)));
+//            empCorpHealthOffHisRepository.update(itemBefore);
+//        } catch (IndexOutOfBoundsException e) {
+//            return;
+//        }
+        updateItemBefore(domain, itemUpdate);
     }
 
     /**
@@ -70,7 +67,7 @@ public class EmpCorpHealthOffHisService {
         final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
         List<DateHistoryItem> listHist = domain.getPeriod();
         int currentIndex = listHist.indexOf(itemDelete);
-        empCorpHealthOffHisRepository.delete(itemDelete.identifier());
+        empCorpHealthOffHisRepository.delete(itemDelete.identifier(), domain.getEmployeeId());
         try {
             DateHistoryItem itemBefore = listHist.get(currentIndex + 1);
             itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemDelete.end() == null ? itemDelete.end() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
@@ -78,6 +75,19 @@ public class EmpCorpHealthOffHisService {
         } catch (IndexOutOfBoundsException e) {
             return;
         }
+    }
+
+    /**
+     * Update item before
+     * @param domain
+     * @param item
+     */
+    private void updateItemBefore(EmpCorpHealthOffHis domain, DateHistoryItem item){
+        Optional<DateHistoryItem> itemToBeUpdated = domain.immediatelyBefore(item);
+        if (!itemToBeUpdated.isPresent()){
+            return;
+        }
+        empCorpHealthOffHisRepository.update(itemToBeUpdated.get());
     }
 
     public void addAll(List<EmpCorpHealthOffParam> domains){
