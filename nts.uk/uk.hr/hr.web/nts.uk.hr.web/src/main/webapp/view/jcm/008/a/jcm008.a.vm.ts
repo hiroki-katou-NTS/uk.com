@@ -98,8 +98,27 @@ module jcm008.a {
 
         public register() {
             let self = this;
-            let selected = $("#retirementDateSetting").ntsGrid("updatedCells");
-            let retiInfos = _.filter(self.plannedRetirements(), (retire) => { return _.find(selected, {'rowId': retire.sid})});
+            
+            let settingChanges = _.filter(self.plannedRetirements(), (p) => { 
+                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), {'rowId': p.sid.replace(/[^\w\s]/gi,'')}) 
+            });
+
+            let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
+            
+            let retiInfos = _.map(settingChanges, (retire) => { 
+                let changed = _.find(groupChanges, (value, key) => { 
+                    return key == retire.sid.replace(/[^\w\s]/gi,'');
+                });
+                console.log(changed);
+                for (let row in changed) {
+                    retire[row.columnKey] = row.value;
+                }
+
+                return retire;
+            });
+
+            console.log(retiInfos);
+
             let data = {
                 retiInfos: retiInfos
             };
@@ -142,7 +161,9 @@ module jcm008.a {
             let dataSources = self.plannedRetirements();
 
             dataSources = _.map(dataSources, (data) => {
-                data.sid = data.sid.(/[^\w\s]/gi,'');
+                data.sid = data.sid.replace(/[^\w\s]/gi,'');
+                data.retirementAge = data.retirementAge + '分';
+                return data;
             });
 
             $('#retirementDateSetting').ntsGrid({
@@ -227,7 +248,7 @@ module jcm008.a {
                 ],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(1, '退職'), new RetirementStatus(2, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
+                    { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
                     { name: 'WorkingCourseCb', width: '80px', options: self.searchFilter.retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
