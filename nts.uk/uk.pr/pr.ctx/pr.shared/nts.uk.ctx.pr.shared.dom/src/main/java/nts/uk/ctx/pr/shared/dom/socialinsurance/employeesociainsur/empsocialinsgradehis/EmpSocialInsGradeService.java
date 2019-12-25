@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialins
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.adapter.employment.SEmpHistImport;
-import nts.uk.ctx.pr.shared.dom.adapter.employment.SyEmploymentAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.employment.SystemEmploymentAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateImport;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearAdapter;
@@ -25,7 +25,7 @@ public class EmpSocialInsGradeService {
     private CurrentProcessDateAdapter currentProcessDateAdapter;
 
     @Inject
-    private SyEmploymentAdapter syEmploymentPub;
+    private SystemEmploymentAdapter syEmploymentPub;
 
     private static final String PASS_HISTORY = "過去の履歴";
     private static final String PRESENT_HISTORY = "現在の給与処理に適用される履歴";

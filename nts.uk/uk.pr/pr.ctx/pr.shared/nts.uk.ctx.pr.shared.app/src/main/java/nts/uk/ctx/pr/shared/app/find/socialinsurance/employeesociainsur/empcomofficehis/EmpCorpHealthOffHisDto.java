@@ -12,14 +12,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class EmpCorpHealthOffHisDto extends PeregDomainDto {
-
-    /**
-     * 社員ID
-     */
-    @PeregEmployeeId
-    private String sid;
 
     /**
      * 開始日
@@ -39,9 +32,16 @@ public class EmpCorpHealthOffHisDto extends PeregDomainDto {
     @PeregItem("IS00790")
     private String socialInsurOfficeCode;
 
+    public EmpCorpHealthOffHisDto(String recordId, GeneralDate startDate, GeneralDate endDate, String socialInsurOfficeCode){
+        super(recordId);
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.socialInsurOfficeCode = socialInsurOfficeCode;
+    }
+
     public static EmpCorpHealthOffHisDto createFromDomain(EmpCorpHealthOffHis domain, AffOfficeInformation domainInfo){
         return new EmpCorpHealthOffHisDto(
-                domain.getEmployeeId(),
+                domainInfo.getHistoryId(),
                 domain.getPeriod().get(0).start(),
                 domain.getPeriod().get(0).end(),
                 domainInfo.getSocialInsurOfficeCode().v()

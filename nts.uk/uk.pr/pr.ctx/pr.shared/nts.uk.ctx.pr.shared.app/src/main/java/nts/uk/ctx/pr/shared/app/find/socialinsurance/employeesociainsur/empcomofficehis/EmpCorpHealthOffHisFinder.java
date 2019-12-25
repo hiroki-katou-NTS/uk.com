@@ -96,10 +96,10 @@ public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHi
 
     @Override
     public List<ComboBoxObject> getListFirstItems(PeregQuery peregQuery) {
-        Optional<EmpCorpHealthOffHis> empCorp = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(peregQuery.getEmployeeId());
+        Optional<EmpCorpHealthOffHis> empCorp = empCorpHealthOffHisRepository.getBySidDesc(peregQuery.getEmployeeId());
         if (empCorp.isPresent()) {
             return empCorp.get().getPeriod().stream()
-                    .filter(x -> affOfficeInformationRepository.getAffOfficeInformationById(peregQuery.getEmployeeId(),x.identifier()) != null)
+                    .filter(x -> affOfficeInformationRepository.getAffOfficeInformationById(peregQuery.getEmployeeId(),x.identifier()).isPresent())
                     .map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(),
                             x.end().equals(GeneralDate.max())
                                     //&& query.getCtgType() == 3

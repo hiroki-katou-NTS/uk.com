@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.shared.ac.employment;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.pr.shared.dom.adapter.employment.SEmpHistImport;
-import nts.uk.ctx.pr.shared.dom.adapter.employment.SyEmploymentAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.employment.SystemEmploymentAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
+public class SystemEmploymentAdapterImpl implements SystemEmploymentAdapter {
 
     @Inject
     SyEmploymentPub syEmploymentPub;

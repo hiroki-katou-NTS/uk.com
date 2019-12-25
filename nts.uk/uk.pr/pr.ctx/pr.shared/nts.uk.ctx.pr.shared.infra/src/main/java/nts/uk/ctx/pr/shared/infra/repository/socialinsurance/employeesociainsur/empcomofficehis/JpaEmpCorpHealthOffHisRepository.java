@@ -32,6 +32,8 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.cid =:cid AND f.empCorpOffHisPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
     private static final String SELECT_BY_SIDS = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId IN :sids AND f.empCorpOffHisPk.cid =:cid";
     private static final String SELECT_BY_ID_AND_BASE_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.employeeId =:sid AND f.empCorpOffHisPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate ";
+    private static final String SELECT_BY_EMPID_DESC = SELECT_BY_EMPID + " ORDER BY f.startDate DESC ";
+
 
     @Override
     public List<EmpCorpHealthOffHis> getAllEmpCorpHealthOffHis(){
@@ -53,6 +55,15 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
                 .setParameter("employeeId", employeeId)
                 .getList();
        return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomain(qqsmtEmpCorpOffHis));
+
+    }
+
+    @Override
+    public Optional<EmpCorpHealthOffHis> getBySidDesc(String employeeId) {
+        List<QqsmtEmpCorpOffHis> qqsmtEmpCorpOffHis =  this.queryProxy().query(SELECT_BY_EMPID_DESC, QqsmtEmpCorpOffHis.class)
+                .setParameter("employeeId", employeeId)
+                .getList();
+        return Optional.ofNullable(QqsmtEmpCorpOffHis.toDomainCps(qqsmtEmpCorpOffHis));
 
     }
 
@@ -106,7 +117,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     @Override
     public void add(EmpCorpHealthOffHis domain, DateHistoryItem itemAdded, AffOfficeInformation itemInfo) {
         this.commandProxy().insert(new QqsmtEmpCorpOffHis(
-                new QqsmtEmpCorpOffHisPk(),
+                new QqsmtEmpCorpOffHisPk(AppContexts.user().companyId(), domain.getEmployeeId(), itemAdded.identifier()),
                 itemAdded.start(),
                 itemAdded.end(),
                 itemInfo.getSocialInsurOfficeCode().v()
@@ -114,33 +125,62 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     }
 
     @Override
-    public void update(DateHistoryItem domain) {
-        Optional<QqsmtEmpCorpOffHis> itemToBeUpdated = this.queryProxy().find(domain.identifier(), QqsmtEmpCorpOffHis.class);
-        if (!itemToBeUpdated.isPresent()){
-            throw new RuntimeException("Invalid QqsmtEmpCorpOffHis");
-        }
-        QqsmtEmpCorpOffHis itemUpdate = new QqsmtEmpCorpOffHis(
-                itemToBeUpdated.get().empCorpOffHisPk,
-                domain.start(),
-                domain.end(),
-                itemToBeUpdated.get().socialInsuranceOfficeCd
-        );
-        this.commandProxy().update(itemUpdate);
+    public void update(DateHistoryItem historyItem) {
+        String UP_SQL = "UPDATE QQSDT_SYAHO_OFFICE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+                + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+        String cid = AppContexts.user().companyId();
+        String updCcd = AppContexts.user().companyCode();
+        String updScd = AppContexts.user().employeeCode();
+        String updPg = AppContexts.programId();
+
+        StringBuilder sb = new StringBuilder();
+        String sql = UP_SQL;
+        sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+        sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+        sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+        sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+
+        sql = sql.replace("START_DATE_VAL", "'" + historyItem.start() + "'");
+        sql = sql.replace("END_DATE_VAL","'" +  historyItem.end() + "'");
+
+        sql = sql.replace("HIST_ID_VAL", "'" + historyItem.identifier() +"'");
+        sql = sql.replace("CID_VAL", "'" + cid +"'");
+
+        sb.append(sql);
+
+        int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+        System.out.println(records);
     }
 
     @Override
-    public void update(DateHistoryItem domain, AffOfficeInformation info){
-        Optional<QqsmtEmpCorpOffHis> itemToBeUpdated = this.queryProxy().find(domain.identifier(), QqsmtEmpCorpOffHis.class);
-        if (!itemToBeUpdated.isPresent()){
-            throw new RuntimeException("Invalid QqsmtEmpCorpOffHis");
-        }
-        QqsmtEmpCorpOffHis itemUpdate = new QqsmtEmpCorpOffHis(
-                itemToBeUpdated.get().empCorpOffHisPk,
-                domain.start(),
-                domain.end(),
-                info.getSocialInsurOfficeCode().v()
-        );
-        this.commandProxy().update(itemUpdate);
+    public void update(DateHistoryItem historyItem, AffOfficeInformation info){
+        String UP_SQL = "UPDATE QQSDT_SYAHO_OFFICE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+                + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+        String cid = AppContexts.user().companyId();
+        String updCcd = AppContexts.user().companyCode();
+        String updScd = AppContexts.user().employeeCode();
+        String updPg = AppContexts.programId();
+
+        StringBuilder sb = new StringBuilder();
+        String sql = UP_SQL;
+        sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+        sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+        sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+        sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+
+        sql = sql.replace("START_DATE_VAL", "'" + historyItem.start() + "'");
+        sql = sql.replace("END_DATE_VAL","'" +  historyItem.end() + "'");
+        sql = sql.replace("SYAHO_OFFICE_CD_VAL","'" +  info.getSocialInsurOfficeCode().v() + "'");
+
+        sql = sql.replace("HIST_ID_VAL", "'" + historyItem.identifier() +"'");
+        sql = sql.replace("CID_VAL", "'" + cid +"'");
+
+        sb.append(sql);
+
+        int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+        System.out.println(records);
     }
 
     @Override

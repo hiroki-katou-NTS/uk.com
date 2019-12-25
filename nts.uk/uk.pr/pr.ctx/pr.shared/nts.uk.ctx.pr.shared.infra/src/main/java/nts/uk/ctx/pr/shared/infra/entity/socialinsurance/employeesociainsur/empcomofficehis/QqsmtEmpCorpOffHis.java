@@ -95,4 +95,20 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
         return null;
     }
 
+    public static EmpCorpHealthOffHis toDomainCps(List<QqsmtEmpCorpOffHis> entity) {
+        if(entity.size() <= 0){
+            return null;
+        }
+        String empID = entity.get(0).empCorpOffHisPk.employeeId;
+        String historyID = entity.get(0).empCorpOffHisPk.historyId;
+        List<DateHistoryItem> period = new ArrayList<>();
+        entity.forEach(x -> {
+            DatePeriod datePeriod = new DatePeriod(x.startDate,x.endDate);
+            DateHistoryItem historyItem = new DateHistoryItem(x.getEmpCorpOffHisPk().historyId,datePeriod);
+            period.add(historyItem);
+        });
+
+        return new EmpCorpHealthOffHis(empID,period);
+    }
+
 }

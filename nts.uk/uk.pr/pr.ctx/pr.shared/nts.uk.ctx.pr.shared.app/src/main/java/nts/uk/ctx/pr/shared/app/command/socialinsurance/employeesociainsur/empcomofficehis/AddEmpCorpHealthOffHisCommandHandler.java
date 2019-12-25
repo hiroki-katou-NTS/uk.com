@@ -51,7 +51,7 @@ public class AddEmpCorpHealthOffHisCommandHandler
 
         val command = context.getCommand();
         String newHistId = IdentifierUtil.randomUniqueId();
-        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getEmpCorpHealthOffHisById(command.getSid());
+        Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getBySidDesc(command.getSid());
         DateHistoryItem itemAdded = new DateHistoryItem(newHistId,
                 new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate(): GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
         EmpCorpHealthOffHis domain = new EmpCorpHealthOffHis(command.getSid(), new ArrayList<>());

@@ -23,10 +23,6 @@ public class EmpCorpHealthOffHisService {
     @Inject
     private EmpCorpHealthOffHisRepository empCorpHealthOffHisRepository;
 
-    public void addHistory(EmpCorpHealthOffHis domain){
-
-    }
-
     /**
      *
      * @param domain
@@ -38,7 +34,7 @@ public class EmpCorpHealthOffHisService {
             empCorpHealthOffHisRepository.add(domain, itemAdded, histItem);
         } else {
             val lastItem = domain.getPeriod().get(0);
-            lastItem.changeSpan(new DatePeriod(lastItem.start(), itemAdded.start()));
+            lastItem.changeSpan(new DatePeriod(lastItem.start(), itemAdded.start().addDays(-1)));
             empCorpHealthOffHisRepository.add(domain, itemAdded, histItem);
             empCorpHealthOffHisRepository.update(lastItem);
         }
@@ -53,6 +49,7 @@ public class EmpCorpHealthOffHisService {
     public void update(EmpCorpHealthOffHis domain, DateHistoryItem itemUpdate, AffOfficeInformation updateInfo){
         List<DateHistoryItem> listHist = domain.getPeriod();
         int currentIndex = listHist.indexOf(itemUpdate);
+        EmpCorpHealthOffParam itemToBeUpdate = new EmpCorpHealthOffParam(domain.getEmployeeId(), itemUpdate, updateInfo.getSocialInsurOfficeCode().v());
         empCorpHealthOffHisRepository.update(itemUpdate, updateInfo);
         try {
             DateHistoryItem itemBefore = listHist.get(currentIndex+1);

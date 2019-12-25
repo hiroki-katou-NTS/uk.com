@@ -18,6 +18,8 @@ public interface EmpCorpHealthOffHisRepository
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(String employeeId);
 
+    Optional<EmpCorpHealthOffHis> getBySidDesc(String employeeId);
+
     Optional<String> getSocialInsuranceOfficeCd(String cid, String employeeId, GeneralDate baseDate);
 
     Optional<EmpCorpHealthOffHis> getEmpCorpHealthOffHisById(List<String> employeeIds, GeneralDate startDate);
@@ -30,7 +32,7 @@ public interface EmpCorpHealthOffHisRepository
 
     void update(DateHistoryItem domain);
 
-    void update(DateHistoryItem domain, AffOfficeInformation info);
+    void update(DateHistoryItem historyItem, AffOfficeInformation info);
 
     void delete(String hisId);
 
