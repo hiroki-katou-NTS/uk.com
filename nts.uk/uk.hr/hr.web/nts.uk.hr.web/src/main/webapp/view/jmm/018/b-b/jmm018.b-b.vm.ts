@@ -19,6 +19,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retireDateSelected: KnockoutObservable<number> = ko.observable(1);
         referenceValueLs: KnockoutObservableArray<any> = ko.observableArray([]);
         numberDispLs: KnockoutObservableArray<any> = ko.observableArray([]);
+        retireConditionLs: KnockoutObservableArray<any> = ko.observableArray([]);
+        applyCondition: KnockoutObservable<boolean> = ko.observable(false);
+        startAppliPossible: KnockoutObservable<string> = ko.observable("");
         
         constructor() {
             let self = this;
@@ -148,27 +151,46 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         // B422_15_26
                         continuationCategory: "a",
                     }
-                let b = {
-                    index: 2,
-                    // B422_15_22
-                    valueItem: "a",
-                    // B422_15_23
-                    display: false,
-                    // B422_15_24
-                    numberDisplay: 3,
-                    // B422_15_25
-                    valueCriteria: "a",
-                    // B422_15_26
-                    continuationCategory: "a",
-                }
+            let b = {
+                index: 2,
+                // B422_15_22
+                valueItem: "a",
+                // B422_15_23
+                display: false,
+                // B422_15_24
+                numberDisplay: 3,
+                // B422_15_25
+                valueCriteria: "a",
+                // B422_15_26
+                continuationCategory: "a",
+            }
 
             self.referenceValueLs().push(new ReferenceValue(a));
             self.referenceValueLs().push(new ReferenceValue(b));
+            
+            
+            let c = {
+                        id: 1,
+                        // B422_15_32
+                        employmentStatus: "yen",
+                        // B422_15_33
+                        retireAge: true,
+                        // B422_15_34
+                        retireCourse: "yenjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+                    }
+            self.retireConditionLs().push(new RetireCond(c));
                dfd.resolve();
 
                 nts.uk.ui.block.clear();
 
             return dfd.promise();
+        }
+        
+        openCDialog(): void {
+            let self = this;
+            
+            nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
+            })
         }
 
     }
@@ -183,8 +205,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         numberDisplay: number;
         // B422_15_25
         valueCriteria: string;
-        // B422_15_26
-        continuationCategory: string;
     }
     
     class ReferenceValue {
@@ -197,8 +217,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         numberDisplay: KnockoutObservable<number>;
         // B422_15_25
         valueCriteria: KnockoutObservable<string>;
-        // B422_15_26
-        continuationCategory: KnockoutObservable<string>;
         constructor(param: IReferenceValue) {
             let self = this;
             self.index = param.index;
@@ -206,7 +224,33 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.display = ko.observable(param.display);
             self.numberDisplay = ko.observable(param.numberDisplay);
             self.valueCriteria = ko.observable(param.valueCriteria);
-            self.continuationCategory = ko.observable(param.continuationCategory);
+        }
+    }
+    
+    export interface IRetireCond {
+        id: number;
+        // B422_15_32
+        employmentStatus: string;
+        // B422_15_33
+        retireAge: boolean;
+        // B422_15_34
+        retireCourse: string;
+    }
+    
+    class RetireCond {
+        id: number;
+        // B422_15_32
+        employmentStatus: KnockoutObservable<string>;
+        // B422_15_33
+        retireAge: KnockoutObservable<boolean>;
+        // B422_15_34
+        retireCourse: KnockoutObservable<string>;
+        constructor(param: IRetireCond) {
+            let self = this;
+            self.id = param.id;
+            self.employmentStatus = ko.observable(param.employmentStatus);
+            self.retireAge = ko.observable(param.retireAge);
+            self.retireCourse = ko.observable(param.retireCourse);
         }
     }
 
