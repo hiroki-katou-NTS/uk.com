@@ -62,11 +62,6 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void registerApprovalData(ApprovalPersonReport domain) {
-		
-	}
-
-	@Override
 	public void add(ApprovalPersonReport domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}

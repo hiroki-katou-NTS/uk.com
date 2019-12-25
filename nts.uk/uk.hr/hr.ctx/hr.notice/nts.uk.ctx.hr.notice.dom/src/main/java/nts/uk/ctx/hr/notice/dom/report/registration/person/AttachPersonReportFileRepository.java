@@ -8,9 +8,6 @@ public interface AttachPersonReportFileRepository {
 	
 	void add(AttachmentPersonReportFile domain);
 	
-	void addAll(List<AttachmentPersonReportFile> domains);
-	
-	void delete(int reportID, String cid);
-	
+	void delete(String fileId , String cid);
 	
 }

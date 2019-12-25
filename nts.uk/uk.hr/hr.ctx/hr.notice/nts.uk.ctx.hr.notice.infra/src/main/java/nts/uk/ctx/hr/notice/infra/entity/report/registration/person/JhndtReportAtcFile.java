@@ -83,4 +83,12 @@ public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 				this.sampleFileID ,
 				this.sampleFileName );
 	}
+
+	public static JhndtReportAtcFile toEntity(AttachmentPersonReportFile domain) {
+		return new JhndtReportAtcFile(new JhndtReportAtcFilePK(domain.getFileId(), domain.getCid()),
+				domain.getReportID(), domain.getDocID(), domain.getDocName(), domain.getFileName(),
+				domain.isFileAttached() == true ? 1 : 0 , domain.getFileStorageDate(), domain.getMimeType(),
+				domain.getFileTypeName(), domain.getFileSize(), domain.isDelFlg(),
+				domain.getSampleFileID(), domain.getSampleFileName());
+	}
 }

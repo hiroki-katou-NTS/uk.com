@@ -15,8 +15,6 @@ public interface ApprovalPersonReportRepository {
 	
 	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid);
 	
-	void registerApprovalData(ApprovalPersonReport domain);
-
 	void add(ApprovalPersonReport domain);
 	
 	void addAll(List<ApprovalPersonReport> domains);
@@ -25,5 +23,5 @@ public interface ApprovalPersonReportRepository {
 	
 	void delete(int reportID, int phaseNum, int aprNum, String cid);
 	
-	void deleteByReportId(int reportID, String cid, int docID);
+	void deleteByReportId(int reportID, String cid);
 }

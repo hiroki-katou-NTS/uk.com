@@ -21,7 +21,7 @@ import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportR
 @Stateless
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
-	private static final String getListBySIds = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
+	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
 	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE c.pk.cid = :cid and c.inputSid = :sid";
 
 	
@@ -47,7 +47,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	
 	@Override
 	public List<RegistrationPersonReport> getListBySIds(String sid) {
-		return this.queryProxy().query(getListBySIds, JhndtReportRegis.class)
+		return this.queryProxy().query(getListBySId, JhndtReportRegis.class)
 				.setParameter("sid", sid).getList(c -> toDomain(c));
 	}
 
