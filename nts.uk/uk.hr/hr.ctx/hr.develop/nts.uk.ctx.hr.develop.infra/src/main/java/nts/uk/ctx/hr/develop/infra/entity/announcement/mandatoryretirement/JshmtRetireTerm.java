@@ -51,8 +51,7 @@ public class JshmtRetireTerm extends UkJpaEntity implements Serializable {
 	}
 	
 	public JshmtRetireTerm(String companyId, String historyId, MandatoryRetireTerm mandatoryRetireTerm) {
-		this.pkJshmtRetireEvalItem.historyId = historyId;
-		this.pkJshmtRetireEvalItem.empCommonMasterItemId = mandatoryRetireTerm.getEmpCommonMasterItemId();
+		this.pkJshmtRetireEvalItem = new JshmtRetireTermPK(historyId, mandatoryRetireTerm.getEmpCommonMasterItemId());
 		this.cId = companyId;
 		this.usageFlg = mandatoryRetireTerm.isUsageFlg()?1:0;
 		this.enableRetirePlanCourse = mandatoryRetireTerm.getEnableRetirePlanCourse().stream().map(
