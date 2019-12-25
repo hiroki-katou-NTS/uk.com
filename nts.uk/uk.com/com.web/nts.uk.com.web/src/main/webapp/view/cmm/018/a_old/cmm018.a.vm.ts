@@ -80,7 +80,6 @@ module nts.uk.com.view.cmm018.a {
             wpName: KnockoutObservable<string> = ko.observable("");
             //emp info: TH goi tu man application
             empInfoLabel: KnockoutObservable<string> = ko.observable("");
-            items: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor(transferData: any) {
                 let self = this;
                 //call method start page
@@ -186,10 +185,6 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }
                     self.cpA.valueHasMutated();
-                    if($('#grid_matome_container').length > 0){
-                        $("#grid_matome").ntsGrid("destroy");
-                    }
-                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA());
                 });
                 //---subscribe tab selected---
                 self.tabSelected.subscribe(function(codeChanged) {
@@ -376,6 +371,33 @@ module nts.uk.com.view.cmm018.a {
                      self.selectedEmployee(data.listEmployee);
                      __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(data.listEmployee);
                  }
+//                   onSearchAllClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                        __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onSearchOnlyClicked: function(data: vmbase.EmployeeSearchDto) {
+//                       self.showinfoSelectedEmployee(true);
+//                       let dataEmployee: vmbase.EmployeeSearchDto[] = [];
+//                       dataEmployee.push(data);
+//                       self.selectedEmployee(dataEmployee);
+//                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
+//                   },
+//                   onSearchOfWorkplaceClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                       self.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onSearchWorkplaceChildClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                       self.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onApplyEmployee: function(dataEmployee: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataEmployee);
+//                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
+//                   }
                 } 
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 // Init Fixed Table
@@ -383,8 +405,6 @@ module nts.uk.com.view.cmm018.a {
                 $("#fixed-tableWp").ntsFixedTable({ height: 550, width: 910 });
                 $("#fixed-tablePs").ntsFixedTable({ height: 530, width: 910 });
             }
-            
-            
             convertEmployeeCcg01ToKcp009(dataList : vmbase.EmployeeSearchDto[]) : void{
                 let self = this;    
                 self.employeeInputList([]);
@@ -481,10 +501,6 @@ module nts.uk.com.view.cmm018.a {
                         if(data == null || data === undefined){
                             self.lstCompany();
                             self.nameCompany('');
-                            if($('#grid_matome_container').length > 0){
-                                $("#grid_matome").ntsGrid("destroy");
-                            }
-                            __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA());
                             return;
                         } 
                         servicebase.getNameConfirmType().done(function(lstNameCfr){
@@ -511,10 +527,6 @@ module nts.uk.com.view.cmm018.a {
                                     self.listHistory([]);
                                     self.enableRegister(false);
                                     self.enableDelete(false);
-                                    if($('#grid_matome_container').length > 0){
-                                        $("#grid_matome").ntsGrid("destroy");
-                                    }
-                                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA());
                                 }else{
                                     //list company
                                 self.lstCompany(data.lstCompany);
@@ -551,10 +563,6 @@ module nts.uk.com.view.cmm018.a {
                         self.enableRegister(false); 
                         self.lstCompany([]);
                         self.enableDelete(false);
-                        if($('#grid_matome_container').length > 0){
-                            $("#grid_matome").ntsGrid("destroy");
-                        }
-                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA());
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -1082,7 +1090,7 @@ module nts.uk.com.view.cmm018.a {
              * open dialog K
              * mode A: まとめて登録モード
              */
-            openDialogK(obj: vmbase.ApprovalPhaseDto, approvalId: string, appTypeValue: number,employRootAtr: number, phaseOrder: number){
+            openDialogK(obj: vmbase.ApprovalPhaseDto, approvalId: string, appTypeValue: number,employRootAtr: number, int: number){
                 let self = __viewContext.viewModel.viewmodelA;
                 block.grayout();
                 self.approverInfor([]);
@@ -1090,12 +1098,12 @@ module nts.uk.com.view.cmm018.a {
                 let confirmedPerson = '';
                 _.each(obj.approver, function(item){
                     if(item.approvalAtr == 0){
-                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr, dispOrder: item.approverOrder}); 
+                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber}); 
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.employeeId;
                     }
                     }else{
-                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr, dispOrder: item.approverOrder});
+                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber});
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.jobTitleId;
                         }
@@ -1113,8 +1121,7 @@ module nts.uk.com.view.cmm018.a {
                                         formSetting: formSetting,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: confirmedPerson, //確定者
-                                        tab: self.tabSelected(),//０：会社、１：職場、２：個人
-                                        typeSetting: self.approverInfor().length == 0 ? 0 : self.approverInfor()[0].approvalAtr
+                                        tab: self.tabSelected()//０：会社、１：職場、２：個人
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     block.clear();
@@ -1132,15 +1139,15 @@ module nts.uk.com.view.cmm018.a {
                     let approvalAtr; 
                     let length = data.approverInfor.length
                     let lstAPhase = [data2.appPhase1,data2.appPhase2,data2.appPhase3,data2.appPhase4,data2.appPhase5]
-                    let color: boolean = length > 0 ? true : self.checkColor(lstAPhase, phaseOrder);
+                    let color: boolean = length > 0 ? true : self.checkColor(lstAPhase,int);
                     _.each(data.approverInfor, function(item, index){
                         approvalAtr = item.approvalAtr;
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
                         let confirmName = confirmedPerson == 1 ? '(確定)' : '';
                         approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,index,approvalAtr,confirmedPerson,confirmName));
                     });
-                   let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName, 0, phaseOrder);
-                switch(phaseOrder){
+                   let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName, 0,int);
+                switch(int){
                     case 1:
                          a = new vmbase.CompanyAppRootADto(color, data2.employRootAtr, appTypeValue, data2.appTypeName, approvalId, data2.historyId,data2.branchId,
                                 b,data2.appPhase2,data2.appPhase3,data2.appPhase4,data2.appPhase5);
@@ -1167,10 +1174,6 @@ module nts.uk.com.view.cmm018.a {
                     let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                     self.cpA(listHistoryNew);
                     self.cpA.valueHasMutated();
-                    if($('#grid_matome_container').length > 0){
-                        $("#grid_matome").ntsGrid("destroy");
-                    }
-                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA());
                 }); 
             }
             /**
@@ -1465,7 +1468,7 @@ module nts.uk.com.view.cmm018.a {
             checklist(list: Array<vmbase.ApprovalPhaseDto>): Array<vmbase.ApprovalPhaseDto>{
                 let self = this;
                 let listFix: Array<vmbase.ApprovalPhaseDto> = [];
-                let itemBonus: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],null,0,'',null,null);
+                let itemBonus: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],null,null,0,null,null,null);
                 for(let i: number = 1; i<=5; i++){
                     let a = self.findAppPhase(i,list);
                     if( a != null){
@@ -1585,18 +1588,18 @@ module nts.uk.com.view.cmm018.a {
              * find app phase
              * mode A: まとめて登録モード
              */
-            findAppPhase(phaseOrder: number,list: Array<vmbase.ApprovalPhaseDto> ): vmbase.ApprovalPhaseDto{
+            findAppPhase(orderNumber: number,list: Array<vmbase.ApprovalPhaseDto> ): vmbase.ApprovalPhaseDto{
                 return _.find(list, function(obj: vmbase.ApprovalPhaseDto) {
-                    return obj.phaseOrder == phaseOrder;
+                    return obj.orderNumber == orderNumber;
                 });
             }
             /**
              * find approver
              * mode A: まとめて登録モード
              */
-            findApprover(approverOrder: number,list: Array<vmbase.ApproverDto> ): vmbase.ApproverDto{
+            findApprover(orderNumber: number,list: Array<vmbase.ApproverDto> ): vmbase.ApproverDto{
                 return _.find(list, function(obj: vmbase.ApproverDto) {
-                    return obj.approverOrder == approverOrder;
+                    return obj.orderNumber == orderNumber;
                 });
             } 
             /**
@@ -1713,10 +1716,7 @@ module nts.uk.com.view.cmm018.a {
                             let name = self.findNameApp(com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType, com.company.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(com.lstAppPhase);
                             let color: boolean = com.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color, com.company.employmentRootAtr, 
-                                    com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType,
-                                    name, com.company.approvalId, com.company.historyId, com.company.branchId,
-                                    appPhase[0], appPhase[1], appPhase[2], appPhase[3], appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,com.company.employmentRootAtr,com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType,name,com.company.approvalId,com.company.historyId,com.company.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -1738,10 +1738,7 @@ module nts.uk.com.view.cmm018.a {
                             let name = self.findNameApp(wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType, wp.workplace.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(wp.lstAppPhase);
                             let color: boolean = wp.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color, wp.workplace.employmentRootAtr,
-                                wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType,
-                                name, wp.workplace.approvalId, wp.workplace.historyId, wp.workplace.branchId,
-                                appPhase[0], appPhase[1], appPhase[2], appPhase[3], appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,wp.workplace.employmentRootAtr,wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType,name,wp.workplace.approvalId,wp.workplace.historyId,wp.workplace.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -1764,10 +1761,7 @@ module nts.uk.com.view.cmm018.a {
                             let name = self.findNameApp(ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType, ps.person.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(ps.lstAppPhase);
                             let color: boolean = ps.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color, ps.person.employmentRootAtr,
-                                    ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType,
-                                    name, ps.person.approvalId, ps.person.historyId, ps.person.branchId,
-                                    appPhase[0], appPhase[1], appPhase[2], appPhase[3], appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,ps.person.employmentRootAtr,ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType,name,ps.person.approvalId,ps.person.historyId,ps.person.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -2138,12 +2132,12 @@ module nts.uk.com.view.cmm018.a {
                 let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
                 _.each(obj.approver, function(item, index){
                     if(item.approvalAtr == 0){
-                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr, dispOrder: item.approverOrder}); 
+                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber}); 
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.employeeId;
                     }
                     }else{
-                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr, dispOrder: item.approverOrder});
+                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber});
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.jobTitleId;
                         }

@@ -7,40 +7,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import service = cmm018.k.service;
     import block = nts.uk.ui.block;
     export class ScreenModel{
-        //==========
-        lstGroup: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-        lstGroup1: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-        lstGroup2: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-        lstSpec1: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-        lstSpec2: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-        selectCode : KnockoutObservable<string> = ko.observable("");
-        selectCode1 : KnockoutObservable<string> = ko.observable("");
-        selectCode2 : KnockoutObservable<string> = ko.observable("");
-        //承認形態
-        formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([
-                new ButtonSelect(1, resource.getText('CMM018_63')),//全員承認
-                new ButtonSelect(2, resource.getText('CMM018_66'))//誰か一人
-                ]);
-        //CA NHAN
-        columns: KnockoutObservableArray<any> = ko.observableArray([
-                    { headerText: 'id', prop: 'id', width: '0px', hidden: true },
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '60px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '175px' }
-                ]);
-        selectFormSet: KnockoutObservable<number> = ko.observable(1);
-        //GROUP
-        columns2: KnockoutObservableArray<any> = ko.observableArray([
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '70px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '310px' }
-                ]);
-        selectFormSetG: KnockoutObservable<number> = ko.observable(1);
-        //CHI DINH
-        columns3: KnockoutObservableArray<any> = ko.observableArray([
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '60px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '185px' }
-                ]);
-        selectFormSetS: KnockoutObservable<number> = ko.observable(1);
-        //==========
         //enable list workplace
         enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
@@ -48,19 +14,20 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //承認者指定種類
         typeSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
         selectTypeSet: KnockoutObservable<number> = ko.observable(null);
-
-        
+        //承認形態
+        formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
+        selectFormSet: KnockoutObservable<number> = ko.observable(null);
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
         employeeList: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
-       
         multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
         approverList : KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         currentApproveCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        columns: KnockoutObservableArray<any> = ko.observableArray([]);
         currentEmployeeCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
         items: KnockoutObservableArray<any> = ko.observableArray([]);
         //確定者の選択
         itemListCbb:KnockoutObservableArray<any> = ko.observableArray([]);
-        cbbEnable: KnockoutObservable<boolean> = ko.observable(false);
+        cbbEnable: KnockoutObservable<boolean> = ko.observable(true);
         selectedCbbCode : KnockoutObservable<string> = ko.observable("");
         //↓ & ↑
         currentCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -79,8 +46,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 baseDate: ko.observable(this.standardDate()),
                 selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
                 alreadySettingList: ko.observableArray([]),
-                systemType : 2,
-                width: 310
+                systemType : 2
         };
         //選択可能な職位一覧
         //承認者の登録(個人別)
@@ -96,7 +62,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
-            self.selectTypeSet(data.typeSetting);
             self.confirm = data.confirmedPerson;
             //change 承認形態
             self.selectFormSet.subscribe(function(newValues){
@@ -108,18 +73,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.cbbEnable(false);    
                 }
             });
+            self.selectTypeSet(0);
             self.getData();
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appTypeName);
                 //承認形態
-                if(data.typeSetting == TypeSet.PERSON){
-                    self.selectFormSet(data.formSetting);
-                }else if(data.typeSetting == TypeSet.GROUP){
-                    self.selectFormSetG(data.formSetting);
-                }else{
-                    self.selectFormSetS(data.formSetting);
-                }
+                self.selectFormSet(data.formSetting);                
                 
                 //承認者の登録(個人別): 非表示
                 if(data.tab === self.personTab){
@@ -131,11 +91,18 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //基準日
             this.standardDate(moment(new Date()).toDate());
             //承認者指定種類
-            self.typeSetting([new ButtonSelect(1, resource.getText('CMM018_57')),
-                                new ButtonSelect(2, resource.getText('CMM018_100')),
-                                new ButtonSelect(0, resource.getText('CMM018_56'))]);
+            self.typeSetting.push(new ButtonSelect(0, resource.getText('CMM018_56')));
+            self.typeSetting.push(new ButtonSelect(1, resource.getText('CMM018_57')));
+            //承認形態
+            self.formSetting.push(new ButtonSelect(1, resource.getText('CMM018_63')));
+            self.formSetting.push(new ButtonSelect(2, resource.getText('CMM018_66')));
             
-            
+            //選択された承認者一覧
+            self.columns = ko.observableArray([
+                    { headerText: 'id', prop: 'id', width: '0px', hidden: true },
+                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '120px' },
+                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '210px' }
+                ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
                 
@@ -151,10 +118,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     nts.uk.ui.errors.clearAll();
                 }
                 self.employeeList.removeAll();
-                if(newValue == TypeSet.PERSON || newValue == TypeSet.SPEC_WKP){
+                if(newValue == 0){
                     self.enableListWp(true);
                     $('#tree-grid').ntsTreeComponent(self.treeGrid);
-               }else{
+                }else{
                     self.setDataForSwapList(newValue);
                     self.enableListWp(false);
                 }
@@ -225,7 +192,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //clear data before push employee new
             self.employeeList([]);
             //個人設定 (employee setting)
-            if(selectTypeSet == TypeSet.PERSON || selectTypeSet == TypeSet.SPEC_WKP){
+            if(selectTypeSet === self.personSetting){
                 block.invisible();
                 self.getDataWpl().done(function(lstA){
                     block.clear();
@@ -234,6 +201,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }).fail(()=>{
                     block.clear();
                 });
+                
+                
+                
+                
+
             //職位設定(job setting)
             }else{
                 block.invisible();
@@ -244,8 +216,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         tmp.push(job);
                     });
                     self.employeeList(tmp);
-                    self.lstGroup(tmp);
-                    self.lstGroup2(tmp);
                     block.clear(); 
                 }).fail(function(res: any){
                     block.clear();
@@ -291,7 +261,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                                         formSetting: self.selectFormSet(),//承認形態
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
-                                        selectTypeSet: self.selectTypeSet(),//承認者指定種類 ( 個人,  職格, 特定職場)
+                                        selectTypeSet: self.selectTypeSet(),
                                         approvalFormName: self.selectFormSet() == self.formAll ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
                                         }
             setShared("CMM018K_DATA",data );
@@ -321,13 +291,32 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }
             return dataRes;
         }
-        nextItem(){
-            alert('Next');
-        }
-        prevItem(){
-            alert('Prev');
-        }
-
+        /**
+         * load data new when base date is changed 
+         */
+        applyDataSearch(): void {
+            let self = this;
+            block.invisible();
+            if (nts.uk.ui.errors.hasError()){return;}
+            if(self.selectTypeSet() == 0){
+                self.treeGrid.baseDate(this.standardDate());
+                $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                block.clear();
+            }else{
+                self.employeeList([]);
+                service.getJobTitleInfor(self.standardDate()).done(function(data: string){
+                    _.forEach(data, function(value: service.model.JobtitleInfor){
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
+                        self.employeeList.push(job);
+                    });
+                    block.clear();    
+                }).fail(function(res: any){
+                    block.clear();
+                    nts.uk.ui.dialog.alert(res.messageId);
+                });
+            }
+             
+         }
     }//end ScreenModel
     interface ITreeGrid {
             treeType: number;
@@ -340,7 +329,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
             systemType : number;
-            width?: number;
         }
     class SimpleObject {
             key: KnockoutObservable<string>;
@@ -358,12 +346,5 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             this.name = name;    
         }
     }
-    enum TypeSet {
-        /** 個人*/
-        PERSON = 0,
-        /** 職格*/
-        GROUP = 1,
-        /** 特定職場*/
-        SPEC_WKP =2
-    }
+    
 }

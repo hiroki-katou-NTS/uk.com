@@ -289,8 +289,8 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
 			List<ApproverDto> lstApproverDto = new ArrayList<ApproverDto>();
 			List<Approver> listApprover = new ArrayList<Approver>();
-			//get All Approval Phase by BranchId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
+			//get All Approval Phase by approvalId
+			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getApprovalId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
 				listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
@@ -339,8 +339,8 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
 			List<ApproverDto> lstApproverDto = new ArrayList<>();
 			List<Approver> lstApprover = new ArrayList<>();
-			//get All Approval Phase by BranchId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getBranchId());
+			//get All Approval Phase by ApprovalId
+			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getApprovalId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
 				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
@@ -382,8 +382,8 @@ public class CommonApprovalRootFinder {
 			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
 			List<Approver> lstApprover = new ArrayList<>();
 			List<ApproverDto> lstApproverDto = new ArrayList<>();
-			//get All Approval Phase by BranchId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getBranchId());
+			//get All Approval Phase by ApprovalId
+			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getApprovalId());
 			for (ApprovalPhase approvalPhase : lstAppPhase) {
 				//get All Approver By ApprovalPhaseId
 				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
@@ -582,7 +582,7 @@ public class CommonApprovalRootFinder {
 				for(PersonApprovalRoot psAppRoot: item.getValue()){
 					startDate = psAppRoot.getApprRoot().getHistoryItems().get(0).start();
 					endDate   = psAppRoot.getApprRoot().getHistoryItems().get(0).end();
-					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
+					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getApprovalId());
 					if(psAppPhase.isPresent()){
 						Optional<Approver> approver1 = psAppPhase.get().getApprovers().stream().filter(x-> x.getApproverOrder() == 1).findFirst();
 						PersonImport person = null;

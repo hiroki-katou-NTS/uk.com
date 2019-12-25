@@ -464,10 +464,8 @@ module nts.uk.com.view.cmm018.shr {
         }
         export class ApprovalPhaseDto{
             approver: Array<ApproverDto>;
-            /**分岐ID*/
-            branchId: string;
-            /**承認フェーズID*/
-            approvalPhaseId: string;
+            /**承認ID*/
+            approvalId: string;
             /**承認形態*/
             approvalForm: number;
             /**承認形態 Name*/
@@ -475,15 +473,14 @@ module nts.uk.com.view.cmm018.shr {
             /**閲覧フェーズ*/
             browsingPhase: number;
             /**順序*/
-            orderNumber: number;
-            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, appFormName: string, browsingPhase: number, orderNumber: number){
+            phaseOrder: number;
+            constructor(approver: Array<ApproverDto>, approvalId: string, approvalForm: number, appFormName: string, browsingPhase: number, phaseOrder: number){
                 this.approver = approver;
-                this.branchId = branchId;
-                this.approvalPhaseId = approvalPhaseId;
+                this.approvalId = approvalId;
                 this.approvalForm = approvalForm;
                 this.appFormName = appFormName;
                 this.browsingPhase = browsingPhase;
-                this.orderNumber = orderNumber;
+                this.phaseOrder = phaseOrder;
             }
         }
         export class ApproverDto{
@@ -496,7 +493,7 @@ module nts.uk.com.view.cmm018.shr {
             /**社員Name*/
             name: string;
             /**順序*/
-            orderNumber: number;
+            approverOrder: number;
             /**区分*/
             approvalAtr: number;
             /**確定者*/
@@ -717,5 +714,25 @@ module nts.uk.com.view.cmm018.shr {
             WORKPLACE = 1,
             PERSON = 2
         }
+        export interface Root {
+            typeRoot: string;
+            appName:string;
+            phase1:string;
+            phase2:string;
+            phase3:string;
+            phase4:string;
+            phase5:string;
+            deleteRoot: string;    
+        }
+        export class CellState {
+            rowId: number;
+            columnKey: string;
+            state: Array<any>
+            constructor(rowId: any, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
+        }  
     }
 }

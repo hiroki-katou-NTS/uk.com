@@ -43,11 +43,11 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-				approvalFrame.setApproverID("");
-				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(null);
-				approvalFrame.setApprovalReason("");
+//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+//				approvalFrame.setApproverID("");
+//				approvalFrame.setRepresenterID("");
+//				approvalFrame.setApprovalDate(null);
+//				approvalFrame.setApprovalReason("");
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
@@ -69,15 +69,15 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-					return;
-				}
-				if(Strings.isBlank(approvalFrame.getRepresenterID())){
-					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getApproverID(), false));
-				} else {
-					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getRepresenterID(), true));
-				}
-				listApprover.addAll(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+//				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+//					return;
+//				}
+//				if(Strings.isBlank(approvalFrame.getRepresenterID())){
+//					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getApproverID(), false));
+//				} else {
+//					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getRepresenterID(), true));
+//				}
+//				listApprover.addAll(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 			break;
 		}

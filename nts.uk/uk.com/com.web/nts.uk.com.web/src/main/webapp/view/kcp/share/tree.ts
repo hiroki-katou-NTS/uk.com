@@ -132,6 +132,7 @@ module kcp.share.tree {
          * Show all levels of department workplace on start
          */
         isFullView?: boolean;
+        width?: number;
     }
 
     /**
@@ -220,6 +221,7 @@ module kcp.share.tree {
 //
 //        $inputId: KnockoutObservable<string>;
         //end
+        setWidth: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.searchBoxId = nts.uk.util.randomId();
@@ -265,6 +267,10 @@ module kcp.share.tree {
             let self = this;
             let dfd = $.Deferred<void>();
             self.data = data;
+            if(data.width){
+                self.treeStyle.width = data.width;  
+                self.setWidth(true);
+            }
             self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;
             self.$input = $input;
             //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
@@ -436,14 +442,17 @@ module kcp.share.tree {
 
             // calculate height tree
             self.calHeightTree(300, data);
-
+            let nodeTextWidth = 325;
+            if(self.setWidth()){
+                nodeTextWidth = self.data.width;
+            }
             self.treeComponentColumn = [
             //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
 //                { headerText: "", key: 'id', dataType: "string", hidden: true },
             //end
                 {
-                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 325, dataType: "string",
+                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: nodeTextWidth, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
                 }
             ];
@@ -479,6 +488,9 @@ module kcp.share.tree {
 
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
+            if(data.width && self.setWidth()){
+                self.treeStyle.width = data.width;
+            }else
             if (self.isFullView()) {
                 self.treeStyle.width = widthColText + data.isShowAlreadySet ? 100 : 30;
 

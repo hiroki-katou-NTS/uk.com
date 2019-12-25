@@ -60,7 +60,7 @@ public class WwfdtApprovalRootDay extends UkJpaEntity {
 				.recordDate(approvalRootState.getApprovalRecordDate())
 				.listWwfdtApprovalPhaseDay(
 						approvalRootState.getListApprovalPhaseState().stream()
-						.map(x -> WwfdtApprovalPhaseDay.fromDomain(companyID, approvalRootState.getApprovalRecordDate(), x))
+						.map(x -> WwfdtApprovalPhaseDay.fromDomain(companyID, approvalRootState.getRootStateID(), x))
 						.collect(Collectors.toList()))
 				.build();
 	}

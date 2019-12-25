@@ -50,47 +50,47 @@ public class DenyImpl implements DenyService {
 			if(CollectionUtil.isEmpty(approvers)){
 				continue;
 			}
-			Boolean allFrameUnapproveFlag = approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
-			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&allFrameUnapproveFlag;
-			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-				Boolean canDenyCheckFlag = this.canDenyCheck(approvalRootState, approvalPhaseState.getPhaseOrder()-1, employeeID);
-				if(canDenyCheckFlag.equals(Boolean.FALSE)){
-					continue;
-				}
-			}
-			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-					if(!approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()).contains(employeeID)){
-						List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-							approvalFrame.setApproverID("");
-							approvalFrame.setRepresenterID(employeeID);
-							approvalFrame.setApprovalDate(GeneralDate.today());
-							approvalFrame.setApprovalReason(memo);
-							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-							executedFlag = true;
-							continue;
-						} else {
-							continue;
-						}
-					}
-				} else {
-					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))||
-						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
-						continue;
-					}
-				}
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-				approvalFrame.setApproverID(employeeID);
-				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(GeneralDate.today());
-				approvalFrame.setApprovalReason(memo);
-				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-				executedFlag = true;
-			}
+//			Boolean allFrameUnapproveFlag = approvalPhaseState.getListApprovalFrame().stream()
+//				.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
+//			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&allFrameUnapproveFlag;
+//			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
+//				Boolean canDenyCheckFlag = this.canDenyCheck(approvalRootState, approvalPhaseState.getPhaseOrder()-1, employeeID);
+//				if(canDenyCheckFlag.equals(Boolean.FALSE)){
+//					continue;
+//				}
+//			}
+//			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+//				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+//					if(!approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()).contains(employeeID)){
+//						List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+//						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+//						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+//							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+//							approvalFrame.setApproverID("");
+//							approvalFrame.setRepresenterID(employeeID);
+//							approvalFrame.setApprovalDate(GeneralDate.today());
+//							approvalFrame.setApprovalReason(memo);
+//							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+//							executedFlag = true;
+//							continue;
+//						} else {
+//							continue;
+//						}
+//					}
+//				} else {
+//					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))||
+//						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
+//						continue;
+//					}
+//				}
+//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+//				approvalFrame.setApproverID(employeeID);
+//				approvalFrame.setRepresenterID("");
+//				approvalFrame.setApprovalDate(GeneralDate.today());
+//				approvalFrame.setApprovalReason(memo);
+//				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+//				executedFlag = true;
+//			}
 			approvalRootStateRepository.update(approvalRootState, rootType);
 			break;
 		}
@@ -116,20 +116,20 @@ public class DenyImpl implements DenyService {
 		}
 		Optional<ApprovalFrame> opConfirmApprovalFrame = lowerPhase.getListApprovalFrame().stream()
 		 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-		if(opConfirmApprovalFrame.isPresent()){
-			ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
-			if((Strings.isNotBlank(confirmApprovalFrame.getApproverID())&&confirmApprovalFrame.getApproverID().equals(employeeID))||
-				(Strings.isNotBlank(confirmApprovalFrame.getRepresenterID())&&confirmApprovalFrame.getRepresenterID().equals(employeeID))){
-				canDenyFlag = false;
-			} else {
-				canDenyFlag = true;
-			}
-			return canDenyFlag;
-		}
-		canDenyFlag = lowerPhase.getListApprovalFrame().stream()
-			.filter(x -> (Strings.isNotBlank(x.getApproverID())&&x.getApproverID().equals(employeeID))||
-					(Strings.isNotBlank(x.getRepresenterID())&&x.getRepresenterID().equals(employeeID)))
-			.findAny().map(y -> false).orElse(true);
+//		if(opConfirmApprovalFrame.isPresent()){
+//			ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
+//			if((Strings.isNotBlank(confirmApprovalFrame.getApproverID())&&confirmApprovalFrame.getApproverID().equals(employeeID))||
+//				(Strings.isNotBlank(confirmApprovalFrame.getRepresenterID())&&confirmApprovalFrame.getRepresenterID().equals(employeeID))){
+//				canDenyFlag = false;
+//			} else {
+//				canDenyFlag = true;
+//			}
+//			return canDenyFlag;
+//		}
+//		canDenyFlag = lowerPhase.getListApprovalFrame().stream()
+//			.filter(x -> (Strings.isNotBlank(x.getApproverID())&&x.getApproverID().equals(employeeID))||
+//					(Strings.isNotBlank(x.getRepresenterID())&&x.getRepresenterID().equals(employeeID)))
+//			.findAny().map(y -> false).orElse(true);
 		return canDenyFlag;
 	}
 }

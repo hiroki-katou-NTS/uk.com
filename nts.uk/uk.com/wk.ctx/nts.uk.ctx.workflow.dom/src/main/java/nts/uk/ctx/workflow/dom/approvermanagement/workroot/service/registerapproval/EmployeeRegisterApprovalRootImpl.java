@@ -211,7 +211,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				for (EmpOrderApproverAsApp c : appr.getLstEmpInfo()) {
 					lstAppr.add(Approver.createSimpleFromJavaType("", "", 1, 1, "", c.getEmployeeName(), 0, c.isConfirmPerson() ? 1:0, null));
 				}
-				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", appr.getPhaseNumber(), 1, 1, lstAppr));
+				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", appr.getPhaseNumber(), 1, 0, lstAppr));
 			}
 			err = collectApprRootService.checkApprovalRoot(approvalPhases, lstadjutst);
 		} else {

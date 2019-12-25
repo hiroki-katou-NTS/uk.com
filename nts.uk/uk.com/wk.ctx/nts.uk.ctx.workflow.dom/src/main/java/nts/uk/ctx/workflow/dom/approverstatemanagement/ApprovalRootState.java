@@ -46,7 +46,7 @@ public class ApprovalRootState extends AggregateRoot {
 					.approvalRecordDate(date)
 					.employeeID(employeeID)
 					.listApprovalPhaseState(approvalRootState.getListApprovalPhaseState().stream()
-							.map(x -> ApprovalPhaseState.createFromFirst(companyID, date, appID, x)).collect(Collectors.toList()))
+							.map(x -> ApprovalPhaseState.createFromFirst(date, x)).collect(Collectors.toList()))
 					.build();
 		}
 		return approvalRootState;

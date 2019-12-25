@@ -410,65 +410,66 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 
 	private ApprovalRootState createFromApprovalPhaseList(String companyID, GeneralDate date,
 			List<ApprovalPhase> listApprovalPhase, String histotyID) {
-		List<ApprovalPhaseState> listApprovalPhaseState = listApprovalPhase.stream().map(approvalPhase -> {
-			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
-			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
-			.filter(approver -> Strings.isBlank(approver.getJobTitleId()))
-			.map(approver -> {
-				List<ApproverInfor> listApproverState = new ArrayList<>();
-				listApproverState.add(
-						new ApproverInfor(
-								null, 
-								approvalPhase.getPhaseOrder(), 
-								approver.getApproverOrder(), 
-								approver.getEmployeeId(),
-								companyID,
-								date));
-				return ApprovalFrame.firstCreate(null, approvalPhase.getPhaseOrder(), approver.getApproverOrder(), approver.getConfirmPerson(), listApproverState);
-			}).collect(Collectors.toList());
-			resultApprovalFrame.addAll(listApprovalFrameByPerson);
+//		List<ApprovalPhaseState> listApprovalPhaseState = listApprovalPhase.stream().map(approvalPhase -> {
+//			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
+//			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
+//			.filter(approver -> Strings.isBlank(approver.getJobTitleId()))
+//			.map(approver -> {
+//				List<ApproverInfor> listApproverState = new ArrayList<>();
+//				listApproverState.add(
+//						new ApproverInfor(
+//								null, 
+//								approvalPhase.getPhaseOrder(), 
+//								approver.getApproverOrder(), 
+//								approver.getEmployeeId(),
+//								companyID,
+//								date));
+//				return ApprovalFrame.firstCreate(null, approvalPhase.getPhaseOrder(), approver.getApproverOrder(), approver.getConfirmPerson(), listApproverState);
+//			}).collect(Collectors.toList());
+//			resultApprovalFrame.addAll(listApprovalFrameByPerson);
 			
-			List<Approver> allListApproverByJob = approvalPhase.getApprovers().stream()
-			.filter(approver -> !Strings.isBlank(approver.getJobTitleId()))
-			.collect(Collectors.toList());
-			Map<String, List<Approver>> findMap = allListApproverByJob.stream()
-					.collect(Collectors.groupingBy(Approver::getJobTitleId));
-			findMap.forEach((k,v) -> {
-				List<ApproverInfor> listApproverStateByJob = v.stream()
-						.map(approver -> new ApproverInfor(
-								null, 
-								approvalPhase.getPhaseOrder(), 
-								approver.getApproverOrder(), 
-								approver.getEmployeeId(),
-								companyID,
-								date))
-						.collect(Collectors.toList()); 
-						if(!CollectionUtil.isEmpty(listApproverStateByJob)){
-							ApprovalFrame approvalFrameByJob = 
-									ApprovalFrame.firstCreate(
-											null, 
-											approvalPhase.getPhaseOrder(), 
-											listApproverStateByJob.get(0).getFrameOrder(), 
-											v.get(0).getConfirmPerson(), 
-											listApproverStateByJob);
-							
-							resultApprovalFrame.add(approvalFrameByJob);
-						}
-			});
-			resultApprovalFrame.sort((a,b)-> a.getFrameOrder().compareTo(b.getFrameOrder()));
-			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState(
-					null, 
-					approvalPhase.getPhaseOrder(), 
-					ApprovalBehaviorAtr.UNAPPROVED, 
-					EnumAdaptor.valueOf(approvalPhase.getApprovalForm().value, ApprovalForm.class), 
-					resultApprovalFrame);
-			return approvalPhaseState;
-		}).sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
-				.collect(Collectors.toList());
-		return ApprovalRootState.builder()
-				.historyID(histotyID)
-				.listApprovalPhaseState(listApprovalPhaseState)
-				.build();
+//			List<Approver> allListApproverByJob = approvalPhase.getApprovers().stream()
+//			.filter(approver -> !Strings.isBlank(approver.getJobTitleId()))
+//			.collect(Collectors.toList());
+//			Map<String, List<Approver>> findMap = allListApproverByJob.stream()
+//					.collect(Collectors.groupingBy(Approver::getJobTitleId));
+//			findMap.forEach((k,v) -> {
+//				List<ApproverInfor> listApproverStateByJob = v.stream()
+//						.map(approver -> new ApproverInfor(
+//								null, 
+//								approvalPhase.getPhaseOrder(), 
+//								approver.getApproverOrder(), 
+//								approver.getEmployeeId(),
+//								companyID,
+//								date))
+//						.collect(Collectors.toList()); 
+//						if(!CollectionUtil.isEmpty(listApproverStateByJob)){
+//							ApprovalFrame approvalFrameByJob = 
+//									ApprovalFrame.firstCreate(
+//											null, 
+//											approvalPhase.getPhaseOrder(), 
+//											listApproverStateByJob.get(0).getFrameOrder(), 
+//											v.get(0).getConfirmPerson(), 
+//											listApproverStateByJob);
+//							
+//							resultApprovalFrame.add(approvalFrameByJob);
+//						}
+//			});
+//			resultApprovalFrame.sort((a,b)-> a.getFrameOrder().compareTo(b.getFrameOrder()));
+//			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState(
+//					null, 
+//					approvalPhase.getPhaseOrder(), 
+//					ApprovalBehaviorAtr.UNAPPROVED, 
+//					EnumAdaptor.valueOf(approvalPhase.getApprovalForm().value, ApprovalForm.class), 
+//					resultApprovalFrame);
+//			return approvalPhaseState;
+//		}).sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+//				.collect(Collectors.toList());
+//		return ApprovalRootState.builder()
+//				.historyID(histotyID)
+//				.listApprovalPhaseState(listApprovalPhaseState)
+//				.build();
+		return null;
 	}
 
 	@Override

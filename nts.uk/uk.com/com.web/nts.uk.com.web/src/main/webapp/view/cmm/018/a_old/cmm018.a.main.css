@@ -1,5 +1,5 @@
 .contents-area {
-	width: 1370px;
+	width: 1260px;
 }
 
 .contents-area-tabpanel-3 {
@@ -122,66 +122,4 @@ table#fixed-tablePsB tbody tr {
 }
 .aaa{
 	 text-overflow: clip !important;
-}
-#grid_matome_virtualContainer {
-	border:1px solid #dddddd
-}
-.button-delete {
-	background-image: url(../images/137.png);
-	width:32px;
-	height:32px;
-}
-.text-format{
-	white-space: nowrap;
-}
-table#fixed-table2 tbody td {
-	border: 1px solid #CCC;
-}
-table#grid_matome tbody td {
-	white-space: nowrap;
-	font-size: 14px;
-	font-style: Meiryo;
-}
-.approver{
-	height: calc(100% - 23px);
-}
-.from {
-	height: 23px;
-}
-.nts-grid-wrapper table tr td.ui-state-hover.appNameBgColor {
-	background-color: #CFF1A5;
-}
-
-.appNameBgColor {
-	background-color: #CFF1A5;
-}
-
-table#grid_matome tr td.ui-state-hover.phaseBgColor {
-	background-color: #C5F1F7;
-}
-.phaseBgColor{
-	background-color: #C5F1F7;
-}
-table#grid_matome tr td.ui-state-hover.phaseBgColorNot {
-	background-color: white;
-}
-.phaseBgColorNot{
-	background-color: white;
-}
-.approver-line {
-	margin: 3px;
-	width: max-content;
-}
-table #grid_matome_headers thead tr th {
-	text-align: center;
-}
-table #grid_matome tbody tr td:LAST-CHILD {
-	text-align: center;
-}
-.td-delete {
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
-table#grid_matome_headers_fixed thead tr th{
-	text-align: center;
 }

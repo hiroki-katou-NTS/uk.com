@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -48,24 +49,24 @@ public class WwfdtApproverMonth extends UkJpaEntity {
 		return wwfdpApproverMonthPK;
 	}
 	
-	public static WwfdtApproverMonth fromDomain(String companyID, GeneralDate date, ApproverInfor approverState){
+	public static WwfdtApproverMonth fromDomain(String companyID, String rootId, int phaseOrder, ApprovalFrame frame, ApproverInfor approverState){
 		return WwfdtApproverMonth.builder()
 				.wwfdpApproverMonthPK(
 						new WwfdpApproverMonthPK(
-								approverState.getRootStateID(), 
-								approverState.getPhaseOrder(), 
-								approverState.getFrameOrder(), 
+								rootId, 
+								phaseOrder, 
+								frame.getFrameOrder(),
 								approverState.getApproverID()))
 				.companyID(companyID)
-				.recordDate(date)
+				.recordDate(frame.getAppDate())
 				.build();
 	}
 	
 	public ApproverInfor toDomain(){
 		return ApproverInfor.builder()
-				.rootStateID(this.wwfdpApproverMonthPK.rootStateID)
-				.phaseOrder(this.wwfdpApproverMonthPK.phaseOrder)
-				.frameOrder(this.wwfdpApproverMonthPK.frameOrder)
+//				.rootStateID(this.wwfdpApproverMonthPK.rootStateID)
+//				.phaseOrder(this.wwfdpApproverMonthPK.phaseOrder)
+//				.frameOrder(this.wwfdpApproverMonthPK.frameOrder)
 				.approverID(this.wwfdpApproverMonthPK.approverID)
 				.build();
 	}

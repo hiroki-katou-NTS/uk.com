@@ -32,9 +32,9 @@ public class ApprovalPhase extends AggregateRoot{
 	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
 			String approvalId,
+			int phaseOrder,
 			int approvalForm,
 			int browsingPhase,
-			int phaseOrder,
 			List<Approver>  approvers){
 		return new ApprovalPhase(companyId,
 				approvalId,

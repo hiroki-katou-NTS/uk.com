@@ -226,7 +226,7 @@ public class SettingOfManagerFinder {
 		// ドメインモデル「承認フェーズ」を取得する
 		Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
 		if (commonApprovalPhase.isPresent()) {
-			commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
+			commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getApproverOrder() - p2.getApproverOrder());
 			// 「承認者」を取得する
 			Approver firstApprover = commonApprovalPhase.get().getApprovers().get(0);
 			// 履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）

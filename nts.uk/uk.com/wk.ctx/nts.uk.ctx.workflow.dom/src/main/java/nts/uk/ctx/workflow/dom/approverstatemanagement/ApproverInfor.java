@@ -1,17 +1,16 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 /**
  * 承認枠 : 承認者
- * @author Doan Duy Hung
+ * @author hoatt
  *
  */
 @AllArgsConstructor
@@ -20,10 +19,6 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Builder
 public class ApproverInfor extends DomainObject {
-	
-	private String rootStateID;
-	
-	private String companyID;
 	/**承認者*/
 	private String approverID;
 	/**承認区分*/
@@ -35,15 +30,19 @@ public class ApproverInfor extends DomainObject {
 	/**理由*/
 	private String approvalReason;
 	
-	public static ApproverInfor createFromFirst(String companyID, GeneralDate date, String rootStateID, ApproverInfor approverState){
-		if(Strings.isBlank(approverState.getRootStateID())){
+	public static ApproverInfor createFromFirst(ApproverInfor approverInfo){
 			return ApproverInfor.builder()
-					.rootStateID(rootStateID)
-					.approverID(approverState.getApproverID())
-					.companyID(companyID)
-//					.approvalDate(date)
+					.approverID(approverInfo.getApproverID())
+					.approvalAtr(approverInfo.getApprovalAtr())
+					.agentID(approverInfo.getAgentID())
+					.approvalDate(approverInfo.getApprovalDate())
+					.approvalReason(approverInfo.getApprovalReason())
 					.build();
-		}
-		return approverState;
+	}
+	public static ApproverInfor convert(String approverID,
+			int approvalAtr, String agentID, GeneralDate approvalDate, String approvalReason){
+		return new  ApproverInfor (approverID,
+				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
+				agentID, approvalDate, approvalReason);
 	}
 }

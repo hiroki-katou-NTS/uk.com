@@ -93,36 +93,36 @@ public class ApproveImpl implements ApproveService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-					return;
-				}
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-					List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-					if(!listApprover.contains(employeeID)){
-						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-							approvalFrame.setApproverID("");
-							approvalFrame.setRepresenterID(employeeID);
-							approvalFrame.setApprovalDate(GeneralDate.today());
-							approvalFrame.setApprovalReason(memo);
-							return;
-						}
-						return;
-					}
-				} else {
-					// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
-					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
-						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
-						return;
-					}
-				}
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-				approvalFrame.setApproverID(employeeID);
-				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(GeneralDate.today());
-				approvalFrame.setApprovalReason(memo);
-				return;
+//				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+//					return;
+//				}
+//				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+//					List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+//					if(!listApprover.contains(employeeID)){
+//						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+//						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+//							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+//							approvalFrame.setApproverID("");
+//							approvalFrame.setRepresenterID(employeeID);
+//							approvalFrame.setApprovalDate(GeneralDate.today());
+//							approvalFrame.setApprovalReason(memo);
+//							return;
+//						}
+//						return;
+//					}
+//				} else {
+//					// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
+//					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
+//						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
+//						return;
+//					}
+//				}
+//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+//				approvalFrame.setApproverID(employeeID);
+//				approvalFrame.setRepresenterID("");
+//				approvalFrame.setApprovalDate(GeneralDate.today());
+//				approvalFrame.setApprovalReason(memo);
+//				return;
 			});
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){
@@ -139,11 +139,11 @@ public class ApproveImpl implements ApproveService {
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState) {
 		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
-			Optional<ApprovalFrame> opApprovalFrameNotApprove = approvalPhaseState.getListApprovalFrame().stream()
-			.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-			if(!opApprovalFrameNotApprove.isPresent()){
-				return true;
-			}
+//			Optional<ApprovalFrame> opApprovalFrameNotApprove = approvalPhaseState.getListApprovalFrame().stream()
+//			.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
+//			if(!opApprovalFrameNotApprove.isPresent()){
+//				return true;
+//			}
 			List<String> listUnapproveApprover = this.getUnapproveApproverFromPhase(approvalPhaseState);
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listUnapproveApprover);
 			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
@@ -154,21 +154,21 @@ public class ApproveImpl implements ApproveService {
 		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameIsConfirm.isPresent()){
 			ApprovalFrame approvalFrame = opApprovalFrameIsConfirm.get();
-			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-				return true;
-			}
-			List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+//			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+//				return true;
+//			}
+			List<String> listApprover = approvalFrame.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
 				return true;
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-		if(opApprovalFrameIsApprove.isPresent()){
-			return true;
-		}
+//		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream()
+//				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
+//		if(opApprovalFrameIsApprove.isPresent()){
+//			return true;
+//		}
 		List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 		if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
@@ -220,10 +220,10 @@ public class ApproveImpl implements ApproveService {
 	public List<String> getUnapproveApproverFromPhase(ApprovalPhaseState approvalPhaseState) {
 		List<String> listUnapproveApprover = new ArrayList<>();
 		approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-				List<String> approvers = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				listUnapproveApprover.addAll(approvers);
-			}
+//			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+//				List<String> approvers = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+//				listUnapproveApprover.addAll(approvers);
+//			}
 		});
 		return listUnapproveApprover.stream().distinct().collect(Collectors.toList());
 	}
