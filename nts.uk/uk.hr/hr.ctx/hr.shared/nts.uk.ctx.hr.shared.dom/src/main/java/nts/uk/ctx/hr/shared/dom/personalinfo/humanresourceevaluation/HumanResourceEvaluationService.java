@@ -15,21 +15,17 @@ public class HumanResourceEvaluationService {
 	private HumanResourceEvaluationRepository hrEvalRepo;
 
 	// 人事評価のロード
-	public HumanResourceEvaluation loadHRevaluation(List<String> employeeIds, GeneralDate startDate,
-			HumanResourceEvaluation result) {
-		// ドメイン [人事評価] を取得する(lấy domain [đánh giá nhân sự])
-		List<PersonnelAssessment> personnelAssessments = hrEvalRepo.getPersonnelAssessmentByEmployeeIds(employeeIds,
-				startDate);
-		result.fillData(personnelAssessments, employeeIds);
-		return result;
+	public HumanResourceEvaluation loadHRevaluation(List<String> employeeIds, GeneralDate startDate) {
+		List<PersonnelAssessmentResults> personnelAssessmentsResult = hrEvalRepo.getPersonnelAssessmentByEmployeeIds(employeeIds, startDate);
+		return new HumanResourceEvaluation(personnelAssessmentsResult, employeeIds);
 	}
 
 	// 人事評価の取得(lay danh gia nhan su)
-	public List<PersonnelAssessment> getHRevaluationBySid(String employeeId, GeneralDate startDate,
+	public List<PersonnelAssessmentResults> getHRevaluationBySid(String employeeId, GeneralDate startDate,
 			HumanResourceEvaluation domain) {
 		// メンバー変数「人事評価のリスト」から、人事評価を取得する(Lấy đánh giá nhân sự từ biến số
 		// member[List đánh giá nhân sự])
-		List<PersonnelAssessment> results = domain.findPersonnelAssessmentBySid(employeeId);
+		List<PersonnelAssessmentResults> results = domain.findPersonnelAssessmentBySid(employeeId);
 		if (!CollectionUtil.isEmpty(results)) {
 			return results;
 		}
@@ -41,10 +37,10 @@ public class HumanResourceEvaluationService {
 			return results;
 		}
 		// 人事評価のロード(Load đánh giá nhân sự)
-		HumanResourceEvaluation hrEval = loadHRevaluation(Arrays.asList(employeeId), startDate, domain);
+		HumanResourceEvaluation hrEval = loadHRevaluation(Arrays.asList(employeeId), startDate);
 		// メンバー変数「人事評価のリスト」から、人事評価を取得する(từ biến số[List đánh giá nhân sự], lấy
 		// đánh giá nhân sự )
-		results = hrEval.getPersonnelAssessments();
+		results = hrEval.getPersonnelAssessmentsResult();
 
 		return results;
 	}

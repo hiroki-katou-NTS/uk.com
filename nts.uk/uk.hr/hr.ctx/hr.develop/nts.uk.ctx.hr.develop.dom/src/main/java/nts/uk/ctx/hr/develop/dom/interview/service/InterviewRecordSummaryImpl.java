@@ -15,8 +15,8 @@ import nts.uk.ctx.hr.develop.dom.interview.InterviewRecordRepository;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
 import nts.uk.ctx.hr.develop.dom.interview.dto.SubInterviewInfor;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
-import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInforAdapter;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 
 @Stateless
 public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
@@ -25,7 +25,7 @@ public class InterviewRecordSummaryImpl implements IInterviewRecordSummary {
 	private InterviewRecordRepository interviewRecordRepository;
 	
 	@Inject
-	private EmployeeInforAdapter employeeInforAdapter;
+	private EmployeeInformationAdaptor employeeInforAdapter;
 	
 	/**
 	 * 面談記録概要の取得

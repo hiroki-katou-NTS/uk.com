@@ -45,6 +45,7 @@ public interface ClosureRepository {
 	List<Closure> findAllUse(String companyId);
 
 	/**
+	 * 締めに紐付く雇用コード一覧を取得
 	 * Find by id.
 	 *
 	 * @param companyId the company id
