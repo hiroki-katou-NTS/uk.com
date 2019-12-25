@@ -82,7 +82,7 @@ public class GroupCommonMasterDomainService {
 	 * 
 	 * @return 共通マスタリスト (List)
 	 */
-	public List<CommonMasterItem> getGroupCommonMasterItem(String contractCode, String commonMasterId) {
+	public List<GroupCommonMasterItem> getGroupCommonMasterItem(String contractCode, String commonMasterId) {
 
 		// ドメインモデル [グループ会社共通マスタ] を取得する
 		Optional<GroupCommonMaster> masterOpt = this.groupMasterRepo.getByContractCodeAndId(contractCode,
@@ -92,7 +92,7 @@ public class GroupCommonMasterDomainService {
 			return Collections.emptyList();
 		}
 
-		return masterOpt.get().getCommonMasterItems().stream().sorted(Comparator.comparing(CommonMasterItem::getCommonMasterItemCode))
+		return masterOpt.get().getCommonMasterItems().stream().sorted(Comparator.comparing(GroupCommonMasterItem::getCommonMasterItemCode))
 				.collect(Collectors.toList());
 	}
 
@@ -147,9 +147,9 @@ public class GroupCommonMasterDomainService {
 
 	}
 
-	private boolean isMathCompanyId(List<NotUseCompany> notUseCompanyList, String companyId) {
+	private boolean isMathCompanyId(List<NotUseCompanyList> notUseCompanyList, String companyId) {
 
-		Optional<NotUseCompany> notUseCompanyOpt = notUseCompanyList.stream()
+		Optional<NotUseCompanyList> notUseCompanyOpt = notUseCompanyList.stream()
 				.filter(x -> x.getCompanyId().equals(companyId)).findFirst();
 
 		if (notUseCompanyOpt.isPresent()) {

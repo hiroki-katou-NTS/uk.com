@@ -52,6 +52,6 @@ public class JpaValPayDateSetRepository extends JpaRepository implements ValPayD
 
 	@Override
 	public List<ValPayDateSet> getById(String cId) {
-		return this.queryProxy().query(SELECT_BY_CID, QpbmtValPayDateSet.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_BY_CID, QpbmtValPayDateSet.class).setParameter("cid", cId).getList(item -> item.toDomain());
 	}
 }

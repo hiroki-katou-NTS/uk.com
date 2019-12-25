@@ -13,10 +13,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.develop.dom.interview.CompanyId;
 import nts.uk.ctx.hr.develop.dom.interview.EmployeeId;
 import nts.uk.ctx.hr.develop.dom.interview.InterviewCategory;
 import nts.uk.ctx.hr.develop.dom.interview.InterviewRecord;
+import nts.uk.ctx.hr.develop.dom.interview.InterviewRecordContent;
 import nts.uk.ctx.hr.develop.dom.interview.MainInterviewerName;
 import nts.uk.ctx.hr.develop.dom.interview.SubInterviewer;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -82,21 +84,24 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 	@Column(name = "SUB5_INTERVIEWER_SID")
 	public String sub5InterviewSID;
 	
-
-	public List<JflmtInterviewContent> jflmtInterviewContent;
-
 	@Override
-		protected Object getKey() {
-			// TODO Auto-generated method stub
-			return this.jflmtInterviewRecordPK;
+	protected Object getKey() {
+		return this.jflmtInterviewRecordPK;
+	}
+	
+	private void check_addSubInterview(String subInterviewSID, List<SubInterviewer> listSubInterviewID) {
+		if (!StringUtil.isNullOrEmpty(subInterviewSID, false)) {
+			listSubInterviewID.add(new SubInterviewer(new EmployeeId (subInterviewSID)));
 		}
-	public InterviewRecord toDomain(){
+	}
+	
+	public InterviewRecord toDomain(List<InterviewRecordContent> listInterviewRecordContent){
 		List<SubInterviewer> listSubInterviewID = new ArrayList<>();
-		listSubInterviewID.add(new SubInterviewer(new EmployeeId (sub1InterviewSID)));
-		listSubInterviewID.add(new SubInterviewer(new EmployeeId (sub2InterviewSID)));
-		listSubInterviewID.add(new SubInterviewer(new EmployeeId (sub3InterviewSID)));
-		listSubInterviewID.add(new SubInterviewer(new EmployeeId (sub4InterviewSID)));
-		listSubInterviewID.add(new SubInterviewer(new EmployeeId (sub5InterviewSID)));
+		check_addSubInterview(sub1InterviewSID, listSubInterviewID);
+		check_addSubInterview(sub2InterviewSID, listSubInterviewID);
+		check_addSubInterview(sub3InterviewSID, listSubInterviewID);
+		check_addSubInterview(sub4InterviewSID, listSubInterviewID);
+		check_addSubInterview(sub5InterviewSID, listSubInterviewID);
 		
 		return new InterviewRecord (
 				new EmployeeId (mainInterviewerSid),
@@ -105,8 +110,8 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 				EnumAdaptor.valueOf(interviewCategory , InterviewCategory.class),
 				interviewDate,
 				this.jflmtInterviewRecordPK.interviewRecordId,
-				jflmtInterviewContent.stream().map(c ->c.toDomain()).collect(Collectors.toList()),
-				listSubInterviewID.stream().filter(c->c != null).collect(Collectors.toList()),
+				listInterviewRecordContent,
+				listSubInterviewID,
 				mainInterviewerScd,
 				new MainInterviewerName(mainInterviewerBName),
 				intervieweeScd,
@@ -157,7 +162,6 @@ public class JflmtInterviewRecord extends UkJpaEntity implements Serializable{
 		this.sub3InterviewSID = sub3InterviewSID;
 		this.sub4InterviewSID = sub4InterviewSID;
 		this.sub5InterviewSID = sub5InterviewSID;
-		this.jflmtInterviewContent = jflmtInterviewContent;
 	}
 
 }

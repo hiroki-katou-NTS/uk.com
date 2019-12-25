@@ -50,7 +50,7 @@ public interface GroupCommonMasterRepository {
 	 * @param 基準日
 	 * @return
 	 */
-	List<CommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId, String companyId,
+	List<GroupCommonMasterItem> getGroupCommonMasterEnableItem(String contractCode, String commonMasterId, String companyId,
 			GeneralDate baseDate);
 
 	/**
