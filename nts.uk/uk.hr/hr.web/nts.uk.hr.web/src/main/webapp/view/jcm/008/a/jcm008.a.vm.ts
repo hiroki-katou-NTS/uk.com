@@ -159,9 +159,25 @@ module jcm008.a {
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
                 data.ageDisplay = data.age + '分';
-                if(data.status == 3 && data.status == 2) {
-                    cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
-                    cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                switch (data.status) {
+                    case 0:
+                        data.registrationStatus = '';
+                        break;
+                    case 1:
+                        data.registrationStatus = '承認待ち';
+                        break;
+                    case 2:
+                        data.registrationStatus = '反映待ち';
+                        cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        break;
+                    case 3:
+                        data.registrationStatus = '反映済み';
+                        cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        break;
+                    default:
+                        break;
                 }
                 return data;
             });
