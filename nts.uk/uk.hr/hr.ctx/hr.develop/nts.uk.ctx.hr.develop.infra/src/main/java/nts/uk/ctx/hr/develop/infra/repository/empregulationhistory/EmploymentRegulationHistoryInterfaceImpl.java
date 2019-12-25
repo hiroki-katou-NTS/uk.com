@@ -12,7 +12,8 @@ import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegula
 public class EmploymentRegulationHistoryInterfaceImpl extends JpaRepository implements EmploymentRegulationHistoryInterface {
 
 	private static final String SELECT_HIS_ID_BY_DATE = "SELECT c.historyId FROM JshmtEmpRegHistory c "
-			+ "WHERE c.startDate <= :baseDate AND :baseDate <= c.endDate "
+			+ "WHERE c.startDate <= :baseDate "
+			+ "AND c.endDate >= :baseDate "
 			+ "AND c.cId = :cId ";
 	
 	@Override

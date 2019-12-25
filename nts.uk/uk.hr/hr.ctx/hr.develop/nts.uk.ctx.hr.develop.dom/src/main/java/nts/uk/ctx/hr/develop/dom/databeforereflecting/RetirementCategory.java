@@ -12,13 +12,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum RetirementCategory {
 	
-	retirement(1), // 退職
+	retirement(1, "退職"), // 退職
 
-	transfer(2),  //  転籍
-	
-	dismissal(3),  // 解雇
-	 
-	retirementAge(4);  // 定年
+	transfer(2, "退職"), // 転籍
+
+	dismissal(3, "解雇"), // 解雇
+
+	retirementAge(4, "定年"); // 定年
 
 	public int value;
+	public String name;
 }

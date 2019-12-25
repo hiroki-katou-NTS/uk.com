@@ -61,12 +61,13 @@ public class RetirementInformationService {
 			obj.scd = i.scd;
 			obj.personName = i.personName;
 			obj.retirementDate = i.date_01;
-			obj.retirementCategory = EnumAdaptor.valueOf(Integer.valueOf(i.select_code_01).intValue(), RetirementCategory.class);
+			obj.retirementCategory = EnumAdaptor.valueOf(Integer.valueOf(i.select_code_01).intValue(),
+					RetirementCategory.class);
 			obj.retirementReasonCtgCode1 = i.select_code_02;
 			obj.retirementReasonCtgCode2 = i.select_code_03;
 			obj.retirementRemarks = i.str_01 == null ? "" : i.str_01.toString();
 			obj.retirementReasonVal = i.str_02 == null ? "" : i.str_02.toString();
-			obj.dismissalNoticeDate      = i.date_02 != null ? GeneralDate.legacyDate(i.date_02.date()) : null;
+			obj.dismissalNoticeDate = i.date_02 != null ? GeneralDate.legacyDate(i.date_02.date()) : null;
 			obj.dismissalNoticeDateAllow = i.date_03 != null ? GeneralDate.legacyDate(i.date_03.date()) : null;
 			obj.reaAndProForDis = i.str_03 == null ? "" : i.str_03.toString();
 			obj.naturalUnaReasons_1 = i.int_01;
@@ -97,7 +98,7 @@ public class RetirementInformationService {
 		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
 		this.dataBeforeReflectPerInfoService.addDataBeforeReflectingPerInfo(domain);
 	}
-	
+
 	// 退職者情報リストを個人情報反映前データリストへ変換する
 	private void convertRetiredEmpIntoDataBefReflec(RetirementInformation domainObj,
 			DataBeforeReflectingPerInfo domain) {
@@ -113,32 +114,40 @@ public class RetirementInformationService {
 		domain.releaseDate = domainObj.releaseDate;
 		domain.stattus = EnumAdaptor.valueOf(domainObj.status, Status.class);
 		domain.date_01 = domainObj.retirementDate;
-		domain.select_code_01 = domainObj.retirementCategory.value +"";
-		
+		domain.select_code_01 = domainObj.retirementCategory.value + "";
+
 		domain.select_code_02 = domainObj.retirementReasonCtgCode1;
 		domain.select_name_02 = domainObj.retirementReasonCtgName1;
-		
+
 		domain.select_code_03 = domainObj.retirementReasonCtgCode2;
 		domain.select_name_03 = domainObj.retirementReasonCtgName2;
-		
+
 		domain.str_01 = domainObj.retirementRemarks != "" ? new NoteRetiment(domainObj.retirementRemarks) : null;
 		domain.str_02 = domainObj.retirementReasonVal != "" ? new NoteRetiment(domainObj.retirementReasonVal) : null;
-		domain.date_02 = domainObj.dismissalNoticeDate != null ? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDate.date()) : null;
-		domain.date_03 = domainObj.dismissalNoticeDateAllow != null ?  GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDateAllow.date()) : null;
-		domain.str_03  = domainObj.reaAndProForDis != "" ? new NoteRetiment(domainObj.reaAndProForDis) : null;
+		domain.date_02 = domainObj.dismissalNoticeDate != null
+				? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDate.date()) : null;
+		domain.date_03 = domainObj.dismissalNoticeDateAllow != null
+				? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDateAllow.date()) : null;
+		domain.str_03 = domainObj.reaAndProForDis != "" ? new NoteRetiment(domainObj.reaAndProForDis) : null;
 		domain.int_01 = domainObj.naturalUnaReasons_1;
-		domain.str_04 = domainObj.naturalUnaReasons_1Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_1Val) : null;
+		domain.str_04 = domainObj.naturalUnaReasons_1Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_1Val)
+				: null;
 		domain.int_02 = domainObj.naturalUnaReasons_2;
-		domain.str_05 = domainObj.naturalUnaReasons_2Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_2Val) : null;
+		domain.str_05 = domainObj.naturalUnaReasons_2Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_2Val)
+				: null;
 		domain.int_03 = domainObj.naturalUnaReasons_3;
-		domain.str_06 = domainObj.naturalUnaReasons_3Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_3Val) : null;
+		domain.str_06 = domainObj.naturalUnaReasons_3Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_3Val)
+				: null;
 		domain.int_04 = domainObj.naturalUnaReasons_4;
-		domain.str_07 = domainObj.naturalUnaReasons_4Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_4Val) : null;
+		domain.str_07 = domainObj.naturalUnaReasons_4Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_4Val)
+				: null;
 		domain.int_05 = domainObj.naturalUnaReasons_5;
-		domain.str_08 = domainObj.naturalUnaReasons_5Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_5Val): null;
+		domain.str_08 = domainObj.naturalUnaReasons_5Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_5Val)
+				: null;
 		domain.int_06 = domainObj.naturalUnaReasons_6;
-		domain.str_09 = domainObj.naturalUnaReasons_6Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_6Val) : null;
-		
+		domain.str_09 = domainObj.naturalUnaReasons_6Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_6Val)
+				: null;
+
 		domain.contractCode = AppContexts.user().contractCode();
 		domain.companyCode = AppContexts.user().companyCode();
 		domain.workId = 1;
@@ -165,11 +174,11 @@ public class RetirementInformationService {
 		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo();
 		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
 		this.dataBeforeReflectPerInfoService.updateDataBeforeReflectingPerInfo(domain);
-		
+
 	}
-	
+
 	public void removeRetireInformation(String histId) {
 		this.dataBeforeReflectPerInfoService.removeDataBeforeReflectingPerInfo(histId);
-		
+
 	}
 }
