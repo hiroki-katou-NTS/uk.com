@@ -6,6 +6,8 @@ package nts.uk.ctx.hr.notice.infra.repository.report.registration.person;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
@@ -16,10 +18,10 @@ import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportR
  * @author laitv
  *
  */
+@Stateless
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
 	private static final String getListBySIds = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
-	private static final String getDomain =     "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId";
 
 	private RegistrationPersonReport toDomain(JhndtReportRegis entity) {
 		return entity.toDomain();
@@ -28,7 +30,6 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	private JhndtReportRegis toEntity(RegistrationPersonReport domain) {
 		return JhndtReportRegis.toEntity(domain);
 	}
-	
 	
 	@Override
 	public List<RegistrationPersonReport> getListBySIds(String sid) {

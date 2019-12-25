@@ -71,22 +71,22 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 
 	public ReportItem toDomain() {
 		return ReportItem.createFromJavaType(
-				this.pk.cid ,
-				this.workId ,
-				this.pk.reportID ,
-				this.reportLayoutID ,
-				this.reportName ,
-				this.layoutItemType ,
-				this.pk.ctgCode ,
-				this.ctgName ,
-				this.fixedAtr ,
-				this.pk.itemCd ,
-				this.itemName ,
-				this.dspOrder ,
-				this.saveDataAtr ,
-				this.stringVal ,
-				this.intVal ,
-				this.dateVal ,
-				this.reflectID);
+						this.pk.cid ,
+						this.workId ,
+						this.pk.reportID ,
+						this.reportLayoutID ,
+						this.reportName ,
+						this.layoutItemType ,
+						this.pk.ctgCode ,
+						this.ctgName ,
+						this.fixedAtr ,
+						this.pk.itemCd ,
+						this.itemName ,
+						this.dspOrder ,
+						this.saveDataAtr ,
+						this.stringVal ,
+						this.intVal ,
+						this.dateVal ,
+						this.reflectID);
 	}
 }
