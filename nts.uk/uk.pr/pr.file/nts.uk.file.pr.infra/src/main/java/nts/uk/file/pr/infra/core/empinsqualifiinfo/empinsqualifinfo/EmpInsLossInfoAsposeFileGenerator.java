@@ -198,7 +198,7 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
                 textBuilder.appendText(setValue(112, 362, insuredName != null ?  insuredName.length() > 23 ? insuredName.substring(0,22) : insuredName : "", 9, false));
                 //A2_2
                 insuredPersonName = element.getEmpInsReportSetting().getSubmitNameAtr().value == 0 ? element.getNameKana() : element.getReportFullNameKana();
-                textBuilder.appendText(setValue(112, 375, insuredPersonName != null ? insuredPersonName.length() > 23 ? insuredPersonName.substring(0,22) :insuredPersonName : "", 9, false));
+                textBuilder.appendText(setValue(112, 375, insuredPersonName != null ? KatakanaConverter.fullKatakanaToHalf(KatakanaConverter.hiraganaToKatakana(insuredPersonName)) : "", 9, false));
                 //A2_3
                 Graph graph = new Graph(100, 518);
                 // tạo line gạch chữ
