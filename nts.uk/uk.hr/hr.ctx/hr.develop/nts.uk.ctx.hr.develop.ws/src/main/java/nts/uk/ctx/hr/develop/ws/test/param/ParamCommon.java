@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.ws.test.param;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,5 +17,15 @@ public class ParamCommon {
 	public String historyId;
 	
 	public GeneralDate baseDate;
-
+	
+	public GeneralDate startDate;
+	
+	public GeneralDate endDate;
+	
+	public Integer retirementAge;
+	
+	public List<String> departmentId;
+	
+	public List<String> employmentCode;
+	
 }

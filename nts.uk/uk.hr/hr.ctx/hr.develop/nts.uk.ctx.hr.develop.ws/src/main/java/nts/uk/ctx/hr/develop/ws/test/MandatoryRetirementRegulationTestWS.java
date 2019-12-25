@@ -12,7 +12,9 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementPlannedPersonDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 import nts.uk.ctx.hr.develop.ws.test.param.MandatoryRetirementRegulationTestDto;
 import nts.uk.ctx.hr.develop.ws.test.param.ParamCommon;
 import nts.uk.ctx.hr.develop.ws.test.param.ReferEvaluationItemTestDto;
@@ -59,6 +61,33 @@ public class MandatoryRetirementRegulationTestWS {
 				param.getMandatoryRetireTerm().stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				param.getReferEvaluationTerm().stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				param.getPlanCourseApplyTerm().toDomain());
+	}
+	
+	@POST
+	@Path("/update")
+	public void update(MandatoryRetirementRegulationTestDto param){
+		finder.updateMandatoryRetirementRegulation(
+				param.getCompanyId(), 
+				param.getHistoryId(), 
+				param.getReachedAgeTerm(), 
+				param.getPublicTerm().toDomain(), 
+				param.getRetireDateTerm().toDomain(), 
+				param.getPlanCourseApplyFlg(), 
+				param.getMandatoryRetireTerm().stream().map(c->c.toDomain()).collect(Collectors.toList()), 
+				param.getReferEvaluationTerm().stream().map(c->c.toDomain()).collect(Collectors.toList()), 
+				param.getPlanCourseApplyTerm().toDomain());
+	}
+	
+	@POST
+	@Path("/getMandatoryRetirementList")
+	public List<RetirementPlannedPersonDto> getMandatoryRetirementListByPeriodDepartmentEmployment(ParamCommon param){
+		return finder.getMandatoryRetirementListByPeriodDepartmentEmployment(
+				param.companyId, 
+				param.startDate, 
+				param.endDate,
+				param.retirementAge == null ? Optional.empty(): Optional.of(new RetirementAge(param.retirementAge)), 
+				param.departmentId, 
+				param.employmentCode);
 	}
 	
 }
