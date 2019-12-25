@@ -38,9 +38,9 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int RESIDENT_STATUS_MAX_BYTE = 18;
     private static final int INSURED_NAME_MAX_BYTE = 22;
     private static final int INSURED_PERSON_ADDRESS = 46;
-    private static final int BUSINESS_NAME = 31;
+    private static final int BUSINESS_NAME = 41;
     private static final int CAUSE_OF_LOSS_INS = 46;
-    private static final int COMPANY_ADDRESS = 80;
+    private static final int COMPANY_ADDRESS = 60;
 
 
     @Inject

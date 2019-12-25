@@ -17,7 +17,7 @@ import java.util.List;
 @Stateless
 public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator implements EmpInsGetQualifRptFileGenerator {
     private static final String TEMPLATE_FILE = "report/雇用保険被保険者資格取得届.pdf";
-    private static final int LOCATION_MAX_BYTE = 56;
+    private static final int LOCATION_MAX_BYTE = 60;
     private static final int BUSINESS_NAME_MAX_BYTE = 48;
     private static final int OFFICE_NAME_MAX_BYTE = 42;
     private static final int NATIONALITY_MAX_BYTE = 22;
@@ -144,7 +144,7 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9, false));
                 // A3_2
                 String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(160, 179, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 9, false));
+                textBuilder.appendText(setValue(160, 180, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 8, false));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
                 textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9, false));
