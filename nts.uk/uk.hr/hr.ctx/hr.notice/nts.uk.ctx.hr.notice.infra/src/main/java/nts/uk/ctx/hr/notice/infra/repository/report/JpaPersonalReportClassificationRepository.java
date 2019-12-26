@@ -73,7 +73,7 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 	
 	private JhnmtRptLayout toEntity(PersonalReportClassification domain) {
 		JhnmtRptLayoutPk primaryKey = new JhnmtRptLayoutPk(domain.getPReportClsId(), domain.getCompanyId());
-		return new JhnmtRptLayout(primaryKey, 
+		return new JhnmtRptLayout(primaryKey, domain.getWorkId(),
 				domain.getPReportCode().v(), domain.getPReportName().v(),
 				domain.getPReportNameYomi().v(), domain.getDisplayOrder(),
 				domain.isAbolition(), domain.getReportType() == null? null: domain.getReportType().value,
