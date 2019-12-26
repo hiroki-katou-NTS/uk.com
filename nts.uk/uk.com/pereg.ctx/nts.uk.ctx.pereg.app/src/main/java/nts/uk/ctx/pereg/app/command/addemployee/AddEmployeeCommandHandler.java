@@ -325,6 +325,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 
 
+
 		for (ItemsByCategory input : inputs) {
 			// prepare data
 			GeneralDate startDateItemCode = null;
