@@ -10,11 +10,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementDateDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementPlannedPersonDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.RetirementAge;
 import nts.uk.ctx.hr.develop.ws.test.param.MandatoryRetirementRegulationTestDto;
 import nts.uk.ctx.hr.develop.ws.test.param.ParamCommon;
@@ -89,6 +92,13 @@ public class MandatoryRetirementRegulationTestWS {
 				param.retirementAge == null ? Optional.empty(): Optional.of(new RetirementAge(param.retirementAge)), 
 				param.departmentId, 
 				param.employmentCode);
+	}
+	
+	@POST
+	@Path("/getRetireDateBySidList")
+	public List<RetirementDateDto> getRetireDateBySidList(ParamCommon param){
+		return finder.getRetireDateBySidList(param.retirePlan.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
+				EnumAdaptor.valueOf(param.reachedAgeTerm, ReachedAgeTerm.class), param.retireDateTerm.toDomain(), Optional.ofNullable(param.endDate), param.closingDate, param.attendanceDate);
 	}
 	
 	@POST
