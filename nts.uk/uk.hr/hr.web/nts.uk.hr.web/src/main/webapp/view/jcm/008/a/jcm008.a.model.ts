@@ -177,24 +177,37 @@ interface ISearchResult {
 }
 
 interface IEmployeeInformationImport {
+    // 社員ID
     employeeId : string;
+    // 社員コード
     employeeCode : string;
+    // ビジネスネーム
     businessName : string;
+    // ビジネスネームカナ
     businessNameKana : string;
+    // 所属職場
     workplace: WorkPlace;
+    // 所属分類
     classification: Classification;
+    // 所属部門
     department: Department;
+    // 所属職位
     position: Position;
+    // 所属雇用
     employment: Employment;
+    // 就業区分
     employmentCls: number;
+    // 個人ID
     personID: string;
+    // 社員名
     employeeName: string;
+    // 顔写真ファイル
     avatarFile: FacePhotoFile;
+    // 誕生日
     birthday: string;
+    // 年齢
     age: number;
 }
-
-
 
 class PlannedRetirementDto {
     pId : string;
@@ -276,8 +289,6 @@ interface WorkPlace {
     workplaceGenericName: string;
     workplaceName: string;
 }
-
-
 
 interface Classification {
     classificationCode: string;

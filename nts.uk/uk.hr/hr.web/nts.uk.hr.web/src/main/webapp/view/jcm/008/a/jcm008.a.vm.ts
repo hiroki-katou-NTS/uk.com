@@ -287,19 +287,20 @@ module jcm008.a {
         public showModal(id, key, el) {
             // $('.nts-grid-control-' + key + '-' + id).append("<b>Appended text</b>");
             let self = this;
-            console.log(key);
-            console.log(id);
+            let selectedEmp = _.findLast($("#retirementDateSetting").igGrid("option", "dataSource"), (retiredEmp) => {
+                return retiredEmp.rKey === id;
+            }) 
             let emp = {
-                code: id,
-                name: '社員名 員名',
-                kanaName: '社員名 ',
+                code: selectedEmp.employeeCode,
+                name: selectedEmp.employeeName,
+                kanaName: selectedEmp.businessnameKana,
                 sex: '性別',
-                dob: '1991/04/11',
-                age: '29分',
-                department: '部門 学科 局 部科売り場',
-                position: '職位職位',
-                employment: '雇用雇用',
-                image: 'https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/s960x960/67660458_2163133103815091_6832643697729863680_o.jpg?_nc_cat=108&_nc_ohc=PzzrUkG6zBAAQkMqXJeoGd7dj9YkJUgyqnSPGDqzbcJ2uPPb_DzzpiSRw&_nc_ht=scontent.fhan2-3.fna&oh=51b9cc5985e9e57dcae281e966c62f20&oe=5E8674C7'
+                dob: selectedEmp.birthday,
+                age: selectedEmp.age + '分',
+                department: selectedEmp.department.departmentName,
+                position: selectedEmp.position.positionName,
+                employment: selectedEmp.employment.employmentName,
+                image: selectedEmp.avatarFile ? selectedEmp.avatarFile.facePhotoFileID : 'https://discovery-park.co.uk/wp-content/uploads/2017/06/avatar-default.png' 
             };
 
             self.employeeInfo(emp);

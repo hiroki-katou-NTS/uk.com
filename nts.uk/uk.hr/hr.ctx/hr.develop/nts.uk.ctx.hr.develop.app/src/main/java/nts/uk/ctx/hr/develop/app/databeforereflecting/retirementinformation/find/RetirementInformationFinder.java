@@ -34,6 +34,10 @@ import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author sonlb
+ *
+ */
 @Stateless
 public class RetirementInformationFinder {
 
