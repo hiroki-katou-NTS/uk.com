@@ -1108,7 +1108,7 @@ module nts.custombinding {
                                     </div>
                                 </div>
                                 <!-- /ko -->
-                                <!-- ko if: location.href.indexOf('cps/001') > -1 || location.href.indexOf('cps/002') > -1 -->
+                                <!-- ko if: location.href.indexOf('jhn/001') > -1 || location.href.indexOf('cps/002') > -1 -->
                                 <div data-bind="ntsComboBox: {
                                             width: '200px',
                                             name: itemName,
