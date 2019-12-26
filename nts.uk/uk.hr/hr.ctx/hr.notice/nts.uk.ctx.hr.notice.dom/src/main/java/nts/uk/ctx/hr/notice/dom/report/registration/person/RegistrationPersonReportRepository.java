@@ -14,7 +14,7 @@ public interface RegistrationPersonReportRepository {
 
 	List<RegistrationPersonReport> getListBySIds(String sid);
 	
-	Optional<RegistrationPersonReport> getDomain(String cid, int reportId);
+	Optional<RegistrationPersonReport> getDomain(String cid, Integer reportId);
 	
 	void add(RegistrationPersonReport domain);
 

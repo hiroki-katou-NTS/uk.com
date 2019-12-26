@@ -52,7 +52,10 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public Optional<RegistrationPersonReport> getDomain(String cid, int reportId) {
+	public Optional<RegistrationPersonReport> getDomain(String cid, Integer reportId) {
+		if (reportId == null) {
+			return Optional.empty();
+		}
 		Optional<JhndtReportRegis> entityOpt = this.queryProxy().find(new JhndtReportRegisPK(cid, reportId), JhndtReportRegis.class);
 		if (!entityOpt.isPresent()) {
 			return Optional.empty();
