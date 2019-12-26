@@ -10,4 +10,7 @@ public interface AttachPersonReportFileRepository {
 	
 	void delete(String fileId , String cid);
 	
+	List<DocumentSampleDto> getListDomainByLayoutId(String cid, int reprtLayoutId, int reportID );
+
+	
 }

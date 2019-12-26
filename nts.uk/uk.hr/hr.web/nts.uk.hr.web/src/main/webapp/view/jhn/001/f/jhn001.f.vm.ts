@@ -14,7 +14,6 @@ module jhn001.f.vm {
 
     export class ViewModel {
 
-
         fileId: KnockoutObservable<string>;
         filename: KnockoutObservable<string>;
         fileInfo: KnockoutObservable<any>;
@@ -63,13 +62,14 @@ module jhn001.f.vm {
                 dfd = $.Deferred();
             self.items = [];
             let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
-            var dfdGetData = service.getData('b1a068b2-d80e-4283-ae6c-29e9b1d1c02d');
+            let param  = {layoutReportId : 1, reportId: 0 }    
+            var dfdGetData = service.getData(param);
 
             block();
-            $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
+            $.when(dfdGetData).done((datafile: Array<IReportFileManagement>) => {
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
-                    totalSize = totalSize + item.originalSize;
+                    totalSize = totalSize + item.fileSize;
                     self.items.push(new GridItem(item));
                 });
                 let sum = (totalSize / 1024).toFixed(2);
@@ -128,7 +128,7 @@ module jhn001.f.vm {
         }
         
 
-        deleteItem(rowItem: IEmpFileMana) {
+        deleteItem(rowItem: IReportFileManagement) {
             let self = this,
             dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -162,7 +162,7 @@ module jhn001.f.vm {
             });
         }
 
-        updateCtgItem(rowItem: IEmpFileMana, comboBoxIdNew: any) {
+        updateCtgItem(rowItem: IReportFileManagement, comboBoxIdNew: any) {
             let self = this;
             if (rowItem.personInfoCategoryId != comboBoxIdNew) {
                 service.updateCtgdata({ fileId: rowItem.fileId, personInfoCategoryIdNew: comboBoxIdNew }).done(() => {
@@ -189,85 +189,94 @@ module jhn001.f.vm {
 
     // Object truyen tu man A sang
     interface IDataShare {
-        pid: string;
-        sid: string;
+        layoutReportId: string;
+        reportId: string;
     }
-
-    interface IPersonAuth {
-        roleId: string;
-        allowMapUpload: number;
-        allowMapBrowse: number;
-        allowDocRef: number;
-        allowDocUpload: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
-    }
-
 
     class GridItem {
         id: string;
+        cid: string;
+        reportLayoutID: number;
+        docID: number;
+        docName: string;
+        dispOrder: number;
+        requiredDoc: number;
+        docRemarks: string;
+        sampleFileId: number;
+        sampleFileName: string;
+        reportID: number;
         fileName: string;
         fileId: string;
-        employeeId: string;
-        categoryName: string;
-        personInfoCategoryId: string;
-        open: string;
-        combo: string;
-        uploadOrder: number
-        constructor(param: IEmpFileMana) {
+        fileSize: number; 
+        constructor(param: IReportFileManagement) {
             this.id = nts.uk.util.randomId();
-            this.fileName = param.fileName;
+            this.cid = param.cid;
+            this.reportLayoutID = param.reportLayoutID;
+            this.docID = param.docID;
+            this.docName = param.docName;
+            this.dispOrder = param.dispOrder;
+            this.requiredDoc = param.requiredDoc;
+            this.docRemarks = param.docRemarks;
+            this.sampleFileId = param.sampleFileId;
+            this.sampleFileName = param.sampleFileName;
+            this.reportID = param.reportID;
             this.fileId = param.fileId;
-            this.employeeId = param.employeeId;
-            this.categoryName = param.categoryName;
-            this.personInfoCategoryId = param.personInfoCategoryId;
-            this.open = param.fileId;
-            this.uploadOrder = param.uploadOrder;
-            this.combo = param.personInfoCategoryId;
+            this.fileName = param.fileName;
+            this.fileSize = param.fileSize;
         }
     }
 
-    interface IEmpFileMana {
-        employeeId: string;
+    interface IReportFileManagement {
+        cid: string;
+        reportLayoutID: number;
+        docID: number;
+        docName: string;
+        dispOrder: number;
+        requiredDoc: number;
+        docRemarks: string;
+        sampleFileId: number;
+        sampleFileName: string;
+        reportID: number;
         fileId: string;
         fileName: string;
-        categoryName: string;
-        personInfoCategoryId: string;
-        uploadOrder: number;
-        originalSize: number;
+        fileSize: number; 
+//        fileId: string;
+//        fileName: string;
+//        categoryName: string;
+//        personInfoCategoryId: string;
+//        uploadOrder: number;
+//        originalSize: number;
     }
 
-    class EmpFileMana {
-        employeeId: string;
+    class ReportFileMana {
+        cid: string;
+        reportLayoutID: number;
+        docID: number;
+        docName: string;
+        dispOrder: number;
+        requiredDoc: number;
+        docRemarks: string;
+        sampleFileId: number;
+        sampleFileName: string;
+        reportID: number;
         fileId: string;
-        categoryName: string;
-        personInfoCategoryId: string;
-        uploadOrder: number;
-        constructor(param: IEmpFileMana) {
-            this.employeeId = param.employeeId;
+        fileName: string;
+        fileSize: number; 
+        employeeId: string;
+        constructor(param: IReportFileManagement) {
+            this.cid = param.cid;
+            this.reportLayoutID = param.reportLayoutID;
+            this.docID = param.docID;
+            this.docName = param.docName;
+            this.dispOrder = param.dispOrder;
+            this.requiredDoc = param.requiredDoc;
+            this.docRemarks = param.docRemarks;
+            this.sampleFileId = param.sampleFileId;
+            this.sampleFileName = param.sampleFileName;
+            this.reportID = param.reportID;
             this.fileId = param.fileId;
-            this.categoryName = param.categoryName;
-            this.personInfoCategoryId = param.personInfoCategoryId;
-            this.uploadOrder = param.uploadOrder;
-        }
-    }
-
-    interface IPersonCtg {
-        id: string;
-        categoryCode: string;
-        categoryName: string;
-        personEmployeeType: number;
-        isAbolition: number;
-        categoryType: number;
-        isFixed: number;
-    }
-
-    class PersonCtg {
-        id: string;
-        name: string;
-        constructor(param: IPersonCtg) {
-            this.name = param.categoryName;
-            this.id = param.id;
+            this.fileName = param.fileName;
+            this.fileSize = param.fileSize;
         }
     }
 }
