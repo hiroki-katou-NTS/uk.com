@@ -53,7 +53,7 @@ public class FacadeUtils {
 	private ComboBoxRetrieveFactory combox;
 	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
-			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082");
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075");
 
 	private static final Map<String, String> startDateItemCodes;
 	static {
@@ -80,6 +80,8 @@ public class FacadeUtils {
 		aMap.put("CS00070", "IS00781");
 		//社員健康保険資格情報
 		aMap.put("CS00082", "IS00841");
+
+		aMap.put("CS00075","IS00788");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -109,6 +111,8 @@ public class FacadeUtils {
 		aMap.put("CS00070", "IS00782");
 		//社員健康保険資格情報
 		aMap.put("CS00082", "IS00842");
+
+		aMap.put("CS00075","IS00789");
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
