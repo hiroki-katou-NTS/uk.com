@@ -28,4 +28,8 @@ public class ParamCommon {
 	
 	public List<String> employmentCode;
 	
+	public List<String> retiredEmployeeId;
+	
+	public List<ReferEvaluationItemTestDto> referEvaluationTerm;
+	
 }

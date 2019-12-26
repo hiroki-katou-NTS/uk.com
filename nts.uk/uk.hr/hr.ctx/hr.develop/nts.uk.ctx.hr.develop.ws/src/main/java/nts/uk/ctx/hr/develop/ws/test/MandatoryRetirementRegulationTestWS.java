@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.EvaluationInfoDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementCourseInformationDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.dto.RetirementPlannedPersonDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
@@ -88,6 +89,14 @@ public class MandatoryRetirementRegulationTestWS {
 				param.retirementAge == null ? Optional.empty(): Optional.of(new RetirementAge(param.retirementAge)), 
 				param.departmentId, 
 				param.employmentCode);
+	}
+	
+	@POST
+	@Path("/getEvaluationInfoBySidList")
+	public EvaluationInfoDto getEvaluationInfoBySidList(ParamCommon param){
+		return finder.getEvaluationInfoBySidList(
+				param.departmentId, 
+				param.referEvaluationTerm.stream().map(c->c.toDomain()).collect(Collectors.toList()));
 	}
 	
 }
