@@ -11,10 +11,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.RetirementInformation_NewService;
 
 @Stateless
 public class RetirementInformationRegisterCommandHandler extends CommandHandler<RetirementInformationRegisterCommand> {
@@ -25,7 +24,7 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	@Inject
-	private DataBeforeReflectingRepository repo;
+	private RetirementInformation_NewService service;
 
 	@Override
 	protected void handle(CommandHandlerContext<RetirementInformationRegisterCommand> context) {
@@ -38,25 +37,10 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	private void registerRetirementInformation(List<RetiInforRegisInfoCommand> list) {
 		// 定年退職者情報リストを個人情報反映前データリストへ変換する(Chuyển đổi RetirementInfoList thành
 		// list data trước khi phản ánh thông tin cá nhân)
-
 		List<DataBeforeReflectingPerInfo> listDomain = createRetirementInfoList(list);
-		List<DataBeforeReflectingPerInfo> addListDomain = listDomain.stream().filter(x -> x.getHistoryId() == null)
-				.collect(Collectors.toList());
 
-		List<DataBeforeReflectingPerInfo> updateListDomain = listDomain.stream().filter(x -> x.getHistoryId() != null)
-				.collect(Collectors.toList());
-		// 個人情報反映前データを変更する (Thay đổi data trước khi phản ánh thông tin cá nhân)
+		this.service.registerRetirementInformation(listDomain);
 
-		if (!addListDomain.isEmpty()) {
-			this.repo.addData(addListDomain);
-		}
-
-		if (!updateListDomain.isEmpty()) {
-			updateListDomain.forEach(x -> {
-				x.setHistoryId(IdentifierUtil.randomUniqueId());
-			});
-			this.repo.updateData(updateListDomain);
-		}
 	}
 
 	private List<DataBeforeReflectingPerInfo> createRetirementInfoList(List<RetiInforRegisInfoCommand> list) {

@@ -8,7 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.DataBeforeReflectingPerInfoService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.retirementinfo.RetirementCategory;
 
@@ -17,6 +19,38 @@ public class RetirementInformation_NewService {
 
 	@Inject
 	private DataBeforeReflectingPerInfoService dataBeforeReflectPerInfoService;
+
+	@Inject
+	private DataBeforeReflectingRepository repo;
+
+	/**
+	 * 個人情報反映前データリストを定年退職者情報リストへ変換する
+	 * 
+	 * @param 個人情報反映前データ
+	 * @return 個人情報反映前データ_定年退職者情報
+	 */
+	public RetirementInformation_New toRetirementInformation_New(DataBeforeReflectingPerInfo datareflect) {
+
+		return RetirementInformation_New.builder().historyId(datareflect.getHistoryId())
+				.desiredWorkingCourseCd(datareflect.getSelect_code_02()).retirementDate(datareflect.getDate_01())
+				.releaseDate(datareflect.getReleaseDate()).sId(datareflect.getSId())
+				.extendEmploymentFlg(
+						EnumAdaptor.valueOf(Integer.valueOf(datareflect.getSelect_code_04()), ResignmentDivision.class))
+				.employeeName(datareflect.getPersonName()).scd(datareflect.getScd())
+				.companyId(datareflect.getCompanyId()).workName(datareflect.getWorkName())
+				.status(EnumAdaptor.valueOf(datareflect.getStattus().value, Status.class))
+				.dst_HistId(datareflect.getHistId_Refer()).desiredWorkingCourseId(datareflect.getSelect_id_02())
+				.pendingFlag(datareflect.getOnHoldFlag()).companyCode(datareflect.getCompanyCode())
+				.PersonName(datareflect.getPersonName()).desiredWorkingCourseName(datareflect.getSelect_name_02())
+				.contractCode(datareflect.getContractCode()).workId(datareflect.getWorkId())
+				.inputDate(datareflect.getRegisterDate())
+				.retirementCategory(EnumAdaptor.valueOf(Integer.valueOf(datareflect.getSelect_code_01()).intValue(),
+						RetirementCategory.class))
+				.notificationCategory(datareflect.getRequestFlag())
+				.retirementReasonCtgID1(datareflect.getSelect_id_03())
+				.retirementReasonCtgCd1(datareflect.getSelect_code_03())
+				.retirementReasonCtgName1(datareflect.getSelect_name_03()).build();
+	}
 
 	/**
 	 * 定年退職者情報の取得
@@ -30,39 +64,62 @@ public class RetirementInformation_NewService {
 			Optional<Boolean> includingReflected) {
 		// ドメイン [個人情報反映前データ] を取得する (Get domain "Data before reflecting personal
 		// information/data trước khi phản ánh thông tin cá nhân")
+
 		List<DataBeforeReflectingPerInfo> dataInfos = this.dataBeforeReflectPerInfoService.getDataBeforeReflectPerInfo(
 				cId, 2, employeeIds, includingReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
 		// 個人情報反映前データリストを定年退職者情報リストへ変換する(Chuyển đổi list data trước khi phản ánh
 		// thông tin các nhân sang list thông tin người nghỉ hưu)
-		
-		return dataInfos.stream().map(x ->
-		RetirementInformation_New
-				.builder()
-				.historyId(x.getHistoryId())
-				.desiredWorkingCourseCd(x.getSelect_code_02())
-				.retirementDate(x.getDate_01())
-				.releaseDate(x.getReleaseDate()).sId(x.getSId())
-				.extendEmploymentFlg(EnumAdaptor.valueOf(Integer.valueOf(x.getSelect_code_04()) , ResignmentDivision.class))
-				.employeeName(x.getPersonName()).scd(x.getScd()).companyId(x.getCompanyId()).workName(x.getWorkName())
-				.status(EnumAdaptor.valueOf(x.getStattus().value, Status.class))
-				.dst_HistId(x.getHistId_Refer())
-				.desiredWorkingCourseId(x.getSelect_id_02())
-				.pendingFlag(x.getOnHoldFlag())
-				.companyCode(x.getCompanyCode())
-				.PersonName(x.getPersonName())
-				.desiredWorkingCourseName(x.getSelect_name_02())
-				.contractCode(x.getContractCode())
-				.workId(x.getWorkId())
-				.inputDate(x.getRegisterDate())
-				.retirementCategory(EnumAdaptor.valueOf(Integer.valueOf(x.getSelect_code_01()).intValue(),
-						RetirementCategory.class))
-				.notificationCategory(x.getRequestFlag())
-				.retirementReasonCtgID1(x.getSelect_id_03())
-				.retirementReasonCtgCd1(x.getSelect_code_03())
-				.retirementReasonCtgName1(x.getSelect_name_03())
-				.build()).collect(Collectors.toList());
+
+		return dataInfos.stream().map(x -> toRetirementInformation_New(x)).collect(Collectors.toList());
 	}
 
-	// 定年退職者情報の変更
-	// 定年退職者情報の削除
+	/**
+	 * 定年退職者情報の新規登録_変更
+	 * 
+	 * @param List(個人情報反映前データ)
+	 */
+	public void registerRetirementInformation(List<DataBeforeReflectingPerInfo> listDomain) {
+		// 定年退職者情報リストを個人情報反映前データリストへ変換する(Chuyển đổi RetirementInfoList thành
+		// list data trước khi phản ánh thông tin cá nhân)
+
+		List<DataBeforeReflectingPerInfo> addListDomain = listDomain.stream().filter(x -> x.getHistoryId() == null)
+				.collect(Collectors.toList());
+
+		List<DataBeforeReflectingPerInfo> updateListDomain = listDomain.stream().filter(x -> x.getHistoryId() != null)
+				.collect(Collectors.toList());
+		// 個人情報反映前データを変更する (Thay đổi data trước khi phản ánh thông tin cá nhân)
+
+		if (!addListDomain.isEmpty()) {
+			this.repo.addData(addListDomain);
+		}
+
+		if (!updateListDomain.isEmpty()) {
+			updateListDomain.forEach(x -> {
+				x.setHistoryId(IdentifierUtil.randomUniqueId());
+			});
+			this.repo.updateData(updateListDomain);
+		}
+	}
+
+	/**
+	 * 定年退職者情報の削除
+	 * 
+	 * @param List(個人情報反映前データ)
+	 */
+	public void deleteRetirementInformation(List<DataBeforeReflectingPerInfo> listDomain) {
+		// 定年退職者情報リストを個人情報反映前データリストへ変換する(Chuyển đổi RetirementInfoList thành
+		// List data trước khi phản ánh thông tin cá nhân)
+
+		// 個人情報反映前データを削除する (Delete data before reflecting personal information)
+		this.repo.deleteData(listDomain);
+	}
+
+	/**
+	 * 定年退職者情報リストを個人情報反映前データリストへ変換する vì có một số thuộc tính của
+	 * DataBeforeReflectingPerInfo mà RetirementInformation_New không có nên
+	 * phải map từ tầng command , không map được trong này nên input của những
+	 * method sẽ nhận vào DataBeforeReflectingPerInfo luôn chứ không qua bước
+	 * chuyển đổi này
+	 */
+
 }
