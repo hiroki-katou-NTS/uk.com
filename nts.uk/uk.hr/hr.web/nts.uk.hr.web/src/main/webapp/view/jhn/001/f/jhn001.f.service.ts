@@ -3,32 +3,21 @@ module jhn001.f.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'basic/organization/empfilemanagement/getlistdocfile/{0}',
-        'savedata': 'basic/organization/empfilemanagement/savedocfile',
-        'updateCtgdata': 'basic/organization/empfilemanagement/updatectgdocfile',
-        'updatedata': 'basic/organization/empfilemanagement/updatedata',
-        'deletedata': 'basic/organization/empfilemanagement/deletedata',
-        'permision': 'ctx/pereg/functions/auth/find-all'
+        'getData': 'hr/notice/report/regis/person/document/findAll',
+        'addDocument': 'hr/notice/report/regis/person/document/add',
+        'deleteDocument': 'hr/notice/report/regis/person/document/delete'
     };
 
-    export function getData(employeeId: any) {
-        return ajax('com' ,format(paths.getData, employeeId));
+    export function getData(param: any) {
+        return ajax('hr' ,format(paths.getData, param));
     }
 
     export function savedata(command: any) {
-        return ajax(paths.savedata, command);
-    }
-
-    export function updatedata(command: any) {
-        return ajax(paths.savedata, command);
+          return ajax('hr' ,format(paths.addDocument, command));
     }
 
     export function deletedata(command: any) {
-        return ajax(paths.deletedata, command);
-    }
-
-    export function updateCtgdata(command: any) {
-        return ajax(paths.updateCtgdata, command);
+       return ajax('hr' ,format(paths.deleteDocument, command));
     }
 
 }

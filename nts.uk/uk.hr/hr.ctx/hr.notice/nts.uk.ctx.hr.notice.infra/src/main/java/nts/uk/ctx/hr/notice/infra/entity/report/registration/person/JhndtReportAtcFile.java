@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachmentPersonReportFile;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -16,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Table(name = "JHNDT_RPT_ATC_FILE")
 public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 
@@ -52,7 +54,7 @@ public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 	int fileSize; //ファイルサイズ    đơn vị byte
 	
 	@Column(name = "DEL_FLG")
-	boolean delFlg; //削除済     0:未削除、1:削除済
+	int delFlg; //削除済     0:未削除、1:削除済
 	
 	@Column(name = "SAMPLE_FILE_ID")
 	String sampleFileID; //サンプルファイルID
@@ -79,7 +81,7 @@ public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 				this.mimeType ,
 				this.fileTypeName ,
 				this.fileSize ,
-				this.delFlg ,
+				this.delFlg == 1 ? true : false ,
 				this.sampleFileID ,
 				this.sampleFileName );
 	}
@@ -88,7 +90,7 @@ public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 		return new JhndtReportAtcFile(new JhndtReportAtcFilePK(domain.getFileId(), domain.getCid()),
 				domain.getReportID(), domain.getDocID(), domain.getDocName(), domain.getFileName(),
 				domain.isFileAttached() == true ? 1 : 0 , domain.getFileStorageDate(), domain.getMimeType(),
-				domain.getFileTypeName(), domain.getFileSize(), domain.isDelFlg(),
+				domain.getFileTypeName(), domain.getFileSize(), domain.isDelFlg() == true ? 1 : 0 ,
 				domain.getSampleFileID(), domain.getSampleFileName());
 	}
 }
