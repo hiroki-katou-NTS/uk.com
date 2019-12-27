@@ -277,13 +277,20 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
             return text;
         }
         int textLength = text.length();
-        int subLength = maxByteAllowed / 2;
-        while (subLength < textLength) {
-            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
                 break;
             }
-            subLength++;
+            index++;
         }
-        return text.substring(0, subLength);
+        return text.substring(0, index + 1);
     }
 }
