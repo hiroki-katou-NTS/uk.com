@@ -37,4 +37,11 @@ public class EmpCorpHealthOffHis extends AggregateRoot
     public List<DateHistoryItem> items() {
         return period;
     }
+
+    @Override
+    public void exCorrectToRemove(DateHistoryItem itemToBeRemoved) {
+        this.latestStartItem().ifPresent(latest -> {
+            latest.changeSpan(latest.span().newSpanWithMaxEnd());
+        });
+    }
 }
