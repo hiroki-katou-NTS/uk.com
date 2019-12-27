@@ -5,7 +5,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
-import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

@@ -1,18 +1,12 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
-import java.util.Optional;
-import java.util.List;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.HistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 /**
 * 社員健康保険得喪期間項目

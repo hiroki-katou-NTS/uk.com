@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import nts.arc.time.GeneralDate;
-
 import java.util.List;
 import java.util.Optional;
 
