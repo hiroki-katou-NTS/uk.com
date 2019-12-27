@@ -264,20 +264,32 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null) {
+            return "";
+        }
         int textLength = text.length();
         String add1 = textLength > 40 ? text.substring(0, 40) : text.substring(0,textLength);
         int engChar = add1.replaceAll("[^a-z0-9]+", "").length();
         int engNChar = add1.replaceAll("[^A-Z]+", "").length();
 
-        int subLength = 0;
         maxByteAllowed = maxByteAllowed + engChar/8;
         maxByteAllowed = maxByteAllowed - engNChar/5;
         if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        for (int i = 0; i < textLength; i++) {
-            subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
         }
-        return text.substring(0, subLength);
+        return text.substring(0, index + 1);
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {
