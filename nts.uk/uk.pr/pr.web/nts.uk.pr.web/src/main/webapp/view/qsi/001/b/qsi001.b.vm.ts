@@ -108,6 +108,9 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             });
             self.selectedCode.subscribe(e =>{
+                if(e != 3 ){
+                    $("#B222_22").ntsError('clear');
+                }
                 self.selectedCode(e);
                 self.textOtherNotes1('');
                 if(e == PersonalNumber.Other){
