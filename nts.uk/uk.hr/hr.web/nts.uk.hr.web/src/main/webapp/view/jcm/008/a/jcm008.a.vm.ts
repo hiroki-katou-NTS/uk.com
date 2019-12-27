@@ -71,10 +71,9 @@ module jcm008.a {
             let dfd = $.Deferred<any>();
             service.searchRetireData(param)
                 .done((res: ISearchResult) => {
-                    console.log(res);
-                    let merged = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
-                    let values = _.values(merged);
-                    self.plannedRetirements(values);
+                    let mergedEmpInfo = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
+                    self.plannedRetirements(_.values(mergedEmpInfo));
+                    
                     self.bindRetirementDateSettingGrid();
                     self.searchFilter.confirmCheckRetirementPeriod(false);
                 })
@@ -287,7 +286,7 @@ module jcm008.a {
         public showModal(id, key, el) {
             // $('.nts-grid-control-' + key + '-' + id).append("<b>Appended text</b>");
             let self = this;
-            let selectedEmp = _.findLast($("#retirementDateSetting").igGrid("option", "dataSource"), (retiredEmp) => {
+            let selectedEmp = _.findLast($("#retirementDateSetting").ntsGrid("dataSource"), (retiredEmp) => {
                 return retiredEmp.rKey === id;
             }) 
             let emp = {
