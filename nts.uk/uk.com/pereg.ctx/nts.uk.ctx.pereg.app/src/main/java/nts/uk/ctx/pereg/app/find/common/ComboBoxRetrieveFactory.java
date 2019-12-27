@@ -389,7 +389,7 @@ public class ComboBoxRetrieveFactory {
 		    //社会保険事業所
 			return socialInsuranceOfficeRepository.findByCid(companyId)
 					.stream()
-					.map(x -> new ComboBoxObject(x.getCode().v(), "000000000000" + JP_SPACE + x.getName().v())).collect(Collectors.toList());
+					.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + JP_SPACE + x.getName().v())).collect(Collectors.toList());
 		default:
 			break;
 		}
