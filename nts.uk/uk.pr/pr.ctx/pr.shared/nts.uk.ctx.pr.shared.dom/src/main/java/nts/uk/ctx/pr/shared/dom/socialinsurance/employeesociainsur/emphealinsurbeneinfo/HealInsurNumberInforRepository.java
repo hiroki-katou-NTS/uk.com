@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import nts.arc.time.GeneralDate;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +11,7 @@ public interface HealInsurNumberInforRepository
 
     List<HealInsurNumberInfor> getAllHealInsurNumberInfor();
 
-    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String historyId);
+    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String empId, String hisId);
 
     List<HealInsurNumberInfor> findByHistoryId(List<String> hisId);
 

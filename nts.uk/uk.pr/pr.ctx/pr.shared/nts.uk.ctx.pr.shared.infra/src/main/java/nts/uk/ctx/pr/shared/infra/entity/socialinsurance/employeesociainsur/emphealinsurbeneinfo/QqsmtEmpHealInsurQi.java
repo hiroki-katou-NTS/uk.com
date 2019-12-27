@@ -71,6 +71,9 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable {
     }
 
     public static EmplHealInsurQualifiInfor toDomain(List<QqsmtEmpHealInsurQi> qqsmtEmpHealInsurQi) {
+        if (qqsmtEmpHealInsurQi.isEmpty()){
+            return null;
+        }
         return new EmplHealInsurQualifiInfor(
                 qqsmtEmpHealInsurQi.get(0).empHealInsurQiPk.employeeId,
                 qqsmtEmpHealInsurQi.stream().map(i -> new EmpHealthInsurBenefits(i.empHealInsurQiPk.hisId, new DateHistoryItem(i.empHealInsurQiPk.hisId, new DatePeriod(i.startDate, i.endDate))))
@@ -87,17 +90,4 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable {
     public HealInsurNumberInfor toHealInsurNumberInfor() {
         return new HealInsurNumberInfor(this.empHealInsurQiPk.hisId, this.careIsNumber, this.healInsurNumber);
     }
-
-//    public static QqsmtEmpHealInsurQi toEntity(EmplHealInsurQualifiInfor qualifiInfor, HealInsurNumberInfor numberInfor) {
-//        return new QqsmtEmpHealInsurQi(
-//                new QqsmtEmpHealInsurQiPk(
-//                        qualifiInfor.getEmployeeId(),
-//                        numberInfor.getHistoryId(),
-//                        AppContexts.user().companyId()
-//                ),
-//                qualifiInfor.getMourPeriod().get(0).start(),
-//                qualifiInfor.getMourPeriod().get(0).end(),
-//                numberInfor.getCareInsurNumber().map(e -> e.v()).orElse(null),
-//                numberInfor.getHealInsNumber().map(e -> e.v()).orElse(null));
-//    }
 }

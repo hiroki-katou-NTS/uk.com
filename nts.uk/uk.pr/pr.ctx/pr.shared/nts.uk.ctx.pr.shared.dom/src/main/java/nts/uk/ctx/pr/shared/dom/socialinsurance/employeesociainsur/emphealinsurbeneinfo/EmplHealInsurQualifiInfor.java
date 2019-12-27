@@ -1,21 +1,13 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.HistoryItem;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.history.strategic.ContinuousHistory;
 import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,28 +41,5 @@ public class EmplHealInsurQualifiInfor extends AggregateRoot implements Continuo
 
     public List<String> getHistoryIds() {
         return mourPeriod.stream().map(x -> x.identifier()).collect(Collectors.toList());
-    }
-
-    public EmpHealthInsurBenefits getEmpHealthInsurBenefits(String hisId) {
-        if (mourPeriod == null) {
-            mourPeriod = new ArrayList<EmpHealthInsurBenefits>();
-        }
-
-        List<EmpHealthInsurBenefits> filter = mourPeriod.stream()
-                .filter(m->m.getHealInsurProfirMourHisId().equals(hisId))
-                .collect(Collectors.toList());
-        if (!filter.isEmpty()) {
-            return filter.get(0);
-        }
-        return null;
-    }
-
-
-
-    public void addEmpHealInsBenefits(EmpHealthInsurBenefits domain) {
-        if (mourPeriod == null){
-            mourPeriod = new ArrayList<EmpHealthInsurBenefits>();
-        }
-        mourPeriod.add(domain);
     }
 }

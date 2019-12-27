@@ -1,15 +1,13 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
-import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -21,6 +19,7 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
     private static final String GET_ALL_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.hisId =:hisId";
     private static final String SELECT_BY_ID_EMPIDS = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId IN :employeeId";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND f.empHealInsurQiPk.hisId =:hisId AND  f.empHealInsurQiPk.cid =:cid ";
 
 
     @Override
@@ -29,12 +28,13 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
     }
 
     @Override
-    public Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String historyId) {
-        Optional<QqsmtEmpHealInsurQi> optionData = this.queryProxy().find(historyId, QqsmtEmpHealInsurQi.class);
-        if (optionData.isPresent()){
-            return Optional.of(toDomain(optionData.get()));
-        }
-        return Optional.empty();
+    public Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String empId, String hisId) {
+        val result = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpHealInsurQi.class)
+                .setParameter("employeeId", empId)
+                .setParameter("hisId",hisId)
+                .setParameter("cid", AppContexts.user().companyId())
+                .getSingle();
+        return result.isPresent() ? Optional.of(new HealInsurNumberInfor(result.get().empHealInsurQiPk.hisId, result.get().careIsNumber, result.get().healInsurNumber)) : Optional.empty();
     }
 
     @Override
@@ -69,15 +69,6 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
 
     @Override
     public void add(HealInsurNumberInfor numberInfor) {
-        commandProxy().insert(toEntity(numberInfor));
-        this.getEntityManager().flush();
-    }
-
-    private QqsmtEmpHealInsurQi toEntity(HealInsurNumberInfor domain){
-        String cId = AppContexts.user().companyId();
-        QqsmtEmpHealInsurQiPk entityPk = new QqsmtEmpHealInsurQiPk(null,domain.getHistoryId(), cId);
-
-        return new QqsmtEmpHealInsurQi(entityPk, null, null, domain.getCareInsurNumber().map(e->e.v()).orElse(null), domain.getHealInsNumber().map(e->e.v()).orElse(null));
     }
 
     @Override
@@ -121,18 +112,30 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
 
     @Override
     public void update(HealInsurNumberInfor domain) {
-        Optional<QqsmtEmpHealInsurQi> existItem = this.queryProxy().find(domain.getHistoryId(), QqsmtEmpHealInsurQi.class);
-        if (!existItem.isPresent()){
-            throw new RuntimeException("Invalid QqsmtEmpHealInsurQi");
-        }
-        updateEntity(domain, existItem.get());
-        this.commandProxy().update(existItem.get());
-    }
+        String UP_SQL = "UPDATE QQSDT_KENHO_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+                + " KAIHO_NUM = KAIHO_NUM_VAL, KENHO_NUM = KENHO_NUM_VAL"
+                + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
+        String cid = AppContexts.user().companyId();
+        String updCcd = AppContexts.user().companyCode();
+        String updScd = AppContexts.user().employeeCode();
+        String updPg = AppContexts.programId();
 
-    private void updateEntity(HealInsurNumberInfor domain, QqsmtEmpHealInsurQi entity){
-        entity.empHealInsurQiPk.hisId = domain.getHistoryId();
-        entity.careIsNumber = domain.getCareInsurNumber().map(c->c.v()).orElse(null);
-        entity.healInsurNumber = domain.getHealInsNumber().map(c->c.v()).orElse(null);
+        StringBuilder sb = new StringBuilder();
+        String sql = UP_SQL;
+        sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+        sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+        sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+        sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+
+        sql = sql.replace("KAIHO_NUM_VAL", "'" + domain.getCareInsurNumber() + "'");
+        sql = sql.replace("KENHO_NUM_VAL", "'" + domain.getHealInsNumber() + "'");
+
+        sql = sql.replace("HIST_ID_VAL", "'" + domain.getHistoryId() + "'");
+        sql = sql.replace("CID_VAL", "'" + cid + "'");
+        sb.append(sql);
+
+        int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+        System.out.println(records);
     }
 
     @Override
@@ -164,6 +167,5 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
 
     @Override
     public void remove(String historyId) {
-
     }
 }

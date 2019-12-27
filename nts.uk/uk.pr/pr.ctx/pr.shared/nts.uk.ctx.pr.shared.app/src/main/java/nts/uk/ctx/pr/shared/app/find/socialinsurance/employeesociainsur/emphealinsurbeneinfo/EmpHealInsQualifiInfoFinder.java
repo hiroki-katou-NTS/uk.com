@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -45,18 +45,21 @@ public class EmpHealInsQualifiInfoFinder implements PeregFinder<EmpHealInsQualif
 
     @Override
     public PeregDomainDto getSingleData(PeregQuery peregQuery) {
-        Optional<EmplHealInsurQualifiInfor> historyOpt;
-        if (peregQuery.getInfoId() != null) {
-            historyOpt = emplHealInsurQualifiInforRepository.getByHistoryId(peregQuery.getInfoId());
-        } else {
-            historyOpt = emplHealInsurQualifiInforRepository.getByEmpIdAndBaseDate(peregQuery.getEmployeeId(), peregQuery.getStandardDate());
-        }
-
-        if (historyOpt.isPresent()) {
-            Optional<HealInsurNumberInfor> numberInfor = healInsurNumberInforRepository.getHealInsurNumberInforById(historyOpt.get().getMourPeriod().get(0).identifier());
-            if (numberInfor.isPresent()) {
-                return EmpHealInsQualifiInfoDto.createFromDomain(historyOpt.get(), numberInfor.get());
+        if (peregQuery.getInfoId() == null) {
+            val getEmpId = emplHealInsurQualifiInforRepository.getByEmpIdAndBaseDate(peregQuery.getEmployeeId(), peregQuery.getStandardDate());
+            if (getEmpId.isPresent()){
+                val firstItem = getEmpId.get().getMourPeriod().get(0);
+                val firstItemInfo = healInsurNumberInforRepository.getHealInsurNumberInforById(peregQuery.getEmployeeId(), firstItem.identifier());
+                return EmpHealInsQualifiInfoDto.createFromDomain(getEmpId.get(), firstItemInfo.get());
+            } else {
+                return null;
             }
+        }
+        val item = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(peregQuery.getEmployeeId(), peregQuery.getInfoId());
+        val itemInfo = healInsurNumberInforRepository.getHealInsurNumberInforById(peregQuery.getEmployeeId(), peregQuery.getInfoId());
+        if (item.isPresent() && itemInfo.isPresent()){
+            EmpHealInsQualifiInfoDto exportItem = EmpHealInsQualifiInfoDto.createFromDomain(item.get(), itemInfo.get());
+            return exportItem;
         }
         return null;
     }
@@ -68,10 +71,11 @@ public class EmpHealInsQualifiInfoFinder implements PeregFinder<EmpHealInsQualif
 
     @Override
     public List<ComboBoxObject> getListFirstItems(PeregQuery peregQuery) {
-        Optional<EmplHealInsurQualifiInfor> numberInfor = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(AppContexts.user().companyId(), peregQuery.getEmployeeId());
-        if (numberInfor.isPresent()){
-            return numberInfor.get().getMourPeriod().stream()
-                    .map(x->ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().equals(GeneralDate.max()) ? "" : x.end().toString()))
+        Optional<EmplHealInsurQualifiInfor> qualifiInfor = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(peregQuery.getEmployeeId());
+        if (qualifiInfor.isPresent()){
+            return qualifiInfor.get().getMourPeriod().stream()
+                    .filter(e->healInsurNumberInforRepository.getHealInsurNumberInforById(peregQuery.getEmployeeId(), e.identifier()) != null)
+                    .map(x->ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().equals(GeneralDate.max()) ? "" :x.end().toString()))
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();

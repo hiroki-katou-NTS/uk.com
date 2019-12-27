@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsur
 import nts.arc.time.GeneralDate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,7 +24,9 @@ public interface EmplHealInsurQualifiInforRepository {
 
     List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInfor(String cid, List<String> empIds);
 
-    Optional<EmplHealInsurQualifiInfor> getEmpHealInsQualifiinfoById(String cid, String empId);
+    Optional<EmplHealInsurQualifiInfor> getEmpHealInsQualifiinfoById(String empId);
+
+    Optional<EmplHealInsurQualifiInfor> getEmpHealInsQualifiinfoById(String empId, String hisId);
 
     EmplHealInsurQualifiInfor getEmpHealInsQualifiInfoOfEmp(String empId);
 
@@ -33,13 +34,11 @@ public interface EmplHealInsurQualifiInforRepository {
 
     Optional<EmplHealInsurQualifiInfor> getByEmpIdAndBaseDate(String empId, GeneralDate baseDate);
 
-    void add(String empId, EmpHealthInsurBenefits item);
-
-    void addAll(Map<String, EmpHealthInsurBenefits> qualifiInfors);
+    void add(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemAdded, HealInsurNumberInfor hisItem);
 
     void update(EmpHealthInsurBenefits benefits);
 
-    void updateAll (List<EmpHealthInsurBenefits> qualifiInfors);
+    void update(EmpHealthInsurBenefits item, HealInsurNumberInfor infor);
 
     void remove(String employeeId, String hisId);
 }
