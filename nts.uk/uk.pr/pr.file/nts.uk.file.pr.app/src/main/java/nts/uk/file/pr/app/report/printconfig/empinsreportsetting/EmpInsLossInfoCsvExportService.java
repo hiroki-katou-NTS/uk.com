@@ -1,14 +1,5 @@
 package nts.uk.file.pr.app.report.printconfig.empinsreportsetting;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
@@ -35,14 +26,14 @@ import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSett
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportTxtSettingRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOfficeRepository;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHist;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsHistRepository;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfoRepository;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
-import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfoRepository;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfoExportQuery> {
@@ -127,21 +118,20 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 		EmpInsOutOrder outputOrder = EnumAdaptor.valueOf(query.getEmpInsReportSettingCommand().getOutputOrderAtr(),
 				EmpInsOutOrder.class);
 		switch (outputOrder) {
-		case INSURANCE_NUMBER:
-			exportData.getRowsData().stream()
-					.sorted((r1, r2) -> r1.getInsuranceNumber().compareTo(r2.getInsuranceNumber()))
-					.collect(Collectors.toList());
-			break;
-		case DEPARTMENT_EMPLOYEE:
-		case EMPLOYEE_CODE:
-			exportData.getRowsData().stream().sorted((r1, r2) -> r1.getEmployeeCode().compareTo(r2.getEmployeeCode()))
-					.collect(Collectors.toList());
-			break;
-		case EMPLOYEE:
-			exportData.getRowsData().stream()
-					.sorted((r1, r2) -> r1.getPersonNameKana().compareTo(r2.getPersonNameKana()))
-					.collect(Collectors.toList());
-			break;
+			case INSURANCE_NUMBER:
+				exportData.getRowsData().sort(Comparator.comparing(EmpInsLossInfoExportRow::getInsuranceNumber, Comparator.nullsFirst(Comparator.naturalOrder()))
+						.thenComparing(EmpInsLossInfoExportRow::getEmployeeCode, Comparator.nullsFirst(Comparator.naturalOrder())));
+				break;
+			case DEPARTMENT_EMPLOYEE:
+			case EMPLOYEE_CODE:
+				exportData.getRowsData().sort(Comparator.comparing(EmpInsLossInfoExportRow::getEmployeeCode, Comparator.nullsFirst(Comparator.naturalOrder())));
+				break;
+			case EMPLOYEE:
+				exportData.getRowsData().sort(Comparator.comparing(EmpInsLossInfoExportRow::getPersonNameKana, Comparator.nullsFirst(Comparator.naturalOrder()))
+						.thenComparing(EmpInsLossInfoExportRow::getEmployeeCode, Comparator.nullsFirst(Comparator.naturalOrder())));
+				break;
+			default:
+				break;
 		}
 		exportData.setLaborInsuranceOffice(exportData.getRowsData().get(0).getLaborInsuranceOffice());
 		csvGenerator.generate(context.getGeneratorContext(), exportData);
@@ -203,7 +193,8 @@ public class EmpInsLossInfoCsvExportService extends ExportService<EmpInsLossInfo
 			}
 			ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
 					GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
-					GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
+					GeneralDate.fromString("2019/01/01", "yyy/MM/dd"),
+					"技能", "14", "704", "ベトナム");
 			EmployeeInfoEx employee = employeeInfos.get(employeeId);
 			rowsData.add(new EmpInsLossInfoExportRow(employeeId, employeeInfos.get(employeeId), history,
 					exportData.getCompanyInfo(), empInsNumInfo, laborInsuranceOffice, empInsLossInfos.get(employeeId),

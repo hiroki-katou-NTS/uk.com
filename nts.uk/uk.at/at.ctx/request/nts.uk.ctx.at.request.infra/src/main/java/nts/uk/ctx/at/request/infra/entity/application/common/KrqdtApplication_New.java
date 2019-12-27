@@ -73,8 +73,6 @@ public class KrqdtApplication_New extends UkJpaEntity {
 	@Column(name = "APP_END_DATE")
 	public GeneralDate endDate;
 	
-	
-	
 	@Column(name = "REFLECT_PLAN_STATE")
 	public Integer stateReflection;
 	

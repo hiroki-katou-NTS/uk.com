@@ -160,7 +160,7 @@ public class EmpInsGetQualifReport {
 
     private String stayPeriod;
 
-    private Integer nonQualifPermission;
+    private Integer unqualifiedActivityPermission;
 
     private Integer contractWorkAtr;
 

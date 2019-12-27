@@ -230,7 +230,7 @@ public class JpaGuaByTheInsurExportRepository extends JpaRepository implements G
         exportSQL.append("      AND QEHIQTEM.START_DATE >= ?startDate AND QEHIQTEM.CID = ?cid ) AS QEHIQ ");
         exportSQL.append(" ON QEHIQ.SID = ROOT.SID ");
         exportSQL.append(" LEFT JOIN QQSDT_SYAHO_MULTI_OFFICE QMEWI ");
-        exportSQL.append(" ON QMEWI.SID = ROOT.SID ");
+        exportSQL.append(" ON QMEWI.SID = QSII.SID ");
         exportSQL.append("  ORDER BY SYAHO_OFFICE_CD");
         String emp = empIds.stream()
                 .map(String::valueOf)

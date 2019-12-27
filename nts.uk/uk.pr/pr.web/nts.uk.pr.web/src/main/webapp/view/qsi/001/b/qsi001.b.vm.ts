@@ -328,12 +328,12 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
 
             service.add(data).done(e => {
                 if (self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) >= 70 && self.applyToEmployeeOver70 () === false) {
-                    dialog.info({ messageId: "Msg_177" }).then(e=>{
+                    dialog.info({ messageId: "MsgQ_177" }).then(e=>{
                         self.applyToEmployeeOver70(true);
                         block.clear();
                     });
                 } else if ((self.getAge(self.dummyBirthDay(), moment.utc(params.date, "YYYY/MM/DD")) < 70) && self.applyToEmployeeOver70 () === true){
-                    dialog.info({ messageId: "Msg_176" }).then(e =>{
+                    dialog.info({ messageId: "MsgQ_176" }).then(e =>{
                         self.applyToEmployeeOver70(false);
                         block.clear();
                     });
@@ -343,7 +343,7 @@ module nts.uk.pr.view.qsi001.b.viewmodel {
                     });
                 }
 
-                self.loadPage(self.selectedItem())
+                self.loadPage(self.selectedItem());
 
                 block.clear();
             }).fail(e => {

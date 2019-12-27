@@ -5,16 +5,20 @@ import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotiCreSetExport;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotiCreSetFileGenerator;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotification;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.BusinessDivision;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.RomajiNameNotiCreSetting;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import nts.uk.shr.com.time.japanese.JapaneseDate;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -108,7 +112,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
 
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd()) : " 〒　　　　　－"));
-                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
+                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(formatTooLongText(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): "", 60)));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ? companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ? companyInfor.getRepname(): ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum(), 1) + "(" + formatPhone( companyInfor.getPhoneNum(), 2) +")" + formatPhone( companyInfor.getPhoneNum(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
@@ -125,7 +129,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     add.append(add2);
                 }
 
-                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(add.toString()));
+                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(formatTooLongText(add.toString(), 60)));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(romajiNameNotiCreSetExport.getName(), ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(romajiNameNotiCreSetExport.getPhoneNumber()!= null ? formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 1)+"("+formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 2)+")"+formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 3) :"（　　　　　　　　　）　　　　　　　　　－"));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(romajiNameNotiCreSetExport.getRepresentativeName(),""));
@@ -249,5 +253,23 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         for (int k = 0; k < name.length(); k++) {
             worksheet.get(i).getCells().get(row, column + k).setValue(name.charAt(k));
         }
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null) {
+            return "";
+        }
+        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
+            return text;
+        }
+        int textLength = text.length();
+        int subLength = maxByteAllowed / 2;
+        while (subLength < textLength) {
+            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+                break;
+            }
+            subLength++;
+        }
+        return text.substring(0, subLength);
     }
 }
