@@ -53,7 +53,7 @@ public class FacadeUtils {
 	private ComboBoxRetrieveFactory combox;
 	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
-			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075");
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075", "CS00092");
 
 	private static final Map<String, String> startDateItemCodes;
 	static {
@@ -82,6 +82,8 @@ public class FacadeUtils {
 		aMap.put("CS00082", "IS00841");
 
 		aMap.put("CS00075","IS00788");
+
+		aMap.put("CS00092", "IS01016");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -113,6 +115,8 @@ public class FacadeUtils {
 		aMap.put("CS00082", "IS00842");
 
 		aMap.put("CS00075","IS00789");
+
+		aMap.put("CS00092", "IS01017");
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -999,7 +1003,24 @@ public class FacadeUtils {
 		}
 		return listItemResult;
 	}
-	
+	public List<ItemValue> getListDefaultCS00092(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
+		List<String> itemEnum = Arrays.asList("IS01019");
+		List<ComboBoxObject> comboxs = this.combox.getComboBox(ReferenceTypes.ENUM, "E00042",
+				GeneralDate.today(), AppContexts.user().employeeId(), null, true,
+				PersonEmployeeType.EMPLOYEE, true, "CS00092", GeneralDate.today(),  false);
+		List<ItemValue>  result = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(comboxs)) {
+			listItemIfo.stream().forEach(c ->{
+				if(itemEnum.contains(c.getItemCode())) {
+					String[][] cs00092Item = {
+							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionValue() } };
+					result.addAll(FacadeUtils.createListItems(cs00092Item, listItemIfo));
+				}
+			});
+		}
+		return result;
+	}
 	/**
 	 * dùng cho cps001. cps002
 	 * Get list Default item exclude item in screen
