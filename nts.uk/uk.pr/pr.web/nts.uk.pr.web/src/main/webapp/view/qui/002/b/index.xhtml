@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 705, height: 530 };</script>
+        <script>var dialogSize = { width: 705, height: 550 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="qui002.b.vm.js" />
         <com:scriptfile path="qui002.b.start.js" />
@@ -36,7 +36,7 @@
         </div>
         <div id="functions-area-bottom">
             <button id="B1_1" tabindex="3" class="large proceed" style="margin-top: 13px;"
-                    data-bind="click:register">#{i18n.getText('QUI002_B222_10')}</button>
+                    data-bind="click:register, enable: $root.errors.isEmpty">#{i18n.getText('QUI002_B222_10')}</button>
             <button id="B1_2" tabindex="4" style="margin-top: 13px;"
                     data-bind="click:cancel">#{i18n.getText('QUI002_B222_11')}</button>
         </div>
