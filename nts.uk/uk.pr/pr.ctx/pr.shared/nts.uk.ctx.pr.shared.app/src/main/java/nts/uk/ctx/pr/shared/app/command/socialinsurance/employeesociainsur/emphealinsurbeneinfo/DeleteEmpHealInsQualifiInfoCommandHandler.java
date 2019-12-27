@@ -18,9 +18,6 @@ public class DeleteEmpHealInsQualifiInfoCommandHandler
     @Inject
     private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
 
-    @Inject
-    private HealInsurNumberInforRepository healInsurNumberInforRepository;
-
     @Inject EmpHealInsQualifiInfoService empHealInsQualifiInfoService;
 
     @Override
@@ -36,16 +33,17 @@ public class DeleteEmpHealInsQualifiInfoCommandHandler
     @Override
     protected void handle(CommandHandlerContext<DeleteEmpHealInsQualifiInfoCommand> context){
         val command = context.getCommand();
-        EmplHealInsurQualifiInfor qualifiInfor = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiInfoOfEmp(command.getEmployeeId());
-        if (qualifiInfor == null){
+        Optional<EmplHealInsurQualifiInfor> listHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(command.getEmployeeId());
+        if (!listHist.isPresent()){
             throw new RuntimeException("Invalid EmplHealInsurQualifiInfor");
         }
-
-        Optional<EmpHealthInsurBenefits> itemToBeDeleted = qualifiInfor.getMourPeriod().stream()
-                .filter(e->e.getHealInsurProfirMourHisId().equals(command.getHistoryId())).findFirst();
-
-        empHealInsQualifiInfoService.delete(qualifiInfor, itemToBeDeleted.get());
-
-        healInsurNumberInforRepository.remove(command.getHistoryId());
+        Optional<EmpHealthInsurBenefits> itemToBeDeleted = listHist.get().getMourPeriod().stream()
+                .filter(e->e.identifier().equals(command.getHistoryId()))
+                .findFirst();
+        if (!itemToBeDeleted.isPresent()) {
+            throw new RuntimeException("Invalid EmplHealInsurQualifiInfor");
+        }
+        listHist.get().remove(itemToBeDeleted.get());
+        empHealInsQualifiInfoService.delete(listHist.get(), itemToBeDeleted.get());
     }
 }

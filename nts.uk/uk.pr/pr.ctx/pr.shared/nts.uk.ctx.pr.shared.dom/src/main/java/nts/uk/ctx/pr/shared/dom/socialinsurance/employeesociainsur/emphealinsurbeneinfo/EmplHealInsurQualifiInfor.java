@@ -50,27 +50,4 @@ public class EmplHealInsurQualifiInfor extends AggregateRoot implements Continuo
     public List<String> getHistoryIds() {
         return mourPeriod.stream().map(x -> x.identifier()).collect(Collectors.toList());
     }
-
-    public EmpHealthInsurBenefits getEmpHealthInsurBenefits(String hisId) {
-        if (mourPeriod == null) {
-            mourPeriod = new ArrayList<EmpHealthInsurBenefits>();
-        }
-
-        List<EmpHealthInsurBenefits> filter = mourPeriod.stream()
-                .filter(m->m.getHealInsurProfirMourHisId().equals(hisId))
-                .collect(Collectors.toList());
-        if (!filter.isEmpty()) {
-            return filter.get(0);
-        }
-        return null;
-    }
-
-
-
-    public void addEmpHealInsBenefits(EmpHealthInsurBenefits domain) {
-        if (mourPeriod == null){
-            mourPeriod = new ArrayList<EmpHealthInsurBenefits>();
-        }
-        mourPeriod.add(domain);
-    }
 }

@@ -13,7 +13,7 @@ public interface HealInsurNumberInforRepository
 
     List<HealInsurNumberInfor> getAllHealInsurNumberInfor();
 
-    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String historyId);
+    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String empId, String hisId);
 
     List<HealInsurNumberInfor> findByHistoryId(List<String> hisId);
 

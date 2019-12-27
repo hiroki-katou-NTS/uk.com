@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -21,9 +22,6 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
     private EmplHealInsurQualifiInforRepository emplHealInsurQualifiInforRepository;
 
     @Inject
-    private HealInsurNumberInforRepository healInsurNumberInforRepository;
-
-    @Inject
     private EmpHealInsQualifiInfoService empHealInsQualifiInfoService;
 
     @Override
@@ -36,12 +34,15 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
         return UpdateEmpHealInsQualifiInfoCommand.class;
     }
 
+    public static final String MAX_DATE = "9999/12/31";
+    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
+
     @Override
     protected void handle(CommandHandlerContext<UpdateEmpHealInsQualifiInfoCommand> context) {
         val command = context.getCommand();
-        String companyId = AppContexts.user().companyId();
+
         if (command.getStartDate() != null) {
-            Optional<EmplHealInsurQualifiInfor> existHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(companyId, command.getEmployeeId());
+            Optional<EmplHealInsurQualifiInfor> existHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(command.getEmployeeId());
 
             if (!existHist.isPresent()) {
                 throw new RuntimeException("Invalid EmpHealInsQualifiInfo");
@@ -52,10 +53,13 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
             if (!itemBenefits.isPresent()) {
                 throw new RuntimeException("Invalid EmpHealInsQualifiInfo");
             }
-            existHist.get().changeSpan(itemBenefits.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-            empHealInsQualifiInfoService.update(existHist.get(), itemBenefits.get());
+            existHist.get().changeSpan(itemBenefits.get(), new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
+            HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(
+                    command.getHistoryId(),
+                    command.getNurCaseInsNumber(),
+                    command.getHealInsNumber()
+                    );
+            empHealInsQualifiInfoService.update(existHist.get(), itemBenefits.get(), numberInfor);
         }
-        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(command.getHistoryId(), command.getHealInsNumber(), command.getNurCaseInsNumber());
-        healInsurNumberInforRepository.update(numberInfor);
     }
 }

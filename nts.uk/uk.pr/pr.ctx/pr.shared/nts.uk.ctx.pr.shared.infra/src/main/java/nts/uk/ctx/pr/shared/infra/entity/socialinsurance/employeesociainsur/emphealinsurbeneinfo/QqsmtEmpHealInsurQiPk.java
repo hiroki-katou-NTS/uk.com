@@ -13,9 +13,9 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
 @Getter
 @Setter
+@Embeddable
 public class QqsmtEmpHealInsurQiPk implements Serializable {
     private static final long serialVersionUID = 1L;
 

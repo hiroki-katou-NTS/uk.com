@@ -40,36 +40,33 @@ public class AddEmpHealInsQualifiInfoCommandHandler
         return AddEmpHealInsQualifiInfoCommand.class;
     }
 
+    public static final String MAX_DATE = "9999/12/31";
+    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
+
     @Override
     protected PeregAddCommandResult handle(CommandHandlerContext<AddEmpHealInsQualifiInfoCommand> context) {
         val command = context.getCommand();
-        String companyId = AppContexts.user().companyId();
         String hisId = IdentifierUtil.randomUniqueId();
+
+        Optional<EmplHealInsurQualifiInfor> exitHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(command.getEmployeeId());
 
         EmpHealthInsurBenefits dateItem = new EmpHealthInsurBenefits(hisId,
                 new DateHistoryItem(hisId,
-                        new DatePeriod(
-                                command.getStartDate() != null ? command.getStartDate() : GeneralDate.min(),
-                                command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()
+                        new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)
         )));
 
-        Optional<EmplHealInsurQualifiInfor> exitHist = emplHealInsurQualifiInforRepository.getEmpHealInsQualifiinfoById(companyId, command.getEmployeeId());
-
         EmplHealInsurQualifiInfor qualifiInfor = new EmplHealInsurQualifiInfor(command.getEmployeeId(), new ArrayList<>());
-        if (exitHist.isPresent()) {
+
+        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(
+                dateItem.identifier(),
+                command.getNurCaseInsNumber(),
+                command.getHealInsNumber()
+        );
+        if (exitHist.isPresent()){
             qualifiInfor = exitHist.get();
         }
         qualifiInfor.add(dateItem);
-
-        empHealInsQualifiInfoService.add(qualifiInfor);
-
-        HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(
-                hisId,
-                command.getHealInsNumber(),
-                command.getNurCaseInsNumber()
-        );
-        healInsurNumberInforRepository.add(numberInfor);
-
+        empHealInsQualifiInfoService.add(qualifiInfor, dateItem, numberInfor);
         return new PeregAddCommandResult(hisId);
     }
 }
