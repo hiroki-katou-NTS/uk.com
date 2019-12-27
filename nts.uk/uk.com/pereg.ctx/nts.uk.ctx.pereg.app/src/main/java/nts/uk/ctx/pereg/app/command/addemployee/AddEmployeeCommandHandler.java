@@ -323,7 +323,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			inputs.add(CS00020);
 			}
 		}
-		
+
+
 
 		for (ItemsByCategory input : inputs) {
 			// prepare data
@@ -369,6 +370,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00020": // WorkingCondition
 			case "CS00021": // BusinessTypeOfEmployeeHistory
 			case "CS00070": // WorkingCondition
+			case "CS00075": // EmpCorpHealthHistory
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode == null? inputCompanyDate: startDateItemCode, null), Optional.empty());

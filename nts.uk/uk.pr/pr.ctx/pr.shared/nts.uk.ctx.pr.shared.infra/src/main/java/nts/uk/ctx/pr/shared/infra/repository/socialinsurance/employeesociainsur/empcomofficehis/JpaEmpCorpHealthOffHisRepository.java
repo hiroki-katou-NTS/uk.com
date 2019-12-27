@@ -167,7 +167,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
     @Override
     public void update(DateHistoryItem historyItem, AffOfficeInformation info){
         String UP_SQL = "UPDATE QQSDT_SYAHO_OFFICE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
+                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL, SYAHO_OFFICE_CD = SYAHO_OFFICE_CD_VAL"
                 + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
         String cid = AppContexts.user().companyId();
         String updCcd = AppContexts.user().companyCode();

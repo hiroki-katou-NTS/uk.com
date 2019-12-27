@@ -60,6 +60,6 @@ public class AddEmpCorpHealthOffHisCommandHandler
         }
         domain.add(itemAdded);
         empCorpHealthOffHisService.add(domain, itemAdded, newHistInfo);
-        return new PeregAddCommandResult(command.getSid());
+        return new PeregAddCommandResult(newHistId);
     }
 }

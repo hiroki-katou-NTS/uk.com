@@ -5,6 +5,7 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Data
 public class AddEmpCorpHealthOffHisCommand {
@@ -14,6 +15,11 @@ public class AddEmpCorpHealthOffHisCommand {
      */
     @PeregEmployeeId
     private String sid;
+
+    /** The history Id. */
+    // 履歴ID
+    @PeregRecordId
+    private String historyId;
 
     /**
      * 開始日
