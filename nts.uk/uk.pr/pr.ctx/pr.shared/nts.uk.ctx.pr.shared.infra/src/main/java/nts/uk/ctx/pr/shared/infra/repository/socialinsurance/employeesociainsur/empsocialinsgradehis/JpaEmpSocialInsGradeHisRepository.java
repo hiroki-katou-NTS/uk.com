@@ -5,10 +5,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHisPk;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeInfoPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -20,10 +23,11 @@ import java.util.stream.Collectors;
 public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements EmpSocialInsGradeHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpSocialInsGradeHis f";
-    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.cId = :cId and f.sId = :sId ORDER BY f.startYM";
-    private static final String SELECT_BY_HISTID = SELECT_ALL_QUERY_STRING + " WHERE f.qqsmtEmpSocialInsGradeHisPk.historyId = :histId ORDER BY f.startYM";
+    private static final String SELECT_BY_EMPID = SELECT_ALL_QUERY_STRING + " WHERE f.cId = :cId and f.sId = :sId ORDER BY f.startYM DESC";
+    private static final String SELECT_BY_HISTID = SELECT_ALL_QUERY_STRING + " WHERE f.qqsmtEmpSocialInsGradeHisPk.historyId = :histId ORDER BY f.startYM DESC";
     private static final String SELECT_BY_SIDS_AND_BASE_YM = SELECT_ALL_QUERY_STRING + " WHERE f.sid IN :sids AND f.startYM <= :baseYM AND f.endYM >= :baseYM";
 
+    private static final String SELECT_BY_ID_AND_BASE_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.sId =:sid AND f.cId =:cid AND f.startYM <= :baseYM AND f.endYM >= :baseYM ";
     /**
      * Convert from domain to entity
      *
@@ -54,7 +58,7 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
 
     @Override
     public void update(YearMonthHistoryItem item) {
-        Optional<QqsmtEmpSocialInsGradeHis> histItem = this.queryProxy().find(item.identifier(), QqsmtEmpSocialInsGradeHis.class);
+        Optional<QqsmtEmpSocialInsGradeHis> histItem = this.queryProxy().find(new QqsmtEmpSocialInsGradeHisPk(item.identifier()), QqsmtEmpSocialInsGradeHis.class);
         if (!histItem.isPresent()) {
             throw new RuntimeException("invalid QqsmtEmpSocialInsGradeHis");
         }
@@ -64,7 +68,7 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
 
     @Override
     public void delete(String histId) {
-        this.commandProxy().remove(QqsmtEmpSocialInsGradeHis.class, histId);
+        this.commandProxy().remove(QqsmtEmpSocialInsGradeHis.class, new QqsmtEmpSocialInsGradeHisPk(histId));
     }
 
     @Override
@@ -85,6 +89,21 @@ public class JpaEmpSocialInsGradeHisRepository extends JpaRepository implements 
     @Override
     public List<EmpSocialInsGradeHis> getAllEmpSocialInsGradeHis() {
         return null;
+    }
+
+    @Override
+    public Optional<EmpSocialInsGradeHis> getBySidAndBaseDate(String sid, GeneralDate baseDate) {
+
+        if (baseDate == null){
+            return Optional.empty();
+        }
+
+        List<QqsmtEmpSocialInsGradeHis> result =  this.queryProxy().query(SELECT_BY_ID_AND_BASE_DATE, QqsmtEmpSocialInsGradeHis.class)
+                .setParameter("sid", sid)
+                .setParameter("cid", AppContexts.user().companyId())
+                .setParameter("baseYM",baseDate.yearMonth())
+                .getList();
+        return result.isEmpty() ? Optional.empty() : Optional.of(toDomainTemp(result));
     }
 
     @Override

@@ -66,6 +66,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.CalculationAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -168,6 +169,8 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00014", UpperLimitSetting.class);
 		// 休暇期限切れ状態
 		aMap.put("E00015", LeaveExpirationStatus.class);
+		// 算定区分
+		aMap.put("E00042", CalculationAtr.class);
 		
 		enumMap = Collections.unmodifiableMap(aMap);
 	}

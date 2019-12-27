@@ -60,8 +60,8 @@ public class UpdateEmpSocialInsGradeInforCommandHandler
                 throw new RuntimeException("invalid EmpSocialInsGradeHis");
             }
 
-            existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(new YearMonth(command.getStartYM()),
-                    command.getEndYM() != null ? new YearMonth(command.getEndYM()) : YearMonth.of(9999, 12)));
+            existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(command.getStartYM().yearMonth(),
+                    command.getEndYM() != null ? command.getEndYM().yearMonth() : YearMonth.of(9999, 12)));
             empSocialInsGradeHisService.update(itemToBeUpdate.get());
         }
 
@@ -69,11 +69,11 @@ public class UpdateEmpSocialInsGradeInforCommandHandler
 
         esigiRepository.update(new EmpSocialInsGradeInfo(
                 command.getHistoryId(),
-                command.getSocInsMonthlyRemune(),
-                command.getCalculationAtr(),
-                command.getHealInsStandMonthlyRemune(),
-                command.getHealInsGrade(),
-                command.getPensionInsStandCompenMonthly(),
-                command.getPensionInsGrade()));
+                command.getSocInsMonthlyRemune().intValue(),
+                command.getCalculationAtr().intValue(),
+                command.getHealInsStandMonthlyRemune() != null ? command.getHealInsStandMonthlyRemune().intValue() : null,
+                command.getHealInsGrade() != null ? command.getHealInsGrade().intValue() : null,
+                command.getPensionInsStandCompenMonthly() != null ? command.getPensionInsStandCompenMonthly().intValue() : null,
+                command.getPensionInsGrade() != null ? command.getPensionInsGrade().intValue() : null));
     }
 }

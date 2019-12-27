@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfoRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHis;
+import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeHisPk;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeInfo;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtEmpSocialInsGradeInfoPk;
 
@@ -45,7 +46,7 @@ public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements
 
     @Override
     public void update(EmpSocialInsGradeInfo domain) {
-        Optional<QqsmtEmpSocialInsGradeInfo> entity = this.queryProxy().find(domain.getHistId(),
+        Optional<QqsmtEmpSocialInsGradeInfo> entity = this.queryProxy().find(new QqsmtEmpSocialInsGradeInfoPk(domain.getHistId()),
                 QqsmtEmpSocialInsGradeInfo.class);
 
         if (!entity.isPresent()) {
@@ -58,18 +59,12 @@ public class JpaEmpSocialInsGradeInfoRepository extends JpaRepository implements
 
     @Override
     public void delete(String histId) {
-        Optional<QqsmtEmpSocialInsGradeHis> tempAbs = this.queryProxy().find(histId, QqsmtEmpSocialInsGradeHis.class);
-
-        if (!tempAbs.isPresent()) {
-            throw new RuntimeException("invalid EmpSocialInsGradeHis");
-        }
-
-        this.commandProxy().remove(QqsmtEmpSocialInsGradeHis.class, histId);
+        this.commandProxy().remove(QqsmtEmpSocialInsGradeInfo.class, new QqsmtEmpSocialInsGradeInfoPk(histId));
     }
 
     @Override
     public Optional<EmpSocialInsGradeInfo> getEmpSocialInsGradeInfoByHistId(String histId) {
-        Optional<QqsmtEmpSocialInsGradeInfo> gradeInfo = this.queryProxy().find(histId, QqsmtEmpSocialInsGradeInfo.class);
+        Optional<QqsmtEmpSocialInsGradeInfo> gradeInfo = this.queryProxy().find(new QqsmtEmpSocialInsGradeInfoPk(histId), QqsmtEmpSocialInsGradeInfo.class);
         return gradeInfo.map(this::toDomain);
     }
 

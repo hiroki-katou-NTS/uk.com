@@ -14,7 +14,6 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -49,8 +48,8 @@ public class AddEmpSocialInsGradeInforCommandHandler
 
         String newHistID = IdentifierUtil.randomUniqueId();
         YearMonthHistoryItem dateItem = new YearMonthHistoryItem(newHistID,
-                new YearMonthPeriod(command.getStartYM() != null ? new YearMonth(command.getStartYM()) : YearMonth.of(1900, 01),
-                        command.getEndYM() != null ? new YearMonth(command.getEndYM()) : YearMonth.of(9999, 12)));
+                new YearMonthPeriod(command.getStartYM() != null ? command.getStartYM().yearMonth() : YearMonth.of(1900, 1),
+                        command.getEndYM() != null ? command.getEndYM().yearMonth() : YearMonth.of(9999, 12)));
 
         Optional<EmpSocialInsGradeHis> existHist = empSocialInsGradeHisRepository.getEmpSocialInsGradeHisBySId(companyId,
                 command.getEmployeeId());
@@ -65,16 +64,14 @@ public class AddEmpSocialInsGradeInforCommandHandler
 
         empSocialInsGradeHisService.add(itemtoBeAdded);
 
-        // TODO SoInsPayCategory set to null
-
         empSocialInsGradeInfoRepository.add(new EmpSocialInsGradeInfo(
                 newHistID,
-                command.getSocInsMonthlyRemune(),
-                command.getCalculationAtr(),
-                command.getHealInsStandMonthlyRemune(),
-                command.getHealInsGrade(),
-                command.getPensionInsStandCompenMonthly(),
-                command.getPensionInsGrade()));
+                command.getSocInsMonthlyRemune().intValue(),
+                command.getCalculationAtr().intValue(),
+                command.getHealInsStandMonthlyRemune() != null ? command.getHealInsStandMonthlyRemune().intValue() : null,
+                command.getHealInsGrade() != null ? command.getHealInsGrade().intValue() : null,
+                command.getPensionInsStandCompenMonthly() != null ? command.getPensionInsStandCompenMonthly().intValue() : null,
+                command.getPensionInsGrade() != null ? command.getPensionInsGrade().intValue() : null));
 
         return new PeregAddCommandResult(newHistID);
     }

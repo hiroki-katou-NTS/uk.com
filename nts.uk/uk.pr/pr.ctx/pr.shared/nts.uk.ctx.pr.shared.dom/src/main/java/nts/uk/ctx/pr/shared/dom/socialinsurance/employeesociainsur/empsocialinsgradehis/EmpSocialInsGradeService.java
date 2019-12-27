@@ -108,8 +108,8 @@ public class EmpSocialInsGradeService {
         Optional<EmpTiedProYearImport> empTiedProYear = empTiedProYearAdapter.getEmpTiedProYearByEmployment(cid, employmentCode);
         if (empTiedProYear.isPresent()) {
             // Get current year month from processing category no
-            List<CurrentProcessDateImport> currProcessDates = currentProcessDateAdapter.getCurrProcessDateByKey(cid, empTiedProYear.get().getProcessCateNo());
-            if (!currProcessDates.isEmpty()) return currProcessDates.get(0).getGiveCurrTreatYear();
+            Optional<CurrentProcessDateImport> currProcessDates = currentProcessDateAdapter.getCurrProcessDateByKey(cid, empTiedProYear.get().getProcessCateNo());
+            if (currProcessDates.isPresent()) return currProcessDates.get().getGiveCurrTreatYear();
         }
         return GeneralDate.today().yearMonth();
     }

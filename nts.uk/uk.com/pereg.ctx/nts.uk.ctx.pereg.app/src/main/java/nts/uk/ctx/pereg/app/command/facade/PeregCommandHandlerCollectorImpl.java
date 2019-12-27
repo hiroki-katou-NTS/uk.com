@@ -129,6 +129,9 @@ import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empco
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.DeleteEmpHealInsQualifiInfoCommand;
 import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.DeleteEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -325,6 +328,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00082
 			new TypeLiteral<PeregAddCommandHandler<AddEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregAddCommandHandler<AddEmpSocialInsGradeInforCommand>>() {
 			}
 	);
 	/** Update handlers */
@@ -451,7 +457,11 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00082
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand>>() {
 			}
+
 	);
 	
 	
@@ -504,6 +514,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00082
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand>>() {
 			}
 	);
 	

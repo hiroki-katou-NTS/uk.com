@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsoci
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.primitive.PrimitiveValueBase;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -15,11 +16,11 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
 
     /** 期間.開始年月 */
     @PeregItem("IS01016")
-    private Integer startYM;
+    private GeneralDate startYM;
 
     /** 期間.終了年月 */
     @PeregItem("IS01017")
-    private Integer endYM;
+    private GeneralDate endYM;
 
     /** 現在の等級 */
     @PeregItem("IS01018")
@@ -49,7 +50,7 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
     @PeregItem("IS01024")
     private Integer socInsMonthlyRemune;
 
-    public EmpSocialInsGradeInforDto(String recordId, Integer startYM, Integer endYM, String currentGrade, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
+    public EmpSocialInsGradeInforDto(String recordId, GeneralDate startYM, GeneralDate endYM, String currentGrade, Integer calculationAtr, Integer healInsGrade, Integer healInsStandMonthlyRemune, Integer pensionInsGrade, Integer pensionInsStandCompenMonthly, Integer socInsMonthlyRemune) {
         super(recordId);
         this.startYM = startYM;
         this.endYM = endYM;
@@ -72,8 +73,8 @@ public class EmpSocialInsGradeInforDto extends PeregDomainDto {
         }
         return new EmpSocialInsGradeInforDto(
                 period.identifier(),
-                period.span().start().v(),
-                period.span().end().v(),
+                GeneralDate.ymd(period.span().start().year(),period.span().start().month(),1),
+                GeneralDate.ymd(period.span().end().year(),period.span().end().month(),1),
                 currentGrade,
                 info.getCalculationAtr().value,
                 info.getHealInsGrade().map(PrimitiveValueBase::v).orElse(null),

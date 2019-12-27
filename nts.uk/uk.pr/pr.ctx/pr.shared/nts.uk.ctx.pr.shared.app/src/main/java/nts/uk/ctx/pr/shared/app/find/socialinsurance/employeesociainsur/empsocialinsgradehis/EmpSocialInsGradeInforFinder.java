@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.GeneralHistoryItem;
@@ -52,7 +54,9 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
     public EmpSocialInsGradeInforDto getSingleData(PeregQuery peregQuery) {
         String companyId = AppContexts.user().companyId();
         if (peregQuery.getInfoId() == null) {
-            Optional<EmpSocialInsGradeHis> domain = esighFinder.getEmpSocialInsGradeHisBySId(companyId, peregQuery.getEmployeeId());
+            //Optional<EmpSocialInsGradeHis> domain = esighFinder.getEmpSocialInsGradeHisBySId(companyId, peregQuery.getEmployeeId());
+
+            Optional<EmpSocialInsGradeHis> domain = esighFinder.getBySidAndBaseDate(peregQuery.getEmployeeId(), peregQuery.getStandardDate());
             if (!domain.isPresent()) {
                 return null;
             }
@@ -61,14 +65,34 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
                 return null;
             }
             EmpSocialInsGradeInfo info = esigiFinder.getEmpSocialInsGradeInfoByHistId(period.identifier()).orElse(null);
-            String currentGrade = service.getCurrentGrade(domain.get(), peregQuery.getStandardDate());
+            String currentGrade = service.getCurrentGrade(domain.get(), peregQuery.getStandardDate() != null ? peregQuery.getStandardDate() : GeneralDate.today());
             return EmpSocialInsGradeInforDto.fromDomain(domain.get(), info, currentGrade);
         } else {
             EmpSocialInsGradeInfo info = esigiFinder.getEmpSocialInsGradeInfoByHistId(peregQuery.getInfoId()).orElse(null);
             EmpSocialInsGradeHis domain = esighFinder.getEmpSocialInsGradeHisByHistId(peregQuery.getInfoId()).orElse(null);
-            String currentGrade = service.getCurrentGrade(domain, peregQuery.getStandardDate());
+            String currentGrade = service.getCurrentGrade(domain, peregQuery.getStandardDate() != null ? peregQuery.getStandardDate() : GeneralDate.today());
             return EmpSocialInsGradeInforDto.fromDomain(domain, info, currentGrade);
         }
+        /*if (peregQuery.getInfoId() == null) {
+            val getBySid = esighFinder.getBySidAndBaseDate(peregQuery.getEmployeeId(), peregQuery.getStandardDate());
+            if (getBySid.isPresent()){
+                val firstItem = getBySid.get().getYearMonthHistoryItems().get(0);
+                val firstItemInfo = esigiFinder.getEmpSocialInsGradeInfoByHistId(peregQuery.getEmployeeId(), firstItem.identifier());
+
+                String currentGrade = service.getCurrentGrade(getBySid.get(), peregQuery.getStandardDate() != null ? peregQuery.getStandardDate() : GeneralDate.today());
+                return EmpSocialInsGradeInforDto.fromDomain(getBySid.get(), firstItemInfo.get(), currentGrade);
+            } else {
+                return null;
+            }
+        }
+        val item = esigiFinder.getEmpSocialInsGradeInfoByHistId(peregQuery.getEmployeeId(), peregQuery.getInfoId());
+        val itemInfo = esighFinder.getEmpSocialInsGradeHisBySId(peregQuery.getEmployeeId(), peregQuery.getInfoId());
+        if (item.isPresent() && itemInfo.isPresent()){
+            String currentGrade = service.getCurrentGrade(item, peregQuery.getStandardDate() != null ? peregQuery.getStandardDate() : GeneralDate.today());
+            EmpSocialInsGradeInforDto exportItem = EmpSocialInsGradeInforDto.fromDomain(item.get(), itemInfo.get());
+            return exportItem;
+        }
+        return null;*/
     }
 
     @Override
@@ -77,8 +101,20 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
     }
 
     @Override
-    public List<ComboBoxObject> getListFirstItems(PeregQuery peregQuery) {
-        return null;
+    public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
+
+        Optional<EmpSocialInsGradeHis> history = esighFinder.getEmpSocialInsGradeHisBySId(AppContexts.user().companyId(),
+                query.getEmployeeId());
+        if (history.isPresent()) {
+            return history.get().getYearMonthHistoryItems().stream()
+                    .filter(item -> esigiFinder.getEmpSocialInsGradeInfoByHistId(item.identifier()).isPresent())
+                    .map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString().length() == 6 ? x.start().toString().substring(0, 4) + "/" + x.start().toString().substring(4) : x.start().toString(),
+                            x.end().equals(YearMonth.of(9999, 12))
+                                    //&& query.getCtgType() == 3
+                                    ? "" : x.end().toString().length() == 6 ? x.end().toString().substring(0, 4) + "/" + x.end().toString().substring(4) : x.end().toString()))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     @Override

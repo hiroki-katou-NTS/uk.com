@@ -8,25 +8,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class HealthInsStandardMonthlyInformation {
-    /**社員ID*/
-    private String employeeId;
-
-    /** 履歴ID */
-    private String historyId;
 
     /**
      * 期間.開始年月
      */
     private Integer startYM;
-
-    /** 期間.終了年月 */
-    private Integer endYM;
-
-    /** 現在の等級 */
-    private Integer currentGrade;
-
-    /** 算定区分 */
-    private Integer calculationAtr;
 
     /**
      * 健康保険等級
@@ -41,7 +27,4 @@ public class HealthInsStandardMonthlyInformation {
 
     /** 厚生年金保険標準報酬月額 */
     private Integer pensionInsStandCompenMonthly;
-
-    /** 社会保険報酬月額（実質） */
-    private Integer socInsMonthlyRemune;
 }
