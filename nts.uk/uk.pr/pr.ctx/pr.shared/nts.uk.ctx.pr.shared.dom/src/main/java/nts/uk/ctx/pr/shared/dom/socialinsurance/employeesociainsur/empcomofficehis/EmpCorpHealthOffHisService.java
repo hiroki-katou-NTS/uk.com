@@ -43,17 +43,7 @@ public class EmpCorpHealthOffHisService {
      * @param updateInfo
      */
     public void update(EmpCorpHealthOffHis domain, DateHistoryItem itemUpdate, AffOfficeInformation updateInfo){
-        List<DateHistoryItem> listHist = domain.getPeriod();
-        int currentIndex = listHist.indexOf(itemUpdate);
-        EmpCorpHealthOffParam itemToBeUpdate = new EmpCorpHealthOffParam(domain.getEmployeeId(), itemUpdate, updateInfo.getSocialInsurOfficeCode().v());
         empCorpHealthOffHisRepository.update(itemUpdate, updateInfo);
-//        try {
-//            DateHistoryItem itemBefore = listHist.get(currentIndex+1);
-//            itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemUpdate.start().addDays(-1)));
-//            empCorpHealthOffHisRepository.update(itemBefore);
-//        } catch (IndexOutOfBoundsException e) {
-//            return;
-//        }
         updateItemBefore(domain, itemUpdate);
     }
 
@@ -63,17 +53,12 @@ public class EmpCorpHealthOffHisService {
      * @param itemDelete
      */
     public void delete(EmpCorpHealthOffHis domain, DateHistoryItem itemDelete){
-        final String MAX_DATE = "9999/12/31";
-        final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
-        List<DateHistoryItem> listHist = domain.getPeriod();
-        int currentIndex = listHist.indexOf(itemDelete);
         empCorpHealthOffHisRepository.delete(itemDelete.identifier(), domain.getEmployeeId());
-        try {
-            DateHistoryItem itemBefore = listHist.get(currentIndex + 1);
-            itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemDelete.end() == null ? itemDelete.end() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
-            empCorpHealthOffHisRepository.update(itemBefore);
-        } catch (IndexOutOfBoundsException e) {
-            return;
+        List<DateHistoryItem> listHist = domain.getPeriod();
+        if (listHist.size() > 0) {
+            val lastItem = listHist.get(0);
+            domain.exCorrectToRemove(lastItem);
+            empCorpHealthOffHisRepository.update(lastItem);
         }
     }
 
