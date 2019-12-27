@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis;
 
 import lombok.Data;
-import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;

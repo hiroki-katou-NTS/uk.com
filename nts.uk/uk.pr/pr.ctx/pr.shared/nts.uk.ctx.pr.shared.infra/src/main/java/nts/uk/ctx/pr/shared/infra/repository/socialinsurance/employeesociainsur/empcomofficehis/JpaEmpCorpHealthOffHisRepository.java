@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.command.CommandProxy;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
