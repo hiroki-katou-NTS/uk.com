@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.arc.error.BusinessException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
@@ -20,25 +21,23 @@ public class EmpHealInsQualifiInfoService {
 
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate, HealInsurNumberInfor updateInfo){
         List<EmpHealthInsurBenefits> listHist = domain.getMourPeriod();
-        /*int current = listHist.indexOf(itemToBeUpdate);*/
         if (listHist.size() >= 1) {
             emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
-            /**//*if (current <= 0) {*/
-               /* EmpHealthInsurBenefits itemBefore = listHist.get(current+1);
-                itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemToBeUpdate.start().addDays(-1)));
-                emplHealInsurQualifiInforRepository.update(itemBefore);*/
-               // Update before
-                updateItem(domain,itemToBeUpdate);
-            /*} else {*/
-                updateItemAfter(domain,itemToBeUpdate);
-                /*EmpHealthInsurBenefits itemBefore = listHist.get(current-1);
-                itemBefore.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end()));
-                emplHealInsurQualifiInforRepository.update(itemBefore);*/
-            /*}*/
+            // Update Before
+            updateItem(domain,itemToBeUpdate);
+            // Update After
+            updateItemAfter(domain,itemToBeUpdate);
+
         }
     }
     public void updateItemAfter(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
         Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyAfter(item);
+
+        // 終了日は直後の履歴の終了日より以降になっている→エラーMsg_538
+        boolean validEnd = item.span().isEnd().before(itemToBeUpdate.get().end());
+        if (!validEnd) {
+            throw new BusinessException("Msg_538");
+        }
         /*itemToBeUpdate.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end())*/
         if (!itemToBeUpdate.isPresent()){
             return;
