@@ -268,13 +268,6 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
             return "";
         }
         int textLength = text.length();
-        String add1 = textLength > 40 ? text.substring(0, 40) : text.substring(0,textLength);
-        int engChar = add1.replaceAll("[^a-z0-9]+", "").length();
-        int engNChar = add1.replaceAll("[^A-Z]+", "").length();
-
-        maxByteAllowed = maxByteAllowed + engChar/8;
-        maxByteAllowed = maxByteAllowed - engNChar/5;
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
         int byteCount = 0;
         int index = 0;
         while (index < textLength) {

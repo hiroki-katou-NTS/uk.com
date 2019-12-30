@@ -259,9 +259,6 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         if (text == null) {
             return "";
         }
-        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
-            return text;
-        }
         int textLength = text.length();
         int byteCount = 0;
         int index = 0;
