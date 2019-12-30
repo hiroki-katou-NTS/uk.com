@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsuran
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.GetHealInsStandCompMonth;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsStandardMonthlyInformation;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceDto;
+import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.GetMonPenInsStandRemu;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 
 @Path("ctx/core/socialinsurance/healthinsurance")
@@ -42,6 +43,9 @@ public class HealthInsuranceWebservice {
 
     @Inject
     private GetHealInsStandCompMonth getHealInsStandCompMonth;
+
+    @Inject
+    private GetMonPenInsStandRemu getMonPenInsStandRemu;
 
     @POST
     @Path("getByCompanyId")
@@ -94,12 +98,12 @@ public class HealthInsuranceWebservice {
     @POST
     @Path("getMonthlyPensionInsStandardRemuneration")
     public long GetMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
-        return getHealInsStandCompMonth.getMonthlyPensionInsStandardRemuneration(param);
+        return getMonPenInsStandRemu.getMonthlyPensionInsStandardRemuneration(param);
     }
 
     @POST
     @Path("getWelfarePensionStandardGradePerMonth")
     public WelfarePensionStandardGradePerMonthDto GetWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
-        return getHealInsStandCompMonth.getWelfarePensionStandardGradePerMonth(param);
+        return getMonPenInsStandRemu.getWelfarePensionStandardGradePerMonth(param);
     }
 }

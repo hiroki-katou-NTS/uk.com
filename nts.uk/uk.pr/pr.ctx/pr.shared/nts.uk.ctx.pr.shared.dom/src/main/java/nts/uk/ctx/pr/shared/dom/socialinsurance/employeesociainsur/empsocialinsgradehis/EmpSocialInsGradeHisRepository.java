@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialins
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public interface EmpSocialInsGradeHisRepository {
     void remove(String sId, String histId);
 
     List<EmpSocialInsGradeHis> getAllEmpSocialInsGradeHis();
+
+    Optional<EmpSocialInsGradeHis> getBySidAndBaseDate(String sid, GeneralDate baseDate);
 
     Optional<EmpSocialInsGradeHis> getEmpSocialInsGradeHisBySId(String cid, String employeeId);
 

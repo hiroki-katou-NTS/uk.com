@@ -21,16 +21,15 @@ public class EmpHealInsQualifiInfoService {
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate, HealInsurNumberInfor updateInfo){
         List<EmpHealthInsurBenefits> listHist = domain.getMourPeriod();
         int current = listHist.indexOf(itemToBeUpdate);
-        emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
         if (listHist.size() > 1) {
             if (current <= 0) {
                 EmpHealthInsurBenefits itemBefore = listHist.get(current+1);
                 itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemToBeUpdate.start().addDays(-1)));
-                emplHealInsurQualifiInforRepository.update(itemBefore, updateInfo);
+                emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
             } else {
                 EmpHealthInsurBenefits itemBefore = listHist.get(current-1);
                 itemBefore.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end()));
-                emplHealInsurQualifiInforRepository.update(itemBefore, updateInfo);
+                emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
             }
         }
     }
