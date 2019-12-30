@@ -106,6 +106,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00070", "IS00781");
 		// 社員社保事業所
 		aMap.put("CS00075", "IS00788");
+		// 社員健康保険資格情報
+		aMap.put("CS00082", "IS00841");
 
 		aMap.put("CS00092", "IS01016");
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
