@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomofficehis;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
@@ -19,6 +21,8 @@ import java.util.List;
 /**
 * 社員社保事業所所属履歴
 */
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -89,6 +93,21 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
     }
     public static QqsmtEmpCorpOffHis toEntity(EmpCorpHealthOffHis domain) {
         return null;
+    }
+
+    public static EmpCorpHealthOffHis toDomainCps(List<QqsmtEmpCorpOffHis> entity) {
+        if(entity.size() <= 0){
+            return null;
+        }
+        String empID = entity.get(0).empCorpOffHisPk.employeeId;
+        List<DateHistoryItem> period = new ArrayList<>();
+        entity.forEach(x -> {
+            DatePeriod datePeriod = new DatePeriod(x.startDate,x.endDate);
+            DateHistoryItem historyItem = new DateHistoryItem(x.getEmpCorpOffHisPk().historyId,datePeriod);
+            period.add(historyItem);
+        });
+
+        return new EmpCorpHealthOffHis(empID,period);
     }
 
 }

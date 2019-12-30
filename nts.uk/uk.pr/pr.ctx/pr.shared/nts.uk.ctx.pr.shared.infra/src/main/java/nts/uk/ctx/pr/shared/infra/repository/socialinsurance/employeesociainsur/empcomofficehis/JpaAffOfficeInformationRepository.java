@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empcomofficehis;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.SocialInsuranceOfficeCode;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomofficehis.QqsmtEmpCorpOffHis;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -16,7 +18,9 @@ import java.util.Optional;
 public class JpaAffOfficeInformationRepository extends JpaRepository implements AffOfficeInformationRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpCorpOffHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND f.empCorpOffHisPk.historyId =:hisId AND  f.empCorpOffHisPk.cid =:cid ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empCorpOffHisPk.employeeId =:employeeId AND f.empCorpOffHisPk.historyId =:historyId AND  f.empCorpOffHisPk.cid =:cid ";
+    private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empCorpOffHisPk.historyId IN :hisIds AND  f.empCorpOffHisPk.cid =:cid";
+
 
     @Override
     public List<AffOfficeInformation> getAllAffOfficeInformation() {
@@ -26,11 +30,19 @@ public class JpaAffOfficeInformationRepository extends JpaRepository implements 
 
     @Override
     public Optional<AffOfficeInformation> getAffOfficeInformationById(String empId, String hisId) {
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpCorpOffHis.class)
+        val result = this.queryProxy().query(SELECT_BY_KEY_STRING, QqsmtEmpCorpOffHis.class)
                 .setParameter("employeeId", empId)
-                .setParameter("hisId",hisId)
+                .setParameter("historyId",hisId)
                 .setParameter("cid", AppContexts.user().companyId())
-                .getSingle(x -> x.toDomain());
+                .getSingle();
+        return result.isPresent() ? Optional.of(new AffOfficeInformation(result.get().empCorpOffHisPk.historyId, new SocialInsuranceOfficeCode(result.get().socialInsuranceOfficeCd))) : Optional.empty();
+    }
+
+    @Override
+    public List<AffOfficeInformation> getByHistIds(List<String> histIds){
+        return this.queryProxy().query(SELECT_BY_HIST_IDS, QqsmtEmpCorpOffHis.class)
+                .setParameter("historyId", histIds).setParameter("cid", AppContexts.user().companyId())
+                .getList(x -> x.toDomain());
     }
 
     @Override
