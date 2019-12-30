@@ -3,6 +3,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
     import errors = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
+    import hasError = nts.uk.ui.errors.hasError;
 
 
     export class ScreenModel {
@@ -51,12 +52,13 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         loadGird(){
             let self = this;
             $("#B_2").ntsGrid({
-                height: '319px',
+                height: '315px',
                 dataSource: self.listEmp(),
                 primaryKey: 'id',
                 virtualization: true,
                 showErrorsOnPage: true,
                 virtualizationMode: 'continuous',
+                errorColumns: [ 'changeDate' ],
                 columns: [
                     { headerText: 'id', key: 'id', dataType: 'number', width: '20' , hidden: true},
                     { headerText: 'employeeId', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
@@ -108,7 +110,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     employee.employeeId = item.employeeId;
                     employee.employeeCode = item.employeeCode;
                     employee.changeDate = item.changeDate;
-                listEmp.push(employee);
+                    listEmp.push(employee);
                 });
             setShared("QUI002_PARAMS_A", listEmp);
             nts.uk.ui.windows.close();
