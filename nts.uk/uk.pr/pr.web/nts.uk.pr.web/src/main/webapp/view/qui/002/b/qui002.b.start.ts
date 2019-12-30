@@ -9,7 +9,7 @@ module nts.uk.pr.view.qui002.b {
                     new nts.uk.ui.errors.ErrorHeader("employeeCode", nts.uk.resource.getText('QUI002_B222_2'), "auto", true),
                     new nts.uk.ui.errors.ErrorHeader("employeeName", nts.uk.resource.getText('QUI002_B222_3'), "auto", true),
                     new nts.uk.ui.errors.ErrorHeader("employeeNameBefore", nts.uk.resource.getText('QUI002_B222_4'), "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true)
+                    new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true)
                 ]
             };
             __viewContext.bind(screenModel, dialogOptions);
