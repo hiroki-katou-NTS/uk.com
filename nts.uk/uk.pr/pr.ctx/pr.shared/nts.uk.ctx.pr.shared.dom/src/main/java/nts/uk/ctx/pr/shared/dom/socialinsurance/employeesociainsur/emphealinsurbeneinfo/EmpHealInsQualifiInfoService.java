@@ -20,30 +20,41 @@ public class EmpHealInsQualifiInfoService {
 
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate, HealInsurNumberInfor updateInfo){
         List<EmpHealthInsurBenefits> listHist = domain.getMourPeriod();
-        int current = listHist.indexOf(itemToBeUpdate);
-        if (listHist.size() > 1) {
+        /*int current = listHist.indexOf(itemToBeUpdate);*/
+        if (listHist.size() >= 1) {
             emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
-            if (current <= 0) {
-                EmpHealthInsurBenefits itemBefore = listHist.get(current+1);
+            /**//*if (current <= 0) {*/
+               /* EmpHealthInsurBenefits itemBefore = listHist.get(current+1);
                 itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemToBeUpdate.start().addDays(-1)));
-                emplHealInsurQualifiInforRepository.update(itemBefore);
-            } else {
-                EmpHealthInsurBenefits itemBefore = listHist.get(current-1);
+                emplHealInsurQualifiInforRepository.update(itemBefore);*/
+               // Update before
+                updateItem(domain,itemToBeUpdate);
+            /*} else {*/
+                updateItemAfter(domain,itemToBeUpdate);
+                /*EmpHealthInsurBenefits itemBefore = listHist.get(current-1);
                 itemBefore.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end()));
-                emplHealInsurQualifiInforRepository.update(itemBefore);
-            }
+                emplHealInsurQualifiInforRepository.update(itemBefore);*/
+            /*}*/
         }
     }
-
+    public void updateItemAfter(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
+        Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyAfter(item);
+        /*itemToBeUpdate.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end())*/
+        if (!itemToBeUpdate.isPresent()){
+            return;
+        }
+        itemToBeUpdate.get().shortenStartToAccept(item.getDatePeriod());
+        emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+    }
     public void delete(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeDeleted){
         emplHealInsurQualifiInforRepository.remove(domain.getEmployeeId(), itemToBeDeleted.identifier());
     }
 
     public void updateItem(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
-        Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
-        if (!itemToBeUpdate.isPresent()){
-            return;
-        }
-        emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+    Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
+    if (!itemToBeUpdate.isPresent()){
+        return;
     }
+    emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+}
 }
