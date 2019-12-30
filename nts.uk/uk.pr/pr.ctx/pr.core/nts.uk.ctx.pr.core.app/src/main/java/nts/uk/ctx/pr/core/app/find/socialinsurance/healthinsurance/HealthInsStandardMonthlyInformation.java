@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -10,9 +11,14 @@ import lombok.Setter;
 public class HealthInsStandardMonthlyInformation {
 
     /**
+     * 社員ID
+     */
+    private String sId;
+
+    /**
      * 期間.開始年月
      */
-    private Integer startYM;
+    private GeneralDate startYM;
 
     /**
      * 健康保険等級
