@@ -32,16 +32,15 @@ public class EmpHealInsQualifiInfoService {
     }
     public void updateItemAfter(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
         Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyAfter(item);
-
+        if (!itemToBeUpdate.isPresent()){
+            return;
+        }
         // 終了日は直後の履歴の終了日より以降になっている→エラーMsg_538
         boolean validEnd = item.span().isEnd().before(itemToBeUpdate.get().end());
         if (!validEnd) {
             throw new BusinessException("Msg_538");
         }
         /*itemToBeUpdate.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end())*/
-        if (!itemToBeUpdate.isPresent()){
-            return;
-        }
         itemToBeUpdate.get().shortenStartToAccept(item.getDatePeriod());
         emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
     }
