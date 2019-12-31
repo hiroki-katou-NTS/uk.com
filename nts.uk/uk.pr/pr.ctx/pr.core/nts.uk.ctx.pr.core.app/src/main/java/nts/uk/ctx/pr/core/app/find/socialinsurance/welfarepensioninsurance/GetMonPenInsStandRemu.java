@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance;
 
 import lombok.val;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensStandGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsStandardMonthlyInformation;
 import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.*;
@@ -18,8 +19,8 @@ public class GetMonPenInsStandRemu {
     private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
     // 等級から厚生年金保険標準報酬月額を取得する
-    public long getMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
-        long standardMonthlyFee = 0L;
+    public Long getMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
+        Long standardMonthlyFee = null;
 
         // ドメインモデル「厚生年金標準月額」を取得する
         Optional<WelfarePensionStandardMonthlyFee> welfarePensionStandardMonthlyFee = welfarePensionStandardMonthlyFeeRepository
@@ -29,7 +30,7 @@ public class GetMonPenInsStandRemu {
             standardMonthlyFee = welfarePensionStandardMonthlyFee.get().getStandardMonthlyPrice().stream()
                     .filter(x -> param.getPensionInsGrade() != null && x.getWelfarePensionGrade() == param.getPensionInsGrade())
                     .map(xm -> xm.getStandardMonthlyFee())
-                    .findFirst().orElse(0L);
+                    .findFirst().orElse(null);
         }
 
         return standardMonthlyFee;
@@ -37,9 +38,9 @@ public class GetMonPenInsStandRemu {
 
 
     // 報酬月額から厚生年金保険標準報酬月額と厚生年金保険等級を取得する
-    public WelfarePensionStandardGradePerMonthDto getWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public WelfarePensStandGradePerMonthDto getWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
 
-        WelfarePensionStandardGradePerMonthDto perMonthDto = new WelfarePensionStandardGradePerMonthDto();
+        WelfarePensStandGradePerMonthDto perMonthDto = new WelfarePensStandGradePerMonthDto();
 
         // ドメインモデル「厚生年金報酬月額範囲」を取得する
         Optional<MonthlyScopeOfWelfarePensionCompensation> dataMonth = welfarePensionStandardMonthlyFeeRepository
@@ -78,7 +79,7 @@ public class GetMonPenInsStandRemu {
         pensionStandardMonthlyFee.ifPresent(welfarePensionStandardMonthlyFee ->
                 perMonthDto.setStandardMonthlyFee(
                         welfarePensionStandardMonthlyFee.getStandardMonthlyPrice().stream()
-                                .filter(x -> x.getWelfarePensionGrade() == perMonthDto.getWelfarePensionGrade())
+                                .filter(x -> perMonthDto.getWelfarePensionGrade() != null && x.getWelfarePensionGrade() == perMonthDto.getWelfarePensionGrade())
                                 .map(WelfarePensionStandardGradePerMonth::getStandardMonthlyFee)
                                 .findFirst().orElse(0L)
                 ));
