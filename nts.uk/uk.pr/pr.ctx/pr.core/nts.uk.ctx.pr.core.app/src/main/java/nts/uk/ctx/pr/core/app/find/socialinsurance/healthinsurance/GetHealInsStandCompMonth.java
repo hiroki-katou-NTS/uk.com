@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance;
 
 import lombok.val;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsStandGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsuranceStandardGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
 import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.*;
@@ -19,8 +20,8 @@ public class GetHealInsStandCompMonth {
     private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
 
     // 等級から健康保険標準報酬月額を取得する
-    public long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
-        long standardMonthlyFee = 0L;
+    public Long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
+        Long standardMonthlyFee = null;
 
         // ドメインモデル「健康保険標準月額」を取得する
         Optional<HealthInsuranceStandardMonthly> healthInsStandardMonthly = healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(param.getStartYM().yearMonth().v());
@@ -29,16 +30,16 @@ public class GetHealInsStandCompMonth {
             standardMonthlyFee = healthInsStandardMonthly.get().getStandardGradePerMonth().stream()
                     .filter(x -> param.getHealInsGrade() != null && x.getHealthInsuranceGrade() == param.getHealInsGrade())
                     .map(x -> x.getStandardMonthlyFee())
-                    .findFirst().orElse(0L);
+                    .findFirst().orElse(null);
         }
 
         return standardMonthlyFee;
     }
 
     // 報酬月額から健康保険標準報酬月額と健康保険等級を取得する
-    public HealthInsuranceStandardGradePerMonthDto getHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public HealthInsStandGradePerMonthDto getHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
 
-        HealthInsuranceStandardGradePerMonthDto perMonthDto = new HealthInsuranceStandardGradePerMonthDto();
+        HealthInsStandGradePerMonthDto perMonthDto = new HealthInsStandGradePerMonthDto();
 
         // ドメインモデル「健康保険報酬月額範囲」を取得する
         Optional<MonthlyHealthInsuranceCompensation> dataMonth = healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonthCom(param.getStartYM().yearMonth().v());
@@ -74,9 +75,9 @@ public class GetHealInsStandCompMonth {
         healthInsStandardMonthly.ifPresent(healthInsuranceStandardMonthly ->
                 perMonthDto.setStandardMonthlyFee(
                     healthInsuranceStandardMonthly.getStandardGradePerMonth().stream()
-                            .filter(x -> x.getHealthInsuranceGrade() == perMonthDto.getHealthInsuranceGrade())
+                            .filter(x -> perMonthDto.getHealthInsuranceGrade() != null && x.getHealthInsuranceGrade() == perMonthDto.getHealthInsuranceGrade())
                             .map(HealthInsuranceStandardGradePerMonth::getStandardMonthlyFee)
-                            .findFirst().orElse(0L)
+                            .findFirst().orElse(null)
         ));
 
         return perMonthDto;
