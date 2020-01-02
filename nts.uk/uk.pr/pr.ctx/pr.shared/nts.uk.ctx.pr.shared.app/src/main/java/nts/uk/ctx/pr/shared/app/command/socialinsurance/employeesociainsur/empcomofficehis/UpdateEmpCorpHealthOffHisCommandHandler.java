@@ -12,6 +12,7 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+
 @Stateless
 public class UpdateEmpCorpHealthOffHisCommandHandler
         extends CommandHandler<UpdateEmpCorpHealthOffHisCommand>
@@ -36,9 +37,6 @@ public class UpdateEmpCorpHealthOffHisCommandHandler
         return UpdateEmpCorpHealthOffHisCommand.class;
     }
 
-    public static final String MAX_DATE = "9999/12/31";
-    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
-
     @Override
     protected void handle(CommandHandlerContext<UpdateEmpCorpHealthOffHisCommand> context) {
         val command = context.getCommand();
@@ -48,7 +46,7 @@ public class UpdateEmpCorpHealthOffHisCommandHandler
                 .findFirst();
         if(itemToBeUpdate.isPresent()){
             existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(),
-                    command.getEndDate()!= null? command.getEndDate(): GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
+                    command.getEndDate()!= null? command.getEndDate(): GeneralDate.max()));
             AffOfficeInformation updateInfo = new AffOfficeInformation(itemToBeUpdate.get().identifier(), new SocialInsuranceOfficeCode(command.getCode()));
             empCorpHealthOffHisService.update(existHist.get(), itemToBeUpdate.get(), updateInfo);
         }

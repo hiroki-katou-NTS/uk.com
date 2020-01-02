@@ -34,9 +34,6 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
         return UpdateEmpHealInsQualifiInfoCommand.class;
     }
 
-    public static final String MAX_DATE = "9999/12/31";
-    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
-
     @Override
     protected void handle(CommandHandlerContext<UpdateEmpHealInsQualifiInfoCommand> context) {
         val command = context.getCommand();
@@ -53,7 +50,7 @@ public class UpdateEmpHealInsQualifiInfoCommandHandler
             if (!itemBenefits.isPresent()) {
                 throw new RuntimeException("Invalid EmpHealInsQualifiInfo");
             }
-            existHist.get().changeSpan(itemBenefits.get(), new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
+            existHist.get().changeSpan(itemBenefits.get(), new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()));
             HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(
                     command.getHistoryId(),
                     command.getNurCaseInsNumber(),

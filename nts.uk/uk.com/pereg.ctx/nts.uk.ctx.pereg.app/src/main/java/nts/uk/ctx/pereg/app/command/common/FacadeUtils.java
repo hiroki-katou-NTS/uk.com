@@ -34,6 +34,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -51,6 +52,9 @@ public class FacadeUtils {
 	
 	@Inject
 	private ComboBoxRetrieveFactory combox;
+
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075", "CS00092");
@@ -1016,6 +1020,25 @@ public class FacadeUtils {
 					String[][] cs00092Item = {
 							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionValue() } };
 					result.addAll(FacadeUtils.createListItems(cs00092Item, listItemIfo));
+				}
+			});
+		}
+		return result;
+	}
+
+	public List<ItemValue> getListDefaultCS00075(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.STRING.value);
+		List<String> itemEnum = Arrays.asList("IS00790");
+		List<ComboBoxObject> comboxs =socialInsuranceOfficeRepository.findByCid(AppContexts.user().companyId())
+				.stream()
+				.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + "　" + x.getName())).collect(Collectors.toList());
+		List<ItemValue> result = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(comboxs)) {
+			listItemIfo.stream().forEach(c ->{
+				if(itemEnum.contains(c.getItemCode())) {
+					String[][] cs00075Item = {
+							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionText() } };
+					result.addAll(FacadeUtils.createListItems(cs00075Item, listItemIfo));
 				}
 			});
 		}

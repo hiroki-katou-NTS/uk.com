@@ -21,8 +21,7 @@ import java.util.List;
 /**
 * 社員社保事業所所属履歴
 */
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -103,7 +102,7 @@ public class QqsmtEmpCorpOffHis extends UkJpaEntity implements Serializable
         List<DateHistoryItem> period = new ArrayList<>();
         entity.forEach(x -> {
             DatePeriod datePeriod = new DatePeriod(x.startDate,x.endDate);
-            DateHistoryItem historyItem = new DateHistoryItem(x.getEmpCorpOffHisPk().historyId,datePeriod);
+            DateHistoryItem historyItem = new DateHistoryItem(x.empCorpOffHisPk.historyId,datePeriod);
             period.add(historyItem);
         });
 

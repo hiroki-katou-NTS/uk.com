@@ -1,13 +1,7 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

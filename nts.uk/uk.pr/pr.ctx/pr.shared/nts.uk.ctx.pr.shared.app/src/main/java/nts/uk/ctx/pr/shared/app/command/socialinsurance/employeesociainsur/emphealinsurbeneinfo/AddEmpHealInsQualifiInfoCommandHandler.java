@@ -39,9 +39,6 @@ public class AddEmpHealInsQualifiInfoCommandHandler
         return AddEmpHealInsQualifiInfoCommand.class;
     }
 
-    public static final String MAX_DATE = "9999/12/31";
-    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
-
     @Override
     protected PeregAddCommandResult handle(CommandHandlerContext<AddEmpHealInsQualifiInfoCommand> context) {
         val command = context.getCommand();
@@ -51,7 +48,7 @@ public class AddEmpHealInsQualifiInfoCommandHandler
 
         EmpHealthInsurBenefits dateItem = new EmpHealthInsurBenefits(hisId,
                 new DateHistoryItem(hisId,
-                        new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)
+                        new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()
         )));
 
         EmplHealInsurQualifiInfor qualifiInfor = new EmplHealInsurQualifiInfor(command.getEmployeeId(), new ArrayList<>());
