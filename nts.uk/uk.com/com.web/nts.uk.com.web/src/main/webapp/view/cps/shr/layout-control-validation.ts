@@ -2393,9 +2393,15 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (healInsGrade) {
+                    if (healInsGrade && startYM) {
                         $(healInsGrade.id).on('blur', () => {
                         // healInsGrade.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
                             // obj để get dữ liệu
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 // IS01016
@@ -2408,11 +2414,6 @@ module nts.layout {
                                 pensionInsGradeParam = pensionInsGrade ? ko.toJS(pensionInsGrade.data.value) : null,
                                 // IS01023
                                 pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
-
-                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
-                                    || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
-                                return;
-                            }
 
                             fetch.getHealInsStandCompMonth({
                                 sid: sid,
@@ -2460,9 +2461,15 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (healInsStandMonthlyRemune) {
+                    if (healInsStandMonthlyRemune && startYM) {
                         $(healInsStandMonthlyRemune.id).on('blur', () => {
                         // healInsStandMonthlyRemune.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
                             // obj để get dữ liệu
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 // IS01016
@@ -2476,10 +2483,6 @@ module nts.layout {
                                 // IS01023
                                 pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
 
-                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
-                                    || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
-                                return;
-                            }
 
                             fetch.getHealthInsuranceStandardGradePerMonth({
                                 sid: sid,
@@ -2531,9 +2534,15 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (pensionInsGrade) {
+                    if (pensionInsGrade && startYM) {
                         $(pensionInsGrade.id).on('blur', () => {
                         // pensionInsGrade.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
                             // obj để get dữ liệu
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 // IS01016
@@ -2547,10 +2556,6 @@ module nts.layout {
                                 // IS01023
                                 pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
 
-                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
-                                    || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
-                                return;
-                            }
 
                             fetch.getMonthlyPensionInsStandardRemuneration({
                                 sid: sid,
@@ -2598,9 +2603,15 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (pensionInsStandCompenMonthly) {
+                    if (pensionInsStandCompenMonthly && startYM) {
                         $(pensionInsStandCompenMonthly.id).on('blur', () => {
                         // pensionInsStandCompenMonthly.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
                             // obj để get dữ liệu
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 // IS01016
@@ -2614,10 +2625,6 @@ module nts.layout {
                                 // IS01023
                                 pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
 
-                            if (!moment.utc(startYMParam)._isValid || moment.utc(startYMParam).diff(moment.utc('1900/01/01'), 'days', true) < 0
-                                    || moment.utc(startYMParam).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
-                                return;
-                            }
 
                             fetch.getWelfarePensionStandardGradePerMonth({
                                 sid: sid,

@@ -87,25 +87,25 @@ public class HealthInsuranceWebservice {
 
     @POST
     @Path("getHealInsStandCompMonth")
-    public Long GetHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
+    public Long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
         return getHealInsStandCompMonth.getHealInsStandCompMonth(param);
     }
 
     @POST
     @Path("getHealthInsuranceStandardGradePerMonth")
-    public HealthInsStandGradePerMonthDto GetHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public HealthInsStandGradePerMonthDto getHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
         return getHealInsStandCompMonth.getHealthInsuranceStandardGradePerMonth(param);
     }
 
     @POST
     @Path("getMonthlyPensionInsStandardRemuneration")
-    public Long GetMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
+    public Long getMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
         return getMonPenInsStandRemu.getMonthlyPensionInsStandardRemuneration(param);
     }
 
     @POST
     @Path("getWelfarePensionStandardGradePerMonth")
-    public WelfarePensStandGradePerMonthDto GetWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public WelfarePensStandGradePerMonthDto getWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
         return getMonPenInsStandRemu.getWelfarePensionStandardGradePerMonth(param);
     }
 }
