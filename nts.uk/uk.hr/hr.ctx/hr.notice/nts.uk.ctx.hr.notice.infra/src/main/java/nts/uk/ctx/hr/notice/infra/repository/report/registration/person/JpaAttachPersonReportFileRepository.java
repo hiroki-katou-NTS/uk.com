@@ -102,7 +102,7 @@ public class JpaAttachPersonReportFileRepository extends JpaRepository  implemen
 			dto.setDispOrder(obj[4] == null ? null : Integer.valueOf(obj[4].toString()));
 			dto.setRequiredDoc(obj[5] == null ? null : Integer.valueOf(obj[5].toString()));
 			dto.setDocRemarks(obj[6] == null ? null : obj[6].toString());
-			dto.setSampleFileId(obj[7] == null ? null : Integer.valueOf(obj[7].toString()));
+			dto.setSampleFileId(obj[7] == null ? null : obj[7].toString());
 			dto.setSampleFileName(obj[8] == null ? null : obj[8].toString());
 			if (!listAttachFile.isEmpty()) {
 				Optional<JhndtReportAtcFile> attachFile = listAttachFile.stream().filter(e -> e.docID == docId).findFirst();

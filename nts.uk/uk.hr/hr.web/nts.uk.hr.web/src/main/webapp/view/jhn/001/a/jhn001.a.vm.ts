@@ -51,18 +51,21 @@ module jhn001.a.viewmodel {
                         if (data) {
                             self.layout().showColor(true);
                             self.layout().standardDate(data.standardDate || undefined);
-                            
+
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
-                           
+
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
-                                unblock();
+                                
+                                // get list file document
+                               self.getListDocument().done(() => {
+                                   unblock();
+                               });
                             });
-
                         } else {
                             self.layout().listItemCls.removeAll();
-                        unblock();
+                            unblock();
                         }
                     }).fail(mgs => {
                         self.layout().showColor(true);
@@ -71,6 +74,45 @@ module jhn001.a.viewmodel {
                     });
                 }
             });
+        }
+        
+        getListDocument(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            let param  = {layoutReportId : 1, reportId: 0 }    
+            var dfdGetData = service.getListDoc(param);
+
+            block();
+            $.when(dfdGetData).done((datafile: any) => {
+                var lstDoc = [];
+                if (datafile) {
+                    for (var i = 0; i < datafile.length; i++) {
+                        let obj = {
+                            docName: datafile[i].docName,
+                            ngoactruoc: '(',
+                            sampleFileName: '<a href="#">' + datafile[i].sampleFileName + '</a>', 
+                            ngoacsau: ')',
+                            fileName: '<a href="#">' + datafile[i].fileName + '</a>' ,
+                            cid: datafile[i].cid,
+                            reportLayoutID: datafile[i].reportLayoutID,
+                            docID: datafile[i].docID,
+                            dispOrder: datafile[i].dispOrder,
+                            requiredDoc: datafile[i].requiredDoc,
+                            docRemarks: datafile[i].docRemarks,
+                            sampleFileId: datafile[i].sampleFileId,
+                            reportID: datafile[i].reportID,
+                            fileId: datafile[i].fileId,
+                            fileSize: datafile[i].fileSize
+                        }
+                        lstDoc.push(obj);
+                    }
+                    self.layout().listDocument(lstDoc);
+                }
+
+                unblock();
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         newMode(){
@@ -129,6 +171,10 @@ module jhn001.a.viewmodel {
             
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
                 console.log('test open dialog f');
+                // get lại list file document
+                self.getListDocument().done(() => {
+                    unblock();
+                });
             });
             
             
@@ -161,10 +207,25 @@ module jhn001.a.viewmodel {
         constructor() {
             let self = this;
 
-            self.listDocument([{ nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' }]);
+            }
+        
+        clickSampleFileName() {
+            console.log(this);
+            let rowData : any = this;
+            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.sampleFileId).done(function(res) {
+                nts.uk.request.specials.donwloadFile(rowData.sampleFileId);
+            });
+            console.log('click Sample FileName');
+        }
+        
+        clickFileName(row) {
+            console.log(this);
+            let rowData : any = this;
+            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
+                nts.uk.request.specials.donwloadFile(rowData.fileId);
+            });
+            
+            console.log('click FileName');
         }
     }
     

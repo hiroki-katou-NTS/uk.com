@@ -24,7 +24,7 @@ public class DocumentSampleDto {
 	public Integer dispOrder; //表示順
 	public Integer requiredDoc; //必須書類
 	public String docRemarks; //備考
-	public Integer sampleFileId; //サンプルファイルID
+	public String sampleFileId; //サンプルファイルID
 	public String sampleFileName; //サンプルファイル名
 	
 	public Integer reportID; //届出ID

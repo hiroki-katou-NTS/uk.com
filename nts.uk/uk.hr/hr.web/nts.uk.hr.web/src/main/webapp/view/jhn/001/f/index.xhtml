@@ -25,21 +25,8 @@
 				<button id="closebtn" tabindex = "3" type="button" data-bind="click: close">#{i18n.getText('CPS001_51')}</button>
 			</div>
 			<div id="contents-area">
-				<div>#{i18n.getText('CPS001_80')}</div>
-				<div class="uploadfile">
-					<div id="file-upload"
-						data-bind="ntsFileUpload:{
-							filename: filename,
-							accept: accept,
-							text: textId,
-							aslink: asLink,
-							enable: enable,
-							uploadFinished:  uploadFinished,
-							stereoType: stereoType,
-							immediateUpload: true,
-							maxSize: 10
-					}"></div>
-				</div>
+				<div class = "title" >#{i18n.getText('JHN001_F2_1')}</div>
+				
 				<table id="grid2"></table>
 			
 				<div>

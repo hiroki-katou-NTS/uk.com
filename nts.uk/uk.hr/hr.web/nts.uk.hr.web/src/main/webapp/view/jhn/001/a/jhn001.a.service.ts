@@ -7,6 +7,7 @@ module jhn001.a.service {
         getDetails: "hr/notice/report/findOne/{0}",
         remove:"hr/notice/report/delete/{0}",
         saveData: "hr/notice/report/save",
+        getListDoc: 'hr/notice/report/regis/person/document/findAll',
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
@@ -39,5 +40,9 @@ module jhn001.a.service {
     
     export function getCurrentLayout(query: any) {
         return nts.uk.request.ajax('com', "ctx/pereg/person/maintenance/findLayoutData" , query);
+    }
+    
+    export function getListDoc(param: any) {
+        return ajax('hr' , paths.getListDoc, param);
     }
 }

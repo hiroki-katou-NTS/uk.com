@@ -114,7 +114,6 @@ module jhn001.f.vm {
                     init();
                     $('.filenamelabel').hide();
                     setTimeout(() => {
-                        $('.browser-button').focus();
                         $('.browser-button').attr("tabindex", 2);
                         $(".link-button").attr("tabindex", 2);
                         $(".delete-button").attr("tabindex", 2);
@@ -170,7 +169,6 @@ module jhn001.f.vm {
             __viewContext['viewModel'].start().done(() => {
                 init();
                 self.filename("");
-                $('.browser-button').focus();
             });
         }
 

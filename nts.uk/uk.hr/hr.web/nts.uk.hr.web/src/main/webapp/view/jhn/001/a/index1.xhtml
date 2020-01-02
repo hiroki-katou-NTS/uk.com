@@ -16,13 +16,15 @@
 						<tbody data-bind="foreach: listDocument">
 							<tr>
 								<td>
-									<span  data-bind ="text: nameLabel"></span>
-									<span  data-bind="text: ngoactruoc"></span>
-									<span  data-bind="html: fileSample"></span>
-									<span  data-bind="text: ngoacsau"></span>
+									<span  data-bind ="text: docName"></span>
+								</td>
+								<td>
+									<span style="text-align: left; padding-left: 5px;" data-bind="text: ngoactruoc"></span>
+									<span data-bind="html: sampleFileName, click: $parent.clickSampleFileName($data)"></span>
+									<span data-bind="text: ngoacsau"></span>
 								</td>
 								<td><span style="text-align: left; padding-left: 5px;"
-									data-bind="html: nameDoc"></span></td>
+									      data-bind="html : fileName, click: $parent.clickFileName($data)"></span></td>
 							</tr>
 						</tbody>
 					</table>

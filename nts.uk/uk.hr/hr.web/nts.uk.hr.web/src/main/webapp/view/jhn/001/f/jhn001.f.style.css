@@ -2,7 +2,7 @@
 	height: auto !important;
 }
 
-.uploadfile {
+.title {
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
@@ -21,4 +21,16 @@
 
 #contents-area{
 	margin-left: 20px;
+}
+
+span.filenamelabel.hyperlink {
+	visibility: hidden;
+}
+
+#file-upload {
+	padding-left: 14px;
+}
+
+#delete-button {
+	margin-left: 10px;
 }
