@@ -3,10 +3,7 @@ package nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emps
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisService;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfoRepository;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -22,13 +19,10 @@ public class DeleteEmpSocialInsGradeInforCommandHandler
         implements PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand> {
 
     @Inject
-    private EmpSocialInsGradeHisRepository esighRepository;
+    private EmpSocialInsGradeRepository repository;
 
     @Inject
-    private EmpSocialInsGradeInfoRepository esigiRepository;
-
-    @Inject
-    private EmpSocialInsGradeHisService empSocialInsGradeHisService;
+    private EmpSocialInsGradeService service;
 
     @Override
     public String targetCategoryCd() {
@@ -45,21 +39,15 @@ public class DeleteEmpSocialInsGradeInforCommandHandler
         val command = context.getCommand();
         String companyId = AppContexts.user().companyId();
 
-        Optional<EmpSocialInsGradeHis> existHist = esighRepository.getEmpSocialInsGradeHisBySId(companyId, command.getSId());
+        EmpSocialInsGrade empSocialInsGrade = repository.getByEmpId(companyId, command.getSId())
+                .orElseThrow(() -> new RuntimeException("invalid EmpSocialInsGradeHis"));
 
-        if (!existHist.isPresent()){
-            throw new RuntimeException("invalid EmpSocialInsGradeHis");
-        }
-        Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getYearMonthHistoryItems().stream()
+        YearMonthHistoryItem itemToBeDeleted = empSocialInsGrade.getHistory().items().stream()
                 .filter(h -> h.identifier().equals(command.getHistoryId()))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("invalid EmpSocialInsGradeHis"));
 
-        if (!itemToBeDelete.isPresent()){
-            throw new RuntimeException("invalid EmpSocialInsGradeHis");
-        }
-        existHist.get().remove(itemToBeDelete.get());
-        empSocialInsGradeHisService.delete(existHist.get(),itemToBeDelete.get());
-
-        esigiRepository.delete(command.getHistoryId());
+        empSocialInsGrade.getHistory().remove(itemToBeDeleted);
+        repository.delete(companyId, empSocialInsGrade.getHistory().getEmployeeId(), itemToBeDeleted.identifier());
     }
 }

@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProc
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
@@ -25,7 +26,10 @@ public class EmpSocialInsGradeService {
     private CurrentProcessDateAdapter currentProcessDateAdapter;
 
     @Inject
-    private SystemEmploymentAdapter syEmploymentPub;
+    private SystemEmploymentAdapter systemEmploymentAdapter;
+
+    @Inject
+    private EmpSocialInsGradeRepository repository;
 
     private static final String PASS_HISTORY = "過去の履歴";
     private static final String PRESENT_HISTORY = "現在の給与処理に適用される履歴";
@@ -40,11 +44,9 @@ public class EmpSocialInsGradeService {
      */
     public String getCurrentGrade(EmpSocialInsGradeHis history, GeneralDate baseDate) {
         String cid = AppContexts.user().companyId();
-
         // get employment code
-        String employmentCode = syEmploymentPub.findSEmpHistBySid(cid, history.getEmployeeId(), baseDate)
+        String employmentCode = systemEmploymentAdapter.findSEmpHistBySid(cid, history.getEmployeeId(), baseDate)
                 .map(SEmpHistImport::getEmploymentCode).orElse("");
-
         // get current year month from employment code
         YearMonth currentYm = getProcessYear(cid, employmentCode);
 
@@ -69,7 +71,7 @@ public class EmpSocialInsGradeService {
         String cid = AppContexts.user().companyId();
 
         // Get map<sid, employment hist>
-        Map<String, SEmpHistImport> mapEmpHists = syEmploymentPub.findSEmpHistByListSid(cid, new ArrayList<>(histories.keySet()), baseDate);
+        Map<String, SEmpHistImport> mapEmpHists = systemEmploymentAdapter.findSEmpHistByListSid(cid, new ArrayList<>(histories.keySet()), baseDate);
 
         // List<employment code> to find current year month
         List<String> employmentCodes = mapEmpHists.values().stream().distinct()
@@ -121,14 +123,47 @@ public class EmpSocialInsGradeService {
      * @return map (key, value) = (employment code, current processing date)
      */
     public Map<String, YearMonth> getMapProcessYear(String cid, List<String> employmentCodes) {
-        // Get processing category no
-        List<EmpTiedProYearImport> empTiedProYears = empTiedProYearAdapter.getEmpTiedProYearByEmployments(cid, employmentCodes);
-        List<Integer> processCateNos = empTiedProYears.stream().map(EmpTiedProYearImport::getProcessCateNo).collect(Collectors.toList());
-
-        // Get current year month from processing category no
-        List<CurrentProcessDateImport> currProcessDates = currentProcessDateAdapter.getCurrProcessDateByProcessCateNos(cid, processCateNos);
-
-
         return null;
+    }
+
+    /**
+     * Insert 2 domains to database
+     *
+     * @param history 社員社会保険等級履歴
+     * @param info    社員社会保険等級情報
+     */
+    public void add(EmpSocialInsGradeHis history, EmpSocialInsGradeInfo info) {
+        if (history.getYearMonthHistoryItems().isEmpty()) {
+            return;
+        }
+        // Insert last element
+        YearMonthHistoryItem lastItem = history.items().get(history.items().size() - 1);
+        history.items().clear();
+        history.items().add(lastItem);
+
+        repository.add(history, info);
+    }
+
+    /**
+     * Update 2 domains to database
+     *
+     * @param history 社員社会保険等級履歴
+     * @param info    社員社会保険等級情報
+     * @param item itemToBeUpdate
+     */
+    public void update(EmpSocialInsGradeHis history, EmpSocialInsGradeInfo info, YearMonthHistoryItem item) {
+        if (history.getYearMonthHistoryItems().isEmpty()) {
+            return;
+        }
+        YearMonthHistoryItem itemToBeUpdate = history.items()
+                .stream()
+                .filter(e -> e.identifier().equals(item.identifier()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid QqsmtSyahoGraHist"));
+
+        history.items().clear();
+        history.items().add(itemToBeUpdate);
+
+        repository.update(history, info);
     }
 }

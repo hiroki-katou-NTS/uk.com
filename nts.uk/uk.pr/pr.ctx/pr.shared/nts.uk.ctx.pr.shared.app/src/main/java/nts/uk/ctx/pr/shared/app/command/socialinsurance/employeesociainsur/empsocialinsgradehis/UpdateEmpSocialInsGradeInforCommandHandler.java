@@ -22,13 +22,10 @@ public class UpdateEmpSocialInsGradeInforCommandHandler
         implements PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand> {
 
     @Inject
-    private EmpSocialInsGradeHisRepository esighRepository;
+    private EmpSocialInsGradeRepository repository;
 
     @Inject
-    private EmpSocialInsGradeInfoRepository esigiRepository;
-
-    @Inject
-    private EmpSocialInsGradeHisService empSocialInsGradeHisService;
+    private EmpSocialInsGradeService service;
 
     @Override
     public String targetCategoryCd() {
@@ -46,34 +43,30 @@ public class UpdateEmpSocialInsGradeInforCommandHandler
         String companyId = AppContexts.user().companyId();
         // Update history table
         // In case of date yearMonthHistoryItems are exist in the screen
-        if (command.getStartYM() != null){
-            Optional<EmpSocialInsGradeHis> existHist = esighRepository.getEmpSocialInsGradeHisBySId(companyId,
-                    command.getEmployeeId());
-            if (!existHist.isPresent()) {
-                throw new RuntimeException("invalid EmpSocialInsGradeHis");
-            }
+        if (command.getStartYM() != null) {
+            EmpSocialInsGrade empSocialInsGrade = repository.getByEmpId(companyId, command.getEmployeeId())
+                    .orElseThrow(() -> new RuntimeException("invalid EmpSocialInsGradeHis"));
 
-            Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getYearMonthHistoryItems().stream()
-                    .filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
+            YearMonthHistoryItem itemToBeUpdated = empSocialInsGrade.getHistory().items()
+                    .stream()
+                    .filter(h -> h.identifier().equals(command.getHistoryId()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("invalid EmpSocialInsGradeHis"));
 
-            if (!itemToBeUpdate.isPresent()) {
-                throw new RuntimeException("invalid EmpSocialInsGradeHis");
-            }
+            empSocialInsGrade.getHistory().changeSpan(itemToBeUpdated, new YearMonthPeriod(command.getStartYM().yearMonth(),
+                    command.getEndYM() != null ? command.getEndYM().yearMonth() : GeneralDate.max().yearMonth()));
 
-            existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(command.getStartYM().yearMonth(),
-                    command.getEndYM() != null ? command.getEndYM().yearMonth() : YearMonth.of(9999, 12)));
-            empSocialInsGradeHisService.update(itemToBeUpdate.get());
+            EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(
+                    command.getHistoryId(),
+                    command.getSocInsMonthlyRemune().intValue(),
+                    command.getCalculationAtr().intValue(),
+                    command.getHealInsStandMonthlyRemune() != null ? command.getHealInsStandMonthlyRemune().intValue() : null,
+                    command.getHealInsGrade() != null ? command.getHealInsGrade().intValue() : null,
+                    command.getPensionInsStandCompenMonthly() != null ? command.getPensionInsStandCompenMonthly().intValue() : null,
+                    command.getPensionInsGrade() != null ? command.getPensionInsGrade().intValue() : null);
+
+            service.update(empSocialInsGrade.getHistory(), info, itemToBeUpdated);
         }
-
-        // Update detail table
-
-        esigiRepository.update(new EmpSocialInsGradeInfo(
-                command.getHistoryId(),
-                command.getSocInsMonthlyRemune().intValue(),
-                command.getCalculationAtr().intValue(),
-                command.getHealInsStandMonthlyRemune() != null ? command.getHealInsStandMonthlyRemune().intValue() : null,
-                command.getHealInsGrade() != null ? command.getHealInsGrade().intValue() : null,
-                command.getPensionInsStandCompenMonthly() != null ? command.getPensionInsStandCompenMonthly().intValue() : null,
-                command.getPensionInsGrade() != null ? command.getPensionInsGrade().intValue() : null));
     }
+
 }

@@ -13,7 +13,9 @@ import nts.uk.ctx.pr.core.app.command.socialinsurance.healthinsurance.DeleteHeal
 import nts.uk.ctx.pr.core.app.command.socialinsurance.healthinsurance.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.healthinsurance.UpdateHealthInsuranceFeeRateHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.healthinsurance.command.HealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsStandGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsuranceStandardGradePerMonthDto;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensStandGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateFinder;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.GetHealInsStandCompMonth;
@@ -85,25 +87,25 @@ public class HealthInsuranceWebservice {
 
     @POST
     @Path("getHealInsStandCompMonth")
-    public long GetHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
+    public Long GetHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
         return getHealInsStandCompMonth.getHealInsStandCompMonth(param);
     }
 
     @POST
     @Path("getHealthInsuranceStandardGradePerMonth")
-    public HealthInsuranceStandardGradePerMonthDto GetHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public HealthInsStandGradePerMonthDto GetHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
         return getHealInsStandCompMonth.getHealthInsuranceStandardGradePerMonth(param);
     }
 
     @POST
     @Path("getMonthlyPensionInsStandardRemuneration")
-    public long GetMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
+    public Long GetMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
         return getMonPenInsStandRemu.getMonthlyPensionInsStandardRemuneration(param);
     }
 
     @POST
     @Path("getWelfarePensionStandardGradePerMonth")
-    public WelfarePensionStandardGradePerMonthDto GetWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
+    public WelfarePensStandGradePerMonthDto GetWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
         return getMonPenInsStandRemu.getWelfarePensionStandardGradePerMonth(param);
     }
 }

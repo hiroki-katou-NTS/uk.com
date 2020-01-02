@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import nts.arc.error.BusinessException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
@@ -20,29 +21,38 @@ public class EmpHealInsQualifiInfoService {
 
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate, HealInsurNumberInfor updateInfo){
         List<EmpHealthInsurBenefits> listHist = domain.getMourPeriod();
-        int current = listHist.indexOf(itemToBeUpdate);
-        if (listHist.size() > 1) {
-            if (current <= 0) {
-                EmpHealthInsurBenefits itemBefore = listHist.get(current+1);
-                itemBefore.changeSpan(new DatePeriod(itemBefore.start(), itemToBeUpdate.start().addDays(-1)));
-                emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
-            } else {
-                EmpHealthInsurBenefits itemBefore = listHist.get(current-1);
-                itemBefore.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end()));
-                emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
-            }
+        if (listHist.size() >= 1) {
+            emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
+            // Update Before
+            updateItem(domain,itemToBeUpdate);
+            // Update After
+            updateItemAfter(domain,itemToBeUpdate);
+
         }
     }
-
+    public void updateItemAfter(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
+        Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyAfter(item);
+        if (!itemToBeUpdate.isPresent()){
+            return;
+        }
+        // 終了日は直後の履歴の終了日より以降になっている→エラーMsg_538
+        boolean validEnd = item.span().isEnd().before(itemToBeUpdate.get().end());
+        if (!validEnd) {
+            throw new BusinessException("Msg_538");
+        }
+        /*itemToBeUpdate.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end())*/
+        itemToBeUpdate.get().shortenStartToAccept(item.getDatePeriod());
+        emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+    }
     public void delete(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeDeleted){
         emplHealInsurQualifiInforRepository.remove(domain.getEmployeeId(), itemToBeDeleted.identifier());
     }
 
     public void updateItem(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
-        Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
-        if (!itemToBeUpdate.isPresent()){
-            return;
-        }
-        emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+    Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
+    if (!itemToBeUpdate.isPresent()){
+        return;
     }
+    emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
+}
 }
