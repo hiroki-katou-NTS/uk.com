@@ -528,7 +528,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				if(personList == null || personList.isEmpty()) {
 					hrEvaluationList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getHrEvaluationDispNumber() >= 2 && personListSort.size() >= 2) {
@@ -550,7 +550,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				if(personList == null || personList.isEmpty()) {
 					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getHealthStatusDispNumber() >= 2 && personListSort.size() >= 2) {
@@ -572,7 +572,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				if(personList == null || personList.isEmpty()) {
 					stressStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getStressStatusDispNumber() >= 2 && personListSort.size() >= 2) {
