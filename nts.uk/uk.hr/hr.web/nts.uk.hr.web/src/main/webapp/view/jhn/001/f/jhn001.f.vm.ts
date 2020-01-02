@@ -46,11 +46,13 @@ module jhn001.f.vm {
             self.allowDowloadFile = ko.observable(true);
             self.fileSize = ko.observable("");
             self.stereoType = ko.observable("documentfile");
-            self.uploadFinished = (fileInfo) => {
-                console.log("change");
+            
+            self.uploadFinished = (fileInfo, id) => {
+                console.log("upload File Finished");
                 console.log(fileInfo);
-                self.pushData(fileInfo);
+                self.pushData(fileInfo, id);
             };
+            
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
@@ -80,44 +82,48 @@ module jhn001.f.vm {
             return dfd.promise();
         }
 
-        pushData(fileInfo) {
-            let self = this,
-                dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
-
-            if (dataShare.pid != null) {
-                var dfdGetData = service.getData('b1a068b2-d80e-4283-ae6c-29e9b1d1c02d');
-                block();
-
-                var fileSize = ((fileInfo.originalSize) / 1024).toFixed(2);
-                self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
-                $("#file-upload").ntsFileUpload("clear");
-                // save file to domain EmployeeFileManagement
-                var dfd = $.Deferred();
-                service.savedata({
-                    pid: dataShare.pid,
-                    sid: dataShare.sid,
-                    fileid: fileInfo.id,
-                    personInfoCtgId: "",
-                    uploadOrder: 1,
-                    itemName: nts.uk.resource.getText("CPS001_151"),
-                    fileName: fileInfo.originalName,
-                    categoryName: nts.uk.resource.getText("CPS001_152")
-                }).done(() => {
-                    __viewContext['viewModel'].start().done(() => {
-                        init();
-                        $('.filenamelabel').hide();
-                        setTimeout(() => {
-                            $('.browser-button').focus();
-                            $('.browser-button').attr("tabindex", 2);
-                            $(".link-button").attr("tabindex", 2);
-                            $(".delete-button").attr("tabindex", 2);
-                        }, 500);
-                        unblock();
-                        dfd.resolve();
-                    });
-                });
-                return dfd.promise();
+        pushData(fileInfo, id) {
+            let self = this;
+            
+            let row :IReportFileManagement  = _.filter(self.items, function(o) { return o.id ==id; });
+            if(_.size(row) == 0){
+                return;
             }
+            let objAdd = {
+                cid:  row[0].cid,//会社ID String
+                reportID: row[0].reportID , //届出ID int
+                docID: row[0].docID , //書類ID int
+                docName:  row[0].docName, //書類名 String
+                fileId:  fileInfo.id, //ファイルID String
+                fileName:  fileInfo.originalName, //ファイル名 String
+                fileAttached: 1 , //ファイル添付済     0:未添付、1:添付済み  int  
+                fileStorageDate:  moment.utc().toDate(), //ファイル格納日時 GeneralDate
+                mimeType:  fileInfo.mimeType, //MIMEタイプ String
+                fileTypeName:  fileInfo.fileType, //ファイル種別名 String
+                fileSize:  fileInfo.originalSize, //ファイルサイズ    đơn vị byte int
+                delFlg:  0, //削除済     0:未削除、1:削除済 int 
+                sampleFileID:  row[0].sampleFileId, //サンプルファイルID String
+                sampleFileName:  row[0].sampleFileName,     
+            }
+            debugger;
+
+            // save file to domain AttachmentPersonReportFile
+            var dfd = $.Deferred();
+            service.addDocument(objAdd).done(() => {
+                __viewContext['viewModel'].start().done(() => {
+                    init();
+                    $('.filenamelabel').hide();
+                    setTimeout(() => {
+                        $('.browser-button').focus();
+                        $('.browser-button').attr("tabindex", 2);
+                        $(".link-button").attr("tabindex", 2);
+                        $(".delete-button").attr("tabindex", 2);
+                    }, 500);
+                    unblock();
+                    dfd.resolve();
+                });
+            });
+            return dfd.promise();
         }
 
         checkSize() {
@@ -137,13 +143,10 @@ module jhn001.f.vm {
                     self.fileInfo(res);
                     block();
                     let command = {
-                        sid: dataShare.sid,
-                        fileid: rowItem.fileId,
-                        itemName: nts.uk.resource.getText("CPS001_151"),
-                        fileName: self.fileInfo() == null ? "File does not exist on server" : self.fileInfo().originalName,
-                        categoryName: nts.uk.resource.getText("CPS001_152")
+                        cid: '000000000000-0001',
+                        fileId: rowItem.fileId
                     }; 
-                service.deletedata(command).done(() => {
+                service.deleteDocument(command).done(() => {
                     self.restart();
                     unblock();
                 }).fail((mes) => {
@@ -162,15 +165,6 @@ module jhn001.f.vm {
             });
         }
 
-        updateCtgItem(rowItem: IReportFileManagement, comboBoxIdNew: any) {
-            let self = this;
-            if (rowItem.personInfoCategoryId != comboBoxIdNew) {
-                service.updateCtgdata({ fileId: rowItem.fileId, personInfoCategoryIdNew: comboBoxIdNew }).done(() => {
-                    self.restart();
-                });
-            }
-        }
-
         restart() {
             let self = this;
             __viewContext['viewModel'].start().done(() => {
@@ -183,8 +177,6 @@ module jhn001.f.vm {
         close() {
             close();
         }
-
-
     }
 
     // Object truyen tu man A sang
@@ -227,6 +219,7 @@ module jhn001.f.vm {
     }
 
     interface IReportFileManagement {
+        id: string;
         cid: string;
         reportLayoutID: number;
         docID: number;
@@ -240,15 +233,10 @@ module jhn001.f.vm {
         fileId: string;
         fileName: string;
         fileSize: number; 
-//        fileId: string;
-//        fileName: string;
-//        categoryName: string;
-//        personInfoCategoryId: string;
-//        uploadOrder: number;
-//        originalSize: number;
     }
 
     class ReportFileMana {
+        id: string;
         cid: string;
         reportLayoutID: number;
         docID: number;
@@ -264,6 +252,7 @@ module jhn001.f.vm {
         fileSize: number; 
         employeeId: string;
         constructor(param: IReportFileManagement) {
+            this.id = param.id;
             this.cid = param.cid;
             this.reportLayoutID = param.reportLayoutID;
             this.docID = param.docID;

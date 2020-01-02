@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "JHNMT_RPT_DOC")
+@Table(name = "JHNMT_DOCUMENT")
 public class JhndtDocument extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -24,16 +24,16 @@ public class JhndtDocument extends UkJpaEntity implements Serializable {
 	public JhndtDocumentPK pk;
 	
 	@Column(name = "DOC_NAME")
-	String docName; //書類名
+	public String docName; //書類名
 	
 	@Column(name = "DOC_REMARKS")
-	String docRemarks; //備考
+	public String docRemarks; //備考
 	
 	@Column(name = "SAMPLE_FILE_ID")
-	int sampleFileId; //サンプルファイルID
+	public String sampleFileId; //サンプルファイルID
 	
 	@Column(name = "SAMPLE_FILE_NAME")
-	String sampleFileName; //サンプルファイル名
+	public String sampleFileName; //サンプルファイル名
 	
 	@Override
 	public Object getKey() {

@@ -27,40 +27,40 @@ public class JhndtReportAtcFile extends UkJpaEntity implements Serializable {
 	public JhndtReportAtcFilePK pk;
 	
 	@Column(name = "RPTID")
-	int reportID; //届出ID
+	public int reportID; //届出ID
 	
 	@Column(name = "DOC_ID")
-	int docID; //書類ID
+	public int docID; //書類ID
 	
 	@Column(name = "DOC_NAME")
-	String docName; //書類名
+	public String docName; //書類名
 	
 	@Column(name = "FILE_NAME")
-	String fileName; //ファイル名
+	public String fileName; //ファイル名
 	
 	@Column(name = "FILE_ATTACHED")
-	int fileAttached; //ファイル添付済     0:未添付、1:添付済み
+	public int fileAttached; //ファイル添付済     0:未添付、1:添付済み
 	
 	@Column(name = "FILE_STORAGE_DATE")
-	GeneralDateTime fileStorageDate; //ファイル格納日時
+	public GeneralDateTime fileStorageDate; //ファイル格納日時
 	
 	@Column(name = "MIME_TYPE")
-	String mimeType; //MIMEタイプ
+	public String mimeType; //MIMEタイプ
 	
 	@Column(name = "FILE_TYPE_NAME")
-	String fileTypeName; //ファイル種別名
+	public String fileTypeName; //ファイル種別名
 	
 	@Column(name = "FILE_SIZE")
-	int fileSize; //ファイルサイズ    đơn vị byte
+	public int fileSize; //ファイルサイズ    đơn vị byte
 	
 	@Column(name = "DEL_FLG")
-	int delFlg; //削除済     0:未削除、1:削除済
+	public int delFlg; //削除済     0:未削除、1:削除済
 	
 	@Column(name = "SAMPLE_FILE_ID")
-	String sampleFileID; //サンプルファイルID
+	public String sampleFileID; //サンプルファイルID
 	
 	@Column(name = "SAMPLE_FILE_NAME")
-	String sampleFileName; //サンプルファイル名
+	public String sampleFileName; //サンプルファイル名
 	
 	
 	@Override

@@ -18,17 +18,17 @@ import lombok.Setter;
 public class DocumentSampleDto {
 
 	public String cid; //会社ID
-	public int  reportLayoutID; // 個別届出種類ID
-	public int docID; //書類ID
+	public Integer  reportLayoutID; // 個別届出種類ID
+	public Integer docID; //書類ID
 	public String docName; //書類名
-	public int dispOrder; //表示順
-	public int requiredDoc; //必須書類
+	public Integer dispOrder; //表示順
+	public Integer requiredDoc; //必須書類
 	public String docRemarks; //備考
-	public int sampleFileId; //サンプルファイルID
+	public Integer sampleFileId; //サンプルファイルID
 	public String sampleFileName; //サンプルファイル名
 	
-	private int reportID; //届出ID
-	private String fileId; //ファイルID
-	private String fileName; //ファイル名
-	private int fileSize; //ファイルサイズ    đơn vị byte
+	public Integer reportID; //届出ID
+	public String fileId; //ファイルID
+	public String fileName; //ファイル名
+	public Integer fileSize; //ファイルサイズ    đơn vị byte
 }

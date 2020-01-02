@@ -18,9 +18,9 @@ public class JhndtDocumentPK implements Serializable {
 
 	@NotNull
 	@Column(name = "CID")
-	String cid; //会社ID
+	public String cid; //会社ID
 	
 	@NotNull
 	@Column(name = "DOC_ID")
-	int docID; //書類ID
+	public int docID; //書類ID
 }

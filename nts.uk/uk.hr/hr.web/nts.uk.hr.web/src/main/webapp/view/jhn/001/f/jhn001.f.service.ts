@@ -9,15 +9,15 @@ module jhn001.f.service {
     };
 
     export function getData(param: any) {
-        return ajax('hr' ,format(paths.getData, param));
+        return ajax('hr' , paths.getData, param);
     }
 
-    export function savedata(command: any) {
-          return ajax('hr' ,format(paths.addDocument, command));
+    export function addDocument(command: any) {
+          return ajax('hr' , paths.addDocument, command);
     }
 
-    export function deletedata(command: any) {
-       return ajax('hr' ,format(paths.deleteDocument, command));
+    export function deleteDocument(command: any) {
+       return ajax('hr' , paths.deleteDocument, command);
     }
 
 }

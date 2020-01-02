@@ -22,9 +22,9 @@ public class JhndtReportDocumentPK implements Serializable {
 	
 	@NotNull
 	@Column(name = "RPT_LAYOUT_ID")
-	int  reportLayoutID; // 個別届出種類ID
+	public int  reportLayoutID; // 個別届出種類ID
 	
 	@NotNull
 	@Column(name = "DOC_ID")
-	int docID; //書類ID
+	public int docID; //書類ID
 }

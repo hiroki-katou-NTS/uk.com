@@ -15,20 +15,6 @@ module jhn001.f {
                 });
             });
 
-            service.getCurrentEmpPermision().done((data: Array<IPersonAuth>) => {
-                if (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].functionNo == FunctionNo.No6_Allow_UploadDoc) {
-                            if (data[i].available == false) {
-                                $(".browser-button").attr('disabled', 'disabled');
-                                $(".delete-button").attr('disabled', 'disabled');
-                            }
-                        }
-                    }
-                }
-            });
-
-            
             setTimeout(() => {
                 $('.browser-button').focus();
                 $('.browser-button').attr("tabindex", 2);
@@ -56,10 +42,10 @@ function init() {
         virtualizationMode: 'continuous',
         columns: [
             { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
-            { headerText: nts.uk.resource.getText('CPS001_81'), key: 'fileName', dataType: 'string', width: '300px', ntsControl: 'Link1' },
-            { headerText: nts.uk.resource.getText('CPS001_81'), key: 'fileName', dataType: 'string', width: '330px', ntsControl: 'Link1' },
-            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '100px', unbound: true, template: "<div id='file-upload' data-bind='ntsFileUpload:{ filename: filename, accept: accept,text: textId, aslink: asLink, enable: enable, uploadFinished:  uploadFinished, stereoType: stereoType,immediateUpload: true, maxSize: 10}'></div>" },
-            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '120px', unbound: true, template: "<button class='delete-button' style='width: 77px' onclick='ButtonClick.call(this)' data-id='${id}'>" + nts.uk.resource.getText("CPS001_83") + "</button>" }
+            { headerText: nts.uk.resource.getText('JHN001_F2_3_1'), key: 'docName', dataType: 'string', width: '300px' },
+            { headerText: nts.uk.resource.getText('JHN001_F2_3_2'), key: 'fileName', dataType: 'string', width: '330px', ntsControl: 'Link1' },
+            { headerText: nts.uk.resource.getText('JHN001_F2_3_3'), key: 'open', dataType: 'string', width: '100px', unbound: true, template: "<div id='file-upload' data-id='${id}' data-bind='ntsFileUpload:{ filename: filename, accept: accept,text: textId, aslink: asLink, enable: enable, uploadFinished: function(file) { uploadFinished(file, `${id}`) } , stereoType: stereoType,immediateUpload: true, maxSize: 10}'></div>" },
+            { headerText: nts.uk.resource.getText('JHN001_F2_3_4'), key: 'open', dataType: 'string', width: '120px', unbound: true, template: "<button class='delete-button' style='width: 77px' onclick='ButtonClick.call(this)' data-id='${id}'>" + nts.uk.resource.getText("CPS001_83") + "</button>" }
 
         ],
         features: [{ name: 'Sorting', type: 'local' }],
@@ -90,24 +76,3 @@ function ButtonClick() {
     $("#file-upload").ntsFileUpload("clear");
 }
 
-interface IPersonAuth {
-    functionNo: number;
-    functionName: string;
-    available: boolean;
-    description: string;
-    orderNumber: number;
-}
-
-enum FunctionNo {
-    No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
-    No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
-    No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
-    No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
-    No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
-    No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
-    No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
-    No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
-    No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
-    No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
-    No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
-}

@@ -18,10 +18,10 @@ public class Document {
 	private int docID; //書類ID
 	private String docName; //書類名
 	private String docRemarks; //備考
-	private int sampleFileId; //サンプルファイルID
+	private String sampleFileId; //サンプルファイルID
 	private String sampleFileName; //サンプルファイル名
 
-	public static Document createFromJavaType(String cid, int docID, String docName, String docRemarks, int sampleFileId, String sampleFileName){
+	public static Document createFromJavaType(String cid, int docID, String docName, String docRemarks, String sampleFileId, String sampleFileName){
 		return new Document(cid, docID, docName, docRemarks, sampleFileId, sampleFileName);
 	}
 }

@@ -24,13 +24,13 @@ public class JhndtReportDocument extends UkJpaEntity implements Serializable {
 	public JhndtReportDocumentPK pk;
 	
 	@Column(name = "DOC_NAME")
-	String docName; //書類名
+	public String docName; //書類名
 	
 	@Column(name = "DISPORDER")
-	int dispOrder; //表示順
+	public int dispOrder; //表示順
 	
 	@Column(name = "REQUIRED_DOC")
-	int requiredDoc; //必須書類
+	public int requiredDoc; //必須書類
 	
 	@Override
 	public Object getKey() {
