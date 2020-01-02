@@ -5,25 +5,24 @@ package nts.uk.ctx.hr.shared.dom.personalinfo.retirementinfo;
  * 退職区分
  */
 public enum RetirementCategory {
-	// 退職
-	RETIREMENT(1),
+	
+	RETIREMENT(1, "退職"), // 退職
 
-	// 転籍
-	TRANSFER(2),
+	TRANSFER(2, "退職"), // 転籍
 
-	// 解雇
-	DISMISSAL(3),
+	DISMISSAL(3, "解雇"), // 解雇
 
-	// 定年
-	RETIREMENT_AGE(4);
+	RETIREMENT_AGE(4, "定年"); // 定年
 
 	public final int value;
+	public final String name;
 
 	/** The Constant values. */
 	private final static RetirementCategory[] values = RetirementCategory.values();
 
-	private RetirementCategory(int value) {
+	private RetirementCategory(int value, String name) {
 		this.value = value;
+		this.name = name;
 	}
 
 	public static RetirementCategory valueOf(Integer value) {

@@ -65,14 +65,14 @@ public class SyEmploymentServiceImpl implements SyEmploymentService{
 					c.getEmployeeCode(), 
 					c.getBusinessName(), 
 					c.getBusinessNameKana(), 
-					c.getDepartment().getDepartmentId(), 
-					c.getDepartment().getDepartmentCode(), 
-					c.getDepartment().getDepartmentName(), 
-					c.getPosition().getPositionId(), 
-					c.getPosition().getPositionCode(), 
-					c.getPosition().getPositionName(), 
-					c.getEmployment().getEmploymentCode(), 
-					c.getEmployment().getEmploymentName());
+					c.getDepartment() == null ? null : c.getDepartment().getDepartmentId(), 
+					c.getDepartment() == null ? null : c.getDepartment().getDepartmentCode(), 
+					c.getDepartment() == null ? null : c.getDepartment().getDepartmentName(), 
+					c.getPosition() == null ? null: c.getPosition().getPositionId(), 
+					c.getPosition() == null ? null: c.getPosition().getPositionCode(), 
+					c.getPosition() == null ? null: c.getPosition().getPositionName(), 
+					c.getEmployment()== null? null: c.getEmployment().getEmploymentCode(), 
+					c.getEmployment()== null? null: c.getEmployment().getEmploymentName());
 		}).collect(Collectors.toList());
 	}
 

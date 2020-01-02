@@ -31,7 +31,7 @@ public class RetirementDateDto {
 	}
 	
 	public void setLastDateInMonth() {
-		this.retirementDate = this.retirementDate.addMonths(1);
+		this.retirementDate = GeneralDate.ymd(this.retirementDate.year(), this.retirementDate.month(), this.retirementDate.lastDateInMonth());
 	}
 	
 	public void setRetirementDateByYear(GeneralDate endDate) {
