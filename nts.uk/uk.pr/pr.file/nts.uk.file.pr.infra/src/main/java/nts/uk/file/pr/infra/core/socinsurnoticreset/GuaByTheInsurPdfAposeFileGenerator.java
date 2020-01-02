@@ -16,6 +16,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,7 +77,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, GeneralDate baseDate) {
+    private void fillDataOffice(WorksheetCollection ws, GuaByTheInsurExportDto element, String sheetName, GeneralDate baseDate) throws UnsupportedEncodingException {
         JapaneseDate dateJp = toJapaneseDate(baseDate);
         ws.getRangeByName(sheetName + "!A1_10_1").setValue(dateJp.year() + 1);
         ws.getRangeByName(sheetName + "!A1_10_2").setValue(dateJp.month());
@@ -86,7 +87,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
         ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getOfficePostalCode(),1));
         ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getOfficePostalCode(),2));
-        ws.getRangeByName(sheetName + "!A1_5").setValue(element.getOfficeAddress1()+"　"+element.getOfficeAddress2());
+        ws.getRangeByName(sheetName + "!A1_5").setValue(formatTooLongText(element.getOfficeAddress1() + element.getOfficeAddress2(), 60));
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
@@ -103,17 +104,17 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_3", stt)).setValue(data.getNameOfInsuredPersonMr().split("　").length > 1 ? data.getNameOfInsuredPerson().split("　")[1] : "");
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_4", stt)).setValue(data.getNameOfInsuredPersonMrK().split("　")[0]);
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_5", stt)).setValue(data.getNameOfInsuredPerson1().split("　").length > 1 ? data.getNameOfInsuredPerson1().split("　")[1] : "");
-        worksheets.getRangeByName(this.getRangeName(sheetName,"A2_9_1" , stt)).setValue(convertJpDate(birthDay).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_1" , stt)).setValue(convertJpDate(birthDay).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_2" , stt)).setValue(convertJpDate(birthDay).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_3" , stt)).setValue(convertJpDate(birthDay).charAt(2));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_4"  , stt)).setValue(convertJpDate(birthDay).charAt(3));
-        worksheets.getRangeByName(this.getRangeName(sheetName,  "A2_9_5" , stt)).setValue(convertJpDate(birthDay).charAt(4));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_5" , stt)).setValue(convertJpDate(birthDay).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_9_6" , stt)).setValue(convertJpDate(birthDay).charAt(5));
-        worksheets.getRangeByName(this.getRangeName(sheetName,"A2_21_1" , stt)).setValue(convertJpDate(startDate).charAt(0));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_1" , stt)).setValue(convertJpDate(startDate).charAt(0));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_2" , stt)).setValue(convertJpDate(startDate).charAt(1));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_3" , stt)).setValue(convertJpDate(startDate).charAt(2));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_4"  , stt)).setValue(convertJpDate(startDate).charAt(3));
-        worksheets.getRangeByName(this.getRangeName(sheetName,  "A2_21_5" , stt)).setValue(convertJpDate(startDate).charAt(4));
+        worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_5" , stt)).setValue(convertJpDate(startDate).charAt(4));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_21_6" , stt)).setValue(convertJpDate(startDate).charAt(5));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_24", stt)).setValue(Objects.toString(data.getMonRemunerationAmountInCurrency(), ""));
         worksheets.getRangeByName(this.getRangeName(sheetName, "A2_25", stt)).setValue(Objects.toString(data.getMonRemunerationAmountOfActualItem(),""));
@@ -285,16 +286,17 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
             case 3 :{
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18_" + stt));
-
                 break;
             }
             case 4 :{
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
                 worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
-
                 break;
             }
-
+            default:
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_17" : "A2_17_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_16" : "A2_16_" + stt));
+                worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_18" : "A2_18_" + stt));
         }
         if(element.getDependentNo() == null) {
             worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(stt == 0 ? "A2_23" : "A2_23_" + stt));
@@ -364,5 +366,27 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
     }
     private String getShapeName(String sheetName, String pos, int stt){
         return stt == 0 ? sheetName + "!" + pos : sheetName + "!" + pos + "_" + stt;
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
     }
 }

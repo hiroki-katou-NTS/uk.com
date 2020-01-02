@@ -27,7 +27,7 @@ import java.util.Optional;
 @Stateless
 public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGenerator implements InsuredNameChangedExportFileGenerator {
 
-    private static final String TEMPLATE_FILE = "report/QSI002.xlsx";
+    private static final String TEMPLATE_FILE = "report/被保険者氏名変更届_帳票テンプレート.xlsx";
 
     private static final String REPORT_FILE_NAME = "被保険者氏名変更届.pdf";
 
@@ -243,7 +243,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
         //fill to A2_1
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),40));
+            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),60));
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
@@ -254,7 +254,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 }
                 String address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
                 String address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
-                address = formatTooLongText(address1 + address2, 40);
+                address = formatTooLongText(address1 + address2, 60);
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? this.formatPostalCode(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v()): null);
                 ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());
@@ -264,20 +264,25 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        int textLength = text.length();
-        String add1 = textLength > 40 ? text.substring(0, 40) : text.substring(0,textLength);
-        int engChar = add1.replaceAll("[^a-z0-9]+", "").length();
-        int engNChar = add1.replaceAll("[^A-Z]+", "").length();
-
-        int subLength = 0;
-        maxByteAllowed = maxByteAllowed + engChar/8;
-        maxByteAllowed = maxByteAllowed - engNChar/5;
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        for (int i = 0; i < textLength; i++) {
-            subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+        if (text == null || text.isEmpty()) {
+            return "";
         }
-        return text.substring(0, subLength);
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
     }
 
     private JapaneseDate toJapaneseDate(GeneralDate date) {

@@ -17,7 +17,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -210,15 +209,26 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
        }
     }
 
-    private static String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        int textLength = text.length();
-        int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
-            subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null || text.isEmpty()) {
+            return "";
         }
-        return text.substring(0, subLength);
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
     }
 
     private void pushBusCode(WorksheetCollection worksheet,
@@ -386,7 +396,7 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                 int d = japaneseDate.day();
                 worksheet.getRangeByName(i + "!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             }
-            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()), 27));
+            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()), 60));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
             worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null && empAddChangeInfoExport.getPhoneNumber().length() > 0?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));

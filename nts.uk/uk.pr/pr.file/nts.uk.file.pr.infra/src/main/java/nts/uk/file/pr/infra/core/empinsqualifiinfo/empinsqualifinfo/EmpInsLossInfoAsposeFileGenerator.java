@@ -38,9 +38,9 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     private static final int RESIDENT_STATUS_MAX_BYTE = 18;
     private static final int INSURED_NAME_MAX_BYTE = 22;
     private static final int INSURED_PERSON_ADDRESS = 46;
-    private static final int BUSINESS_NAME = 31;
+    private static final int BUSINESS_NAME = 41;
     private static final int CAUSE_OF_LOSS_INS = 46;
-    private static final int COMPANY_ADDRESS = 80;
+    private static final int COMPANY_ADDRESS = 60;
 
 
     @Inject
@@ -403,21 +403,25 @@ public class EmpInsLossInfoAsposeFileGenerator extends AsposePdfReportGenerator 
     }
 
     private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text == null) {
+        if (text == null || text.isEmpty()) {
             return "";
         }
-        if (text.getBytes("Shift_JIS").length <= maxByteAllowed) {
-            return text;
-        }
         int textLength = text.length();
-        int subLength = maxByteAllowed / 2;
-        while (subLength < textLength) {
-            if (text.substring(0, subLength + 1).getBytes("Shift_JIS").length > maxByteAllowed) {
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
                 break;
             }
-            subLength++;
+            index++;
         }
-        return text.substring(0, subLength);
+        return text.substring(0, index + 1);
     }
 
 }

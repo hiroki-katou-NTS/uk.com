@@ -258,7 +258,7 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_1
                         tempReport.setOfficePostalCode(companyInfo.getPostCd());
                         // A3_2
-                        tempReport.setOfficeLocation(companyInfo.getAdd_1() + " " + companyInfo.getAdd_2());
+                        tempReport.setOfficeLocation(companyInfo.getAdd_1() + companyInfo.getAdd_2());
                         // A3_3
                         tempReport.setBusinessOwnerName(companyInfo.getRepname());
                         // A3_4
