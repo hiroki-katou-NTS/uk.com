@@ -11,16 +11,14 @@ module nts.uk.at.view.kmr002.a.model {
     import service = nts.uk.at.view.kmr002.a.service;
     import errors = nts.uk.ui.errors;
     export class ScreenModel {
-        date: KnockoutObservable<string> = ko.observable(new Date());
+        date: KnockoutObservable<any> = ko.observable(new Date());
         lunch: KnockoutObservable<string> = ko.observable('');
         dinner: KnockoutObservable<string> = ko.observable('');
         sum: KnockoutObservable<string> = ko.observable('');
         lunchCount: KnockoutObservable<number> = ko.observable(0);
         dinnerCount: KnockoutObservable<number> = ko.observable(0);
-        sumCount: KnockoutObservable<number> = ko.observable(0);
         priceLunch: KnockoutObservable<number> = ko.observable(0);
         priceDinner: KnockoutObservable<number> = ko.observable(0);
-        priceSum: KnockoutObservable<number> = ko.observable(0);
         txtPriceLunch: KnockoutObservable<string> = ko.observable('');
         txtPriceDinner: KnockoutObservable<string> = ko.observable('');
         txtPriceSum: KnockoutObservable<string> = ko.observable('');
@@ -29,8 +27,8 @@ module nts.uk.at.view.kmr002.a.model {
         menuDinner: KnockoutObservableArray<BentoMenu> = ko.observableArray([]);
         isUpdate: KnockoutObservable<boolean> = ko.observable(true);
         optionMenu: KnockoutObservableArray<any> = ko.observableArray([]);
-        startTime: KnockoutObservable<string> = ko.observable();
-        endTime: KnockoutObservable<string> = ko.observable();
+        startTime: KnockoutObservable<any> = ko.observable();
+        endTime: KnockoutObservable<any> = ko.observable();
         amount: KnockoutObservable<number> = ko.observable(1);
         listBentoOrderLunch: KnockoutObservableArray<BentoOrder> = ko.observableArray([]);
         listBentoOrderDinner: KnockoutObservableArray<BentoOrder> = ko.observableArray([]);
@@ -141,62 +139,50 @@ module nts.uk.at.view.kmr002.a.model {
                     self.menuDinner().push(new BentoMenu({ frameNo: item.frameNo, name: item.name, price: item.amount1, status: status, unit: getText('KMR002_11', [item.amount1]) }));
                 });
                 self.menuDinner.valueHasMutated();
-            } else if (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0) {
-                error({ messageId: "Msg_1589" });
             }
-
-            if (self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0) {
+            if ((self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0)
+                ||(self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0)) {
                 error({ messageId: "Msg_1589" });
             }
 
             self.mealSelected.subscribe((value) => {
                 self.initTime(data, self.setIndex(data, value));
             });
-            
-            if (data.listOrder.length <= 1) {
-                self.isVisibleLunch(false);
-                self.isVisibleDinner(false);
-            }
+
+            self.isVisibleLunch(false);
+            self.isVisibleDinner(false);
 
             for (let i = 0; i < data.listOrder.length; i++) {
                 if (data.listOrder[i].reservationClosingTimeFrame == 1) {
                     let name = '', price = 0, unit = '', listOrderLunch = data.listOrder[i].listBentoReservationDetail;
-                    if (listOrderLunch.length == 0) {
-                        self.isVisibleLunch(false);
-                    } else {
-                        self.isVisibleLunch(true);
-                        _.forEach(listOrderLunch, (item) => {
-                            _.each(self.menuLunch(), (benTo) => {
-                                if (benTo.frameNo() == item.frameNo) {
-                                    name = benTo.name();
-                                    price = benTo.price();
-                                    unit = benTo.unit();
-                                }
-                            });
-                            self.listBentoOrderLunch().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
+                    self.isVisibleLunch(listOrderLunch.length == 0 ? false : true);
+                    _.forEach(listOrderLunch, (item) => {
+                        _.each(self.menuLunch(), (benTo) => {
+                            if (benTo.frameNo() == item.frameNo) {
+                                name = benTo.name();
+                                price = benTo.price();
+                                unit = benTo.unit();
+                            }
                         });
-                        self.listBentoOrderLunch.valueHasMutated();
-                    }
+                        self.listBentoOrderLunch().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
+                    });
+                    self.listBentoOrderLunch.valueHasMutated();
                 }
 
                 if (data.listOrder[i].reservationClosingTimeFrame == 2) {
                     let name = '', price = 0, unit = '', listOrderDinner = data.listOrder[i].listBentoReservationDetail;
-                    if (listOrderDinner.length == 0) {
-                        self.isVisibleDinner(false);
-                    } else {
-                        self.isVisibleDinner(true);
-                        _.forEach(listOrderDinner, (item) => {
-                            _.each(self.menuDinner(), (benTo) => {
-                                if (benTo.frameNo() == item.frameNo) {
-                                    name = benTo.name();
-                                    price = benTo.price();
-                                    unit = benTo.unit();
-                                }
-                            });
-                            self.listBentoOrderDinner().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
+                    self.isVisibleDinner(listOrderDinner.length == 0 ? false : true);
+                    _.forEach(listOrderDinner, (item) => {
+                        _.each(self.menuDinner(), (benTo) => {
+                            if (benTo.frameNo() == item.frameNo) {
+                                name = benTo.name();
+                                price = benTo.price();
+                                unit = benTo.unit();
+                            }
                         });
-                        self.listBentoOrderDinner.valueHasMutated();
-                    }
+                        self.listBentoOrderDinner().push(new BentoOrder({ frameNo: item.frameNo, bentoCount: item.bentoCount, name: name, price: price, unit: unit }));
+                    });
+                    self.listBentoOrderDinner.valueHasMutated();
                 }
             }
 
@@ -240,61 +226,52 @@ module nts.uk.at.view.kmr002.a.model {
         public caculatorLunch(): void {
             let self = this;
             self.priceLunch(0);
-            self.priceSum(0);
             self.lunchCount(0);
-            self.sumCount(0);
             self.txtPriceLunch('');
             self.lunch('');
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
             } else if (self.listBentoOrderLunch().length == 0) {
-                self.priceSum(self.priceDinner());
-                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
-                self.sumCount(self.dinnerCount());
-                self.sum(getText('KMR002_12', [self.sumCount()]));
+                self.caculatorSum(self.priceDinner(), self.dinnerCount());
             }
 
             _.forEach(self.listBentoOrderLunch(), (item) => {
                 self.priceLunch(self.priceLunch() + item.price() * item.bentoCount());
-                self.priceSum(self.priceLunch() + self.priceDinner());
                 self.lunchCount(self.lunchCount() + item.bentoCount());
-                self.sumCount(self.lunchCount() + self.dinnerCount());
                 self.txtPriceLunch(getText('KMR002_11', [self.priceLunch()]));
                 self.lunch(getText('KMR002_10', [self.lunchText(), self.lunchCount()]));
-                self.sum(getText('KMR002_12', [self.sumCount()]));
-                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
+                self.caculatorSum(self.priceLunch() + self.priceDinner(), self.lunchCount() + self.dinnerCount());
             });
         }
 
         public caculatorDinner(): void {
             let self = this;
             self.priceDinner(0);
-            self.priceSum(0);
             self.dinnerCount(0);
-            self.sumCount(0);
             self.txtPriceDinner('');
             self.dinner('');
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
                 self.txtPriceSum('');
             } else if (self.listBentoOrderDinner().length == 0) {
-                self.priceSum(self.priceLunch());
-                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
-                self.sumCount(self.lunchCount());
-                self.sum(getText('KMR002_12', [self.sumCount()]));
+                self.caculatorSum(self.priceLunch(), self.lunchCount());
             }
 
             _.forEach(self.listBentoOrderDinner(), (item) => {
                 self.priceDinner(self.priceDinner() + item.price() * item.bentoCount());
-                self.priceSum(self.priceLunch() + self.priceDinner());
                 self.dinnerCount(self.dinnerCount() + item.bentoCount());
-                self.sumCount(self.lunchCount() + self.dinnerCount());
                 self.txtPriceDinner(getText('KMR002_11', [self.priceDinner()]));
-                self.txtPriceSum(getText('KMR002_11', [self.priceSum()]));
                 self.dinner(getText('KMR002_10', [self.dinnerText(), self.dinnerCount()]));
-                self.sum(getText('KMR002_12', [self.sumCount()]));
+                self.caculatorSum(self.priceLunch() + self.priceDinner(), self.lunchCount() + self.dinnerCount());
             });
+        }
+        
+        public caculatorSum(price: number, count: number): void {
+            let self = this;
+            self.txtPriceSum(getText('KMR002_11', [price]));
+            self.sum(getText('KMR002_12', [count]));
+            
         }
 
         public initTime(data: any, index: number) {
@@ -302,8 +279,8 @@ module nts.uk.at.view.kmr002.a.model {
                 dateNow = moment(new Date()).format("YYYY/MM/DD"), timeNow = (new Date()).getHours() * 60 + (new Date()).getMinutes(),
                 start = self.mealSelected() == 1 ? self.startLunch() : self.startDinner(),
                 end = self.mealSelected() == 1 ? self.finishLunch() : self.finishDinner();
-                self.startTime(start != null ? moment.utc(moment.duration(start, 'm').asMilliseconds()).format("HH:mm") : '');
-                self.endTime(end != null ? moment.utc(moment.duration(end, 'm').asMilliseconds()).format("HH:mm") : '');
+            self.startTime(start != null ? moment.utc(moment.duration(start, 'm').asMilliseconds()).format("HH:mm") : '');
+            self.endTime(end != null ? moment.utc(moment.duration(end, 'm').asMilliseconds()).format("HH:mm") : '');
             let timeSt = start != null ? start : 0;
             if (data.listOrder.length > index && data.listOrder[index].ordered) {
                 self.isVisible(true);
@@ -339,7 +316,6 @@ module nts.uk.at.view.kmr002.a.model {
         public updateOrderLunch(frameNo: number): void {
             let self = this;
             self.lunchCount(self.lunchCount() + 1);
-            self.sumCount(self.sumCount() + 1);
             self.isVisibleLunch(true);
             _.each(self.menuLunch(), (item) => {
                 if (item.frameNo == frameNo && !item.status()) {
@@ -353,7 +329,6 @@ module nts.uk.at.view.kmr002.a.model {
         public updateOrderDinner(frameNo: number): void {
             let self = this;
             self.dinnerCount(self.dinnerCount() + 1);
-            self.sumCount(self.sumCount() + 1);
             self.isVisibleDinner(true);
             _.each(self.menuDinner(), (item) => {
                 if (item.frameNo == frameNo && !item.status()) {
