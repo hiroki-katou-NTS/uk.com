@@ -12,12 +12,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroup;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "BSYMT_APPROVER_GROUP")
 @AllArgsConstructor
+@NoArgsConstructor
 public class BsymtApproverGroup extends UkJpaEntity {
 	
 	@EmbeddedId

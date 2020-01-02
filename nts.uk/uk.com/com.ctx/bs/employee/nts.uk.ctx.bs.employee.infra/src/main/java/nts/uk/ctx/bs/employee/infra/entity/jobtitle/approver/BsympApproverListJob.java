@@ -4,9 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class BsympApproverListJob {
 	
 	@Column(name = "CID")

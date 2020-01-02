@@ -9,12 +9,14 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverJob;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "BSYMT_APPROVER_G_LIST_JOB")
 @AllArgsConstructor
+@NoArgsConstructor
 public class BsymtApproverListJob extends UkJpaEntity {
 	
 	@EmbeddedId
