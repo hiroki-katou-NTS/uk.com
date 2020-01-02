@@ -9,7 +9,7 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverListJob;
+import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverJob;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -35,13 +35,13 @@ public class BsymtApproverListJob extends UkJpaEntity {
 		return pk;
 	}
 	
-	public static BsymtApproverListJob fromDomain(String companyID, String approverCD, ApproverListJob approverListJob) {
+	public static BsymtApproverListJob fromDomain(String companyID, String approverGroupCD, ApproverJob approverJob) {
 		return new BsymtApproverListJob(
 				new BsympApproverListJob(
 						companyID, 
-						approverCD, 
-						approverListJob.getJobID()), 
-				approverListJob.getOrder(), 
+						approverGroupCD, 
+						approverJob.getJobID()), 
+				approverJob.getOrder(), 
 				null);
 	}  
 	

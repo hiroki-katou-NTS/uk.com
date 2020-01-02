@@ -16,7 +16,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroup;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroupRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverListJob;
+import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverJob;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.approver.BsymtApproverGroup;
@@ -40,8 +40,8 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	@Getter
 	private class FullJoin {
 	    private String companyID;
-	    private String approverCD;
-	    private String approverName;
+	    private String approverGroupCD;
+	    private String approverGroupName;
 	    private String jobID;
 	    private int order;
 	}
@@ -59,13 +59,13 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	}
 	
 	private List<ApproverGroup> toDomain(List<FullJoin> listFullJoin) {
-		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoin::getApproverCD))
+		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoin::getApproverGroupCD))
 			.entrySet().stream().map(x -> {
-				List<ApproverListJob> approverLst = x.getValue().stream().map(y -> new ApproverListJob(y.getJobID(), y.getOrder())).collect(Collectors.toList());
+				List<ApproverJob> approverLst = x.getValue().stream().map(y -> new ApproverJob(y.getJobID(), y.getOrder())).collect(Collectors.toList());
 				return new ApproverGroup(
 						x.getValue().get(0).getCompanyID(), 
-						new JobTitleCode(x.getValue().get(0).getApproverCD()), 
-						new ApproverName(x.getValue().get(0).getApproverName()), 
+						new JobTitleCode(x.getValue().get(0).getApproverGroupCD()), 
+						new ApproverName(x.getValue().get(0).getApproverGroupName()), 
 						approverLst);
 			}).collect(Collectors.toList());
 	}

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ApproverListJob {
+public class ApproverJob {
 	
 	private String jobID;
 	

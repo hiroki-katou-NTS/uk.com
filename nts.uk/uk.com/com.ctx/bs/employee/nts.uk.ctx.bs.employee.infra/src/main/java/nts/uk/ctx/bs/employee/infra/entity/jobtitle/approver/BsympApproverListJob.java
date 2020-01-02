@@ -13,7 +13,7 @@ public class BsympApproverListJob {
     private String companyID;
     
     @Column(name = "APPROVER_G_CD")
-    private String approverCD;
+    private String approverGroupCD;
     
     @Column(name = "JOB_ID")
     private String jobID;

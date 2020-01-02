@@ -13,9 +13,9 @@ public class ApproverGroup extends AggregateRoot {
 	
 	private String companyID;
 	
-	private JobTitleCode approverCD;
+	private JobTitleCode approverGroupCD;
 	
-	private ApproverName approverName;
+	private ApproverName approverGroupName;
 	
-	private List<ApproverListJob> approverList;
+	private List<ApproverJob> approverJobList;
 }

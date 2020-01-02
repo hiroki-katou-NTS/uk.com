@@ -1,7 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.jobtitle.approver;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,11 +24,11 @@ public class BsymtApproverGroup extends UkJpaEntity {
 	private BsympApproverGroup pk;
 	
 	@Column(name = "APPROVER_G_NAME")
-    private String approverName;
+    private String approverGroupName;
 	
 	@OneToMany(targetEntity = BsymtApproverListJob.class, mappedBy = "approverGroup", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "BSYMT_APPROVER_G_LIST_JOB")
-	public List<BsymtApproverListJob> approverList;
+	public List<BsymtApproverListJob> approverJobList;
 
 	@Override
 	protected Object getKey() {
@@ -39,9 +39,14 @@ public class BsymtApproverGroup extends UkJpaEntity {
 		return new BsymtApproverGroup(
 				new BsympApproverGroup(
 						approverGroup.getCompanyID(), 
-						approverGroup.getApproverCD().v()), 
-				approverGroup.getApproverName().v(),
-				Collections.emptyList());
+						approverGroup.getApproverGroupCD().v()), 
+				approverGroup.getApproverGroupName().v(),
+				approverGroup.getApproverJobList().stream()
+					.map(x -> BsymtApproverListJob.fromDomain(
+							approverGroup.getCompanyID(), 
+							approverGroup.getApproverGroupCD().v(), 
+							x))
+					.collect(Collectors.toList()));
 	}
 	
 }
