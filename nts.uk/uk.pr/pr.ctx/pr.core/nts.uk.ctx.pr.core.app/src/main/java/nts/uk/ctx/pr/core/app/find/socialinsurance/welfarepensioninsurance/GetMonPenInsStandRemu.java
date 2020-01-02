@@ -81,7 +81,7 @@ public class GetMonPenInsStandRemu {
                         welfarePensionStandardMonthlyFee.getStandardMonthlyPrice().stream()
                                 .filter(x -> perMonthDto.getWelfarePensionGrade() != null && x.getWelfarePensionGrade() == perMonthDto.getWelfarePensionGrade())
                                 .map(WelfarePensionStandardGradePerMonth::getStandardMonthlyFee)
-                                .findFirst().orElse(0L)
+                                .findFirst().orElse(null)
                 ));
 
         return perMonthDto;
