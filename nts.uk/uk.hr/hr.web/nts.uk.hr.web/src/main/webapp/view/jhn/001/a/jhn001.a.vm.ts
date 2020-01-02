@@ -90,9 +90,9 @@ module jhn001.a.viewmodel {
                         let obj = {
                             docName: datafile[i].docName,
                             ngoactruoc: '(',
-                            sampleFileName: '<a href="#">' + datafile[i].sampleFileName + '</a>', 
+                            sampleFileName:  datafile[i].sampleFileName == null ? '' : '<a href="#">' + datafile[i].sampleFileName + '</a>', 
                             ngoacsau: ')',
-                            fileName: '<a href="#">' + datafile[i].fileName + '</a>' ,
+                            fileName: datafile[i].fileName == null ? '' : '<a href="#">' + datafile[i].fileName+ '</a>' ,
                             cid: datafile[i].cid,
                             reportLayoutID: datafile[i].reportLayoutID,
                             docID: datafile[i].docID,
@@ -210,22 +210,21 @@ module jhn001.a.viewmodel {
             }
         
         clickSampleFileName() {
-            console.log(this);
-            let rowData : any = this;
-            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.sampleFileId).done(function(res) {
-                nts.uk.request.specials.donwloadFile(rowData.sampleFileId);
-            });
-            console.log('click Sample FileName');
+            let rowData: any = this;
+            if (rowData.sampleFileId) {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.sampleFileId).done(function(res) {
+                    nts.uk.request.specials.donwloadFile(rowData.sampleFileId);
+                });
+            }
         }
-        
-        clickFileName(row) {
-            console.log(this);
-            let rowData : any = this;
-            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
-                nts.uk.request.specials.donwloadFile(rowData.fileId);
-            });
-            
-            console.log('click FileName');
+
+        clickFileName() {
+            let rowData: any = this;
+            if (rowData.fileId) {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
+                    nts.uk.request.specials.donwloadFile(rowData.fileId);
+                });
+            }
         }
     }
     
