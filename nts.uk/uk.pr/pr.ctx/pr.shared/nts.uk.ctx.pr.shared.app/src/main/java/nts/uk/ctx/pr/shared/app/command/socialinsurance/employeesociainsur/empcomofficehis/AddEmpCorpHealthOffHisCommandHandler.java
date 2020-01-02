@@ -41,9 +41,6 @@ public class AddEmpCorpHealthOffHisCommandHandler
         return AddEmpCorpHealthOffHisCommand.class;
     }
 
-    public static final String MAX_DATE = "9999/12/31";
-    public static final String FORMAT_DATE_YYYYMMDD = "yyyy/MM/dd";
-
     @Override
     protected PeregAddCommandResult handle(CommandHandlerContext<AddEmpCorpHealthOffHisCommand> context) {
 
@@ -51,7 +48,7 @@ public class AddEmpCorpHealthOffHisCommandHandler
         String newHistId = IdentifierUtil.randomUniqueId();
         Optional<EmpCorpHealthOffHis> listHist = empCorpHealthOffHisRepository.getBySidAsc(command.getSid());
         DateHistoryItem itemAdded = new DateHistoryItem(newHistId,
-                new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate(): GeneralDate.fromString(MAX_DATE, FORMAT_DATE_YYYYMMDD)));
+                new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate(): GeneralDate.max()));
         EmpCorpHealthOffHis domain = new EmpCorpHealthOffHis(command.getSid(), new ArrayList<>());
         AffOfficeInformation newHistInfo = new AffOfficeInformation(itemAdded.identifier(),
                 new SocialInsuranceOfficeCode(command.getSocialInsurOfficeCode()));
