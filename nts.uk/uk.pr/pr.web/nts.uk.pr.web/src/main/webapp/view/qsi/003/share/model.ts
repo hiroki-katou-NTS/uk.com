@@ -34,8 +34,8 @@ module nts.uk.pr.view.qsi003.share.model {
 
     export function roundingRules(): Array<ItemModel> {
         return [
-            new ItemModel(2, getText('QSI003_18')),
-            new ItemModel(1, getText('QSI003_19'))
+            new ItemModel(2, getText('QSI003_B222_21')),
+            new ItemModel(1, getText('QSI003_B222_22'))
 
         ];
     }
