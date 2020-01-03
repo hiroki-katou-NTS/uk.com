@@ -214,7 +214,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstAppInfo = getPhaseApprover(companyID, root.getBranchId(), root.getStartDate());
+		lstAppInfo = getPhaseApprover(companyID, root.getApprovalId(), root.getStartDate());
 		ApprovalForApplication wpAppInfo = new ApprovalForApplication(root.getEmploymentRootAtr(), appType, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		return wpRootInfor;
@@ -262,7 +262,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstMatter = getPhaseApprover(companyID, comRoot.getApprRoot().getBranchId(), comRoot.getApprRoot().getHistoryItems().get(0).start());		
+		lstMatter = getPhaseApprover(companyID, comRoot.getApprovalId(), comRoot.getApprRoot().getHistoryItems().get(0).start());		
 		approvalForApp.setLstApproval(lstMatter);
 		return approvalForApp;
 	}
@@ -279,10 +279,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		return "";
 	}
 	
-	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String branchId, GeneralDate baseDate){
+	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String approvalId, GeneralDate baseDate){
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
-		List<ApprovalPhase> getAllIncludeApprovers = phaseRepository.getAllIncludeApprovers(companyID, branchId);
+		List<ApprovalPhase> getAllIncludeApprovers = phaseRepository.getAllIncludeApprovers(approvalId);
 		if(CollectionUtil.isEmpty(getAllIncludeApprovers)){
 			return lstMatter;
 		}
@@ -292,12 +292,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			if(!CollectionUtil.isEmpty(lstApprover)) {
 				Collections.sort(lstApprover, Comparator.comparing(Approver:: getApproverOrder));
 			}
+			ApprovalAtr appAtr = phase.getApprovalAtr();
 			for(Approver approver: lstApprover) {
 				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
-				if(approver.getApprovalAtr() == ApprovalAtr.PERSON){
+				if(appAtr.equals(ApprovalAtr.PERSON)){
 					lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 				}else{
-					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobTitleId(), baseDate).getPositionName());
+					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobGCD(), baseDate).getPositionName());
 				}
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getPhaseOrder(), phase.getApprovalForm().name, lstApprovers);

@@ -14,7 +14,8 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param workplaceId
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> getAllWpApprovalRoot(String companyId, String workplaceId);
+	List<WorkplaceApprovalRoot> getWpRootStart(String companyId, String workplaceId, int sysAtr,
+			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * get WpApprovalRoot

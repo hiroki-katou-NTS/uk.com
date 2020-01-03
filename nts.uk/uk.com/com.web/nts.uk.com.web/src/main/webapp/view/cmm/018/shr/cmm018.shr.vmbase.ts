@@ -2,6 +2,8 @@ module nts.uk.com.view.cmm018.shr {
     export module vmbase {
         //data register
         export class DataResigterDto{
+            /**システム区分*/
+            systemAtr: number;
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
             checkAddHist: boolean;//true: newHist, false: updateHist
@@ -13,11 +15,12 @@ module nts.uk.com.view.cmm018.shr {
             lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
             checkMode: number;//0: まとめて登録モード, 1: 申請個別登録モード
-            constructor(rootType: number, checkAddHist: boolean,
+            constructor(systemAtr: number, rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<ApplicationType>,
                 root: Array<CompanyAppRootADto>,checkMode: number){
+                    this.systemAtr = systemAtr;
                     this.rootType = rootType;
                     this.checkAddHist = checkAddHist;
                     this.workpplaceId = workpplaceId;
@@ -233,18 +236,21 @@ module nts.uk.com.view.cmm018.shr {
             }
         }
         //Param screen A,C,E
-        export class ParamDto {
+        export interface ParamDto {
+            /**システム区分*/
+            systemAtr: number;
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
             /**履歴ID*/
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            constructor(rootType: number, workplaceId: string, employeeId: string){
-                this.rootType = rootType;
-                this.workplaceId = workplaceId;
-                this.employeeId =  employeeId;
-            }
+            /**申請種類*/
+            lstAppType: Array<number>;
+            /**届出種類ID*/
+            lstNoticeID: Array<string>;
+            /**プログラムID(インベント)*/
+            lstEventID: Array<string>;
         }
         //data screen A,C,E
         export class CommonApprovalRootDto{
@@ -474,7 +480,8 @@ module nts.uk.com.view.cmm018.shr {
             browsingPhase: number;
             /**順序*/
             phaseOrder: number;
-            constructor(approver: Array<ApproverDto>, approvalId: string, approvalForm: number, appFormName: string, browsingPhase: number, phaseOrder: number){
+            constructor(approver: Array<ApproverDto>, approvalId: string, approvalForm: number,
+                appFormName: string, browsingPhase: number, phaseOrder: number){
                 this.approver = approver;
                 this.approvalId = approvalId;
                 this.approvalForm = approvalForm;
@@ -484,13 +491,11 @@ module nts.uk.com.view.cmm018.shr {
             }
         }
         export class ApproverDto{
-            /**承認者ID*/
-            approverId: string;
-            /**職位ID*/
-            jobTitleId: string;
+            /**承認者Gコード*/
+            jobGCD: string;
             /**社員ID*/
             employeeId: string;
-            /**社員Name*/
+            /**aapproverName*/
             name: string;
             /**順序*/
             approverOrder: number;
@@ -500,18 +505,20 @@ module nts.uk.com.view.cmm018.shr {
             confirmPerson: number;
             /**confirmPerson Name*/
             confirmName: string;
-            constructor(approverId: string, jobTitleId: string,
-                employeeId: string, name: string,orderNumber: number,
-                approvalAtr: number, confirmPerson: number, confirmName: string)
+            /**特定職場ID*/
+            specWkpId: string;
+            constructor(jobGCD: string,
+                employeeId: string, name: string, approverOrder: number, approvalAtr: number,
+                confirmPerson: number, confirmName: string, specWkpId: string)
             {
-                this.approverId = approverId;
-                this.jobTitleId = jobTitleId;
+                this.jobGCD = jobGCD;
                 this.employeeId = employeeId;
-                this.orderNumber = orderNumber;
+                this.approverOrder = approverOrder;
                 this.name = name;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
                 this.confirmName = confirmName;
+                this.specWkpId = specWkpId;
             }
             
         }
@@ -709,11 +716,7 @@ module nts.uk.com.view.cmm018.shr {
             
             workplaceName: string;
         }
-        export enum RootType {
-            COMPANY = 0,
-            WORKPLACE = 1,
-            PERSON = 2
-        }
+
         export interface Root {
             typeRoot: string;
             appName:string;
@@ -733,6 +736,30 @@ module nts.uk.com.view.cmm018.shr {
                 this.columnKey = columnKey;
                 this.state = state;
             }
-        }  
+        }
+        export enum RootType {
+            COMPANY = 0,
+            WORKPLACE = 1,
+            PERSON = 2
+        }
+        export enum ApprovalForm {
+            /** 全員承認*/
+            EVERYONE_APPROVED = 1,
+            /** 誰か一人*/
+            SINGLE_APPROVED = 2
+        }
+        
+        export enum SystemAtr {
+             /**就業*/
+            WORK = 0,
+            /**人事*/
+            HUMAN_RESOURCES = 1
+        }
+        export enum MODE {
+            /** まとめて設定モード(0)*/
+            MATOME = 0,
+            /**申請個別設定モード(1)*/
+            SHINSEI = 1
+        }
     }
 }

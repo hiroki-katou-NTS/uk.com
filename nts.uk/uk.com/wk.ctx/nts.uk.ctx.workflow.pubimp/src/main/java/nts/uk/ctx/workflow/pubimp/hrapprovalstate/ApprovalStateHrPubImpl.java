@@ -1,114 +1,114 @@
-//package nts.uk.ctx.workflow.pubimp.hrapprovalstate;
-//
-//import java.util.ArrayList;
-//import java.util.Comparator;
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.stream.Collectors;
-//
-//import javax.ejb.Stateless;
-//import javax.inject.Inject;
-//
-//import org.apache.logging.log4j.util.Strings;
-//
-//import nts.arc.time.GeneralDate;
-//import nts.gul.collection.CollectionUtil;
-//import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
-//import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
-//import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
-//import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
-//import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-//import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
-//import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalPhaseStateHr;
-//import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHr;
-//import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHrRepository;
-//import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
-//import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.ApprovalStateHrPub;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApprovalStateHrImport;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApproverInfoHrImport;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.input.FrameHrImport;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.input.PhaseStateHrImport;
-//import nts.uk.ctx.workflow.pub.hrapprovalstate.output.ApprovalRootStateHrExport;
-//import nts.uk.shr.com.context.AppContexts;
-//@Stateless
-//public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
-//
-//	@Inject
-//	private ApprovalRootStateHrRepository repoApprStateHr;
-//	
-//	@Inject
-//	private CollectApprovalAgentInforService collectApprAgentSv;
-//	
-//	@Inject
-//	private ApprovalSettingRepository repoApprSet;
-//	
-//	/**
-//	 * 1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhase)
-//	 * @author hoatt
-//	 * @param 人事承認フェーズ phaseHr
-//	 * @return 承認者社員ID一覧
-//	 */
-//	@Override
-//	public List<String> getApproverFromPhaseHr(PhaseStateHrImport phaseHr) {
-//		//ループ中の「人事承認枠」．承認者リストを承認者社員ID一覧に追加する
-//		List<String> listApprover = new ArrayList<>();
-//		for(FrameHrImport frame : phaseHr.getLstApprovalFrame()){
-//			listApprover.addAll(frame.getLstApproverInfo().stream()
-//					.map(c -> c.getApproverID()).collect(Collectors.toList()));
-//		}
-//		//社員ID重複な承認者を消す(xóa người xác nhận bị trùng)
-//		List<String> newListApprover = listApprover.stream().distinct().collect(Collectors.toList());
-//		return newListApprover;
-//	}
-//	/**
-//	 * [RQ631]申請書の承認者と状況を取得する
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 * @return
-//	 */
-//	@Override
-//	public ApprovalRootStateHrExport getApprovalRootStateHr(String rootStateID) {
-//		// TODO Auto-generated method stub
-//		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
-//		boolean errorFlg = false;
-//		ApprovalStateHrImport apprState = null;
-//		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
-//		if(opRoot.isPresent()){
-//			//エラーフラグ　＝　True (Error flag = True)
-//			errorFlg = true;
-//			return new ApprovalRootStateHrExport(errorFlg, apprState);
-//		}
-//		ApprovalRootStateHr root = opRoot.get();
-//		//人事承認状態を作成 (Tạo HR approval state)
-//		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), 
-//				root.getLstPhaseState().stream()
-//					.map(ph -> new PhaseStateHrImport(ph.getPhaseOrder(), ph.getApprovalAtr().value, 
-//						ph.getApprovalForm().value, ph.getLstApprovalFrame().stream()
-//						.map(fr -> new FrameHrImport(fr.getFrameOrder(), 
-//								fr.getConfirmAtr().value, fr.getAppDate(),
-//								fr.getLstApproverInfo().stream()
-//									.map(c -> new ApproverInfoHrImport(c.getApproverID(), c.getApprovalAtr().value, c.getAgentID(),
-//											c.getApprovalDate(), c.getApprovalReason())
-//									).collect(Collectors.toList()))
-//						).collect(Collectors.toList()))
-//					).collect(Collectors.toList()));
-//		//エラーフラグ、人事承認状態　を渡す ( Truyền  HR approval state, Error flag)
-//		return new ApprovalRootStateHrExport(errorFlg, apprState);
-//	}
-//	/**
-//	 * [RQ632]申請書を承認する
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 * @param 社員ID employeeID
-//	 * @param コメント comment
-//	 * @return 承認フェーズ枠番
-//	 */
-//	@Override
-//	public Integer approveHr(String rootStateID, String employeeID, String comment) {
-//		//承認フェーズ枠番 = 0(初期化) (khởi tạo phaseOrder = 0)
-//		Integer phaseOrder = 0;
-//		//ドメインモデル「人事承認ルートインスタンス」を取得する
+package nts.uk.ctx.workflow.pubimp.hrapprovalstate;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
+import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalPhaseStateHr;
+import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHr;
+import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHrRepository;
+import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.ApprovalStateHrPub;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApprovalStateHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApproverInfoHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.FrameHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.PhaseStateHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.output.ApprovalRootStateHrExport;
+import nts.uk.shr.com.context.AppContexts;
+@Stateless
+public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
+
+	@Inject
+	private ApprovalRootStateHrRepository repoApprStateHr;
+	
+	@Inject
+	private CollectApprovalAgentInforService collectApprAgentSv;
+	
+	@Inject
+	private ApprovalSettingRepository repoApprSet;
+	
+	/**
+	 * 1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhase)
+	 * @author hoatt
+	 * @param 人事承認フェーズ phaseHr
+	 * @return 承認者社員ID一覧
+	 */
+	@Override
+	public List<String> getApproverFromPhaseHr(PhaseStateHrImport phaseHr) {
+		//ループ中の「人事承認枠」．承認者リストを承認者社員ID一覧に追加する
+		List<String> listApprover = new ArrayList<>();
+		for(FrameHrImport frame : phaseHr.getLstApprovalFrame()){
+			listApprover.addAll(frame.getLstApproverInfo().stream()
+					.map(c -> c.getApproverID()).collect(Collectors.toList()));
+		}
+		//社員ID重複な承認者を消す(xóa người xác nhận bị trùng)
+		List<String> newListApprover = listApprover.stream().distinct().collect(Collectors.toList());
+		return newListApprover;
+	}
+	/**
+	 * [RQ631]申請書の承認者と状況を取得する
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 * @return
+	 */
+	@Override
+	public ApprovalRootStateHrExport getApprovalRootStateHr(String rootStateID) {
+		// TODO Auto-generated method stub
+		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
+		boolean errorFlg = false;
+		ApprovalStateHrImport apprState = null;
+		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
+		if(opRoot.isPresent()){
+			//エラーフラグ　＝　True (Error flag = True)
+			errorFlg = true;
+			return new ApprovalRootStateHrExport(errorFlg, apprState);
+		}
+		ApprovalRootStateHr root = opRoot.get();
+		//人事承認状態を作成 (Tạo HR approval state)
+		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), 
+				root.getLstPhaseState().stream()
+					.map(ph -> new PhaseStateHrImport(ph.getPhaseOrder(), ph.getApprovalAtr().value, 
+						ph.getApprovalForm().value, ph.getLstApprovalFrame().stream()
+						.map(fr -> new FrameHrImport(fr.getFrameOrder(), 
+								fr.getConfirmAtr().value, fr.getAppDate(),
+								fr.getLstApproverInfo().stream()
+									.map(c -> new ApproverInfoHrImport(c.getApproverID(), c.getApprovalAtr().value, c.getAgentID(),
+											c.getApprovalDate(), c.getApprovalReason())
+									).collect(Collectors.toList()))
+						).collect(Collectors.toList()))
+					).collect(Collectors.toList()));
+		//エラーフラグ、人事承認状態　を渡す ( Truyền  HR approval state, Error flag)
+		return new ApprovalRootStateHrExport(errorFlg, apprState);
+	}
+	/**
+	 * [RQ632]申請書を承認する
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 * @param 社員ID employeeID
+	 * @param コメント comment
+	 * @return 承認フェーズ枠番
+	 */
+	@Override
+	public Integer approveHr(String rootStateID, String employeeID, String comment) {
+		//承認フェーズ枠番 = 0(初期化) (khởi tạo phaseOrder = 0)
+		Integer phaseOrder = 0;
+		//ドメインモデル「人事承認ルートインスタンス」を取得する
 //		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
 //		if(!opRoot.isPresent()){//0件
 //			//状態：承認ルート取得失敗 (trạng thái: get ApprovalRoot thất bại)
@@ -186,23 +186,23 @@
 //			phaseOrder = phase.getPhaseOrder();
 //		}
 //		repoApprStateHr.update(root);
-//		return phaseOrder;
-//	}
-//	/**
-//	 * [RQ633]申請書を否認する
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 * @param 社員ID employeeID
-//	 * @param コメント comment
-//	 * @return 否認を実行したかフラグ(true, false)
-//					true：否認を実行した
-//					false：否認を実行しなかった
-//	 */
-//	@Override
-//	public Boolean denyHr(String rootStateID, String employeeID, String comment) {
-//		//否認を実行したかフラグ=false（初期化）
-//		Boolean executedFlag = false;
-//		//ドメインモデル「人事承認ルートインスタンス」を取得する
+		return phaseOrder;
+	}
+	/**
+	 * [RQ633]申請書を否認する
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 * @param 社員ID employeeID
+	 * @param コメント comment
+	 * @return 否認を実行したかフラグ(true, false)
+					true：否認を実行した
+					false：否認を実行しなかった
+	 */
+	@Override
+	public Boolean denyHr(String rootStateID, String employeeID, String comment) {
+		//否認を実行したかフラグ=false（初期化）
+		Boolean executedFlag = false;
+		//ドメインモデル「人事承認ルートインスタンス」を取得する
 //		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
 //		if(!opRoot.isPresent()){
 //			//状態：承認ルート取得失敗
@@ -266,18 +266,18 @@
 //			repoApprStateHr.update(root);
 //			return executedFlag;
 //		}
-//		return executedFlag;
-//	}
-//	/**
-//	 * [RQ634]申請書を差し戻しする
-//	 * 申請書を差し戻しする（承認者まで）
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 * @param 「人事承認フェーズインスタンス」．順序 phaseOrder
-//	 */
-//	@Override
-//	public void remandForApproverHr(String rootStateID, Integer phaseOrder) {
-//		//ドメインモデル「人事承認ルートインスタンス」を取得する
+		return executedFlag;
+	}
+	/**
+	 * [RQ634]申請書を差し戻しする
+	 * 申請書を差し戻しする（承認者まで）
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 * @param 「人事承認フェーズインスタンス」．順序 phaseOrder
+	 */
+	@Override
+	public void remandForApproverHr(String rootStateID, Integer phaseOrder) {
+		//ドメインモデル「人事承認ルートインスタンス」を取得する
 //		Optional<ApprovalRootStateHr> opApprovalRootState = repoApprStateHr.getById(rootStateID);
 //		if(!opApprovalRootState.isPresent()){
 //			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
@@ -300,38 +300,38 @@
 //		currentPhase.setApprovalAtr(ApprovalBehaviorAtr.REMAND);
 //		//ドメインモデル「人事承認枠」の承認状態をUpdateする
 //		repoApprStateHr.update(root);
-//	}
-//	/**
-//	 * [RQ634]申請書を差し戻しする
-//	 * 申請書を差し戻しする（申請本人まで）
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 */
-//	@Override
-//	public void remandForApplicantHr(String rootStateID) {
-//		//一括解除する
-//		this.releaseAllHr(rootStateID);
-//		//ドメインモデル「人事承認フェーズインスタンス」．人事承認フェーズ１．承認区分をupdateする
-//		repoApprStateHr.getById(rootStateID).ifPresent(appRoot -> {
-//			appRoot.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder));
-//			appRoot.getLstPhaseState().get(0).setApprovalAtr(ApprovalBehaviorAtr.ORIGINAL_REMAND);
-//			repoApprStateHr.update(appRoot);
-//		});
-//	}
-//	/**
-//	 * [RQ635]申請書を解除する
-//	 * @author hoatt
-//	 * @param インスタンスID rootStateID
-//	 * @param 社員ID employeeID
-//	 * @return ・解除を実行したかフラグ(true, false)
-//					true：解除を実行した
-//					false：解除を実行しなかった
-//	 */
-//	@Override
-//	public Boolean releaseHr(String rootStateID, String employeeID) {
-//		//解除を実行したかフラグ=false（初期化）
-//		Boolean executedFlag = false;
-//		//ドメインモデル「人事承認ルートインスタンス」を取得する
+	}
+	/**
+	 * [RQ634]申請書を差し戻しする
+	 * 申請書を差し戻しする（申請本人まで）
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 */
+	@Override
+	public void remandForApplicantHr(String rootStateID) {
+		//一括解除する
+		this.releaseAllHr(rootStateID);
+		//ドメインモデル「人事承認フェーズインスタンス」．人事承認フェーズ１．承認区分をupdateする
+		repoApprStateHr.getById(rootStateID).ifPresent(appRoot -> {
+			appRoot.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder));
+			appRoot.getLstPhaseState().get(0).setApprovalAtr(ApprovalBehaviorAtr.ORIGINAL_REMAND);
+			repoApprStateHr.update(appRoot);
+		});
+	}
+	/**
+	 * [RQ635]申請書を解除する
+	 * @author hoatt
+	 * @param インスタンスID rootStateID
+	 * @param 社員ID employeeID
+	 * @return ・解除を実行したかフラグ(true, false)
+					true：解除を実行した
+					false：解除を実行しなかった
+	 */
+	@Override
+	public Boolean releaseHr(String rootStateID, String employeeID) {
+		//解除を実行したかフラグ=false（初期化）
+		Boolean executedFlag = false;
+		//ドメインモデル「人事承認ルートインスタンス」を取得する
 //		Optional<ApprovalRootStateHr> opRootState = repoApprStateHr.getById(rootStateID);
 //		if(!opRootState.isPresent()){
 //			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
@@ -376,18 +376,18 @@
 //			//解除を実行したかフラグ=true
 //			executedFlag = true;
 //		}
-//		return executedFlag;
-//	}
-//	/**
-//	 * [RQ637]承認ルートインスタンスを新規作成する
-//	 * @author hoatt
-//	 * @param 人事承認状態 apprSttHr
-//	 * @return エラーフラグ　＝　True 失敗した場合 
-//	 * 		        エラーフラグ　＝　False OK場合 
-//	 */
-//	@Override
-//	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr) {
-//		if(apprSttHr == null) return true;
+		return executedFlag;
+	}
+	/**
+	 * [RQ637]承認ルートインスタンスを新規作成する
+	 * @author hoatt
+	 * @param 人事承認状態 apprSttHr
+	 * @return エラーフラグ　＝　True 失敗した場合 
+	 * 		        エラーフラグ　＝　False OK場合 
+	 */
+	@Override
+	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr) {
+		if(apprSttHr == null) return true;
 //		try{
 //			ApprovalRootStateHr root = new ApprovalRootStateHr(apprSttHr.getRootStateID(),
 //				apprSttHr.getAppDate(), apprSttHr.getEmployeeID(),
@@ -404,10 +404,11 @@
 //		}catch(Exception ex){
 //			return true;
 //		}
-//	}
-//	//1.解除できるかチェックする
-//	public Boolean canReleaseCheckHr(ApprovalPhaseStateHr phaseState, String employeeID) {
-//		//「承認フェーズインスタンス」．承認形態をチェックする
+		return Boolean.FALSE;
+	}
+	//1.解除できるかチェックする
+	public Boolean canReleaseCheckHr(ApprovalPhaseStateHr phaseState, String employeeID) {
+		//「承認フェーズインスタンス」．承認形態をチェックする
 //		if(phaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「承認フェーズインスタンス」．承認形態が全員承認
 //			return phaseState.getLstApprovalFrame().stream()
 //				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && 
@@ -431,14 +432,15 @@
 //				.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) &&
 //						this.checkExist(x.getLstApproverID(), x.getRepresenterID(), employeeID))
 //				.findAny().map(y ->true).orElse(false);
-//	}
-//	/**
-//	 * 一括解除する
-//	 * @param companyID
-//	 * @param rootStateID
-//	 */
-//	public void releaseAllHr(String rootStateID) {
-//		//ドメインモデル「人事承認ルートインスタンス」を取得する
+		return Boolean.TRUE;
+	}
+	/**
+	 * 一括解除する
+	 * @param companyID
+	 * @param rootStateID
+	 */
+	public void releaseAllHr(String rootStateID) {
+		//ドメインモデル「人事承認ルートインスタンス」を取得する
 //		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
 //		if(!opRoot.isPresent()){
 //			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
@@ -457,19 +459,19 @@
 //		});
 //		//ドメインモデル「人事承認ルートインスタンス」の承認状態をUpdateする
 //		repoApprStateHr.update(root);
-//	}
-//	/**
-//	 * 1.否認できるかチェックする
-//	 * @param 人事承認ルートインスタンス root
-//	 * @param 開始順序 order
-//	 * @param 社員ID employeeID
-//	 * @return ・否認できるフラグ(true, false)
-//					true：否認できる
-//					false：否認できない
-//	 */
-//	public Boolean checkCanDeny(ApprovalRootStateHr root, Integer order, String employeeID) {
-//		//終了状態：否認できるフラグ = true
-//		Boolean canDenyFlag = true;
+	}
+	/**
+	 * 1.否認できるかチェックする
+	 * @param 人事承認ルートインスタンス root
+	 * @param 開始順序 order
+	 * @param 社員ID employeeID
+	 * @return ・否認できるフラグ(true, false)
+					true：否認できる
+					false：否認できない
+	 */
+	public Boolean checkCanDeny(ApprovalRootStateHr root, Integer order, String employeeID) {
+		//終了状態：否認できるフラグ = true
+		Boolean canDenyFlag = true;
 //		//ループ開始順序の異常をチェックする(check thu tu bat dau xu ly loop)
 //		if(root.getLstPhaseState().size() == 1 || order <= 0){
 //			return canDenyFlag;
@@ -514,33 +516,33 @@
 //			}
 //			return canDenyFlag;
 //		}
-//		return canDenyFlag;
-//	}
-//	
-//	//convert from domain to import
+		return canDenyFlag;
+	}
+	
+	//convert from domain to import
 //	private PhaseStateHrImport convertToImport(ApprovalPhaseStateHr phase){
 //		return new PhaseStateHrImport(phase.getPhaseOrder(), phase.getApprovalAtr().value, phase.getApprovalForm().value,
 //				phase.getLstApprovalFrame().stream().map(c -> 
 //				new FrameHrImport(c.getFrameOrder(), c.getLstApproverID(), c.getApprovalAtr().value, c.getConfirmAtr().value,
 //						c.getRepresenterID(), c.getApprovalDate(), c.getApprovalReason(), c.getAppDate())).collect(Collectors.toList()));
 //	}
-//	//check 指定する社員が承認者かチェックする
-//	private boolean checkExist(List<String> lstApproverId, String representerID, String employeeId){
-//		if(lstApproverId.contains(employeeId) || (Strings.isNotBlank(representerID) && representerID.equals(employeeId))){
-//			return true;
-//		}
-//		return false;
-//	}
-//	/**
-//	 * 1.指定する人事承認フェーズの承認が完了したか
-//	 * @param ドメインモデル「承認フェーズインスタンス」 phase
-//	 * @return 承認完了フラグ(true, false)
-//				　true：指定する承認フェーズの承認が完了
-//				　false：指定する承認フェーズの承認がまだ未完了
-//	 */
-//	public Boolean isApprovalPhaseComplete(ApprovalPhaseStateHr phase) {
-//		String companyID = AppContexts.user().companyId();
-//		
+	//check 指定する社員が承認者かチェックする
+	private boolean checkExist(List<String> lstApproverId, String representerID, String employeeId){
+		if(lstApproverId.contains(employeeId) || (Strings.isNotBlank(representerID) && representerID.equals(employeeId))){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 1.指定する人事承認フェーズの承認が完了したか
+	 * @param ドメインモデル「承認フェーズインスタンス」 phase
+	 * @return 承認完了フラグ(true, false)
+				　true：指定する承認フェーズの承認が完了
+				　false：指定する承認フェーズの承認がまだ未完了
+	 */
+	public Boolean isApprovalPhaseComplete(ApprovalPhaseStateHr phase) {
+		String companyID = AppContexts.user().companyId();
+		
 //		//人事承認フェーズインスタンス」．承認形態をチェックする
 //		if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「人事承認フェーズインスタンス」．承認形態が全員承認
 //			//承認完了フラグ = true（初期化）
@@ -590,5 +592,6 @@
 //		List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phase));
 //		ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listApprover);
 //		return apprAgent.getAllPathSetFlag().equals(Boolean.TRUE);
-//	}
-//}
+		return Boolean.TRUE;
+	}
+}

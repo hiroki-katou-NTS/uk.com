@@ -16,22 +16,16 @@ import lombok.Data;
 @Data
 public class ApproverInfoImport {
 	
-	/**職位ID*/
-	private String jobId;
-	/**
-	 * 社員ID
-	 */
+	/**承認者Gコード*/
+	private String jobGCD;
+	/**社員ID*/
 	private String sid;
-	/** 承認フェーズ順序 */
-	private int phaseOrder;
 	/** 確定者 */
 	private boolean isConfirmPerson;
 	/** 承認者順序 */
 	private int approverOrder;
 
 	private String name;
-	/**承認者指定区分*/
-	private int approvalAtr;
 	
 	private String representerSID;
 	
@@ -45,14 +39,12 @@ public class ApproverInfoImport {
 	
 	private List<String> representerNameList;
 
-	public ApproverInfoImport(String jobId,String sid, int phaseOrder, boolean isConfirmPerson, int approverOrder,int approvalAtr) {
+	public ApproverInfoImport(String jobGCD, String sid, boolean isConfirmPerson, int approverOrder) {
 		super();
-		this.jobId = jobId;
+		this.jobGCD = jobGCD;
 		this.sid = sid;
-		this.phaseOrder = phaseOrder;
 		this.isConfirmPerson = isConfirmPerson;
 		this.approverOrder = approverOrder;
-		this.approvalAtr = approvalAtr;
 		this.approverSIDList = new ArrayList<String>();
 		this.approverNameList = new ArrayList<String>();
 		this.representerSIDList = new ArrayList<String>();

@@ -11,7 +11,7 @@ public interface ApprovalPhaseRepository {
 	 * @param approvalId
 	 * @return
 	 */
-	List<ApprovalPhase> getAllApprovalPhasebyCode(String companyId, String approvalId);
+	List<ApprovalPhase> getAllApprovalPhasebyCode(String approvalId);
 	/**
 	 * get Approval Phase by Code
 	 * @param companyId
@@ -19,14 +19,14 @@ public interface ApprovalPhaseRepository {
 	 * @param phaseOrder
 	 * @return
 	 */
-	Optional<ApprovalPhase> getApprovalPhase(String companyId, String approvalId, int phaseOrder);
+	Optional<ApprovalPhase> getApprovalPhase(String approvalId, int phaseOrder);
 	/**
 	 * get All Approval Phase by Code include approvers
 	 * @param companyId
 	 * @param approvalId
 	 * @return
 	 */
-	List<ApprovalPhase> getAllIncludeApprovers(String companyId, String approvalId);
+	List<ApprovalPhase> getAllIncludeApprovers(String approvalId);
 	
 	/**
 	 * add All Approval Phase
@@ -48,19 +48,19 @@ public interface ApprovalPhaseRepository {
 	 * @param companyId
 	 * @param approvalId
 	 */
-	void deleteAllAppPhaseByApprovalId(String companyId, String approvalId);
+	void deleteAllAppPhaseByApprovalId(String approvalId);
 	/**
 	 * delete Approval Phase By phaseOrder
 	 * @param companyId
 	 * @param approvalId
 	 * @param phaseOrder
 	 */
-	void deleteAppPhaseByAppPhId(String companyId, String approvalId, int phaseOrder);
+	void deleteAppPhaseByAppPhId(String approvalId, int phaseOrder);
 	/**
 	 * Get approval first phase by approvalId
 	 * @param companyId
 	 * @param approvalId
 	 * @return
 	 */
-	Optional<ApprovalPhase> getApprovalFirstPhase(String companyId, String approvalId);
+	Optional<ApprovalPhase> getApprovalFirstPhase(String approvalId);
 }

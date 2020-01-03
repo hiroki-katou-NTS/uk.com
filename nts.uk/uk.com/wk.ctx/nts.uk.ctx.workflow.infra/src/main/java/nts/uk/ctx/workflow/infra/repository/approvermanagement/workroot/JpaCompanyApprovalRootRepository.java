@@ -14,6 +14,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRoot;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRootPK;
 /**
@@ -83,16 +84,70 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			 + " AND c.endDate >= :baseDate"
 			 + " AND c.confirmationRootType = :confirmationRootType"
 			 + " AND c.employmentRootAtr = 2";
+	private static final String FIND_BY_ATR_WORK1 = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.sysAtr = 0"
+			+ " AND c.employmentRootAtr = 1"
+			+ " AND c.applicationType IN :lstAppType";
+	private static final String FIND_BY_ATR_WORK02 = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.sysAtr = 0"
+			+ " AND c.employmentRootAtr IN (0,2)";
+	private static final String FIND_BY_ATR_HR02 = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr IN (0,2)";
+	private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr = 4"
+			+ " AND c.noticeId IN :lstNoticeID";
+	private static final String FIND_BY_ATR_HR5 = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr = 5"
+			+ " AND c.busEventId IN :lstEventID";
 	/**
-	 * get All Company Approval Root
+	 * getComRootStart CMM018
 	 * @param companyId
+	 * @param sysAtr
+	 * @param lstAppType
+	 * @param lstNoticeID
+	 * @param lstEventID
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId) {
-		return this.queryProxy().query(FIND_BY_CID, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", companyId)
-				.getList(c->toDomainComApR(c));
+	public List<CompanyApprovalRoot> getComRootStart(String companyId, int sysAtr, List<Integer> lstAppType,
+			List<String> lstNoticeID, List<String> lstEventID) {
+		List<CompanyApprovalRoot> lstCom = new ArrayList<>();
+		if(sysAtr == SystemAtr.WORK.value){//就業
+			lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.getList(c->toDomainComApR(c)));
+			if(!lstAppType.isEmpty()){
+				lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_WORK1, WwfmtComApprovalRoot.class)
+						.setParameter("companyId", companyId)
+						.setParameter("lstAppType", lstAppType)
+						.getList(c->toDomainComApR(c)));
+			}
+		}else{//人事
+			lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR02, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.getList(c->toDomainComApR(c)));
+			if(!lstNoticeID.isEmpty()){
+				lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR4, WwfmtComApprovalRoot.class)
+						.setParameter("companyId", companyId)
+						.setParameter("lstNoticeID", lstAppType)
+						.getList(c->toDomainComApR(c)));
+			}
+			if(!lstEventID.isEmpty()){
+				lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR5, WwfmtComApprovalRoot.class)
+						.setParameter("companyId", companyId)
+						.setParameter("lstEventID", lstAppType)
+						.getList(c->toDomainComApR(c)));
+			}
+		}
+		return lstCom;
 	}
 	/**
 	 * get ComApprovalRoot
@@ -274,14 +329,23 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	private WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
 		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(),
+				domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
+		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
-		entity.applicationType = (domain.getApprRoot().getApplicationType() == null ? null : domain.getApprRoot().getApplicationType().value);
 		entity.branchId = domain.getApprRoot().getBranchId();
-		entity.anyItemAppId = domain.getApprRoot().getAnyItemApplicationId();
-		entity.confirmationRootType = (domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
+		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
+				domain.getApprRoot().getApplicationType().value : null;
+		entity.confirmationRootType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION) ?
+				domain.getApprRoot().getConfirmationRootType().value : null;
+		entity.anyItemAppId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.ANYITEM) ?
+				domain.getApprRoot().getAnyItemApplicationId() : null;
+		entity.noticeId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE) ?
+				domain.getApprRoot().getNoticeId() : null;
+		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?
+				domain.getApprRoot().getBusEventId() : null;
 		return entity;
 	}
 	@Override

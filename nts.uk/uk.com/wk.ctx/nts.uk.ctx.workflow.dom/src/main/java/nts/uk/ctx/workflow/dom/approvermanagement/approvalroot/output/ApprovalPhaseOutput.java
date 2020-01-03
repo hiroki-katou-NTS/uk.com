@@ -18,8 +18,6 @@ import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 @Getter
 @AllArgsConstructor
 public class ApprovalPhaseOutput {
-	/** 会社ID */
-	private String companyId;
 	/** 承認ID */
 	private String approvalId;
 	/** 承認フェーズ順序 */
@@ -28,16 +26,18 @@ public class ApprovalPhaseOutput {
 	private int approvalForm;
 	/** 閲覧フェーズ */
 	private int browsingPhase;
+	/**承認者指定区分*/
+	private int approvalAtr;
 	/** 承認者*/
 	private List<ApproverInfo> approvers;
 	
 	public static ApprovalPhaseOutput convertToOutputData(ApprovalPhase phase) {
 		return new ApprovalPhaseOutput(
-				phase.getCompanyId(), 
 				phase.getApprovalId(), 
 				phase.getPhaseOrder(), 
 				phase.getApprovalForm().value, 
-				phase.getBrowsingPhase(), 
+				phase.getBrowsingPhase(),
+				phase.getApprovalAtr().value,
 				null);
 	}
 	

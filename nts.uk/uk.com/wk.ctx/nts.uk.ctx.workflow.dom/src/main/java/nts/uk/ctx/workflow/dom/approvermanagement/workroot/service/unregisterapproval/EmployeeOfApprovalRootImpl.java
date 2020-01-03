@@ -43,7 +43,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		List<ApprovalPhase> approvalPhases = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(personRootAll)) {
 			personRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getApprRoot().getBranchId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -59,7 +59,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
 				psRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getApprRoot().getBranchId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});
@@ -84,7 +84,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 								.collect(Collectors.toList());
 						if(!CollectionUtil.isEmpty(wpRootAllAtr)) {
 							wpRootAllAtr.stream().forEach(x -> {
-								approvalPhase.getAllApprovalPhasebyCode(companyId, x.getApprRoot().getBranchId()).stream()
+								approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 								.forEach(y -> {
 									approvalPhases.add(y);
 								});
@@ -133,7 +133,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				.collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(companyRootAll)) {
 			companyRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getApprRoot().getBranchId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -148,7 +148,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(companyRootCommonAtr)) {
 				companyRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getApprRoot().getBranchId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});

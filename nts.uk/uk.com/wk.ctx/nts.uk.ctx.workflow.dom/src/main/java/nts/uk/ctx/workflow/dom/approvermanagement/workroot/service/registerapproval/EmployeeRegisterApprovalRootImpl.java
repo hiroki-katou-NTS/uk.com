@@ -149,7 +149,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 						null));
 
 				// tìm ra các phase từ bảng WWFMT_APPROVAL_PHASE
-				List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(companyID, x.getBranchId());
+				List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(x.getApprovalId());
 
 				// check nếu có thì add các phase còn ko thì đưa ra thông báo
 				if (!CollectionUtil.isEmpty(phases)) {
@@ -163,32 +163,31 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 					result);
 			List<ApprovalPhaseOutput> adjustmentPhase = new ArrayList<>();
 			adjustmentData.stream().forEach(z -> {
-				List<ApprovalPhase> phaseLst = phaseRepo.getAllApprovalPhasebyCode(companyID, z.getBranchId());
+				List<ApprovalPhase> phaseLst = phaseRepo.getAllApprovalPhasebyCode(z.getApprovalId());
 				phaseLst.stream().forEach(w -> {
-					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(b.getJobTitleId(),
+					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(b.getJobGCD(),
 							b.getEmployeeId(),
-							b.getPhaseOrder(), 
 							b.getApproverOrder(),
 							b.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, 
-							null,
-							b.getApprovalAtr())).collect(Collectors.toList());
+							null)).collect(Collectors.toList());
 					adjustmentPhase
-							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getApprovalId(), w.getPhaseOrder(),
-									w.getApprovalForm().value, w.getBrowsingPhase(), approvers));
+							.add(new ApprovalPhaseOutput(w.getApprovalId(), w.getPhaseOrder(), w.getApprovalForm().value,
+									w.getBrowsingPhase(),w.getApprovalAtr().value, approvers));
 				});
 			});
 			for (ApprovalPhaseOutput phase : adjustmentPhase) {
 				List<EmpOrderApproverAsApp> employIn = new ArrayList<>();
+				int appAtr = phase.getApprovalAtr();
 				for (ApproverInfo appInfo : phase.getApprovers()) {
 					String name = "";
 					//ドメインモデル「承認者」．区分をチェックする(check thong tin domain「承認者」．区分)
-					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON) {
+					if(appAtr == ApprovalAtr.PERSON.value) {
 						name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
 						employIn.add(new EmpOrderApproverAsApp(appInfo.getApproverOrder(),name, appInfo.getIsConfirmPerson()));
 					}else {
 						//3.職位から承認者へ変換する
 						String employeeID = AppContexts.user().employeeId();
-						List<ApproverInfo> lstApEm = collectApprRootService.convertPositionToApprover(companyID, employeeID, baseDate, appInfo.getJobId());
+						List<ApproverInfo> lstApEm = collectApprRootService.convertPositionToApprover(companyID, employeeID, baseDate, appInfo.getJobGCD());
 						for (ApproverInfo approver : lstApEm) {
 							employIn.add(new EmpOrderApproverAsApp(appInfo.getApproverOrder(),approver.getName(),appInfo.getIsConfirmPerson()));
 						}
@@ -209,9 +208,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				}
 				List<Approver> lstAppr = new ArrayList<>();
 				for (EmpOrderApproverAsApp c : appr.getLstEmpInfo()) {
-					lstAppr.add(Approver.createSimpleFromJavaType("", "", 1, 1, "", c.getEmployeeName(), 0, c.isConfirmPerson() ? 1:0, null));
+					lstAppr.add(Approver.createSimpleFromJavaType(1, "", c.getEmployeeName(), c.isConfirmPerson() ? 1:0, null));
 				}
-				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", "", appr.getPhaseNumber(), 1, 0, lstAppr));
+				lstadjutst.add(ApprovalPhase.createSimpleFromJavaType("", appr.getPhaseNumber(), 1, 0, 0, lstAppr));
 			}
 			err = collectApprRootService.checkApprovalRoot(approvalPhases, lstadjutst);
 		} else {

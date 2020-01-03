@@ -21,6 +21,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="sub/cmm018.sub.a.vm.js" />
+			<com:scriptfile path="sub/cmm018.sub.b.vm.js" />
 
 		</ui:define>
 		<ui:define name="sidebar">
@@ -60,16 +61,18 @@
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
+									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
 									<!-- A1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
+									<div data-bind="if: systemAtr() == 0">
+										<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedModeCode,
 											enable: true}"></div>
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -112,6 +115,8 @@
 									<button data-bind="click: resize2">Resizecolum2</button>
 									<button data-bind="click: resize3">Resizecolum3</button>
 									<button data-bind="click: cal1">cal</button>
+									<div style="display: inline-block;">
+									<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
 									<table id="grid_matome"></table>
 								</div>
 							
@@ -120,7 +125,7 @@
 						<!-- SCREEN B -->
 						<div class="mode_Private" style="display:none" data-bind="visible: selectedModeCode">
 							<!-- B2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
+							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
@@ -147,7 +152,7 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -195,16 +200,18 @@
 								</td>
 								<td>
 									<!-- C1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
+									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
 									<!-- C1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
+									<div data-bind="if: systemAtr() == 0">
+										<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedModeCode,
 											enable: true}" ></div>
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -250,7 +257,7 @@
 						<!-- SCREEN D -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode">
 							<!-- D2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
+							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- D2_2: -->
@@ -277,7 +284,7 @@
 								</div>
 							</div>
 							<!-- D3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
 								<div>
 									<!-- D3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -324,16 +331,18 @@
 								</td>
 								<td>
 									<!-- E1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
+									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
 									<!-- E1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
+									<div data-bind="if: systemAtr() == 0">
+										<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedModeCode,
 											enable: true}"></div>
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -383,7 +392,7 @@
 							<!-- F2: List gridList -->
 							<div id = "left-contents" style="float: left;" 
 							data-bind="style: {marginLeft: visibleCCG001() ? '86px' : '20px'}">
-								<div style="width: 280px; height: 470px;" data-bind="with: $parent.viewmodelB" class="caret-right caret-background bg-green">
+								<div style="width: 280px; height: 470px;" data-bind="with: $parent.viewmodelSubB" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- F2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -411,7 +420,7 @@
 							<!-- F3: List -->
 							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"  
 							data-bind="style: {marginRight: visibleCCG001() ? '0px' : '50px'}">
-								<div data-bind="with: $parent.viewmodelB">
+								<div data-bind="with: $parent.viewmodelSubB">
 									<!-- F3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- F3_2: 選択する期間 -->

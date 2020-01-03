@@ -12,27 +12,22 @@ import lombok.Getter;
 public class ApproverInfoExport {
 	
 	/**職位ID*/
-	private String jobId;
+	private String jobGCD;
 	/**社員ID*/
 	private String sid;
-	/** 承認フェーズ順序 */
-	private int phaseOrder;
 	/** 承認者順序 */
 	private int approverOrder;
 	/** 確定者 */
 	private Boolean isConfirmPerson;
+	
 	private String name;
-	/**確定者*/
-	private Integer approvalAtr;
 
-	public ApproverInfoExport(String jobId,String sid, int phaseOrder, int approverOrder, boolean isConfirmPerson, int approvalAtr) {
+	public ApproverInfoExport(String jobGCD, String sid, int approverOrder, boolean isConfirmPerson) {
 		super();
-		this.jobId = jobId;
+		this.jobGCD = jobGCD;
 		this.sid = sid;
-		this.phaseOrder = phaseOrder;
 		this.isConfirmPerson = isConfirmPerson;
 		this.approverOrder = approverOrder;
-		this.approvalAtr = approvalAtr;
 	}
 
 	public void addEmployeeName(String name) {

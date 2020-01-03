@@ -33,7 +33,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
@@ -61,8 +60,6 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
-	private ApproverRepository repoApprover;
-	@Inject
 	private PersonAdapter adapterPerson;
 	@Inject
 	private WorkplaceApproverAdapter adapterWp;
@@ -85,7 +82,7 @@ public class CommonApprovalRootFinder {
 	 */
 	public DataFullDto getAllCommonApprovalRoot(ParamDto param){
 		//get all data by param
-		CommonApprovalRootDto data = getPrivate(param);
+		CommonApprovalRootDto data = this.getPrivate(param);
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == COMPANY){
 			return this.getAllComApprovalRoot(data);
@@ -159,6 +156,9 @@ public class CommonApprovalRootFinder {
 		List<ObjDate> lstTrung = result.getLstDate();
 		List<DataDisplayComDto> lstComFinal = new ArrayList<>();
 		int index = 0;
+		if(lstRootCheckOvl.isEmpty()){
+			return new DataFullDto("", data.getCompanyName(),lstComFinal, null, null);
+		}
 		//grouping companyRoot by history
 		for (ObjectDate objDate : lstRootCheckOvl) {
 			List<CompanyAppRootDto> lstItem = new ArrayList<>();
@@ -179,10 +179,10 @@ public class CommonApprovalRootFinder {
 					}
 				}
 			}
-			lstComFinal.add(new DataDisplayComDto(index,objDate.isOverlap(),data.getCompanyName(), lstItem));
+			lstComFinal.add(new DataDisplayComDto(index,objDate.isOverlap(),lstItem));
 			index++;
 		}
-		return new DataFullDto("",lstComFinal, null, null);
+		return new DataFullDto("", data.getCompanyName(), lstComFinal, null, null);
 	}
 	/**
 	 * get All Work place Approval Root(grouping by history)
@@ -225,7 +225,7 @@ public class CommonApprovalRootFinder {
 			lstWpFinal.add(new DataDisplayWpDto(index,objDate.isOverlap(), lstItem));
 			index++;
 		}
-		return new DataFullDto(data.getWorkplaceId(),null, lstWpFinal, null);
+		return new DataFullDto(data.getWorkplaceId(), "", null, lstWpFinal, null);
 	}
 	/**
 	 * get All Person Approval Root(grouping by history)
@@ -268,7 +268,7 @@ public class CommonApprovalRootFinder {
 			lstPsFinal.add(new DataDisplayPsDto(index, objDate.isOverlap(), lstItem));
 			index++;
 		}
-		return new DataFullDto("",null, null, lstPsFinal);
+		return new DataFullDto("", "", null, null, lstPsFinal);
 	}
 	/**
 	 * get Data Company Approval Root
@@ -281,34 +281,16 @@ public class CommonApprovalRootFinder {
 		String companyId = AppContexts.user().companyId();
 		List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
 		//get all data from ComApprovalRoot (会社別就業承認ルート)
-		List<ComApprovalRootDto> lstCom = this.repoCom.getAllComApprovalRoot(companyId)
+		List<ComApprovalRootDto> lstCom = this.repoCom.getComRootStart(companyId, param.getSystemAtr(), 
+				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
 							.stream()
 							.map(c->ComApprovalRootDto.fromDomain(c))
 							.collect(Collectors.toList());
-		for (ComApprovalRootDto companyApprovalRoot : lstCom) {
-			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-			List<ApproverDto> lstApproverDto = new ArrayList<ApproverDto>();
-			List<Approver> listApprover = new ArrayList<Approver>();
+		for (ComApprovalRootDto rootCom : lstCom) {
 			//get All Approval Phase by approvalId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getApprovalId());
-			for (ApprovalPhase approvalPhase : lstAppPhase) {
-				//get All Approver By ApprovalPhaseId
-				listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
-				lstApproverDto = listApprover.stream()
-							.map(c->{
-								String name = c.getApprovalAtr().value == 0 ? 
-										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-										getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-								String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
-								return ApproverDto.fromDomain(c,name, confirmName);
-								})
-							.collect(Collectors.toList());
-				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase()));
-			}
+			List<ApprovalPhaseDto> lstPhaseDto = this.convertDto(rootCom.getApprovalId());
 			//add in lstAppRoot
-			lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
+			lstComRoot.add(new CompanyAppRootDto(rootCom, lstPhaseDto));
 		}
 		return new CommonApprovalRootDto(companyName,"","",lstComRoot, null, null);
 	}
@@ -331,34 +313,16 @@ public class CommonApprovalRootFinder {
 			}
 		}
 		//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-		List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, workplaceId)
+		List<WpApprovalRootDto> lstWp = this.repoWorkplace.getWpRootStart(companyId, workplaceId, param.getSystemAtr(),
+				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
 				.stream()
 				.map(c->WpApprovalRootDto.fromDomain(c))
 				.collect(Collectors.toList());
-		for (WpApprovalRootDto workplaceApprovalRoot : lstWp) {
-			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-			List<ApproverDto> lstApproverDto = new ArrayList<>();
-			List<Approver> lstApprover = new ArrayList<>();
+		for (WpApprovalRootDto rootWkp : lstWp) {
 			//get All Approval Phase by ApprovalId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getApprovalId());
-			for (ApprovalPhase approvalPhase : lstAppPhase) {
-				//get All Approver By ApprovalPhaseId
-				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
-				lstApproverDto = lstApprover.stream()
-						.map(c->{
-							String name = c.getApprovalAtr().value == 0 ? 
-									getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-									getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-							String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
-							return ApproverDto.fromDomain(c,name,confirmName);
-							})
-						.collect(Collectors.toList());
-				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase()));
-			}
+			List<ApprovalPhaseDto> lstPhaseDto = this.convertDto(rootWkp.getApprovalId());
 			//add in lstAppRoot
-			lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
+			lstWpRoot.add(new WorkPlaceAppRootDto(rootWkp, lstPhaseDto));
 		}
 		return new CommonApprovalRootDto(companyName, workplaceId,"", null, lstWpRoot, null);
 	}
@@ -374,34 +338,16 @@ public class CommonApprovalRootFinder {
 		List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
 		String employeeId = StringUtil.isNullOrEmpty(param.getEmployeeId(), true) ? AppContexts.user().employeeId() : param.getEmployeeId();
 		//get all data from PersonApprovalRoot (個人別就業承認ルート)
-		List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId,employeeId )
+		List<PsApprovalRootDto> lstPs = this.repo.getPsRootStart(companyId,employeeId, param.getSystemAtr(),
+				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
 				.stream()
 				.map(c->PsApprovalRootDto.fromDomain(c))
 				.collect(Collectors.toList());
-		for (PsApprovalRootDto personApprovalRoot : lstPs) {
-			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-			List<Approver> lstApprover = new ArrayList<>();
-			List<ApproverDto> lstApproverDto = new ArrayList<>();
+		for (PsApprovalRootDto rootPs : lstPs) {
 			//get All Approval Phase by ApprovalId
-			List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getApprovalId());
-			for (ApprovalPhase approvalPhase : lstAppPhase) {
-				//get All Approver By ApprovalPhaseId
-				lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
-				lstApproverDto = lstApprover.stream()
-						.map(c->{
-							String name = c.getApprovalAtr().value == 0 ? 
-									getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-									getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
-							String confirmName = c.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
-							return ApproverDto.fromDomain(c,name,confirmName);
-							})
-						.collect(Collectors.toList());
-				//lst (ApprovalPhase + lst Approver)
-				lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getApprovalId(),approvalPhase.getPhaseOrder(),
-						approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase()));
-			}
+			List<ApprovalPhaseDto> lstPhaseDto = this.convertDto(rootPs.getApprovalId());
 			//add in lstAppRoot
-			lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
+			lstPsRoot.add(new PersonAppRootDto(rootPs, lstPhaseDto));
 		}
 		return new CommonApprovalRootDto(companyName, "",employeeId, null, null, lstPsRoot);
 	}
@@ -582,7 +528,7 @@ public class CommonApprovalRootFinder {
 				for(PersonApprovalRoot psAppRoot: item.getValue()){
 					startDate = psAppRoot.getApprRoot().getHistoryItems().get(0).start();
 					endDate   = psAppRoot.getApprRoot().getHistoryItems().get(0).end();
-					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getApprovalId());
+					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(psAppRoot.getApprovalId());
 					if(psAppPhase.isPresent()){
 						Optional<Approver> approver1 = psAppPhase.get().getApprovers().stream().filter(x-> x.getApproverOrder() == 1).findFirst();
 						PersonImport person = null;
@@ -717,5 +663,23 @@ public class CommonApprovalRootFinder {
 			}
 		}
 		return result;
+	}
+	
+	private List<ApprovalPhaseDto> convertDto(String approvalId){
+		//get All Approval Phase by ApprovalId
+		List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(approvalId);
+		return lstAppPhase.stream()
+				.map(c -> new ApprovalPhaseDto(c.getApprovers().stream()
+						.map(d -> {
+								String name = c.getApprovalAtr().value == 0 ? 
+								this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeName() : 	
+								this.getJobTitleInfo(d.getJobGCD()) == null ? "" : getJobTitleInfo(d.getJobGCD()).getPositionName();
+								String confirmName = d.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
+								return ApproverDto.fromDomain(d, name, confirmName);
+						}).collect(Collectors.toList()),
+						c.getApprovalId(), c.getPhaseOrder(),
+					 c.getApprovalForm().value, c.getApprovalForm().getName(), c.getBrowsingPhase(),
+					 c.getApprovalAtr().value))
+				.collect(Collectors.toList());
 	}
 }

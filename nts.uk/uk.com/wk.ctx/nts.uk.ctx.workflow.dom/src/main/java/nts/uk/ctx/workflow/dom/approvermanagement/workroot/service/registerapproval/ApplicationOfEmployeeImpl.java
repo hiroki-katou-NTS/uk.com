@@ -49,7 +49,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(companyID, y.getApprRoot().getBranchId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -96,7 +96,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstWpRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getApprRoot().getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -137,7 +137,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getApprRoot().getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					

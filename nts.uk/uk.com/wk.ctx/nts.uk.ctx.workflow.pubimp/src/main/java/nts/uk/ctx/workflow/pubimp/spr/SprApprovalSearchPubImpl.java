@@ -72,22 +72,22 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	}
 
 	@Override
-	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String branchId) {
-		return approvalPhaseRepository.getAllIncludeApprovers(companyId, branchId)
+	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String approvalId) {
+		return approvalPhaseRepository.getAllIncludeApprovers(approvalId)
 			.stream().map(x -> ApprovalPhaseSprExport.createFromJavaType(
-					x.getCompanyId(), 
-					x.getApprovalId(), 
+					companyId, 
+					approvalId, 
 					x.getPhaseOrder(), 
 					x.getApprovalForm().value, 
-					x.getBrowsingPhase(), 
+					x.getBrowsingPhase(),
+					x.getApprovalAtr().value,
 					x.getApprovers().stream().map(y -> ApproverSprExport.createFromJavaType(
-							y.getCompanyId(), 
-							y.getApprovalId(), 
-							y.getPhaseOrder(), 
+							companyId, 
+							approvalId, 
+							x.getPhaseOrder(), 
 							y.getApproverOrder(), 
-							y.getJobTitleId(), 
+							y.getJobGCD(), 
 							y.getEmployeeId(), 
-							y.getApprovalAtr().value, 
 							y.getConfirmPerson().value)).collect(Collectors.toList())))
 			.collect(Collectors.toList());
 	}

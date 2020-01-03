@@ -22,13 +22,11 @@ public class ApproverSprExport {
 	private String jobTitleId;
 	/**社員ID*/
 	private String employeeId;
-	/**承認者指定区分*/
-	private Integer approvalAtr;
 	/**確定者*/
 	private Integer confirmPerson;
 	
 	public static ApproverSprExport createFromJavaType(String companyId, String approvalId, int phaseOrder,
-			int approverOrder, String jobTitleId, String employeeId, Integer approvalAtr, Integer confirmPerson){
+			int approverOrder, String jobTitleId, String employeeId, Integer confirmPerson){
 		return new ApproverSprExport(
 				companyId, 
 				approvalId, 
@@ -36,7 +34,6 @@ public class ApproverSprExport {
 				approverOrder, 
 				jobTitleId, 
 				employeeId, 
-				approvalAtr, 
 				confirmPerson);
 	} 
 }

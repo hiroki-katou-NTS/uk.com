@@ -34,6 +34,9 @@ public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
 	/**閲覧フェーズ*/
 	@Column(name = "BROWSING_PHASE")
 	public int browsingPhase;
+	/**区分*/
+	@Column(name = "APPROVAL_ATR")
+	public int approvalAtr;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="wwfmtApprovalPhase", orphanRemoval = true)
 	public List<WwfmtAppover> wwfmtAppovers;

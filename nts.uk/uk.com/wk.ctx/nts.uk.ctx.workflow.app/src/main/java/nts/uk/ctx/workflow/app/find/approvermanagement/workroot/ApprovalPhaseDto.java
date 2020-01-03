@@ -19,5 +19,6 @@ public class ApprovalPhaseDto {
 	private String appFormName;
 	/**閲覧フェーズ*/
 	private Integer browsingPhase;
-	
+	/**承認者指定区分*/
+	private int approvalAtr;
 }

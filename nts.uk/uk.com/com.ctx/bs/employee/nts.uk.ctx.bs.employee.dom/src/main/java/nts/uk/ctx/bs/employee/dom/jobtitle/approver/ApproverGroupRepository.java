@@ -12,4 +12,8 @@ public interface ApproverGroupRepository {
 	
 	public void delete(ApproverGroup approverGroup);
 	
+	public List<ApproverGInfo> getAll(String companyID);
+	
+	public List<ApproverGInfo> findByCd(String companyID, List<String> jobGCd);
+	
 }

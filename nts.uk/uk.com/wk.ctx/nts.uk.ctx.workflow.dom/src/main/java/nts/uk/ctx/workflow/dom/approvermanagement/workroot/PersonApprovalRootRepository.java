@@ -19,7 +19,8 @@ public interface PersonApprovalRootRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	List<PersonApprovalRoot> getAllPsApprovalRoot(String companyId, String employeeId);
+	List<PersonApprovalRoot> getPsRootStart(String companyId, String employeeId, int sysAtr,
+			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * delete Person Approval Root
@@ -173,4 +174,6 @@ public interface PersonApprovalRootRepository {
 	
 	Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId);
 	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer applicationType);
+	//get by endDate
+	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
 }

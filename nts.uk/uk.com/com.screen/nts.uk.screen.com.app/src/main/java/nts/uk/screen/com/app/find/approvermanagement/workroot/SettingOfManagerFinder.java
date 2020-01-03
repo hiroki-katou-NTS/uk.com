@@ -23,6 +23,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -224,13 +225,14 @@ public class SettingOfManagerFinder {
 		String approverId   = null;
 		String approvalName = null;
 		// ドメインモデル「承認フェーズ」を取得する
-		Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId, psAppRoot.getApprRoot().getBranchId());
-		if (commonApprovalPhase.isPresent()) {
-			commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getApproverOrder() - p2.getApproverOrder());
+		Optional<ApprovalPhase> commonPhase = this.appPhaseRepo.getApprovalFirstPhase(psAppRoot.getApprovalId());
+		if (commonPhase.isPresent()) {
+			commonPhase.get().getApprovers().sort((p1, p2) -> p1.getApproverOrder() - p2.getApproverOrder());
+			ApprovalAtr appAtr = commonPhase.get().getApprovalAtr();
 			// 「承認者」を取得する
-			Approver firstApprover = commonApprovalPhase.get().getApprovers().get(0);
+			Approver firstApprover = commonPhase.get().getApprovers().get(0);
 			// 履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
-			if (firstApprover.getApprovalAtr().value == 0) {
+			if (appAtr.equals(ApprovalAtr.PERSON)) {
 				PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
 				approvalCode = person.getEmployeeCode();
 				approverId   = person.getSID();

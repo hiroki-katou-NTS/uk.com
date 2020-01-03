@@ -86,17 +86,6 @@ table#fixed-tablePsB tbody td {
 	white-space: nowrap;
 	overflow: hidden;
 }
-/* #fixed-table {
-	height: 550px !important;
-}
-
-#fixed-tableWp {
-	height: 550px !important;
-}
-
-#fixed-tablePs {
-	height: 550px !important;
-} */
 .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden !important;
 }
@@ -148,26 +137,41 @@ table#grid_matome tbody td {
 .from {
 	height: 23px;
 }
+
+/* COLUMN APPNAME */
 .nts-grid-wrapper table tr td.ui-state-hover.appNameBgColor {
 	background-color: #CFF1A5;
 }
-
 .appNameBgColor {
 	background-color: #CFF1A5;
 }
-
+/* PHASE SETTING */
 table#grid_matome tr td.ui-state-hover.phaseBgColor {
+	background-color: #C5F1F7;
+}
+table#grid_matomeC tr td.ui-state-hover.phaseBgColor {
+	background-color: #C5F1F7;
+}
+table#grid_matomeE tr td.ui-state-hover.phaseBgColor {
 	background-color: #C5F1F7;
 }
 .phaseBgColor{
 	background-color: #C5F1F7;
 }
+/* PHASE NOT SETTING */
 table#grid_matome tr td.ui-state-hover.phaseBgColorNot {
+	background-color: white;
+}
+table#grid_matomeC tr td.ui-state-hover.phaseBgColorNot {
+	background-color: white;
+}
+table#grid_matomeE tr td.ui-state-hover.phaseBgColorNot {
 	background-color: white;
 }
 .phaseBgColorNot{
 	background-color: white;
 }
+/* APPROVER */
 .approver-line {
 	margin: 3px;
 	width: max-content;

@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.approver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroup;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroupRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverJob;
@@ -35,6 +37,13 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 		builderString.append("where a.CID = 'companyID'");
 		FIND_ALL = builderString.toString();
 	}
+	
+	private static final String GET_ALL = "SELECT * FROM BsymtApproverGroup c"
+			+ " WHERE c.pk.companyID = 'companyID'"
+			+ " ORDER BY c.pk.approverGroupCD ASC";
+	private static final String FIND_BY_CD = "SELECT * FROM BsymtApproverGroup c"
+			+ " WHERE c.pk.companyID = 'companyID'"
+			+ " AND c.pk.approverGroupCD IN 'jobGCd'";
 	
 	@AllArgsConstructor
 	@Getter
@@ -94,6 +103,22 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	@Override
 	public void delete(ApproverGroup approverGroup) {
 		commandProxy().remove(BsymtApproverGroup.fromDomain(approverGroup));
+	}
+
+	@Override
+	public List<ApproverGInfo> getAll(String companyID) {
+		return this.queryProxy().query(GET_ALL, BsymtApproverGroup.class)
+				.setParameter("companyID", companyID)
+				.getList(c -> new ApproverGInfo(c.getPk().getApproverGroupCD(), c.getApproverGroupName()));
+	}
+
+	@Override
+	public List<ApproverGInfo> findByCd(String companyID, List<String> jobGCd) {
+		if(jobGCd.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query(FIND_BY_CD, BsymtApproverGroup.class)
+				.setParameter("companyID", companyID)
+				.setParameter("jobGCd", jobGCd)
+				.getList(c -> new ApproverGInfo(c.getPk().getApproverGroupCD(), c.getApproverGroupName()));
 	}
 
 }

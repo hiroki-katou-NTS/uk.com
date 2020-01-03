@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WwfmtAppoverPK implements Serializable{
 	private static final long serialVersionUID = 1L;
-	/**会社ID*/
-	@Column(name = "CID")
-	public String companyId;
-	/**分岐ID*/
+	/**承認ID*/
 	@Column(name = "APPROVAL_ID")
 	public String approvalId;
 	/**承認フェーズ順序*/

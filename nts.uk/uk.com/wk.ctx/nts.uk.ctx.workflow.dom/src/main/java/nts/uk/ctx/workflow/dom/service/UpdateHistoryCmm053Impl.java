@@ -11,11 +11,13 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
@@ -85,15 +87,14 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	@Override
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
 		if(Strings.isNotBlank(employeeIdApprover)){
-			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-					psAppRoot.getApprovalId());
-			if (approvalPhase.isPresent()) {
-				ApprovalPhase updateApprovalPhase = approvalPhase.get();
-				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
+			Optional<ApprovalPhase> phase = this.repoAppPhase.getApprovalFirstPhase(psAppRoot.getApprovalId());
+			if (phase.isPresent()) {
+				ApprovalPhase updatePhase = phase.get();
+				List<Approver> approverOlds       = updatePhase.getApprovers();
 				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getApproverOrder() == 1).findFirst();
 				if (firstApprover.isPresent()) {
 					firstApprover.get().setEmployeeId(employeeIdApprover);
-					this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+					this.repoApprover.updateEmployeeIdApprover(updatePhase.getApprovalId(), updatePhase.getPhaseOrder(), firstApprover.get());
 				}
 			}
 		}
@@ -105,49 +106,51 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 		int approverOrder1 = 1;
 		int approverOrder2 = 2;
 		if(commonRoot != null){
-			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getApprovalId());
+			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(commonRoot.getApprovalId());
 			//common
 			if(commonPhase.isPresent()){
 				//承認フェーズ・承認形態　＝　誰か一人
 				ApprovalPhase phase = commonPhase.get();
 				if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					phase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
+					phase.setApprovalAtr(ApprovalAtr.PERSON);
 					repoAppPhase.updateApprovalPhase(phase);
 				}
 				String approvalId = commonRoot.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
+				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
 				//insert approver moi
 				//common
 				if(dailyDisplay){//common insert 2 record
 					//a210
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder1, null, a210, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a210, ConfirmPerson.NOT_CONFIRM.value, null));
 					//a27
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder2, null, a27, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder2, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
 				}else{//common insert 1 record
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  approvalId, phaseOrder, approverOrder1, null, a27, 0, 0, null));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
 				}
 	 		}
 		}
 		if(monthlyRoot != null){
 			//monthly A27
-			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getApprovalId());
+			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(monthlyRoot.getApprovalId());
 			if(monthlyPhase.isPresent()){
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
 				if(mphase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					mphase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
+					mphase.setApprovalAtr(ApprovalAtr.PERSON);
 					repoAppPhase.updateApprovalPhase(mphase);
 				}
 				String approvalId = mphase.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
-				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getApprovalId(), phaseOrder, 
-						approverOrder1, null, a27, 0, 0, null));
+				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
+				lstApprNew.add(Approver.createSimpleFromJavaType(
+						approverOrder1, null, a27,  ConfirmPerson.NOT_CONFIRM.value, null));
 			}
 		}
 		if(!lstApprNew.isEmpty()){
-			repoApprover.addAllApprover(lstApprNew);
+			repoApprover.addAllApprover(monthlyRoot.getApprovalId(), phaseOrder, lstApprNew);
 		}
 	}
 }

@@ -14,15 +14,26 @@ module nts.uk.com.view.cmm018.a.sub {
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             constructor() {
             }
-            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>){
+            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE){
                 let self = this;
+                let gridName = '#grid_matome';
+                if(rootType == vmbase.RootType.COMPANY){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matome' : '#grid_matomeB';
+                }else if(rootType == vmbase.RootType.WORKPLACE){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
+                }else{//PERSON
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                }
+                if($(gridName + '_container').length > 0){
+                    $(gridName).ntsGrid("destroy");
+                }
                 self.items([]);
                 self.lstData(lstRoot);
                 _.each(lstRoot, function(root){
                     self.items.push(self.convertlistRoot(root));
                 });
                 let colorBackGr: any = self.fillColorbackGr();
-              $('#grid_matome').ntsGrid({
+              $(gridName).ntsGrid({
                 width: 950,
                 height: 530,
                 dataSource: self.items(),
@@ -30,7 +41,6 @@ module nts.uk.com.view.cmm018.a.sub {
                 rowVirtualization: true,
                 virtualization: true,
                 hidePrimaryKey: true,
-                rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '100px'},
@@ -61,34 +71,36 @@ module nts.uk.com.view.cmm018.a.sub {
                  ],
                 ntsControls: [{ name: 'Button', controlType: 'Button', enable: true }],
             });
-            $("#grid_matome").on("click", ".button-delete", function(evt, ui) {
+            $(gridName).on("click", ".button-delete", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                alert('Clear row' + id);
+                let empRType = id.split("_")[0];
+                let appType = id.split("_")[1];
+                self.deleteRowSub(empRType, appType);
             });
             //Phase1
-            $("#grid_matome").on("click", ".openK_Phase1", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase1", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(1, empRType, appType);
             });
-                $("#grid_matome").on("click", ".openK_Phase2", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase2", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(2, empRType, appType);
             });
-                $("#grid_matome").on("click", ".openK_Phase3", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase3", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(3, empRType, appType);
             });
-                $("#grid_matome").on("click", ".openK_Phase4", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase4", function(evt, ui) {
                     console.log('Phase4');
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
@@ -96,7 +108,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(4, empRType, appType);
             });
-                $("#grid_matome").on("click", ".openK_Phase5", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase5", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
@@ -148,7 +160,7 @@ module nts.uk.com.view.cmm018.a.sub {
         convertlistRoot(root: vmbase.CompanyAppRootADto): vmbase.Root{
             let self = this;
             let typeRoot: string = root.employRootAtr +'_'+ root.appTypeValue;
-            let appName:string = root.appTypeName;
+            let appName:string = self.appNameHtml(root.appTypeName, root.employRootAtr);
             let phase1:string = self.phaseHtml(root.appPhase1, root.appTypeValue, root.employRootAtr,1);
             let phase2:string = self.phaseHtml(root.appPhase2, root.appTypeValue, root.employRootAtr,2);
             let phase3:string = self.phaseHtml(root.appPhase3, root.appTypeValue, root.employRootAtr,3);
@@ -164,7 +176,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             phase5:phase5,
                             deleteRoot: deleteRoot};
         }
-            
+         
         phaseHtml(phase: vmbase.ApprovalPhaseDto, appTypeValue, employRootAtr, phaseOrder: number):any{
             let classPhase = 'openK_Phase' + phaseOrder;
             if(_.isEmpty(phase.approver) || phase.approver.length == 0){//phase chua setting
@@ -172,7 +184,7 @@ module nts.uk.com.view.cmm018.a.sub {
             }
             let result = '<div class="approver">';
             _.each(phase.approver, function(approver){
-                result += '<div class="hyperlink approver-line ' + classPhase + '">' + approver.name +'</div>';
+                result += '<div class="hyperlink approver-line ' + classPhase + '">' + approver.name + approver.confirmName +'</div>';
             });
                 result += '</div>'+ '<div class="from">' + '（' + phase.appFormName + '）' + '</div>';
            return result;
@@ -180,7 +192,7 @@ module nts.uk.com.view.cmm018.a.sub {
         }
         openDialogKSub(phaseOrder: number, empRType: any, appType: any){
             let self = this;
-            let root: vmbase.CompanyAppRootADto = self.findRoot(phaseOrder, empRType, appType);
+            let root: vmbase.CompanyAppRootADto = self.findRoot(empRType, appType);
             let phase = null;
             if(_.isEmpty(root)) return;
             if(phaseOrder == 1) phase = root.appPhase1;
@@ -190,7 +202,7 @@ module nts.uk.com.view.cmm018.a.sub {
             if(phaseOrder == 5) phase = root.appPhase5;
             __viewContext.viewModel.viewmodelA.openDialogK(phase, root.approvalId, appType, empRType, phaseOrder);
         }
-        findRoot(phaseOrder: number, empRType: any, appType: any): vmbase.CompanyAppRootADto{
+        findRoot(empRType: any, appType: any): vmbase.CompanyAppRootADto{
             let self = this;
             if(appType == 'null' && Number(empRType) == 0){//common
                 return _.find(self.lstData(), function(root){
@@ -236,8 +248,19 @@ module nts.uk.com.view.cmm018.a.sub {
             });
             return result;
         }
-    }
         
-        
+            appNameHtml(appName: string, empRType: number){
+                if(empRType != 0) return appName;
+                return appName + '<div style="display: inline-block;">'
+                    + '<button data-bind="ntsHelpButton: ' + "{image: '../images/CMM018_001.png', position: 'right top',enable: true}" 
+                    + '" >?</button></div>';
+            }
+            deleteRowSub(empRType: any, appType: any){
+                let self = this;
+                let root: vmbase.CompanyAppRootADto = self.findRoot(empRType, appType);
+                if(_.isEmpty(root)) return;
+                __viewContext.viewModel.viewmodelA.deleteRow(root.approvalId, empRType);
+            }
+        }
     }
 }

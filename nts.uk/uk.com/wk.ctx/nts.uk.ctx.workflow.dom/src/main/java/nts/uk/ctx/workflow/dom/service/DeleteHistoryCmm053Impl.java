@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 
@@ -47,14 +47,14 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 			for (PersonApprovalRoot deleteItem : deletePersonApproval) {
 				String approvalId = deleteItem.getApprovalId();
 				String historyId  = deleteItem.getApprRoot().getHistoryItems().get(0).getHistoryId();
-				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, approvalId);
+				Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(approvalId);
 				if (approvalPhase.isPresent()) {
 					int phaseOrder = approvalPhase.get().getPhaseOrder();
 					// 「個人別就業承認ルート」に紐付く「分岐」「承認ルート」を削除する
 					//Delete table Approver
-					this.repoApprover.deleteAllApproverByAppPhId(companyId, approvalId, phaseOrder);
+					this.repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
 					//Delete table Approver
-					this.repoAppPhase.deleteAllAppPhaseByApprovalId(companyId, approvalId);
+					this.repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 					//Delete table Branch
 					this.repoBranch.deleteBranch(companyId, deleteItem.getApprRoot().getBranchId());
 				}
@@ -63,9 +63,8 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 			}
 		}
 
-		List<PersonApprovalRoot> getAllPsApprovalRoot = this.repoPerson.getAllPsApprovalRoot(companyId, employeeId);
-		List<PersonApprovalRoot> currentApprovalRoot  = this.getPersonApprovalRootByEndDate(getAllPsApprovalRoot, endDate);
-		List<PersonApprovalRoot> previousApprovalRoot = this.getPersonApprovalRootByEndDate(getAllPsApprovalRoot, endDatePrevious);
+		List<PersonApprovalRoot> currentApprovalRoot  = repoPerson.getByEndDate(companyId, employeeId, SystemAtr.WORK.value, endDate);
+		List<PersonApprovalRoot> previousApprovalRoot = repoPerson.getByEndDate(companyId, employeeId, SystemAtr.WORK.value, endDatePrevious);
 		// 削除した履歴の直前の「個人別就業承認ルート」が存在するかチェックする
 		if (currentApprovalRoot.isEmpty() && !previousApprovalRoot.isEmpty()) {
 			for (PersonApprovalRoot updateItem : previousApprovalRoot) {
@@ -76,21 +75,5 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 		}
 		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate, startDate);
 		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate, startDate);
-	}
-
-	/**
-	 * Get person approval root by end date
-	 * 
-	 * @param personAppRootList
-	 * @param endDate
-	 * @return
-	 */
-	private List<PersonApprovalRoot> getPersonApprovalRootByEndDate(List<PersonApprovalRoot> personAppRootList,
-			GeneralDate endDate) {
-		if (personAppRootList.isEmpty())
-			return Collections.emptyList();
-		return personAppRootList.stream()
-				.filter(x -> x.getApprRoot().getHistoryItems().get(0).end().compareTo(endDate) == 0)
-				.collect(Collectors.toList());
 	}
 }

@@ -35,13 +35,11 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprova
 public class JpaApprovalPhaseRepository extends JpaRepository implements ApprovalPhaseRepository{
 	
 	private static final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
-			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
-			+ " AND c.wwfmtApprovalPhasePK.approvalId = :approvalId";
+			+ " WHERE c.wwfmtApprovalPhasePK.approvalId = :approvalId";
 	private static final String SELECT_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.wwfmtApprovalPhasePK.phaseOrder = :phaseOrder";
 	private static final String DELETE_APHASE_BY_APPROVALID = "DELETE from WwfmtApprovalPhase c "
-			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
-			+ " AND c.wwfmtApprovalPhasePK.approvalId = :approvalId";
+			+ " WHERE c.wwfmtApprovalPhasePK.approvalId = :approvalId";
 	private static final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
 			+ " AND c.phaseOrder = 1";
 
@@ -52,9 +50,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 * @return
 	 */
 	@Override
-	public List<ApprovalPhase> getAllApprovalPhasebyCode(String companyId, String approvalId) {
+	public List<ApprovalPhase> getAllApprovalPhasebyCode(String approvalId) {
 		return this.queryProxy().query(SELECT_FROM_APPHASE,WwfmtApprovalPhase.class)
-				.setParameter("companyId", companyId)
 				.setParameter("approvalId", approvalId)
 				.getList(c->toDomainApPhase(c));
 	}
@@ -66,9 +63,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 * @return
 	 */
 	@Override
-	public Optional<ApprovalPhase> getApprovalPhase(String companyId, String approvalId, int phaseOrder) {
+	public Optional<ApprovalPhase> getApprovalPhase(String approvalId, int phaseOrder) {
 		return this.queryProxy().query(SELECT_APPHASE,WwfmtApprovalPhase.class)
-				.setParameter("companyId", companyId)
 				.setParameter("approvalId", approvalId)
 				.setParameter("phaseOrder", phaseOrder)
 				.getSingle(c->toDomainApPhase(c));
@@ -81,19 +77,16 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 */
 	@Override
 	@SneakyThrows
-	public List<ApprovalPhase> getAllIncludeApprovers(String companyId, String approvalId) {
+	public List<ApprovalPhase> getAllIncludeApprovers(String approvalId) {
 		List<ApprovalPhase> result = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String query = "SELECT phase.CID, phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.PHASE_ORDER, " +
-						"approver.JOB_ID, approver.SID, approver.APPROVERORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON " +
+		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.PHASE_ORDER, " +
+						"approver.JOB_ID, approver.SID, approver.APPROVER_ORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON " +
 						"FROM WWFMT_APPROVAL_PHASE phase " +
 						"LEFT JOIN WWFMT_APPROVER approver " +
-						"ON phase.CID = approver.CID " +
 						"AND phase.APPROVAL_ID = approver.APPROVAL_ID " +
 						"AND phase.PHASE_ORDER = approver.PHASE_ORDER " +
-						"WHERE phase.APPROVAL_ID = 'approvalId' "+
-						"AND phase.CID = 'companyID' " ;
-		query = query.replaceAll("companyID", companyId);
+						"WHERE phase.APPROVAL_ID = 'approvalId' " ;
 		query = query.replaceAll("approvalId", approvalId);
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
@@ -145,9 +138,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 * @param approvalId
 	 */
 	@Override
-	public void deleteAllAppPhaseByApprovalId(String companyId, String approvalId) {
+	public void deleteAllAppPhaseByApprovalId(String approvalId) {
 		this.getEntityManager().createQuery(DELETE_APHASE_BY_APPROVALID)
-		.setParameter("companyId", companyId)
 		.setParameter("approvalId", approvalId)
 		.executeUpdate();
 		this.getEntityManager().flush();
@@ -159,8 +151,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 * @param approvalPhaseId
 	 */
 	@Override
-	public void deleteAppPhaseByAppPhId(String companyId, String approvalId, int phaseOrder) {
-		WwfmtApprovalPhasePK appPhasePk = new WwfmtApprovalPhasePK(companyId, approvalId, phaseOrder);
+	public void deleteAppPhaseByAppPhId(String approvalId, int phaseOrder) {
+		WwfmtApprovalPhasePK appPhasePk = new WwfmtApprovalPhasePK(approvalId, phaseOrder);
 		this.commandProxy().remove(appPhasePk);
 	}
 	/**
@@ -171,33 +163,16 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
 		List<Approver> lstApprover = new ArrayList<>();
 		for(WwfmtAppover approver: entity.wwfmtAppovers) {
-			lstApprover.add(toDomainApprover(approver));
+			lstApprover.add(approver.toDomainApprover());
 		}
 		
-		val domain = ApprovalPhase.createSimpleFromJavaType(entity.wwfmtApprovalPhasePK.companyId,
+		val domain = ApprovalPhase.createSimpleFromJavaType(
 				entity.wwfmtApprovalPhasePK.approvalId,
 				entity.wwfmtApprovalPhasePK.phaseOrder,
 				entity.approvalForm,
 				entity.browsingPhase,
-				lstApprover);
-		return domain;
-	}
-	
-	/**
-	 * convert entity WwfmtAppover to domain Approver
-	 * @param entity
-	 * @return
-	 */
-	private Approver toDomainApprover(WwfmtAppover entity){
-		val domain = Approver.createSimpleFromJavaType(entity.wwfmtAppoverPK.companyId,
-				entity.wwfmtAppoverPK.approvalId,
-				entity.wwfmtAppoverPK.phaseOrder,
-				entity.wwfmtAppoverPK.approverOrder,
-				entity.jobId,
-				entity.employeeId,
 				entity.approvalAtr,
-				entity.confirmPerson,
-				entity.specWkpId);
+				lstApprover);
 		return domain;
 	}
 	
@@ -208,16 +183,15 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 */
 	private WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain){
 		val entity = new WwfmtApprovalPhase();
-		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getCompanyId(), domain.getApprovalId(), domain.getPhaseOrder());
+		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getApprovalId(), domain.getPhaseOrder());
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
 		return entity;
 	}
 
 	@Override
-	public Optional<ApprovalPhase> getApprovalFirstPhase(String companyId, String approvalId) {
+	public Optional<ApprovalPhase> getApprovalFirstPhase(String approvalId) {
 		return this.queryProxy().query(SELECT_FIRST_APPHASE,WwfmtApprovalPhase.class)
-				.setParameter("companyId", companyId)
 				.setParameter("approvalId", approvalId)
 				.getSingle(c->toDomainApPhase(c));
 	}	
@@ -228,12 +202,11 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 
 		while (rs.next()) {
 			listFullData.add(new FullJoinWwfmtApprovalPhase(
-					rs.getString("CID"), 
 					rs.getString("APPROVAL_ID"), 
 					rs.getInt("PHASE_ORDER"), 
 					rs.getInt("APPROVAL_FORM"), 
 					rs.getInt("BROWSING_PHASE"), 
-					rs.getString("JOB_ID"), 
+					rs.getString("APPROVER_G_CD"), 
 					rs.getString("SID"), 
 					rs.getInt(10), 
 					rs.getInt("APPROVAL_ATR"), 
@@ -247,23 +220,19 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoinWwfmtApprovalPhase::getPhaseOrder))
 						.entrySet().stream().map(x -> {
 					FullJoinWwfmtApprovalPhase first = x.getValue().get(0);
-					String companyId = first.companyId;
 					String approvalId = first.approvalId;
 					int phaseOrder = first.phaseOrder;
 					ApprovalForm approvalForm = EnumAdaptor.valueOf(first.approvalForm, ApprovalForm.class);
 					int browsingPhase = first.browsingPhase;
 					List<Approver> approvers = x.getValue().stream().map(y -> 
 						new Approver(
-								companyId, 
-								approvalId, 
-								phaseOrder, 
 								y.approverOrder, 
-								y.jobId, 
+								y.jobGCD, 
 								y.employeeId, 
-								EnumAdaptor.valueOf(y.approvalAtr, ApprovalAtr.class), 
 								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class),
 								null)).collect(Collectors.toList());
-					return new ApprovalPhase(companyId, approvalId, phaseOrder, approvalForm, browsingPhase, approvers);
+					return new ApprovalPhase(approvalId, phaseOrder, approvalForm,
+							browsingPhase, EnumAdaptor.valueOf(x.getValue().get(0).getApprovalAtr(), ApprovalAtr.class), approvers);
 				}).collect(Collectors.toList());
 	}
 }

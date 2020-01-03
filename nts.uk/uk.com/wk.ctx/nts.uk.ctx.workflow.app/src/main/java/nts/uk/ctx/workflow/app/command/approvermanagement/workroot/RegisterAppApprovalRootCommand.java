@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RegisterAppApprovalRootCommand {
-
+	/**システム区分*/
+	private int systemAtr;
 	/**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
 	private int rootType;
 	/**work place id*/

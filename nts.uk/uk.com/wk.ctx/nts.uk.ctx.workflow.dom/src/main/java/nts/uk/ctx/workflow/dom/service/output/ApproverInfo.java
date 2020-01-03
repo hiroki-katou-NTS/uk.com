@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.dom.service.output;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 
 /**
@@ -15,28 +14,23 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 @Getter
 @AllArgsConstructor
 public class ApproverInfo {
-	/**職位ID*/
-	private String jobId;
+	/**承認者Gコード*/
+	private String jobGCD;
 	/**社員ID*/
 	private String sid;
-	/**承認フェーズ順序*/
-	private int phaseOrder;
 	/**承認者順序*/
 	private int approverOrder;
 	/**確定者*/
 	private Boolean isConfirmPerson;
+	
 	private String name;
-	/**区分*/
-	private ApprovalAtr approvalAtr;
 	
 	public static ApproverInfo create(Approver x, String employeeName) {
-		return new ApproverInfo(x.getJobTitleId(),
+		return new ApproverInfo(x.getJobGCD(),
 				x.getEmployeeId(), 
-				x.getPhaseOrder(),
 				x.getApproverOrder(),
 				true, 
-				employeeName,
-				x.getApprovalAtr());
+				employeeName);
 	}
 	
 	public static ApproverInfo create(ConcurrentEmployeeImport emp) {
@@ -44,9 +38,7 @@ public class ApproverInfo {
 				emp.getJobId(),
 				emp.getEmployeeId(),
 				1,
-				1,
 				null,
-				emp.getPersonName(),
-				ApprovalAtr.JOB_TITLE);
+				emp.getPersonName());
 	}
 }

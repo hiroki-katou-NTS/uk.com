@@ -14,50 +14,30 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @AllArgsConstructor
 public class Approver extends DomainObject{
-	/**会社ID*/
-	private String companyId;
-	/**分岐ID*/
-	private String approvalId;
-	/**承認フェーズID*/
-	private int phaseOrder;
 	/**承認者順序*/
 	private int approverOrder;
-	/**職位ID*/
-	private String jobTitleId;
+	/**承認者Gコード*/
+	private String jobGCD;
 	/**社員ID*/
 	private String employeeId;
-	/**承認者指定区分*/
-	private ApprovalAtr approvalAtr;
 	/**確定者*/
 	private ConfirmPerson confirmPerson;
 	/**特定職場ID*/
 	private String specWkpId;
 	
-	public static Approver createSimpleFromJavaType(String companyId, 
-			String approvalId,
-			int phaseOrder,
+	public static Approver createSimpleFromJavaType(
 			int approverOrder,
-			String jobTitleId,
+			String jobGCD,
 			String employeeId,
-			int approvalAtr,
 			int confirmPerson,
 			String specWkpId){
-		return new Approver(companyId,
-				approvalId,
-				phaseOrder,
+		return new Approver(
 				approverOrder,
-				jobTitleId,
+				jobGCD,
 				employeeId,
-				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
 				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class),
 				specWkpId);
 	}
-//	public void updateApprovalPhaseId(String approvalPhaseId){
-//		this.approvalPhaseId = approvalPhaseId;
-//	}
-//	public void updateApproverId(String approverId){
-//		this.approverId = approverId;
-//	}
 	
 	public boolean isConfirmer() {
 		return this.confirmPerson == ConfirmPerson.CONFIRM;

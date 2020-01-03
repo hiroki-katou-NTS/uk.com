@@ -169,7 +169,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,
 			List<ApprovalRootOutput> appDatas) {
 		appDatas.stream().forEach(x -> {
-			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(cid, x.getBranchId())
+			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(x.getApprovalId())
 					.stream().filter(f -> f.getBrowsingPhase() == 0).collect(Collectors.toList());
 			x.setBeforePhases(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
@@ -203,14 +203,15 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			}
 
 			List<ApproverInfo> approversResult = new ArrayList<>();
+			ApprovalAtr appAtr = phase.getApprovalAtr();
 			approvers.stream().forEach(x -> {
 				// 個人の場合
-				if (x.getApprovalAtr() == ApprovalAtr.PERSON) {
+				if (appAtr.equals(ApprovalAtr.PERSON)) {
 					approversResult.add(ApproverInfo.create(x, employeeAdapter.getEmployeeName(x.getEmployeeId())));
 				} else {
 					// 職位の場合
 					List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid, baseDate,
-							x.getJobTitleId());
+							x.getJobGCD());
 					approversResult.addAll(approversOfJob);
 				}
 			});

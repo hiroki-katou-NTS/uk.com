@@ -61,7 +61,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 				.collect(Collectors.toList());
 		if (!CollectionUtil.isEmpty(comInfoCommon)) {
 			for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
-				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getApprRoot().getBranchId());
+				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyApprovalRoot.getApprovalId());
 				if(!lstAppPhase.isEmpty()){
 					return lstUnRegister;
 				}
