@@ -83,7 +83,7 @@
 }
 
 .retireCourseTxt{
-	width: 730px;
+	width: 725px;
 	margin-left: 10px;
 }
 
@@ -93,4 +93,28 @@
 
 .appCon{
 	margin-left: 15px;
+}
+.appAgeCell{
+	width: 130px;
+}
+
+.judg{
+	width: 20px;
+}
+
+.panel-croll{
+	overflow-y: scroll;
+	height: 590px;
+}
+
+.isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.retireDateEna{
+	display: inline-block;
+	vertical-align: middle;
 }

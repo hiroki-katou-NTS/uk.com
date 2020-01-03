@@ -5,6 +5,7 @@ module nts.uk.com.view.jmm018.tabb {
         let screenModel = new jmm018b.viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
+            screenModel.hidden('href1', 'B422_12')
         });
     });
 }

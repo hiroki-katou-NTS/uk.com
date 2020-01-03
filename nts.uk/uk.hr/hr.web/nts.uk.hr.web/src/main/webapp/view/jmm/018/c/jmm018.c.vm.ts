@@ -75,8 +75,10 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             let dfd = $.Deferred();
             let listData = _.filter(self.dataRetirment(), function(o) { return o.checkBox() == true; });
             let normal = _.countBy(listData, function(x) { return x.courseAtr() == "通常"; });
-            if(normal.true >2){
+            if(normal.true >= 2){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_14"});
+            }else if(normal.true == 0 || !normal.true){
+                nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
             }else{
                 nts.uk.ui.windows.setShared('shareToJMM018B', listData);
                 nts.uk.ui.windows.close();   

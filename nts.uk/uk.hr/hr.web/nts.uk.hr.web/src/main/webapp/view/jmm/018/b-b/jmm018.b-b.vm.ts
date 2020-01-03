@@ -13,15 +13,27 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         releaseDateSelected: KnockoutObservable<number> = ko.observable(1);
         textEditorB422_15_6: KnockoutObservable<number> = ko.observable(0);
         textDate: KnockoutObservable<string> = ko.observable('');
-        releaseType: KnockoutObservableArray<any> = ko.observableArray([]);
+
         releaseTypeSelected: KnockoutObservable<number> = ko.observable(1);
         retireDate: KnockoutObservableArray<any> = ko.observableArray([]);
-        retireDateSelected: KnockoutObservable<number> = ko.observable(1);
+        retireDateSelected: KnockoutObservable<number> = ko.observable(2);
         referenceValueLs: KnockoutObservableArray<any> = ko.observableArray([]);
         numberDispLs: KnockoutObservableArray<any> = ko.observableArray([]);
         retireConditionLs: KnockoutObservableArray<any> = ko.observableArray([]);
         applyCondition: KnockoutObservable<boolean> = ko.observable(false);
         startAppliPossible: KnockoutObservable<string> = ko.observable("");
+        ageLowerLimit: KnockoutObservable<number> = ko.observable(0);
+        ageUpperLimit: KnockoutObservable<number> = ko.observable(0);
+        appliAcceptLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        appliAcceptVal: KnockoutObservable<any> = ko.observable(1);
+        appliAccepTypetLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        appliAcceptType: KnockoutObservable<any> = ko.observable(1);
+        isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
+        appliConEna: KnockoutObservable<boolean> = ko.observable(false);
+        retireDatePoint: KnockoutObservable<number> = ko.observable(1);
+        retireDateEna: KnockoutObservable<boolean> = ko.observable(true);
+        retireDateVis: KnockoutObservable<boolean> = ko.observable(true);
+        retireText: KnockoutObservable<boolean> = ko.observable(true);
         
         constructor() {
             let self = this;
@@ -40,13 +52,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new ItemModel(6, getText('JMM018_B422_15_5_6')),
                 ]);
             
-            self.releaseType = ko.observableArray([
-                    new ItemModel(1, getText('JMM018_B422_15_5_1')),
-                    new ItemModel(2, getText('JMM018_B422_15_5_2')),
-                    new ItemModel(3, getText('JMM018_B422_15_5_3')),
-                    new ItemModel(6, getText('JMM018_B422_15_5_6')),
-                ]);
-            
             self.retireDate = ko.observableArray([
                     new ItemModel(1, getText('JMM018_B422_15_5_1')),
                     new ItemModel(2, getText('JMM018_B422_15_5_2')),
@@ -55,11 +60,20 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 ]);
             
             self.numberDispLs = ko.observableArray([
-                    new ItemModel(1, getText('JMM018_B422_15_5_1')),
-                    new ItemModel(2, getText('JMM018_B422_15_5_2')),
-                    new ItemModel(3, getText('JMM018_B422_15_5_3')),
-                    new ItemModel(6, getText('JMM018_B422_15_5_6')),
+                    new ItemModel(1, "1"),
+                    new ItemModel(2, "2"),
+                    new ItemModel(3, "3"),
                 ]);
+            
+            let appliAccep = __viewContext.enums.MonthSelectItem;
+            _.forEach(appliAccep, (obj) => {
+                self.appliAcceptLst.push(new ItemModel(obj.value, obj.name));
+            });
+            
+            let appAccepType = __viewContext.enums.DateSelectItem;
+            _.forEach(appAccepType, (x) => {
+                self.appliAccepTypetLst.push(new ItemModel(x.value, x.name));
+            });
             
             self.delVisible = ko.observable(true);
             
@@ -105,7 +119,14 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             
             self.selectedHistId.subscribe(function(newValue) {
-                console.log(newValue);
+                if (!_.findIndex(self.histList(), h => h.histId === newValue)) {
+                    self.isLatestHis(true);
+                    _.forEach(self.referenceValueLs(), (obj) => {
+                        obj.enable(obj.enable());
+                    })
+                }else{
+                    self.isLatestHis(false);
+                }
             });
             
             self.afterRender = () => {
@@ -127,11 +148,49 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             self.releaseDateSelected.subscribe(function(val){
                 if(val == 2){
-                    self.textDate(getText('JMM018_B422_17_7_1'));   
+                    self.textDate(getText('JMM018_B422_17_7_1')); 
+                    self.retireDateVis(false);  
+                    self.retireText(true);
                 }else if(val == 3){
-                    self.textDate(getText('JMM018_B422_17_7_2'));   
+                    self.textDate(getText('JMM018_B422_17_7_2'));  
+                    self.retireDateVis(false); 
+                    self.retireText(true);
+                }else if(val == 6){
+                    self.retireDateVis(true);
+                    self.retireText(false);
+                }else{
+                    self.retireDateVis(false);    
+                    self.retireText(false);
                 }
             });
+            
+            self.ageLowerLimit.subscribe(function(x){
+                if(x > self.ageUpperLimit()){
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_11"});
+                }
+            });
+            
+            self.ageUpperLimit.subscribe(function(y){
+                if(y < self.ageLowerLimit()){
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
+                }
+            });
+            
+            self.applyCondition.subscribe(function(z){
+                if(z == true){
+                    self.appliConEna(true);
+                }else{
+                    self.appliConEna(false);
+                }
+            });
+            
+            self.retireDateSelected.subscribe(function(v) {
+                if(v == 1){
+                    self.retireDateEna(true);    
+                }else{
+                    self.retireDateEna(false);    
+                }
+            })
         }
 
         start(): JQueryPromise<any> {
@@ -147,7 +206,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         // B422_15_24
                         numberDisplay: 2,
                         // B422_15_25
-                        valueCriteria: "a",
+                        valueCriteria: "",
                         // B422_15_26
                         continuationCategory: "a",
                     }
@@ -160,7 +219,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 // B422_15_24
                 numberDisplay: 3,
                 // B422_15_25
-                valueCriteria: "a",
+                valueCriteria: "",
                 // B422_15_26
                 continuationCategory: "a",
             }
@@ -178,21 +237,52 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         // B422_15_34
                         retireCourse: "yenjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
                     }
+            
+            let d = {
+                id: 2,
+                // B422_15_32
+                employmentStatus: "yen",
+                // B422_15_33
+                retireAge: true,
+                // B422_15_34
+                retireCourse: "",
+            }
             self.retireConditionLs().push(new RetireCond(c));
-               dfd.resolve();
-
-                nts.uk.ui.block.clear();
+            self.retireConditionLs().push(new RetireCond(d));
+            
+            self.hidden('href1', 'B422_12');
+            dfd.resolve();
+            nts.uk.ui.block.clear();
 
             return dfd.promise();
         }
         
         openCDialog(): void {
             let self = this;
-            
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
             })
         }
 
+        register(): void{
+            let self = this;
+            if(!!self.applyCondition()){
+                $('#lowerLimit').trigger("validate");
+                $('#upperLimit').trigger("validate");
+            }
+            $('.judg').trigger("validate");
+            _.forEach(self.retireConditionLs(), (obj) => {
+                if(obj.retireAge() == true && obj.retireCourse() == ""){
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
+                }
+            });    
+        }
+        
+        hidden(param: string, id: string){
+            $('.hyperlink').removeClass('isDisabled');
+            $('#'+ param).addClass('isDisabled');
+            var elmnt = document.getElementById(id);
+            elmnt.scrollIntoView();
+        }
     }
     
     export interface IReferenceValue {
@@ -210,13 +300,17 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
     class ReferenceValue {
         index: number;
         // B422_15_22
-        valueItem: KnockoutObservable<string>;
+        valueItem: KnockoutObservable<string> = ko.observable("");
         // B422_15_23
-        display: KnockoutObservable<boolean>;
+        display: KnockoutObservable<boolean> = ko.observable(true);
         // B422_15_24
-        numberDisplay: KnockoutObservable<number>;
+        numberDisplay: KnockoutObservable<number> = ko.observable(1);
         // B422_15_25
-        valueCriteria: KnockoutObservable<string>;
+        valueCriteria: KnockoutObservable<string> = ko.observable("B");
+        // required
+        //required: KnockoutObservable<boolean> = ko.observable(false); 
+        // enable
+        enable: KnockoutObservable<boolean> = ko.observable(false);
         constructor(param: IReferenceValue) {
             let self = this;
             self.index = param.index;
@@ -224,6 +318,14 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.display = ko.observable(param.display);
             self.numberDisplay = ko.observable(param.numberDisplay);
             self.valueCriteria = ko.observable(param.valueCriteria);
+            self.enable = ko.observable(param.display);
+            self.display.subscribe(function(x){
+                if(x){
+                    self.enable(true);
+                }else{
+                    self.enable(false);
+                }
+            })
         }
     }
     
@@ -245,12 +347,21 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retireAge: KnockoutObservable<boolean>;
         // B422_15_34
         retireCourse: KnockoutObservable<string>;
+        enable: KnockoutObservable<boolean>;
         constructor(param: IRetireCond) {
             let self = this;
             self.id = param.id;
             self.employmentStatus = ko.observable(param.employmentStatus);
             self.retireAge = ko.observable(param.retireAge);
             self.retireCourse = ko.observable(param.retireCourse);
+            self.enable = ko.observable(param.retireAge); 
+            self.retireAge.subscribe(function(x){
+                if(x){
+                    self.enable(true);
+                }else{
+                    self.enable(false);
+                }
+            })
         }
     }
 
