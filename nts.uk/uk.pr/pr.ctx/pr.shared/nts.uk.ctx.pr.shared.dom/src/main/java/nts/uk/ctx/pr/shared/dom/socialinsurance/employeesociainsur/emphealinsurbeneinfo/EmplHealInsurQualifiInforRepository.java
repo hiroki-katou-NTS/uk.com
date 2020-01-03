@@ -38,7 +38,7 @@ public interface EmplHealInsurQualifiInforRepository {
 
     void update(EmpHealthInsurBenefits benefits);
 
-    void update(EmpHealthInsurBenefits item, HealInsurNumberInfor infor);
+    void update(EmpHealthInsurBenefits domain, HealInsurNumberInfor item, String sid);
 
     void remove(String employeeId, String hisId);
 }

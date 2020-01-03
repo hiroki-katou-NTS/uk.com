@@ -141,8 +141,8 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
                 new QqsmtEmpHealInsurQiPk(domain.getEmployeeId(), itemAdded.identifier(), AppContexts.user().companyId()),
                 itemAdded.start(),
                 itemAdded.end(),
-                hisItem.getCareInsurNumber().map(e->e.v()).orElse(null),
-                hisItem.getHealInsNumber().map(e->e.v()).orElse(null)
+                hisItem.getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null),
+                hisItem.getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)
         ));
     }
 
@@ -176,34 +176,17 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     }
 
     @Override
-    public void update(EmpHealthInsurBenefits item, HealInsurNumberInfor infor) {
-        String UP_SQL = "UPDATE QQSDT_KENHO_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL, KAIHO_NUM = KAIHO_NUM_VAL, KENHO_NUM = KENHO_NUM_VAL"
-                + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
-        String cid = AppContexts.user().companyId();
-        String updCcd = AppContexts.user().companyCode();
-        String updScd = AppContexts.user().employeeCode();
-        String updPg = AppContexts.programId();
+    public void update(EmpHealthInsurBenefits domain, HealInsurNumberInfor item, String sid) {
+        val oldEntity = this.queryProxy().find(new QqsmtEmpHealInsurQiPk(sid, item.getHistoryId(), AppContexts.user().companyId()), QqsmtEmpHealInsurQi.class);
+        if (!oldEntity.isPresent()) {
+            return;
+        }
+        oldEntity.get().startDate = domain.getDatePeriod().start();
+        oldEntity.get().endDate = domain.getDatePeriod().end();
+        oldEntity.get().healInsurNumber = item.getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null);
+        oldEntity.get().careIsNumber = item.getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null);
 
-        StringBuilder sb = new StringBuilder();
-        String sql = UP_SQL;
-
-        sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
-        sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
-        sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
-        sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
-
-        sql = sql.replace("START_DATE_VAL", "'" + item.start() + "'");
-        sql = sql.replace("END_DATE_VAL", "'" + item.end() + "'");
-        sql = sql.replace("KAIHO_NUM_VAL", "'" + infor.getCareInsurNumber().map(e->e.v()).orElse(null) + "'");
-        sql = sql.replace("KENHO_NUM_VAL", "'" + infor.getHealInsNumber().map(e->e.v()).orElse(null) + "'");
-
-        sql = sql.replace("HIST_ID_VAL", "'" + item.identifier() + "'");
-        sql = sql.replace("CID_VAL","'" + cid + "'");
-        sb.append(sql);
-
-        int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
-        System.out.println(records);
+        this.commandProxy().update(oldEntity.get());
     }
 
     @Override

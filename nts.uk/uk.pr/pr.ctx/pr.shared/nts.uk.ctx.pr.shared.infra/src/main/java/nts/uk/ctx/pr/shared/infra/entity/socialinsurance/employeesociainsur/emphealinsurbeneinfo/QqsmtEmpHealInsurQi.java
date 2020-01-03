@@ -15,7 +15,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -85,6 +84,18 @@ public class QqsmtEmpHealInsurQi extends UkJpaEntity implements Serializable {
         date.add(new EmpHealthInsurBenefits(this.empHealInsurQiPk.hisId, new DateHistoryItem(this.empHealInsurQiPk.hisId, new DatePeriod(this.startDate, this.endDate))));
         return new EmplHealInsurQualifiInfor(
                 this.empHealInsurQiPk.employeeId, date);
+    }
+
+    public static QqsmtEmpHealInsurQi toEntity(EmpHealthInsurBenefits domain, HealInsurNumberInfor item) {
+        String cid = AppContexts.user().companyId();
+        String empId = AppContexts.user().employeeId();
+        return new QqsmtEmpHealInsurQi(
+                new QqsmtEmpHealInsurQiPk(empId, domain.identifier(), cid),
+                domain.getDatePeriod().start(),
+                domain.getDatePeriod().end(),
+                item.getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null),
+                item.getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)
+        );
     }
 
     public HealInsurNumberInfor toHealInsurNumberInfor() {
