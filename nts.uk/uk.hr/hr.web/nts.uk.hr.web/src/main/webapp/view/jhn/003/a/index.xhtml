@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jhn003.a.style.css" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="jhn003.a.service.js" />
+			<com:scriptfile path="jhn003.a.vm.js" />
+			<com:scriptfile path="jhn003.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" data-bind="with: layout">
+				<div
+					data-bind="ntsLayoutControl: {
+									 data: itemsClassification,
+									 editAble: true, 
+									 callback: nts.uk.ui.windows.close }"></div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="C1_1" class="proceed x-large" tabindex="7" data-bind="click: pushData">#{i18n.getText('JHN011_C1_1')}</button>
+				<button id="C1_2" tabindex="8" data-bind="click: close">#{i18n.getText('JHN011_C1_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
