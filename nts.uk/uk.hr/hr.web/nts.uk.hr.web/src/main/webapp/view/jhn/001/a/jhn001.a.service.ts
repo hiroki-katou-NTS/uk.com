@@ -4,7 +4,7 @@ module jhn001.a.service {
 
     let paths = {
         getAll: "hr/notice/report/findAll/{0}",
-        getDetails: "hr/notice/report/findOne/{0}",
+        getReportDetails: "hr/notice/report/findOne/{0}",
         remove:"hr/notice/report/delete/{0}",
         saveData: "hr/notice/report/save",
         getListDoc: 'hr/notice/report/regis/person/document/findAll',
@@ -23,8 +23,8 @@ module jhn001.a.service {
         return ajax(format(paths.getAll, abolition));
     }
 
-    export function getDetails(reportClsId) {
-        return ajax(format(paths.getDetails, reportClsId));
+    export function getReportDetails(reportClsId) {
+        return ajax(format(paths.getReportDetails, reportClsId));
     }
     
     export function removeData(reportClsId) {

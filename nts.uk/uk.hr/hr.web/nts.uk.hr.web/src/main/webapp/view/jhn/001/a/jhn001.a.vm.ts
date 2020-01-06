@@ -18,7 +18,7 @@ module jhn001.a.viewmodel {
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         layout: KnockoutObservable<Layout> = ko.observable(new Layout()); 
-        reportId : KnockoutObservable<string> = ko.observable('');
+        reportClsId : KnockoutObservable<string> = ko.observable('');
         
         enaGoBack : KnockoutObservable<boolean> = ko.observable(false);
         enaSave : KnockoutObservable<boolean> = ko.observable(true);
@@ -38,7 +38,7 @@ module jhn001.a.viewmodel {
             
             self.start();
 
-            self.reportId.subscribe(id => {
+            self.reportClsId.subscribe(id => {
                 if (id) {
                     let query = {
                         layoutId: '4cc80933-443b-407d-9204-1d69f9a1a225',
@@ -54,7 +54,8 @@ module jhn001.a.viewmodel {
 
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
-
+                            self.layout().sendBackComment(text('JHN001_A222_2_1') + ' : ' + 'sendBackComment');
+                            
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
                                 
@@ -122,6 +123,7 @@ module jhn001.a.viewmodel {
 
         start(code?: string): JQueryPromise<any> {
             let self = this,
+                layout = self.layout,
                 layouts = self.layouts,
                 dfd = $.Deferred();
             // get all layout
@@ -142,7 +144,8 @@ module jhn001.a.viewmodel {
                     });
                     _.each(_.orderBy(_data, ['displayOrder'], ['asc']) , d => layouts.push(d));
                     if(_data){
-                        
+                        self.reportClsId(_data[0].reportClsId);
+                        self.layout().message(text('JHN001_A222_1_1') + ' : ' + '_data[0].message');
                     }
                     
                 } else {

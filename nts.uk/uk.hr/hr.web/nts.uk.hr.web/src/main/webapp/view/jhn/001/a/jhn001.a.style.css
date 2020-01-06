@@ -40,8 +40,7 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-/* 	min-height: 585px; */
-	width: 400px;
+	width: 400px !important;
 }
 
 #B221_3{
@@ -146,3 +145,11 @@ div.drag-panel{
 	margin-top: 8px;
 	margin-left: 150px;
 }
+
+.label.warning {
+    padding: 15px 10px;
+    font-size: 1rem;
+    background-color: #F7EFD4;
+    color: #C12017;
+}
+

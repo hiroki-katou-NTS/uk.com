@@ -34,3 +34,7 @@
 	min-width: 250px;
 	min-height: 120px;
 }
+
+button {
+	margin-top: 10px;
+}

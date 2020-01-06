@@ -60,7 +60,7 @@
 									optionsValue: 'id',
 									columns: reportColums,
 									multiple: false,
-									value: reportId ,
+									value: reportClsId ,
 									rows:25}">
 							</table>
 						</div>
@@ -68,11 +68,12 @@
 				</div>
 				<div id="B222" data-bind="with: layout">
 						<div class = "divHead">
-							<div class="panel" style="background: #FDEADB ; width: 780px; height: 15px"  data-bind="text: message"></div>
-							<div class="panel" style="background: #FDEADB ; width: 780px; height: 15px; margin-top: 10px;"  data-bind="text: sendBackComment"></div>
+							<div id= "label1" class="label warning" data-bind="text: message" style="width: 780px;"></div>
+							<div id= "label2" class="label warning" data-bind="text: sendBackComment" style="width: 780px; margin-top: 10px;"></div>
+						
 							<div>
 								<div id="B222_6" class="inline" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_A222_4')}</div>
-								<div class="panel panel-gray-bg inline"  style="width: 100px; height: 20px">#{i18n.getText('JHN001_A222_4_1')}</div>
+								<div class="panel panel-gray-bg inline"  style="width: calc(100vh - 794px); height: 20px">#{i18n.getText('JHN001_A222_4_1')}</div>
 							</div>
 						</div>
 						

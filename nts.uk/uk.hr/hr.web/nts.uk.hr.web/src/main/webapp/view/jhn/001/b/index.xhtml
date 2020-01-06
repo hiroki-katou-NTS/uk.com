@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 1000,
-					height : 545
+					height : 600
 				};
 			</script>
 			<com:ValidatorScript>
@@ -41,19 +41,18 @@
 									columns: reportColums,
 									multiple: false,
 									value: reportId ,
-									rows:15}">
+									rows:15 }">
 							</table>
 						</div>
 						
 						
 					</div>
 				</div>
-				
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed " data-bind="click: continueProcess">#{i18n.getText('JHN001_B1_1')}</button>
-				<button class="danger " data-bind="click: close">#{i18n.getText('JHN001_B1_2')}</button>
-				<button data-bind="click: deleteSaveDraft">#{i18n.getText('JHN001_B1_3')}</button>
+				<button data-bind="click: close">#{i18n.getText('JHN001_B1_2')}</button>
+				<button class="danger" data-bind="click: deleteSaveDraft">#{i18n.getText('JHN001_B1_3')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
