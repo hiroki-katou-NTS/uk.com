@@ -39178,7 +39178,7 @@ var nts;
                                             my: "left top",
                                             at: "left bottom",
                                             collision: "flip flip"
-                                        });
+                                        }).css("z-index", 11000);
                                         _(internal._datePickerBoard).keys()
                                             .filter(function (k) { return k !== data.controlDef.format; })
                                             .forEach(function (k) {
