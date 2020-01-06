@@ -59,7 +59,7 @@ public class GetMonPenInsStandRemu {
 
                 if (param.getPensionInsStandCompenMonthly() != null && min > param.getPensionInsStandCompenMonthly()) {
                     perMonthDto.setWelfarePensionGrade(1);
-                } else if (param.getHealInsStandMonthlyRemune() != null && min < param.getHealInsStandMonthlyRemune()) {
+                } else if (param.getPensionInsStandCompenMonthly() != null && min < param.getPensionInsStandCompenMonthly()) {
 
                     perMonthDto.setWelfarePensionGrade(
                             Collections.max(dataMonth.get().getWelfarePensionGradePerRewardMonthlyRange().stream()
