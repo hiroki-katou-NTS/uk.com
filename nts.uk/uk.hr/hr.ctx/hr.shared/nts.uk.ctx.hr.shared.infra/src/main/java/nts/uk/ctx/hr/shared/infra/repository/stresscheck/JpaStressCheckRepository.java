@@ -22,7 +22,7 @@ import nts.uk.ctx.hr.shared.infra.entity.stresscheck.PpedtStressItem;
 @Stateless
 public class JpaStressCheckRepository extends JpaRepository implements StressCheckRepository {
 
-	private static final String SEL_BY_EMPLOYEES_AND_START_DATE = "SELECT i FROM PpedtStressItem i INNER JOIN PpedtStressHistory h "
+	private static final String SEL_BY_EMPLOYEES_AND_START_DATE = "SELECT i, h FROM PpedtStressItem i INNER JOIN PpedtStressHistory h "
 			+ "ON i.ppedtStressItemPk.historyID = h.ppedtStressHistoryPk.historyID "
 			+ "WHERE i.employeeID IN :employee " 
 			+ "AND h.startDate >= :startDate ORDER BY h.startDate";

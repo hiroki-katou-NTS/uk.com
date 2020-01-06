@@ -43,7 +43,7 @@ module nts.uk.com.view.cdl009.a {
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     baseDate: self.baseDate,
-                    selectedWorkplaceId: self.multiSelectedTree,
+                    selectedId: self.multiSelectedTree,
                     isShowSelectButton: true,
                     isDialog: true,
                     maxRows: 12,

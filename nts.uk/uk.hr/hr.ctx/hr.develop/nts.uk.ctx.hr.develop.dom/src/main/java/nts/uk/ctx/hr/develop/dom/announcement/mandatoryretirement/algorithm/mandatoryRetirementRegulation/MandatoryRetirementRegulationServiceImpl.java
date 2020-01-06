@@ -528,7 +528,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				if(personList == null || personList.isEmpty()) {
 					hrEvaluationList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getHrEvaluationDispNumber() >= 2 && personListSort.size() >= 2) {
@@ -550,7 +550,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 				if(personList == null || personList.isEmpty()) {
 					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getHealthStatusDispNumber() >= 2 && personListSort.size() >= 2) {
@@ -565,14 +565,14 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isStressStatusRefer()) {
-			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getStressStatusDispNumber()) +1));
 			Map<String, List<StressCheckResults>> mapSid = stressCheckManagement.getStressChecks().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<StressCheckResults> personList = mapSid.get(id);
 				if(personList == null || personList.isEmpty()) {
-					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+					stressStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
 				}else {
-					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> x.getStartDate().compareTo(y.getStartDate())).collect(Collectors.toList());
+					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
 					
 					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
 					if(outputObject.getStressStatusDispNumber() >= 2 && personListSort.size() >= 2) {
@@ -581,7 +581,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 					if(outputObject.getStressStatusDispNumber() >= 3 && personListSort.size() >= 3) {
 						dto.setOverallResult3(personListSort.get(2).getEvaluation());
 					}
-					healthStatusList.add(dto);
+					stressStatusList.add(dto);
 				}
 			}
 			

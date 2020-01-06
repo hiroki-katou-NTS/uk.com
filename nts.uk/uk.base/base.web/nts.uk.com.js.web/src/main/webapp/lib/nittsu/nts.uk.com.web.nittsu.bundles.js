@@ -300,6 +300,44 @@ var nts;
                 return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
             }
             ntsNumber.formatNumber = formatNumber;
+            function applyFormat(format, target, formatter) {
+                if (formatter === undefined)
+                    formatter = getFormatter();
+                switch (format) {
+                    case 'Number_Separated':
+                        return formatter.numberSeparate(target);
+                }
+            }
+            ntsNumber.applyFormat = applyFormat;
+            var NumberFormatter = /** @class */ (function () {
+                function NumberFormatter() {
+                }
+                NumberFormatter.prototype.numberSeparate = function (target) {
+                    var option = {
+                        groupseperator: ',',
+                        grouplength: 3,
+                        formatId: 'Number_Separated'
+                    };
+                    if (isInteger(target, option)) {
+                        return formatNumber(target, option);
+                    }
+                    return target;
+                };
+                NumberFormatter.prototype.isNumberFormat = function (format) {
+                    return format === 'Number_Separated';
+                };
+                return NumberFormatter;
+            }());
+            ntsNumber.NumberFormatter = NumberFormatter;
+            function getFormatter() {
+                switch (systemLanguage) {
+                    case 'ja':
+                        return new NumberFormatter();
+                    case 'en':
+                        return null;
+                }
+            }
+            ntsNumber.getFormatter = getFormatter;
         })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -1023,7 +1061,8 @@ var nts;
                     return message;
                 var paramRegex = /{([0-9])+(:\w+)?}/;
                 var matches;
-                var formatter = uk.time.getFormatter();
+                var timeFormatter = uk.time.getFormatter();
+                var numberFormatter = uk.ntsNumber.getFormatter();
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
                     var text_2 = args[parseInt(code)];
@@ -1031,8 +1070,14 @@ var nts;
                     //                    text = getText(text.substring(1))
                     //                }
                     var param = matches[2];
-                    if (param !== undefined && formatter !== undefined) {
-                        text_2 = uk.time.applyFormat(param.substring(1), text_2, formatter);
+                    if (param !== undefined) {
+                        var format_1 = param.substring(1);
+                        if (numberFormatter !== undefined && numberFormatter.isNumberFormat(format_1)) {
+                            text_2 = uk.ntsNumber.applyFormat(format_1, text_2, numberFormatter);
+                        }
+                        else if (timeFormatter !== undefined) {
+                            text_2 = uk.time.applyFormat(format_1, text_2, timeFormatter);
+                        }
                     }
                     message = message.replace(paramRegex, text_2);
                 }
@@ -29248,8 +29293,8 @@ var nts;
                                         c.textContent = "";
                                     }
                                     else if (!hide && c.textContent === "" && content !== "") {
-                                        var format_1 = su.format(_columnsMap[key][0], content);
-                                        c.textContent = format_1;
+                                        var format_2 = su.format(_columnsMap[key][0], content);
+                                        c.textContent = format_2;
                                     }
                                 });
                             });
