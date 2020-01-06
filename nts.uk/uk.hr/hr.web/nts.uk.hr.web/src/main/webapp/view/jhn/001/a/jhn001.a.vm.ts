@@ -90,9 +90,9 @@ module jhn001.a.viewmodel {
                         let obj = {
                             docName: datafile[i].docName,
                             ngoactruoc: '(',
-                            sampleFileName:  datafile[i].sampleFileName == null ? '' : '<a href="#">' + datafile[i].sampleFileName + '</a>', 
+                            sampleFileName:  datafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/'+ datafile[i].fileName +'" target="_blank">' + datafile[i].sampleFileName + '</a>', 
                             ngoacsau: ')',
-                            fileName: datafile[i].fileName == null ? '' : '<a href="#">' + datafile[i].fileName+ '</a>' ,
+                            fileName: datafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/'+ datafile[i].fileName +'" target="_blank">' + datafile[i].fileName + '</a>' ,
                             cid: datafile[i].cid,
                             reportLayoutID: datafile[i].reportLayoutID,
                             docID: datafile[i].docID,
@@ -132,10 +132,18 @@ module jhn001.a.viewmodel {
                         return {
                             id: x.reportClsId,
                             reportCode: x.reportCode,
-                            reportName: x.reportName
+                            reportName: x.reportName,
+                            reportClsId: x.reportClsId,
+                            displayOrder: x.displayOrder,
+                            remark: x.remark,
+                            memo: x.remark,
+                            message: x.message
                         }
                     });
-                    _.each(_data, d => layouts.push(d));
+                    _.each(_.orderBy(_data, ['displayOrder'], ['asc']) , d => layouts.push(d));
+                    if(_data){
+                        
+                    }
                     
                 } else {
                     self.createNewLayout();
@@ -222,6 +230,12 @@ module jhn001.a.viewmodel {
             let rowData: any = this;
             if (rowData.fileId) {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
+                    
+//                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.originalName).done(function(res) {
+//                        console.log(res);
+//                    }).fail(function(error) {
+//                       console.log(error);
+//                    });
                     nts.uk.request.specials.donwloadFile(rowData.fileId);
                 });
             }
@@ -233,7 +247,7 @@ module jhn001.a.viewmodel {
         categoryCode?: string;
         categoryName?: string;
         categoryType?: IT_CAT_TYPE;
-    }
+    }                       
 
     export enum TABS {
         LAYOUT = <any>"layout",
