@@ -2649,7 +2649,7 @@ module nts.uk.ui.jqueryExtentions {
                                 my: "left top",
                                 at: "left bottom",
                                 collision: "flip flip"
-                            });
+                            }).css("z-index", 11000);
                             
                             _(internal._datePickerBoard).keys()
                                 .filter(k => k !== data.controlDef.format)
