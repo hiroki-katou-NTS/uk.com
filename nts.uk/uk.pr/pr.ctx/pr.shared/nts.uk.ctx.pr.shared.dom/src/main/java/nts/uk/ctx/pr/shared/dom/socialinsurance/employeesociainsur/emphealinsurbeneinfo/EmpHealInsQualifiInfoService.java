@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
 import nts.arc.error.BusinessException;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ public class EmpHealInsQualifiInfoService {
     public void update(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits itemToBeUpdate, HealInsurNumberInfor updateInfo){
         List<EmpHealthInsurBenefits> listHist = domain.getMourPeriod();
         if (listHist.size() >= 1) {
-            emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo);
+            emplHealInsurQualifiInforRepository.update(itemToBeUpdate, updateInfo,domain.getEmployeeId());
             // Update Before
             updateItem(domain,itemToBeUpdate);
             // Update After
@@ -40,7 +39,6 @@ public class EmpHealInsQualifiInfoService {
         if (!validEnd) {
             throw new BusinessException("Msg_538");
         }
-        /*itemToBeUpdate.changeSpan(new DatePeriod(itemToBeUpdate.end().addDays(+1), itemBefore.end())*/
         itemToBeUpdate.get().shortenStartToAccept(item.getDatePeriod());
         emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
     }
@@ -48,11 +46,11 @@ public class EmpHealInsQualifiInfoService {
         emplHealInsurQualifiInforRepository.remove(domain.getEmployeeId(), itemToBeDeleted.identifier());
     }
 
-    public void updateItem(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item){
-    Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
-    if (!itemToBeUpdate.isPresent()){
-        return;
+    public void updateItem(EmplHealInsurQualifiInfor domain, EmpHealthInsurBenefits item) {
+        Optional<EmpHealthInsurBenefits> itemToBeUpdate = domain.immediatelyBefore(item);
+        if (!itemToBeUpdate.isPresent()) {
+            return;
+        }
+        emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
     }
-    emplHealInsurQualifiInforRepository.update(itemToBeUpdate.get());
-}
 }
