@@ -52,9 +52,9 @@ public class EmpSocialInsGradeService {
 
         YearMonthPeriod period = history.items().get(0).span();
         if (period.start().greaterThan(currentYm)) {
-            return PASS_HISTORY;
-        } else if (period.end().lessThan(currentYm)) {
             return FUTURE_HISTORY;
+        } else if (period.end().lessThan(currentYm)) {
+            return PASS_HISTORY;
         } else {
             return PRESENT_HISTORY;
         }
@@ -88,9 +88,9 @@ public class EmpSocialInsGradeService {
             String employmentCode = mapEmpHists.containsKey(k) ? mapEmpHists.get(k).getEmploymentCode() : "";
             YearMonth currentYm = mapYearMonth.get(employmentCode);
             if (period.start().greaterThan(currentYm)) {
-                currentGrade = PASS_HISTORY;
-            } else if (period.end().lessThan(currentYm)) {
                 currentGrade = FUTURE_HISTORY;
+            } else if (period.end().lessThan(currentYm)) {
+                currentGrade = PASS_HISTORY;
             } else {
                 currentGrade = PRESENT_HISTORY;
             }

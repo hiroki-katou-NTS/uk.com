@@ -2393,7 +2393,7 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (healInsGrade && startYM) {
+                    if (healInsGrade) {
                         $(healInsGrade.id).on('blur', () => {
                         // healInsGrade.data.value.subscribe(x => {
 
@@ -2461,7 +2461,7 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (healInsStandMonthlyRemune && startYM) {
+                    if (healInsStandMonthlyRemune) {
                         $(healInsStandMonthlyRemune.id).on('blur', () => {
                         // healInsStandMonthlyRemune.data.value.subscribe(x => {
 
@@ -2534,7 +2534,7 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (pensionInsGrade && startYM) {
+                    if (pensionInsGrade) {
                         $(pensionInsGrade.id).on('blur', () => {
                         // pensionInsGrade.data.value.subscribe(x => {
 
@@ -2603,7 +2603,7 @@ module nts.layout {
                         pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
                         healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
 
-                    if (pensionInsStandCompenMonthly && startYM) {
+                    if (pensionInsStandCompenMonthly) {
                         $(pensionInsStandCompenMonthly.id).on('blur', () => {
                         // pensionInsStandCompenMonthly.data.value.subscribe(x => {
 
