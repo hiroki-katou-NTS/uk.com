@@ -32,9 +32,9 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button id="B1_1" tabindex="1" class="proceed" data-bind = "click : updateReasonRomajiName, , enable: $root.errors.isEmpty()">#{i18n.getText('QSI003_12')}</button>
+            <button id="B1_1" tabindex="1" class="proceed" data-bind = "click : updateReasonRomajiName, , enable: $root.errors.isEmpty()">#{i18n.getText('QSI003_B1_1')}</button>
 
-            <button id="B1_2" tabindex="2" data-bind="click: cancel"  >#{i18n.getText('QSI003_13')}</button>
+            <button id="B1_2" tabindex="2" data-bind="click: cancel"  >#{i18n.getText('QSI003_B1_2')}</button>
         </div>
         <div id="contents-area">
             <!-- kcp009-->
@@ -44,22 +44,22 @@
             <!-- div left -->
             <div style="margin-left: 100px">
                 <div id = "B3_2" style="border-bottom: 1px solid #bfb4b4;" class="control-group">
-                    <span id = "B3_1" class="label">#{i18n.getText('QSI003_15')}</span>
+                    <span id = "B3_1" class="label">#{i18n.getText('QSI003_B222_3')}</span>
                 </div>
                 <div class="control-group">
-                    <div id = "B3_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_16')}</div>
+                    <div id = "B3_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_B222_5')}</div>
                     <input id= "B3_4" data-bind="ntsTextEditor: {
                                     value: basicPenNumber,
-                                    name: '#{i18n.getText('QSI003_16')}',
+                                    name: '#{i18n.getText('QSI003_B222_6')}',
                                     constraint: 'BasicPenNumber',
                                     enable: true,
                                     readonly: false}" />
                 </div>
 
                 <div class="control-group">
-                    <div id="B3_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_17')}</div>
+                    <div id="B3_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_B222_7')}</div>
                     <div id="B3_6" class="cf" data-bind="ntsSwitchButton: {
-                        name: '#{i18n.getText('QSI003_17')}',
+                        name: '#{i18n.getText('QSI003_B222_8')}',
                         options: roundingRules,
                         optionsValue: 'code',
                         optionsText: 'name',
@@ -68,18 +68,18 @@
                         enable: true }"></div>
                 </div>
                 <div>
-                    <div id = "B3_9" style="float:left" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_20')}</div>
+                    <div id = "B3_9" style="float:left" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_B222_11')}</div>
                     <div style="float:left">
-                        <div id = "B3_10"   data-bind="ntsCheckBox: { checked: shortResidentp }">#{i18n.getText('QSI003_21')}</div>
+                        <div id = "B3_10"   data-bind="ntsCheckBox: { checked: shortResidentp }">#{i18n.getText('QSI003_B222_12')}</div>
                         <br></br>
-                        <div id = "B3_11" data-bind="ntsCheckBox: { checked: addressOverseap }">#{i18n.getText('QSI003_22')}</div>
+                        <div id = "B3_11" data-bind="ntsCheckBox: { checked: addressOverseap }">#{i18n.getText('QSI003_B222_13')}</div>
                         <br></br>
-                        <div id = "B3_12" data-bind="ntsCheckBox: { checked: listedp }">#{i18n.getText('QSI003_23')}</div>
+                        <div id = "B3_12" data-bind="ntsCheckBox: { checked: listedp }">#{i18n.getText('QSI003_B222_14')}</div>
                         <br></br>
-                        <div id = "B3_13" data-bind="ntsCheckBox: { checked: otherp }">#{i18n.getText('QSI003_24')}</div>
+                        <div id = "B3_13" data-bind="ntsCheckBox: { checked: otherp }">#{i18n.getText('QSI003_B222_15')}</div>
                         <input id = "B3_14"  data-bind="ntsTextEditor: {
                                     value: otherReasonp,
-                                    name: '#{i18n.getText('QSI003_25')}',
+                                    name: '#{i18n.getText('QSI003_B222_16')}',
                                     enable: $vm.otherp(),
                                     constraint: 'ReasonsForRegisRoman'}" />
                     </div>
@@ -89,12 +89,12 @@
             <div style="clear: both"></div>
             <div style="margin-left: 100px">
                 <div id = "B4_2" style="border-bottom: 1px solid #bfb4b4;" class="control-group">
-                    <span id = "B4_1" class="label">#{i18n.getText('QSI003_26')}</span>
+                    <span id = "B4_1" class="label">#{i18n.getText('QSI003_B222_17')}</span>
                 </div>
                 <div class="control-group">
-                    <div  id="B4_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_17')}</div>
+                    <div  id="B4_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_B222_19')}</div>
                     <div  id="B4_4" class="cf" data-bind="ntsSwitchButton: {
-                        name: '#{i18n.getText('QSI003_27')}',
+                        name: '#{i18n.getText('QSI003_B222_20')}',
                         options: roundingRules,
                         optionsValue: 'code',
                         optionsText: 'name',
@@ -103,18 +103,18 @@
                         enable: true }"></div>
                 </div>
                 <div>
-                    <div style="float:left" id="B4_7" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_20')}</div>
+                    <div style="float:left" id="B4_7" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_B222_23')}</div>
                     <div style="float:left">
-                        <div id = "B4_8" data-bind="ntsCheckBox: { checked: shortResidents }">#{i18n.getText('QSI003_28')}</div>
+                        <div id = "B4_8" data-bind="ntsCheckBox: { checked: shortResidents }">#{i18n.getText('QSI003_B222_24')}</div>
                         <br></br>
-                        <div id = "B4_9" data-bind="ntsCheckBox: { checked: addressOverseas }">#{i18n.getText('QSI003_29')}</div>
+                        <div id = "B4_9" data-bind="ntsCheckBox: { checked: addressOverseas }">#{i18n.getText('QSI003_B222_25')}</div>
                         <br></br>
-                        <div id = "B4_10" data-bind="ntsCheckBox: { checked: listeds }">#{i18n.getText('QSI003_30')}</div>
+                        <div id = "B4_10" data-bind="ntsCheckBox: { checked: listeds }">#{i18n.getText('QSI003_B222_26')}</div>
                         <br></br>
-                        <div id = "B4_11" data-bind="ntsCheckBox: { checked: others }">#{i18n.getText('QSI003_31')}</div>
+                        <div id = "B4_11" data-bind="ntsCheckBox: { checked: others }">#{i18n.getText('QSI003_B222_27')}</div>
                         <input id = "B4_12" data-bind="ntsTextEditor: {
                                     value: otherReasons,
-                                    name: '#{i18n.getText('QSI003_32')}',
+                                    name: '#{i18n.getText('QSI003_B222_28')}',
                                     enable: $vm.others(),
                                     constraint: 'ReasonsForRegisRoman'}" />
                     </div>
