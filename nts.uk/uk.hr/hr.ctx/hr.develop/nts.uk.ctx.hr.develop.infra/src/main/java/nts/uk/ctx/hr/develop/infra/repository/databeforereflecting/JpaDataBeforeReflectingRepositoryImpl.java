@@ -186,19 +186,52 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	private void updateEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
 		
 		entity.stattus = domain.stattus.value;
-		entity.date_01 = domain.date_01; // retirementDate
+		
 		entity.releaseDate = domain.releaseDate;
+		
 		entity.select_code_01 = domain.select_code_01; // retirementCategory
 		entity.select_code_02 = domain.select_code_02; // retirementCategory
 		entity.select_code_03 = domain.select_code_03; // retirementReasonCtgCode1
+		entity.select_code_04 = domain.select_code_04; // retirementReasonCtgCode1
+		entity.select_code_05 = domain.select_code_05; // retirementReasonCtgCode1
+		entity.select_code_06 = domain.select_code_06; // retirementReasonCtgCode1
+		entity.select_code_07 = domain.select_code_07; // retirementReasonCtgCode1
+		entity.select_code_08 = domain.select_code_08; // retirementReasonCtgCode1
+		entity.select_code_09 = domain.select_code_09; // retirementReasonCtgCode1
+		entity.select_code_10 = domain.select_code_10; // retirementReasonCtgCode1
+		
 		entity.select_name_01 = domain.select_name_01; // retirementReasonCtgName1
 		entity.select_name_02 = domain.select_name_02; // retirementReasonCtgName2
 		entity.select_name_03 = domain.select_name_03; // retirementReasonCtgName2
+		entity.select_name_04 = domain.select_name_04; // retirementReasonCtgName1
+		entity.select_name_05 = domain.select_name_05; // retirementReasonCtgName2
+		entity.select_name_06 = domain.select_name_06; // retirementReasonCtgName2
+		entity.select_name_07 = domain.select_name_07; // retirementReasonCtgName1
+		entity.select_name_08 = domain.select_name_08; // retirementReasonCtgName2
+		entity.select_name_09 = domain.select_name_09; // retirementReasonCtgName2
+		entity.select_name_10 = domain.select_name_10; // retirementReasonCtgName2
+		
 		entity.str_01 = domain.str_01 == null ? null : domain.str_01.toString(); // retirementRemarks
 		entity.str_02 = domain.str_02 == null ? null : domain.str_02.toString(); // retirementReasonVal
+		entity.str_03 = domain.str_03 == null ? null : domain.str_03.toString(); // retirementRemarks
+		entity.str_04 = domain.str_04 == null ? null : domain.str_04.toString(); // retirementReasonVal
+		entity.str_05 = domain.str_05 == null ? null : domain.str_05.toString(); // retirementRemarks
+		entity.str_06 = domain.str_06 == null ? null : domain.str_06.toString(); // retirementReasonVal
+		entity.str_07 = domain.str_07 == null ? null : domain.str_07.toString(); // retirementRemarks
+		entity.str_08 = domain.str_08 == null ? null : domain.str_08.toString(); // retirementReasonVal
+		entity.str_09 = domain.str_09 == null ? null : domain.str_09.toString(); // retirementRemarks
+		entity.str_10 = domain.str_10 == null ? null : domain.str_10.toString(); // retirementReasonVal
+		
+		entity.date_01 = domain.date_01; // retirementDate
 		entity.date_02 = domain.date_02; // dismissalNoticeDate
 		entity.date_03 = domain.date_03; // dismissalNoticeDateAllow
-		entity.str_03 = domain.str_03 == null ? null : domain.str_03.toString();  // reaAndProForDis
+		entity.date_04 = domain.date_04; // dismissalNoticeDate
+		entity.date_05 = domain.date_05; // dismissalNoticeDateAllow
+		entity.date_06 = domain.date_06; // dismissalNoticeDate
+		entity.date_07 = domain.date_07; // dismissalNoticeDateAllow
+		entity.date_08 = domain.date_08; // dismissalNoticeDate
+		entity.date_09 = domain.date_09; // dismissalNoticeDateAllow
+		entity.date_10 = domain.date_10; // dismissalNoticeDate
 		
 		entity.int_01 = domain.int_01;
 		entity.int_02 = domain.int_02;
@@ -206,12 +239,10 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.int_04 = domain.int_04;
 		entity.int_05 = domain.int_05;
 		entity.int_06 = domain.int_06;
-		entity.str_04 = domain.str_04 == null ? null : domain.str_04.toString();
-		entity.str_05 = domain.str_05 == null ? null : domain.str_05.toString();
-		entity.str_06 = domain.str_06 == null ? null : domain.str_06.toString();
-		entity.str_07 = domain.str_07 == null ? null : domain.str_07.toString();
-		entity.str_08 = domain.str_08 == null ? null : domain.str_08.toString();
-		entity.str_09 = domain.str_09 == null ? null : domain.str_09.toString();
+		entity.int_07 = domain.int_07;
+		entity.int_08 = domain.int_08;
+		entity.int_09 = domain.int_09;
+		entity.int_10 = domain.int_10;
 	}
 
 	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
