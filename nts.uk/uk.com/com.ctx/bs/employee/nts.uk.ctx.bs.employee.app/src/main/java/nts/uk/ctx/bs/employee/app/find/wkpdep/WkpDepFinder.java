@@ -298,7 +298,7 @@ public class WkpDepFinder {
             case WORKPLACE_MODE:
             	if (findObject.getRestrictionOfReferenceRange()) {
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
-							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate(), false).getListWorkplaceIds();
+							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate()).getListWorkplaceIds();
             		return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
 							.stream().map(InformationDto::new).collect(Collectors.toList());
 				} else {

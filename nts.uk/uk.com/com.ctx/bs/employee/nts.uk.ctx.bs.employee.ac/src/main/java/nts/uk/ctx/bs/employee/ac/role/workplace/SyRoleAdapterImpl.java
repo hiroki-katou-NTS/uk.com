@@ -31,11 +31,11 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 	 * findListWkpIdByRoleId(java.lang.Integer)
 	 */
 	@Override
-	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate, boolean oldFlag) {
+	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
 		WorkplaceIDImport workplaceIDImport = new WorkplaceIDImport();
 
-		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate, oldFlag);
+		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate);
 		workplaceIDImport.setIsAllEmp(workplaceIdExport.getIsAllEmp());
 		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
 
