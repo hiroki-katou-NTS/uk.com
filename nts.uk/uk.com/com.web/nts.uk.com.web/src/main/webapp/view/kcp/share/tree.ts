@@ -313,7 +313,7 @@ module kcp.share.tree {
                     }
 
                     // Init component.
-                    self.itemList(res);
+                    self.itemList(res1);
                     self.initNoSelectRow();
                     self.backupItemList(self.itemList());
                 }
