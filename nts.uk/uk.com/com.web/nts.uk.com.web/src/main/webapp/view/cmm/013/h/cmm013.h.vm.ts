@@ -61,12 +61,12 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             return dfd.promise();
         }
         
-        public reload() {
+        public reload(index?) {
             let self = this;
             nts.uk.ui.block.invisible();
             service.findAll()
             .done((data: Array<IApproverGroup>) => {
-                self.initData(data);
+                self.initData(data, index);
                 nts.uk.ui.block.clear(); 
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId })
@@ -76,13 +76,26 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             });        
         }
         
-        public initData(data) {
+        public initData(data, index?) {
             let self = this;  
             self.approverGroupLst(_.sortBy(data, o => o.approverGroupCD));
             if(_.isEmpty(self.currentApproverGroupCD())) {
                 self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);    
             } else {
-                self.currentApproverGroup(self.getCurrentApproverGroup());          
+                let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroupCD());
+                if(containCD) {
+                    self.currentApproverGroup(self.getCurrentApproverGroup());       
+                } else {
+                    if(_.isEmpty(self.approverGroupLst())) {
+                        self.currentApproverGroupCD("");     
+                    } else {
+                        if(index==_.size(self.approverGroupLst())) {
+                            self.currentApproverGroupCD(self.approverGroupLst()[index-1].approverGroupCD);    
+                        } else {
+                            self.currentApproverGroupCD(self.approverGroupLst()[index].approverGroupCD);      
+                        }
+                    }   
+                }      
             }
             self.approverJobLst(self.getApproverJobLst(
                 self.listTitleInfo, 
@@ -217,11 +230,12 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         
         public remove() {
             let self = this,
+                index = _.findIndex(self.approverGroupLst(), o => o.approverGroupCD == self.currentApproverGroup().approverGroupCD());
                 command = ko.toJS(self.currentApproverGroup()); 
             nts.uk.ui.block.invisible();
             service.remove(command).done((data) => {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.reload();
+                    self.reload(index);
                     nts.uk.ui.block.clear();        
                 });        
             }).fail((res) => {
