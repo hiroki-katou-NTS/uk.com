@@ -183,5 +183,12 @@ public class HumanItemPubImp implements HumanItemPub{
 	public String getCategoryName(String cid, String categoryCode) {
 		return this.itemPub.getCategoryName(cid, categoryCode);
 	}
+
+	@Override
+	public DateRangeItemImport getDateRangeItemByCtgId(String categoryId) {
+		DateRangeItemExport dateRange = this.itemPub.getDateRangeItemByCtgId(categoryId);
+		return new DateRangeItemImport(dateRange.getPersonInfoCtgId(), dateRange.getStartDateItemId(),
+				dateRange.getEndDateItemId(), dateRange.getStartDateItemId());
+	}
 	
 }

@@ -22,4 +22,5 @@ public class PerInfoCtgShowImport {
 	private int salaryUseAtr;
 	private int personnelUseAtr;
 	private int employmentUseAtr;
+	private int isFixed;
 }
