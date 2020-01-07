@@ -130,7 +130,8 @@ module jhn001.a.viewmodel {
 
             block();
             $.when(dfdGetData).done((listReportDarft: any) => {
-                if (listReportDarft) {
+                debugger;
+                if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
                         dataShare = getShared('CPS001B_PARAMS');
                         debugger;
@@ -174,6 +175,7 @@ module jhn001.a.viewmodel {
                         self.reportClsId(_data[0].reportClsId);
                         self.layout().message(text('JHN001_A222_1_1') + ' : ' + '_data[0].message');
                     }
+                    
                     
                 } else {
                     self.createNewLayout();
