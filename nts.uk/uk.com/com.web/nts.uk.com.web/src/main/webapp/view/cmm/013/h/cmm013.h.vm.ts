@@ -7,7 +7,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         approverGroupLst: KnockoutObservableArray<IApproverGroup>;
         currentApproverGroup: KnockoutObservable<ApproverGroup>;
         currentApproverGroupCD: KnockoutObservableArray<string>;
-        currentApproverJobID: KnockoutObservableArray<string>;
+        currentApproverJobCD: KnockoutObservableArray<string>;
         baseDate: any = moment.utc();
         listTitleInfo: any = [];
         isInsertNew: boolean = true;
@@ -17,7 +17,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             self.approverGroupLst = ko.observableArray([]);
             self.currentApproverGroup = ko.observable(new ApproverGroup({ approverGroupCD: "", approverGroupName: "", approverJobList: [] }));
             self.currentApproverGroupCD = ko.observable();
-            self.currentApproverJobID = ko.observable();
+            self.currentApproverJobCD = ko.observable();
             self.currentApproverGroupCD.subscribe((value) => {
                 if(_.isEmpty(value)) {
                     self.isInsertNew = true;
@@ -26,8 +26,11 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                     self.currentApproverGroup().approverJobList = []; 
                 } else {
                     self.currentApproverGroup(self.getCurrentApproverGroup());      
-                    self.approverJobLst(self.getApproverJobLst(self.listTitleInfo, _.map(self.currentApproverGroup().approverJobList, o => o.jobID)));
-                    self.currentApproverJobID(self.getCurrentApproverJobID()); 
+                    self.approverJobLst(self.getApproverJobLst(
+                        self.listTitleInfo, 
+                        _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
+                    );
+                    self.currentApproverJobCD(self.getCurrentApproverJobCD()); 
                     self.isInsertNew = false;      
                 }
             });
@@ -36,11 +39,13 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
+            nts.uk.ui.block.invisible();
             let dfdTitleInfo = service.findAllJobTitle({ baseDate: self.baseDate });
             let dfdApproverGroup = service.findAll();
             $.when(dfdTitleInfo, dfdApproverGroup).done((dataTitleInfo, dataApproverGroup) => {
                 self.listTitleInfo = dataTitleInfo;
                 self.initData(dataApproverGroup);
+                nts.uk.ui.block.clear();
                 dfd.resolve();    
             }).fail((res1, res2) => {
                 dialog.alertError({ messageId: res1.messageId })
@@ -58,6 +63,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         
         public reload() {
             let self = this;
+            nts.uk.ui.block.invisible();
             service.findAll()
             .done((data: Array<IApproverGroup>) => {
                 self.initData(data);
@@ -72,10 +78,17 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         
         public initData(data) {
             let self = this;  
-            self.approverGroupLst(data);
-            self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);
-            self.approverJobLst(self.getApproverJobLst(self.listTitleInfo, _.map(self.currentApproverGroup().approverJobList, o => o.jobID)));
-            self.currentApproverJobID(self.getCurrentApproverJobID());  
+            self.approverGroupLst(_.sortBy(data, o => o.approverGroupCD));
+            if(_.isEmpty(self.currentApproverGroupCD())) {
+                self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);    
+            } else {
+                self.currentApproverGroup(self.getCurrentApproverGroup());          
+            }
+            self.approverJobLst(self.getApproverJobLst(
+                self.listTitleInfo, 
+                _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
+            );
+            self.currentApproverJobCD(self.getCurrentApproverJobCD());  
         }
         
         public getCurrentApproverGroup() {
@@ -89,22 +102,30 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         }
     
         public getApproverJobLst(listTitleInfo: any, output: any) {
-            let self = this;      
-            return _.chain(listTitleInfo)
-                    .filter(o => _.includes(output, o.id))
-                    .map(o => _.assign({
-                        jobID: o.id,
-                        jobCD: o.code,
-                        jobName: o.name        
-                    })).value();
+            let self = this;
+            return _.chain(output)
+                    .map(o => {
+                        let info = _.find(listTitleInfo, a => a.id == o);
+                        if(info) {
+                            return _.assign({
+                                jobID: info.id,
+                                jobCD: info.code,
+                                jobName: info.name        
+                            });   
+                        } else {
+                            return null;    
+                        }    
+                    })
+                    .filter(o => !_.isNull(o))
+                    .value();
         }
     
-        public getCurrentApproverJobID() {
+        public getCurrentApproverJobCD() {
             let self = this;
             if(_.isEmpty(self.approverJobLst())){
                 return "";    
             }
-            return _.first(self.approverJobLst()).jobID;    
+            return _.first(self.approverJobLst()).jobCD;    
         }
     
         public getCommand() {
@@ -132,6 +153,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                 return;    
             }
             if(self.isInsertNew) {
+                nts.uk.ui.block.invisible();
                 service.register(self.getCommand()).done((data) => {
                     dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
@@ -144,6 +166,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                     });      
                 });    
             } else {
+                nts.uk.ui.block.invisible();
                 service.update(self.getCommand()).done((data) => {
                     dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
@@ -174,6 +197,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                     });        
                 }    
             });
+            nts.uk.ui.block.invisible();
             service.multiInsert(commandLst).done((data) => {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.reload();
@@ -194,6 +218,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         public remove() {
             let self = this,
                 command = ko.toJS(self.currentApproverGroup()); 
+            nts.uk.ui.block.invisible();
             service.remove(command).done((data) => {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.reload();
@@ -223,7 +248,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                 }
                 let output = nts.uk.ui.windows.getShared('outputCDL004');
                 self.approverJobLst(self.getApproverJobLst(self.listTitleInfo, output));
-                self.currentApproverJobID(self.getCurrentApproverJobID());
+                self.currentApproverJobCD(self.getCurrentApproverJobCD());
             });  
                 
         }

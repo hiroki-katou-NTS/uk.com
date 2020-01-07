@@ -99,18 +99,18 @@
 							<table id="job-list" data-bind="ntsGridList: {								
 														height: 200,
 														dataSource: approverJobLst,
-														primaryKey: 'jobID',
+														primaryKey: 'jobCD',
 														columns: ko.observableArray([
 											                { headerText: '#{i18n.getText('CMM013_46')}', key: 'jobCD', width: 100 },
 											                { headerText: '#{i18n.getText('CMM013_47')}', key: 'jobName', width: 150 }
 											            ]),
-														value: currentApproverJobID
+														value: currentApproverJobCD
 													}"></table>	
 						</div>
 						<div class="cell">
 							<div id="job-grid-up-down" data-bind="ntsUpDown: {
 										targetSource: approverJobLst,
-										primaryKey: 'jobID',
+										primaryKey: 'jobCD',
 										comId: '#job-list',
 										type: 'grid'
 									}"></div>	

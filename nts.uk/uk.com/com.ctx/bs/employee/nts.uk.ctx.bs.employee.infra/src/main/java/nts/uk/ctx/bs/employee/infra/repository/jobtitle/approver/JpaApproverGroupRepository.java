@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,13 +76,17 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 			.entrySet().stream().map(x -> {
 				List<ApproverJob> approverLst = x.getValue().stream()
 						.filter(y -> Strings.isNotBlank(y.getJobID()))
-						.map(y -> new ApproverJob(y.getJobID(), y.getOrder())).collect(Collectors.toList());
+						.map(y -> new ApproverJob(y.getJobID(), y.getOrder()))
+						.sorted(Comparator.comparing(ApproverJob::getOrder))
+						.collect(Collectors.toList());
 				return new ApproverGroup(
 						x.getValue().get(0).getCompanyID(), 
 						new JobTitleCode(x.getValue().get(0).getApproverGroupCD()), 
 						new ApproverName(x.getValue().get(0).getApproverGroupName()), 
 						approverLst);
-			}).collect(Collectors.toList());
+			})
+			.sorted(Comparator.comparing(ApproverGroup::getApproverGroupCD))
+			.collect(Collectors.toList());
 	}
 
 	@Override
