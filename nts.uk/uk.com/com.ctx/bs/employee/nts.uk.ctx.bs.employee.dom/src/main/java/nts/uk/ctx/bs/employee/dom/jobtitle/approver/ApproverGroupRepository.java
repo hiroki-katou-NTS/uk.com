@@ -16,4 +16,6 @@ public interface ApproverGroupRepository {
 	
 	public List<ApproverGInfo> findByCd(String companyID, List<String> jobGCd);
 	
+	public void insertAll(List<ApproverGroup> approverGroupLst);
+	
 }

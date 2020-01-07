@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -21,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroupRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverJob;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.approver.BsympApproverGroup;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.approver.BsymtApproverGroup;
 
 @Stateless
@@ -32,7 +35,7 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
-		builderString.append("SELECT * FROM BSYMT_APPROVER_GROUP a JOIN BSYMT_APPROVER_G_LIST_JOB b ");
+		builderString.append("SELECT * FROM BSYMT_APPROVER_GROUP a LEFT JOIN BSYMT_APPROVER_G_LIST_JOB b ");
 		builderString.append("on a.CID = b.CID and a.APPROVER_G_CD = b.APPROVER_G_CD ");
 		builderString.append("where a.CID = 'companyID'");
 		FIND_ALL = builderString.toString();
@@ -52,7 +55,7 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	    private String approverGroupCD;
 	    private String approverGroupName;
 	    private String jobID;
-	    private int order;
+	    private Integer order;
 	}
 	
 	private List<FullJoin> createFullJoin(ResultSet rs){
@@ -70,7 +73,9 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	private List<ApproverGroup> toDomain(List<FullJoin> listFullJoin) {
 		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoin::getApproverGroupCD))
 			.entrySet().stream().map(x -> {
-				List<ApproverJob> approverLst = x.getValue().stream().map(y -> new ApproverJob(y.getJobID(), y.getOrder())).collect(Collectors.toList());
+				List<ApproverJob> approverLst = x.getValue().stream()
+						.filter(y -> Strings.isNotBlank(y.getJobID()))
+						.map(y -> new ApproverJob(y.getJobID(), y.getOrder())).collect(Collectors.toList());
 				return new ApproverGroup(
 						x.getValue().get(0).getCompanyID(), 
 						new JobTitleCode(x.getValue().get(0).getApproverGroupCD()), 
@@ -102,7 +107,7 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 
 	@Override
 	public void delete(ApproverGroup approverGroup) {
-		commandProxy().remove(BsymtApproverGroup.fromDomain(approverGroup));
+		commandProxy().remove(BsymtApproverGroup.class, new BsympApproverGroup(approverGroup.getCompanyID(), approverGroup.getApproverGroupCD().v()));
 	}
 
 	@Override
@@ -119,6 +124,11 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 				.setParameter("companyID", companyID)
 				.setParameter("jobGCd", jobGCd)
 				.getList(c -> new ApproverGInfo(c.getPk().getApproverGroupCD(), c.getApproverGroupName()));
+	}
+
+	@Override
+	public void insertAll(List<ApproverGroup> approverGroupLst) {
+		commandProxy().insertAll(approverGroupLst.stream().map(x -> BsymtApproverGroup.fromDomain(x)).collect(Collectors.toList()));
 	}
 
 }

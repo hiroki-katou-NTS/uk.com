@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author Doan Duy Hung
  *
  */
-@StringMaxLength(11)
+@StringMaxLength(22)
 public class ApproverName extends StringPrimitiveValue<ApproverName>{
 
 	/**
