@@ -2397,7 +2397,8 @@ module nts.layout {
                         $(healInsGrade.id).on('blur', () => {
                         // healInsGrade.data.value.subscribe(x => {
 
-                            if (!moment.utc(startYM)._isValid || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                 || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                                 return;
                             }
@@ -2465,7 +2466,8 @@ module nts.layout {
                         $(healInsStandMonthlyRemune.id).on('blur', () => {
                         // healInsStandMonthlyRemune.data.value.subscribe(x => {
 
-                            if (!moment.utc(startYM)._isValid || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                 || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                                 return;
                             }
@@ -2538,7 +2540,8 @@ module nts.layout {
                         $(pensionInsGrade.id).on('blur', () => {
                         // pensionInsGrade.data.value.subscribe(x => {
 
-                            if (!moment.utc(startYM)._isValid || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                 || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                                 return;
                             }
@@ -2607,7 +2610,8 @@ module nts.layout {
                         $(pensionInsStandCompenMonthly.id).on('blur', () => {
                         // pensionInsStandCompenMonthly.data.value.subscribe(x => {
 
-                            if (!moment.utc(startYM)._isValid || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                 || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                                 return;
                             }
