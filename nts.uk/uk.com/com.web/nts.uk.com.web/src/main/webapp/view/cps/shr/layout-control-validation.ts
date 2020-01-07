@@ -2418,7 +2418,7 @@ module nts.layout {
 
                             fetch.getHealInsStandCompMonth({
                                 sid: sid,
-                                startYM: moment.utc(startYMParam).toDate(),
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
                                 healInsGrade: healInsGradeParam,
                                 healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
                                 pensionInsGrade: pensionInsGradeParam,
@@ -2488,7 +2488,7 @@ module nts.layout {
 
                             fetch.getHealthInsuranceStandardGradePerMonth({
                                 sid: sid,
-                                startYM: moment.utc(startYMParam).toDate(),
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
                                 healInsGrade: healInsGradeParam,
                                 healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
                                 pensionInsGrade: pensionInsGradeParam,
@@ -2562,7 +2562,7 @@ module nts.layout {
 
                             fetch.getMonthlyPensionInsStandardRemuneration({
                                 sid: sid,
-                                startYM: moment.utc(startYMParam).toDate(),
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
                                 healInsGrade: healInsGradeParam,
                                 healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
                                 pensionInsGrade: pensionInsGradeParam,
@@ -2632,7 +2632,7 @@ module nts.layout {
 
                             fetch.getWelfarePensionStandardGradePerMonth({
                                 sid: sid,
-                                startYM: moment.utc(startYMParam).toDate(),
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
                                 healInsGrade: healInsGradeParam,
                                 healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
                                 pensionInsGrade: pensionInsGradeParam,
