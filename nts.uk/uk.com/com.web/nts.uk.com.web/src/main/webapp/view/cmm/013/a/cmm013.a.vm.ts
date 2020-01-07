@@ -547,7 +547,12 @@ module nts.uk.com.view.cmm013.a {
                 });
             }
             
-            
+            public openHScreen() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/cmm/013/h/index.xhtml").onClosed(function() {
+                    
+                });
+            }
 
         }
 
