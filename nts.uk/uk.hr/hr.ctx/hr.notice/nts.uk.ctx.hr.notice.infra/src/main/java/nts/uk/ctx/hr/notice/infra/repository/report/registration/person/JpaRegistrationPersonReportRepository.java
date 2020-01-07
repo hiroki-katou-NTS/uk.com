@@ -29,6 +29,8 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	
+	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
+	
 
 	
 	private RegistrationPersonReport toDomain(JhndtReportRegis entity) {
@@ -85,6 +87,23 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 	
 	@Override
+	public Optional<RegistrationPersonReport> getDomainByReportId(String cid, Integer reportId) {
+		if (reportId == null) {
+			return Optional.empty();
+		}
+		
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportId).getSingle();
+		
+		if (!entityOpt.isPresent()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(toDomain(entityOpt.get()));
+		}
+	}
+	
+	@Override
 	public void add(RegistrationPersonReport domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
@@ -99,7 +118,5 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		JhndtReportRegisPK pk = new JhndtReportRegisPK(cid, reportId);
 		this.commandProxy().remove(JhndtReportRegis.class, pk);
 	}
-
-
 
 }

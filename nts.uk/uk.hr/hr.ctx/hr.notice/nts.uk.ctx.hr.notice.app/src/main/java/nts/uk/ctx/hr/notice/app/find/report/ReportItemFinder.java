@@ -69,7 +69,7 @@ public class ReportItemFinder {
 		String cid = AppContexts.user().companyId();
 
 		
-		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomain(cid,  Integer.valueOf(params.getReportId()));
+		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		// ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。
 		// (Get tất cả domain models「type đơn xin cá nhân」、「 Item dang ky don xin ca nhan」)

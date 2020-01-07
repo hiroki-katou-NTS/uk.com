@@ -3,8 +3,8 @@ module jhn001.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAll: "hr/notice/report/findAll/{0}",
-        getReportDetails: "hr/notice/report/findOne/{0}",
+        getAll: "hr/notice/person/report/findAll",
+        getReportDetails: "hr/notice/report/item/findOne",
         remove:"hr/notice/report/delete/{0}",
         saveDraftData: "hr/notice/report/regis/person/save/draft/save",
         getListDoc: 'hr/notice/report/regis/person/document/findAll',
@@ -17,19 +17,16 @@ module jhn001.a.service {
     };
     
 
-    /**
-    * Get list Maintenance Layout
-    */
-    export function getAll(abolition) {
-        return ajax(format(paths.getAll, abolition));
+    export function getAll() {
+        return ajax(format(paths.getAll));
     }
     
     export function getListReportSaveDraft() {
         return ajax('hr' , paths.getListReportSaveDraft);
     }
 
-    export function getReportDetails(reportClsId) {
-        return ajax(format(paths.getReportDetails, reportClsId));
+    export function getReportDetails(obj: any) {
+        return ajax(format(paths.getReportDetails, obj));
     }
     
     export function removeData(reportClsId) {

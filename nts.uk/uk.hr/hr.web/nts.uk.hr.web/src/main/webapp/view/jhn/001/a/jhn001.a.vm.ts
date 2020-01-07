@@ -44,32 +44,37 @@ module jhn001.a.viewmodel {
 
             self.reportClsId.subscribe(id => {
                 if (id) {
+                    block();
+                    let objReport =  _.find(self.layouts(), function(o) { return o.id == id; })
+                    
+                    if(objReport ==  undefined || objReport == null){
+                        return;
+                    }
+                    
                     let query = {
-                        layoutId: '4cc80933-443b-407d-9204-1d69f9a1a225',
-                        browsingEmpId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570',
-                        standardDate: moment.utc().toDate()
+                        reportId: objReport.reportId,
+                        reportLayoutId: objReport.reportClsId
                     };
                     
-                    block();
-                    service.getCurrentLayout(query).done((data: any) => {
+                    service.getReportDetails(query).done((data: any) => {
                         if (data) {
                             self.layout().showColor(true);
                             self.layout().standardDate(data.standardDate || undefined);
 
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
-                            self.layout().sendBackComment(text('JHN001_A222_2_1') + ' : ' + 'sendBackComment');
+                           
+                             // set sendBackComment header A222_2_1
+                            self.layout().sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment );
+
+                            // set message header A222_1_1
+                            self.layout().message(text('JHN001_A222_1_1') + ' : ' + data.message);
+                            
+                             // set list file document
+                            self.setListDocument(data.documentSampleDto);
                             
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
-                                
-                                // get list file document
-                               self.getListDocument().done(() => {
-                                   unblock();
-                               });
-                                
-                               self.getListReportSaveDraft().done(() => {});
-                                
                             });
                         } else {
                             self.layout().listItemCls.removeAll();
@@ -91,36 +96,40 @@ module jhn001.a.viewmodel {
             var dfdGetData = service.getListDoc(param);
 
             block();
-            $.when(dfdGetData).done((datafile: any) => {
-                var lstDoc = [];
-                if (datafile) {
-                    for (var i = 0; i < datafile.length; i++) {
-                        let obj = {
-                            docName: datafile[i].docName,
-                            ngoactruoc: '(',
-                            sampleFileName:  datafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/'+ datafile[i].fileName +'" target="_blank">' + datafile[i].sampleFileName + '</a>', 
-                            ngoacsau: ')',
-                            fileName: datafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/'+ datafile[i].fileName +'" target="_blank">' + datafile[i].fileName + '</a>' ,
-                            cid: datafile[i].cid,
-                            reportLayoutID: datafile[i].reportLayoutID,
-                            docID: datafile[i].docID,
-                            dispOrder: datafile[i].dispOrder,
-                            requiredDoc: datafile[i].requiredDoc,
-                            docRemarks: datafile[i].docRemarks,
-                            sampleFileId: datafile[i].sampleFileId,
-                            reportID: datafile[i].reportID,
-                            fileId: datafile[i].fileId,
-                            fileSize: datafile[i].fileSize
-                        }
-                        lstDoc.push(obj);
-                    }
-                    self.layout().listDocument(lstDoc);
+            $.when(dfdGetData).done((listdatafile: any) => {
+                if (listdatafile) {
+                    self.setListDocument(listdatafile);
                 }
-
                 unblock();
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+
+        setListDocument(listdatafile: any) {
+            let self = this;
+            var lstDoc = [];
+            for (var i = 0; i < listdatafile.length; i++) {
+                let obj = {
+                    docName: listdatafile[i].docName,
+                    ngoactruoc: '(',
+                    sampleFileName: listdatafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + datafile[i].fileName + '" target="_blank">' + datafile[i].sampleFileName + '</a>',
+                    ngoacsau: ')',
+                    fileName: listdatafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + datafile[i].fileName + '" target="_blank">' + datafile[i].fileName + '</a>',
+                    cid: listdatafile[i].cid,
+                    reportLayoutID: listdatafile[i].reportLayoutID,
+                    docID: listdatafile[i].docID,
+                    dispOrder: listdatafile[i].dispOrder,
+                    requiredDoc: listdatafile[i].requiredDoc,
+                    docRemarks: listdatafile[i].docRemarks,
+                    sampleFileId: listdatafile[i].sampleFileId,
+                    reportID: listdatafile[i].reportID,
+                    fileId: listdatafile[i].fileId,
+                    fileSize: listdatafile[i].fileSize
+                }
+                lstDoc.push(obj);
+            }
+            self.layout().listDocument(lstDoc);
         }
         
         getListReportSaveDraft(): JQueryPromise<any> {
@@ -160,26 +169,28 @@ module jhn001.a.viewmodel {
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
-                            id: x.reportClsId,
-                            reportCode: x.reportCode,
-                            reportName: x.reportName,
-                            reportClsId: x.reportClsId,
-                            displayOrder: x.displayOrder,
-                            remark: x.remark,
-                            memo: x.remark,
-                            message: x.message
+                            id          : x.clsDto.reportClsId,
+                            reportCode  : x.clsDto.reportCode,
+                            reportName  : x.clsDto.reportName,
+                            reportClsId : x.clsDto.reportClsId,
+                            displayOrder: x.clsDto.displayOrder,
+                            remark      : x.clsDto.remark,
+                            memo        : x.clsDto.remark,
+                            message     : x.clsDto.message,
+                            reportId    : x.reportID,
+                            sendBackComment : x.sendBackComment
                         }
                     });
-                    _.each(_.orderBy(_data, ['displayOrder'], ['asc']) , d => layouts.push(d));
-                    if(_data){
+                    _.each(_.orderBy(_data, ['displayOrder'], ['asc']), d => layouts.push(d));
+                    if (_data) {
                         self.reportClsId(_data[0].reportClsId);
-                        self.layout().message(text('JHN001_A222_1_1') + ' : ' + '_data[0].message');
                     }
-                    
-                    
                 } else {
                     self.createNewLayout();
                 }
+                
+                self.getListReportSaveDraft().done(() => {});
+                
                 dfd.resolve();
             });
             return dfd.promise();
