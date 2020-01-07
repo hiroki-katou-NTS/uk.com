@@ -169,6 +169,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		val domain = ApprovalPhase.createSimpleFromJavaType(
 				entity.wwfmtApprovalPhasePK.approvalId,
 				entity.wwfmtApprovalPhasePK.phaseOrder,
+				entity.branchId,
 				entity.approvalForm,
 				entity.browsingPhase,
 				entity.approvalAtr,
@@ -184,8 +185,10 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain){
 		val entity = new WwfmtApprovalPhase();
 		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getApprovalId(), domain.getPhaseOrder());
+		entity.branchId = domain.getBranchId();
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
+		entity.approvalAtr = domain.getApprovalAtr().value;
 		return entity;
 	}
 
@@ -203,7 +206,8 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		while (rs.next()) {
 			listFullData.add(new FullJoinWwfmtApprovalPhase(
 					rs.getString("APPROVAL_ID"), 
-					rs.getInt("PHASE_ORDER"), 
+					rs.getInt("PHASE_ORDER"),
+					rs.getString("BRANCH_ID"),
 					rs.getInt("APPROVAL_FORM"), 
 					rs.getInt("BROWSING_PHASE"), 
 					rs.getString("APPROVER_G_CD"), 
@@ -222,6 +226,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 					FullJoinWwfmtApprovalPhase first = x.getValue().get(0);
 					String approvalId = first.approvalId;
 					int phaseOrder = first.phaseOrder;
+					String branchId = first.branchId;
 					ApprovalForm approvalForm = EnumAdaptor.valueOf(first.approvalForm, ApprovalForm.class);
 					int browsingPhase = first.browsingPhase;
 					List<Approver> approvers = x.getValue().stream().map(y -> 
@@ -231,7 +236,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 								y.employeeId, 
 								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class),
 								null)).collect(Collectors.toList());
-					return new ApprovalPhase(approvalId, phaseOrder, approvalForm,
+					return new ApprovalPhase(approvalId, phaseOrder, branchId, approvalForm,
 							browsingPhase, EnumAdaptor.valueOf(x.getValue().get(0).getApprovalAtr(), ApprovalAtr.class), approvers);
 				}).collect(Collectors.toList());
 	}

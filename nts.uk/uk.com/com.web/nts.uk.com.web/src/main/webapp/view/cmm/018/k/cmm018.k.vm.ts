@@ -7,6 +7,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import service = cmm018.k.service;
     import block = nts.uk.ui.block;
     import error = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel{
         //==========
         lstJob: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -62,7 +63,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
         employeeList: KnockoutObservableArray<vmbase.ApproverDtoK> = ko.observableArray([]);
        
-        multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
         approverList : KnockoutObservableArray<vmbase.ApproverDtoK> = ko.observableArray([]);
         currentApproveCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
         currentEmployeeCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -78,19 +78,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         currentCodeListSwapLR:  KnockoutObservableArray<any> = ko.observableArray([]);
         confirm: string = '';
         //職場リスト
-        treeGrid: ITreeGrid = {
-                treeType: 1,
-                selectType: 4,
-                isDialog: true,
-                isMultiSelect: false,
-                isShowAlreadySet: false,
-                isShowSelectButton: true,
-                baseDate: ko.observable(this.standardDate()),
-                selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
-                alreadySettingList: ko.observableArray([]),
-                systemType : 2,
-                width: 310
-        };
+        treeGrid: ITreeGrid = null;
         //選択可能な職位一覧
         //承認者の登録(個人別)
         personTab : number = 2;
@@ -102,11 +90,32 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
+            self.treeGrid = {
+                treeType: 1,
+                selectType: 3,
+                isDialog: true,
+                isMultiSelect: false,
+                isShowAlreadySet: false,
+                isShowSelectButton: true,
+                baseDate: ko.observable(this.standardDate()),
+                selectedId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
+                alreadySettingList: ko.observableArray([]),
+                systemType : 2,
+                width: 310,
+                startMode: data.systemAtr
+            };
+            
             let specLabel = data.systemAtr == 0 ? resource.getText('CMM018_100') : resource.getText('CMM018_101'); 
             //承認者指定種類
-            self.typeSetting([new ButtonSelect(1, resource.getText('CMM018_57')),
+            //０：会社、１：職場、２：個人
+            if(data.tab == 2){
+                self.typeSetting([new ButtonSelect(0, resource.getText('CMM018_56'))]);
+            }else{
+                self.typeSetting([new ButtonSelect(1, resource.getText('CMM018_57')),
                                 new ButtonSelect(2, specLabel),
                                 new ButtonSelect(0, resource.getText('CMM018_56'))]);
+            }
+            
             self.selectTypeSet(data.typeSetting);
             self.confirm = data.confirmedPerson;
             //change 承認形態
@@ -149,7 +158,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             });
             
             //職場リスト            
-            self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
+            self.treeGrid.selectedId.subscribe(function(newValues){
                 if(self.checkEmpty(newValues)) return;
                 if(self.selectTypeSet() == TypeSet.PERSON){
                     block.invisible();
@@ -190,36 +199,29 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         }
         getData(): JQueryPromise<any>{
             let self = this;
-            let dfd = $.Deferred();
-            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
-             //承認者一覧              
-            if(data.approverInfor.length > 0){
-                _.forEach(data.approverInfor, function(sID){
-                    if(sID.approvalAtr === 0){
-                        service.getPersonInfor(sID.id).done(function(data: any){
-                            self.approverList.push(new vmbase.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
-                        })
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
+            if(data.approverInfor.length <= 0) return;
+            if(self.selectTypeSet() == TypeSet.PERSON){
+                _.forEach(data.approverInfor, function(item){
+                    self.approverList.push({id: item.id, code: item.code, name: item.name, dispOrder: item.dispOrder});
+                });
+                self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
+            }else if(self.selectTypeSet() == TypeSet.GROUP){
+                _.each(data.approverInfor, function(appr){
+                    if(appr.dispOrder == 1){
+                        self.lstGroup1.push({code: appr.code, name: appr.name, dispOrder: appr.dispOrder});
                     }else{
-                        let job = new service.model.JobtitleInfor;
-                        job.positionId = sID.id;
-                        job.startDate = self.standardDate();
-                        job.companyId = "";
-                        job.positionCode = "";
-                        job.positionName = "";
-                        job.sequenceCode = "";
-                        job.endDate = moment(new Date()).toDate();
-                        service.getJobTitleName(job).done(function(data: any){
-                            self.approverList.push(new vmbase.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
-                        })    
-                    }
-                })    
-            }else{                    
-                self.setDataForCbb();    
-            }
-            dfd.resolve();
-            return dfd.promise();    
+                        self.lstGroup2.push({code: appr.code, name: appr.name, dispOrder: appr.dispOrder});
+                    }    
+                });
+                self.lstGroup2(_.orderBy(self.lstGroup2(),["dispOrder"], ["asc"]));
+            }else{//CHI DINH
+                _.each(data.approverInfor, function(appr){
+                    self.lstSpec2.push({code: appr.code, name: appr.name, dispOrder: appr.dispOrder});
+                });
+                self.lstSpec2(_.orderBy(self.lstSpec2(),["dispOrder"], ["asc"]));
+                self.treeGrid.selectedId(data.specWkpId);
+            } 
         }
         
         //bind data
@@ -272,7 +274,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let dfd = $.Deferred();
             var employeeSearch = new service.model.EmployeeSearchInDto();
             employeeSearch.baseDate = self.standardDate();
-            let lstWkp1 = [self.treeGrid.selectedWorkplaceId()];
+            let lstWkp1 = [self.treeGrid.selectedId()];
             let lstA = [];
             let UNIT = 100;
             for(let i = 0; i < lstWkp1.length; i += UNIT){
@@ -304,14 +306,25 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let lstApprover = [];
             let approvalForm = 1;
             let confirmSet = '';
+            let specWkpId = null;
+            //決定情報をチェック
             if(self.selectTypeSet() == TypeSet.PERSON){//PERSON
                 lstApprover = self.approverList();
                 approvalForm = self.selectFormSet();
                 confirmSet = self.selectedCbbCode();
             }else if(self.selectTypeSet() == TypeSet.SPEC_WKP){//CHI DINH
+                if(self.checkEmpty(self.treeGrid.selectedId())) {
+                    error({messageId: 'Msg_1582', messageParams:[getText('Com_Workplace')]});
+                    return;
+                }
                 lstApprover = self.lstSpec2();
                 approvalForm = self.selectFormSetS();
+                specWkpId = self.treeGrid.selectedId() || '';
             }else{//GROUP
+                if(self.lstGroup2().length > 0 && self.lstGroup1().length == 0){
+                    error({messageId: 'Msg_1606', messageParams:[getText('CMM018_102')]});
+                    return;
+                }
                 lstApprover = self.lstGroup1();
                 _.each(self.lstGroup2(), function(job){
                     lstApprover.push(job);
@@ -324,7 +337,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                                         confirmedPerson: confirmSet, //確定者
                                         selectTypeSet: self.selectTypeSet(),//承認者指定種類 ( 個人,  職格, 特定職場)
                                         approvalFormName: approvalForm == vmbase.ApprovalForm.EVERYONE_APPROVED ? 
-                                                        resource.getText('CMM018_63') : resource.getText('CMM018_66')
+                                                        resource.getText('CMM018_63') : resource.getText('CMM018_66'),
+                                        specWkpId: specWkpId
                                         }
             console.log(data);
             setShared("CMM018K_DATA",data );
@@ -431,10 +445,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             isShowAlreadySet: boolean;
             isShowSelectButton: boolean;
             baseDate: KnockoutObservable<any>;
-            selectedWorkplaceId: KnockoutObservable<any>;
+            selectedId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
             systemType : number;
             width?: number;
+            startMode: number;
         }
     class SimpleObject {
             key: KnockoutObservable<string>;

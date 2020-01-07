@@ -309,7 +309,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			this.repoApprover.addAllApprover(approvalId, phaseOrder, listApprover);
 
 			// 承認フェーズ
-			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder,
+			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder, branchId,
 					ApprovalForm.SINGLE_APPROVED.value, browsingPhase, ApprovalAtr.PERSON.value, listApprover));
 
 			ApprovalBranch branch = new ApprovalBranch(companyId, branchId, 1);
@@ -341,7 +341,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		this.repoApprover.addAllApprover(approvalId, phaseOrder, listApprover);
 
 		// 承認フェーズ
-		this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder,
+		this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder, branchId,
 				ApprovalForm.SINGLE_APPROVED.value, browsingPhase, ApprovalAtr.PERSON.value, listApprover));
 
 		ApprovalBranch branch = new ApprovalBranch(companyId, branchId, 1);
@@ -373,7 +373,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			this.repoApprover.addAllApprover(approvalId, phaseOrder, lstApprover);
 
 			// 承認フェーズ
-			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder,
+			this.repoAppPhase.addApprovalPhase(ApprovalPhase.createSimpleFromJavaType(approvalId, phaseOrder, psAppRoot.getApprRoot().getBranchId(),
 					ApprovalForm.SINGLE_APPROVED.value, 0, ApprovalAtr.PERSON.value, lstApprover));
 		}
 	}

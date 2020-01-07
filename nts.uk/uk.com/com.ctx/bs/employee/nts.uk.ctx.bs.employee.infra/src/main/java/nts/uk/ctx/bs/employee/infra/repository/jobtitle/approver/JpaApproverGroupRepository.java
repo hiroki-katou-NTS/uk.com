@@ -41,12 +41,12 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 		FIND_ALL = builderString.toString();
 	}
 	
-	private static final String GET_ALL = "SELECT * FROM BsymtApproverGroup c"
-			+ " WHERE c.pk.companyID = 'companyID'"
+	private static final String GET_ALL = "SELECT c FROM BsymtApproverGroup c"
+			+ " WHERE c.pk.companyID = :companyID"
 			+ " ORDER BY c.pk.approverGroupCD ASC";
-	private static final String FIND_BY_CD = "SELECT * FROM BsymtApproverGroup c"
-			+ " WHERE c.pk.companyID = 'companyID'"
-			+ " AND c.pk.approverGroupCD IN 'jobGCd'";
+	private static final String FIND_BY_CD = "SELECT c FROM BsymtApproverGroup c"
+			+ " WHERE c.pk.companyID = :companyID"
+			+ " AND c.pk.approverGroupCD IN :jobGCd";
 	
 	@AllArgsConstructor
 	@Getter

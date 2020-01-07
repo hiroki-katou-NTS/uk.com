@@ -480,14 +480,17 @@ module nts.uk.com.view.cmm018.shr {
             browsingPhase: number;
             /**順序*/
             phaseOrder: number;
+            /**承認者指定区分*/
+            approvalAtr: number;
             constructor(approver: Array<ApproverDto>, approvalId: string, approvalForm: number,
-                appFormName: string, browsingPhase: number, phaseOrder: number){
+                appFormName: string, browsingPhase: number, phaseOrder: number, approvalAtr: number){
                 this.approver = approver;
                 this.approvalId = approvalId;
                 this.approvalForm = approvalForm;
                 this.appFormName = appFormName;
                 this.browsingPhase = browsingPhase;
                 this.phaseOrder = phaseOrder;
+                this.approvalAtr = approvalAtr;
             }
         }
         export class ApproverDto{

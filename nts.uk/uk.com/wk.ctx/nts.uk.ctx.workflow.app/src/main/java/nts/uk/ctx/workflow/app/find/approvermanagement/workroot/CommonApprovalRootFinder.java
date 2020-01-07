@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoRQ18;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
@@ -30,6 +31,7 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -458,11 +460,11 @@ public class CommonApprovalRootFinder {
 	 * @param jobTitleId
 	 * @return
 	 */
-	private JobTitleImport getJobTitleInfo(String jobTitleId){
-		String companyId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.today();
-		return adapterJobtitle.findJobTitleByPositionId(companyId, jobTitleId, baseDate);
-	}
+//	private JobTitleImport getJobTitleInfo(String jobTitleId){
+//		String companyId = AppContexts.user().companyId();
+//		GeneralDate baseDate = GeneralDate.today();
+//		return adapterJobtitle.findJobTitleByPositionId(companyId, jobTitleId, baseDate);
+//	}
 
 	/**
 	 * 05.社員コードを入力する
@@ -671,9 +673,9 @@ public class CommonApprovalRootFinder {
 		return lstAppPhase.stream()
 				.map(c -> new ApprovalPhaseDto(c.getApprovers().stream()
 						.map(d -> {
-								String name = c.getApprovalAtr().value == 0 ? 
+								String name = c.getApprovalAtr().equals(ApprovalAtr.PERSON) ? 
 								this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeName() : 	
-								this.getJobTitleInfo(d.getJobGCD()) == null ? "" : getJobTitleInfo(d.getJobGCD()).getPositionName();
+								this.getJobGInfo(d.getJobGCD()) == null ? "" : this.getJobGInfo(d.getJobGCD()).getName();
 								String confirmName = d.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
 								return ApproverDto.fromDomain(d, name, confirmName);
 						}).collect(Collectors.toList()),
@@ -681,5 +683,12 @@ public class CommonApprovalRootFinder {
 					 c.getApprovalForm().value, c.getApprovalForm().getName(), c.getBrowsingPhase(),
 					 c.getApprovalAtr().value))
 				.collect(Collectors.toList());
+	}
+	//get jobG name
+	private JobGInfor getJobGInfo(String jobGCD){
+		String companyId = AppContexts.user().companyId();
+		List<JobGInfor> lstJG = adapterJobtitle.getJobGInfor(companyId, Arrays.asList(jobGCD));
+		if(lstJG.isEmpty()) return new JobGInfor(jobGCD, "コード削除済");
+		return lstJG.get(0);
 	}
 }

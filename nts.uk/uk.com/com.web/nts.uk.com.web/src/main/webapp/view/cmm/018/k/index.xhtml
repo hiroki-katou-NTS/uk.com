@@ -175,24 +175,25 @@
 				<div data-bind="if: selectTypeSet() == 1" style="margin-top: 15px; display: flex">
 					<!-- List ten group -->
 					<div>
-					<!--K2_1-->
-					<div class="titleSelect" data-bind="ntsFormLabel: {required: false }"
-								style="margin-bottom: 10px">#{i18n.getText('CMM018_61')}</div>
-					<table id="lst-group-L1" data-bind="ntsGridList: {								
-						dataSource: lstGroup,
-						primaryKey: 'code',
-						columns: columns2,
-						multiple: false,
-						value: selectG,
-						rows: 14
-					}"></table></div>
+						<!--K2_1-->
+						<div class="titleSelect" data-bind="ntsFormLabel: {required: false }"
+									style="margin-bottom: 10px">#{i18n.getText('CMM018_61')}</div>
+						<table id="lst-group-L1" data-bind="ntsGridList: {								
+												dataSource: lstGroup,
+												primaryKey: 'code',
+												columns: columns2,
+												multiple: false,
+												value: selectG,
+												rows: 14}">
+						</table>
+					</div>
 					<div style="width: 75px; margin-top: 125px; margin-left: 20px">
-					<div>
-					<button class="auto-height" style="width:75px;" data-bind="click: nextItem"><i class="img-icon icon-next label"></i></button>
-					</div>
-					<div style="margin-top: 15px">
-					<button class="auto-height" style="width:75px;" data-bind="click: prevItem"><i class="img-icon icon-prev label"></i></button>
-					</div>
+						<div>
+							<button class="auto-height" style="width:75px;" data-bind="click: nextItem"><i class="img-icon icon-next label"></i></button>
+						</div>
+						<div style="margin-top: 15px">
+							<button class="auto-height" style="width:75px;" data-bind="click: prevItem"><i class="img-icon icon-prev label"></i></button>
+						</div>
 					</div>
 					<!-- List da chon -->
 					<div style="margin-left: 25px;">

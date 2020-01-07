@@ -90,8 +90,8 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		entity.wwfmtAppoverPK = new WwfmtAppoverPK(approvalId, phaseOrder, domain.getApproverOrder());
 		entity.jobGCD = domain.getJobGCD();
 		entity.employeeId = domain.getEmployeeId();
-		entity.wwfmtAppoverPK.approverOrder = domain.getApproverOrder();
 		entity.confirmPerson = domain.getConfirmPerson().value;
+		entity.specWkpId = domain.getSpecWkpId();
 		return entity;
 	}
 }

@@ -120,5 +120,12 @@ public interface SyJobTitlePub {
 	List<JobTitleInfoExport> findByJobIds(String companyId, List<String> jobIds, String historyId);
 	
 	List<SequenceMasterExport> findAllSequen(String companyId, String sequenceCode);
+	/**
+	 * get JobG info
+	 * @param companyId
+	 * @param jobGCd
+	 * @return
+	 */
+	List<JobGInforEx> getJobGInfor(String companyId, List<String> jobGCd);
 
 }

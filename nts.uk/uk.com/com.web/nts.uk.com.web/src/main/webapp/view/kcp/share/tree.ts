@@ -116,6 +116,7 @@ module kcp.share.tree {
          * Show all levels of department workplace on start
          */
         isFullView?: boolean;
+        width?: number;
     }
 
     /**
@@ -187,6 +188,7 @@ module kcp.share.tree {
         treeStyle: TreeStyle;
         restrictionOfReferenceRange: boolean;
         searchBoxId: string;
+        setWidth: KnockoutObservable<boolean> = ko.observable(false);
 
         // 部門対応 #106784
         startMode: StartMode;
@@ -233,6 +235,11 @@ module kcp.share.tree {
             let self = this;
             let dfd = $.Deferred<void>();
             self.data = data;
+            if(data.width){
+                self.treeStyle.width = data.width;  
+                self.setWidth(true);
+            }
+
             self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;
             self.$input = $input;
             self.$inputId($input[0].id);
@@ -385,11 +392,14 @@ module kcp.share.tree {
 
             // calculate height tree
             self.calHeightTree(300, data);
-
+            let nodeTextWidth = 325;
+            if(self.setWidth()){
+                nodeTextWidth = self.data.width;
+            }
             self.treeComponentColumn = [
                 { headerText: "", key: 'id', dataType: "string", hidden: true },
                 {
-                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 325, dataType: "string",
+                    headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: nodeTextWidth, dataType: "string",
                     template: "<td class='tree-component-node-text-col'>${nodeText}</td>"
                 }
             ];
@@ -425,6 +435,9 @@ module kcp.share.tree {
 
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
+            if(data.width && self.setWidth()){
+                self.treeStyle.width = data.width;
+            }else
             if (self.isFullView()) {
                 self.treeStyle.width = widthColText + data.isShowAlreadySet ? 100 : 30;
 

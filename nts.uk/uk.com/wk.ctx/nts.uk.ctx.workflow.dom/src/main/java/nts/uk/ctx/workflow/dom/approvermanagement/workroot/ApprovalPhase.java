@@ -20,6 +20,8 @@ public class ApprovalPhase extends AggregateRoot{
 	private String approvalId;
 	/**順序*/
 	private int phaseOrder;
+	/**分岐ID*/
+	private String branchId;
 	/**承認形態*/
 	private ApprovalForm approvalForm;
 	/**閲覧フェーズ*/
@@ -32,6 +34,7 @@ public class ApprovalPhase extends AggregateRoot{
 	public static ApprovalPhase createSimpleFromJavaType(
 			String approvalId,
 			int phaseOrder,
+			String branchId,
 			int approvalForm,
 			int browsingPhase,
 			int approvalAtr,
@@ -39,6 +42,7 @@ public class ApprovalPhase extends AggregateRoot{
 		return new ApprovalPhase(
 				approvalId,
 				phaseOrder,
+				branchId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),

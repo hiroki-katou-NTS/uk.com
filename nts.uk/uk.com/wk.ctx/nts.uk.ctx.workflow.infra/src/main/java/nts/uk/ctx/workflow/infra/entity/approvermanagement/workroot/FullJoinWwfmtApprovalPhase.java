@@ -8,6 +8,7 @@ import lombok.Getter;
 public class FullJoinWwfmtApprovalPhase {
 	public String approvalId;
 	public int phaseOrder;
+	public String branchId;
 	public int approvalForm;
 	public int browsingPhase;
 	public String jobGCD;

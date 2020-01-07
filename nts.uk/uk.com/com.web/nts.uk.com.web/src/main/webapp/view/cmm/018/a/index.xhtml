@@ -29,7 +29,7 @@
 				<!-- A1_2: Tab 会社 -->
 				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Company')}</a></li>
 				<!-- A1_3: Tab 職場 -->
-				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="text: a1_3, visible: visibleTab"></a></li>
 				<!-- A1_4: Tab 個人 -->
 				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
@@ -169,7 +169,7 @@
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
-					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<span class="title" data-bind="text: a1_3"></span>
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
@@ -181,40 +181,38 @@
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
-						<table>
-							<tr>
-								<td style = "width: 100px;">
-								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008">職場選択 </button>
-								</td>
-								<td style = "width: 100px;">
-									<div style = "margin-left: 20px;">職場コード:</div>
-								</td>
-								<td>
-									<div data-bind = "text: wpCode"></div>
-								</td>
-								<td style = "width: 100px;">
-									<div style = "margin-left: 20px;">職場名称:</div>
-								</td>
-								<td style = "width: 500px;">
-									<div data-bind = "text: wpName"></div>
-								</td>
-								<td>
-									<!-- C1_11: Label モード切替： -->
-									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
-								</td>
-								<td>
-									<!-- C1_12: SwitchButton モード切替 -->
-									<div data-bind="if: systemAtr() == 0">
-										<div data-bind="ntsSwitchButton: {
-											options: listMode,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedModeCode,
-											enable: true}" ></div>
-									</div>
-								</td>
-							</tr>
-						</table>
+						<div class="table">
+							<div class="cell" style = "width: 100px;">
+								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008, text: c1_1"> </button>
+							</div>
+							<div class="cell" style = "width: 100px;">
+								<div style = "margin-left: 20px;" data-bind="text: c1_3"></div>
+							</div>
+							<div class="cell" >
+								<div data-bind = "text: wpCode"></div>
+							</div>
+							<div class="cell"  style = "width: 100px;">
+								<div style = "margin-left: 20px;" data-bind="text: c1_4"></div>
+							</div>
+							<div class="cell" style = "width: 500px;">
+								<div data-bind = "text: wpName"></div>
+							</div>
+							<div  class="cell" >
+								<!-- C1_11: Label モード切替： -->
+								<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
+							</div>
+							<div  class="cell" >
+								<!-- C1_12: SwitchButton モード切替 -->
+								<div data-bind="if: systemAtr() == 0">
+									<div data-bind="ntsSwitchButton: {
+										options: listMode,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedModeCode,
+										enable: true}" ></div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div>
 						<!-- SCREEN C -->
