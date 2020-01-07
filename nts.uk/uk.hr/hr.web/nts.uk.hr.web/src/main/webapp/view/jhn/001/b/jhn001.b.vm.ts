@@ -27,24 +27,50 @@ module jhn001.b.vm {
         constructor() {
             let self = this,
                 listReportDraft = self.listReportDraft;
-            self.start();
+            self.getListReportSaveDraft().done(() => { 
+                console.log('get list done');
+            });
         }
 
-        start(code?: string){
+        start(code?: string) {
             let self = this,
                 listReportDraft = self.listReportDraft;
             listReportDraft.removeAll();
-            
-            for (var i = 0; i < 30; i++) {
-                let _data = {id: i,
-                             draftSaveDate: '2019/12/'+ i,
-                             reportName: 'reportName ' + i,
-                             missingDocName : 'missingDocName ' + i,
-                             reportCode : 'reportCode ' + i }
-                 listReportDraft.push(_data);
-           }
-        }
 
+            self.getListReportSaveDraft().done(() => { });
+        }
+        
+        getListReportSaveDraft(): JQueryPromise<any> {
+            let self = this,
+                listReportDraft = self.listReportDraft,
+                dfd = $.Deferred();
+
+            listReportDraft.removeAll();
+
+            var dfdGetData = service.getListReportSaveDraft();
+
+            block();
+            $.when(dfdGetData).done((listReportDarft: any) => {
+                if (listReportDarft) {
+                    for (var i = 0; i < listReportDarft.length; i++) {
+                        let _data = {
+                            id: listReportDarft[i].reportID,
+                            draftSaveDate: listReportDarft[i].draftSaveDate,
+                            reportName: listReportDarft[i].reportName,
+                            missingDocName: listReportDarft[i].missingDocName,
+                            reportCode: listReportDarft[i].reportCode
+                        }
+                        listReportDraft.push(_data);
+                    }
+                    self.reportId(listReportDarft[0].reportID);
+                }
+                unblock();
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
+     
         continueProcess() {
             let self = this;
             
@@ -52,7 +78,7 @@ module jhn001.b.vm {
                 setShared('JHN001B_PARAMS', {
                     reportId: self.reportId()
                 });
-                self.close();
+                close();
             }
         }
         
@@ -62,6 +88,9 @@ module jhn001.b.vm {
         }
 
         close() {
+             setShared('JHN001B_PARAMS', {
+                    reportId: null;
+                });
             close();
         }
     }

@@ -63,6 +63,9 @@ module jhn001.a.viewmodel {
                                self.getListDocument().done(() => {
                                    unblock();
                                });
+                                
+                               self.getListReportSaveDraft().done(() => {});
+                                
                             });
                         } else {
                             self.layout().listItemCls.removeAll();
@@ -116,9 +119,27 @@ module jhn001.a.viewmodel {
             return dfd.promise();
         }
         
+        getListReportSaveDraft(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            var dfdGetData = service.getListReportSaveDraft();
+
+            block();
+            $.when(dfdGetData).done((listReportDarft: any) => {
+                if (listReportDarft) {
+                    subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
+                        dataShare = getShared('CPS001B_PARAMS');
+                    });
+                }
+                unblock();
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
+        
         newMode(){
             let self = this;
-            
         }
 
         start(code?: string): JQueryPromise<any> {
@@ -156,12 +177,16 @@ module jhn001.a.viewmodel {
             return dfd.promise();
         }
         
+        createNewLayout() {
+            let self = this,
+                layout = self.layout,
+                layouts = self.layouts;
+        }
+        
         save() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
-            
-            
         }
         
         saveDraft() {
@@ -169,9 +194,7 @@ module jhn001.a.viewmodel {
                 layout = self.layout,
                 layouts = self.layouts;
             
-            subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
-                console.log('test open dialog B');
-            });
+            
             
         }
         

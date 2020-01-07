@@ -8,6 +8,7 @@ module jhn001.a.service {
         remove:"hr/notice/report/delete/{0}",
         saveData: "hr/notice/report/save",
         getListDoc: 'hr/notice/report/regis/person/document/findAll',
+        getListReportSaveDraft: 'hr/notice/report/regis/person/save/draft/getAll',
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
@@ -21,6 +22,10 @@ module jhn001.a.service {
     */
     export function getAll(abolition) {
         return ajax(format(paths.getAll, abolition));
+    }
+    
+    export function getListReportSaveDraft() {
+        return ajax('hr' , paths.getListReportSaveDraft);
     }
 
     export function getReportDetails(reportClsId) {
