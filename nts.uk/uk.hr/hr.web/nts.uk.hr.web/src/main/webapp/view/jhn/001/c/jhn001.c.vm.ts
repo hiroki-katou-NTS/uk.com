@@ -18,18 +18,11 @@ module jhn001.c.viewmodel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         layout: KnockoutObservable<Layout> = ko.observable(new Layout()); 
         reportId : KnockoutObservable<string> = ko.observable('');
-        
         enaGoBack : KnockoutObservable<boolean> = ko.observable(false);
         enaSave : KnockoutObservable<boolean> = ko.observable(true);
         enaSaveDraft : KnockoutObservable<boolean> = ko.observable(true);
         enaAttachedFile : KnockoutObservable<boolean> = ko.observable(true);
         enaRemove : KnockoutObservable<boolean> = ko.observable(true);
-        
-        reportColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
-        ]);
         
         constructor() {
             let self = this,
@@ -80,9 +73,13 @@ module jhn001.c.viewmodel {
             layouts.removeAll();
             service.getDetails(reportId).done((data: any) => {
                 if (data) {
-                    lv.removeDoubleLine(data.itemsClassification);
-                    layout.classifications(data.listItemClsDto || []);
-                    layout.action(LAYOUT_ACTION.UPDATE);
+                    lv.removeDoubleLine(data.classificationItems);
+                    layout.classifications(data.classificationItems || []);
+                    _.defer(() => {
+                        new vc(layout.classifications());
+                    });
+                } else {
+                    layout.classifications.removeAll();
                     unblock();
                 }
             });

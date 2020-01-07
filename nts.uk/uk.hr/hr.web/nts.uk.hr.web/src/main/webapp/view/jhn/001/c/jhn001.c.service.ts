@@ -5,7 +5,7 @@ module jhn001.c.service {
 
     let paths = {
         getAll: "hr/notice/report/findAll/{0}",
-        getDetails: "hr/notice/report/findOne/{0}",
+        getDetails: "hr/notice/report/item/findOne/{0}",
         remove:"hr/notice/report/delete/{0}",
         saveData: "hr/notice/report/save",
         layout: {
