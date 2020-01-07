@@ -68,10 +68,10 @@ module jhn001.c.viewmodel {
                 dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let reportId: number = url.split("=")[1];
+            let reportId: String = url.split("=")[1];
             // get all layout
             layouts.removeAll();
-            service.getDetails(reportId).done((data: any) => {
+            service.getDetails({reportId: reportId, reportLayoutId: 1}).done((data: any) => {
                 if (data) {
                     lv.removeDoubleLine(data.classificationItems);
                     layout.classifications(data.classificationItems || []);

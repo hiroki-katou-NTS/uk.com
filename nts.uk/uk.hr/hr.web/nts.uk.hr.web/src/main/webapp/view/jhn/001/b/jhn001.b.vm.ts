@@ -77,7 +77,7 @@ module jhn001.b.vm {
             
             if(self.reportId()){
                 setShared('JHN001B_PARAMS', {
-                    obj:  _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); });
+                    obj:  _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); })
                 });
                 close();
             }
@@ -90,7 +90,7 @@ module jhn001.b.vm {
 
         close() {
              setShared('JHN001B_PARAMS', {
-                    reportId: null;
+                    reportId: null
                 });
             close();
         }

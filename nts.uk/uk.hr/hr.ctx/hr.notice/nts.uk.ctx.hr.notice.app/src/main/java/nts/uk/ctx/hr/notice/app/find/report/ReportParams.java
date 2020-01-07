@@ -6,6 +6,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class ReportParams {
-	private Integer reportId;
+	private String reportId;
 	private int reportLayoutId;
 }
