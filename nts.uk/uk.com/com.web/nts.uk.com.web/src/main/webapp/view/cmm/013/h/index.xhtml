@@ -32,11 +32,11 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button data-bind="click: createNew, enable: $root.errors.isEmpty">#{i18n.getText('CMM013_41')}</button>
-				<button class="proceed" data-bind="click: register">#{i18n.getText('CMM013_42')}</button>
+				<button data-bind="click: createNew, enable: !isInsertNew()">#{i18n.getText('CMM013_41')}</button>
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM013_42')}</button>
 				<button data-bind="click: multiInsert">#{i18n.getText('CMM013_70')}</button>
 				<button data-bind="click: close">#{i18n.getText('CMM013_43')}</button>
-				<button class="danger" data-bind="click: remove">#{i18n.getText('CMM013_44')}</button>
+				<button class="danger" data-bind="click: remove, enable: !isInsertNew()">#{i18n.getText('CMM013_44')}</button>
 			</div>
 
 			<div id="contents-area" class="table">
@@ -65,7 +65,7 @@
 														value: currentApproverGroup().approverGroupCD,
 														constraint: 'JobTitleCode',
 														required: true,
-														enable: true }" />	
+														enable: isInsertNew }" />	
 						</div>
 					</div>
 					<div class="table valign-center control-group">

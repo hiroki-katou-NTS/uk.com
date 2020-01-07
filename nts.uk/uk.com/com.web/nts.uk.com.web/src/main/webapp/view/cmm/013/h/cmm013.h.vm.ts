@@ -3,24 +3,19 @@ module nts.uk.com.view.cmm013.h.viewmodel {
     import text = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog; 
     export class ScreenModel {
-        approverJobLst: KnockoutObservableArray<IApproverJob>;
-        approverGroupLst: KnockoutObservableArray<IApproverGroup>;
-        currentApproverGroup: KnockoutObservable<ApproverGroup>;
-        currentApproverGroupCD: KnockoutObservableArray<string>;
-        currentApproverJobCD: KnockoutObservableArray<string>;
+        approverJobLst: KnockoutObservableArray<IApproverJob> = ko.observableArray([]);
+        approverGroupLst: KnockoutObservableArray<IApproverGroup> = ko.observableArray([]);
+        currentApproverGroup: KnockoutObservable<ApproverGroup> = ko.observable(new ApproverGroup({ approverGroupCD: "", approverGroupName: "", approverJobList: [] }));
+        currentApproverGroupCD: KnockoutObservableArray<string> = ko.observable();
+        currentApproverJobCD: KnockoutObservableArray<string> = ko.observable();
         baseDate: any = moment.utc();
         listTitleInfo: any = [];
-        isInsertNew: boolean = true;
+        isInsertNew: KnockoutObservableArray<boolean> = ko.observable(true);
         constructor() {
             let self = this;
-            self.approverJobLst = ko.observableArray([]);
-            self.approverGroupLst = ko.observableArray([]);
-            self.currentApproverGroup = ko.observable(new ApproverGroup({ approverGroupCD: "", approverGroupName: "", approverJobList: [] }));
-            self.currentApproverGroupCD = ko.observable();
-            self.currentApproverJobCD = ko.observable();
             self.currentApproverGroupCD.subscribe((value) => {
                 if(_.isEmpty(value)) {
-                    self.isInsertNew = true;
+                    self.isInsertNew(true);
                     self.currentApproverGroup().approverGroupCD("");
                     self.currentApproverGroup().approverGroupName("");
                     self.currentApproverGroup().approverJobList = []; 
@@ -31,7 +26,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                         _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
                     );
                     self.currentApproverJobCD(self.getCurrentApproverJobCD()); 
-                    self.isInsertNew = false;      
+                    self.isInsertNew(false);      
                 }
             });
         }
@@ -80,15 +75,22 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             let self = this;  
             self.approverGroupLst(_.sortBy(data, o => o.approverGroupCD));
             if(_.isEmpty(self.currentApproverGroupCD())) {
-                self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);    
+                if(_.isEmpty(self.approverGroupLst())) {
+                    self.createNew();    
+                } else {
+                    self.isInsertNew(false);
+                    self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);     
+                }
             } else {
                 let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroupCD());
                 if(containCD) {
+                    self.isInsertNew(false);
                     self.currentApproverGroup(self.getCurrentApproverGroup());       
                 } else {
                     if(_.isEmpty(self.approverGroupLst())) {
                         self.currentApproverGroupCD("");     
                     } else {
+                        self.isInsertNew(false);
                         if(index==_.size(self.approverGroupLst())) {
                             self.currentApproverGroupCD(self.approverGroupLst()[index-1].approverGroupCD);    
                         } else {
@@ -165,7 +167,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             if(nts.uk.ui.errors.hasError()) {
                 return;    
             }
-            if(self.isInsertNew) {
+            if(self.isInsertNew()) {
                 nts.uk.ui.block.invisible();
                 service.register(self.getCommand()).done((data) => {
                     dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -211,16 +213,20 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                 }    
             });
             nts.uk.ui.block.invisible();
-            service.multiInsert(commandLst).done((data) => {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.reload();
-                    nts.uk.ui.block.clear();        
-                });        
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId })
-                .then(function() { 
-                    nts.uk.ui.block.clear();
-                });      
+            dialog.confirm({ messageId: "Msg_1591" }).ifYes(() => {
+                service.multiInsert(commandLst).done((data) => {
+                    dialog.info({ messageId: "Msg_1592" }).then(function() {
+                        self.reload();
+                        nts.uk.ui.block.clear();        
+                    });        
+                }).fail((res) => {
+                    dialog.alertError({ messageId: res.messageId })
+                    .then(function() { 
+                        nts.uk.ui.block.clear();
+                    });      
+                });
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
             });
         }
     
@@ -233,16 +239,20 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                 index = _.findIndex(self.approverGroupLst(), o => o.approverGroupCD == self.currentApproverGroup().approverGroupCD());
                 command = ko.toJS(self.currentApproverGroup()); 
             nts.uk.ui.block.invisible();
-            service.remove(command).done((data) => {
-                dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.reload(index);
-                    nts.uk.ui.block.clear();        
-                });        
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId })
-                .then(function() { 
-                    nts.uk.ui.block.clear();
-                });      
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.remove(command).done((data) => {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.reload(index);
+                        nts.uk.ui.block.clear();        
+                    });        
+                }).fail((res) => {
+                    dialog.alertError({ messageId: res.messageId })
+                    .then(function() { 
+                        nts.uk.ui.block.clear();
+                    });      
+                });
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
             });
         }
     
