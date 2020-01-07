@@ -22,7 +22,7 @@ public class AttachPersonReportFileFinder {
 	@Inject
 	private AttachPersonReportFileRepository repo;
 
-	public List<DocumentSampleDto> findAll(int layoutReportId, int reportId) {
+	public List<DocumentSampleDto> findAll(int layoutReportId, Integer reportId) {
 		String cid = AppContexts.user().companyId();
 		List<DocumentSampleDto> result = repo.getListDomainByLayoutId(cid, layoutReportId, reportId);
 		return result;

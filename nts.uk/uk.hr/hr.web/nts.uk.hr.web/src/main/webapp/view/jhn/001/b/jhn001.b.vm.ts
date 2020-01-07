@@ -58,7 +58,8 @@ module jhn001.b.vm {
                             draftSaveDate: listReportDarft[i].draftSaveDate,
                             reportName: listReportDarft[i].reportName,
                             missingDocName: listReportDarft[i].missingDocName,
-                            reportCode: listReportDarft[i].reportCode
+                            reportCode: listReportDarft[i].reportCode,
+                            reportLayoutID: listReportDarft[i].reportCode
                         }
                         listReportDraft.push(_data);
                     }
@@ -76,7 +77,7 @@ module jhn001.b.vm {
             
             if(self.reportId()){
                 setShared('JHN001B_PARAMS', {
-                    reportId: self.reportId()
+                    obj:  _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); });
                 });
                 close();
             }

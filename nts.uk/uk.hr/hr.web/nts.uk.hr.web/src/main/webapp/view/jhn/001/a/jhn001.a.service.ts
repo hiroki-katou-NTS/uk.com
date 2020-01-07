@@ -6,7 +6,7 @@ module jhn001.a.service {
         getAll: "hr/notice/report/findAll/{0}",
         getReportDetails: "hr/notice/report/findOne/{0}",
         remove:"hr/notice/report/delete/{0}",
-        saveData: "hr/notice/report/save",
+        saveDraftData: "hr/notice/report/regis/person/save/draft/save",
         getListDoc: 'hr/notice/report/regis/person/document/findAll',
         getListReportSaveDraft: 'hr/notice/report/regis/person/save/draft/getAll',
         layout: {
@@ -36,9 +36,7 @@ module jhn001.a.service {
         return ajax(format(paths.remove, reportClsId));
     }
 
-   /**
-    * add  Maintenance Layout
-    */
+   
     export function saveData(data: any) {
         return ajax(paths.saveData, data);
     }
@@ -49,5 +47,9 @@ module jhn001.a.service {
     
     export function getListDoc(param: any) {
         return ajax('hr' , paths.getListDoc, param);
+    }
+    
+    export function saveDraftData(command: any) {
+        return ajax('hr' , paths.saveDraftData, command);
     }
 }

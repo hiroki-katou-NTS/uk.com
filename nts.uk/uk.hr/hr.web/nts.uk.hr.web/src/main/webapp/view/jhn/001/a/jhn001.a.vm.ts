@@ -8,6 +8,10 @@ module jhn001.a.viewmodel {
     import format = nts.uk.text.format;
     import vc = nts.layout.validation;
     import subModal = nts.uk.ui.windows.sub.modal;
+    import hasError = nts.uk.ui.errors.hasError;
+    import info = nts.uk.ui.dialog.info;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     const __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -129,6 +133,8 @@ module jhn001.a.viewmodel {
                 if (listReportDarft) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
                         dataShare = getShared('CPS001B_PARAMS');
+                        debugger;
+                        
                     });
                 }
                 unblock();
@@ -191,11 +197,34 @@ module jhn001.a.viewmodel {
         
         saveDraft() {
             let self = this,
-                layout = self.layout,
-                layouts = self.layouts;
+                controls = self.layout.listItemCls();
+
+            // refresh data from layout
+            self.layout.outData.refresh();
+            let inputs = self.layout.outData();
             
+            let command = { inputs: inputs };
+
+             // trigger change of all control in layout
+            lv.checkError(controls);
             
-            
+            setTimeout(() => {
+                if (hasError()) {
+                    $('#func-notifier-errors').trigger('click');
+                    return;
+                }
+
+                // push data layout to webservice
+                self.block();
+                service.saveDraftData(command).done(() => {
+                    info({ messageId: "Msg_15" }).then(function() {
+                        //self.reload();
+                    });
+                }).fail((mes: any) => {
+                    self.unblock();
+                });
+            }, 50);
+
         }
         
         attachedFile() {

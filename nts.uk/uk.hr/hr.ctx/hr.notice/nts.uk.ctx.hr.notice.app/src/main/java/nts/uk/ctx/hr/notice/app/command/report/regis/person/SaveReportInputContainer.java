@@ -1,23 +1,26 @@
-/**
- * 
- */
 package nts.uk.ctx.hr.notice.app.command.report.regis.person;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
-/**
- * @author laitv
- *
- */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RegisPersonReportCommand {
+public class SaveReportInputContainer {
+	
+	 String personId;
+	
+	 String employeeId;
+	 
+	 List<ItemsByCategory> inputs;
+	 
 	 String cid; // 会社ID
 	 String rootSateId; // ルートインスタンスID
 	 int workId; // 業務ID
@@ -50,6 +53,6 @@ public class RegisPersonReportCommand {
 	 String sendBackSID;//差し戻し先社員ID
 	 String sendBackComment;//差し戻しコメント
 	 boolean delFlg;//削除済
-	 
-	 
+	
+	
 }

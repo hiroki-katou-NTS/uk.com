@@ -15,13 +15,14 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonRep
  *
  */
 @Stateless
-public class SaveDraftRegisPersonReportHandler extends CommandHandler<RegisPersonReportCommand>{
+public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegisPersonReportCommand> context) {
-		RegisPersonReportCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
+		SaveReportInputContainer command = context.getCommand();
+		System.out.println("command");
 	}
 }
