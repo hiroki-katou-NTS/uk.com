@@ -90,10 +90,9 @@ module jhn001.a.viewmodel {
              self.start();
         }
         
-        getListDocument(): JQueryPromise<any> {
+        getListDocument(param): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            let param  = {layoutReportId : 1, reportId: 0 }    
             var dfdGetData = service.getListDoc(param);
 
             block();
@@ -245,11 +244,27 @@ module jhn001.a.viewmodel {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
+            let reportLayoutId = self.reportClsId();
+            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                return;
+
+            let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
+
+            if (objReport == undefined || objReport == null) {
+                return;
+            }
+            
+            let param = {
+                reportId: string = objReport.reportId,
+                reportLayoutId: number = reportLayoutId
+            };
+            
+            setShared("JHN001F_PARAMS", param );
             
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
                 console.log('test open dialog f');
                 // get lại list file document
-                self.getListDocument().done(() => {
+                self.getListDocument(param).done(() => {
                     unblock();
                 });
             });

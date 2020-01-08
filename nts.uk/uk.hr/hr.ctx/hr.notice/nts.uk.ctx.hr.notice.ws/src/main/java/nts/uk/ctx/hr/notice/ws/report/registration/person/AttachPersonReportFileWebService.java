@@ -17,6 +17,7 @@ import nts.uk.ctx.hr.notice.app.command.report.regis.person.DeleteDocumentReport
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachReportFileParamFinder;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -49,6 +50,7 @@ public class AttachPersonReportFileWebService {
 	@POST
 	@Path("delete")
 	public void deleteDoc(DeleteDocumentReportCommand command) {
+		command.setCid(AppContexts.user().companyId());
 		this.delete.handle(command);
 	}
 }
