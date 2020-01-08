@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.jmm018retire.dto;
+package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto;
 
 import java.util.List;
 

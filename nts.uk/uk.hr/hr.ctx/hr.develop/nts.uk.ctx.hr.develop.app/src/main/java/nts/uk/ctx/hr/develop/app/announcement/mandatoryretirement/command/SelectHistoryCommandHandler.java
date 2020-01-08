@@ -1,19 +1,19 @@
-package nts.uk.ctx.hr.develop.app.jmm018retire.command;
+package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.hr.develop.app.jmm018retire.jmm0018bcfinder;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.MandatoryRetirementDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RelateMasterDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.StartDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RelateMasterDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.StartDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.find.MandatoryRetirementRegulationFinder;
 
 @Stateless
 public class SelectHistoryCommandHandler{
 	
 	@Inject
-	private jmm0018bcfinder finder;
+	private MandatoryRetirementRegulationFinder finder;
 	
 	public StartDto selcectHistory(StartDto startdto, String hist, boolean isLatestHis) {
 		if(startdto.getRelateMaster() == null) {

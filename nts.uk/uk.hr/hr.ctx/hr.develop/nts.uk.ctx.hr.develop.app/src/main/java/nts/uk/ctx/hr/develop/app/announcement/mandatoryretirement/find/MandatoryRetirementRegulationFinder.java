@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.jmm018retire;
+package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.find;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,15 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateCaculationTermDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateTermDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.MandatoryRetirementDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.PlanCourseTermDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.ReferItemDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RelateMasterDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetirePlanCourceDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetireTermDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.StartDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.StartDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.DateCaculationTermDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.DateTermDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.PlanCourseTermDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.ReferItemDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RelateMasterDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RetirePlanCourceDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RetireTermDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
@@ -26,7 +26,7 @@ import nts.uk.ctx.hr.shared.dom.employee.GrpCommonMasterAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class jmm0018bcfinder {
+public class MandatoryRetirementRegulationFinder {
 
 	@Inject
 	private GrpCommonMasterAdaptor commonMasterAdap;
