@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateCaculationTermDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateTermDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.MandatoryRetirementDto;
@@ -40,16 +41,16 @@ public class jmm0018bcfinder {
 		// アルゴリズム [関連マスタの取得] を実行する
 		RelateMasterDto relateDto = this.getRelateMaster();
 		if(relateDto == null) {
-			return new startDto(false, "MsgJ_JMM018_16", false, null, null);
+			throw new BusinessException("MsgJ_JMM018_16");
 		}else {
 			if(selectHistory == null) {
-				return new startDto(false, "MsgJ_JMM018_15", true, relateDto, null);
+				throw new BusinessException("MsgJ_JMM018_15");
 			}else {
 				MandatoryRetirementDto mandatory = this.getLaborRegulation(selectHistory);
 				if(mandatory == null) {
-					return new startDto(false, "MsgJ_JMM018_17", false, relateDto, null);
+					throw new BusinessException("MsgJ_JMM018_17");
 				}else {
-					return new startDto(true, "", true, relateDto, mandatory);
+					return new startDto(relateDto, mandatory);
 				}
 			}
 		}
