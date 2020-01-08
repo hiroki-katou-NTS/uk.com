@@ -133,7 +133,7 @@ module jhn001.f.vm {
         
 
         deleteItem(rowItem: IReportFileManagement) {
-            let self = this,
+            let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId)
                 .done(function(res) {

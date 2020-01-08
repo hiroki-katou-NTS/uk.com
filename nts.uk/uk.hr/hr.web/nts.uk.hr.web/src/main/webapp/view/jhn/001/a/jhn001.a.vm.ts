@@ -139,12 +139,9 @@ module jhn001.a.viewmodel {
 
             block();
             $.when(dfdGetData).done((listReportDarft: any) => {
-                debugger;
                 if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
                         dataShare = getShared('CPS001B_PARAMS');
-                        debugger;
-                        
                     });
                 }
                 unblock();
@@ -210,11 +207,11 @@ module jhn001.a.viewmodel {
         
         saveDraft() {
             let self = this,
-                controls = self.layout.listItemCls();
+                controls = self.layout().listItemCls();
 
             // refresh data from layout
-            self.layout.outData.refresh();
-            let inputs = self.layout.outData();
+            self.layout().outData.refresh();
+            let inputs = self.layout().outData();
             
             let command = { inputs: inputs };
 
@@ -256,7 +253,7 @@ module jhn001.a.viewmodel {
             
             let param = {
                 reportId: string = objReport.reportId,
-                reportLayoutId: number = reportLayoutId
+                layoutReportId: number = reportLayoutId
             };
             
             setShared("JHN001F_PARAMS", param );
