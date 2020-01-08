@@ -455,16 +455,6 @@ public class CommonApprovalRootFinder {
 	private PersonImport getPersonInfo(String employeeId){
 		return adapterPerson.getPersonInfo(employeeId);
 	}
-	/**
-	 * get JobTitle Info
-	 * @param jobTitleId
-	 * @return
-	 */
-//	private JobTitleImport getJobTitleInfo(String jobTitleId){
-//		String companyId = AppContexts.user().companyId();
-//		GeneralDate baseDate = GeneralDate.today();
-//		return adapterJobtitle.findJobTitleByPositionId(companyId, jobTitleId, baseDate);
-//	}
 
 	/**
 	 * 05.社員コードを入力する
@@ -677,7 +667,9 @@ public class CommonApprovalRootFinder {
 								this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeName() : 	
 								this.getJobGInfo(d.getJobGCD()) == null ? "" : this.getJobGInfo(d.getJobGCD()).getName();
 								String confirmName = d.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
-								return ApproverDto.fromDomain(d, name, confirmName);
+								String empCode = c.getApprovalAtr().equals(ApprovalAtr.PERSON) ? 
+										this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeCode() : null;
+								return ApproverDto.fromDomain(d, name, confirmName, empCode);
 						}).collect(Collectors.toList()),
 						c.getApprovalId(), c.getPhaseOrder(),
 					 c.getApprovalForm().value, c.getApprovalForm().getName(), c.getBrowsingPhase(),

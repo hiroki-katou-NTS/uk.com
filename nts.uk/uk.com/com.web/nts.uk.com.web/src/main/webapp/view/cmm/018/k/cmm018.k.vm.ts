@@ -60,7 +60,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         selectTypeSet: KnockoutObservable<number> = ko.observable(null);
 
         
-        currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
         employeeList: KnockoutObservableArray<vmbase.ApproverDtoK> = ko.observableArray([]);
        
         approverList : KnockoutObservableArray<vmbase.ApproverDtoK> = ko.observableArray([]);
@@ -88,17 +87,22 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         lstTmp: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor(){
             var self = this;
+            //Subscribe PERSON - CHI DINH - GROUP
+            self.selectTypeSet.subscribe(function(newValue){
+                if(self.checkEmpty(newValue)) return;
+                self.bindData(newValue);
+            });
             //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
             self.treeGrid = {
                 treeType: 1,
-                selectType: 3,
+                selectType: data.typeSetting == 2 ? 1 : 3, 
                 isDialog: true,
                 isMultiSelect: false,
                 isShowAlreadySet: false,
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
-                selectedId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
+                selectedId: data.typeSetting == 2 ? ko.observableArray([data.specWkpId]) : ko.observableArray([]),
                 alreadySettingList: ko.observableArray([]),
                 systemType : 2,
                 width: 310,
@@ -151,12 +155,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //基準日
             this.standardDate(moment(new Date()).toDate());
             
-            //Subscribe PERSON - CHI DINH - GROUP
-            self.selectTypeSet.subscribe(function(newValue){
-                if(self.checkEmpty(newValue)) return;
-                self.bindData(newValue);
-            });
-            
             //職場リスト            
             self.treeGrid.selectedId.subscribe(function(newValues){
                 if(self.checkEmpty(newValues)) return;
@@ -197,7 +195,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.selectedCbbCode(self.confirm); 
             }
         }
-        getData(): JQueryPromise<any>{
+        getData(){
             let self = this;
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
             if(data.approverInfor.length <= 0) return;
@@ -220,7 +218,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.lstSpec2.push({code: appr.code, name: appr.name, dispOrder: appr.dispOrder});
                 });
                 self.lstSpec2(_.orderBy(self.lstSpec2(),["dispOrder"], ["asc"]));
-                self.treeGrid.selectedId(data.specWkpId);
+                if(data.approverInfor.length > 0 ){
+                    self.treeGrid.selectedId(data.specWkpId);
+                }
             } 
         }
         
@@ -325,9 +325,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     error({messageId: 'Msg_1606', messageParams:[getText('CMM018_102')]});
                     return;
                 }
-                lstApprover = self.lstGroup1();
-                _.each(self.lstGroup2(), function(job){
-                    lstApprover.push(job);
+                let jG1 = self.lstGroup1()[0];
+                lstApprover.push({code: jG1.code, name: jG1.name, dispOrder: 1});
+                _.each(self.lstGroup2(), function(job, index){
+                    lstApprover.push({code: job.code, name: job.name, dispOrder: index + 2});
                 });
                 approvalForm = self.selectFormSetG();
             }

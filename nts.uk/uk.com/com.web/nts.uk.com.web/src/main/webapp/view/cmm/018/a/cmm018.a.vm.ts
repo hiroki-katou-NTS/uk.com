@@ -17,6 +17,7 @@ module nts.uk.com.view.cmm018.a {
             c1_3: KnockoutObservable<string> = ko.observable('');
             c1_4: KnockoutObservable<string> = ko.observable('');
             a1_3: KnockoutObservable<string> = ko.observable('');
+            rowHist: KnockoutObservable<number> = ko.observable(10);
             //===================
             nameCompany: KnockoutObservable<string>= ko.observable('');
             modeCommon: KnockoutObservable<boolean> = ko.observable(true);
@@ -452,6 +453,9 @@ module nts.uk.com.view.cmm018.a {
                 let url = $(location).attr('search');
                 let urlParam: number = url.split("=")[1];
                 self.systemAtr(urlParam || 0);
+                if(self.systemAtr() == 1){
+                    self.rowHist(5);
+                }
                 block.invisible();
                 self.textIinit();
                 let param: vmbase.ParamDto;
@@ -1177,8 +1181,8 @@ module nts.uk.com.view.cmm018.a {
                 let confirmedPerson = '';
                 let appAtr = obj.approvalAtr;
                 _.each(obj.approver, function(item){
-                    if(item.approvalAtr == 0){
-                       self.approverInfor.push({id: item.employeeId, name: item.name,approvalAtr: appAtr, dispOrder: item.approverOrder}); 
+                    if(appAtr == 0){
+                       self.approverInfor.push({id: item.employeeId,code: item.empCode, name: item.name,approvalAtr: appAtr, dispOrder: item.approverOrder}); 
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.employeeId;
                     }
@@ -1189,12 +1193,22 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }
                 });
+                let specWkp = '';
+                if(appAtr == 2){
+                    specWkp = obj.approver.length > 0 ? obj.approver[0].specWkpId : '';
+                }
                 let appType = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
                 let appTypeName;
                 if(appType != undefined){
                     appTypeName = appType.localizedName;
                 }else{
                     appTypeName = '共通';
+                }
+                let typeSet = 1;
+                if(self.tabSelected() == 2){
+                    typeSet = 0;
+                }else{
+                    typeSet = self.approverInfor().length == 0 ? 1 : self.approverInfor()[0].approvalAtr;
                 }
                 setShared("CMM018K_PARAM", {
                                         systemAtr: self.systemAtr(), 
@@ -1203,7 +1217,8 @@ module nts.uk.com.view.cmm018.a {
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: confirmedPerson, //確定者
                                         tab: self.tabSelected(),//０：会社、１：職場、２：個人
-                                        typeSetting: self.approverInfor().length == 0 ? 0 : self.approverInfor()[0].approvalAtr
+                                        typeSetting: typeSet,//0:個人、1:職格、2: 特定職場
+                                        specWkpId: specWkp
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     block.clear();
@@ -1226,7 +1241,7 @@ module nts.uk.com.view.cmm018.a {
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
                         let confirmName = confirmedPerson == 1 ? '（確定）' : '';
                         approver.push(new vmbase.ApproverDto(approvalAtr != 0 ? item.code : null, approvalAtr == 0 ? item.id : null,
-                                item.name, index + 1, approvalAtr, confirmedPerson, confirmName, data.specWkpId));
+                                approvalAtr == 0 ? item.code : null, item.name, item.dispOrder, approvalAtr, confirmedPerson, confirmName, data.specWkpId));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName, 0, phaseOrder, approvalAtr);
                 switch(phaseOrder){

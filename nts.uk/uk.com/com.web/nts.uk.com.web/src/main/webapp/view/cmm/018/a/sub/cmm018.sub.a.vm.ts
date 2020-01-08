@@ -33,9 +33,10 @@ module nts.uk.com.view.cmm018.a.sub {
                     self.items.push(self.convertlistRoot(root));
                 });
                 let colorBackGr: any = self.fillColorbackGr();
+                let heightG = __viewContext.viewModel.viewmodelA.systemAtr() == 1 ? 430 : 530;
               $(gridName).ntsGrid({
                 width: 950,
-                height: 530,
+                height: heightG,
                 dataSource: self.items(),
                 primaryKey: 'typeRoot',
                 rowVirtualization: true,

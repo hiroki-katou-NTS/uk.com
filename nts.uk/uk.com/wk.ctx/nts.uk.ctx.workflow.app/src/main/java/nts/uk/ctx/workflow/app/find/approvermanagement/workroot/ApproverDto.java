@@ -10,6 +10,8 @@ public class ApproverDto {
 	private String jobGCD;
 	/**社員ID*/
 	private String employeeId;
+	/** 社員コード*/
+	private String empCode;
 	/**Name*/
 	private String name;
 	/**順序*/
@@ -21,10 +23,11 @@ public class ApproverDto {
 	/**特定職場ID*/
 	private String specWkpId;
 	
-	public static ApproverDto fromDomain(Approver domain, String name , String confirmName){
+	public static ApproverDto fromDomain(Approver domain, String name , String confirmName, String empCode){
 		return new ApproverDto(
 					domain.getJobGCD(),
 					domain.getEmployeeId(),
+					empCode,
 					name,
 					domain.getApproverOrder(),
 					domain.getConfirmPerson().value,

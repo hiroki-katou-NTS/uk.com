@@ -498,6 +498,8 @@ module nts.uk.com.view.cmm018.shr {
             jobGCD: string;
             /**社員ID*/
             employeeId: string;
+            /**社員コード*/
+            empCode: string;
             /**aapproverName*/
             name: string;
             /**順序*/
@@ -511,7 +513,7 @@ module nts.uk.com.view.cmm018.shr {
             /**特定職場ID*/
             specWkpId: string;
             constructor(jobGCD: string,
-                employeeId: string, name: string, approverOrder: number, approvalAtr: number,
+                employeeId: string, empCode: string, name: string, approverOrder: number, approvalAtr: number,
                 confirmPerson: number, confirmName: string, specWkpId: string)
             {
                 this.jobGCD = jobGCD;
@@ -522,6 +524,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.confirmPerson = confirmPerson;
                 this.confirmName = confirmName;
                 this.specWkpId = specWkpId;
+                this.empCode = empCode;
             }
             
         }

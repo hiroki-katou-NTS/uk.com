@@ -80,46 +80,91 @@
 					<div>
 						<!-- SCREEN A -->
 						<div class="mode_Common"  data-bind="visible: checkAAA">
-							<!-- A2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+							<!-- SHYUUGYO -->
+							<div data-bind="if:systemAtr()==0">
+								<!-- A2: List gridList -->
+								<div id = "left-contents" style="float: left;margin-left: 10px;">
+									<div style="width: 280px;padding-bottom: 1px;" class="caret-right caret-background bg-green">
+										<div style="margin: 10px 20px 20px 20px">
+											<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+											<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+										</div>
+										<div style="margin: 20px">
+											<table tabindex="2" id="single-list-dataSource"
+												data-bind="ntsGridList:{
+													width: 240,
+													rows: rowHist,
+													options: listHistory,								
+													optionsValue: 'id',
+													columns: columns,
+													multiple: false,
+													value: currentCode,
+													enable: true}" >
+											</table>
+										</div>
 									</div>
-									<div style="margin: 20px">
-										<table tabindex="2" id="single-list-dataSource"
-											data-bind="ntsGridList:{
-												width: 240,
-												height: 258,
-												options: listHistory,								
-												optionsValue: 'id',
-												columns: columns,
-												multiple: false,
-												value: currentCode,
-												enable: true}" >
-										</table>
+								</div>
+								<!-- A3: List -->
+								<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 370px;">
+									<div>
+										<!-- A3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- A3_2: 選択する期間 -->
+										<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
+									<div data-bind="with: $parent.viewmodelSubA">
+										<button data-bind="click: resize1">Resizecolum1</button>
+										<button data-bind="click: resize2">Resizecolum2</button>
+										<button data-bind="click: resize3">Resizecolum3</button>
+										<button data-bind="click: cal1">cal</button>
+										<div style="display: inline-block;">
+										<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
+										<table id="grid_matome"></table>
 									</div>
 								</div>
 							</div>
-							<!-- A3: List -->
-							<div id = "right-contents" style="fmargin-top: 10px; margin-bottom: 20px; margin-left: 370px;">
+							<!-- JINJI -->
+							<div data-bind="if: systemAtr()==1">
 								<div>
-									<!-- A3_1: Label 有効期間 -->
-									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- A3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+								<!-- A2: List gridList -->
+								<div style="margin-left: 20px; margin-top: 10px; width: 1000px;">
+									<div style="width: 382px; height: 179px; display: inline-block;" 
+										class="caret-background bg-green">
+										<div style="display: inline-flex">
+											<div style="margin: 20px;">
+												<table id="single-list-dataSource"
+													data-bind="ntsGridList:{
+														width: 240,
+														rows: rowHist,
+														options: listHistory,								
+														optionsValue: 'id',
+														columns: columns,
+														multiple: false,
+														value: currentCode,
+														enable: true}" >
+												</table>
+											</div>
+											<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+												<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+												<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+											</div>
+										</div>
+									</div>
+									<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+										<!-- A3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- A3_2: 選択する期間 -->
+										<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
 								</div>
-								<div data-bind="with: $parent.viewmodelSubA">
-									<button data-bind="click: resize1">Resizecolum1</button>
-									<button data-bind="click: resize2">Resizecolum2</button>
-									<button data-bind="click: resize3">Resizecolum3</button>
-									<button data-bind="click: cal1">cal</button>
-									<div style="display: inline-block;">
-									<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
-									<table id="grid_matome"></table>
+								<br/>
+								<!-- A3: List -->
+								<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
+									<div data-bind="with: $parent.viewmodelSubA">
+										<table id="grid_matome"></table>
+									</div>
 								</div>
-							
+								</div>
 							</div>
 						</div>
 						<!-- SCREEN B -->
@@ -214,9 +259,10 @@
 							</div>
 						</div>
 					</div>
-					<div>
-						<!-- SCREEN C -->
-						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+					<!-- SCREEN C -->
+					<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+						<!-- SHYUUGYO -->
+						<div data-bind="if:systemAtr()==0">
 							<!-- C2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
@@ -228,7 +274,7 @@
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
 												width: 240,
-												height: 258,
+												rows: rowHist,
 												options: listHistory,								
 												optionsValue: 'id',
 												columns: columns,
@@ -250,50 +296,93 @@
 								<div data-bind="with: $parent.viewmodelSubA">
 									<table id="grid_matomeC"></table>
 								</div>
-								</div>
+							</div>
 						</div>
-						<!-- SCREEN D -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
-							<!-- D2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
-								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<!-- D2_2: -->
-										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
-										<!-- D2_3 -->
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
+						<!-- JINJI -->
+						<div data-bind="if: systemAtr()==1">
+							<div>
+							<!-- A2: List gridList -->
+							<div style="margin-left: 20px; margin-top: 10px; width: 1000px;">
+								<div style="width: 382px; height: 179px; display: inline-block;" 
+									class="caret-background bg-green">
+									<div style="display: inline-flex">
+										<div style="margin: 20px;">
+											<table id="single-list-dataSource"
+												data-bind="ntsGridList:{
+													width: 240,
+													rows: rowHist,
+													options: listHistory,								
+													optionsValue: 'id',
+													columns: columns,
+													multiple: false,
+													value: currentCode,
+													enable: true}" >
+											</table>
+										</div>
+										<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+											<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+											<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+										</div>
 									</div>
-									<!-- Tree -->
-									<div>
-									<table id="treegrid2"
-											data-bind="ntsTreeGridView:{
-												width: 270,
-												dataSource: dataDisplay,
-												value: singleSelectedCode,
-												optionsValue: 'approvalId',
-												optionsChild: 'lstbyApp',
-												optionsText: 'nameAppType',
-												multiple: false,
-												enable: true,
-												initialExpandDepth: 0,
-												rows: 15,
-												showCheckBox: false}"></table>
-									</div>
+								</div>
+								<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+									<!-- A3_1: Label 有効期間 -->
+									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+									<!-- A3_2: 選択する期間 -->
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 							</div>
-							<!-- D3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
-								<div>
-									<!-- D3_1: Label 有効期間 -->
-									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- D3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
-								</div>
+							<br/>
+							<!-- A3: List -->
+							<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
 								<div data-bind="with: $parent.viewmodelSubA">
-									<table id="grid_matome"></table>
+									<table id="grid_matomeC"></table>
 								</div>
-								</div>
+							</div>
+							</div>
 						</div>
+					</div>
+					<!-- SCREEN D -->
+					<div class="mode_Private" data-bind="visible: selectedModeCode">
+						<!-- D2: List gridList -->
+						<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
+							<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
+								<div style="margin: 10px 20px 20px 20px">
+									<!-- D2_2: -->
+									<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
+									<!-- D2_3 -->
+									<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
+								</div>
+								<!-- Tree -->
+								<div>
+								<table id="treegrid2"
+										data-bind="ntsTreeGridView:{
+											width: 270,
+											dataSource: dataDisplay,
+											value: singleSelectedCode,
+											optionsValue: 'approvalId',
+											optionsChild: 'lstbyApp',
+											optionsText: 'nameAppType',
+											multiple: false,
+											enable: true,
+											initialExpandDepth: 0,
+											rows: 15,
+											showCheckBox: false}"></table>
+								</div>
+							</div>
+						</div>
+						<!-- D3: List -->
+						<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
+							<div>
+								<!-- D3_1: Label 有効期間 -->
+								<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+								<!-- D3_2: 選択する期間 -->
+								<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+							</div>
+							<div data-bind="with: $parent.viewmodelSubA">
+								<table id="grid_matome"></table>
+							</div>
+							</div>
 					</div>
 				</div>
 			</div>
@@ -311,7 +400,7 @@
 				</div>
 				<div class="contents-area-tabpanel-3">
 						<!-- CCG001 -->
-						<div data-bind="visible: viewmodelA.visibleCCG001">
+					<div data-bind="visible: viewmodelA.visibleCCG001">
 							<div id="ccgcomponent"></div>
 						</div>
 					<div class="contents-area-tabpanel-3" data-bind="with: viewmodelA">
@@ -348,6 +437,8 @@
 					<div>
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+							<!-- SHYUUGYO -->
+							<div data-bind="if: systemAtr()==0">
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;"
 							data-bind="style: {marginLeft: visibleCCG001() ? '90px' : '20px'}">
@@ -360,7 +451,7 @@
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
 												width: 240,
-												height: 258,
+												rows: rowHist,
 												options: listHistory,								
 												optionsValue: 'id',
 												columns: columns,
@@ -384,6 +475,50 @@
 									<table id="grid_matomeE"></table>
 								</div>
 								</div>
+							</div>
+							<!-- JINJI -->
+							<div data-bind="if: systemAtr()==1">
+								<div>
+								<!-- E2: List gridList -->
+								<div style="margin-left: 90px; margin-top: 10px; width: 1000px;">
+									<div style="width: 382px; height: 179px; display: inline-block;" 
+										class="caret-background bg-green">
+										<div style="display: inline-flex">
+											<div style="margin: 20px;">
+												<table id="single-list-dataSource"
+													data-bind="ntsGridList:{
+														width: 240,
+														rows: rowHist,
+														options: listHistory,								
+														optionsValue: 'id',
+														columns: columns,
+														multiple: false,
+														value: currentCode,
+														enable: true}" >
+												</table>
+											</div>
+											<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+												<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+												<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+											</div>
+										</div>
+									</div>
+									<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+										<!-- E3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- E3_2: 選択する期間 -->
+										<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
+								</div>
+								<br/>
+								<!-- E3: List -->
+								<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 90px">
+									<div data-bind="with: $parent.viewmodelSubA">
+										<table id="grid_matomeE"></table>
+									</div>
+								</div>
+								</div>
+							</div>
 						</div>
 						<!-- SCREEN F -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode">
