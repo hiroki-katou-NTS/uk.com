@@ -6,9 +6,9 @@ import lombok.Data;
 public class StartDto {	
 	private RelateMasterDto relateMaster;
 	
-	private MandatoryRetirementDto mandatoryRetirement;
+	private MandatoryRetirementRegulationDto mandatoryRetirement;
 
-	public StartDto(RelateMasterDto relateMaster, MandatoryRetirementDto mandatoryRetirement) {
+	public StartDto(RelateMasterDto relateMaster, MandatoryRetirementRegulationDto mandatoryRetirement) {
 		super();
 		this.relateMaster = relateMaster;
 		this.mandatoryRetirement = mandatoryRetirement;

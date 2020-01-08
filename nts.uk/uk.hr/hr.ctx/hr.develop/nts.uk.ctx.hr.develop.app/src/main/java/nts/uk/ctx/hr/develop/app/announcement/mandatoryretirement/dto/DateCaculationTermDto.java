@@ -1,22 +1,31 @@
 package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 public class DateCaculationTermDto {
-	/** 算出条件 */
-	private int calculationTerm;
+
+	private Integer calculationTerm;
 	
-	/** 指定数 */
 	private Integer dateSettingNum;
 	
-	/** 指定日 */
 	private Integer dateSettingDate;
+	
+	public DateCaculationTerm toDomain() {
+		return DateCaculationTerm.createFromJavaType(this.calculationTerm, this.dateSettingNum, this.dateSettingDate);
+	}
 
-	public DateCaculationTermDto(int calculationTerm, Integer dateSettingNum, Integer dateSettingDate) {
+	public DateCaculationTermDto(DateCaculationTerm domain) {
 		super();
-		this.calculationTerm = calculationTerm;
-		this.dateSettingNum = dateSettingNum;
-		this.dateSettingDate = dateSettingDate;
+		this.calculationTerm = domain.getCalculationTerm().value;
+		this.dateSettingNum = domain.getDateSettingNum();
+		this.dateSettingDate = domain.getDateSettingDate().isPresent()?domain.getDateSettingDate().get().value:null;
 	}
 }

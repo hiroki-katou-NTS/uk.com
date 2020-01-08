@@ -8,15 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.StartDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.DateCaculationTermDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.DateTermDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.PlanCourseTermDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.ReferItemDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementRegulationDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RelateMasterDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RetirePlanCourceDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RetireTermDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.StartDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
@@ -46,7 +41,7 @@ public class MandatoryRetirementRegulationFinder {
 			if(selectHistory == null) {
 				throw new BusinessException("MsgJ_JMM018_15");
 			}else {
-				MandatoryRetirementDto mandatory = this.getLaborRegulation(selectHistory);
+				MandatoryRetirementRegulationDto mandatory = this.getLaborRegulation(selectHistory);
 				if(mandatory == null) {
 					throw new BusinessException("MsgJ_JMM018_17");
 				}else {
@@ -86,30 +81,12 @@ public class MandatoryRetirementRegulationFinder {
 	/**
 	 * アルゴリズム [就業規則の取得] を実行する (THực hiện thuật toán  [Lấy Quy tắc làm việc/Labor regulations] )
 	 */
-	public MandatoryRetirementDto getLaborRegulation(String historyId) {
+	public MandatoryRetirementRegulationDto getLaborRegulation(String historyId) {
 		// アルゴリズム [定年退職の就業規則の取得] を実行する(Thực hiện thuật toán [lấy mandatoryRetirementRegulations])
 		Optional<MandatoryRetirementRegulation> findMandotory = mandatoryRep.findByKey(historyId);
 		if(findMandotory.isPresent()) {
 			MandatoryRetirementRegulation found = findMandotory.get();
-			return new MandatoryRetirementDto(new DateCaculationTermDto(found.getPublicTerm().getCalculationTerm().value, 
-																		found.getPublicTerm().getDateSettingNum(), 
-																		found.getPublicTerm().getDateSettingDate().isPresent() ? found.getPublicTerm().getDateSettingDate().get().value : null), 
-												found.getReachedAgeTerm().value, 
-												new DateTermDto(found.getRetireDateTerm().getRetireDateTerm().value, 
-																found.getRetireDateTerm().getRetireDateSettingDate().isPresent() ? found.getRetireDateTerm().getRetireDateSettingDate().get().value : null), 
-												found.getMandatoryRetireTerm().stream()
-																			.map(x -> new RetireTermDto(x.getEmpCommonMasterItemId(), x.isUsageFlg(), x.getEnableRetirePlanCourse()
-																																						.stream()
-																																						.map(a -> a.getRetirePlanCourseId())
-																																						.collect(Collectors.toList())))
-																			.collect(Collectors.toList()), 
-												found.getReferEvaluationTerm().stream()
-																			.map(x -> new ReferItemDto(x.getEvaluationItem().value, x.isUsageFlg(), x.getDisplayNum(), x.getPassValue()))
-																			.collect(Collectors.toList()), 
-												found.isPlanCourseApplyFlg(), 
-												new PlanCourseTermDto(found.getPlanCourseApplyTerm().getApplicationEnableStartAge().v(), 
-																		found.getPlanCourseApplyTerm().getApplicationEnableEndAge().v(), 
-																		found.getPlanCourseApplyTerm().getEndMonth().value, found.getPlanCourseApplyTerm().getEndDate().value)); 
+			return new MandatoryRetirementRegulationDto(found); 
 		}else {
 			return null;
 		}
