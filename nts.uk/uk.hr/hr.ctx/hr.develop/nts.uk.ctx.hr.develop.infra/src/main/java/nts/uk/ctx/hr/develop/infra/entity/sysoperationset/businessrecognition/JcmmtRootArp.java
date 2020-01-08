@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author laitv
  *
  */
-@Entity
+//@Entity
 @Table(name="JCMMT_ROOT_APR")
 @AllArgsConstructor
 @NoArgsConstructor

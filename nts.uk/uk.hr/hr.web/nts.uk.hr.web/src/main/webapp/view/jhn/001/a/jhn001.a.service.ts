@@ -26,7 +26,7 @@ module jhn001.a.service {
     }
 
     export function getReportDetails(obj: any) {
-        return ajax(format(paths.getReportDetails, obj));
+        return ajax(paths.getReportDetails, obj);
     }
     
     export function removeData(reportClsId) {

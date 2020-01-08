@@ -68,7 +68,6 @@ public class ReportItemFinder {
 
 		String cid = AppContexts.user().companyId();
 
-		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		// ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。
@@ -98,7 +97,7 @@ public class ReportItemFinder {
 		List<RegisterPersonalReportItem> listItemCls = this.itemReportClsRepo.getAllItemBy(cid, reportLayoutId);
 		
 		//添付ファイル一覧を表示する(アルゴリズム[添付ファイル一覧を表示する]を実行する)
-		List<DocumentSampleDto> documentSampleDtoLst = this.attachPersonReportFileFinder.findAll(reportLayoutId, Integer.valueOf(params.getReportId()));
+		List<DocumentSampleDto> documentSampleDtoLst = this.attachPersonReportFileFinder.findAll(reportLayoutId, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		List<LayoutReportClsDto> items = mapItemCls(params.getReportLayoutId(), listItemCls);
 

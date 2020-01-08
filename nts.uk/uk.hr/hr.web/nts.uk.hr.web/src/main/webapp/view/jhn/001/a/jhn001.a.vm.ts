@@ -35,44 +35,43 @@ module jhn001.a.viewmodel {
             { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
             { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
         ]);
+        
         constructor() {
             let self = this,
-                layout = self.layout,
+                layout = self.layout(),
                 layouts = self.layouts;
-            
-            self.start();
 
             self.reportClsId.subscribe(id => {
                 if (id) {
                     block();
-                    let objReport =  _.find(self.layouts(), function(o) { return o.id == id; })
-                    
-                    if(objReport ==  undefined || objReport == null){
+                    let objReport = _.find(self.layouts(), function(o) { return o.id == id; })
+
+                    if (objReport == undefined || objReport == null) {
                         return;
                     }
-                    
+
                     let query = {
-                        reportId: objReport.reportId,
-                        reportLayoutId: objReport.reportClsId
+                        reportId: string = objReport.reportId,
+                        reportLayoutId: number = objReport.reportClsId
                     };
-                    
+
                     service.getReportDetails(query).done((data: any) => {
                         if (data) {
-                            self.layout().showColor(true);
-                            self.layout().standardDate(data.standardDate || undefined);
+                            //layout.showColor(true);
+                            //layout.standardDate(data.standardDate || undefined);
 
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
-                           
-                             // set sendBackComment header A222_2_1
-                            self.layout().sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment );
+
+                            // set sendBackComment header A222_2_1
+                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment);
 
                             // set message header A222_1_1
-                            self.layout().message(text('JHN001_A222_1_1') + ' : ' + data.message);
-                            
-                             // set list file document
+                            layout.message(text('JHN001_A222_1_1') + ' : ' + data.message);
+
+                            // set list file document
                             self.setListDocument(data.documentSampleDto);
-                            
+
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
                             });
@@ -87,6 +86,8 @@ module jhn001.a.viewmodel {
                     });
                 }
             });
+            
+             self.start();
         }
         
         getListDocument(): JQueryPromise<any> {
@@ -113,9 +114,9 @@ module jhn001.a.viewmodel {
                 let obj = {
                     docName: listdatafile[i].docName,
                     ngoactruoc: '(',
-                    sampleFileName: listdatafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + datafile[i].fileName + '" target="_blank">' + datafile[i].sampleFileName + '</a>',
+                    sampleFileName: listdatafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].sampleFileName + '</a>',
                     ngoacsau: ')',
-                    fileName: listdatafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + datafile[i].fileName + '" target="_blank">' + datafile[i].fileName + '</a>',
+                    fileName: listdatafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].fileName + '</a>',
                     cid: listdatafile[i].cid,
                     reportLayoutID: listdatafile[i].reportLayoutID,
                     docID: listdatafile[i].docID,
