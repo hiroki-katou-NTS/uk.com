@@ -119,15 +119,14 @@ public class RetirementInformationFinder {
 
 		// アルゴリズム[定年退職予定者の取得]を実行する(Thực hiện thuật toán [lấy người dự định nghỉ
 		// hưu])
-		List<RetirementPlannedPersonDto> retiplandeds =  this.madaRepo
+		List<RetirementPlannedPersonDto> retiplandeds = this.madaRepo
 				.getMandatoryRetirementListByPeriodDepartmentEmployment(cId, query.getStartDate(), query.getEndDate(),
 						Optional.ofNullable(
 								query.getRetirementAge() != null ? new RetirementAge(query.getRetirementAge()) : null),
 						query.getSelectDepartment(), query.getSelectEmployment());
-		
-		
-		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x-> toPlannedRetirementDto(x)).collect(Collectors.toList());
 
+		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x -> toPlannedRetirementDto(x))
+				.collect(Collectors.toList());
 
 		if (retiredEmployees.size() > 2000) {
 			throw new BusinessException(" MsgJ_JCM008_8");
@@ -143,7 +142,7 @@ public class RetirementInformationFinder {
 
 		return createListRetiredEmployees(retirementEmployees, retiredEmployees);
 	}
-	
+
 	private PlannedRetirementDto toPlannedRetirementDto(RetirementPlannedPersonDto plan) {
 		return PlannedRetirementDto.builder().pId(plan.getPersonalId()).sId(plan.getEmployeeId())
 				.scd(plan.getEmployeeCode()).businessName(plan.getBusinessName())
@@ -216,7 +215,6 @@ public class RetirementInformationFinder {
 		item.setRetirementReasonCtgName1(reti.getRetirementReasonCtgName1());
 	}
 
-
 	private void preSearchWarning(GeneralDate endDate) {
 
 		if (endDate.before(GeneralDate.today().addYears(2))) {
@@ -270,7 +268,7 @@ public class RetirementInformationFinder {
 		// アルゴリズム[定年退職期間設定の取得]を実行する(thực hiện thuật toán [lấy setting khoảng
 		// thời gian nghỉ hưu])
 
-		return retirementCourses.stream().sorted(Comparator.comparing(RetirementCourseDto::getRetirePlanCourseCode))
+		return retirementCourses.stream().filter(x -> x.getRetirePlanCourseClass() == 0 && x.getDurationFlg() == 0)
 				.collect(Collectors.toList());
 	}
 
