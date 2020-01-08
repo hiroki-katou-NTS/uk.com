@@ -26,8 +26,7 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="search_box"></div>
-					<div id="grid">
+					<div id="search_box">
 						<div class="div_line">
 							<div class="content-left">
 								<div class="col_group_1">
@@ -47,8 +46,10 @@
 									<input id="A222_3_1"
 										data-bind="ntsTextEditor: {name:'JHN003_A222_3_1', value: searchInfo().inputName, enable: true }" />
 								</div>
-								<div id="A222_5"
-									data-bind="ntsCheckBox: {name:'JHN003_A222_5', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
+								<div class="col_group_3">
+									<div id="A222_5"
+										data-bind="ntsCheckBox: {name:'JHN003_A222_5', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
+								</div>
 
 							</div>
 						</div>
@@ -95,14 +96,18 @@
 															{ prop: 'name', length: 5 },
 														]}"></div>
 								</div>
+								<div class="col_group_3">
+									<button id="A222_8" data-bind="click:search">#{i18n.getText('JHN003_A222_8')}</button>
+								</div>
 							</div>
-
-
-
 						</div>
-
 					</div>
-					<div class="div_line"></div>
+					<div id="grid">
+						<div class="div_line">
+						
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</ui:define>

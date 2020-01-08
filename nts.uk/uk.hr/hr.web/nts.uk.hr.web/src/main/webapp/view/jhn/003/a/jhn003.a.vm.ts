@@ -3,7 +3,7 @@ module jhn003.a.vm {
     import text = nts.uk.resource.getText;
 
     export class ViewModel {
-        
+
         searchInfo: KnockoutObservable<SearchInfo> = ko.observable(new SearchInfo());
 
         constructor() {
@@ -18,6 +18,10 @@ module jhn003.a.vm {
         }
 
         approvalAll() {
+
+        }
+
+        search() {
 
         }
     }
