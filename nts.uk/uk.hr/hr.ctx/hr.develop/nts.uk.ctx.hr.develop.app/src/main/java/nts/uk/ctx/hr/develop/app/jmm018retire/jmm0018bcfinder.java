@@ -7,9 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateCaculationTermDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.DateTermDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.MandatoryRetirementDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.PlanCourseTermDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.ReferItemDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RelateMasterDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetirePlanCourceDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetireTermDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.startDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
@@ -29,6 +35,26 @@ public class jmm0018bcfinder {
 	
 	@Inject
 	private MandatoryRetirementRegulationRepository mandatoryRep;
+	
+	public startDto startPage(String selectHistory) {
+		// アルゴリズム [関連マスタの取得] を実行する
+		RelateMasterDto relateDto = this.getRelateMaster();
+		if(relateDto == null) {
+			return new startDto(false, "MsgJ_JMM018_16", false, null, null);
+		}else {
+			if(selectHistory == null) {
+				return new startDto(false, "MsgJ_JMM018_15", true, relateDto, null);
+			}else {
+				MandatoryRetirementDto mandatory = this.getLaborRegulation(selectHistory);
+				if(mandatory == null) {
+					return new startDto(false, "MsgJ_JMM018_17", false, relateDto, null);
+				}else {
+					return new startDto(true, "", true, relateDto, mandatory);
+				}
+			}
+		}
+		
+	}
 
 	/**
 	 * アルゴリズム [関連マスタの取得] を実行する(Thực hiện thuật toán [lấy RelatedMaster])
@@ -64,7 +90,25 @@ public class jmm0018bcfinder {
 		Optional<MandatoryRetirementRegulation> findMandotory = mandatoryRep.findByKey(historyId);
 		if(findMandotory.isPresent()) {
 			MandatoryRetirementRegulation found = findMandotory.get();
-			return null; 
+			return new MandatoryRetirementDto(new DateCaculationTermDto(found.getPublicTerm().getCalculationTerm().value, 
+																		found.getPublicTerm().getDateSettingNum(), 
+																		found.getPublicTerm().getDateSettingDate().isPresent() ? found.getPublicTerm().getDateSettingDate().get().value : null), 
+												found.getReachedAgeTerm().value, 
+												new DateTermDto(found.getRetireDateTerm().getRetireDateTerm().value, 
+																found.getRetireDateTerm().getRetireDateSettingDate().isPresent() ? found.getRetireDateTerm().getRetireDateSettingDate().get().value : null), 
+												found.getMandatoryRetireTerm().stream()
+																			.map(x -> new RetireTermDto(x.getEmpCommonMasterItemId(), x.isUsageFlg(), x.getEnableRetirePlanCourse()
+																																						.stream()
+																																						.map(a -> a.getRetirePlanCourseId())
+																																						.collect(Collectors.toList())))
+																			.collect(Collectors.toList()), 
+												found.getReferEvaluationTerm().stream()
+																			.map(x -> new ReferItemDto(x.getEvaluationItem().value, x.isUsageFlg(), x.getDisplayNum(), x.getPassValue()))
+																			.collect(Collectors.toList()), 
+												found.isPlanCourseApplyFlg(), 
+												new PlanCourseTermDto(found.getPlanCourseApplyTerm().getApplicationEnableStartAge().v(), 
+																		found.getPlanCourseApplyTerm().getApplicationEnableEndAge().v(), 
+																		found.getPlanCourseApplyTerm().getEndMonth().value, found.getPlanCourseApplyTerm().getEndDate().value)); 
 		}else {
 			return null;
 		}
