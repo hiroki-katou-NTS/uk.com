@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.pubimp.employee.groupcommonmaster;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
@@ -10,7 +11,7 @@ import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterRepository;
 import nts.uk.ctx.bs.employee.pub.groupcommonmaster.IGrpCmonMasterPub;
 import nts.uk.ctx.bs.employee.pub.groupcommonmaster.export.GrpCmmMastItExport;
 import nts.uk.ctx.bs.employee.pub.groupcommonmaster.export.GrpCmonMasterExprort;
-
+@Stateless
 public class GrpCmonMasterPubImp implements IGrpCmonMasterPub {
 
 	@Inject
@@ -33,5 +34,4 @@ public class GrpCmonMasterPubImp implements IGrpCmonMasterPub {
 			return Optional.empty();
 		}
 	}
-
 }

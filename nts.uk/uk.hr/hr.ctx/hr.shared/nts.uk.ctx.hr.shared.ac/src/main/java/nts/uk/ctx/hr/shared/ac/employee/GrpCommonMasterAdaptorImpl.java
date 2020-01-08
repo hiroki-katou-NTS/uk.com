@@ -1,8 +1,10 @@
 package nts.uk.ctx.hr.shared.ac.employee;
 
 import java.util.Optional;
+
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.groupcommonmaster.IGrpCmonMasterPub;
@@ -11,6 +13,7 @@ import nts.uk.ctx.hr.shared.dom.employee.GrpCmmMastItImport;
 import nts.uk.ctx.hr.shared.dom.employee.GrpCmonMasterImport;
 import nts.uk.ctx.hr.shared.dom.employee.GrpCommonMasterAdaptor;
 
+@Stateless
 public class GrpCommonMasterAdaptorImpl implements GrpCommonMasterAdaptor{
 	
 	@Inject

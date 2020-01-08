@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.app.jmm018retire;
+package nts.uk.ctx.hr.develop.app.jmm018retire.dto;
 
 import java.util.List;
 
@@ -19,4 +19,13 @@ public class RelateMasterDto {
 	
 	// 定年退職コースリスト RetirePlanCourseList
 	private List<RetirePlanCourceDto> retirePlanCourseList;
+
+	public RelateMasterDto(Boolean processingResult, String commonMasterName,
+			List<GrpCmmMastItImport> commonMasterItemList, List<RetirePlanCourceDto> retirePlanCourseList) {
+		super();
+		this.processingResult = processingResult;
+		this.commonMasterName = commonMasterName;
+		this.commonMasterItemList = commonMasterItemList;
+		this.retirePlanCourseList = retirePlanCourseList;
+	}
 }
