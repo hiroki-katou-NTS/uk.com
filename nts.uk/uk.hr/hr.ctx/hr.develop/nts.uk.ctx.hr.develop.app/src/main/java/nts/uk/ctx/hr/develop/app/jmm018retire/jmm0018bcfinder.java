@@ -16,7 +16,7 @@ import nts.uk.ctx.hr.develop.app.jmm018retire.dto.ReferItemDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RelateMasterDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetirePlanCourceDto;
 import nts.uk.ctx.hr.develop.app.jmm018retire.dto.RetireTermDto;
-import nts.uk.ctx.hr.develop.app.jmm018retire.dto.startDto;
+import nts.uk.ctx.hr.develop.app.jmm018retire.dto.StartDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
@@ -37,7 +37,7 @@ public class jmm0018bcfinder {
 	@Inject
 	private MandatoryRetirementRegulationRepository mandatoryRep;
 	
-	public startDto startPage(String selectHistory) {
+	public StartDto startPage(String selectHistory) {
 		// アルゴリズム [関連マスタの取得] を実行する
 		RelateMasterDto relateDto = this.getRelateMaster();
 		if(relateDto == null) {
@@ -50,7 +50,7 @@ public class jmm0018bcfinder {
 				if(mandatory == null) {
 					throw new BusinessException("MsgJ_JMM018_17");
 				}else {
-					return new startDto(relateDto, mandatory);
+					return new StartDto(relateDto, mandatory);
 				}
 			}
 		}
