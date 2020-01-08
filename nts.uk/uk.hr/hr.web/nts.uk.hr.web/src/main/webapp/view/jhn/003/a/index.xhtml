@@ -19,16 +19,91 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" data-bind="with: layout">
-				<div
-					data-bind="ntsLayoutControl: {
-									 data: itemsClassification,
-									 editAble: true, 
-									 callback: nts.uk.ui.windows.close }"></div>
+			<div id="functions-area">
+				<div class="container">
+					<button id="A1_1" data-bind="click:approvalAll">#{i18n.getText('JHN003_A1_1')}</button>
+				</div>
 			</div>
-			<div id="functions-area-bottom">
-				<button id="C1_1" class="proceed x-large" tabindex="7" data-bind="click: pushData">#{i18n.getText('JHN011_C1_1')}</button>
-				<button id="C1_2" tabindex="8" data-bind="click: close">#{i18n.getText('JHN011_C1_2')}</button>
+			<div id="contents-area" class="cf">
+				<div id="content">
+					<div id="search_box"></div>
+					<div id="grid">
+						<div class="div_line">
+							<div class="content-left">
+								<div class="col_group_1">
+									<div id="A222_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN003_A222_1')}</div>
+								</div>
+								<div class="col_group_2">
+									<div id="A222_1_1"
+										data-bind="ntsDateRangePicker: {name: 'JHN003_A222_1_1', required: true, enable: true, value: searchInfo().appDate }" />
+								</div>
+							</div>
+
+							<div class="content-right">
+								<div class="col_group_1">
+									<div id="A222_3" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_2')}</div>
+								</div>
+								<div class="col_group_2">
+									<input id="A222_3_1"
+										data-bind="ntsTextEditor: {name:'JHN003_A222_3_1', value: searchInfo().inputName, enable: true }" />
+								</div>
+								<div id="A222_5"
+									data-bind="ntsCheckBox: {name:'JHN003_A222_5', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
+
+							</div>
+						</div>
+						<div class="div_line">
+							<div class="content-left">
+								<div class="col_group_1">
+									<div id="A222_2" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_2')}</div>
+								</div>
+
+								<div class="col_group_2">
+									<div id="A222_2_1"
+										data-bind="ntsComboBox: {
+														name: 'JHN003_A222_2_1',
+														options: searchInfo().reportItems,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: searchInfo().reportId,
+														optionsText: 'name',
+														editable: false,
+														required: false,
+														selectFirstIfNull: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div>
+								</div>
+							</div>
+							<div class="content-right">
+								<div class="col_group_1">
+									<div id="A222_4" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_4')}</div>
+								</div>
+								<div class="col_group_2">
+									<div id="A222_2_1"
+										data-bind="ntsComboBox: {
+														name: 'JHN003_A222_4_1',
+														options: searchInfo().approvalItems,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: searchInfo().approvalStatus,
+														optionsText: 'name',
+														editable: false,
+														required: false,
+														selectFirstIfNull: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div>
+								</div>
+							</div>
+
+
+
+						</div>
+
+					</div>
+					<div class="div_line"></div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

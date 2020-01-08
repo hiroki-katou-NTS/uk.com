@@ -1,68 +1,24 @@
 module jhn003.a.vm {
     import setShared = nts.uk.ui.windows.setShared;
+    import text = nts.uk.resource.getText;
 
     export class ViewModel {
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
+        
+        searchInfo: KnockoutObservable<SearchInfo> = ko.observable(new SearchInfo());
 
         constructor() {
-            let self = this,
-                layout = self.layout();
-
-        
+            let self = this;
         }
 
-        start() {
+        start(): JQueryPromise<any> {
             let self = this,
-                layout = self.layout(),
-                dto: any = getShared('JHN011C_PARAM');
-
-            layout.id = dto.id;
-            layout.code = dto.reportCode;
-            layout.name = dto.reportName;
-            
-
-            let cls: Array<any> = dto.classifications;
-
-            if (cls && cls.length) {
-                layout.itemsClassification(_.map(cls, x => _.omit(x, ["items", "renders"])));
-            } else {
-                layout.itemsClassification([]);
-            }
+                dfd = $.Deferred();
+            dfd.resolve();
+            return dfd.promise();
         }
 
-        pushData() {
-            let self = this,
-                layout: ILayout = ko.toJS(self.layout);
+        approvalAll() {
 
-            // check item tren man hinh
-            if (layout.itemsClassification.length == 0) {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_203" });
-                return;
-            }
-
-            let listItemIds = _(layout.itemsClassification)
-                .map(x => _.map(x.listItemDf, m => m))
-                .flatten()
-                .filter(x => !!x)
-                .groupBy((x: any) => x.id)
-                .pickBy(x => x.length > 1)
-                .keys()
-                .value();
-            // エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
-            if (!!listItemIds.length) {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_289" });
-                return;
-            }
-
-            setShared("JHN011C_VALUE", _.map(layout.itemsClassification, m => _.omit(m, ["items", "renders"])));
-
-            close();
-
-        }
-
-        close() {
-            setShared('JHN011C_VALUE', null);
-            close();
         }
     }
 
@@ -75,41 +31,40 @@ module jhn003.a.vm {
         listItemDf: Array<IItemDefinition>;
     }
 
-    interface IItemDefinition {
-        id: string;
-        perInfoCtgId?: string;
-        itemCode?: string;
-        itemName: string;
+    class SearchInfo {
+        appDate: KnockoutObservable<any> = ko.observable({});
+        inputName: KnockoutObservable<string> = ko.observable('');
+        approvalReport: KnockoutObservable<boolean> = ko.observable(true);
+        reportItems: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            { code: null, name: "" },
+            { code: "0", name: "育児休業申請届" },
+            { code: "1", name: "育児短時間勤務申請届" },
+            { code: "2", name: "介護休暇届" },
+            { code: "3", name: "介護休業申請届" }
+        ]);
+        reportId: KnockoutObservable<string> = ko.observable('');
+        approvalItems: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            { code: null, name: "" },
+            { code: "0", name: text("JHN003_A222_4_1_1") },
+            { code: "1", name: text("JHN003_A222_4_1_2") },
+            { code: "2", name: text("JHN003_A222_4_1_3") },
+            { code: "3", name: text("JHN003_A222_4_1_4") },
+            { code: "4", name: text("JHN003_A222_4_1_5") },
+            { code: "5", name: text("JHN003_A222_4_1_6") }
+        ]);
+        approvalStatus: KnockoutObservable<string> = ko.observable('');
+
+        constructor() {
+        }
     }
 
-    interface ILayout {
-        id: string;
+    class ItemModel {
         code: string;
         name: string;
-        editable?: boolean;
-        itemsClassification?: Array<IItemClassification>;
-    }
 
-    class Layout {
-        id: KnockoutObservable<string> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-        editable: KnockoutObservable<boolean> = ko.observable(true);
-        itemsClassification: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        constructor(param: ILayout) {
-            let self = this;
-
-            self.id(param.id);
-            self.code(param.code);
-            self.name(param.name);
-
-            if (param.editable != undefined) {
-                self.editable(param.editable);
-            }
-
-            // replace x by class that implement this interface
-            self.itemsClassification(param.itemsClassification || []);
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 
