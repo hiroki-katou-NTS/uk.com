@@ -11,10 +11,11 @@ public class FullJoinWwfmtApprovalPhase {
 	public String branchId;
 	public int approvalForm;
 	public int browsingPhase;
+	public int phaseAtr;
 	public String jobGCD;
 	public String employeeId;
 	public int approverOrder;
 	public int approvalAtr;
 	public int confirmPerson;
-	
+	public String specWkpID;
 }

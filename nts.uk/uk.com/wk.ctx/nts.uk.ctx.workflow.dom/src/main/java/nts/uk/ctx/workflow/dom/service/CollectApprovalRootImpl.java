@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -44,7 +47,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
@@ -400,66 +407,64 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 
 	private ApprovalRootState createFromApprovalPhaseList(String companyID, GeneralDate date,
 			List<ApprovalPhase> listApprovalPhase, String histotyID) {
-//		List<ApprovalPhaseState> listApprovalPhaseState = listApprovalPhase.stream().map(approvalPhase -> {
-//			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
-//			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
-//			.filter(approver -> Strings.isBlank(approver.getJobTitleId()))
-//			.map(approver -> {
-//				List<ApproverInfor> listApproverState = new ArrayList<>();
-//				listApproverState.add(
-//						new ApproverInfor(
-//								null, 
-//								approvalPhase.getPhaseOrder(), 
-//								approver.getApproverOrder(), 
-//								approver.getEmployeeId(),
-//								companyID,
-//								date));
-//				return ApprovalFrame.firstCreate(null, approvalPhase.getPhaseOrder(), approver.getApproverOrder(), approver.getConfirmPerson(), listApproverState);
-//			}).collect(Collectors.toList());
-//			resultApprovalFrame.addAll(listApprovalFrameByPerson);
+		List<ApprovalPhaseState> listApprovalPhaseState = listApprovalPhase.stream().map(approvalPhase -> {
+			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
+			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
+			.filter(approver -> Strings.isBlank(approver.getJobGCD()))
+			.map(approver -> {
+				List<ApproverInfor> listApproverState = new ArrayList<>();
+				listApproverState.add(
+						new ApproverInfor(
+								approver.getEmployeeId(),
+								ApprovalBehaviorAtr.UNAPPROVED, 
+								"", 
+								null,
+								""));
+				return new ApprovalFrame(
+						approver.getApproverOrder(), 
+						approver.getConfirmPerson(),
+						date,
+						listApproverState);
+			}).collect(Collectors.toList());
+			resultApprovalFrame.addAll(listApprovalFrameByPerson);
 			
-//			List<Approver> allListApproverByJob = approvalPhase.getApprovers().stream()
-//			.filter(approver -> !Strings.isBlank(approver.getJobTitleId()))
-//			.collect(Collectors.toList());
-//			Map<String, List<Approver>> findMap = allListApproverByJob.stream()
-//					.collect(Collectors.groupingBy(Approver::getJobTitleId));
-//			findMap.forEach((k,v) -> {
-//				List<ApproverInfor> listApproverStateByJob = v.stream()
-//						.map(approver -> new ApproverInfor(
-//								null, 
-//								approvalPhase.getPhaseOrder(), 
-//								approver.getApproverOrder(), 
-//								approver.getEmployeeId(),
-//								companyID,
-//								date))
-//						.collect(Collectors.toList()); 
-//						if(!CollectionUtil.isEmpty(listApproverStateByJob)){
-//							ApprovalFrame approvalFrameByJob = 
-//									ApprovalFrame.firstCreate(
-//											null, 
-//											approvalPhase.getPhaseOrder(), 
-//											listApproverStateByJob.get(0).getFrameOrder(), 
-//											v.get(0).getConfirmPerson(), 
-//											listApproverStateByJob);
-//							
-//							resultApprovalFrame.add(approvalFrameByJob);
-//						}
-//			});
-//			resultApprovalFrame.sort((a,b)-> a.getFrameOrder().compareTo(b.getFrameOrder()));
-//			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState(
-//					null, 
-//					approvalPhase.getPhaseOrder(), 
-//					ApprovalBehaviorAtr.UNAPPROVED, 
-//					EnumAdaptor.valueOf(approvalPhase.getApprovalForm().value, ApprovalForm.class), 
-//					resultApprovalFrame);
-//			return approvalPhaseState;
-//		}).sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
-//				.collect(Collectors.toList());
-//		return ApprovalRootState.builder()
-//				.historyID(histotyID)
-//				.listApprovalPhaseState(listApprovalPhaseState)
-//				.build();
-		return null;
+			List<Approver> allListApproverByJob = approvalPhase.getApprovers().stream()
+			.filter(approver -> !Strings.isBlank(approver.getJobGCD()))
+			.collect(Collectors.toList());
+			Map<String, List<Approver>> findMap = allListApproverByJob.stream()
+					.collect(Collectors.groupingBy(Approver::getJobGCD));
+			findMap.forEach((k,v) -> {
+				List<ApproverInfor> listApproverStateByJob = v.stream()
+						.map(approver -> new ApproverInfor(
+								approver.getEmployeeId(),
+								ApprovalBehaviorAtr.UNAPPROVED, 
+								"", 
+								null,
+								""))
+						.collect(Collectors.toList()); 
+				if(!CollectionUtil.isEmpty(listApproverStateByJob)){
+					ApprovalFrame approvalFrameByJob = 
+							new ApprovalFrame(
+									v.get(0).getApproverOrder(), 
+									v.get(0).getConfirmPerson(), 
+									date, 
+									listApproverStateByJob);
+					resultApprovalFrame.add(approvalFrameByJob);
+				}
+			});
+			resultApprovalFrame.sort((a,b) -> a.getFrameOrder() - b.getFrameOrder());
+			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState(
+					approvalPhase.getPhaseOrder(), 
+					ApprovalBehaviorAtr.UNAPPROVED, 
+					EnumAdaptor.valueOf(approvalPhase.getApprovalForm().value, ApprovalForm.class), 
+					resultApprovalFrame);
+			return approvalPhaseState;
+		}).sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.collect(Collectors.toList());
+		return ApprovalRootState.builder()
+				.historyID(histotyID)
+				.listApprovalPhaseState(listApprovalPhaseState)
+				.build();
 	}
 
 	@Override
