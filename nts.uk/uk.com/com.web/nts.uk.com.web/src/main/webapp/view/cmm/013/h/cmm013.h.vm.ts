@@ -6,21 +6,22 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         approverJobLst: KnockoutObservableArray<IApproverJob> = ko.observableArray([]);
         approverGroupLst: KnockoutObservableArray<IApproverGroup> = ko.observableArray([]);
         currentApproverGroup: KnockoutObservable<ApproverGroup> = ko.observable(new ApproverGroup({ approverGroupCD: "", approverGroupName: "", approverJobList: [] }));
-        currentApproverGroupCD: KnockoutObservableArray<string> = ko.observable();
-        currentApproverJobCD: KnockoutObservableArray<string> = ko.observable();
+        currentApproverGroupCD: KnockoutObservableArray<string> = ko.observable("");
+        currentApproverJobCD: KnockoutObservableArray<string> = ko.observable("");
         baseDate: any = moment.utc();
         listTitleInfo: any = [];
         isInsertNew: KnockoutObservableArray<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             self.currentApproverGroupCD.subscribe((value) => {
+                nts.uk.ui.errors.clearAll();
                 if(_.isEmpty(value)) {
                     self.isInsertNew(true);
                     self.currentApproverGroup().approverGroupCD("");
                     self.currentApproverGroup().approverGroupName("");
                     self.currentApproverGroup().approverJobList = []; 
                 } else {
-                    self.currentApproverGroup(self.getCurrentApproverGroup());      
+                    self.getCurrentApproverGroup(value);      
                     self.approverJobLst(self.getApproverJobLst(
                         self.listTitleInfo, 
                         _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
@@ -74,41 +75,38 @@ module nts.uk.com.view.cmm013.h.viewmodel {
         public initData(data, index?) {
             let self = this;  
             self.approverGroupLst(_.sortBy(data, o => o.approverGroupCD));
-            if(_.isEmpty(self.currentApproverGroupCD())) {
-                if(_.isEmpty(self.approverGroupLst())) {
-                    self.createNew();    
-                } else {
-                    self.isInsertNew(false);
-                    self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);     
-                }
+            if(_.isEmpty(self.approverGroupLst())) { 
+                self.createNew();
             } else {
-                let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroupCD());
-                if(containCD) {
-                    self.isInsertNew(false);
-                    self.currentApproverGroup(self.getCurrentApproverGroup());       
+                self.isInsertNew(false);
+                if(_.isEmpty(self.currentApproverGroup().approverGroupCD())) {
+                    self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);  
                 } else {
-                    if(_.isEmpty(self.approverGroupLst())) {
-                        self.currentApproverGroupCD("");     
+                    let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroup().approverGroupCD());
+                    if(containCD) {
+                        self.currentApproverGroupCD(self.currentApproverGroup().approverGroupCD());             
                     } else {
-                        self.isInsertNew(false);
                         if(index==_.size(self.approverGroupLst())) {
                             self.currentApproverGroupCD(self.approverGroupLst()[index-1].approverGroupCD);    
                         } else {
                             self.currentApproverGroupCD(self.approverGroupLst()[index].approverGroupCD);      
                         }
-                    }   
-                }      
+                    }      
+                }
             }
             self.approverJobLst(self.getApproverJobLst(
                 self.listTitleInfo, 
                 _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
             );
-            self.currentApproverJobCD(self.getCurrentApproverJobCD());  
+            self.currentApproverJobCD(self.getCurrentApproverJobCD()); 
         }
         
-        public getCurrentApproverGroup() {
-            let self = this;
-            return new ApproverGroup(_.find(self.approverGroupLst(), o => o.approverGroupCD == self.currentApproverGroupCD()));    
+        public getCurrentApproverGroup(value) {
+            let self = this,
+                approverGroup = _.find(self.approverGroupLst(), o => o.approverGroupCD == value);
+            self.currentApproverGroup().approverGroupCD(approverGroup.approverGroupCD);
+            self.currentApproverGroup().approverGroupName(approverGroup.approverGroupName);
+            self.currentApproverGroup().approverJobList = approverGroup.approverJobList;
         }
         
         public getCurrentApproverJob(currentCode: string) {
