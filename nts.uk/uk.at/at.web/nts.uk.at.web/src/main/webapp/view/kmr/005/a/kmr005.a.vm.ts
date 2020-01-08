@@ -160,7 +160,7 @@ module nts.uk.at.view.kmr005.a.viewmodel {
             if(nts.uk.ui.errors.hasError()) {
                 return;    
             }
-            if(_.isEmpty(self.employeeList())) {
+            if(_.isEmpty(self.selectedEmployeeCode())) {
                 dialog.alertError({ messageId : "Msg_1587" }).then(function(){
                     nts.uk.ui.block.clear();
                 });
