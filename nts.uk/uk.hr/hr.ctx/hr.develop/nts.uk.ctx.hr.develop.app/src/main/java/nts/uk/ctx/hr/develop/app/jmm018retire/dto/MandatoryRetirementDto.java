@@ -26,4 +26,19 @@ public class MandatoryRetirementDto {
 	
 	/** 希望コース申請条件 */
 	private PlanCourseTermDto planCourseApplyTerm;
+
+	public MandatoryRetirementDto(DateCaculationTermDto publicTerm, int reachedAgeTerm, DateTermDto retireDateTerm,
+			List<RetireTermDto> mandatoryRetireTerm, List<ReferItemDto> referInfo, boolean planCourseApplyFlg,
+			PlanCourseTermDto planCourseApplyTerm) {
+		super();
+		this.publicTerm = publicTerm;
+		this.reachedAgeTerm = reachedAgeTerm;
+		this.retireDateTerm = retireDateTerm;
+		this.mandatoryRetireTerm = mandatoryRetireTerm;
+		this.referInfo = referInfo;
+		this.planCourseApplyFlg = planCourseApplyFlg;
+		this.planCourseApplyTerm = planCourseApplyTerm;
+	}
+	
+	
 }
