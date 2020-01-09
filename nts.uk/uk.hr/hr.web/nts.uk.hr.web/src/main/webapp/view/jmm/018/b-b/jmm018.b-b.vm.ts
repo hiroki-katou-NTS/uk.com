@@ -79,10 +79,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             self.delChecked = ko.observable();
             
-            self.pathGet = ko.observable(`careermgmt/careerpath/getDateHistoryItem`);
-            self.pathAdd = ko.observable(`careermgmt/careerpath/saveDateHistoryItem`);
-            self.pathUpdate = ko.observable(`careermgmt/careerpath/updateDateHistoryItem`);
-            self.pathDelete = ko.observable(`careermgmt/careerpath/removeDateHistoryItem`);
+            self.pathGet = ko.observable(`employmentRegulationHistory/getDateHistoryItem`);
+            self.pathAdd = ko.observable(`employmentRegulationHistory/saveDateHistoryItem`);
+            self.pathUpdate = ko.observable(`employmentRegulationHistory/updateDateHistoryItem`);
+            self.pathDelete = ko.observable(`employmentRegulationHistory/removeDateHistoryItem`);
             
             self.commandAdd = (masterId, histId, startDate, endDate) => {
                 return { startDate: moment(startDate).format("YYYY/MM/DD") }

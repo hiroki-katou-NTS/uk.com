@@ -5,37 +5,15 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="jmm018.b-b.style.css" />
-			<com:scriptfile path="jmm018.b-b.start.js" />
-			<com:scriptfile path="jmm018.b-b.vm.js" />
-			<com:scriptfile path="jmm018.b-b.service.js" />
+	<ui:composition>
 
-
-			<com:EnumScript>
-				nts.uk.ctx.sys.shared.dom.toppagealarmset.UseAtr
-				nts.uk.ctx.hr.shared.dom.enumeration.MonthSelectItem
-				nts.uk.ctx.hr.shared.dom.enumeration.DateSelectItem
-			</com:EnumScript>
-			
-			<com:ValidatorScript>
-				nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_0_99
-				nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.primitiveValue.DesiredCourseApplicationAge
-			</com:ValidatorScript>
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<div class="container">
-					<button class="proceed" tabindex="1" data-bind="click: register, enable: isLatestHis">#{i18n.getText('JMM018_B3_3')}</button>
-				</div>
+			<div class="sidebar-content-header">
+				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
+				<button class="proceed" tabindex="1" data-bind="click: register, enable: isLatestHis">#{i18n.getText('JMM018_B3_3')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container cf">
 					<div style="height: 150px;">
-					
 						<assy-com params="screenMode: screenMode, 
 						masterId: masterId, 
 						histList: histList, 
@@ -397,7 +375,6 @@
 					</div>
 				</div>
 			</div>
-		</ui:define>
 	</ui:composition>
 </body>
 </html>
