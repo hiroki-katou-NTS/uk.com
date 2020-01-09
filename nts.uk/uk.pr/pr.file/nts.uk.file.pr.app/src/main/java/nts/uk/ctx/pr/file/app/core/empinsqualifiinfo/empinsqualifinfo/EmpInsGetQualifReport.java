@@ -166,7 +166,9 @@ public class EmpInsGetQualifReport {
 
     private String officePostalCode;
 
-    private String officeLocation;
+    private String officeLocation_1;
+
+    private String officeLocation_2;
 
     private String businessOwnerName;
 

@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.insurenamechangenoti;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -241,9 +242,14 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         //会社名・住所を出力
         //fill to A2_1
+        //Set style for item K23
+        Style style = ws.getCells().get("K23").getStyle();
+        style.setTextWrapped(true);
+        ws.getCells().get("K23").setStyle(style);
+
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() + company.getAdd_2(),60));
+            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() ,60) + "\n" + (company.getAdd_2() != null ? company.getAdd_2() : "") );
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
@@ -254,7 +260,8 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
                 }
                 String address1 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress1().get().v() : "";
                 String address2 = data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().isPresent() ? data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getAddress2().get().v() : "";
-                address = formatTooLongText(address1 + address2, 60);
+                address = formatTooLongText(address1, 60) + "\n" + address2;
+
                 ws.getCells().get("J22").putValue(data.getSocialInsuranceOffice().getBasicInformation().getAddress().isPresent() && data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().isPresent() ? this.formatPostalCode(data.getSocialInsuranceOffice().getBasicInformation().getAddress().get().getPostalCode().get().v()): null);
                 ws.getCells().get("K23").putValue(address);
                 ws.getCells().get("K24").putValue(data.getSocialInsuranceOffice().getName().v());

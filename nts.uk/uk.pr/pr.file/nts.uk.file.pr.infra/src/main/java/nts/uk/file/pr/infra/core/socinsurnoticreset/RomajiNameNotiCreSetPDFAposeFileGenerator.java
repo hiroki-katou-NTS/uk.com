@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -110,9 +111,14 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 selectShapes(worksheet,romajiNameNotiCreSetExport.getSpouseSetOther() , i, "A4_4" );
             }
 
+            //Set style for item A3_3
+            Style style = worksheet.getRangeByName(i + "!A3_3").get(0,0).getStyle();
+            style.setTextWrapped(true);
+            worksheet.getRangeByName(i + "!A3_3").setStyle(style);
+
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd()) : " 〒　　　　　－"));
-                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(formatTooLongText(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): "", 60)));
+                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor == null ? "" : formatTooLongText(companyInfor.getAdd_1(), 60) + "\n" + (companyInfor.getAdd_2() != null ? companyInfor.getAdd_2() : "")));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ? companyInfor.getCompanyName(): ""));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ? companyInfor.getRepname(): ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum(), 1) + "(" + formatPhone( companyInfor.getPhoneNum(), 2) +")" + formatPhone( companyInfor.getPhoneNum(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
@@ -123,13 +129,14 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 String add2 = romajiNameNotiCreSetExport.getAddress2();
                 StringBuffer add = new StringBuffer("");
                 if(add1 != null ){
-                    add.append(add1);
+                    add.append(formatTooLongText(add1, 60));
                 }
                 if(add2 != null ){
+                    add.append("\n");
                     add.append(add2);
                 }
 
-                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(formatTooLongText(add.toString(), 60)));
+                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(add.toString()));
                 worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(romajiNameNotiCreSetExport.getName(), ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(romajiNameNotiCreSetExport.getPhoneNumber()!= null ? formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 1)+"("+formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 2)+")"+formatPhone(romajiNameNotiCreSetExport.getPhoneNumber(), 3) :"（　　　　　　　　　）　　　　　　　　　－"));
                 worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(romajiNameNotiCreSetExport.getRepresentativeName(),""));

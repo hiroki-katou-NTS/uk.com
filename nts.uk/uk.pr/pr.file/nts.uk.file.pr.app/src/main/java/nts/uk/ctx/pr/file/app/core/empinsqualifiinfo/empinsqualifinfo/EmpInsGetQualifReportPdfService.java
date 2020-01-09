@@ -258,7 +258,8 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         // A3_1
                         tempReport.setOfficePostalCode(companyInfo.getPostCd());
                         // A3_2
-                        tempReport.setOfficeLocation(companyInfo.getAdd_1() + companyInfo.getAdd_2());
+                        tempReport.setOfficeLocation_1(companyInfo.getAdd_1());
+                        tempReport.setOfficeLocation_2(companyInfo.getAdd_2());
                         // A3_3
                         tempReport.setBusinessOwnerName(companyInfo.getRepname());
                         // A3_4
@@ -273,7 +274,8 @@ public class EmpInsGetQualifReportPdfService extends ExportService<EmpInsGetQual
                         val address1 = streetAddress.getAddress1().map(PrimitiveValueBase::v).orElse("");
                         val address2 = streetAddress.getAddress2().map(PrimitiveValueBase::v).orElse("");
                         // A3_2
-                        tempReport.setOfficeLocation(address1 + address2);
+                        tempReport.setOfficeLocation_1(address1);
+                        tempReport.setOfficeLocation_2(address2);
                         // A3_3
                         tempReport.setBusinessOwnerName(laborInsuranceOffices.get(laborCode).getBasicInformation().getRepresentativeName().map(PrimitiveValueBase::v).orElse(""));
                         // A3_4

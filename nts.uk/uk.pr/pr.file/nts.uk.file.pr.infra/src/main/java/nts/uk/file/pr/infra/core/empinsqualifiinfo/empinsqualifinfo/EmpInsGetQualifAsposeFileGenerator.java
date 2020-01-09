@@ -141,10 +141,12 @@ public class EmpInsGetQualifAsposeFileGenerator extends AsposePdfReportGenerator
                 textBuilder.appendText(setValue(415, 291, contractWorkAtr, 16, false));
                 // A3_1
                 String postalCode = data.getOfficePostalCode() == null ? "" : data.getOfficePostalCode();
-                textBuilder.appendText(setValue(110, 179, formatPostalCode(postalCode), 9, false));
+                textBuilder.appendText(setValue(110, 190, formatPostalCode(postalCode), 9, false));
                 // A3_2
-                String officeLocation = data.getOfficeLocation() == null ? "" : data.getOfficeLocation();
-                textBuilder.appendText(setValue(160, 180, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 8, false));
+                String officeLocation = data.getOfficeLocation_1() == null ? "" : data.getOfficeLocation_1();
+                textBuilder.appendText(setValue(110, 180, formatTooLongText(officeLocation, LOCATION_MAX_BYTE), 8, false));
+                String officeLocation_2 = data.getOfficeLocation_2() == null ? "" : data.getOfficeLocation_2();
+                textBuilder.appendText(setValue(110, 170, officeLocation_2, 8, false));
                 // A3_4
                 String businessOwnerName = data.getBusinessOwnerName() == null ? "" : data.getBusinessOwnerName();
                 textBuilder.appendText(setValue(110, 151, formatTooLongText(businessOwnerName, BUSINESS_NAME_MAX_BYTE), 9, false));

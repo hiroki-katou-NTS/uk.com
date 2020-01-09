@@ -1,6 +1,7 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
 import com.aspose.cells.AutoFitterOptions;
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -87,7 +88,10 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
         ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getOfficePostalCode(),1));
         ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getOfficePostalCode(),2));
-        ws.getRangeByName(sheetName + "!A1_5").setValue(formatTooLongText(element.getOfficeAddress1() + element.getOfficeAddress2(), 60));
+        Style style = new Style();
+        style.setTextWrapped(true);
+        ws.getRangeByName(sheetName + "!A1_5").setStyle(style);
+        ws.getRangeByName(sheetName + "!A1_5").setValue(formatTooLongText(element.getOfficeAddress1(), 60) + "\n" + (element.getOfficeAddress2() != null ? element.getOfficeAddress2() : ""));
         ws.getRangeByName(sheetName +"!A1_6").setValue(element.getBusinessName());
         ws.getRangeByName(sheetName + "!A1_7").setValue(element.getBusinessName1());
         //ws.getRangeByName(this.getRangeName(sheetName,"A1_8", stt)).setValue(element.getBusinessName1());
