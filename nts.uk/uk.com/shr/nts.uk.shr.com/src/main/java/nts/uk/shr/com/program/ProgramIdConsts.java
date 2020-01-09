@@ -578,6 +578,8 @@ public class ProgramIdConsts {
 	public static final String CMM013E = "CMM013E";
 
 	public static final String CMM013F = "CMM013F";
+	
+	public static final String CMM013H = "CMM013H";
 
 	public static final String CDL004 = "CDL004";
 

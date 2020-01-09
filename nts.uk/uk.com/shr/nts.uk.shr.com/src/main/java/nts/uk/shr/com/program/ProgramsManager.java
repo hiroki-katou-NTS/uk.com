@@ -1616,6 +1616,9 @@ public class ProgramsManager {
 
     public static final Program CMM013F = new Program(WebAppId.COM, ProgramIdConsts.CMM013F, "CMM013_58",
             "/view/cmm/013/f/index.xhtml");
+    
+    public static final Program CMM013H = new Program(WebAppId.COM, ProgramIdConsts.CMM013H, "CMM013_69",
+            "/view/cmm/013/h/index.xhtml");
 
     public static final Program CDL004 = new Program(WebAppId.COM, ProgramIdConsts.CDL004, "CDL004_1",
             "/view/cdl/004/a/index.xhtml");
