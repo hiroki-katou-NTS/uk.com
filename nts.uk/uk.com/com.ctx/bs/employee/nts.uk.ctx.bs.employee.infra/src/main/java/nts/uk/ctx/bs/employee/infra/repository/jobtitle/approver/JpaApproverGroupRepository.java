@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -33,6 +34,8 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	
 	private static final String FIND_ALL;
 	
+	private static final String FIND_BY_CODE;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
@@ -40,6 +43,12 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 		builderString.append("on a.CID = b.CID and a.APPROVER_G_CD = b.APPROVER_G_CD ");
 		builderString.append("where a.CID = 'companyID'");
 		FIND_ALL = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT * FROM BSYMT_APPROVER_GROUP a LEFT JOIN BSYMT_APPROVER_G_LIST_JOB b ");
+		builderString.append("on a.CID = b.CID and a.APPROVER_G_CD = b.APPROVER_G_CD ");
+		builderString.append("where a.CID = 'companyID' AND a.APPROVER_G_CD = 'approverGCD'");
+		FIND_BY_CODE = builderString.toString();
 	}
 	
 	private static final String GET_ALL = "SELECT c FROM BsymtApproverGroup c"
@@ -134,6 +143,22 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	@Override
 	public void insertAll(List<ApproverGroup> approverGroupLst) {
 		commandProxy().insertAll(approverGroupLst.stream().map(x -> BsymtApproverGroup.fromDomain(x)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public Optional<ApproverGroup> findByCode(String companyID, String approverGroupCD) {
+		String sql = FIND_BY_CODE.replace("companyID", companyID).replace("approverGCD", approverGroupCD);
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			ResultSet rs = stmt.executeQuery();
+			List<ApproverGroup> approverGroupLst = toDomain(createFullJoin(rs));
+			if(approverGroupLst.isEmpty()) {
+				return Optional.empty();
+			} else {
+				return Optional.of(approverGroupLst.get(0));
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

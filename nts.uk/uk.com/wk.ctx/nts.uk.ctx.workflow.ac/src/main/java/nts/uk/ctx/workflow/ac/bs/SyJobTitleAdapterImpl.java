@@ -90,4 +90,9 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 				.map(c -> new JobGInfor(c.getCode(), c.getName()))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<String> getJobIDFromGroup(String companyID, String approverGroupCD) {
+		return syJobTitlePub.getJobIDFromGroup(companyID, approverGroupCD);
+	}
 }

@@ -502,4 +502,11 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<String> getJobIDFromGroup(String companyID, String approverGroupCD) {
+		return repoApprG.findByCode(companyID, approverGroupCD).map(x -> {
+			return x.getApproverJobList().stream().map(y -> y.getJobID()).collect(Collectors.toList());
+		}).orElse(Collections.emptyList());
+	}
+
 }

@@ -127,5 +127,13 @@ public interface SyJobTitlePub {
 	 * @return
 	 */
 	List<JobGInforEx> getJobGInfor(String companyId, List<String> jobGCd);
+	
+	/**
+	 * 承認者Gコードから職位情報を取得
+	 * @param companyID
+	 * @param approverGroupCD
+	 * @return
+	 */
+	List<String> getJobIDFromGroup(String companyID, String approverGroupCD); 
 
 }

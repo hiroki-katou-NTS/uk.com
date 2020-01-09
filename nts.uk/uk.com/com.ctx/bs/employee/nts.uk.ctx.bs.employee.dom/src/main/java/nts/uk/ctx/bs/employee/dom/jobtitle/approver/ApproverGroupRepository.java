@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.approver;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ApproverGroupRepository {
 	
@@ -17,5 +18,7 @@ public interface ApproverGroupRepository {
 	public List<ApproverGInfo> findByCd(String companyID, List<String> jobGCd);
 	
 	public void insertAll(List<ApproverGroup> approverGroupLst);
+	
+	public Optional<ApproverGroup> findByCode(String companyID, String approverGroupCD);
 	
 }
