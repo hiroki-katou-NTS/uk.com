@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.shared.ac.employee;
 
 import java.util.Optional;
-
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
