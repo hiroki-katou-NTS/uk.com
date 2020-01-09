@@ -6,7 +6,7 @@ package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums;
  */
 public enum RetireDateRule {
 
-	THE_DAY_OF_REACHING_RETIREMENT_AGE (0,"定年に達した日"),
+	THE_DAY_OF_REACHING_RETIREMENT_AGE (0,"定年年齢に達した日"),
 	
 	RETIREMENT_DATE_DESIGNATED_DATE (1,"退職日指定日"),
 	

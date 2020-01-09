@@ -4,7 +4,8 @@ module nts.uk.com.view.jdl0110.a {
     import SelectType = kcp.share.list.SelectType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    import TreeType = kcp.share.tree.TreeType;
+    import StartMode = kcp.share.tree.StartMode;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
         /**
@@ -21,6 +22,9 @@ module nts.uk.com.view.jdl0110.a {
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
 
+            // 部門対応 #106784
+            startMode: StartMode;
+
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -30,6 +34,7 @@ module nts.uk.com.view.jdl0110.a {
                 self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
                 self.restrictionOfReferenceRange = true;
+
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(moment(inputCDL008.baseDate, "YYYY-MM-DD"));
@@ -51,18 +56,21 @@ module nts.uk.com.view.jdl0110.a {
 
                     // If Selection Mode is Multiple Then not show Unselected Row
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
+
+                    // 部門対応 #106784
+                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultipleSelect,
                     isMultipleUse: self.isMultipleUse,
-                    treeType: TreeType.WORK_PLACE,
+                    startMode: self.startMode,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    selectedWorkplaceId: null,
+                    selectedId: null,
                     maxRows: 12,
                     tabindex: 1,
                     systemType: self.selectedSystemType,
@@ -70,10 +78,14 @@ module nts.uk.com.view.jdl0110.a {
                     isShowNoSelectRow: self.isDisplayUnselect()
                 };
                 if (self.isMultipleSelect) {
-                    self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
+                    self.workplaces.selectedId = self.selectedMulWorkplace;
                 }
                 else {
-                    self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
+                    self.workplaces.selectedId = self.selectedSelWorkplace;
+                }
+
+                if (self.startMode == StartMode.DEPARTMENT) {
+                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
                 }
             }
 
@@ -84,12 +96,20 @@ module nts.uk.com.view.jdl0110.a {
                 var self = this;
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 }
@@ -98,14 +118,7 @@ module nts.uk.com.view.jdl0110.a {
                 if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                let selected = [];
-                let dataList: UnitModel[] = nts.uk.util.flatArray($("#workplaceList").getDataList(), 'childs');
-                _.forEach(dataList, function(value) {
-                    if(_.includes(selectedCode, value.workplaceId)){
-                        selected.push(value);
-                    }
-                });
-                nts.uk.ui.windows.setShared('outputCDL008', selected);
+                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
                 nts.uk.ui.windows.setShared('baseDateCDL008', self.baseDate());
                 nts.uk.ui.windows.close();
             }

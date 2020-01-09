@@ -297,7 +297,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		for (Employment employment : listEmployment) {
 			EmploymentInfoExport employmentInfoExport = EmploymentInfoExport.builder()
 					.companyId(employment.getCompanyId().toString())
-					.employmentCode(employment.getEmpExternalCode().toString())
+					.employmentCode(employment.getEmploymentCode() == null ? null : employment.getEmploymentCode().toString())
 					.employmentName(getEmploymentName == true ? employment.getEmploymentName().toString() : null)
 					.empExternalCode(getEmpExternalCode == true ? employment.getEmpExternalCode().toString() : null)
 					.memo(getMemo == true ? employment.getMemo().toString() : null)

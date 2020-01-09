@@ -14,11 +14,8 @@ module nts.uk.com.view.ccg001.a {
             isAdvancedSearchTab: KnockoutObservable<boolean>;
             isAllReferableEmployee: KnockoutObservable<boolean>;
             isOnlyMe: KnockoutObservable<boolean>;
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            isEmployeeOfDepartment: KnockoutObservable<boolean>;
-//            isEmployeeDepartmentFollow: KnockoutObservable<boolean>;
-//            showDepartment: KnockoutObservable<boolean>; // 部門条件
-            //end
+            isEmployeeOfDepartment: KnockoutObservable<boolean>;
+            isEmployeeDepartmentFollow: KnockoutObservable<boolean>;
             isEmployeeOfWorkplace: KnockoutObservable<boolean>;
             isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
             isMutipleCheck: KnockoutObservable<boolean>;
@@ -28,6 +25,7 @@ module nts.uk.com.view.ccg001.a {
             baseDate: KnockoutObservable<moment.Moment>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
             showEmployment: KnockoutObservable<boolean>; // 雇用条件
+            showDepartment: KnockoutObservable<boolean>; // 部門条件
             showWorkplace: KnockoutObservable<boolean>; // 職場条件
             showClassification: KnockoutObservable<boolean>; // 分類条件
             showJobTitle: KnockoutObservable<boolean>; // 職位条件
@@ -85,19 +83,17 @@ module nts.uk.com.view.ccg001.a {
                 self.isAdvancedSearchTab = ko.observable(true);
                 self.isAllReferableEmployee = ko.observable(true);
                 self.isOnlyMe = ko.observable(true);
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.isEmployeeOfDepartment = ko.observable(true);
-//                self.isEmployeeDepartmentFollow = ko.observable(true);  
-//                self.showDepartment = ko.observable(true); // 部門条件
-                //end
+                self.isEmployeeOfDepartment = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isEmployeeOfWorkplace = ko.observable(true);
+                self.isEmployeeDepartmentFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
                 self.isSelectAllEmployee = ko.observable(true);
                 self.baseDate = ko.observable(moment());
                 self.periodStartDate = ko.observable(moment());
                 self.periodEndDate = ko.observable(moment());
                 self.showEmployment = ko.observable(true);
+                self.showDepartment = ko.observable(true); // 部門条件
                 self.showWorkplace = ko.observable(true); // 職場条件
                 self.showClassification = ko.observable(true); // 分類条件
                 self.showJobTitle = ko.observable(true); // 職位条件
@@ -165,18 +161,14 @@ module nts.uk.com.view.ccg001.a {
                     /** Quick search tab options */
                     showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
                     showOnlyMe: self.isOnlyMe(), // 自分だけ
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                    showSameDepartment: self.isEmployeeOfDepartment(), //同じ部門の社員
-//                    showSameDepartmentAndChild: self.isEmployeeDepartmentFollow(), // 同じ部門とその配下の社員
-                    //end
+                    showSameDepartment: self.isEmployeeOfDepartment(), //同じ部門の社員
+                    showSameDepartmentAndChild: self.isEmployeeDepartmentFollow(), // 同じ部門とその配下の社員
                     showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
                     showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
 
                     /** Advanced search properties */
                     showEmployment: self.showEmployment(), // 雇用条件
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                    showDepartment: self.showDepartment(), // 部門条件
-                    //end
+                    showDepartment: self.showDepartment(), // 部門条件
                     showWorkplace: self.showWorkplace(), // 職場条件
                     showClassification: self.showClassification(), // 分類条件
                     showJobTitle: self.showJobTitle(), // 職位条件
