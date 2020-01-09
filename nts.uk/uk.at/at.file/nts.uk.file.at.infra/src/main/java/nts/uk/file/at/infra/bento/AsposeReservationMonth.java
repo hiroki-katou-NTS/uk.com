@@ -219,9 +219,9 @@ public class AsposeReservationMonth extends AsposeCellsReportGenerator implement
 		if(endDate.year() - startDate.year() > 0) {
 			int startYear = startDate.year();
 			int endYear = endDate.year();
-			int beforeDateNo = GeneralDate.fromString(startYear + "/12/31", DATE_FORMAT).compareTo(startDate);
-			int afterDateNo = endDate.compareTo(GeneralDate.fromString(endYear + "/01/01", DATE_FORMAT));
-			return beforeDateNo + afterDateNo;
+			GeneralDate beforeYearEndDate = GeneralDate.fromString(startYear + "/12/31", DATE_FORMAT);
+			GeneralDate afterYearStartDate = GeneralDate.fromString(endYear + "/01/01", DATE_FORMAT);
+			return endDate.dayOfYear() - afterYearStartDate.dayOfYear() + beforeYearEndDate.dayOfYear() - startDate.dayOfYear() + 1;
 		} else {
 			return endDate.dayOfYear() - startDate.dayOfYear();
 		}
