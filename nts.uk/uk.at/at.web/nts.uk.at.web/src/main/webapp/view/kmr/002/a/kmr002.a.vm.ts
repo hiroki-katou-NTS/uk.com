@@ -35,6 +35,7 @@ module nts.uk.at.view.kmr002.a.model {
         isError: KnockoutObservable<boolean> = ko.observable(false);
         lunchText: KnockoutObservable<string> = ko.observable('');
         dinnerText: KnockoutObservable<string> = ko.observable('');
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
         isEnableLunch: KnockoutObservable<boolean> = ko.observable(true);
         isEnableDinner: KnockoutObservable<boolean> = ko.observable(true);
         isVisible: KnockoutObservable<boolean> = ko.observable(false);
@@ -58,7 +59,10 @@ module nts.uk.at.view.kmr002.a.model {
 
                 let momentDate = moment(value);
 
-                if (momentDate instanceof moment && !momentDate.isValid()) return;
+                if (momentDate instanceof moment && !momentDate.isValid()) {
+                    self.isEnable(false);
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 service.startScreen({
 
@@ -141,7 +145,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.menuDinner.valueHasMutated();
             }
             if ((self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0)
-                ||(self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0)) {
+                || (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0)) {
                 error({ messageId: "Msg_1589" });
             }
 
@@ -227,11 +231,10 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this;
             self.priceLunch(0);
             self.lunchCount(0);
-            self.txtPriceLunch('');
-            self.lunch('');
+            self.txtPriceLunch(getText('KMR002_11', [0]));
+            self.lunch(getText('KMR002_10', [self.lunchText(), 0]));
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
-                self.sum('');
-                self.txtPriceSum('');
+                self.caculatorSum(0, 0);
             } else if (self.listBentoOrderLunch().length == 0) {
                 self.caculatorSum(self.priceDinner(), self.dinnerCount());
             }
@@ -249,11 +252,11 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this;
             self.priceDinner(0);
             self.dinnerCount(0);
-            self.txtPriceDinner('');
-            self.dinner('');
+            self.txtPriceDinner(getText('KMR002_11', [0]));
+            self.dinner(getText('KMR002_10', [self.dinnerText(), 0]));
             if (self.priceLunch() == 0 && self.priceDinner() == 0) {
                 self.sum('');
-                self.txtPriceSum('');
+                self.caculatorSum(0, 0);
             } else if (self.listBentoOrderDinner().length == 0) {
                 self.caculatorSum(self.priceLunch(), self.lunchCount());
             }
@@ -266,12 +269,12 @@ module nts.uk.at.view.kmr002.a.model {
                 self.caculatorSum(self.priceLunch() + self.priceDinner(), self.lunchCount() + self.dinnerCount());
             });
         }
-        
+
         public caculatorSum(price: number, count: number): void {
             let self = this;
             self.txtPriceSum(getText('KMR002_11', [price]));
             self.sum(getText('KMR002_12', [count]));
-            
+
         }
 
         public initTime(data: any, index: number) {
@@ -288,20 +291,33 @@ module nts.uk.at.view.kmr002.a.model {
                 self.setDisPlay(false);
             } else if (dateSelect < dateNow) {
                 self.isVisible(true);
-                self.setDisPlay(false);
                 self.textError(getText('KMR002_9'));
+                self.setDisPlay(false);
             } else if (dateSelect == dateNow) {
                 if (timeSt <= timeNow && timeNow <= end) {
                     self.isVisible(false);
-                    self.setDisPlay(true);
+                    self.isError(false);
+                    if (self.mealSelected() == 1) {
+                        self.isEnableLunch(true);
+                    } else {
+                        self.isEnableDinner(true);
+                    }
                 } else {
                     self.isVisible(true);
-                    self.setDisPlay(true);
+                    self.isError(false);
+                    if (self.mealSelected() == 1) {
+                        self.isEnableLunch(false);
+                    } else {
+                        self.isEnableDinner(false);
+                    }
                 }
+                self.isEnable((!self.isEnableLunch() && !self.isEnableDinner()) ? false : true);
+                
             } else {
                 self.isVisible(false);
                 self.setDisPlay(true);
             }
+
             self.startTime.valueHasMutated();
             self.endTime.valueHasMutated();
         }
@@ -311,6 +327,7 @@ module nts.uk.at.view.kmr002.a.model {
             self.isError(!value);
             self.isEnableLunch(value);
             self.isEnableDinner(value);
+            self.isEnable(value);
         }
 
         public updateOrderLunch(frameNo: number): void {
@@ -447,16 +464,17 @@ module nts.uk.at.view.kmr002.a.model {
                 if (detailLst.length == 0) {
                     error({ messageId: "Msg_1589" });
                     nts.uk.ui.block.clear();
-                } else {
-                    service.register(command).done((data) => {
-                        info({ messageId: "Msg_15" });
-                        self.isUpdate(true);
-                    }).fail(() => {
-                        error({ messageId: "Msg_1585" });
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                    return;
                 }
+                service.register(command).done((data) => {
+                    info({ messageId: "Msg_15" });
+                    self.isUpdate(true);
+                }).fail(() => {
+                    error({ messageId: "Msg_1585" });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+
             }
         }
 
