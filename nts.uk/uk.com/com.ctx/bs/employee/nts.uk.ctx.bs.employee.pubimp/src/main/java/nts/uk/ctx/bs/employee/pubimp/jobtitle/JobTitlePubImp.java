@@ -505,7 +505,10 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public List<String> getJobIDFromGroup(String companyID, String approverGroupCD) {
 		return repoApprG.findByCode(companyID, approverGroupCD).map(x -> {
-			return x.getApproverJobList().stream().map(y -> y.getJobID()).collect(Collectors.toList());
+			return x.getApproverJobList().stream()
+					.sorted((a,b) -> a.getOrder() - b.getOrder())
+					.map(y -> y.getJobID())
+					.collect(Collectors.toList());
 		}).orElse(Collections.emptyList());
 	}
 
