@@ -20,6 +20,7 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                     self.currentApproverGroup().approverGroupCD("");
                     self.currentApproverGroup().approverGroupName("");
                     self.currentApproverGroup().approverJobList = []; 
+                    self.approverJobLst([]);
                 } else {
                     self.getCurrentApproverGroup(value);      
                     self.approverJobLst(self.getApproverJobLst(
@@ -77,28 +78,29 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             self.approverGroupLst(_.sortBy(data, o => o.approverGroupCD));
             if(_.isEmpty(self.approverGroupLst())) { 
                 self.createNew();
-            } else {
-                self.isInsertNew(false);
-                if(_.isEmpty(self.currentApproverGroup().approverGroupCD())) {
-                    self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD);  
-                } else {
-                    let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroup().approverGroupCD());
-                    if(containCD) {
-                        self.currentApproverGroupCD(self.currentApproverGroup().approverGroupCD());             
-                    } else {
-                        if(index==_.size(self.approverGroupLst())) {
-                            self.currentApproverGroupCD(self.approverGroupLst()[index-1].approverGroupCD);    
-                        } else {
-                            self.currentApproverGroupCD(self.approverGroupLst()[index].approverGroupCD);      
-                        }
-                    }      
-                }
+                return;
+            } 
+            self.isInsertNew(false);
+            if(_.isEmpty(self.currentApproverGroup().approverGroupCD())) {
+                self.currentApproverGroupCD(_.first(self.approverGroupLst()).approverGroupCD); 
+                return; 
             }
-            self.approverJobLst(self.getApproverJobLst(
-                self.listTitleInfo, 
-                _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
-            );
-            self.currentApproverJobCD(self.getCurrentApproverJobCD()); 
+            let containCD = _.includes(_.map(self.approverGroupLst(), o => o.approverGroupCD), self.currentApproverGroup().approverGroupCD());
+            if(containCD) {
+                self.currentApproverGroupCD(self.currentApproverGroup().approverGroupCD());       
+                self.getCurrentApproverGroup(self.currentApproverGroupCD());
+                self.approverJobLst(self.getApproverJobLst(
+                    self.listTitleInfo, 
+                    _.map(_.sortBy(self.currentApproverGroup().approverJobList, a => a.order), o => o.jobID))
+                );
+                self.currentApproverJobCD(self.getCurrentApproverJobCD()); 
+                return;
+            }
+            if(index==_.size(self.approverGroupLst())) {
+                self.currentApproverGroupCD(self.approverGroupLst()[index-1].approverGroupCD);    
+            } else {
+                self.currentApproverGroupCD(self.approverGroupLst()[index].approverGroupCD);      
+            }
         }
         
         public getCurrentApproverGroup(value) {
