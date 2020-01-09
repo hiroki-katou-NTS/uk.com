@@ -15,8 +15,8 @@
 
 			<script>
 				var dialogSize = {
-					width : 650,
-					height : 490
+					width : 660,
+					height : 475
 				};
 			</script>
 
@@ -47,8 +47,8 @@
 														dataSource: approverGroupLst,
 														primaryKey: 'approverGroupCD',
 														columns: ko.observableArray([
-											                { headerText: '#{i18n.getText('CMM013_46')}', key: 'approverGroupCD', width: 100 },
-											                { headerText: '#{i18n.getText('CMM013_47')}', key: 'approverGroupName', width: 150 }
+											                { headerText: '#{i18n.getText('CMM013_46')}', key: 'approverGroupCD', width: 70 },
+											                { headerText: '#{i18n.getText('CMM013_47')}', key: 'approverGroupName', width: 180 }
 											            ]),
 														value: currentApproverGroupCD
 													}"></table>
@@ -78,7 +78,7 @@
 														value: currentApproverGroup().approverGroupName,
 														constraint: 'ApproverName',
 														option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-											            	width: '150px',
+											            	width: '160px',
 											            })),
 														required: true,
 														enable: true }" />	
@@ -97,12 +97,12 @@
 					<div class="table valign-center control-group">
 						<div class="cell">
 							<table id="job-list" data-bind="ntsGridList: {								
-														height: 200,
+														height: 185,
 														dataSource: approverJobLst,
 														primaryKey: 'jobCD',
 														columns: ko.observableArray([
-											                { headerText: '#{i18n.getText('CMM013_46')}', key: 'jobCD', width: 100 },
-											                { headerText: '#{i18n.getText('CMM013_47')}', key: 'jobName', width: 150 }
+											                { headerText: '#{i18n.getText('CMM013_46')}', key: 'jobCD', width: 70 },
+											                { headerText: '#{i18n.getText('CMM013_47')}', key: 'jobName', width: 190 }
 											            ]),
 														value: currentApproverJobCD
 													}"></table>	
