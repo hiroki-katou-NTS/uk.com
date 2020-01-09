@@ -115,10 +115,11 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             let self = this;
             return _.first(_.find(self.approverGroupLst(), o => o.approverGroupCD == currentCode).approverJobList).jobCD;    
         }
-    
-        public getApproverJobLst(listTitleInfo: any, output: any) {
+        
+        /*
+        public getApproverJobLst(listTitleInfo: any, sortLst: any) {
             let self = this;
-            return _.chain(output)
+            return _.chain(sortLst)
                     .map(o => {
                         let info = _.find(listTitleInfo, a => a.id == o);
                         if(info) {
@@ -132,7 +133,47 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                         }    
                     })
                     .filter(o => !_.isNull(o))
+                    .sortBy(o => o.jobCD)
                     .value();
+        }
+        */
+        
+        public getApproverJobLst(listTitleInfo: any, codeLst: any) {
+            let self = this,
+                sortByOrderLst = _.chain(self.currentApproverGroup().approverJobList)
+                                    .filter(o => _.includes(codeLst, o.jobID))
+                                    .sortBy(o => o.order)
+                                    .map(o => {
+                                        let info = _.find(listTitleInfo, a => a.id == o.jobID);
+                                        if(info) {
+                                            return _.assign({
+                                                jobID: info.id,
+                                                jobCD: info.code,
+                                                jobName: info.name        
+                                            });   
+                                        } else {
+                                            return null;    
+                                        }    
+                                    })
+                                    .filter(o => !_.isNull(o))
+                                    .value(),
+                sortByCodeLst = _.chain(codeLst).difference(_.map(sortByOrderLst, o => o.jobID))
+                                    .map(o => {
+                                        let info = _.find(listTitleInfo, a => a.id == o);
+                                        if(info) {
+                                            return _.assign({
+                                                jobID: info.id,
+                                                jobCD: info.code,
+                                                jobName: info.name        
+                                            });   
+                                        } else {
+                                            return null;    
+                                        }    
+                                    })
+                                    .filter(o => !_.isNull(o))
+                                    .sortBy(o => o.jobCD)
+                                    .value();
+            return _.union(sortByOrderLst, sortByCodeLst);
         }
     
         public getCurrentApproverJobCD() {
