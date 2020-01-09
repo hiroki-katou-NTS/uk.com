@@ -116,28 +116,6 @@ module nts.uk.com.view.cmm013.h.viewmodel {
             return _.first(_.find(self.approverGroupLst(), o => o.approverGroupCD == currentCode).approverJobList).jobCD;    
         }
         
-        /*
-        public getApproverJobLst(listTitleInfo: any, sortLst: any) {
-            let self = this;
-            return _.chain(sortLst)
-                    .map(o => {
-                        let info = _.find(listTitleInfo, a => a.id == o);
-                        if(info) {
-                            return _.assign({
-                                jobID: info.id,
-                                jobCD: info.code,
-                                jobName: info.name        
-                            });   
-                        } else {
-                            return null;    
-                        }    
-                    })
-                    .filter(o => !_.isNull(o))
-                    .sortBy(o => o.jobCD)
-                    .value();
-        }
-        */
-        
         public getApproverJobLst(listTitleInfo: any, codeLst: any) {
             let self = this,
                 sortByOrderLst = _.chain(self.currentApproverGroup().approverJobList)
