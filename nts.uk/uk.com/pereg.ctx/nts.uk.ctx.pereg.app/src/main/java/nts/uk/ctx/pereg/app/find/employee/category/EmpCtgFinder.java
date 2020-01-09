@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -369,12 +370,25 @@ public class EmpCtgFinder {
 		return infoList.stream().filter(x -> {
 			boolean isPast = false;
 
-			String enddate = x.getOptionText().substring(13);
+			String enddate = "";
+			String endDateTemp = x.getOptionText().split("~")[1].trim();
+			if (endDateTemp.length() == 7) {
+				enddate = x.getOptionText().split("~")[1].trim() + "/01";
+			} else if (!StringUtil.isNullOrEmpty(endDateTemp,true)){
+				enddate = x.getOptionText().substring(13);
+			}
+
 			if (!enddate.equals("")) {
 				isPast = today.after(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
 			}
 			if (!isPast) {
-				String sDate = x.getOptionText().substring(0, 10);
+                String sDate = "";
+                String startDateTemp = x.getOptionText().split("~")[0].trim();
+                if (startDateTemp.length() == 7) {
+                    sDate = x.getOptionText().split("~")[0].trim() + "/01";
+                } else if (!StringUtil.isNullOrEmpty(startDateTemp,true)){
+                    sDate = x.getOptionText().substring(0, 10);
+                }
 				GeneralDate startDate = GeneralDate.fromString(sDate, "yyyy/MM/dd");
 				if (today.afterOrEquals(startDate))
 					return true;
