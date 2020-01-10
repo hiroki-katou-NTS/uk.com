@@ -4,6 +4,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
     import dialogInfo = nts.uk.ui.dialog.info;
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         dataRetirment: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -15,6 +16,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
             dfd = $.Deferred();
+//            let param = getShared('employmentType');
             let pa = {
                 index: 1,
                 // C222_5
@@ -80,7 +82,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             }else if(normal.true == 0 || !normal.true){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
             }else{
-                nts.uk.ui.windows.setShared('shareToJMM018B', listData);
+                setShared('shareToJMM018B', listData);
                 nts.uk.ui.windows.close();   
             }
         }
