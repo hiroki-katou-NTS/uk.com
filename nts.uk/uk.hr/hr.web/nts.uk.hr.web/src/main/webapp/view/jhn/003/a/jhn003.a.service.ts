@@ -3,21 +3,16 @@ module jhn003.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getListCls: "ctx/pereg/person/maintenance/findOne/{0}",
-        getData: "ctx/pereg/person/newlayout/get",
-        saveData: "ctx/pereg/person/newlayout/save",
+        findPersonReport: "hr/notice/report/regis/person/report/search",
+        approvalAll: "hr/notice/report/regis/person/report/approval-all",
     };
 
-    export function getData() {
-        return ajax("com", paths.getData);
-    }
-    
-    export function getListCls(lid) {
-         return ajax("com", format(paths.getListCls, lid));
+    export function findPersonReport(query) {
+        return ajax("hr", paths.findPersonReport, query);
     }
 
-    export function saveData(command) {
-        return ajax("com", paths.saveData, command);
+    export function approvalAll(command) {
+        return ajax("hr", paths.approvalAll, command);
     }
 
 

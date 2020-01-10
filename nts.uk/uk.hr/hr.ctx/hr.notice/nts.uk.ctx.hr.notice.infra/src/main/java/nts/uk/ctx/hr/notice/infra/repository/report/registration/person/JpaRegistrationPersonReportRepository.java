@@ -9,7 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
@@ -83,20 +84,21 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<RegistrationPersonReport> findByJHN003(String cId, String sId, GeneralDate startDate,
-			GeneralDate endDate, Integer reportId, Integer approvalStatus, String inputName, boolean approvalReport) {
+	public List<RegistrationPersonReport> findByJHN003(String cId, String sId, GeneralDateTime startDate,
+			GeneralDateTime endDate, Integer reportId, Integer approvalStatus, String inputName,
+			boolean approvalReport) {
 
 		String query = SEL;
 
 		if (approvalReport) {
-			query += " INNER JOIN JhndtReportApproval a" + " ON r.pk.reportID = a.pk.reportID";
+			query += " INNER JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
 		}
 
-		query += " WHERE r.pk.cid = @cId AND r.appDate BETWEEN @startDate AND @endDate";
+		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
 
 		if (reportId != null) {
-			query += "AND r.reportLayoutID = %r";
-			String.format(query, reportId);
+			query += " AND r.reportLayoutID = %s";
+			query = String.format(query, reportId);
 		}
 
 		if (approvalStatus != null) {
@@ -106,19 +108,20 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				String.format(query, approvalStatus, approvalStatus);
 			} else {
 				query += " AND r.aprStatus = %s";
-				String.format(query, approvalStatus);
+				query = String.format(query, approvalStatus);
 			}
 		}
-
-		if (inputName != null) {
-			if (approvalReport) {
-				query += " AND (r.inputBussinessName LIKE %n OR r.appBussinessName LIKE %n )";
-				String.format(query, inputName);
-			} else {
-				query += "AND r.inputSid = %s";
-				String.format(query, sId);
+		
+		if (approvalReport) {
+			query += "AND r.aprSid = %s";
+			query = String.format(query, sId);
+		} else {
+			if (!StringUtil.isNullOrEmpty(inputName, false)) {
+				query += " AND (r.inputBussinessName LIKE %s OR r.appBussinessName LIKE %s )";
+				query = String.format(query, inputName);
 			}
 		}
+		
 
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));

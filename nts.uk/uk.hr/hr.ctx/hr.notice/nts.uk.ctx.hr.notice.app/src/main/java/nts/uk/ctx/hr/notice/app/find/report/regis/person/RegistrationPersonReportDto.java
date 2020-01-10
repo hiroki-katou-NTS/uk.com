@@ -12,6 +12,7 @@ public class RegistrationPersonReportDto {
 
 	private String rootSateId; // ルートインスタンスID
 	private int reportID; // 届出ID
+	private boolean approvalReport;
 	private String reportName; // 届出名
 	private String reportDetail; // 届出内容
 	private int aprStatus;// 承認状況
@@ -20,12 +21,12 @@ public class RegistrationPersonReportDto {
 	private String appBussinessName;// 申請者表示氏名
 	private String appDate;// 申請日
 
-	public static RegistrationPersonReportDto fromDomain(RegistrationPersonReport domain) {
+	public static RegistrationPersonReportDto fromDomain(RegistrationPersonReport domain, boolean approvalReport) {
 		return RegistrationPersonReportDto.builder().reportID(domain.getReportID())
 				.appBussinessName(domain.getAppBussinessName()).reportName(domain.getReportName())
 				.appDate(domain.getAppDate().toString(DATEFORMAT)).reportDetail(domain.getReportDetail())
 				.inputBussinessName(domain.getInputBussinessName())
 				.inputDate(domain.getInputDate().toString(DATEFORMAT)).aprStatus(domain.getAprStatus().value)
-				.rootSateId(domain.getRootSateId()).build();
+				.rootSateId(domain.getRootSateId()).approvalReport(approvalReport).build();
 	}
 }

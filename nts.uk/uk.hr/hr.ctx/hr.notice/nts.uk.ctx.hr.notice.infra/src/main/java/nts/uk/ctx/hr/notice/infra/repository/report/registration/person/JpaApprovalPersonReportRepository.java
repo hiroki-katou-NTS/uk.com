@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApproval;
@@ -20,7 +21,8 @@ import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportA
 public class JpaApprovalPersonReportRepository extends JpaRepository implements ApprovalPersonReportRepository{
 
 	private static final String getListApproval = "select c FROM  JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
-	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
+	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";	
+	private static final String SEL = "select r FROM  JhndtReportApproval r";
 
 	private ApprovalPersonReport toDomain(JhndtReportApproval entity) {
 		return entity.toDomain();
@@ -99,5 +101,30 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	public void addAll(List<ApprovalPersonReport> domains) {
 		List<JhndtReportApproval> entities = domains.stream().map(dm -> toEntity(dm)).collect(Collectors.toList());
 		this.commandProxy().insertAll(entities);
+	}
+
+	@Override
+	public List<ApprovalPersonReport> getByJHN003(String cId, String sId, GeneralDateTime startDate,
+			GeneralDateTime endDate, Integer reportId, Integer approvalStatus, String inputName) {
+		String query = SEL;
+
+		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
+
+		if (reportId != null) {
+			query += " AND r.reportLayoutID = %s";
+			query = String.format(query, reportId);
+		}
+
+		if (approvalStatus != null) {
+			query += " AND r.aprStatus = %s";
+			query = String.format(query, approvalStatus);
+		}
+
+		query += "AND r.aprSid = %s";
+		query = String.format(query, sId);
+
+		return this.queryProxy().query(query, JhndtReportApproval.class).setParameter("cId", cId)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
+
 	}
 }

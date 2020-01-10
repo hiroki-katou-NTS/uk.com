@@ -2,14 +2,12 @@ package nts.uk.ctx.hr.notice.app.find.report.regis.person;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @Data
 @NoArgsConstructor
 public class PersonReportQuery {
 	// 申請日
-	private GeneralDate startDate;
-	private GeneralDate endDate;
+	private DateQuery appDate;
 	// 届出名
 	private Integer reportId;
 	// 入力者・申請者

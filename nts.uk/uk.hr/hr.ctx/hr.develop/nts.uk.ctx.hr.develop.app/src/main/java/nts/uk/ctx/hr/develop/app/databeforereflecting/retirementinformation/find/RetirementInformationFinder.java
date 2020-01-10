@@ -126,7 +126,7 @@ public class RetirementInformationFinder {
 
 
 		if (retiredEmployees.size() > 2000) {
-			throw new BusinessException(" MsgJ_JCM008_8");
+			throw new BusinessException("MsgJ_JCM008_8");
 		}
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
