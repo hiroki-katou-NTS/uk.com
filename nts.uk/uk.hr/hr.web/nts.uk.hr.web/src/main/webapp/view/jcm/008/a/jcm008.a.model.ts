@@ -51,7 +51,14 @@ class RetirementAgeSetting {
 interface IStartPageDto {
     dateDisplaySettingPeriod: IDateDisplaySettingPeriod;
     retirementCourses: Array<IRetirementCourses>;
-    referEvaluationItems: Array<any>;
+    referEvaluationItems: Array<ReferEvaluationItem>;
+}
+
+interface ReferEvaluationItem {
+    evaluationItem: number;
+    usageFlg: boolean;
+    displayNum: number;
+    passValue: string;
 }
 
 interface IDateDisplaySettingPeriod {
@@ -126,14 +133,14 @@ class SearchFilterModel {
             return elem.name;
         }).join(', ');
     });
-    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(true);
     employment: KnockoutObservable<Array[IEmployment]> = ko.observable([]);
     employmentDisplay: KnockoutObservable<string> = ko.computed(() => {
         return this.employment().map(function(elem){
             return elem.name;
         }).join(', ');
     })
-    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(true);
     confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
     retirementCourses: KnockoutObservable<IRetirementCourses>;
     retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
@@ -322,4 +329,10 @@ class CellState {
         this.columnKey = columnKey;
         this.state = state;
     }
+}
+
+const EvaluationItem = {
+    PERSONNEL_ASSESSMENT: 0,
+    HEALTH_CONDITION: 1,
+    STRESS_CHECK: 2
 }

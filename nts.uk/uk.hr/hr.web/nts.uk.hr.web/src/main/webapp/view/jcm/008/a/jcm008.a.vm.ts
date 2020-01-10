@@ -13,18 +13,18 @@ module jcm008.a {
     export class ViewModel {
         searchFilter: SearchFilterModel;
         retirementSettings: KnockoutObservable<Array<string>>;
-
         selectedRetirementEmployee: KnockoutObservable<any>;
         plannedRetirements: KnockoutObservable<Array<PlannedRetirementDto>>;
         employeeInfo: KnockoutObservable<IEmployee>;
+        referEvaluationItems: KnockoutObservable<Array<ReferEvaluationItem>>;
 
         constructor() {
             let self = this;
             self.searchFilter = new SearchFilterModel();
             self.plannedRetirements = ko.observableArray([]);
-            self.bindRetirementDateSettingGrid();
             self.searchFilter.retirementCourses = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
+            self.referEvaluationItems = ko.observableArray([]);
             $(".employee-info-pop-up").ntsPopup("hide");
         }
 
@@ -35,20 +35,23 @@ module jcm008.a {
             let dfd = $.Deferred<any>();
             service.getData().done((data: IStartPageDto) => {
                 console.log(data);
+                self.referEvaluationItems(data.referEvaluationItems);
                 let dateDisplaySet = data.dateDisplaySettingPeriod;
                 self.searchFilter.retirementPeriod({ startDate: dateDisplaySet.periodStartdate, endDate: dateDisplaySet.periodEnddate });
+               
                 _.map(data.retirementCourses, (c) => {
-                    c.retirementAge = c.retirementAge + '分';
+                    c.retirementAge = c.retirementAge + '歳';
                     return c;
                 });
                 self.searchFilter.retirementCourses(data.retirementCourses);
 
                 let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
-                    return new RetirementAgeSetting(rc.retirementAge.replace('分', ''), rc.retirementAge);
+                    return new RetirementAgeSetting(rc.retirementAge.replace('歳', ''), rc.retirementAge);
                 });
-
+                
                 self.searchFilter.retirementAges(_.uniqBy(retirementAge, 'code'));
                 self.bindRetirementAgeGrid();
+                self.bindRetirementDateSettingGrid();
                 dfd.resolve();
                 // block.clear();
             }).fail((error) => {
@@ -73,7 +76,6 @@ module jcm008.a {
                 .done((res: ISearchResult) => {
                     let mergedEmpInfo = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
                     self.plannedRetirements(_.values(mergedEmpInfo));
-                    
                     self.bindRetirementDateSettingGrid();
                     self.searchFilter.confirmCheckRetirementPeriod(false);
                 })
@@ -86,7 +88,7 @@ module jcm008.a {
                             self.getRetirementData();
                         });
                     } else {
-                        dialog.info(error);
+                        dialog.bundledErrors(error);
                     }
                 })
                 .always(() => {
@@ -157,7 +159,7 @@ module jcm008.a {
             let cellStates = []
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
-                data.ageDisplay = data.age + '分';
+                data.ageDisplay = data.age + '歳';
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
@@ -181,6 +183,53 @@ module jcm008.a {
                 return data;
             });
             console.log(rowStates);
+            let columns = [
+                { headerText: 'key', key: 'rKey', dataType: 'string' },
+                { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
+                { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
+                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' },
+                // { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px' },
+                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
+                { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
+                { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' },
+                { headerText: getText('JCM008_A222_32'), key: 'employmentName', dataType: 'string', width: '90px' },
+                { headerText: getText('JCM008_A222_33'), key: 'dateJoinComp', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_34'), key: 'retirementDate', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_35'), key: 'releaseDate', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_35_1'), key: 'inputDate', dataType: 'string', width: '95px' 
+            }];
+            if (self.referEvaluationItems().length > 0) {
+                self.referEvaluationItems().forEach((item) => {
+                    if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
+                        let hcGroups = [];
+                        for (let hc = 0; hc < item.displayNum; hc ++) {
+                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + hc, dataType: 'string', width: '40px' });
+                        }
+                        columns.push({headerText: getText('JCM008_A222_36'), group: hcGroups});
+                    }
+                    if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
+                        let paGroups = [];
+                        for (let pa = 0; pa < item.displayNum; pa ++) {
+                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'hrEvaluation' + pa, dataType: 'string', width: '40px' });
+                        }
+                        columns.push({headerText: getText('JCM008_A222_37'), group: paGroups});
+                    }
+                    
+                    if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
+                        let scGroups = [];
+                        for (let sc = 0; sc < item.displayNum; sc ++) {
+                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'hrEvaluation' + sc, dataType: 'string', width: '40px' });
+                        }
+                        columns.push({headerText: getText('JCM008_A222_38'), group: scGroups});
+                    }
+                });
+            }
+            columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecord', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
+            
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -191,50 +240,7 @@ module jcm008.a {
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 // autoFitWindow: true,
-                columns: [
-                    { headerText: 'key', key: 'rKey', dataType: 'string' },
-                    { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                    { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
-                    { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' },
-                    // { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px' },
-                    { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
-                    { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
-                    { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px' },
-                    { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' },
-                    { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' },
-                    { headerText: getText('JCM008_A222_32'), key: 'employmentName', dataType: 'string', width: '90px' },
-                    { headerText: getText('JCM008_A222_33'), key: 'dateJoinComp', dataType: 'string', width: '95px' },
-                    { headerText: getText('JCM008_A222_34'), key: 'retirementDate', dataType: 'string', width: '95px' },
-                    { headerText: getText('JCM008_A222_35'), key: 'releaseDate', dataType: 'string', width: '95px' },
-                    { headerText: getText('JCM008_A222_35_1'), key: 'inputDate', dataType: 'string', width: '95px' },
-                    {
-                        headerText: getText('JCM008_A222_36'),
-                        group: [
-                            { headerText: getText('JCM008_A222_54_1'), key: 'hrEvaluation1', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_54_2'), key: 'hrEvaluation2', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_54_3'), key: 'hrEvaluation3', dataType: 'string', width: '40px' }
-                        ]
-                    },
-                    {
-                        headerText: getText('JCM008_A222_37'),
-                        group: [
-                            { headerText: getText('JCM008_A222_55_1'), key: 'healthStatus1', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_55_2'), key: 'healthStatus2', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_55_3'), key: 'healthStatus3', dataType: 'string', width: '40px' }
-                        ]
-                    },
-                    {
-                        headerText: getText('JCM008_A222_38'),
-                        group: [
-                            { headerText: getText('JCM008_A222_56_1'), key: 'stressStatus1', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_56_2'), key: 'stressStatus2', dataType: 'string', width: '40px' },
-                            { headerText: getText('JCM008_A222_56_3'), key: 'stressStatus3', dataType: 'string', width: '40px' }
-                        ]
-                    },
-                    { headerText: getText('JCM008_A222_39'), key: 'interviewRecord', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' },
-                ],
+                columns: columns,
                 dataSource: dataSources,
                 tabIndex: 11,
                 features: [
@@ -255,7 +261,18 @@ module jcm008.a {
                     },
                     { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
                     { name: 'Resizing' },
-                    { name: 'MultiColumnHeaders' }
+                    { name: 'MultiColumnHeaders' },
+                    { name: 'ColumnFixing', fixingDirection: 'left',
+//                                            syncRowHeights: true,
+                                            showFixButtons: false,
+                                            columnSettings: [
+                                                            { columnKey: 'flag', isFixed: true },
+                                                            { columnKey: 'extendEmploymentFlg', isFixed: true },
+                                                            { columnKey: 'registrationStatus', isFixed: true },
+                                                            { columnKey: 'desiredWorkingCourseId', isFixed: true },
+                                                            { columnKey: 'employeeCode', isFixed: true },
+                                                            { columnKey: 'employeeName', isFixed: true } 
+                                                        ]}
                 ],
                 ntsFeatures: [
                     { name: 'CopyPaste' },
@@ -295,7 +312,7 @@ module jcm008.a {
                 kanaName: selectedEmp.businessnameKana,
                 sex: '性別',
                 dob: selectedEmp.birthday,
-                age: selectedEmp.age + '分',
+                age: selectedEmp.age + '歳',
                 department: selectedEmp.department.departmentName,
                 position: selectedEmp.position.positionName,
                 employment: selectedEmp.employment.employmentName,

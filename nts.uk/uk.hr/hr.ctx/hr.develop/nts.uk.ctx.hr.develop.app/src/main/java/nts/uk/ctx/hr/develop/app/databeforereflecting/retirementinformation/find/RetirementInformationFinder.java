@@ -217,7 +217,7 @@ public class RetirementInformationFinder {
 
 	private void preSearchWarning(GeneralDate endDate) {
 
-		if (endDate.before(GeneralDate.today().addYears(2))) {
+		if (!endDate.before(GeneralDate.today().addYears(2))) {
 			throw new BusinessException("MsgJ_JCM008_5");
 		}
 	}
