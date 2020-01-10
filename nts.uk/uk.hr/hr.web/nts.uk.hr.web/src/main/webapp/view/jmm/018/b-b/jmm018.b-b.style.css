@@ -1,4 +1,5 @@
 @CHARSET "UTF-8";
+.tab2 {padding: 10px;}
 
 .tab2 .linkRetire{
 	margin-left: 30px;
@@ -104,7 +105,7 @@
 
 .tab2 .panel-croll{
 	overflow-y: scroll;
-	height: 590px;
+	height: 620px;
 }
 
 .tab2 .isDisabled {
