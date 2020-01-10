@@ -136,6 +136,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         }
                     }
                     self.comRoot.valueHasMutated();
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
                 //____get name application type___
                 servicebase.getNameAppType().done(function(lstNameApp){
@@ -166,7 +167,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         /**社員ID*/
                         employeeId: '',
                         /**申請種類*/
-                        lstAppType:[1,2,3,4,6,7,8,9,10,11,12,13,14],
+                        lstAppType:[0,1,2,3,4,6,7,8,9,10,11,12,13,14],
                         /**届出種類ID*/
                         lstNoticeID: [],
                         /**プログラムID(インベント)*/
@@ -227,7 +228,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         /**社員ID*/
                         employeeId: '',
                         /**申請種類*/
-                        lstAppType:[1,2,3,4,6,7,8,9,10,11,12,13,14],
+                        lstAppType:[0,1,2,3,4,6,7,8,9,10,11,12,13,14],
                         /**届出種類ID*/
                         lstNoticeID: [],
                         /**プログラムID(インベント)*/
@@ -297,7 +298,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         /**社員ID*/
                         employeeId: self.employeeId(),
                         /**申請種類*/
-                        lstAppType:[1,2,3,4,6,7,8,9,10,11,12,13,14],
+                        lstAppType:[0,1,2,3,4,6,7,8,9,10,11,12,13,14],
                         /**届出種類ID*/
                         lstNoticeID: [],
                         /**プログラムID(インベント)*/
@@ -607,6 +608,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         break;
                     } 
                     self.comRoot(a);
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 }); 
             }
             /**

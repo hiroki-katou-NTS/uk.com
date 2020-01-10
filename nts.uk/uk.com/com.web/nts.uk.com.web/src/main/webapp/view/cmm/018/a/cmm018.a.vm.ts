@@ -243,8 +243,8 @@ module nts.uk.com.view.cmm018.a {
                     self.enableCreatNew(true);
                     self.enableDelete(true);
                     if(codeChanged==1){//private
-                        __viewContext.viewModel.viewmodelSubB.singleSelectedCode(null);
                         self.checkAAA(0);
+                        __viewContext.viewModel.viewmodelSubB.singleSelectedCode(null);
                         __viewContext.viewModel.viewmodelSubB.tabSelectedB(self.tabSelected());
                         //TH: company
                         if(self.tabSelected() == vmbase.RootType.COMPANY){
@@ -425,8 +425,9 @@ module nts.uk.com.view.cmm018.a {
                 setShared('inputCDL008', {baseDate: moment(new Date()).toDate(),
                                 isMultiple: false,
                                 selectedCodes: self.workplaceId(),
-                                selectedSystemType: 2,
-                                isrestrictionOfReferenceRange: true});
+                                selectedSystemType: self.systemAtr() == 1 ? 4 : 2,
+                                isrestrictionOfReferenceRange: true,
+                                startMode: self.systemAtr()});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                     block.clear();
                     let data = getShared('outputCDL008');
@@ -570,14 +571,16 @@ module nts.uk.com.view.cmm018.a {
             textIinit(){
                 let self = this;
                 if(self.systemAtr() == vmbase.MODE.MATOME){
-                    self.c1_1(getText('CMM018_104', ['Com_Workplace']));
-                    self.c1_3(getText('CMM018_105', ['Com_Workplace']));
-                    self.c1_4(getText('CMM018_106', ['Com_Workplace']));
+                    let a = getText('Com_Workplace');
+                    self.c1_1(getText('CMM018_104', [a]));
+                    self.c1_3(getText('CMM018_105', [a]));
+                    self.c1_4(getText('CMM018_106', [a]));
                     self.a1_3(getText('Com_Workplace'));
                 }else{
-                    self.c1_1(getText('CMM018_104', ['Com_Department']));
-                    self.c1_3(getText('CMM018_105', ['Com_Department']));
-                    self.c1_4(getText('CMM018_106', ['Com_Department']));
+                    let b = getText('Com_Department');
+                    self.c1_1(getText('CMM018_104', [b]));
+                    self.c1_3(getText('CMM018_105', [b]));
+                    self.c1_4(getText('CMM018_106', [b]));
                     self.a1_3(getText('Com_Department'));
                 }    
             }
@@ -1222,15 +1225,21 @@ module nts.uk.com.view.cmm018.a {
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     block.clear();
+                    let modeA = __viewContext.viewModel.viewmodelA.selectedModeCode();
                     self.approverInfor([]);
                     let data: vmbase.KData = getShared('CMM018K_DATA');
                     if(data == null){
                         return;
                     }
-                    let data2: vmbase.CompanyAppRootADto = self.findRootAR(approvalId);
-                    _.remove(self.cpA(), function(item: vmbase.CompanyAppRootADto) {
-                        return item.approvalId == approvalId;
-                    });
+                    let data2: vmbase.CompanyAppRootADto;
+                    if(modeA == vmbase.MODE.SHINSEI){
+                        data2 = __viewContext.viewModel.viewmodelSubB.comRoot();
+                    }else{
+                        data2 = self.findRootAR(approvalId);
+                        _.remove(self.cpA(), function(item: vmbase.CompanyAppRootADto) {
+                            return item.approvalId == approvalId;
+                        });
+                    }
                     let a: vmbase.CompanyAppRootADto = null;
                     let approver: Array<vmbase.ApproverDto> = [];
                     let approvalAtr = data.selectTypeSet; 
@@ -1265,12 +1274,17 @@ module nts.uk.com.view.cmm018.a {
                           a = new vmbase.CompanyAppRootADto(color, data2.employRootAtr, appTypeValue, data2.appTypeName, approvalId, data2.historyId,data2.branchId,
                                 data2.appPhase1,data2.appPhase2,data2.appPhase3,data2.appPhase4,b);
                         break;
-                    } 
-                    let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
-                    dataOld.push(a);
-                    let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
-                    self.cpA(listHistoryNew);
-                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                    }
+                    if(modeA == vmbase.MODE.SHINSEI){
+                        __viewContext.viewModel.viewmodelSubB.comRoot(a);
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN([a], self.tabSelected(), vmbase.MODE.SHINSEI);
+                    }else{
+                        let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
+                        dataOld.push(a);
+                        let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
+                        self.cpA(listHistoryNew);
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                    }
                 }); 
             }
             /**

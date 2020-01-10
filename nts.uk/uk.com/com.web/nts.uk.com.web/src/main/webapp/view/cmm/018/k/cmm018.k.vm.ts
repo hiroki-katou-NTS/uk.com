@@ -104,7 +104,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 baseDate: ko.observable(this.standardDate()),
                 selectedId: data.typeSetting == 2 ? ko.observableArray([data.specWkpId]) : ko.observableArray([]),
                 alreadySettingList: ko.observableArray([]),
-                systemType : 2,
+                systemType : data.systemAtr == 1 ? 4 : 2,
                 width: 310,
                 startMode: data.systemAtr
             };

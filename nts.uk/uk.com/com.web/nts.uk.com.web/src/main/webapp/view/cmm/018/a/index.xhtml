@@ -119,8 +119,8 @@
 										<button data-bind="click: cal1">cal</button>
 										<div style="display: inline-block;">
 										<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
-										<table id="grid_matome"></table>
 									</div>
+									<table id="grid_matome"></table>
 								</div>
 							</div>
 							<!-- JINJI -->
@@ -168,9 +168,10 @@
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" style="display:none" data-bind="visible: selectedModeCode">
+						<div class="mode_Private" data-bind="visible: selectedModeCode">
+							<div style="display: inline-flex">
 							<!-- B2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
+							<div id = "left-contents" style="width: 330px;margin-left: 10px;" data-bind="with: $parent.viewmodelSubB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
@@ -197,17 +198,18 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
+							<div id = "right-contents" style="margin-top: 20px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- B3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div data-bind="with: $parent.viewmodelSubA">
+								<div>
 									<table id="grid_matomeB"></table>
 								</div>
 								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -265,7 +267,7 @@
 						<div data-bind="if:systemAtr()==0">
 							<!-- C2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
+								<div style="width: 280px; height: 340px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -293,9 +295,7 @@
 									<!-- C3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div data-bind="with: $parent.viewmodelSubA">
-									<table id="grid_matomeC"></table>
-								</div>
+								<table id="grid_matomeC"></table>
 							</div>
 						</div>
 						<!-- JINJI -->
@@ -335,9 +335,7 @@
 							<br/>
 							<!-- A3: List -->
 							<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
-								<div data-bind="with: $parent.viewmodelSubA">
-									<table id="grid_matomeC"></table>
-								</div>
+								<table id="grid_matomeC"></table>
 							</div>
 							</div>
 						</div>
@@ -379,9 +377,7 @@
 								<!-- D3_2: 選択する期間 -->
 								<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 							</div>
-							<div data-bind="with: $parent.viewmodelSubA">
-								<table id="grid_matome"></table>
-							</div>
+							<table id="grid_matome"></table>
 							</div>
 					</div>
 				</div>
@@ -442,7 +438,7 @@
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;"
 							data-bind="style: {marginLeft: visibleCCG001() ? '90px' : '20px'}">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
+								<div style="width: 280px; height: 340px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -471,9 +467,7 @@
 									<!-- E3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div data-bind="with: $parent.viewmodelSubA">
-									<table id="grid_matomeE"></table>
-								</div>
+								<table id="grid_matomeE"></table>
 								</div>
 							</div>
 							<!-- JINJI -->
@@ -559,9 +553,7 @@
 									<!-- F3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div data-bind="with: $parent.viewmodelSubA">
-									<table id="grid_matomeF"></table>
-								</div>
+								<table id="grid_matomeF"></table>
 								</div>
 						</div>
 					</div>

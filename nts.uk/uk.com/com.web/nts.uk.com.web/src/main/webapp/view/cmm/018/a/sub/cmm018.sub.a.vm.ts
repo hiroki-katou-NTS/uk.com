@@ -34,6 +34,9 @@ module nts.uk.com.view.cmm018.a.sub {
                 });
                 let colorBackGr: any = self.fillColorbackGr();
                 let heightG = __viewContext.viewModel.viewmodelA.systemAtr() == 1 ? 430 : 530;
+                if(mode == vmbase.MODE.SHINSEI){
+                    heightG = 200;
+                }
               $(gridName).ntsGrid({
                 width: 950,
                 height: heightG,
@@ -47,10 +50,10 @@ module nts.uk.com.view.cmm018.a.sub {
                     { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '100px'},
                     { headerText: getText('CMM018_28'), 
                         group:[{ headerText: getText('CMM018_30'), key: 'phase1', dataType: 'string', width: '100px' },
-                               { headerText: getText('CMM018_31'), key: 'phase2', dataType: 'string', width: '100px' },
-                               { headerText: getText('CMM018_32'), key: 'phase3', dataType: 'string', width: '100px' },
-                               { headerText: getText('CMM018_33'), key: 'phase4', dataType: 'string', width: '100px' },
-                               { headerText: getText('CMM018_34'), key: 'phase5', dataType: 'string', width: '100px' }]
+                               { headerText: '⇐' + getText('CMM018_31'), key: 'phase2', dataType: 'string', width: '100px' },
+                               { headerText: '⇐' + getText('CMM018_32'), key: 'phase3', dataType: 'string', width: '100px' },
+                               { headerText: '⇐' + getText('CMM018_33'), key: 'phase4', dataType: 'string', width: '100px' },
+                               { headerText: '⇐' + getText('CMM018_34'), key: 'phase5', dataType: 'string', width: '100px' }]
                     },
                     { headerText: getText('CMM018_95'), key: 'deleteRoot', dataType: 'string', width: '75px'},
                     { headerText: 'ID', key: 'typeRoot', dataType: 'string', width: '0px', hidden: true }
