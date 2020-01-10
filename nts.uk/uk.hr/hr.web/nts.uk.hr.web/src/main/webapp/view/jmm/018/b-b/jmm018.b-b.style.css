@@ -1,58 +1,58 @@
 @CHARSET "UTF-8";
 
-.linkRetire{
+.tab2 .linkRetire{
 	margin-left: 30px;
 }
 
-.frameRetire{
+.tab2 .frameRetire{
 	margin-top: 10px;
 }
 
-.typeRetire{
+.tab2 .typeRetire{
 	font-size: 18px;
 }
 
-.eachType{
+.tab2 .eachType{
 	margin-top: 15px;
 }
 
-.radioRetire{
+.tab2 .radioRetire{
     margin-left: 30px;
 }
 
-.ntsRadioBox{
+.tab2 .ntsRadioBox{
 	margin-left: 20px;
 }
 
-.B422_15_2{
+.tab2 .B422_15_2{
 	display: inline-block;
     vertical-align: bottom;
 }
 
-.comboRetire{
+.tab2 .comboRetire{
 	margin-left: 90px;
 }
 
-#inpDate{
+.tab2 #inpDate{
 	width: 20px;
 }
 
-.ui-widget-header{
+.tab2 .ui-widget-header{
 	border: 1px solid #dddddd;
     color: #333333;
     height: 25px;
     background: #CFF1A5;
 }
 
-.idColumn{
+.tab2 .idColumn{
 	width: 40px;
 }
 
-.course{
+.tab2 .course{
 	width: 80px;
 }
 
-.retireName{
+.tab2 .retireName{
 	width: 200px;
 }
 
@@ -60,61 +60,61 @@
 	width: 100px;
 }
 
-.continueCategory{
+.tab2 .continueCategory{
 	width: 100px;
 }
 
-.column-row{
+.tab2 .column-row{
 	border: 1px solid #dddddd;
     color: #333333;
     height: 40px;
 }
 
-#check-box{
+.tab2 #check-box{
 	margin-left: 27px;
 }
 
-.retireCourse{
+.tab2 .retireCourse{
 	width: 800px;
 }
 
-.employmenttype{
+.tab2 .employmenttype{
 	width: 290px;
 }
 
-.retireCourseTxt{
+.tab2 .retireCourseTxt{
 	width: 725px;
 	margin-left: 10px;
 }
 
-.buttonDialogC{
+.tab2 .buttonDialogC{
 	margin-left: 10px;
 }
 
-.appCon{
+.tab2 .appCon{
 	margin-left: 15px;
 }
-.appAgeCell{
+.tab2 .appAgeCell{
 	width: 130px;
 }
 
-.judg{
+.tab2 .judg{
 	width: 20px;
 }
 
-.panel-croll{
+.tab2 .panel-croll{
 	overflow-y: scroll;
 	height: 590px;
 }
 
-.isDisabled {
+.tab2 .isDisabled {
   color: currentColor;
 /*   cursor: not-allowed; */
   opacity: 0.5;
   text-decoration: none;
 }
 
-.retireDateEna{
+.tab2 .retireDateEna{
 	display: inline-block;
 	vertical-align: middle;
 }
