@@ -13,11 +13,17 @@ public interface ApprovalPersonReportRepository {
 
 	List<ApprovalPersonReport> getListDomainByReportId(String cid, String reprtId);
 	
+	List<ApprovalPersonReport> getListDomainByReportId(String reprtId);
+	
+	List<ApprovalPersonReport> getListDomainByReportIdAndSid(String reprtId, String approverId);
+	
 	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid);
 	
 	void add(ApprovalPersonReport domain);
 	
 	void addAll(List<ApprovalPersonReport> domains);
+	
+	void updateAll(List<ApprovalPersonReport> domains);
 	
 	void update(ApprovalPersonReport domain);
 	

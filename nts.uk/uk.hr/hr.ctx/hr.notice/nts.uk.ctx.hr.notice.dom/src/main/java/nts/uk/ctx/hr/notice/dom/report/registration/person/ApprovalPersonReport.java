@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -23,6 +24,7 @@ import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
  * Domain : 人事届出の承認
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApprovalPersonReport extends AggregateRoot{
@@ -94,5 +96,4 @@ public class ApprovalPersonReport extends AggregateRoot{
 				aprActivity, emailTransmissionClass, appSid, inputSid, reportLayoutID, sendBackSID, sendBackClass);
 		
 	}
-
 }
