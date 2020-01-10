@@ -88,7 +88,7 @@ public class GuaByTheInsurPdfAposeFileGenerator extends AsposeCellsReportGenerat
         ws.getRangeByName(sheetName + "!A1_3").setValue(element.getOfficeNumber());
         ws.getRangeByName(sheetName + "!A1_4_1").setValue(formatPortCd(element.getOfficePostalCode(),1));
         ws.getRangeByName(sheetName + "!A1_4_2").setValue(formatPortCd(element.getOfficePostalCode(),2));
-        Style style = new Style();
+        Style style = ws.getRangeByName(sheetName + "!A1_5").get(0,0).getStyle();
         style.setTextWrapped(true);
         ws.getRangeByName(sheetName + "!A1_5").setStyle(style);
         ws.getRangeByName(sheetName + "!A1_5").setValue(formatTooLongText(element.getOfficeAddress1(), 60) + "\n" + (element.getOfficeAddress2() != null ? element.getOfficeAddress2() : ""));

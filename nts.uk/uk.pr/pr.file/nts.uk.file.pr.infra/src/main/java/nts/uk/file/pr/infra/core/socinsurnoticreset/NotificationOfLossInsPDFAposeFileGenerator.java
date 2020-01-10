@@ -247,8 +247,8 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         Style style = worksheets.getRangeByName(sheetName + "!A1_6").get(0,0).getStyle();
         style.setTextWrapped(true);
         worksheets.getRangeByName(sheetName + "!A1_6").setStyle(style);
-        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (formatTooLongText(company.getAdd_1(), 60) + (company.getAdd_2() != null ? company.getAdd_2() : "")) :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (formatTooLongText(data.getAdd1(), 60) + (data.getAdd2() != null ? data.getAdd2() : "")) : "");
+        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (formatTooLongText(company.getAdd_1(), 60) + "\n" +(company.getAdd_2() != null ? company.getAdd_2() : "")) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (formatTooLongText(data.getAdd1(), 60) + "\n" + (data.getAdd2() != null ? data.getAdd2() : "")) : "");
         worksheets.getRangeByName(sheetName + "!A1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
