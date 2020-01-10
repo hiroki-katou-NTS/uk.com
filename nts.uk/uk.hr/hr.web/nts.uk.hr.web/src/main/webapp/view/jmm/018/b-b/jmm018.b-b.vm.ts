@@ -1,5 +1,6 @@
 module nts.uk.com.view.jmm018.tabb.viewmodel {
     import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModel {
@@ -259,6 +260,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         
         openCDialog(): void {
             let self = this;
+//            let employmentType = {
+//                listInfor:
+//                listSelect:
+//            }
+//            setShared('employmentType', guideMsg);
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
             })
         }
