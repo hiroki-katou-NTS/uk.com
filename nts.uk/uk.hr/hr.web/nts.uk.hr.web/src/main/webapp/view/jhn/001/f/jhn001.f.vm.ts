@@ -63,8 +63,7 @@ module jhn001.f.vm {
             let self = this,
                 dfd = $.Deferred();
             self.items = [];
-            let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
-            let param  = {layoutReportId : 1, reportId: 0 }    
+            let param = getShared('JHN001F_PARAMS') || null;
             var dfdGetData = service.getData(param);
 
             block();
@@ -134,15 +133,14 @@ module jhn001.f.vm {
         
 
         deleteItem(rowItem: IReportFileManagement) {
-            let self = this,
-            dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
+            let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId)
                 .done(function(res) {
                     self.fileInfo(res);
                     block();
                     let command = {
-                        cid: '000000000000-0001',
+                        cid: '',
                         fileId: rowItem.fileId
                     }; 
                 service.deleteDocument(command).done(() => {

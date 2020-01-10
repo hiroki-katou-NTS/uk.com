@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.notice.ac.report;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -30,7 +31,7 @@ public class HumanCategoryPubImp implements HumanCategoryPub{
 				c.getCategoryType(), c.getCategoryCode(), c.getIsAbolition(),
 				c.getCategoryParentCode(), c.getInitValMasterObjCls(),
 				c.getAddItemObjCls(), c.isCanAbolition(),
-				c.getSalaryUseAtr(), c.getPersonnelUseAtr(), c.getEmploymentUseAtr());})
+				c.getSalaryUseAtr(), c.getPersonnelUseAtr(), c.getEmploymentUseAtr(), c.getFixed());})
 				.collect(Collectors.toList())) ;
 	}
 
@@ -42,8 +43,22 @@ public class HumanCategoryPubImp implements HumanCategoryPub{
 				c.getCategoryType(), c.getCategoryCode(), c.getIsAbolition(),
 				c.getCategoryParentCode(), c.getInitValMasterObjCls(),
 				c.getAddItemObjCls(), c.isCanAbolition(),
-				c.getSalaryUseAtr(), c.getPersonnelUseAtr(), c.getEmploymentUseAtr());})
+				c.getSalaryUseAtr(), c.getPersonnelUseAtr(), c.getEmploymentUseAtr(), c.getFixed());})
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<PerInfoCtgShowImport> getCategoryByCidAndContractCd(String ctgId, String contractCd) {
+		Optional<PerInfoCtgShowExport> categoryOpt = this.catgegoryPub.getInfoCtgByCtgIdAndCid(ctgId, contractCd);
+		if (categoryOpt.isPresent()) {
+			PerInfoCtgShowExport category = categoryOpt.get();
+			return Optional.of(new PerInfoCtgShowImport(category.getId(), category.getCategoryName(),
+					category.getCategoryType(), category.getCategoryCode(), category.getIsAbolition(),
+					category.getCategoryParentCode(), category.getInitValMasterObjCls(), category.getAddItemObjCls(),
+					category.isCanAbolition(), category.getSalaryUseAtr(), category.getPersonnelUseAtr(),
+					category.getEmploymentUseAtr(), category.getFixed()));
+		}
+		return Optional.empty();
 	}
 
 }

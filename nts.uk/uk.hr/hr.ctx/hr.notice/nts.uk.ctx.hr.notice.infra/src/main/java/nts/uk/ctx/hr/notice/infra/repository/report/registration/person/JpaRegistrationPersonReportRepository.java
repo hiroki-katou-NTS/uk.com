@@ -15,6 +15,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonRep
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegisPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -25,6 +26,13 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
 	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE c.pk.cid = :cid and c.inputSid = :sid";
+	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid "
+			+ " and c.inputSid = :sid and c.appSid = :sid "
+			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
+	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
+	
+	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
+	
 
 	private static final String SEL = "select r FROM  JhndtReportRegis r";
 
@@ -49,17 +57,47 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 	@Override
 	public List<RegistrationPersonReport> getListBySIds(String sid) {
-		return this.queryProxy().query(getListBySId, JhndtReportRegis.class).setParameter("sid", sid)
-				.getList(c -> toDomain(c));
+		String cid =  AppContexts.user().companyId();
+		return this.queryProxy().query(getListBySId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public Optional<RegistrationPersonReport> getDomain(String cid, Integer reportId) {
+	public List<RegistrationPersonReport> getListReportSaveDraft(String sid) {
+		String cid =  AppContexts.user().companyId();
+		return this.queryProxy().query(getListReportSaveDraft, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<RegistrationPersonReport> getDomain(String cid, Integer reportLayoutID) {
+		if (reportLayoutID == null) {
+			return Optional.empty();
+		}
+		
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainDetail, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportLayoutID", reportLayoutID).getSingle();
+		
+		if (!entityOpt.isPresent()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(toDomain(entityOpt.get()));
+		}
+	}
+	
+	@Override
+	public Optional<RegistrationPersonReport> getDomainByReportId(String cid, Integer reportId) {
 		if (reportId == null) {
 			return Optional.empty();
 		}
-		Optional<JhndtReportRegis> entityOpt = this.queryProxy().find(new JhndtReportRegisPK(cid, reportId),
-				JhndtReportRegis.class);
+		
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportId).getSingle();
+		
 		if (!entityOpt.isPresent()) {
 			return Optional.empty();
 		} else {

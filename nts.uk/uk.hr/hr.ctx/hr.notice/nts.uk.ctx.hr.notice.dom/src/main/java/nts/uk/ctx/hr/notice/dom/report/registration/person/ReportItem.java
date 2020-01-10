@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 
 /**
@@ -34,12 +34,14 @@ public class ReportItem extends AggregateRoot {
 	private int saveDataAtr; // 保存データ型
 	private String stringVal; // 文字列
 	private BigDecimal intVal; // 数値
-	private GeneralDateTime dateVal;// 日付
+	private GeneralDate dateVal;// 日付
 	private int reflectID; // 反映ID
-
+	private String categoryId;//カテゴリID
+	private String itemId;//項目ID
+	
 	public ReportItem(String cid, int workId, int reportID, int reportLayoutID, String reportName, int layoutItemType,
 			String ctgCode, String ctgName, boolean fixedAtr, String itemCd, String itemName, int dspOrder,
-			int saveDataAtr, String stringVal, BigDecimal intVal, GeneralDateTime dateVal, int reflectID) {
+			int saveDataAtr, String stringVal, BigDecimal intVal, GeneralDate dateVal, int reflectID, String categoryId, String itemId) {
 		super();
 		this.cid = cid;
 		this.workId = workId;
@@ -58,12 +60,14 @@ public class ReportItem extends AggregateRoot {
 		this.intVal = intVal;
 		this.dateVal = dateVal;
 		this.reflectID = reflectID;
+		this.categoryId = categoryId;
+		this.itemId = itemId;
 	}
 
 	public static ReportItem createFromJavaType(String cid, int workId, int reportID, int reportLayoutID,
 			String reportName, int layoutItemType, String ctgCode, String ctgName, boolean fixedAtr, String itemCd,
 			String itemName, int dspOrder, int saveDataAtr, String stringVal, BigDecimal intVal,
-			GeneralDateTime dateVal, int reflectID) {
+			GeneralDate dateVal, int reflectID, String categoryId, String itemId) {
 		return new ReportItem(cid, workId, reportID, reportLayoutID, reportName, layoutItemType, ctgCode, ctgName,
-				fixedAtr, itemCd, itemName, dspOrder, saveDataAtr, stringVal, intVal, dateVal, reflectID);}
+				fixedAtr, itemCd, itemName, dspOrder, saveDataAtr, stringVal, intVal, dateVal, reflectID, categoryId, itemId);}
 }

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -31,7 +31,7 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 	@Column(name = "RPT_LAYOUT_ID")
 	public int reportLayoutID; // 個別届出種類ID
 	
-	@Column(name = "")
+	@Column(name = "RPT_LAYOUT_NAME")
 	public String reportName; // 項目区分
 	
 	@Column(name = "LAYOUT_ITEM_TYPE")
@@ -59,10 +59,16 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 	public BigDecimal intVal; // 数値
 	
 	@Column(name = "DATE_VAL")
-	public GeneralDateTime dateVal;// 日付
+	public GeneralDate dateVal;// 日付
 	
 	@Column(name = "REFLECT_ID")
 	public int reflectID; // 反映ID
+	
+	@Column(name = "CATEGORY_ID")
+	public String categoryId; // 反映ID
+	
+	@Column(name = "ITEM_ID")
+	public String itemId; // 反映ID
 
 	@Override
 	public Object getKey() {
@@ -87,6 +93,8 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 						this.stringVal ,
 						this.intVal ,
 						this.dateVal ,
-						this.reflectID);
+						this.reflectID,
+						this.categoryId,
+						this.itemId);
 	}
 }

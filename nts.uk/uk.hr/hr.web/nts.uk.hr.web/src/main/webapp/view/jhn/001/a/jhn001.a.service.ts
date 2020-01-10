@@ -3,11 +3,12 @@ module jhn001.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAll: "hr/notice/report/findAll/{0}",
-        getDetails: "hr/notice/report/findOne/{0}",
+        getAll: "hr/notice/person/report/findAll",
+        getReportDetails: "hr/notice/report/item/findOne",
         remove:"hr/notice/report/delete/{0}",
-        saveData: "hr/notice/report/save",
+        saveDraftData: "hr/notice/report/regis/person/save/draft/save",
         getListDoc: 'hr/notice/report/regis/person/document/findAll',
+        getListReportSaveDraft: 'hr/notice/report/regis/person/save/draft/getAll',
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",
@@ -16,24 +17,23 @@ module jhn001.a.service {
     };
     
 
-    /**
-    * Get list Maintenance Layout
-    */
-    export function getAll(abolition) {
-        return ajax(format(paths.getAll, abolition));
+    export function getAll() {
+        return ajax(format(paths.getAll));
+    }
+    
+    export function getListReportSaveDraft() {
+        return ajax('hr' , paths.getListReportSaveDraft);
     }
 
-    export function getDetails(reportClsId) {
-        return ajax(format(paths.getDetails, reportClsId));
+    export function getReportDetails(obj: any) {
+        return ajax(paths.getReportDetails, obj);
     }
     
     export function removeData(reportClsId) {
         return ajax(format(paths.remove, reportClsId));
     }
 
-   /**
-    * add  Maintenance Layout
-    */
+   
     export function saveData(data: any) {
         return ajax(paths.saveData, data);
     }
@@ -44,5 +44,9 @@ module jhn001.a.service {
     
     export function getListDoc(param: any) {
         return ajax('hr' , paths.getListDoc, param);
+    }
+    
+    export function saveDraftData(command: any) {
+        return ajax('hr' , paths.saveDraftData, command);
     }
 }

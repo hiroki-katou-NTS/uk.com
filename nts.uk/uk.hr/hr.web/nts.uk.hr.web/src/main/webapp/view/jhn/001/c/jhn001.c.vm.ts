@@ -18,18 +18,11 @@ module jhn001.c.viewmodel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         layout: KnockoutObservable<Layout> = ko.observable(new Layout()); 
         reportId : KnockoutObservable<string> = ko.observable('');
-        
         enaGoBack : KnockoutObservable<boolean> = ko.observable(false);
         enaSave : KnockoutObservable<boolean> = ko.observable(true);
         enaSaveDraft : KnockoutObservable<boolean> = ko.observable(true);
         enaAttachedFile : KnockoutObservable<boolean> = ko.observable(true);
         enaRemove : KnockoutObservable<boolean> = ko.observable(true);
-        
-        reportColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
-        ]);
         
         constructor() {
             let self = this,
@@ -75,18 +68,91 @@ module jhn001.c.viewmodel {
                 dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let reportId: number = url.split("=")[1];
+            let reportId: String = url.split("=")[1];
             // get all layout
             layouts.removeAll();
-            service.getDetails(reportId).done((data: any) => {
+            service.getDetails({reportId: reportId, reportLayoutId: 1}).done((data: any) => {
                 if (data) {
-                    lv.removeDoubleLine(data.itemsClassification);
-                    layout.classifications(data.listItemClsDto || []);
-                    layout.action(LAYOUT_ACTION.UPDATE);
+                    lv.removeDoubleLine(data.classificationItems);
+                    self.getDetailReport(layout, data);
+                    _.defer(() => {
+                        new vc(layout.classifications());
+                    });
+                } else {
+                    layout.classifications.removeAll();
                     unblock();
                 }
             });
             return dfd.promise();
+        }
+        
+        getDetailReport(layout: any, data: any) {
+            
+            layout.reportId(data.reportId);
+            
+            layout.reportName(data.reportName);
+            
+            layout.message(text('JHN001_C222_1') + ' : ' + data.message);
+            
+            layout.backComment(data.backComment);
+            
+            layout.backCommentContent(text('JHN001_C222_2') + ' : ' +data.backCommentContent);
+            
+            layout.approveComment(data.approveComment);
+            
+            layout.denyOraprrove(data.denyOraprrove);
+            
+            layout.classifications(data.classifications);
+            
+            layout.approvalRootState(data.approvalRootState);
+            
+            layout.listDocument(data.listDocument);
+            
+            layout.classifications(data.classificationItems || []);
+            
+            var lstDoc = [];
+            
+            for (var i = 0; i < data.documentSampleDto.length; i++) {
+                
+                let obj = {
+                    
+                    docName: data.documentSampleDto[i].docName,
+                    
+                    ngoactruoc: '(',
+                    
+                    sampleFileName: data.documentSampleDto[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].sampleFileName + '</a>',
+                    
+                    ngoacsau: ')',
+                    
+                    fileName: data.documentSampleDto[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].fileName + '</a>',
+                   
+                    cid: data.documentSampleDto[i].cid,
+                    
+                    reportLayoutID: data.documentSampleDto[i].reportLayoutID,
+                   
+                    docID: data.documentSampleDto[i].docID,
+                    
+                    dispOrder: data.documentSampleDto[i].dispOrder,
+                   
+                    requiredDoc: data.documentSampleDto[i].requiredDoc,
+                    
+                    docRemarks: data.documentSampleDto[i].docRemarks,
+                    
+                    sampleFileId: data.documentSampleDto[i].sampleFileId,
+                   
+                    reportID: data.documentSampleDto[i].reportID,
+                    
+                    fileId: data.documentSampleDto[i].fileId,
+                    
+                    fileSize: data.documentSampleDto[i].fileSize
+                }
+                
+                lstDoc.push(obj);
+                
+            }
+            
+            layout.listDocument(lstDoc);
+
         }
         
         attachedFile() {
@@ -107,34 +173,66 @@ module jhn001.c.viewmodel {
     }
 
     interface ILayout {
-        id: string;
+        reportId: int;
+        reportName?: string;
         message?: string;
-        sendBackComment?: string;
+        backComment?: boolean;
+        backCommentContent?: string;
         approveComment?: string;
-        classifications?: Array<IItemClassification>;
+        denyOraprrove?: boolean;
         action?: number;
+        classifications?: Array<IItemClassification>;
         outData?: Array<any>;
+        approvalRootState?: Array<any>;
+        listDocument?: Array<any>;
     }
 
     class Layout {
-        id: KnockoutObservable<string> = ko.observable('');
+        reportId: KnockoutObservable<number> = ko.observable('');
+        reportName: KnockoutObservable<string> = ko.observable('');
         message: KnockoutObservable<string> = ko.observable('');
-        sendBackComment: KnockoutObservable<string> = ko.observable('');
+        backComment: KnockoutObservable<boolean> = ko.observable(true);
+        backCommentContent: KnockoutObservable<string> = ko.observable('');
         approveComment: KnockoutObservable<string> = ko.observable('');
         mode: KnockoutObservable<TABS> = ko.observable(TABS.LAYOUT);
         showColor: KnockoutObservable<boolean> = ko.observable(false);
-        outData: KnockoutObservableArray<any> = ko.observableArray([]);
+        denyOraprrove: KnockoutObservable<boolean> = ko.observable(true);
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
-        approvalRootState : any = ko.observableArray([]);
-        listDocument : any = ko.observableArray([]);
+        outData: KnockoutObservableArray<any> = ko.observableArray([]);
+        approvalRootState : KnockoutObservableArray<any> = ko.observableArray([]);
+        listDocument : KnockoutObservableArray<any> = ko.observableArray([]);
         
         constructor() {
             let self = this;
+//            self.reportId(param.reportId);
+//            self.reportName(param.reportName);
+//            self.message(param.message);
+//            self.backComment(param.backComment);
+//            self.backCommentContent(param.backCommentContent);
+//            self.approveComment(param.approveComment);
+//            self.denyOraprrove(param.denyOraprrove);
+//            self.classifications(param.classifications);
+//            self.approvalRootState(param.approvalRootState);
+//            self.listDocument(param.listDocument);
+            
+        }
+        
+        clickSampleFileName() {
+            let rowData: any = this;
+            if (rowData.sampleFileId) {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.sampleFileId).done(function(res) {
+                    nts.uk.request.specials.donwloadFile(rowData.sampleFileId);
+                });
+            }
+        }
 
-            self.listDocument([{ nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' },
-                               { nameLabel: 'Bert',ngoactruoc:'(',fileSample : '<a href="https://www.w3schools.com">fileSample</a>', ngoacsau: ')', nameDoc: '<a href="https://www.w3schools.com">fileSample.pdf</a>' }]);
+        clickFileName() {
+            let rowData: any = this;
+            if (rowData.fileId) {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
+                    nts.uk.request.specials.donwloadFile(rowData.fileId);
+                });
+            }
         }
     }
     

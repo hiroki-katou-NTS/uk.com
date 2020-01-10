@@ -3,22 +3,19 @@ module jhn001.b.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getEmployeeInfo': 'ctx/pereg/deleteemployee/getemployeetodelete/{0}',
-        'getPersonInfo': 'bs/employee/person/findBypId/{0}',
-        'deleteEmp': 'ctx/pereg/deleteemployee/deleteemployee',
+         getListReportSaveDraft: 'hr/notice/report/regis/person/save/draft/getAll',
+         deleteReport: 'hr/notice/report/regis/person/save/draft/remove/{0}',
     };
 
 
-
-    export function getEmployeeInfo(employeeId: string) {
-        return ajax(format(paths.getEmployeeInfo, employeeId));
+    export function getListReportSaveDraft() {
+        return ajax('hr', paths.getListReportSaveDraft);
     }
     
-     export function getPersonInfo(personId: string) {
-        return ajax(format(paths.getPersonInfo, personId));
+    export function deleteReport(reportId : any) {
+        return ajax('hr', paths.deleteReport, reportId);
     }
-
-    export function deleteEmp(modelDelete: any) {
-        return ajax(paths.deleteEmp, modelDelete);
-    }
+    
+    
+    
 }
