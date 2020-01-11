@@ -1,9 +1,6 @@
 package nts.uk.file.pr.infra.core.insurenamechangenoti;
 
-import com.aspose.cells.Style;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
@@ -22,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -249,7 +247,7 @@ public class InsuredNameChangedAposeFileGenerator extends AsposeCellsReportGener
 
         if (socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_COMPANY_NAME.value) {
             ws.getCells().get("J22").putValue(formatPostalCode(company.getPostCd()));
-            ws.getCells().get("K23").putValue(formatTooLongText(company.getAdd_1() ,60) + "\n" + (company.getAdd_2() != null ? company.getAdd_2() : "") );
+            ws.getCells().get("K23").putValue(Objects.toString(formatTooLongText(company.getAdd_1() ,60) + "\r\n" + (company.getAdd_2() == null ? "" : company.getAdd_2())));
             ws.getCells().get("K24").putValue(company.getCompanyName());
             ws.getCells().get("K25").putValue(company.getRepname());
             ws.getCells().get("J27").putValue(this.formatPhoneNumber(company.getPhoneNum()));
