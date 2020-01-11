@@ -165,6 +165,7 @@ class ISearchParams {
         this.includingReflected = param.includingReflected();
         this.retirementAgeSetting = param.retirementAgeDesignation();
         if(this.retirementAgeSetting) {
+            // console.log(param.selectedRetirementAge());
             this.retirementAge = parseInt(param.selectedRetirementAge());
         }
         this.startDate = param.retirementPeriod().startDate;
@@ -172,9 +173,8 @@ class ISearchParams {
         this.allSelectDepartment = param.selectAllDepartment();
         this.selectDepartment = _.map(param.department(), (d) => {return d.name;});
         this.allSelectEmployment = param.selectAllEmployment();
-        this.selectEmployment = _.map(param.employment(), (d) => {return d.name;});
+        this.selectEmployment = _.map(param.employment(), (d) => {return d.code;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
-        this.retirementAge = param.selectedRetirementAge;
     }
 }
 

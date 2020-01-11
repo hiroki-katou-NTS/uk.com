@@ -136,7 +136,7 @@ module jcm008.a {
             let self = this;
             $('#retirementAgeInfo').ntsGrid({
                 autoGenerateColumns: false,
-                height: '200px',
+                height: '160px',
                 columns: [
                     { headerText: getText('JCM008_A222_13'), key: 'employmentName', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_14'), key: 'retirementAge', dataType: 'string', width: '70px' },
@@ -362,7 +362,7 @@ module jcm008.a {
             block.grayout();
             setShared('CDL002Params', {
                 selectedCodes: self.searchFilter.employment().map(function (elem) {
-                    return elem.workplaceId;
+                    return elem.code;
                 }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
