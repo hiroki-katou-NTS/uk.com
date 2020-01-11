@@ -136,6 +136,7 @@ module jcm008.a {
             let self = this;
             $('#retirementAgeInfo').ntsGrid({
                 autoGenerateColumns: false,
+                height: '200px',
                 columns: [
                     { headerText: getText('JCM008_A222_13'), key: 'employmentName', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_14'), key: 'retirementAge', dataType: 'string', width: '70px' },
@@ -303,9 +304,10 @@ module jcm008.a {
         public showModal(id, key, el) {
             // $('.nts-grid-control-' + key + '-' + id).append("<b>Appended text</b>");
             let self = this;
-            let selectedEmp = _.findLast($("#retirementDateSetting").ntsGrid("dataSource"), (retiredEmp) => {
+            let selectedEmp = _.findLast($("#retirementDateSetting").igGrid("option", "dataSource"), (retiredEmp) => {
                 return retiredEmp.rKey === id;
-            }) 
+            });
+
             let emp = {
                 code: selectedEmp.employeeCode,
                 name: selectedEmp.employeeName,
@@ -313,9 +315,9 @@ module jcm008.a {
                 sex: '性別',
                 dob: selectedEmp.birthday,
                 age: selectedEmp.age + '歳',
-                department: selectedEmp.department.departmentName,
+                department: selectedEmp.departmentName,
                 position: selectedEmp.position.positionName,
-                employment: selectedEmp.employment.employmentName,
+                employment: selectedEmp.employmentName,
                 image: selectedEmp.avatarFile ? selectedEmp.avatarFile.facePhotoFileID : 'https://discovery-park.co.uk/wp-content/uploads/2017/06/avatar-default.png' 
             };
 
