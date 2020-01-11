@@ -174,6 +174,7 @@ class ISearchParams {
         this.allSelectEmployment = param.selectAllEmployment();
         this.selectEmployment = _.map(param.employment(), (d) => {return d.name;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
+        this.retirementAge = param.selectedRetirementAge;
     }
 }
 
