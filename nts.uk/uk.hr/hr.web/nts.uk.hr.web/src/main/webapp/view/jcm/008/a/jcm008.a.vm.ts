@@ -41,13 +41,14 @@ module jcm008.a {
                     c.retirementAge = c.retirementAge + '歳';
                     return c;
                 });
-                self.searchFilter.retirementCourses(data.retirementCourses);
+                
+                self.searchFilter.retirementCourses(_.sortBy(data.retirementCourses, ['employmentCode', 'retirementAge']));
 
                 let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
                     return new RetirementAgeSetting(rc.retirementAge.replace('歳', ''), rc.retirementAge);
                 });
                 
-                self.searchFilter.retirementAges(_.uniqBy(retirementAge, 'code'));
+                self.searchFilter.retirementAges(_.sortBy(_.uniqBy(retirementAge, 'code'), 'code'));
                 self.bindRetirementAgeGrid();
                 self.bindRetirementDateSettingGrid();
                 dfd.resolve();
@@ -163,6 +164,7 @@ module jcm008.a {
                 if (data.presence) {
                     data.interviewRecordTxt = interviewRecordTxt;
                 }
+                
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
