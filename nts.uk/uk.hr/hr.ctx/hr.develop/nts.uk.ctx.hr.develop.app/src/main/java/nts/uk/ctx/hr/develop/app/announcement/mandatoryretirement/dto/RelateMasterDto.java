@@ -2,22 +2,21 @@ package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto;
 
 import java.util.List;
 
-import lombok.Data;
-import nts.uk.ctx.hr.shared.dom.employee.GrpCmmMastItImport;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.hr.shared.dom.employee.GrpCmonMasterImport;
 
-@Data
-public class RelateMasterDto {
-	
-	private String commonMasterName;
-	
-	private List<GrpCmmMastItImport> commonMasterItemList;
+@Setter
+@Getter
+@NoArgsConstructor
+public class RelateMasterDto extends GrpCmonMasterImport{
 	
 	private List<RetirePlanCourceDto> retirePlanCourseList;
 
-	public RelateMasterDto(String commonMasterName, List<GrpCmmMastItImport> commonMasterItemList, List<RetirePlanCourceDto> retirePlanCourseList) {
-		super();
-		this.commonMasterName = commonMasterName;
-		this.commonMasterItemList = commonMasterItemList;
+	public RelateMasterDto(GrpCmonMasterImport commonMasterImport, List<RetirePlanCourceDto> retirePlanCourseList) {
+		super(commonMasterImport.getCommonMasterName(), commonMasterImport.getCommonMasterItems());
 		this.retirePlanCourseList = retirePlanCourseList;
 	}
+	
 }

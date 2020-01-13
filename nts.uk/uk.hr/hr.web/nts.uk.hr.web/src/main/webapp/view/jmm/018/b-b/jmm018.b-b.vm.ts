@@ -23,7 +23,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retireDateSelected: KnockoutObservable<number> = ko.observable(2);
         referenceValueLs: KnockoutObservableArray<any> = ko.observableArray([]);
         numberDispLs: KnockoutObservableArray<any> = ko.observableArray([]);
-        retireConditionLs: KnockoutObservableArray<any> = ko.observableArray([]);
+        retirePlanCourseList: KnockoutObservableArray<any> = ko.observableArray([]);
         applyCondition: KnockoutObservable<boolean> = ko.observable(false);
         startAppliPossible: KnockoutObservable<string> = ko.observable("");
         ageLowerLimit: KnockoutObservable<number> = ko.observable(0);
@@ -41,6 +41,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         
         
         latestHistId: KnockoutObservable<any>;
+        commonMasterName: KnockoutObservable<string> = ko.observable("");
+        commonMasterItems: KnockoutObservableArray<GrpCmonMaster> = ko.observableArray([]);
+        
         
         constructor() {
             let self = this;
@@ -210,6 +213,16 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
             });
+            new service.getRelateMaster().done(function(data: any) {
+                console.log(data);
+                self.commonMasterName(data.commonMasterName);
+                let tg = [];
+                _.forEach(data.commonMasterItems, (item) => {
+                    tg.push(new GrpCmonMaster(item));
+                });
+                self.commonMasterItems(tg);
+            });
+            
             let a = {
                         index: 1,
                         // B422_15_22
@@ -241,27 +254,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.referenceValueLs().push(new ReferenceValue(b));
             
             
-            let c = {
-                        id: 1,
-                        // B422_15_32
-                        employmentStatus: "yen",
-                        // B422_15_33
-                        retireAge: true,
-                        // B422_15_34
-                        retireCourse: "yenjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
-                    }
-            
-            let d = {
-                id: 2,
-                // B422_15_32
-                employmentStatus: "yen",
-                // B422_15_33
-                retireAge: true,
-                // B422_15_34
-                retireCourse: "",
-            }
-            self.retireConditionLs().push(new RetireCond(c));
-            self.retireConditionLs().push(new RetireCond(d));
             
             self.hidden('href1', 'B422_12');
             dfd.resolve();
@@ -288,7 +280,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 $('#upperLimit').trigger("validate");
             }
             $('.judg').trigger("validate");
-            _.forEach(self.retireConditionLs(), (obj) => {
+            _.forEach(self.retirePlanCourseList(), (obj) => {
                 if(obj.retireAge() == true && obj.retireCourse() == ""){
                     nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
                 }
@@ -347,39 +339,33 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         }
     }
     
-    export interface IRetireCond {
-        id: number;
-        // B422_15_32
-        employmentStatus: string;
-        // B422_15_33
-        retireAge: boolean;
-        // B422_15_34
-        retireCourse: string;
+    export interface IGrpCmonMaster {
+        displayNumber: number;
+        commonMasterItemId: string;
+        commonMasterItemName: string;
     }
     
-    class RetireCond {
-        id: number;
-        // B422_15_32
-        employmentStatus: KnockoutObservable<string>;
-        // B422_15_33
-        retireAge: KnockoutObservable<boolean>;
-        // B422_15_34
-        retireCourse: KnockoutObservable<string>;
-        enable: KnockoutObservable<boolean>;
-        constructor(param: IRetireCond) {
+    class GrpCmonMaster {
+        displayNumber: number;
+        commonMasterItemId: string;
+        commonMasterItemName: string;
+        usageFlg: KnockoutObservable<boolean> = ko.observable(false);
+        enableRetirePlanCourse: KnockoutObservableArray<any> = ko.observableArray([]);
+        enableRetirePlanCourseText: KnockoutObservable<string> = ko.observable("");
+        constructor(param: IGrpCmonMaster) {
             let self = this;
-            self.id = param.id;
-            self.employmentStatus = ko.observable(param.employmentStatus);
-            self.retireAge = ko.observable(param.retireAge);
-            self.retireCourse = ko.observable(param.retireCourse);
-            self.enable = ko.observable(param.retireAge); 
-            self.retireAge.subscribe(function(x){
-                if(x){
-                    self.enable(true);
-                }else{
-                    self.enable(false);
-                }
-            })
+            self.displayNumber = param.displayNumber;
+            self.commonMasterItemId = param.commonMasterItemId;
+            self.commonMasterItemName = param.commonMasterItemName;
+        }
+        setUsageFlg(usageFlg: boolean): void{
+            let self = this;
+            self.usageFlg(usageFlg);
+        }
+        setEnableRetirePlanCourse(enableRetirePlanCourse: any[]): void{
+            let self = this;
+            self.enableRetirePlanCourse(enableRetirePlanCourse);
+            self.enableRetirePlanCourseText(enableRetirePlanCourse.toString());
         }
     }
 

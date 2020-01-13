@@ -2,23 +2,21 @@ package nts.uk.ctx.hr.shared.dom.employee;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 /**
  * 
  * @author yennth
  *
  */
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class GrpCmonMasterImport {
-	// 共通マスタ名
+ 
 	private String commonMasterName;
 	
-	// 共通マスタ項目
 	private List<GrpCmmMastItImport> commonMasterItems;
 
-	public GrpCmonMasterImport(String commonMasterName, List<GrpCmmMastItImport> commonMasterItems) {
-		super();
-		this.commonMasterName = commonMasterName;
-		this.commonMasterItems = commonMasterItems;
-	}
 }

@@ -242,22 +242,22 @@
 											<table>
 												<thead>
 													<tr>
-														<th class = "ui-widget-header employmenttype">#{i18n.getText('JMM018_B422_15_32')}</th>
+														<th class = "ui-widget-header employmenttype" data-bind="text: commonMasterName">#{i18n.getText('JMM018_B422_15_32')}</th>
 														<th class = "ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_33')}</th>
 														<th class = "ui-widget-header retireCourse">#{i18n.getText('JMM018_B422_15_34')}</th>
 													</tr>
 					
 												</thead>
-												<tbody data-bind="foreach : retireConditionLs">
+												<tbody data-bind="foreach : commonMasterItems">
 													<tr>
-														<td class="column-row"><span class="label " data-bind="text: employmentStatus"></span></td>
+														<td class="column-row"><span class="label " data-bind="text: commonMasterItemName"></span></td>
 														<td class="column-row">
-															<div data-bind="ntsCheckBox: { checked: retireAge, enable: $parent.isLatestHis }"></div>
+															<div data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis }"></div>
 															<div style = "display: inline-block;">#{i18n.getText('JMM018_B422_15_38')}</div>
 														</td>
 														<td class="column-row">
-															<button data-bind="click: $parent.openCDialog, enable: $parent.isLatestHis() &amp;&amp; enable()" class="small buttonDialogC" >#{i18n.getText('JMM018_B422_15_39')}</button>
-															<div style = "display: inline-block;"><span class="label limited-label retireCourseTxt" data-bind="text: retireCourse"></span></div>
+															<button data-bind="click: $parent.openCDialog, enable: $parent.isLatestHis() &amp;&amp; usageFlg()" class="small buttonDialogC" >#{i18n.getText('JMM018_B422_15_39')}</button>
+															<div style = "display: inline-block;"><span class="label limited-label retireCourseTxt" data-bind="text: enableRetirePlanCourseText"></span></div>
 														</td>
 													</tr>
 												</tbody>

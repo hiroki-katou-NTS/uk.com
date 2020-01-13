@@ -7,18 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementRegulationDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RelateMasterDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RetirePlanCourceDto;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.StartDto;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulationRepository;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCource;
-import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetirePlanCourceRepository;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.mandatoryRetirementRegulation.MandatoryRetirementRegulationService;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.retirePlanCource.RetirePlanCourceService;
 import nts.uk.ctx.hr.shared.dom.employee.GrpCmonMasterImport;
 import nts.uk.ctx.hr.shared.dom.employee.GrpCommonMasterAdaptor;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class MandatoryRetirementRegulationFinder {
@@ -27,69 +24,35 @@ public class MandatoryRetirementRegulationFinder {
 	private GrpCommonMasterAdaptor commonMasterAdap;
 
 	@Inject
-	private RetirePlanCourceRepository retirePlanCourceRep;
+	private RetirePlanCourceService retirePlanCourceService;
 	
 	@Inject
-	private MandatoryRetirementRegulationRepository mandatoryRep;
+	private MandatoryRetirementRegulationService mandatoryService;
 	
-	public StartDto startPage(String selectHistory) {
-		// アルゴリズム [関連マスタの取得] を実行する
-		RelateMasterDto relateDto = this.getRelateMaster();
-		if(relateDto == null) {
-			throw new BusinessException("MsgJ_JMM018_16");
-		}else {
-			if(selectHistory == null) {
-				throw new BusinessException("MsgJ_JMM018_15");
-			}else {
-				MandatoryRetirementRegulationDto mandatory = this.getLaborRegulation(selectHistory);
-				if(mandatory == null) {
-					throw new BusinessException("MsgJ_JMM018_17");
-				}else {
-					return new StartDto(relateDto, mandatory);
-				}
-			}
+	//アルゴリズム [関連マスタの取得] を実行する(Thực hiện thuật toán [lấy RelatedMaster])
+	public Optional<RelateMasterDto> getRelateMaster(String contractCd, String companyId, String commonMasterId) {
+		Optional<GrpCmonMasterImport> commonMasterItem = commonMasterAdap.findCommonMasterByContract(contractCd, commonMasterId);
+		if(!commonMasterItem.isPresent()) {
+			return Optional.empty();
+		}
+		List<RetirePlanCource> listRetirePlan = retirePlanCourceService.getAllRetirePlanCource(companyId);
+		if(listRetirePlan.isEmpty()) {
+			return Optional.empty();
 		}
 		
-	}
-
-	/**
-	 * アルゴリズム [関連マスタの取得] を実行する(Thực hiện thuật toán [lấy RelatedMaster])
-	 * @return RelateMasterDto
-	 */
-	public RelateMasterDto getRelateMaster() {
-		String contractCd = AppContexts.user().contractCode();
-		String companyId = AppContexts.user().companyId();
-		// ドメインモデル [グループ会社共通マスタ] を取得する
-		Optional<GrpCmonMasterImport> getDomainCompanyCommonMaster = commonMasterAdap.findCommonMasterByContract(contractCd, "M000031");
-		if(getDomainCompanyCommonMaster.isPresent()) {
-			// アルゴリズム [全ての定年退職コースの取得] を実行する(Thực hiện thuật toán [lấy tất cả RetirePlanCourse])
-			List<RetirePlanCource> listRetirePlan = retirePlanCourceRep.getlistRetirePlanCource(companyId);
-			if(listRetirePlan.isEmpty()) {
-				return null;
-			}else {
-				List<RetirePlanCourceDto> listRetireDto = listRetirePlan.stream()
-						.map(x -> new RetirePlanCourceDto(x))
-						.collect(Collectors.toList());
-				return null;
-			}
-
-		}else {
-			return null;
-		}
+		return Optional.of(new RelateMasterDto(commonMasterItem.get(),
+				listRetirePlan.stream()
+				.map(x -> new RetirePlanCourceDto(x))
+				.collect(Collectors.toList())));
 	}
 	
-	/**
-	 * アルゴリズム [就業規則の取得] を実行する (THực hiện thuật toán  [Lấy Quy tắc làm việc/Labor regulations] )
-	 */
-	public MandatoryRetirementRegulationDto getLaborRegulation(String historyId) {
-		// アルゴリズム [定年退職の就業規則の取得] を実行する(Thực hiện thuật toán [lấy mandatoryRetirementRegulations])
-		Optional<MandatoryRetirementRegulation> findMandotory = mandatoryRep.findByKey(historyId);
-		if(findMandotory.isPresent()) {
-			MandatoryRetirementRegulation found = findMandotory.get();
-			return new MandatoryRetirementRegulationDto(found); 
-		}else {
-			return null;
+	//アルゴリズム [就業規則の取得] を実行する (THực hiện thuật toán  [Lấy Quy tắc làm việc/Labor regulations] )
+	public Optional<MandatoryRetirementRegulationDto> getMandatoryRetirementRegulation(String companyId, String historyId) {
+		Optional<MandatoryRetirementRegulation> result = mandatoryService.getMandatoryRetirementRegulation(companyId, historyId);
+		if(result.isPresent()) {
+			return Optional.of(new MandatoryRetirementRegulationDto(result.get()));
 		}
+		return Optional.empty();
 	}
 	
 }
