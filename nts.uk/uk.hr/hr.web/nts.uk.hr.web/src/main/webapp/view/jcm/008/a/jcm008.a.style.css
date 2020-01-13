@@ -11,6 +11,7 @@
 }
 .ui-accordion .ui-accordion-content{
 	padding: 0.5em 1em;
+	width: 429px !important;
 }
 .ui-accordion .ui-accordion-header{
 	margin-top: 0px;

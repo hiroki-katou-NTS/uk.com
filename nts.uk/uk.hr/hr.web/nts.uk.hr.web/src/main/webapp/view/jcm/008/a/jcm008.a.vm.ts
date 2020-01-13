@@ -5,6 +5,7 @@ module jcm008.a {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import dialog = nts.uk.ui.dialog;
+    import liveView = nts.uk.request.liveView;
     var block = nts.uk.ui.block;
 
     export class ViewModel {
@@ -72,6 +73,9 @@ module jcm008.a {
             service.searchRetireData(param)
                 .done((res: ISearchResult) => {
                     let mergedEmpInfo = _.merge(_.keyBy(res.retiredEmployees, 'sid'), _.keyBy(res.employeeImports, 'employeeId'));
+                    if(res.interView && res.interView.listInterviewRecordAvailability) {
+                        mergedEmpInfo = _.merge(_.keyBy(mergedEmpInfo, 'sid'), _.keyBy(res.interView.listInterviewRecordAvailability, 'employeeID'));
+                    }
                     self.plannedRetirements(_.values(mergedEmpInfo));
                     self.bindRetirementDateSettingGrid();
                     self.searchFilter.confirmCheckRetirementPeriod(false);
@@ -137,7 +141,7 @@ module jcm008.a {
                 columns: [
                     { headerText: getText('JCM008_A222_13'), key: 'employmentName', dataType: 'string', width: '80px' },
                     { headerText: getText('JCM008_A222_14'), key: 'retirementAge', dataType: 'string', width: '70px' },
-                    { headerText: getText('JCM008_A222_15'), key: 'retireDateBase', dataType: 'string', width: '280px' },
+                    { headerText: getText('JCM008_A222_15'), key: 'retireDateBase', dataType: 'string', width: '262px' },
 
                 ],
                 dataSource: self.searchFilter.retirementCourses(),
@@ -149,15 +153,16 @@ module jcm008.a {
         public bindRetirementDateSettingGrid(): void {
             let self = this;
             let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
-            // if ($('#retirementDateSetting').data("igGrid")) {
-            //     $('#retirementDateSetting').ntsGrid("destroy");
-            // };
             let dataSources = self.plannedRetirements();
             let rowStates = [];
-            let cellStates = []
+            let cellStates = [];
+            let interviewRecordTxt = getText('JCM008_A222_57');
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
                 data.ageDisplay = data.age + '歳';
+                if (data.presence) {
+                    data.interviewRecordTxt = interviewRecordTxt;
+                }
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
@@ -180,14 +185,13 @@ module jcm008.a {
                 }
                 return data;
             });
-            console.log(rowStates);
+            console.log(dataSources);
             let columns = [
                 { headerText: 'key', key: 'rKey', dataType: 'string' },
                 { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                 { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
                 { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
                 { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' },
-                // { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseName', dataType: 'string', width: '100px' },
                 { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
                 { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
                 { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
@@ -202,7 +206,7 @@ module jcm008.a {
             }];
             if (self.referEvaluationItems().length > 0) {
                 self.referEvaluationItems().forEach((item) => {
-                    if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
+                    if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
                         let hcGroups = [];
                         for (let hc = 0; hc < item.displayNum; hc ++) {
                             hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' });
@@ -210,7 +214,7 @@ module jcm008.a {
                         columns.push({headerText: getText('JCM008_A222_36'), group: hcGroups});
                     }
                     
-                    if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
+                    if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
                         let paGroups = [];
                         for (let pa = 0; pa < item.displayNum; pa ++) {
                             paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' });
@@ -227,7 +231,7 @@ module jcm008.a {
                     }
                 });
             }
-            columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecord', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
+            columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
             
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
@@ -320,7 +324,7 @@ module jcm008.a {
                 department: selectedEmp.departmentName,
                 position: selectedEmp.position.positionName,
                 employment: selectedEmp.employmentName,
-                image: selectedEmp.avatarFile ? selectedEmp.avatarFile.facePhotoFileID : 'https://discovery-park.co.uk/wp-content/uploads/2017/06/avatar-default.png' 
+                image: selectedEmp.avatarFile ? liveView(selectedEmp.avatarFile.facePhotoFileID) : 'images/avatar.png' 
             };
 
             self.employeeInfo(emp);
