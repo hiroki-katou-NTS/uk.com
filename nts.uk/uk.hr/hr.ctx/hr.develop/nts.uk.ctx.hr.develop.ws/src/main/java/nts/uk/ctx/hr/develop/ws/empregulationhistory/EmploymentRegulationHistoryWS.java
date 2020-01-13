@@ -50,4 +50,11 @@ public class EmploymentRegulationHistoryWS {
 		command.remove(dto);
 	}
 	
+	@POST
+	@Path("/getLatestHistId")
+	public JavaTypeResult<String> getLatestHistId(){
+		String cId = AppContexts.user().companyId();
+		return new JavaTypeResult<String> (finder.getLatestEmpRegulationHist(cId));
+	}
+	
 }

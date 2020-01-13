@@ -1,6 +1,9 @@
 module nts.uk.com.view.jmm018.tabb.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModel {
@@ -35,6 +38,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retireDateEna: KnockoutObservable<boolean> = ko.observable(true);
         retireDateVis: KnockoutObservable<boolean> = ko.observable(true);
         retireText: KnockoutObservable<boolean> = ko.observable(true);
+        
+        
+        latestHistId: KnockoutObservable<any>;
         
         constructor() {
             let self = this;
@@ -76,10 +82,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 self.appliAccepTypetLst.push(new ItemModel(x.value, x.name));
             });
             
+            //ThanhPV
+            self.latestHistId = ko.observable('');
+            
+            
             self.delVisible = ko.observable(true);
-            
             self.delChecked = ko.observable();
-            
             self.pathGet = ko.observable(`employmentRegulationHistory/getDateHistoryItem`);
             self.pathAdd = ko.observable(`employmentRegulationHistory/saveDateHistoryItem`);
             self.pathUpdate = ko.observable(`employmentRegulationHistory/updateDateHistoryItem`);
@@ -131,6 +139,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             
             self.afterRender = () => {
+                self.selectedHistId(self.latestHistId());
             };
             
             self.afterAdd = () => {
@@ -197,7 +206,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
+            block.grayout();
+            new service.getLatestHistId().done(function(data: any) {
+                self.latestHistId(data);
+            });
             let a = {
                         index: 1,
                         // B422_15_22
@@ -253,7 +265,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             self.hidden('href1', 'B422_12');
             dfd.resolve();
-            nts.uk.ui.block.clear();
+            block.clear();
 
             return dfd.promise();
         }

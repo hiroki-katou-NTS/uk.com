@@ -17,6 +17,12 @@ public class MandatoryRetirementRegulationWS {
 	private UpdateMandatoryRetirementRegulation command;
 	
 	@POST
+	@Path("/start")
+	public void start(MandatoryRetirementRegulationDto param){
+	}
+	
+	
+	@POST
 	@Path("/update")
 	public void update(MandatoryRetirementRegulationDto param){
 		command.update(param);

@@ -1,17 +1,17 @@
 package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class StartDto {	
+	
 	private RelateMasterDto relateMaster;
 	
 	private MandatoryRetirementRegulationDto mandatoryRetirement;
-
-	public StartDto(RelateMasterDto relateMaster, MandatoryRetirementRegulationDto mandatoryRetirement) {
-		super();
-		this.relateMaster = relateMaster;
-		this.mandatoryRetirement = mandatoryRetirement;
-	}
-
 }

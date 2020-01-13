@@ -1,8 +1,7 @@
-module nts.uk.com.view.ccg009.a.service {
+module nts.uk.com.view.jmm018.tabb.service {
 
     var paths: any = {
-        getLatestCareerPathHist: "careermgmt/careerpath/getLatestCareerPathHist",
-        
+        getLatestHistId: "employmentRegulationHistory/getLatestHistId",
         
         
         find: "sys/share/toppagealarm/find",
@@ -17,8 +16,8 @@ module nts.uk.com.view.ccg009.a.service {
         return nts.uk.request.ajax("com", paths.updateWorkType, command);
     };
     
-    export function getLatestCareerPathHist(): JQueryPromise<any> {
-        return ajax(paths.getLatestCareerPathHist);
+    export function getLatestHistId(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getLatestHistId);
     }
 
 }

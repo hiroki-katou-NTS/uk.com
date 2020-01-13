@@ -70,7 +70,7 @@ public class MandatoryRetirementRegulationFinder {
 				List<RetirePlanCourceDto> listRetireDto = listRetirePlan.stream()
 						.map(x -> new RetirePlanCourceDto(x))
 						.collect(Collectors.toList());
-				return new RelateMasterDto(null, getDomainCompanyCommonMaster.get().getCommonMasterName(), getDomainCompanyCommonMaster.get().getCommonMasterItems(), listRetireDto);
+				return null;
 			}
 
 		}else {

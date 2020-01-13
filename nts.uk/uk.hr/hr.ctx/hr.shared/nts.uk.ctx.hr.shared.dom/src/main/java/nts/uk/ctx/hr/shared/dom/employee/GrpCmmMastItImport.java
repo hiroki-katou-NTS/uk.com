@@ -1,27 +1,20 @@
 package nts.uk.ctx.hr.shared.dom.employee;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * 
  * @author yennth
  *
  */
-@Data
+@AllArgsConstructor
+@Getter
 public class GrpCmmMastItImport {
-	// 共通項目ID
-	private String commonMasterItemId;
 	
-	// 共通項目名
+ 	private String commonMasterItemId;
+	
 	private String commonMasterItemName;
 	
-	// 表示順
 	private int displayNumber;
-
-	public GrpCmmMastItImport(String commonMasterItemId, String commonMasterItemName, int displayNumber) {
-		super();
-		this.commonMasterItemId = commonMasterItemId;
-		this.commonMasterItemName = commonMasterItemName;
-		this.displayNumber = displayNumber;
-	}
 }
