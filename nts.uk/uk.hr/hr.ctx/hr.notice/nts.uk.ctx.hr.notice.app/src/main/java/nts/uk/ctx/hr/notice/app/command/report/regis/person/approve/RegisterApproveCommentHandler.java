@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
@@ -165,7 +164,7 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 	 * 承認する(Phê duyệt)
 	 * @param cmd
 	 */
-	private void approveReport(ApproveReportCommand cmd) {
+	public void approveReport(ApproveReportCommand cmd) {
 
 		String sid = AppContexts.user().employeeId();
 
