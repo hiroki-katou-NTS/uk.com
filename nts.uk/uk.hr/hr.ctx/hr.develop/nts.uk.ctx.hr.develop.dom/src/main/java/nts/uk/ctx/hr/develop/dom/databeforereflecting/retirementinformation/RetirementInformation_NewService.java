@@ -90,13 +90,13 @@ public class RetirementInformation_NewService {
 		// 個人情報反映前データを変更する (Thay đổi data trước khi phản ánh thông tin cá nhân)
 
 		if (!addListDomain.isEmpty()) {
+			addListDomain.forEach(x -> {
+				x.setHistoryId(IdentifierUtil.randomUniqueId());
+			});
 			this.repo.addData(addListDomain);
 		}
 
 		if (!updateListDomain.isEmpty()) {
-			updateListDomain.forEach(x -> {
-				x.setHistoryId(IdentifierUtil.randomUniqueId());
-			});
 			this.repo.updateData(updateListDomain);
 		}
 	}
