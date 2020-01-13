@@ -51,7 +51,14 @@ class RetirementAgeSetting {
 interface IStartPageDto {
     dateDisplaySettingPeriod: IDateDisplaySettingPeriod;
     retirementCourses: Array<IRetirementCourses>;
-    referEvaluationItems: Array<any>;
+    referEvaluationItems: Array<ReferEvaluationItem>;
+}
+
+interface ReferEvaluationItem {
+    evaluationItem: number;
+    usageFlg: boolean;
+    displayNum: number;
+    passValue: string;
 }
 
 interface IDateDisplaySettingPeriod {
@@ -126,14 +133,14 @@ class SearchFilterModel {
             return elem.name;
         }).join(', ');
     });
-    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(true);
     employment: KnockoutObservable<Array[IEmployment]> = ko.observable([]);
     employmentDisplay: KnockoutObservable<string> = ko.computed(() => {
         return this.employment().map(function(elem){
             return elem.name;
         }).join(', ');
     })
-    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(true);
     confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
     retirementCourses: KnockoutObservable<IRetirementCourses>;
     retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
@@ -158,6 +165,7 @@ class ISearchParams {
         this.includingReflected = param.includingReflected();
         this.retirementAgeSetting = param.retirementAgeDesignation();
         if(this.retirementAgeSetting) {
+            // console.log(param.selectedRetirementAge());
             this.retirementAge = parseInt(param.selectedRetirementAge());
         }
         this.startDate = param.retirementPeriod().startDate;
@@ -165,7 +173,7 @@ class ISearchParams {
         this.allSelectDepartment = param.selectAllDepartment();
         this.selectDepartment = _.map(param.department(), (d) => {return d.name;});
         this.allSelectEmployment = param.selectAllEmployment();
-        this.selectEmployment = _.map(param.employment(), (d) => {return d.name;});
+        this.selectEmployment = _.map(param.employment(), (d) => {return d.code;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
     }
 }
@@ -177,24 +185,37 @@ interface ISearchResult {
 }
 
 interface IEmployeeInformationImport {
+    // 社員ID
     employeeId : string;
+    // 社員コード
     employeeCode : string;
+    // ビジネスネーム
     businessName : string;
+    // ビジネスネームカナ
     businessNameKana : string;
+    // 所属職場
     workplace: WorkPlace;
+    // 所属分類
     classification: Classification;
+    // 所属部門
     department: Department;
+    // 所属職位
     position: Position;
+    // 所属雇用
     employment: Employment;
+    // 就業区分
     employmentCls: number;
+    // 個人ID
     personID: string;
+    // 社員名
     employeeName: string;
+    // 顔写真ファイル
     avatarFile: FacePhotoFile;
+    // 誕生日
     birthday: string;
+    // 年齢
     age: number;
 }
-
-
 
 class PlannedRetirementDto {
     pId : string;
@@ -277,8 +298,6 @@ interface WorkPlace {
     workplaceName: string;
 }
 
-
-
 interface Classification {
     classificationCode: string;
     classificationName: string;
@@ -291,4 +310,30 @@ interface IInterviewSummary {
 interface IInterviewRecordAvailability {
     employeeID: string;
     isPresence: boolean;
+}
+
+class RowState {
+    rowId: string;
+    disable: boolean;
+    constructor(rowId: string, disable: boolean) {
+        this.rowId = rowId;
+        this.disable = disable;
+    }
+}
+
+class CellState {
+    rowId: string;
+    columnKey: string;
+    state: Array<any>
+    constructor(rowId: string, columnKey: string, state: Array<any>) {
+        this.rowId = rowId;
+        this.columnKey = columnKey;
+        this.state = state;
+    }
+}
+
+const EvaluationItem = {
+    PERSONNEL_ASSESSMENT: 0,
+    HEALTH_CONDITION: 1,
+    STRESS_CHECK: 2
 }
