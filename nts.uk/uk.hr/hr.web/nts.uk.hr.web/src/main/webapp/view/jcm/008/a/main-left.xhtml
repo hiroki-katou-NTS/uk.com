@@ -8,7 +8,7 @@
             class="mr-20 help-button">?</button>
         <!-- JCM008_A222_3 -->
         <div id="retirement-period" tabindex="3"
-            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod}"></div>
+            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod, required: true}"></div>
         <!-- JCM008_A222_2_2 -->
         <div id="includingReflected" tabindex="4" data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
             class="check-box-padding">
@@ -28,6 +28,7 @@
             optionsValue: 'code',
             visibleItemsCount: 5,
             value: searchFilter.selectedRetirementAge,
+            selectFirstIfNull: false,
             enable: searchFilter.retirementAgeDesignation(),
             optionsText: 'name',
             columns: [

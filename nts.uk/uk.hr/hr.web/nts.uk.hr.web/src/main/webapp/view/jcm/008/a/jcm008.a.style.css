@@ -11,6 +11,7 @@
 }
 .ui-accordion .ui-accordion-content{
 	padding: 0.5em 1em;
+	width: 429px !important;
 }
 .ui-accordion .ui-accordion-header{
 	margin-top: 0px;
@@ -69,4 +70,7 @@
 }
 .ui-iggrid-tablebody .nts-checkbox-container{
 	margin-left: 16px;
+}
+.ui-iggrid-fixedcontainer-left {
+	border-right: 2px solid #dddddd!important;
 }
