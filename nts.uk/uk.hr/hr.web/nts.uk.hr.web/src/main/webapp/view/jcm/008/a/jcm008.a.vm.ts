@@ -1,12 +1,9 @@
 module jcm008.a {
-    import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import liveView = nts.uk.request.liveView;
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
-    import close = nts.uk.ui.windows.close;
     import dialog = nts.uk.ui.dialog;
     var block = nts.uk.ui.block;
 
@@ -263,18 +260,16 @@ module jcm008.a {
                     { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
                     { name: 'Resizing' },
                     { name: 'MultiColumnHeaders' },
-                    { name: 'ColumnFixing', fixingDirection: 'left',
-//                                            syncRowHeights: true,
-                                            showFixButtons: false,
-                                            columnSettings: [
-                                                            { columnKey: 'rKey', isFixed: true },
-                                                            { columnKey: 'flag', isFixed: true },
-                                                            { columnKey: 'extendEmploymentFlg', isFixed: true },
-                                                            { columnKey: 'registrationStatus', isFixed: true },
-                                                            { columnKey: 'desiredWorkingCourseId', isFixed: true },
-                                                            { columnKey: 'employeeCode', isFixed: true },
-                                                            { columnKey: 'employeeName', isFixed: true } 
-                                                        ]}
+                    { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false,
+                        columnSettings: [
+                            { columnKey: 'rKey', isFixed: true },
+                            { columnKey: 'flag', isFixed: true },
+                            { columnKey: 'extendEmploymentFlg', isFixed: true },
+                            { columnKey: 'registrationStatus', isFixed: true },
+                            { columnKey: 'desiredWorkingCourseId', isFixed: true },
+                            { columnKey: 'employeeCode', isFixed: true },
+                            { columnKey: 'employeeName', isFixed: true } 
+                        ]}
                 ],
                 ntsFeatures: [
                     { name: 'CopyPaste' },
@@ -349,7 +344,8 @@ module jcm008.a {
                 selectedSystemType: 1,
                 isrestrictionOfReferenceRange: false,
                 showNoSelection: false,
-                isShowBaseDate: true
+                isShowBaseDate: true,
+                startMode: 1
             });
             modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
                 block.clear();
@@ -370,7 +366,8 @@ module jcm008.a {
                 selectedSystemType: 1,
                 isrestrictionOfReferenceRange: false,
                 showNoSelection: false,
-                isShowBaseDate: true
+                isShowBaseDate: true,
+                isShowWorkClosure: false
             });
             modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function () {
                 block.clear();
