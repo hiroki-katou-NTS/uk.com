@@ -70,3 +70,6 @@
 .ui-iggrid-tablebody .nts-checkbox-container{
 	margin-left: 16px;
 }
+.ui-iggrid-fixedcontainer-left {
+	border-right: 2px solid #dddddd!important;
+}

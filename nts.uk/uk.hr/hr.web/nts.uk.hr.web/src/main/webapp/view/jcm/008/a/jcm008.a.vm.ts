@@ -205,14 +205,15 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
                         let hcGroups = [];
                         for (let hc = 0; hc < item.displayNum; hc ++) {
-                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + hc, dataType: 'string', width: '40px' });
+                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' });
                         }
                         columns.push({headerText: getText('JCM008_A222_36'), group: hcGroups});
                     }
+                    
                     if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
                         let paGroups = [];
                         for (let pa = 0; pa < item.displayNum; pa ++) {
-                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'hrEvaluation' + pa, dataType: 'string', width: '40px' });
+                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' });
                         }
                         columns.push({headerText: getText('JCM008_A222_37'), group: paGroups});
                     }
@@ -220,7 +221,7 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
                         let scGroups = [];
                         for (let sc = 0; sc < item.displayNum; sc ++) {
-                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'hrEvaluation' + sc, dataType: 'string', width: '40px' });
+                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '40px' });
                         }
                         columns.push({headerText: getText('JCM008_A222_38'), group: scGroups});
                     }
@@ -259,6 +260,11 @@ module jcm008.a {
                     },
                     { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
                     { name: 'Resizing' },
+                    { name: 'Hiding' },
+                    {
+                        name: 'ColumnMoving', 
+                        columnMovingDialogContainment: 'window'
+                    },
                     { name: 'MultiColumnHeaders' },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false,
                         columnSettings: [
