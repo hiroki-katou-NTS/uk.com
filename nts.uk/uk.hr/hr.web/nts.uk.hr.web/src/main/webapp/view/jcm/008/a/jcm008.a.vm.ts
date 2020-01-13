@@ -152,9 +152,9 @@ module jcm008.a {
         public bindRetirementDateSettingGrid(): void {
             let self = this;
             let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
-            if ($('#retirementDateSetting').data("igGrid")) {
-                $('#retirementDateSetting').ntsGrid("destroy");
-            };
+            // if ($('#retirementDateSetting').data("igGrid")) {
+            //     $('#retirementDateSetting').ntsGrid("destroy");
+            // };
             let dataSources = self.plannedRetirements();
             let rowStates = [];
             let cellStates = []
@@ -267,6 +267,7 @@ module jcm008.a {
 //                                            syncRowHeights: true,
                                             showFixButtons: false,
                                             columnSettings: [
+                                                            { columnKey: 'rKey', isFixed: true },
                                                             { columnKey: 'flag', isFixed: true },
                                                             { columnKey: 'extendEmploymentFlg', isFixed: true },
                                                             { columnKey: 'registrationStatus', isFixed: true },
