@@ -256,7 +256,7 @@
 															<div style = "display: inline-block;">#{i18n.getText('JMM018_B422_15_38')}</div>
 														</td>
 														<td class="column-row">
-															<button data-bind="click: $parent.openCDialog, enable: $parent.isLatestHis() &amp;&amp; usageFlg()" class="small buttonDialogC" >#{i18n.getText('JMM018_B422_15_39')}</button>
+															<button data-bind="click: $parent.openCDialog.bind($parent.retirePlanCourseList), enable: $parent.isLatestHis() &amp;&amp; usageFlg()" class="small buttonDialogC" >#{i18n.getText('JMM018_B422_15_39')}</button>
 															<div style = "display: inline-block;"><span class="label limited-label retireCourseTxt" data-bind="text: enableRetirePlanCourseText"></span></div>
 														</td>
 													</tr>

@@ -20,7 +20,7 @@ module nts.uk.com.view.jmm018.a {
                 
                 let _self = this;
                 
-                $.when(_self.eventManage().start_page(), _self.screenModelTab2().start()).done(function() {
+                $.when(_self.eventManage().start_page()).done(function() {
                         dfd.resolve(_self);
                     });
                 
@@ -44,7 +44,8 @@ module nts.uk.com.view.jmm018.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let _self = this;
-                        _self.start_page();
+                        //_self.start_page();
+                        _self.screenModelTab2().start();
                         _self.removeErrorMonitor();
                     }
                 });
