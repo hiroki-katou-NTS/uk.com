@@ -16,6 +16,8 @@
 			
 		<com:EnumScript>
 			nts.uk.ctx.at.request.dom.application.ApplicationType
+			nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.DurationFlg
+			nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetirePlanCourseClass
 		</com:EnumScript>
 		
 		<com:ValidatorScript>
@@ -52,15 +54,12 @@
 							<tbody data-bind="foreach : dataRetirment">
 									<tr>
 										<td class="column-row">
-											<div id ="check-box"
-												data-bind="ntsCheckBox: { checked: checkBox },attr:{
-														tabindex:1 + $index()+1
-													}"></div>
+											<div id ="check-box" data-bind="ntsCheckBox: { checked: checkBox }, attr:{ tabindex:1 + $index()+1 } "> </div>
 										</td>
-										<td class="column-row"><span class="label " data-bind="text: courseAtr"></span></td>
-										<td class="column-row"><span class="label " data-bind="text: retirement"></span></td>
+										<td class="column-row"><span class="label " data-bind="text: retirePlanCourseClass().name"></span></td>
+										<td class="column-row"><span class="label " data-bind="text: retirePlanCourseName"></span></td>
 										<td class="column-row"><span class="label " data-bind="text: retirementAge"></span></td>
-										<td class="column-row"><span class="label " data-bind="text: continuationCategory"></span></td>
+										<td class="column-row"><span class="label " data-bind="text: durationFlg"></span></td>
 									</tr> 
 								</tbody>
 							</table>

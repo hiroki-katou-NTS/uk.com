@@ -5,9 +5,13 @@ module nts.uk.at.view.jmm018.c.viewmodel {
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
         dataRetirment: KnockoutObservableArray<any> = ko.observableArray([]);
+        durationList: [];
+        retirePlanCourseClassList: [];
+        
         constructor() {
             let self = this;
         }
@@ -16,51 +20,36 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
             dfd = $.Deferred();
-//            let param = getShared('employmentType');
-            let pa = {
-                index: 1,
-                // C222_5
-                checkBox: true,
-                // C222_6
-                courseAtr: "通常",
-                // C222_8
-                retirement: "b",
-                // C222_9
-                retirementAge: "c",
-                // C222_10
-                continuationCategory: "d",
-            }
             
-            let ram = {
-                index: 2,
-                // C222_5
-                checkBox: false,
-                // C222_6
-                courseAtr: "通常",
-                // C222_8
-                retirement: "b",
-                // C222_9
-                retirementAge: "c",
-                // C222_10
-                continuationCategory: "d",
-            }
+            self.durationList = __viewContext.enums.DurationFlg;
             
-            let a = {
-                index: 1,
-                // C222_5
-                checkBox: false,
-                // C222_6
-                courseAtr: "通常",
-                // C222_8
-                retirement: "b",
-                // C222_9
-                retirementAge: "c",
-                // C222_10
-                continuationCategory: "d",
-            }
-            self.dataRetirment().push(new RetirementCourse(pa));
-            self.dataRetirment().push(new RetirementCourse(ram));
-            self.dataRetirment().push(new RetirementCourse(a));
+            self.retirePlanCourseClassList = __viewContext.enums.RetirePlanCourseClass;
+            
+            let param = getShared('employmentTypeToC');
+           let tg = [];
+            _.forEach(param.listInfor, (obj) => {
+                 
+                let durationFind = _.find(self.durationList, function(item) {
+                    return obj.id == item.id;
+                });                
+                let kt = _.find(param.listSelect, {'retirePlanCourseId': obj.retirePlanCourseId});
+                
+                let enterParam = {
+                    retirePlanCourseId: obj.retirePlanCourseId,
+                    // C222_5
+                    checkBox: kt != undefined,
+                    // C222_6
+                    retirePlanCourseClass: _.find(self.retirePlanCourseClassList, { 'value': obj.retirePlanCourseClass}),
+                    // C222_8
+                    retirePlanCourseName: obj.retirePlanCourseName,
+                    // C222_9
+                    retirementAge: obj.retirementAge.toString(),
+                    // C222_10
+                    durationFlg: durationFind.name,
+                }
+                tg.push(new RetirementCourse(enterParam));
+            });   
+            self.dataRetirment(tg);
             dfd.resolve();
             return dfd.promise();
         }
@@ -76,10 +65,10 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let listData = _.filter(self.dataRetirment(), function(o) { return o.checkBox() == true; });
-            let normal = _.countBy(listData, function(x) { return x.courseAtr() == "通常"; });
-            if(normal.true >= 2){
+            let normal = _.size(listData, function(x) { return x.retirePlanCourseClass().value == 0; });
+            if(normal >= 2){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_14"});
-            }else if(normal.true == 0 || !normal.true){
+            }else if(normal == 0 || !normal){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
             }else{
                 setShared('shareToJMM018B', listData);
@@ -89,39 +78,49 @@ module nts.uk.at.view.jmm018.c.viewmodel {
 }
 
     export interface IRetirementCourse {
-        index: number;
+        retirePlanCourseId: number;
         // C222_5
         checkBox: boolean;
         // C222_6
-        courseAtr: string;
+        retirePlanCourseClass: string;
         // C222_8
-        retirement: string;
+        retirePlanCourseName: string;
         // C222_9
         retirementAge: string;
         // C222_10
-        continuationCategory: string;
+        durationFlg: string;
     }
     
     class RetirementCourse {
-        index: number;
+        retirePlanCourseId: number;
         // C222_5
         checkBox: KnockoutObservable<boolean>;
         // C222_6
-        courseAtr: KnockoutObservable<string>;
+        retirePlanCourseClass: KnockoutObservable<string>;
         // C222_8
-        retirement: KnockoutObservable<string>;
+        retirePlanCourseName: KnockoutObservable<string>;
         // C222_9
         retirementAge: KnockoutObservable<string>;
         // C222_10
-        continuationCategory: KnockoutObservable<string>;
+        durationFlg: KnockoutObservable<string>;
         constructor(param: IRetirementCourse) {
             let self = this;
-            self.index = param.index;
+            self.retirePlanCourseId = param.retirePlanCourseId;
             self.checkBox = ko.observable(param.checkBox);
-            self.courseAtr = ko.observable(param.courseAtr);
-            self.retirement = ko.observable(param.retirement);
+            self.retirePlanCourseClass = ko.observable(param.retirePlanCourseClass);
+            self.retirePlanCourseName = ko.observable(param.retirePlanCourseName);
             self.retirementAge = ko.observable(param.retirementAge);
-            self.continuationCategory = ko.observable(param.continuationCategory);
+            self.durationFlg = ko.observable(param.durationFlg);
+        }
+    }
+
+    class ItemModel {
+        value: number;
+        name: string;
+
+        constructor(value: number, name: string) {
+            this.value = value;
+            this.name = name;
         }
     }
 }
