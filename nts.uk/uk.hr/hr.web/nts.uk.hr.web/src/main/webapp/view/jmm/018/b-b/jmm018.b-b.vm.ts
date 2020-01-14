@@ -12,6 +12,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         masterId: KnockoutObservable<string> = ko.observable("");
         histList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedHistId: KnockoutObservable<any> = ko.observable('');
+        latestHistId: KnockoutObservable<any>;
+        isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
+
+        
         reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
         dateRule: KnockoutObservableArray<any> = ko.observableArray([]);
         dateSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -20,13 +24,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         displayNum: KnockoutObservableArray<any> = ko.observableArray([
                     new ItemModel(1, "1"),
                     new ItemModel(2, "2"),
-                    new ItemModel(3, "3"),
+                    new ItemModel(3, "3")
                 ]);
         monthSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         
         // master
-        latestHistId: KnockoutObservable<any>;
-        isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
         commonMasterName: KnockoutObservable<string> = ko.observable("");
         commonMasterItems: KnockoutObservableArray<GrpCmonMaster> = ko.observableArray([]);
         retirePlanCourseList: [];
@@ -44,6 +46,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         applicationEnableEndAge: KnockoutObservable<number> = ko.observable(59);
         endMonth: KnockoutObservable<any> = ko.observable(12);
         endDate: KnockoutObservable<any> = ko.observable(31);
+        mandatoryRetirementRegulation: KnockoutObservable<MandatoryRetirementRegulation>;
         
         constructor() {
             let self = this;
@@ -64,41 +67,34 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.pathAdd = ko.observable(`employmentRegulationHistory/saveDateHistoryItem`);
             self.pathUpdate = ko.observable(`employmentRegulationHistory/updateDateHistoryItem`);
             self.pathDelete = ko.observable(`employmentRegulationHistory/removeDateHistoryItem`);
-            
             self.commandAdd = (masterId, histId, startDate, endDate) => {
                 return { startDate: moment(startDate).format("YYYY/MM/DD") }
             };
-            
             self.getQueryResult = (res) => {
                 return _.map(res, h => {
                     return { histId: h.historyId, startDate: h.startDate, endDate: h.endDate, displayText: `${h.startDate} ～ ${h.endDate}` };
                 });
             };
-            
             self.commandUpdate = (masterId, histId, startDate, endDate) => {
                 return {
                     historyId: histId,
                     startDate: moment(startDate).format("YYYY/MM/DD")
                 }
             };
-            
             self.commandDelete = (masterId, histId) => {
                 return {
                     historyId: histId
                 };
             };
-            
             self.getSelectedStartDate = () => {
                 let selectedHist = _.find(self.histList(), h => h.histId === self.selectedHistId());
                 if (selectedHist) return selectedHist.startDate;
             };
-            
             self.histList.subscribe(function(newValue) {
                 if(self.histList().length == 0){
                     self.selectedHistId('');        
                 }
             });
-            
             self.selectedHistId.subscribe(function(newValue) {
                 if (self.latestHistId() === newValue) {
                     self.isLatestHis(true);
@@ -106,21 +102,16 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     self.isLatestHis(false);
                 }
             });
-            
             self.afterRender = () => {
-                
             };
-            
             self.afterAdd = () => {
                 new service.getLatestCareerPathHist().done(function(data: any) {
                     self.latestCareerPathHist(data);
                 });
             };
-            
             self.afterUpdate = () => {
                 alert("Updated");
             };
-            
             self.afterDelete = () => {
                 alert("delete");
             };
@@ -130,7 +121,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_11"});
                 }
             });
-            
             self.applicationEnableEndAge.subscribe(function(y){
                 if(y < self.applicationEnableStartAge()){
                     nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
@@ -139,6 +129,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.planCourseApplyFlg.subscribe(function(val){
                 $('.judg').trigger("validate");
             });
+            
+            self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             
         }
 
@@ -159,13 +151,15 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         
                         let tg = [];
                         _.forEach(data.referEvaluationTerm, (item) => {
-                            tg.push(new ReferenceValue(item));
+                            tg.push(new ReferEvaluationItem(item , undefined));
                         });
                         let a = []
-                        a.push(new ReferenceValue({evaluationItem: 1, usageFlg: true, displayNum: 1, passValue: 'B'}));
+                        a.push(new ReferEvaluationItem(undefined, 1));
                         self.referEvaluationTerm(a);
                         
                         self.planCourseApplyFlg(data.planCourseApplyFlg);
+                        
+                        self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
                         
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
@@ -244,29 +238,132 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         }
     }
     
-    export interface IReferenceValue {
+    export interface IMandatoryRetirementRegulation {
+        historyId: string;
+        reachedAgeTerm: number;
+        publicTerm: IDateCaculationTerm;
+        retireDateTerm: IRetireDateTerm;
+        planCourseApplyFlg: boolean;
+        mandatoryRetireTerm: IMandatoryRetireTerm [];
+        referEvaluationTerm: IReferEvaluationItem [];
+        planCourseApplyTerm: IPlanCourseApplyTerm;
+    }
+    
+    class MandatoryRetirementRegulation {
+        reachedAgeTerm: KnockoutObservable<number>;
+        publicTerm: KnockoutObservable<DateCaculationTerm>;
+        retireDateTerm: KnockoutObservable<RetireDateTerm>;
+        planCourseApplyFlg: KnockoutObservable<boolean>;
+        mandatoryRetireTerm: [];
+        referEvaluationTerm: KnockoutObservableArray<[]>;
+        planCourseApplyTerm: KnockoutObservable<PlanCourseApplyTerm>;
+        constructor(param: IMandatoryRetirementRegulation) {
+            let self = this;
+            self.reachedAgeTerm = ko.observable(param? param.reachedAgeTerm: 0);
+            self.publicTerm = ko.observable(param? new DateCaculationTerm(param.publicTerm): new DateCaculationTerm(undefined));
+            self.retireDateTerm = ko.observable(param? new RetireDateTerm(param.retireDateTerm): new RetireDateTerm(undefined));
+            self.planCourseApplyFlg = ko.observable(param? param.planCourseApplyFlg: false);
+            self.mandatoryRetireTerm = param? param.mandatoryRetireTerm: [];
+            if(param != undefined){
+                let tg = [];
+                _.forEach(param.referEvaluationTerm, (item) => {
+                    tg.push(new ReferEvaluationItem(item, 0));
+                });
+                self.referEvaluationTerm = ko.observableArray(tg);    
+            }else{
+                let tg = [];
+                for(var i = 0; i< 3; i++){
+                    tg.push(new ReferEvaluationItem(undefined, i));
+                }
+                self.referEvaluationTerm = ko.observableArray(tg); 
+            }
+            self.planCourseApplyTerm = ko.observable(param? new PlanCourseApplyTerm(param.planCourseApplyTerm): new PlanCourseApplyTerm(undefined));
+        }
+    }
+    
+    export interface IDateCaculationTerm {
+        calculationTerm: number;
+        dateSettingNum: number;
+        dateSettingDate: number;
+    }
+    
+    class DateCaculationTerm {
+        calculationTerm: KnockoutObservable<number>;
+        dateSettingDate: KnockoutObservable<number>;
+        dateSettingNum: KnockoutObservable<number>;
+        constructor(param: IDateCaculationTerm) {
+            let self = this;
+            self.calculationTerm = ko.observable(param ? param.calculationTerm : 1);
+            self.dateSettingDate = ko.observable(param ? param.dateSettingNum : 1);
+            self.dateSettingNum = ko.observable(param ? param.dateSettingDate : '');
+        }
+    }
+
+    export interface IRetireDateTerm {
+        retireDateTerm: number;
+        retireDateSettingDate: number;
+    }
+    
+    class RetireDateTerm {
+        retireDateTerm: KnockoutObservable<number>;
+        retireDateSettingDate: KnockoutObservable<number>;
+        constructor(param: IRetireDateTerm) {
+            let self = this;
+            self.retireDateTerm = ko.observable(param ? param.retireDateTerm : 0);
+            self.retireDateSettingDate = ko.observable(param ? param.retireDateSettingDate : 1);
+        }
+    }
+
+    export interface IMandatoryRetireTerm {
+        empCommonMasterItemId: string;
+        usageFlg: boolean;
+        enableRetirePlanCourse: any;
+    }
+
+    export interface IReferEvaluationItem {
         evaluationItem: number;
         usageFlg: boolean;
         displayNum: number;
         passValue: string;
     }
     
-    class ReferenceValue {
+    class ReferEvaluationItem {
         name: string;
         evaluationItem: number;
-        usageFlg: KnockoutObservable<boolean> = ko.observable();
-        displayNum: KnockoutObservable<number> = ko.observable(1);
-        passValue: KnockoutObservable<string> = ko.observable("B");
-        constructor(param: IReferenceValue) {
+        usageFlg: KnockoutObservable<boolean>;
+        displayNum: KnockoutObservable<number>;
+        passValue: KnockoutObservable<string>;
+        constructor(param: IReferEvaluationItem, order: number) {
             let self = this;
-            self.evaluationItem = param.evaluationItem;
-            self.usageFlg = ko.observable(param.usageFlg);
-            self.displayNum = ko.observable(param.displayNum);
-            self.passValue = ko.observable(param.passValue);
-            self.name = _.find(__viewContext.enums.EvaluationItem, t => t.value == param.evaluationItem).name;
+            self.evaluationItem = param ? param.evaluationItem : order;
+            self.name = _.find(__viewContext.enums.EvaluationItem, t => t.value == self.evaluationItem).name;
+            self.usageFlg = ko.observable(param ? param.usageFlg : false);
+            self.displayNum = ko.observable(param ? param.displayNum : 1);
+            self.passValue = ko.observable(param ? param.passValue : 'B');
             self.usageFlg.subscribe(function(val){
                 $('.judg').trigger("validate");
             });
+        }
+    }
+
+    export interface IPlanCourseApplyTerm {
+        applicationEnableStartAge: number;
+        applicationEnableEndAge: number;
+        endMonth: number;
+        endDate: number;
+    }
+    
+    class PlanCourseApplyTerm {
+        applicationEnableStartAge: KnockoutObservable<number>;
+        applicationEnableEndAge: KnockoutObservable<number>;
+        endMonth: KnockoutObservable<number>;
+        endDate: KnockoutObservable<number>;
+        constructor(param: IPlanCourseApplyTerm) {
+            let self = this;
+            self.applicationEnableStartAge = ko.observable(param ? param.applicationEnableStartAge : 50);
+            self.applicationEnableEndAge = ko.observable(param ? param.applicationEnableEndAge : 59);
+            self.endMonth = ko.observable(param ? param.endMonth : 12);
+            self.endDate = ko.observable(param ? param.endDate : 31);
         }
     }
     
@@ -280,12 +377,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         displayNumber: number;
         commonMasterItemId: string;
         commonMasterItemName: string;
-        usageFlg: KnockoutObservable<boolean> = ko.observable(false);
+        usageFlg: KnockoutObservable<boolean>;
         enableRetirePlanCourse: KnockoutObservableArray<any> = ko.observableArray([]);
         enableRetirePlanCourseText: KnockoutObservable<string> = ko.observable("");
         constructor(param: IGrpCmonMaster) {
             let self = this;
             self.displayNumber = param.displayNumber;
+            self.usageFlg = ko.observable(false);
             self.commonMasterItemId = param.commonMasterItemId;
             self.commonMasterItemName = param.commonMasterItemName;
         }
@@ -314,6 +412,14 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             self.enableRetirePlanCourse(tg); 
         }
+        
+        collectMandatoryRetireTerm (): any{
+            let self = this;
+            return {empCommonMasterItemId: self.commonMasterItemId,
+                    usageFlg: self.usageFlg(),
+                    enableRetirePlanCourse: self.enableRetirePlanCourse()}
+        }
+        
     }
 
     class ItemModel {
