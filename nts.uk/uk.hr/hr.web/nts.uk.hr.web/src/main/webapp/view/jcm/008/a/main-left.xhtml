@@ -14,7 +14,7 @@
             class="check-box-padding">
             #{i18n.getText('JCM008_A222_2_2')}</div>
     </div>
-    <div class="line-height flex">
+    <div class="line-height flex" data-bind="visible: searchFilter.retirementCourses().length > 0">
         <!-- JCM008_A222_4 -->
         <div data-bind="ntsCheckBox: { checked: searchFilter.retirementAgeDesignation, enable: true }"
             class="check-box-padding mr-10 ml-16">
@@ -74,6 +74,6 @@
             readonly: true,
             required: true
         }" class="mt-6" />
-        <button tabindex="10" class="normal mt-6 ml-70" data-bind="click: getRetirementData">#{i18n.getText('JCM008_A222_10')}</button>
+        <button tabindex="10" class="normal mt-6 ml-70" data-bind="click: getRetirementData, enable: $root.errors.isEmpty()">#{i18n.getText('JCM008_A222_10')}</button>
     </div>
 </div>
