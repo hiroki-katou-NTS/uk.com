@@ -274,9 +274,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 listInfor: self,
                 listSelect: item.getRetirePlanCourseId()
             }
-//            setShared('employmentType', guideMsg);
-//            nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
-//            })
+            setShared('employmentTypeToC', employmentType);
+            nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
+                let param = getShared('shareToJMM018B');
+                item.setEnableRetirePlanCourse(param);
+            })
         }
         
         loadHisId(): JQueryPromise<any> {
