@@ -185,6 +185,7 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 			.businessNameKana(item.getBusinessNameKana())
 			.employeeCode(item.getEmployeeCode())
 			.employeeId(item.getEmployeeId())
+			.gender(item.getGender())
 			.classification(cls)
 			.workplace(wkp)
 			.department(dep)

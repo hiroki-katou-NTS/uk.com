@@ -48,7 +48,7 @@ public class PlannedRetirementDto {
 	// 雇用名
 	private String employmentName;
 	// 年齢
-	private Integer age;
+	private Integer retirementAge;
 	// 退職日
 	private GeneralDate retirementDate;
 	// 公開日

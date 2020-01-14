@@ -187,54 +187,21 @@ module jcm008.a {
                 }
                 return data;
             });
-            console.log(dataSources);
-            let columns = [
-                { headerText: 'key', key: 'rKey', dataType: 'string' },
-                { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
-                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px' },
-                { headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' },
-                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
-                { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
-                { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
-                { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px' },
-                { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' },
-                { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' },
-                { headerText: getText('JCM008_A222_32'), key: 'employmentName', dataType: 'string', width: '90px' },
-                { headerText: getText('JCM008_A222_33'), key: 'dateJoinComp', dataType: 'string', width: '95px' },
-                { headerText: getText('JCM008_A222_34'), key: 'retirementDate', dataType: 'string', width: '95px' },
-                { headerText: getText('JCM008_A222_35'), key: 'releaseDate', dataType: 'string', width: '95px' },
-                { headerText: getText('JCM008_A222_35_1'), key: 'inputDate', dataType: 'string', width: '95px' 
-            }];
-            if (self.referEvaluationItems().length > 0) {
-                self.referEvaluationItems().forEach((item) => {
-                    if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
-                        let hcGroups = [];
-                        for (let hc = 0; hc < item.displayNum; hc ++) {
-                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' });
-                        }
-                        columns.push({headerText: getText('JCM008_A222_36'), group: hcGroups});
-                    }
-                    
-                    if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
-                        let paGroups = [];
-                        for (let pa = 0; pa < item.displayNum; pa ++) {
-                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' });
-                        }
-                        columns.push({headerText: getText('JCM008_A222_37'), group: paGroups});
-                    }
-                    
-                    if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
-                        let scGroups = [];
-                        for (let sc = 0; sc < item.displayNum; sc ++) {
-                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '40px' });
-                        }
-                        columns.push({headerText: getText('JCM008_A222_38'), group: scGroups});
-                    }
-                });
-            }
-            columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
             
+            let fixedClmSetting = [
+                { columnKey: 'rKey', isFixed: true },
+                { columnKey: 'flag', isFixed: true },
+                { columnKey: 'extendEmploymentFlg', isFixed: true },
+                { columnKey: 'registrationStatus', isFixed: true }
+            ];
+            if(self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
+                fixedClmSetting.push({ columnKey: 'desiredWorkingCourseId', isFixed: true });
+            }
+            fixedClmSetting = fixedClmSetting.concat([
+                { columnKey: 'employeeCode', isFixed: true },
+                { columnKey: 'employeeName', isFixed: true }
+            ]);
+            let columns = self.buildRetirementDateSettingCol();
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -269,19 +236,16 @@ module jcm008.a {
                     { name: 'Hiding' },
                     {
                         name: 'ColumnMoving', 
-                        columnMovingDialogContainment: 'window'
+                        columnMovingDialogContainment: 'window',
+                        // columnSettings: [
+                        //     {columnKey: 'flag', allowMoving: false},
+                        //     {columnKey: 'hrEvaluation1', allowMoving: false},
+                        //     {columnKey: 'hrEvaluation2', allowMoving: false},
+                        //     {columnKey: 'hrEvaluation3', allowMoving: false}
+                        // ]
                     },
                     { name: 'MultiColumnHeaders' },
-                    { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false,
-                        columnSettings: [
-                            { columnKey: 'rKey', isFixed: true },
-                            { columnKey: 'flag', isFixed: true },
-                            { columnKey: 'extendEmploymentFlg', isFixed: true },
-                            { columnKey: 'registrationStatus', isFixed: true },
-                            { columnKey: 'desiredWorkingCourseId', isFixed: true },
-                            { columnKey: 'employeeCode', isFixed: true },
-                            { columnKey: 'employeeName', isFixed: true } 
-                        ]}
+                    { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: fixedClmSetting}
                 ],
                 ntsFeatures: [
                     { name: 'CopyPaste' },
@@ -307,6 +271,67 @@ module jcm008.a {
 
                 ]
             });
+            // $('#retirementDateSetting ')
+        }
+
+        private buildRetirementDateSettingCol() {
+            let self = this;
+            let columns = [
+                { headerText: 'key', key: 'rKey', dataType: 'string' },
+                { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
+                { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
+                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px'}
+            ];
+            
+            if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
+                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' });
+            }
+           
+            columns = columns.concat([
+                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
+                { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px' },
+                { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' },
+                { headerText: getText('JCM008_A222_32'), key: 'employmentName', dataType: 'string', width: '90px' },
+                { headerText: getText('JCM008_A222_33'), key: 'dateJoinComp', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_34'), key: 'retirementDate', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_35'), key: 'releaseDate', dataType: 'string', width: '95px' },
+                { headerText: getText('JCM008_A222_35_1'), key: 'inputDate', dataType: 'string', width: '95px'}
+            ]);
+
+            if (self.referEvaluationItems().length > 0) {
+                self.referEvaluationItems().forEach((item) => {
+                    if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
+                        let hcGroups = [];
+                        for (let hc = 0; hc < item.displayNum; hc ++) {
+                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' });
+                        }
+
+                        columns.push(hcGroups.length > 1 ? {headerText: getText('JCM008_A222_36'), group: hcGroups} : { headerText: getText('JCM008_A222_36'), key: 'hrEvaluation1', dataType: 'string', width: '40px' });
+                    }
+                    
+                    if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
+                        let paGroups = [];
+                        for (let pa = 0; pa < item.displayNum; pa ++) {
+                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' });
+                        }
+                        columns.push(paGroups.length > 1 ? {headerText: getText('JCM008_A222_37'), group: paGroups} : { headerText: getText('JCM008_A222_37'), key: 'healthStatus1', dataType: 'string', width: '40px' });
+                    }
+                    
+                    if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
+                        let scGroups = [];
+                        for (let sc = 0; sc < item.displayNum; sc ++) {
+                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '40px' });
+                        }
+                        columns.push( scGroups.length > 1 ? {headerText: getText('JCM008_A222_38'), group: scGroups} : { headerText: getText('JCM008_A222_38'), key: 'stressStatus1', dataType: 'string', width: '40px' });
+                    }
+                });
+            }
+
+            columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
+            return columns;
         }
 
         public showModal(id, key, el) {
@@ -320,7 +345,7 @@ module jcm008.a {
                 code: selectedEmp.employeeCode,
                 name: selectedEmp.employeeName,
                 kanaName: selectedEmp.businessnameKana,
-                sex: '性別',
+                sex: selectedEmp.gender === 1 ? '男性' : '女性',
                 dob: selectedEmp.birthday,
                 age: selectedEmp.age + '歳',
                 department: selectedEmp.departmentName,

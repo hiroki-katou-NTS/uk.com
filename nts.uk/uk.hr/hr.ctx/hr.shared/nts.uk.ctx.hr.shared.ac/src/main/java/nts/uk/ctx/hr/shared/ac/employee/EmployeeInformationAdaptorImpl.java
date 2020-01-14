@@ -51,6 +51,7 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 
 	private EmployeeInformationImport toImport(EmployeeInformationExport x) {
 		return EmployeeInformationImport.builder().employeeId(x.getEmployeeId()).employeeCode(x.getEmployeeCode())
+				.gender(x.getGender())
 				.businessName(x.getBusinessName()).businessNameKana(x.getBusinessNameKana())
 				.workplace(toWorkplace(x.getWorkplace())).classification(toClassification(x.getClassification()))
 				.department(toDepartment(x.getDepartment())).position(toPosition(x.getPosition()))
