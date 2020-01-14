@@ -100,28 +100,38 @@ module jcm008.a {
 
         public register() {
             let self = this;
+            block.grayout();
 
-            let settingChanges = _.filter(self.plannedRetirements(), (p) => {
-                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
-            });
+            // let settingChanges = _.filter(self.plannedRetirements(), (p) => {
+            //     return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
+            // });
 
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
-            let retiInfos = _.map(settingChanges, (retire) => {
+            let retiInfos = _.map(self.plannedRetirements(), (retire) => {
                 let changed = _.find(groupChanges, (value, key) => {
                     return key == retire.rKey;
                 });
-                for (let row in changed) {
-                    retire[changed[row].columnKey] = changed[row].value;
+                // アルゴリズム[定年退職者情報の新規登録_変更]を実行する(thực hiện thuật toán [tạo mới/thay đổi thông tin người nghỉ hưu])
+                if (changed) {
+                    retire.pendingFlag = 1;
+                    retire.status = 0;
+                    for (let row in changed) {
+                        if(changed[row].columnKey === 'registrationStatus') {
+                            retire.extendEmploymentFlg = changed[row].value
+                        }
+                        retire[changed[row].columnKey] = changed[row].value;
+                    }
+                } else {
+                    retire.pendingFlag = 1;
+                    retire.status = 0;
                 }
-
+        
                 return retire;
             });
 
-            console.log(retiInfos);
             let data = {
                 retiInfos: retiInfos
             };
-            block.grayout();
             service.register(data)
                 .done(() => {
                     dialog.info({ messageId: "Msg_15" });
