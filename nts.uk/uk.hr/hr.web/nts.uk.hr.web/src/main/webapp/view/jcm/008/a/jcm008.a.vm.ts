@@ -345,7 +345,7 @@ module jcm008.a {
                 code: selectedEmp.employeeCode,
                 name: selectedEmp.employeeName,
                 kanaName: selectedEmp.businessnameKana,
-                sex: selectedEmp.gender,
+                sex: selectedEmp.gender === 1 ? '男性' : '女性',
                 dob: selectedEmp.birthday,
                 age: selectedEmp.age + '歳',
                 department: selectedEmp.departmentName,
