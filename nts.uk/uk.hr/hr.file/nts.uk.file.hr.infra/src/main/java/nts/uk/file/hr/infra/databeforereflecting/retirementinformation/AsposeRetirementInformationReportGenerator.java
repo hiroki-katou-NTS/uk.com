@@ -2,7 +2,6 @@ package nts.uk.file.hr.infra.databeforereflecting.retirementinformation;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -180,10 +179,11 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 						page++;
 					}
 				}
-				// remove evalua by setting
-				removeColumnEvalue(ws, referEvaluaItems);
 
+				rowIndex++;
 			}
+			// remove evalua by setting
+			removeColumnEvalue(ws, referEvaluaItems);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -192,31 +192,60 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 	private void removeColumnEvalue(Worksheet ws, List<ReferEvaluationItem> referEvaluaItems) {
 		
-		List<Integer> deleteColumns = new ArrayList<Integer>();
+		int deletedCol = 0;
 		
-		//collect all delete columns
-		referEvaluaItems.forEach(x -> {
-			if (x.isUsageFlg()) {
-				return;
-			}
-			switch (x.getEvaluationItem()) {
-			case PERSONNEL_ASSESSMENT:
-				deleteColumns.add(PER_EVAL_1 + (x.getDisplayNum() - 1));
-				break;
-			case HEALTH_CONDITION:
-				deleteColumns.add(HEATH_STATUS_1 + (x.getDisplayNum() - 1));
-				break;
-			case STRESS_CHECK:
-				deleteColumns.add(STRESS_CHECK_1 + (x.getDisplayNum() - 1));
-				break;
-			}
-		});
-		//delete columns
+		int totalItemType = 3;
 		
-		for (int i = 0; i < deleteColumns.size(); i++) {
-			// column position = (number cell - Number of columns deleted)  
-			ws.getCells().deleteColumn(deleteColumns.get(i) - i);
+		for (int i = 0; i < totalItemType; i++) {
+			int currentItemType = i;
+
+			int delColNumber = getStartCol(EnumAdaptor.valueOf(i, EvaluationItem.class));
+			Optional<ReferEvaluationItem> setting = referEvaluaItems.stream()
+					.filter(x -> x.getEvaluationItem().value == currentItemType).findFirst();
+			
+			if ((setting.isPresent() && !setting.get().isUsageFlg()) || !setting.isPresent()) {
+				deletedCol = deleteCol(ws, delColNumber, 0, deletedCol);
+			} else {
+				deletedCol = deleteCol(ws, delColNumber, setting.get().getDisplayNum(), deletedCol);
+			}
+
 		}
+	}
+
+	private int deleteCol(Worksheet ws, int delColNumber, Integer displayNum, int deletedCol) {
+
+		int totalColInGroup = 3;
+
+		if (displayNum == totalColInGroup) {
+			return 0;
+		}
+
+		int numberCol = totalColInGroup - displayNum;
+
+		for (int i = 0; i < numberCol; i++) {
+			ws.getCells().deleteColumn(delColNumber - deletedCol);
+
+			deletedCol++;
+		}
+		return deletedCol;
+	}
+
+	private int getStartCol(EvaluationItem evaluationItem) {
+		int colNumber = 0;
+		switch (evaluationItem) {
+
+		case PERSONNEL_ASSESSMENT:
+			colNumber = PER_EVAL_3;
+			break;
+		case HEALTH_CONDITION:
+			colNumber = HEATH_STATUS_3;
+			break;
+		case STRESS_CHECK:
+			colNumber = STRESS_CHECK_3;
+			break;
+
+		}
+		return colNumber;
 	}
 
 	private void settingTableHeader(Worksheet ws) {

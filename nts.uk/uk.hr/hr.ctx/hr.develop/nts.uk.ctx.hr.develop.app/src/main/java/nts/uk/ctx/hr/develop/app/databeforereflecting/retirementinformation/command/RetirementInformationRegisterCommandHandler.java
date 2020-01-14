@@ -49,15 +49,15 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	}
 
 	private DataBeforeReflectingPerInfo createNew(RetiInforRegisInfoCommand cmd) {
-
+		
 		String historyId = cmd.getHistoryId();
 		String contractCode = cmd.getContractCode();
 		String companyId = cmd.getCompanyId();
-		String companyCode = cmd.getCompanyCode();
+		String companyCode =cmd.getCompanyCode();
 		String pId = cmd.getPId();
 		String sId = cmd.getSId();
 		String scd = cmd.getScd();
-		Integer workId = cmd.getWorkId();
+		Integer workId =cmd.getWorkId();
 		String personName = cmd.getPersonName();
 		String workName = cmd.getWorkName();
 		int requestFlag = cmd.getNotificationCategory();
@@ -70,12 +70,12 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 
 		GeneralDateTime date_01 = GeneralDateTime
 				.fromString(cmd.getRetirementDate().toString("yyyy-MM-dd") + TIME_DAY_START, DATE_TIME_FORMAT);
-		String select_code_01 = String.valueOf(cmd.getRetirementCategory());
+		String select_code_01 = String.valueOf(RetirementCategory.retirementAge.value);
 		String select_code_02 = cmd.getDesiredWorkingCourseCd();
 		String select_code_03 = cmd.getRetirementReasonCtgCd1();
 		String select_code_04 = String.valueOf(cmd.getExtendEmploymentFlg());
 
-		String select_name_01 = EnumAdaptor.valueOf(cmd.getRetirementCategory(), RetirementCategory.class).name;
+		String select_name_01 = RetirementCategory.retirementAge.name;
 		String select_name_02 = cmd.getDesiredWorkingCourseName();
 		String select_name_03 = cmd.getRetirementReasonCtgName1();
 
