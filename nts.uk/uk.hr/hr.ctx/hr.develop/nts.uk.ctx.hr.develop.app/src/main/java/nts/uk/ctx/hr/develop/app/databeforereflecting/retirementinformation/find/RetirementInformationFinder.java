@@ -150,7 +150,7 @@ public class RetirementInformationFinder {
 				.departmentCode(plan.getDepartmentCode()).departmentName(plan.getDepartmentName())
 				.jobTitleId(plan.getPositionId()).jobTitleCd(plan.getPositionCode())
 				.jobTitleName(plan.getPositionName()).employmentCode(plan.getEmploymentCode())
-				.employmentName(plan.getEmploymentName()).age(plan.getAge()).retirementDate(plan.getRetirementDate())
+				.employmentName(plan.getEmploymentName()).retirementAge(plan.getAge()).retirementDate(plan.getRetirementDate())
 				.releaseDate(plan.getReleaseDate())
 				.hrEvaluation1(plan.getHrEvaluation1().isPresent() ? plan.getHrEvaluation1().get() : null)
 				.hrEvaluation2(plan.getHrEvaluation2().isPresent() ? plan.getHrEvaluation2().get() : null)
