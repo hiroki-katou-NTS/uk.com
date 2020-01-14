@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffiliationWorkplace;
@@ -36,6 +37,11 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Inject
 	private WorkplaceManagerRepository workplaceManagerRepository;
+	
+	@Inject
+	private WorkplacePub wkpNewPub;
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter#findListWkpIdByBaseDate(nts.arc.time.GeneralDate)
@@ -103,12 +109,30 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 		List<WorkplaceManager> listWorkplaceManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, GeneralDate.today());
 		for (WorkplaceManager workplaceManager : listWorkplaceManager) {
 			if(!subListWorkPlace.contains(workplaceManager.getWorkplaceId())){
-				subListWorkPlace.addAll(syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyID, workplaceManager.getWorkplaceId(), GeneralDate.today()));
+				subListWorkPlace.add(workplaceManager.getWorkplaceId());
+				List<String> list = this.getAllChildrenOfWkpIdNEW(companyID, baseDate, workplaceManager.getWorkplaceId());
+				subListWorkPlace.addAll(list);
+//				subListWorkPlace.addAll(syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyID, workplaceManager.getWorkplaceId(), GeneralDate.today()));
 			}
 		}
 		return subListWorkPlace.stream().distinct().collect(Collectors.toList());
 	}
 
-	
+	@Override
+	public Optional<AffWorkplaceHistImport> findWkpByBaseDateAndSIdNEW(GeneralDate baseDate, String employeeId) {
+
+		AffWorkplaceHistImport affWorkplaceHistImport = new AffWorkplaceHistImport();
+
+		Optional<SWkpHistExport> opSWkpHistExport = syWorkplacePub.findBySidNew(employeeId, baseDate);
+		if (opSWkpHistExport.isPresent()) {			
+			affWorkplaceHistImport.setWorkplaceId(opSWkpHistExport.get().getWorkplaceId());			
+		}
+		return Optional.ofNullable(affWorkplaceHistImport);
+	}
+
+	@Override
+	public List<String> getAllChildrenOfWkpIdNEW(String companyId, GeneralDate baseDate, String parentWorkplaceId) {
+		return wkpNewPub.getAllChildrenOfWorkplaceId(companyId, baseDate, parentWorkplaceId);
+	}
 
 }
