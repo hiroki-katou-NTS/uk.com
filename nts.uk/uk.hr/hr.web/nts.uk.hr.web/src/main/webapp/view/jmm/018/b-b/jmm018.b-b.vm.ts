@@ -100,7 +100,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             
             self.selectedHistId.subscribe(function(newValue) {
-                if (!_.findIndex(self.histList(), h => h.histId === newValue)) {
+                if (self.latestHistId() === newValue) {
                     self.isLatestHis(true);
                 }else{
                     self.isLatestHis(false);

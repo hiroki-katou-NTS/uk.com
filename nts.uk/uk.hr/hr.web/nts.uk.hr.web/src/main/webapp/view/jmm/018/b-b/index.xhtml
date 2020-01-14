@@ -9,7 +9,7 @@
 
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
-				<button class="proceed" tabindex="1" data-bind="click: register, enable: isLatestHis">#{i18n.getText('JMM018_B3_3')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: register, enable:  isLatestHis() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('JMM018_B3_3')}</button>
 			</div>
 			<div class="tab2">
 				<div class="container cf">
@@ -54,6 +54,8 @@
 						<div class="eachType">
 							<a class="typeRetire" id="B422_14"> #{i18n.getText('JMM018_B422_14')} </a> <hr></hr>
 						</div>
+						
+						<!-- Retirement age area -->
 						<div class="eachType">
 							<a class="typeRetire" id="B422_15"> #{i18n.getText('JMM018_B422_15')} </a> <hr></hr>
 							<div data-bind="visible: true">
@@ -268,6 +270,8 @@
 								</div>
 							</div>
 						</div>
+						
+						
 						<div class="eachType">
 							<a class="typeRetire" id="B422_16">#{i18n.getText('JMM018_B422_16')} </a><hr></hr>
 						</div>
