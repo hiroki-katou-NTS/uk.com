@@ -217,8 +217,7 @@
 								</div>
 								<div>
 									<div>
-										<div class="linkRetire frameRetire"
-											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_41')}</div>
+										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_41')}</div>
 										<div class="linkRetire frameRetire" id="applycationCondition">
 											<table>
 												<thead>
@@ -227,21 +226,16 @@
 														<th class="ui-widget-header appAgeCell">#{i18n.getText('JMM018_B422_15_45')}</th>
 														<th style="width: 235px;" class="ui-widget-header">#{i18n.getText('JMM018_B422_15_46')}</th>
 													</tr>
-
 												</thead>
-
 												<tbody>
 													<tr>
 														<td class="column-row">
-															<div class="appCon"
-																data-bind="ntsCheckBox: { checked: applyCondition, enable: isLatestHis }"></div>
+															<div class="appCon" data-bind="ntsCheckBox: { checked: applyCondition, enable: isLatestHis }"></div>
 															<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
 														</td>
-
 														<td class="column-row">
 															<div class="table">
-																<input id="lowerLimit" class="cell buttonDialogC"
-																	data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+																<input id="lowerLimit" class="cell buttonDialogC" data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_49')}',
 																				value: ageLowerLimit,
 																				enable: isLatestHis &amp;&amp; appliConEna,
@@ -249,8 +243,7 @@
 																				 required: isLatestHis &amp;&amp; appliConEna
 																				}" />
 																<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
-																<input id="upperLimit" class="cell"
-																	data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+																<input id="upperLimit" class="cell" data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_51')}',
 																				value: ageUpperLimit,
 																				enable: isLatestHis &amp;&amp; appliConEna,
@@ -259,10 +252,8 @@
 																				}" />
 															</div>
 														</td>
-
 														<td class="column-row">
-															<div class="buttonDialogC"
-																data-bind="ntsComboBox: {
+															<div class="buttonDialogC" data-bind="ntsComboBox: {
 																							options: appliAcceptLst,
 																							optionsValue: 'value',
 																							value: appliAcceptVal,
@@ -272,10 +263,8 @@
 																							visibleItemsCount: 12,
 																							width: 100,
 																							required: isLatestHis &amp;&amp; appliConEna
-																							 }">
-															</div>
-															<div class="buttonDialogC"
-																data-bind="ntsComboBox: {
+																							 }"></div>
+															<div class="buttonDialogC" data-bind="ntsComboBox: {
 																							options: dateSelectItem,
 																							optionsValue: 'value',
 																							value: appliAcceptType,
@@ -285,47 +274,29 @@
 																							visibleItemsCount: 10,
 																							width: 100,
 																							required: isLatestHis &amp;&amp; appliConEna
-																							 }">
-															</div>
+																							 }"></div>
 														</td>
 													</tr>
 												</tbody>
-
 											</table>
 										</div>
 									</div>
 								</div>
-
 							</div>
-
-
 						</div>
-
 						<div class="eachType">
-							<a class="typeRetire" id="B422_16">
-								#{i18n.getText('JMM018_B422_16')} </a>
-							<hr></hr>
+							<a class="typeRetire" id="B422_16">#{i18n.getText('JMM018_B422_16')} </a><hr></hr>
 						</div>
-
 						<div class="eachType">
-							<a class="typeRetire" id="B422_17">
-								#{i18n.getText('JMM018_B422_17')} </a>
-							<hr></hr>
+							<a class="typeRetire" id="B422_17">#{i18n.getText('JMM018_B422_17')} </a><hr></hr>
 						</div>
-
 						<div class="eachType">
-							<a class="typeRetire" id="B422_18">
-								#{i18n.getText('JMM018_B422_18')} </a>
-							<hr></hr>
+							<a class="typeRetire" id="B422_18">#{i18n.getText('JMM018_B422_18')} </a><hr></hr>
 						</div>
-
 						<div class="eachType">
-							<a class="typeRetire" id="B422_19">
-								#{i18n.getText('JMM018_B422_19')} </a>
-							<hr></hr>
+							<a class="typeRetire" id="B422_19">#{i18n.getText('JMM018_B422_19')} </a><hr></hr>
 						</div>
 					</div>
-
 				</div>
 				</div>
 			</div>
