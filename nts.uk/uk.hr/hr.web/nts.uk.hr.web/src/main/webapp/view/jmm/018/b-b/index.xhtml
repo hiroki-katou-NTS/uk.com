@@ -65,7 +65,7 @@
 												options: reachedAgeTermList,
 												optionsValue: 'value',
 												optionsText: 'name',
-												value: reachedAgeTerm,
+												value: mandatoryRetirementRegulation().reachedAgeTerm,
 												enable: isLatestHis}"> </div>
 								</div>
 								<div>
@@ -73,7 +73,7 @@
 									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 												options: dateRule,
 												optionsValue: 'value',
-												value: calculationTerm,
+												value: mandatoryRetirementRegulation().publicTerm().calculationTerm,
 												optionsText: 'name',
 												columns: [{ prop: 'name', length: 10 }],
 												enable: isLatestHis,
@@ -83,7 +83,7 @@
 									<div class="retireDateEna" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3) ">
 										<span> 
 											<input style="margin-left: 30px;" class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
-													value: dateSettingNum,
+													value: mandatoryRetirementRegulation().publicTerm().dateSettingNum,
 													required: true,
 													readonly: false,
 													enable: isLatestHis,
@@ -97,7 +97,7 @@
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 													options: dateSelectItem,
 													optionsValue: 'value',
-													value: dateSettingDate,
+													value: mandatoryRetirementRegulation().publicTerm().dateSettingDate,
 													optionsText: 'name',
 													columns: [{ prop: 'name', length: 10 }],
 													enable: isLatestHis,
@@ -111,7 +111,7 @@
 									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 												options: retireDateRule,
 												optionsValue: 'value',
-												value: retireDateTerm,
+												value: mandatoryRetirementRegulation().retireDateTerm().retireDateTerm,
 												optionsText: 'name',
 												enable: isLatestHis,
 												visibleItemsCount: 10,
@@ -121,7 +121,7 @@
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 													options: dateSelectItem,
 													optionsValue: 'value',
-													value: retireDateSettingDate,
+													value: mandatoryRetirementRegulation().retireDateTerm().retireDateSettingDate,
 													optionsText: 'name',
 													columns: [{ prop: 'name', length: 10 }],
 													enable: isLatestHis,
@@ -142,7 +142,7 @@
 													<th class="ui-widget-header ">#{i18n.getText('JMM018_B422_15_19')}</th>
 												</tr>
 											</thead>
-											<tbody data-bind="foreach : referEvaluationTerm">
+											<tbody data-bind="foreach : mandatoryRetirementRegulation().referEvaluationTerm">
 												<tr>
 													<td class="column-row"><span class="label " data-bind="text: name"></span></td>
 													<td class="column-row">
