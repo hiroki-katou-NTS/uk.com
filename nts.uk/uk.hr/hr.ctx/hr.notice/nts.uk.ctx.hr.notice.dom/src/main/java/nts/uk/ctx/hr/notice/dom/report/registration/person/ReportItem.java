@@ -41,8 +41,8 @@ public class ReportItem extends AggregateRoot {
 	private String stringVal; // 文字列
 	private BigDecimal intVal; // 数値
 	private GeneralDate dateVal;// 日付
-	private int layoutDisOrder; // レイアウト項目区分
-	private String contractCode; // 帳票差し込みの項目名称
+	private int layoutDisOrder; // 項目表示順
+	private String contractCode; // 契約CD
 	private int reflectID; // 反映ID
 	
 	

@@ -45,11 +45,14 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 
 	/** The Constant DATE_TIME_FORMAT. */
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	public static final String MAX_DATE = "9999/12/31";
+	public static final String MIN_DATE = "1900/01/01";
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		System.out.println("command");
+		ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -73,9 +76,9 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 				.reportLayoutID(data.reportLayoutID)
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
-				.reportDetail("") // chưa đặt hàng lần n
+				.reportDetail("") // chưa đặt hàng lần này
 				.regStatus(RegistrationStatus.Save_Draft)
-				.aprStatus(ApprovalStatusForRegis.Approved) // tam thoi
+				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
 				.inputPid("")
