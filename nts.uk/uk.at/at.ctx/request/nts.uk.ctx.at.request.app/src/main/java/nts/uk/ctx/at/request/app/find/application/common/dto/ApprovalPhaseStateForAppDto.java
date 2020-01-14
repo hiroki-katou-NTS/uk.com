@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 @Value
 @AllArgsConstructor
 public class ApprovalPhaseStateForAppDto {
-private Integer phaseOrder;
+	private Integer phaseOrder;
 	
 	private Integer approvalAtrValue;
 	

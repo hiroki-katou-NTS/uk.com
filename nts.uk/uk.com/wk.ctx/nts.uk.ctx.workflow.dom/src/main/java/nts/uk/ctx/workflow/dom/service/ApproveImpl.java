@@ -65,7 +65,8 @@ public class ApproveImpl implements ApproveService {
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
 					appDate,
-					SystemAtr.WORK.value);
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			//ドメインモデル「承認ルートインスタンス」を取得する
@@ -187,7 +188,8 @@ public class ApproveImpl implements ApproveService {
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
 					appDate,
-					SystemAtr.WORK.value);
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
@@ -238,7 +240,8 @@ public class ApproveImpl implements ApproveService {
 					EmploymentRootAtr.APPLICATION, 
 					appType, 
 					appDate,
-					SystemAtr.WORK.value);
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);

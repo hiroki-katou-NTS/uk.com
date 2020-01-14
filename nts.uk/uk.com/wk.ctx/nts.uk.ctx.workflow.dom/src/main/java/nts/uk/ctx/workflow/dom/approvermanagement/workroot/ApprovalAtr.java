@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 public enum ApprovalAtr {
 	/** 個人*/
 	PERSON(0),
-	/** 職格*/
-	JOB_TITLE(1),
+	/** 承認者グループ*/
+	APPROVER_GROUP(1),
 	/** 特定職場*/
 	SPEC_WKP(2);
 	public final int value;
