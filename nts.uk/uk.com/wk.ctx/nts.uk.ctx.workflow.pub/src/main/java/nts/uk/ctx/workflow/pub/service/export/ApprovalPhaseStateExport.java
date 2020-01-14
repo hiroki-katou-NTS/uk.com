@@ -17,6 +17,8 @@ public class ApprovalPhaseStateExport {
 	
 	private ApprovalBehaviorAtrExport approvalAtr;
 	
+	private ApprovalFormExport approvalForm;
+	
 	private List<ApprovalFrameExport> listApprovalFrame;
 	
 }

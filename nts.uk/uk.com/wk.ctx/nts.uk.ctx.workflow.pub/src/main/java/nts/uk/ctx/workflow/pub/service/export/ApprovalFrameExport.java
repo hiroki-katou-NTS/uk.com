@@ -14,25 +14,11 @@ import nts.arc.time.GeneralDate;
 @Value
 public class ApprovalFrameExport {
 	
-	private Integer phaseOrder;
-	
 	private Integer frameOrder;
-	
-	private ApprovalBehaviorAtrExport approvalAtr;
 	
 	private List<ApproverStateExport> listApprover;
 	
-	private String approverID;
-	
-	private String approverName;
-	
-	private String representerID;
-	
-	private String representerName;
-	
-	private String approvalReason;
-	
 	private int confirmAtr;
 	
-	private GeneralDate approvalDate;
+	private GeneralDate appDate;
 }
