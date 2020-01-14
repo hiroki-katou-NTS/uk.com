@@ -99,7 +99,7 @@ public class ReportItemFinder {
 		//添付ファイル一覧を表示する(アルゴリズム[添付ファイル一覧を表示する]を実行する)
 		List<DocumentSampleDto> documentSampleDtoLst = this.attachPersonReportFileFinder.findAll(reportLayoutId, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
-		List<LayoutReportClsDto> items = mapItemCls(params.getReportLayoutId(), listItemCls);
+		List<LayoutReportClsDto> items = mapItemCls(params.getReportId(), listItemCls);
 
 		List<LayoutReportClsDto> itemInter = new ArrayList<>();
 
@@ -145,7 +145,7 @@ public class ReportItemFinder {
 	 * @param listItemCls
 	 * @return
 	 */
-	private List<LayoutReportClsDto> mapItemCls(Integer reportId, List<RegisterPersonalReportItem> listItemCls) {
+	private List<LayoutReportClsDto> mapItemCls(String reportId, List<RegisterPersonalReportItem> listItemCls) {
 		List<LayoutReportClsDto> result = new ArrayList<>();
 
 		String cid = AppContexts.user().companyId();
@@ -283,7 +283,7 @@ public class ReportItemFinder {
 		
 		if(reportId != null) {
 			
-			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, reportId.intValue()).stream()
+			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, Integer.valueOf(reportId)).stream()
 					.collect(Collectors.groupingBy(c -> c.getCtgCode())));
 		}
 

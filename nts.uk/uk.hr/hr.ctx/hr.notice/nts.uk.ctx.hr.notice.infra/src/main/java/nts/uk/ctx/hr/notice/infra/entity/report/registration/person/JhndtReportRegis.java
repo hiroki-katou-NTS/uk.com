@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -48,6 +49,7 @@ public class JhndtReportRegis extends UkJpaEntity implements Serializable {
 	@Column(name = "APR_STATUS")
 	public int aprStatus;// 承認状況
 
+	@Setter
 	@Column(name = "DRAFT_SAVE_DATE")
 	public GeneralDateTime draftSaveDate;//下書き保存日
 
@@ -111,6 +113,7 @@ public class JhndtReportRegis extends UkJpaEntity implements Serializable {
 	@Column(name = "SEND_BACK_COMMENT")
 	public String sendBackComment;//差し戻しコメント
 
+	@Setter
 	@Column(name = "DEL_FLG")
 	public int delFlg;//削除済
 

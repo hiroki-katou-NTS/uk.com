@@ -32,7 +32,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
  *
  */
 @Stateless
-public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
+public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
@@ -40,16 +40,9 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	@Inject
 	private ReportItemRepository reportItemRepo;
 	
-	/** The Constant TIME_DAY_START. */
-	public static final String TIME_DAY_START = " 00:00:00";
-
-	/** The Constant DATE_TIME_FORMAT. */
-	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		System.out.println("command");
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -74,7 +67,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
 				.reportDetail("") // chưa đặt hàng lần n
-				.regStatus(RegistrationStatus.Save_Draft)
+				.regStatus(RegistrationStatus.Registration)
 				.aprStatus(ApprovalStatusForRegis.Approved) // tam thoi
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
@@ -116,11 +109,10 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
-			for (int j = 0; j < items.size(); j++) { // COM1_000000000000000_CS00001_IS00001
+			for (int j = 0; j < items.size(); j++) {
 				ItemValue itemValue = items.get(j);
-				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
-				
-				ItemDfCommand itemDfCommand = itemDfCommandOpt.get();
+				ItemDfCommand itemDfCommand = listItemDf.stream().filter(it -> it.itemDefId == itemValue.definitionId())
+						.findFirst().get();
 				
 				int layoutItemType = 0;
 				switch (itemDfCommand.layoutItemType) {

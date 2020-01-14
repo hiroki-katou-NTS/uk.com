@@ -35,7 +35,7 @@ public class RegistrationPersonReportFinder {
 
 		List<RegistrationPersonReport> listReport = repo.getListBySIds(sid);
 
-		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(true);
+		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(false);
 
 		if (!listReportJhn011.isEmpty()) {
 			listReportJhn011.forEach(rp -> {

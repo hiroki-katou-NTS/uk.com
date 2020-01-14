@@ -30,6 +30,8 @@ module jhn001.a.viewmodel {
         enaAttachedFile : KnockoutObservable<boolean> = ko.observable(true);
         enaRemove : KnockoutObservable<boolean> = ko.observable(true);
         
+        listItemDf = [];
+        
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
             { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
@@ -42,6 +44,7 @@ module jhn001.a.viewmodel {
                 layouts = self.layouts;
 
             self.reportClsId.subscribe(id => {
+                self.listItemDf = [];
                 if (id) {
                     block();
                     let objReport = _.find(self.layouts(), function(o) { return o.id == id; })
@@ -57,11 +60,13 @@ module jhn001.a.viewmodel {
 
                     service.getReportDetails(query).done((data: any) => {
                         if (data) {
-                            //layout.showColor(true);
-                            //layout.standardDate(data.standardDate || undefined);
 
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
+                            
+                            if( data.classificationItems.length > 0 ){
+                                self.setListItemDf(data.classificationItems);
+                            }
 
                             // set sendBackComment header A222_2_1
                             layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment);
@@ -75,6 +80,7 @@ module jhn001.a.viewmodel {
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
                             });
+                            unblock();
                         } else {
                             self.layout().listItemCls.removeAll();
                             unblock();
@@ -87,7 +93,33 @@ module jhn001.a.viewmodel {
                 }
             });
             
-             self.start();
+            let reportLayoutId = null ;
+            self.start(reportLayoutId);
+        }
+        
+        setListItemDf(clsItems: any) {
+            let self = this,
+                itemDfs = [];
+            for (let i = 0; i < clsItems.length; i++) {
+                if (clsItems[i].items != undefined || clsItems[i].layoutItemType != "SeparatorLine"){
+                    for (let j = 0; j < clsItems[i].items.length; j++) {
+                        let item = clsItems[i].items[j];
+                        let obj = {
+                            categoryId: clsItems[i].personInfoCategoryID,
+                            categoryCode: clsItems[i].categoryCode,
+                            categoryName: clsItems[i].categoryName,
+                            ctgType: clsItems[i].ctgType,
+                            layoutItemType: clsItems[i].layoutItemType,
+                            layoutDisOrder: clsItems[i].dispOrder,
+                            dispOrder: item.dispOrder,
+                            itemDefId: item.itemDefId,
+                            itemCode: item.itemCode,
+                            itemName: item.itemName
+                        }
+                        self.listItemDf.push(obj);
+                    }
+                }
+            }
         }
         
         getListDocument(param): JQueryPromise<any> {
@@ -155,14 +187,14 @@ module jhn001.a.viewmodel {
             let self = this;
         }
 
-        start(code?: string): JQueryPromise<any> {
+        start(reportLayoutId?: string): JQueryPromise<any> {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
                 dfd = $.Deferred();
             // get all layout
             layouts.removeAll();
-            service.getAll(true).done((data: Array<any>) => {
+            service.getAll(false).done((data: Array<any>) => {
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
@@ -175,12 +207,13 @@ module jhn001.a.viewmodel {
                             memo        : x.clsDto.remark,
                             message     : x.clsDto.message,
                             reportId    : x.reportID,
-                            sendBackComment : x.sendBackComment
+                            sendBackComment : x.sendBackComment,
+                            workId : null
                         }
                     });
                     _.each(_.orderBy(_data, ['displayOrder'], ['asc']), d => layouts.push(d));
                     if (_data) {
-                        self.reportClsId(_data[0].reportClsId);
+                        self.reportClsId(reportLayoutId == null ? _data[0].reportClsId : reportLayoutId);
                     }
                 } else {
                     self.createNewLayout();
@@ -202,18 +235,34 @@ module jhn001.a.viewmodel {
         save() {
             let self = this,
                 layout = self.layout,
-                layouts = self.layouts;
-        }
-        
-        saveDraft() {
-            let self = this,
+                layouts = self.layouts,
                 controls = self.layout().listItemCls();
-
+            
             // refresh data from layout
             self.layout().outData.refresh();
             let inputs = self.layout().outData();
             
-            let command = { inputs: inputs };
+            let reportLayoutId = self.reportClsId();
+            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                return;
+
+            let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
+
+            if (objReport == undefined || objReport == null) {
+                return;
+            }
+            
+            let command = { 
+                inputs : inputs ,
+                listItemDf: self.listItemDf,
+                reportID : objReport.reportId ,
+                reportLayoutID : reportLayoutId ,
+                reportCode : objReport.reportCode ,
+                reportName : objReport.reportName ,
+                reportType : objReport.reportType ,
+                sendBackComment : objReport.sendBackComment ,
+                workId : objReport.workId == null ? 0 : objReport.workId,
+            };
 
              // trigger change of all control in layout
             lv.checkError(controls);
@@ -225,13 +274,67 @@ module jhn001.a.viewmodel {
                 }
 
                 // push data layout to webservice
-                self.block();
-                service.saveDraftData(command).done(() => {
+                block();
+                service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        //self.reload();
+                        self.start(reportLayoutId);
                     });
                 }).fail((mes: any) => {
-                    self.unblock();
+                    unblock();
+                });
+            }, 50);
+
+        }
+        
+        saveDraft() {
+            let self = this,
+                layout = self.layout,
+                layouts = self.layouts,
+                controls = self.layout().listItemCls();
+            
+            // refresh data from layout
+            self.layout().outData.refresh();
+            let inputs = self.layout().outData();
+            
+            let reportLayoutId = self.reportClsId();
+            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                return;
+
+            let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
+
+            if (objReport == undefined || objReport == null) {
+                return;
+            }
+            
+            let command = { 
+                inputs : inputs ,
+                listItemDf: self.listItemDf,
+                reportID : objReport.reportId ,
+                reportLayoutID : reportLayoutId ,
+                reportCode : objReport.reportCode ,
+                reportName : objReport.reportName ,
+                reportType : objReport.reportType ,
+                sendBackComment : objReport.sendBackComment ,
+                workId : objReport.workId == null ? 0 : objReport.workId,
+            };
+
+             // trigger change of all control in layout
+            lv.checkError(controls);
+            
+            setTimeout(() => {
+                if (hasError()) {
+                    $('#func-notifier-errors').trigger('click');
+                    return;
+                }
+
+                // push data layout to webservice
+                block();
+                service.saveDraftData(command).done(() => {
+                    info({ messageId: "Msg_15" }).then(function() {
+                        self.start(reportLayoutId);
+                    });
+                }).fail((mes: any) => {
+                    unblock();
                 });
             }, 50);
 
@@ -321,6 +424,19 @@ module jhn001.a.viewmodel {
                 });
             }
         }
+    }
+    
+    interface IItemDf {
+        categoryId: string;
+        categoryCode: string;
+        categoryName: string;
+        ctgType: number;
+        layoutItemType: number;
+        layoutDisOrder: number;
+        dispOrder : number;
+        itemDefId: string;
+        itemCode : string;
+        itemName: string;
     }
     
     interface ICategory {

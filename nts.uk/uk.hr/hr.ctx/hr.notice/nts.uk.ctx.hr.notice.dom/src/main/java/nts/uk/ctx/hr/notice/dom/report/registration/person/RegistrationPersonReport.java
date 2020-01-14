@@ -4,8 +4,10 @@
 package nts.uk.ctx.hr.notice.dom.report.registration.person;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -19,6 +21,8 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
  * đăng ký thông tin report cua nhan vien
  */
 @Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegistrationPersonReport extends AggregateRoot{
@@ -52,8 +56,8 @@ public class RegistrationPersonReport extends AggregateRoot{
 	private String appPosCd ;//申請者職位CD
 	private String appPosName ;//申請者職位名
 	private ReportType reportType;//届出種類
-	private String sendBackSID;//差し戻し先社員ID
-	private String sendBackComment;//差し戻しコメント
+	private String  sendBackSID;//差し戻し先社員ID
+	private String  sendBackComment;//差し戻しコメント
 	private boolean delFlg;//削除済
 	
 	public RegistrationPersonReport(String cid, String rootSateId, int workId, int reportID, int reportLayoutID,

@@ -3,8 +3,8 @@ module jhn001.b.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-         getListReportSaveDraft: 'hr/notice/report/regis/person/save/draft/getAll',
-         deleteReport: 'hr/notice/report/regis/person/save/draft/remove/{0}',
+         getListReportSaveDraft: 'hr/notice/report/regis/person/getAll',
+         deleteReport: 'hr/notice/report/regis/person/remove/{0}',
     };
 
 

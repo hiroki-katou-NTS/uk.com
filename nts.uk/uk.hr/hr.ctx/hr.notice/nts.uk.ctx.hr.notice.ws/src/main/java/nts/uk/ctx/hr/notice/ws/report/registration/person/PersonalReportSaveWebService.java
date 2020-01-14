@@ -15,9 +15,9 @@ import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonRepor
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.com.context.AppContexts;
 
-@Path("hr/notice/report/regis/person/save/draft")
+@Path("hr/notice/report/regis/person")
 @Produces("application/json")
-public class PersonalReportSaveDraftWebService {
+public class PersonalReportSaveWebService {
 
 	@Inject
 	private RegistrationPersonReportFinder finder;
@@ -38,13 +38,19 @@ public class PersonalReportSaveDraftWebService {
 	
 	@POST
 	@Path("remove/{reportId}")
-	public void remove(@PathParam("reportId") String reportId) {
+	public void remove(@PathParam("reportId") Integer reportId) {
 		del.handle(reportId);
 	}
 	
 	@POST
-	@Path("save")
+	@Path("saveDraft")
 	public void saveDraft(SaveReportInputContainer inputContainer) {
+		this.saveDarft.handle(inputContainer);
+	}
+	
+	@POST
+	@Path("save")
+	public void save(SaveReportInputContainer inputContainer) {
 		this.saveDarft.handle(inputContainer);
 	}
 	

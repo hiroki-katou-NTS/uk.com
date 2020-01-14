@@ -37,11 +37,17 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 	@Column(name = "LAYOUT_ITEM_TYPE")
 	public int layoutItemType; // 項目区分
 	
+	@Column(name = "CATEGORY_ID")
+	public String categoryId; // 反映ID
+	
 	@Column(name = "CATEGORY_NAME")
 	public String ctgName; // カテゴリ名
 	
 	@Column(name = "FIXED_ATR")
 	public boolean fixedAtr; // 既定区分
+	
+	@Column(name = "ITEM_ID")
+	public String itemId; // 反映ID
 	
 	@Column(name = "ITEM_NAME")
 	public String itemName; // 項目名
@@ -61,15 +67,15 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 	@Column(name = "DATE_VAL")
 	public GeneralDate dateVal;// 日付
 	
+	@Column(name = "LAYOUT_DISORDER")
+	public int layoutDisOrder;  // レイアウト項目区分
+	
+	@Column(name = "CONTRACT_CD")
+	public String contractCode; // 帳票差し込みの項目名称
+	
 	@Column(name = "REFLECT_ID")
 	public int reflectID; // 反映ID
 	
-	@Column(name = "CATEGORY_ID")
-	public String categoryId; // 反映ID
-	
-	@Column(name = "ITEM_ID")
-	public String itemId; // 反映ID
-
 	@Override
 	public Object getKey() {
 		return pk;
@@ -83,9 +89,11 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 						this.reportLayoutID ,
 						this.reportName ,
 						this.layoutItemType ,
+						this.categoryId ,
 						this.pk.ctgCode ,
 						this.ctgName ,
 						this.fixedAtr ,
+						this.itemId,
 						this.pk.itemCd ,
 						this.itemName ,
 						this.dspOrder ,
@@ -93,8 +101,9 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 						this.stringVal ,
 						this.intVal ,
 						this.dateVal ,
-						this.reflectID,
-						this.categoryId,
-						this.itemId);
+						this.layoutDisOrder,
+						this.contractCode,
+						this.reflectID
+						);
 	}
 }

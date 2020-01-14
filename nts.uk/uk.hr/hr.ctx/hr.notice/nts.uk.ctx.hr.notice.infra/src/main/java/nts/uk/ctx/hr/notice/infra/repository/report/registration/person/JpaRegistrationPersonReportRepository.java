@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
@@ -23,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
 	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
-	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE c.pk.cid = :cid and c.inputSid = :sid";
+	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
 	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid "
 			+ " and c.inputSid = :sid and c.appSid = :sid "
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
@@ -114,9 +115,18 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public void remove(String cid, int reportId) {
-		JhndtReportRegisPK pk = new JhndtReportRegisPK(cid, reportId);
-		this.commandProxy().remove(JhndtReportRegis.class, pk);
+	public void remove(String cid, Integer reportId) {
+		if (reportId == null) {
+			return;
+		}
+		
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportId).getSingle();
+		JhndtReportRegis entity = entityOpt.get();
+		entity.setDelFlg(1);
+		entity.setDraftSaveDate(GeneralDateTime.now());
+		this.commandProxy().update(entity);
 	}
 
 }
