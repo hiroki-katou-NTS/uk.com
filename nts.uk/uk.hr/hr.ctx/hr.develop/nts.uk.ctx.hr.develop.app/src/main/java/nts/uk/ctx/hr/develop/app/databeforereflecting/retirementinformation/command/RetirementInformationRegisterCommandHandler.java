@@ -49,15 +49,15 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	}
 
 	private DataBeforeReflectingPerInfo createNew(RetiInforRegisInfoCommand cmd) {
-
+		
 		String historyId = cmd.getHistoryId();
 		String contractCode = cmd.getContractCode();
 		String companyId = cmd.getCompanyId();
-		String companyCode = cmd.getCompanyCode();
+		String companyCode =cmd.getCompanyCode();
 		String pId = cmd.getPId();
 		String sId = cmd.getSId();
 		String scd = cmd.getScd();
-		Integer workId = cmd.getWorkId();
+		Integer workId =cmd.getWorkId();
 		String personName = cmd.getPersonName();
 		String workName = cmd.getWorkName();
 		int requestFlag = cmd.getNotificationCategory();
