@@ -78,7 +78,7 @@
 												dropDownAttachedToBody: true,
 												visibleItemsCount: 10
 												 }"> </div>
-									<div class="retireDateEna" data-bind="visible: retireText">
+									<div class="retireDateEna" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3) ">
 										<span> 
 											<input style="margin-left: 30px;" class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
 													value: dateSettingNum,
@@ -88,51 +88,43 @@
 													constraint: 'Integer_0_99',
 													name: '#{i18n.getText('JMM018_B422_15_6')}'}" />
 										</span> 
-										<span class="label" data-bind="text: textDate"></span>
+										<span class="label" data-bind="visible: calculationTerm() == 2" >#{i18n.getText('JMM018_B422_17_7_1')}</span>
+										<span class="label" data-bind="visible: calculationTerm() == 3" >#{i18n.getText('JMM018_B422_17_7_2')}</span>
 									</div>
-									<div class="retireDateEna" data-bind="visible: retireDateVis">
+									<div class="retireDateEna" data-bind="visible: calculationTerm() == 6 ">
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 													options: dateSelectItem,
 													optionsValue: 'value',
-													value: retireDateTerm,
+													value: dateSettingDate,
 													optionsText: 'name',
-													columns: [
-																{ prop: 'value', length: 2 },
-																{ prop: 'name', length: 10 },
-															],
+													columns: [{ prop: 'name', length: 10 }],
 													enable: isLatestHis,
-													dropDownAttachedToBody: true,
 													visibleItemsCount: 10,
-													width: 150
+													width: 75
 													 }"> </div>
 									</div>
 								</div>
 								<div>
 									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_9')}</div>
 									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
-												options: retireDate,
+												options: retireDateRule,
 												optionsValue: 'value',
-												value: retireDateSelected,
+												value: retireDateTerm,
 												optionsText: 'name',
 												enable: isLatestHis,
-												dropDownAttachedToBody: true,
 												visibleItemsCount: 10,
-												width: 280
+												width: 300
 												 }"> </div>
-									<div class="retireDateEna" data-bind="visible: retireDateEna">
+									<div class="retireDateEna" data-bind="visible: retireDateTerm() == 1">
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 													options: dateSelectItem,
 													optionsValue: 'value',
-													value: retireDatePoint,
+													value: retireDateSettingDate,
 													optionsText: 'name',
-													columns: [
-																{ prop: 'value', length: 2 },
-																{ prop: 'name', length: 10 },
-															],
+													columns: [{ prop: 'name', length: 10 }],
 													enable: isLatestHis,
-													dropDownAttachedToBody: true,
 													visibleItemsCount: 10,
-													width: 150
+													width: 75
 													 }"> </div>
 									</div>
 								</div>
@@ -145,40 +137,38 @@
 													<th class="ui-widget-header retireName">#{i18n.getText('JMM018_B422_15_16')}</th>
 													<th class="ui-widget-header course">#{i18n.getText('JMM018_B422_15_17')}</th>
 													<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_18')}</th>
-													<th class="ui-widget-header continueCategory">#{i18n.getText('JMM018_B422_15_19')}</th>
+													<th class="ui-widget-header ">#{i18n.getText('JMM018_B422_15_19')}</th>
 												</tr>
 											</thead>
-											<tbody data-bind="foreach : referenceValueLs">
+											<tbody data-bind="foreach : referEvaluationTerm">
 												<tr>
-													<td class="column-row"><span class="label " data-bind="text: valueItem"></span></td>
+													<td class="column-row"><span class="label " data-bind="text: name"></span></td>
 													<td class="column-row">
-														<div id="check-box" data-bind="ntsCheckBox: { checked: display, enable: $parent.isLatestHis, }"></div>
+														<div id="check-box" data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis}"></div>
 													</td>
 													<td class="column-row">
 														<div style="margin-left: 22px;" class="buttonDialogC" data-bind="ntsComboBox: {
-																													options: $parent.numberDispLs,
+																													options: $parent.displayNum,
 																													optionsValue: 'value',
-																													value: numberDisplay,
+																													value: displayNum,
 																													optionsText: 'name',
-																													enable: $parent.isLatestHis() &amp;&amp; enable(),
-																													dropDownAttachedToBody: true,
+																													enable: $parent.isLatestHis &amp;&amp; usageFlg,
 																													visibleItemsCount: 10,
-																													width: 60
-																													 }">
-														</div>
+																													width: 60 }"></div>
 													</td>
 													<td class="column-row">
 														<div class="table">
-															<div class="cell">#{i18n.getText('JMM018_B422_15_25')}</div>
+															<div class="cell" style="padding: 0 5px;">#{i18n.getText('JMM018_B422_15_25')}</div>
 															<div class="cell">
 																<input class="nts-input judg" data-bind="ntsTextEditor:{
-																									value: valueCriteria,
-																									required: true,
+																									value: passValue,
+																									required: $parent.isLatestHis &amp;&amp; usageFlg,
 																									readonly: false,
-																									enable: $parent.isLatestHis() &amp;&amp; enable(),
-																									name: '#{i18n.getText('JMM018_B422_15_26')}'}" />
+																									enable: $parent.isLatestHis &amp;&amp; usageFlg,
+																									name: '#{i18n.getText('JMM018_B422_15_26')}',
+																									width: 60}" />
 															</div>
-															<div class="cell">#{i18n.getText('JMM018_B422_15_27')}</div>
+															<div class="cell" style="padding: 0 5px;">#{i18n.getText('JMM018_B422_15_27')}</div>
 														</div>
 													</td>
 												</tr>
@@ -230,51 +220,45 @@
 												<tbody>
 													<tr>
 														<td class="column-row">
-															<div class="appCon" data-bind="ntsCheckBox: { checked: applyCondition, enable: isLatestHis }"></div>
+															<div class="appCon" data-bind="ntsCheckBox: { checked: planCourseApplyFlg, enable: isLatestHis }"></div>
 															<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
 														</td>
 														<td class="column-row">
-															<div class="table">
-																<input id="lowerLimit" class="cell buttonDialogC" data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+															<div class="table buttonDialogC ">
+																<input class="cell judg" data-bind="ntsNumberEditor: {
+																				constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_49')}',
-																				value: ageLowerLimit,
-																				enable: isLatestHis &amp;&amp; appliConEna,
-																				option:{width:'50', unitID:'AGE'},
-																				 required: isLatestHis &amp;&amp; appliConEna
-																				}" />
+																				value: applicationEnableStartAge,
+																				required: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				enable: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				option:{width:'50', unitID:'AGE'}}" />
 																<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
-																<input id="upperLimit" class="cell" data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+																<input class="cell judg" data-bind="ntsNumberEditor: {
+																				constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_51')}',
-																				value: ageUpperLimit,
-																				enable: isLatestHis &amp;&amp; appliConEna,
-																				option:{width:'50',unitID:'AGE'},
-																			 	required: isLatestHis &amp;&amp; appliConEna
-																				}" />
+																				value: applicationEnableEndAge,
+																				required: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				enable: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				option:{width:'50',unitID:'AGE'}}" />
 															</div>
 														</td>
 														<td class="column-row">
 															<div class="buttonDialogC" data-bind="ntsComboBox: {
-																							options: appliAcceptLst,
+																							options: monthSelectItem,
 																							optionsValue: 'value',
-																							value: appliAcceptVal,
+																							value: endMonth,
 																							optionsText: 'name',
-																							enable: isLatestHis &amp;&amp; appliConEna,
-																							dropDownAttachedToBody: true,
+																							enable: isLatestHis &amp;&amp; planCourseApplyFlg,
 																							visibleItemsCount: 12,
-																							width: 100,
-																							required: isLatestHis &amp;&amp; appliConEna
-																							 }"></div>
+																							width: 100}"></div>
 															<div class="buttonDialogC" data-bind="ntsComboBox: {
 																							options: dateSelectItem,
 																							optionsValue: 'value',
-																							value: appliAcceptType,
+																							value: endDate,
 																							optionsText: 'name',
-																							enable: isLatestHis &amp;&amp; appliConEna,
-																							dropDownAttachedToBody: true,
+																							enable: (isLatestHis() &amp;&amp; planCourseApplyFlg()),
 																							visibleItemsCount: 10,
-																							width: 100,
-																							required: isLatestHis &amp;&amp; appliConEna
-																							 }"></div>
+																							width: 100}"></div>
 														</td>
 													</tr>
 												</tbody>
