@@ -12,14 +12,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         masterId: KnockoutObservable<string> = ko.observable("");
         histList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedHistId: KnockoutObservable<any> = ko.observable('');
-        itemListB422_15: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedIdB422_15: KnockoutObservable<number> = ko.observable(0);
-        releaseDate: KnockoutObservableArray<any> = ko.observableArray([]);
-        releaseDateSelected: KnockoutObservable<number> = ko.observable(1);
-        textEditorB422_15_6: KnockoutObservable<number> = ko.observable(0);
+        reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        dateRule: KnockoutObservableArray<any> = ko.observableArray([]);
+        dateSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         textDate: KnockoutObservable<string> = ko.observable('');
 
-        releaseTypeSelected: KnockoutObservable<number> = ko.observable(1);
         retireDate: KnockoutObservableArray<any> = ko.observableArray([]);
         retireDateSelected: KnockoutObservable<number> = ko.observable(2);
         referenceValueLs: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -30,7 +29,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         ageUpperLimit: KnockoutObservable<number> = ko.observable(0);
         appliAcceptLst: KnockoutObservableArray<any> = ko.observableArray([]);
         appliAcceptVal: KnockoutObservable<any> = ko.observable(1);
-        appliAccepTypetLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         appliAcceptType: KnockoutObservable<any> = ko.observable(1);
         isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
         appliConEna: KnockoutObservable<boolean> = ko.observable(false);
@@ -39,30 +38,26 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retireDateVis: KnockoutObservable<boolean> = ko.observable(true);
         retireText: KnockoutObservable<boolean> = ko.observable(true);
         
-        
+        // master
         latestHistId: KnockoutObservable<any>;
         commonMasterName: KnockoutObservable<string> = ko.observable("");
         commonMasterItems: KnockoutObservableArray<GrpCmonMaster> = ko.observableArray([]);
         retirePlanCourseList: [];
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
         
+        // control
+        reachedAgeTerm: KnockoutObservable<number> = ko.observable(0);
+        calculationTerm: KnockoutObservable<number> = ko.observable(1);
+        
+        retireDateTerm: KnockoutObservable<number> = ko.observable(1);
+        dateSettingNum: KnockoutObservable<number> = ko.observable(0);
         
         constructor() {
             let self = this;
-            
             // radio button
-            let ageCondition = __viewContext.enums.UseAtr;
-            _.forEach(ageCondition, (obj) => {
-                self.itemListB422_15.push(new ItemModel(obj.value, obj.name));
-            });
-            
-            // combobox
-            self.releaseDate = ko.observableArray([
-                    new ItemModel(1, getText('JMM018_B422_15_5_1')),
-                    new ItemModel(2, getText('JMM018_B422_15_5_2')),
-                    new ItemModel(3, getText('JMM018_B422_15_5_3')),
-                    new ItemModel(6, getText('JMM018_B422_15_5_6')),
-                ]);
+            self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm);            
+            self.dateRule = (__viewContext.enums.DateRule);
+            self.dateSelectItem = (__viewContext.enums.DateSelectItem);
             
             self.retireDate = ko.observableArray([
                     new ItemModel(1, getText('JMM018_B422_15_5_1')),
@@ -80,11 +75,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let appliAccep = __viewContext.enums.MonthSelectItem;
             _.forEach(appliAccep, (obj) => {
                 self.appliAcceptLst.push(new ItemModel(obj.value, obj.name));
-            });
-            
-            let appAccepType = __viewContext.enums.DateSelectItem;
-            _.forEach(appAccepType, (x) => {
-                self.appliAccepTypetLst.push(new ItemModel(x.value, x.name));
             });
             
             //ThanhPV
@@ -161,7 +151,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 alert("delete");
             };
             
-            self.releaseDateSelected.subscribe(function(val){
+            self.retireDateTerm.subscribe(function(val){
                 if(val == 2){
                     self.textDate(getText('JMM018_B422_17_7_1')); 
                     self.retireDateVis(false);  

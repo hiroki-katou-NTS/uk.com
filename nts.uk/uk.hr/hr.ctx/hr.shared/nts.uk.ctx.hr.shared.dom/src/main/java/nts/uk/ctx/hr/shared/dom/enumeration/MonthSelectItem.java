@@ -32,11 +32,11 @@ public enum MonthSelectItem {
 		
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	MonthSelectItem(int value, String name) {
+	MonthSelectItem(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

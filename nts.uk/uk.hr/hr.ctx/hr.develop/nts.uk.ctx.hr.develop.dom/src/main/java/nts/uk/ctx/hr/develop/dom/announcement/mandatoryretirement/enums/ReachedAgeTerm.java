@@ -12,11 +12,11 @@ public enum ReachedAgeTerm {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	ReachedAgeTerm(int value, String name) {
+	ReachedAgeTerm(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

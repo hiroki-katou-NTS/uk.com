@@ -15,26 +15,24 @@
 				<div class="container cf">
 					<div style="height: 130px;">
 						<assy-com params="screenMode: screenMode, 
-						masterId: masterId, 
-						histList: histList, 
-						selectedHistId: selectedHistId,
-					 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
-					 	getQueryResult: getQueryResult,
-					 	webAppId: 'hr',
-					 	getSelectedStartDate: getSelectedStartDate,
-					 	commandAdd: commandAdd,
-					 	commandUpdate: commandUpdate,
-					 	commandDelete: commandDelete,
-					 	delVisible: delVisible,
-					 	delChecked: delChecked,
-					 	afterRender: afterRender,
-					 	afterAdd: afterAdd,
-					 	afterUpdate: afterUpdate,
-					 	afterDelete: afterDelete"
+										masterId: masterId, 
+										histList: histList, 
+										selectedHistId: selectedHistId,
+									 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
+									 	getQueryResult: getQueryResult,
+									 	webAppId: 'hr',
+									 	getSelectedStartDate: getSelectedStartDate,
+									 	commandAdd: commandAdd,
+									 	commandUpdate: commandUpdate,
+									 	commandDelete: commandDelete,
+									 	delVisible: delVisible,
+									 	delChecked: delChecked,
+									 	afterRender: afterRender,
+									 	afterAdd: afterAdd,
+									 	afterUpdate: afterUpdate,
+									 	afterDelete: afterDelete"
 					 	></assy-com>
-					 	
 					</div>
-					
 					<div>
 						<a id = "href1" class="hyperlink" href="#B422_12" data-bind = "click: hidden('href1', 'B422_12')">#{i18n.getText('JMM018_B422_2')}</a>
 						<a id = "href2" class="hyperlink linkRetire" href="#B422_13" data-bind = "click: hidden('href2', 'B422_13')">#{i18n.getText('JMM018_B422_3')}</a>
@@ -44,93 +42,59 @@
 						<a id = "href6" class="hyperlink linkRetire" href="#B422_17" data-bind = "click: hidden('href6', 'B422_17')">#{i18n.getText('JMM018_B422_7')}</a>
 						<a id = "href7" class="hyperlink linkRetire" href="#B422_18" data-bind = "click: hidden('href7', 'B422_18')">#{i18n.getText('JMM018_B422_8')}</a>
 						<a id = "href8" class="hyperlink linkRetire" href="#B422_19" data-bind = "click: hidden('href8', 'B422_19')">#{i18n.getText('JMM018_B422_9')}</a>
-					
 					</div>
-					
 					<div>
-					
-						<div class="panel panel-frame frameRetire panel-croll">
-						
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_12">
-									#{i18n.getText('JMM018_B422_12')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_13">
-									#{i18n.getText('JMM018_B422_13')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_14">
-									#{i18n.getText('JMM018_B422_14')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_15">
-									#{i18n.getText('JMM018_B422_15')}
-								</a>
-								<hr></hr>					
-								<div data-bind = "visible: true">
-									
-									<!-- 年齢到達条件 -->
-									<div>
-										<div class="linkRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_2')}</div>
-										<div class="radioRetire"
-											data-bind="ntsRadioBoxGroup: {
-												options: itemListB422_15,
+					<div class="panel panel-frame frameRetire panel-croll">
+						<div class="eachType">
+							<a class="typeRetire" id="B422_12"> #{i18n.getText('JMM018_B422_12')} </a> <hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_13"> #{i18n.getText('JMM018_B422_13')} </a> <hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_14"> #{i18n.getText('JMM018_B422_14')} </a> <hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_15"> #{i18n.getText('JMM018_B422_15')} </a> <hr></hr>
+							<div data-bind="visible: true">
+								<div>
+									<div class="linkRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_2')}</div>
+									<div class="radioRetire" data-bind="ntsRadioBoxGroup: {
+												options: reachedAgeTermList,
 												optionsValue: 'value',
 												optionsText: 'name',
-												value: selectedIdB422_15,
-												enable: isLatestHis}">
-										</div>
-									</div>
-									
-									<!-- 公開日 -->
-									<div>
-										<div class="linkRetire frameRetire B422_15_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_4')}</div>
-										<div  class ="B422_15_2 comboRetire"
-											data-bind="ntsComboBox: {
-												options: releaseDate,
+												value: reachedAgeTerm,
+												enable: isLatestHis}"> </div>
+								</div>
+								<div>
+									<div class="linkRetire frameRetire B422_15_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_4')}</div>
+									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+												options: dateRule,
 												optionsValue: 'value',
-												value: releaseDateSelected,
+												value: calculationTerm,
 												optionsText: 'name',
-												columns: [
-															{ prop: 'value', length: 2 },
-															{ prop: 'name', length: 10 },
-														],
+												columns: [{ prop: 'name', length: 10 }],
 												enable: isLatestHis,
 												dropDownAttachedToBody: true,
 												visibleItemsCount: 10
-												 }">
-										</div>
-										
-										<div class = "retireDateEna" data-bind = "visible: retireText">
-											<span>
-												<input style="margin-left: 30px;" class="nts-input" id="inpDate"
-													data-bind="ntsNumberEditor:{
-													value: textEditorB422_15_6,
+												 }"> </div>
+									<div class="retireDateEna" data-bind="visible: retireText">
+										<span> 
+											<input style="margin-left: 30px;" class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
+													value: dateSettingNum,
 													required: true,
 													readonly: false,
 													enable: isLatestHis,
 													constraint: 'Integer_0_99',
 													name: '#{i18n.getText('JMM018_B422_15_6')}'}" />
-											</span>
-											<span class="label " data-bind="text: textDate"></span>
-										</div>
-										
-										<div class = "retireDateEna" data-bind="visible: retireDateVis">
-											<div  class ="B422_15_2 comboRetire"
-												data-bind="ntsComboBox: {
-													options: appliAccepTypetLst,
+										</span> 
+										<span class="label" data-bind="text: textDate"></span>
+									</div>
+									<div class="retireDateEna" data-bind="visible: retireDateVis">
+										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+													options: dateSelectItem,
 													optionsValue: 'value',
-													value: releaseTypeSelected,
+													value: retireDateTerm,
 													optionsText: 'name',
 													columns: [
 																{ prop: 'value', length: 2 },
@@ -140,16 +104,12 @@
 													dropDownAttachedToBody: true,
 													visibleItemsCount: 10,
 													width: 150
-													 }">
-											</div>
-										</div>
+													 }"> </div>
 									</div>
-									
-									<!-- 退職日 -->
-									<div>
-										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_9')}</div>
-										<div  class ="B422_15_2 comboRetire"
-											data-bind="ntsComboBox: {
+								</div>
+								<div>
+									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_9')}</div>
+									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
 												options: retireDate,
 												optionsValue: 'value',
 												value: retireDateSelected,
@@ -158,12 +118,10 @@
 												dropDownAttachedToBody: true,
 												visibleItemsCount: 10,
 												width: 280
-												 }">
-										</div>
-										<div class = "retireDateEna" data-bind="visible: retireDateEna">
-											<div  class ="B422_15_2 comboRetire"
-												data-bind="ntsComboBox: {
-													options: appliAccepTypetLst,
+												 }"> </div>
+									<div class="retireDateEna" data-bind="visible: retireDateEna">
+										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+													options: dateSelectItem,
 													optionsValue: 'value',
 													value: retireDatePoint,
 													optionsText: 'name',
@@ -175,142 +133,136 @@
 													dropDownAttachedToBody: true,
 													visibleItemsCount: 10,
 													width: 150
-													 }">
-											</div>
-										</div>
+													 }"> </div>
 									</div>
-									
-									<!-- 参考評価情報 -->
+								</div>
+								<div>
+									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_12')}</div>
+									<div class="linkRetire frameRetire" id="tableRetire">
+										<table>
+											<thead>
+												<tr>
+													<th class="ui-widget-header retireName">#{i18n.getText('JMM018_B422_15_16')}</th>
+													<th class="ui-widget-header course">#{i18n.getText('JMM018_B422_15_17')}</th>
+													<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_18')}</th>
+													<th class="ui-widget-header continueCategory">#{i18n.getText('JMM018_B422_15_19')}</th>
+												</tr>
+											</thead>
+											<tbody data-bind="foreach : referenceValueLs">
+												<tr>
+													<td class="column-row"><span class="label " data-bind="text: valueItem"></span></td>
+													<td class="column-row">
+														<div id="check-box" data-bind="ntsCheckBox: { checked: display, enable: $parent.isLatestHis, }"></div>
+													</td>
+													<td class="column-row">
+														<div style="margin-left: 22px;" class="buttonDialogC" data-bind="ntsComboBox: {
+																													options: $parent.numberDispLs,
+																													optionsValue: 'value',
+																													value: numberDisplay,
+																													optionsText: 'name',
+																													enable: $parent.isLatestHis() &amp;&amp; enable(),
+																													dropDownAttachedToBody: true,
+																													visibleItemsCount: 10,
+																													width: 60
+																													 }">
+														</div>
+													</td>
+													<td class="column-row">
+														<div class="table">
+															<div class="cell">#{i18n.getText('JMM018_B422_15_25')}</div>
+															<div class="cell">
+																<input class="nts-input judg" data-bind="ntsTextEditor:{
+																									value: valueCriteria,
+																									required: true,
+																									readonly: false,
+																									enable: $parent.isLatestHis() &amp;&amp; enable(),
+																									name: '#{i18n.getText('JMM018_B422_15_26')}'}" />
+															</div>
+															<div class="cell">#{i18n.getText('JMM018_B422_15_27')}</div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div>
+									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_28')}</div>
+									<div class="linkRetire frameRetire" id="retireCondition">
+										<table>
+											<thead>
+												<tr>
+													<th class="ui-widget-header employmenttype" data-bind="text: commonMasterName"></th>
+													<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_33')}</th>
+													<th class="ui-widget-header retireCourse">#{i18n.getText('JMM018_B422_15_34')}</th>
+												</tr>
+											</thead>
+											<tbody data-bind="foreach : commonMasterItems">
+												<tr>
+													<td class="column-row"><span class="label " data-bind="text: commonMasterItemName"></span></td>
+													<td class="column-row">
+														<div data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis }"></div>
+														<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_38')}</div>
+													</td>
+													<td class="column-row">
+														<button data-bind="click: $parent.openCDialog.bind($parent.retirePlanCourseList), enable: $parent.isLatestHis() &amp;&amp; usageFlg()"class="small buttonDialogC">#{i18n.getText('JMM018_B422_15_39')}</button>
+														<div style="display: inline-block;">
+															<span class="label limited-label retireCourseTxt"data-bind="text: enableRetirePlanCourseText"></span>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div>
 									<div>
-										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_12')}</div>
-										<div class="linkRetire frameRetire" id = "tableRetire">
+										<div class="linkRetire frameRetire"
+											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_41')}</div>
+										<div class="linkRetire frameRetire" id="applycationCondition">
 											<table>
 												<thead>
 													<tr>
-														<th class = "ui-widget-header retireName">#{i18n.getText('JMM018_B422_15_16')}</th>
-														<th class = "ui-widget-header course">#{i18n.getText('JMM018_B422_15_17')}</th>
-														<th class = "ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_18')}</th>
-														<th class = "ui-widget-header continueCategory">#{i18n.getText('JMM018_B422_15_19')}</th>
+														<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_44')}</th>
+														<th class="ui-widget-header appAgeCell">#{i18n.getText('JMM018_B422_15_45')}</th>
+														<th style="width: 235px;" class="ui-widget-header">#{i18n.getText('JMM018_B422_15_46')}</th>
 													</tr>
-					
+
 												</thead>
-												<tbody data-bind="foreach : referenceValueLs">
-														<tr>
-															<td class="column-row"><span class="label " data-bind="text: valueItem"></span></td>
-															<td class="column-row">
-																<div id ="check-box"
-																	data-bind="ntsCheckBox: { checked: display, enable: $parent.isLatestHis, }"></div>
-															</td>
-															<td class="column-row">
-																<div style = "margin-left: 22px; " class = "buttonDialogC" data-bind="ntsComboBox: {
-																							options: $parent.numberDispLs,
-																							optionsValue: 'value',
-																							value: numberDisplay,
-																							optionsText: 'name',
-																							enable: $parent.isLatestHis() &amp;&amp; enable(),
-																							dropDownAttachedToBody: true,
-																							visibleItemsCount: 10,
-																							width: 60
-																							 }">
-																 </div>
-															</td>
-															<td class="column-row">
-																<div class="table">
-																	<div class="cell">#{i18n.getText('JMM018_B422_15_25')}</div>
-																	<div class="cell">
-																		<input class="nts-input judg"
-																			data-bind="ntsTextEditor:{
-																			value: valueCriteria,
-																			required: true,
-																			readonly: false,
-																			enable: $parent.isLatestHis() &amp;&amp; enable(),
-																			name: '#{i18n.getText('JMM018_B422_15_26')}'}" />
-																	</div>
-																	<div class="cell">#{i18n.getText('JMM018_B422_15_27')}</div>
-																</div>
-															</td>
-														</tr> 
-												</tbody>
-											</table>
-										</div>
-									</div>
-									
-									<!-- 定年退職条件 -->
-									<div>
-										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_28')}</div>
-										<div class="linkRetire frameRetire" id = "retireCondition">
-											<table>
-												<thead>
+
+												<tbody>
 													<tr>
-														<th class = "ui-widget-header employmenttype" data-bind="text: commonMasterName">#{i18n.getText('JMM018_B422_15_32')}</th>
-														<th class = "ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_33')}</th>
-														<th class = "ui-widget-header retireCourse">#{i18n.getText('JMM018_B422_15_34')}</th>
-													</tr>
-					
-												</thead>
-												<tbody data-bind="foreach : commonMasterItems">
-													<tr>
-														<td class="column-row"><span class="label " data-bind="text: commonMasterItemName"></span></td>
 														<td class="column-row">
-															<div data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis }"></div>
-															<div style = "display: inline-block;">#{i18n.getText('JMM018_B422_15_38')}</div>
+															<div class="appCon"
+																data-bind="ntsCheckBox: { checked: applyCondition, enable: isLatestHis }"></div>
+															<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
 														</td>
+
 														<td class="column-row">
-															<button data-bind="click: $parent.openCDialog.bind($parent.retirePlanCourseList), enable: $parent.isLatestHis() &amp;&amp; usageFlg()" class="small buttonDialogC" >#{i18n.getText('JMM018_B422_15_39')}</button>
-															<div style = "display: inline-block;"><span class="label limited-label retireCourseTxt" data-bind="text: enableRetirePlanCourseText"></span></div>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-									
-									<!-- 定年退職コース申請条件 -->
-									<div>
-										<div>
-											<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_41')}</div>
-											<div class="linkRetire frameRetire" id = "applycationCondition">
-												<table>
-													<thead>
-														<tr>
-															<th class = "ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_44')}</th>
-															<th class = "ui-widget-header appAgeCell">#{i18n.getText('JMM018_B422_15_45')}</th>
-															<th style = "width: 235px;" class = "ui-widget-header">#{i18n.getText('JMM018_B422_15_46')}</th>
-														</tr>
-						
-													</thead>
-													
-													<tbody>
-														<tr>
-															<td class="column-row">
-																<div class = "appCon" data-bind="ntsCheckBox: { checked: applyCondition, enable: isLatestHis }"></div>
-																<div style = "display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
-															</td>
-															
-	 														<td class="column-row">
-																<div class="table">
-																	<input id="lowerLimit" class = "cell buttonDialogC"
-																				data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+															<div class="table">
+																<input id="lowerLimit" class="cell buttonDialogC"
+																	data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_49')}',
 																				value: ageLowerLimit,
 																				enable: isLatestHis &amp;&amp; appliConEna,
 																				option:{width:'50', unitID:'AGE'},
 																				 required: isLatestHis &amp;&amp; appliConEna
 																				}" />
-																	<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
-																	<input id="upperLimit" class = "cell"
-																				data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
+																<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
+																<input id="upperLimit" class="cell"
+																	data-bind="ntsNumberEditor: {constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_51')}',
 																				value: ageUpperLimit,
 																				enable: isLatestHis &amp;&amp; appliConEna,
 																				option:{width:'50',unitID:'AGE'},
 																			 	required: isLatestHis &amp;&amp; appliConEna
 																				}" />
-																</div>
-															</td>
-															
-															<td class="column-row">
-																<div class = "buttonDialogC" data-bind="ntsComboBox: {
+															</div>
+														</td>
+
+														<td class="column-row">
+															<div class="buttonDialogC"
+																data-bind="ntsComboBox: {
 																							options: appliAcceptLst,
 																							optionsValue: 'value',
 																							value: appliAcceptVal,
@@ -321,9 +273,10 @@
 																							width: 100,
 																							required: isLatestHis &amp;&amp; appliConEna
 																							 }">
-																 </div>
-																 <div class = "buttonDialogC" data-bind="ntsComboBox: {
-																							options: appliAccepTypetLst,
+															</div>
+															<div class="buttonDialogC"
+																data-bind="ntsComboBox: {
+																							options: dateSelectItem,
 																							optionsValue: 'value',
 																							value: appliAcceptType,
 																							optionsText: 'name',
@@ -333,51 +286,47 @@
 																							width: 100,
 																							required: isLatestHis &amp;&amp; appliConEna
 																							 }">
-																 </div>
-															 </td>
-														</tr>
-													</tbody>
-												
-												</table>
-											</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+
+											</table>
 										</div>
 									</div>
-								
 								</div>
-								
-								
+
 							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_16">
-									#{i18n.getText('JMM018_B422_16')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_17">
-									#{i18n.getText('JMM018_B422_17')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_18">
-									#{i18n.getText('JMM018_B422_18')}
-								</a>
-								<hr></hr>
-							</div>
-							
-							<div class = "eachType">
-								<a class = "typeRetire" id = "B422_19">
-									#{i18n.getText('JMM018_B422_19')}
-								</a>
-								<hr></hr>
-							</div>
+
+
 						</div>
-					
+
+						<div class="eachType">
+							<a class="typeRetire" id="B422_16">
+								#{i18n.getText('JMM018_B422_16')} </a>
+							<hr></hr>
+						</div>
+
+						<div class="eachType">
+							<a class="typeRetire" id="B422_17">
+								#{i18n.getText('JMM018_B422_17')} </a>
+							<hr></hr>
+						</div>
+
+						<div class="eachType">
+							<a class="typeRetire" id="B422_18">
+								#{i18n.getText('JMM018_B422_18')} </a>
+							<hr></hr>
+						</div>
+
+						<div class="eachType">
+							<a class="typeRetire" id="B422_19">
+								#{i18n.getText('JMM018_B422_19')} </a>
+							<hr></hr>
+						</div>
 					</div>
+
+				</div>
 				</div>
 			</div>
 	</ui:composition>

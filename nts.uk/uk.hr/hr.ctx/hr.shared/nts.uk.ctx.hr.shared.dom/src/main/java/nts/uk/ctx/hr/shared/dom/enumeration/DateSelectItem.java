@@ -70,11 +70,11 @@ public enum DateSelectItem {
 		
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	DateSelectItem(int value, String name) {
+	DateSelectItem(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }
