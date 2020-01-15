@@ -221,6 +221,18 @@ module jcm008.a {
                 { columnKey: 'employeeName', isFixed: true }
             ]);
             let columns = self.buildRetirementDateSettingCol();
+            let sheets = [];
+            _.forEach(columns, (col) => {
+                if( _.indexOf(_.map(fixedClmSetting, 'columnKey'), col.key) === -1 ) {
+                    if(col.group && col.group.length > 0) {
+                        _.forEach(col.group, (gr) => {
+                            sheets.push(gr.key);    
+                        });
+                    } else {
+                        sheets.push(col.key);
+                    }
+                }
+            });
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -274,13 +286,13 @@ module jcm008.a {
                     {
                         name: 'RowState',
                         rows: rowStates
-                    }
+                    },
                     { name: "Sheet",
                             initialDisplay: "sheet1",
                             sheets: [
-                                { name: "sheet1", text: "Sheet 1", columns: ["birthday", "businessnameKana"] }
+                                { name: "sheet1", text: "Sheet 1", columns: sheets }
                             ]
-                        },
+                    },
                 ],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -298,18 +310,18 @@ module jcm008.a {
             let columns = [
                 { headerText: 'key', key: 'rKey', dataType: 'string' },
                 { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '80px', ntsControl: 'RetirementStatusCb' },
-                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '80px'}
+                { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '110px', ntsControl: 'RetirementStatusCb' },
+                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '110px'}
             ];
             
             if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
-                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '100px', ntsControl: 'WorkingCourseCb' });
+                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '140px', ntsControl: 'WorkingCourseCb' });
             }
            
             columns = columns.concat([
-                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '80px' },
+                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '110px' },
                 { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
-                { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '100px', ntsControl: 'Label' },
+                { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '120px', ntsControl: 'Label' },
                 { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px', ntsControl: 'Label'},
                 { headerText: getText('JCM008_A222_30'), key: 'ageDisplay', dataType: 'string', width: '80px' , ntsControl: 'Label'},
                 { headerText: getText('JCM008_A222_31'), key: 'departmentName', dataType: 'string', width: '90px' , ntsControl: 'Label'},
@@ -328,7 +340,7 @@ module jcm008.a {
                             hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
                         }
 
-                        columns.push(hcGroups.length > 1 ? {headerText: getText('JCM008_A222_36'), group: hcGroups} : { headerText: getText('JCM008_A222_36'), key: 'hrEvaluation1', dataType: 'string', width: '40px', ntsControl: 'Label' });
+                        columns.push(hcGroups.length > 1 ? {headerText: getText('JCM008_A222_36'), width: '80px', group: hcGroups} : { headerText: getText('JCM008_A222_36'), key: 'hrEvaluation1', dataType: 'string', width: '80px', ntsControl: 'Label' });
                     }
                     
                     if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
@@ -336,7 +348,7 @@ module jcm008.a {
                         for (let pa = 0; pa < item.displayNum; pa ++) {
                             paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
                         }
-                        columns.push(paGroups.length > 1 ? {headerText: getText('JCM008_A222_37'), group: paGroups} : { headerText: getText('JCM008_A222_37'), key: 'healthStatus1', dataType: 'string', width: '40px', ntsControl: 'Label' });
+                        columns.push(paGroups.length > 1 ? {headerText: getText('JCM008_A222_37'), width: '80px', group: paGroups} : { headerText: getText('JCM008_A222_37'), key: 'healthStatus1', dataType: 'string', width: '80px', ntsControl: 'Label' });
                     }
                     
                     if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
@@ -344,7 +356,7 @@ module jcm008.a {
                         for (let sc = 0; sc < item.displayNum; sc ++) {
                             scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
                         }
-                        columns.push( scGroups.length > 1 ? {headerText: getText('JCM008_A222_38'), group: scGroups} : { headerText: getText('JCM008_A222_38'), key: 'stressStatus1', dataType: 'string', width: '40px', ntsControl: 'Label'});
+                        columns.push( scGroups.length > 1 ? {headerText: getText('JCM008_A222_38'), width: '80px', group: scGroups} : { headerText: getText('JCM008_A222_38'), key: 'stressStatus1', dataType: 'string', width: '80px', ntsControl: 'Label'});
                     }
                 });
             }
@@ -384,8 +396,6 @@ module jcm008.a {
                 showOnStart: true,
                 dismissible: true
             });
-            // Toggle
-
         };
 
         public choseDepartment() {

@@ -146,7 +146,17 @@ class SearchFilterModel {
     retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
     selectedRetirementAge: KnockoutObservable<string> = ko.observable({});
     constructor() {
-
+        let self = this;
+        self.selectAllDepartment.subscribe((newVal) => {
+            if(newVal === true) {
+                self.department([]);
+            }
+        });
+        self.selectAllEmployment.subscribe((newVal) => {
+            if(newVal === true) {
+                self.employment([]);
+            }
+        });
     }
 }
 
