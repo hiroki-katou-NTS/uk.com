@@ -374,11 +374,11 @@ public class RetirementInformationFinder {
 
 		case RETIREMENT_DATE_DESIGNATED_DATE:
 			result = retireDateTerm.getRetireDateSettingDate().isPresent()
-					? retireDateTerm.getRetireDateSettingDate().get().name : null;
+					? retireDateTerm.getRetireDateSettingDate().get().nameId : null;
 			break;
 
 		default:
-			result = retireDateTerm.getRetireDateTerm().name;
+			result = retireDateTerm.getRetireDateTerm().nameId;
 			break;
 		}
 
