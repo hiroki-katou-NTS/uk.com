@@ -9,9 +9,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.command.UpdateMandatoryRetirementRegulation;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.command.MandatoryRetirementRegulationCommand;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.HistoryIdParam;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementRegulationDto;
+import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.ParamAddManRetireRegDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.RelateMasterDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.find.MandatoryRetirementRegulationFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +25,7 @@ public class MandatoryRetirementRegulationWS {
 	private MandatoryRetirementRegulationFinder finder;
 	
 	@Inject
-	private UpdateMandatoryRetirementRegulation command;
+	private MandatoryRetirementRegulationCommand command;
 	
 	@POST
 	@Path("/getRelateMaster")
@@ -51,6 +52,11 @@ public class MandatoryRetirementRegulationWS {
 		return result.get();
 	}
 	
+	@POST
+	@Path("/add")
+	public void add(ParamAddManRetireRegDto param){
+		command.add(param);
+	}
 	
 	@POST
 	@Path("/update")

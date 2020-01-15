@@ -32,6 +32,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retirePlanCourseList: [];
         
         // data
+        isStart: boolean;
+        isAddNewHis: boolean;
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
         mandatoryRetirementRegulation: KnockoutObservable<MandatoryRetirementRegulation>;
         
@@ -87,13 +89,18 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }else{
                     self.isLatestHis(false);
                 }
-                self.getMandatoryRetirementRegulation();
+                if(self.isAddNewHis){
+                    self.isAddNewHis = false;
+                    self.latestHistId(newValue);
+                    self.isLatestHis(true); 
+                    self.add();
+                }else{
+                    self.getMandatoryRetirementRegulation();    
+                }
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
-                new service.getLatestHistId().done(function(data: any) {
-                    self.latestHistId(data);
-                });
+                self.isAddNewHis = true;
             };
             self.afterUpdate = () => {
 //                alert("Updated");
@@ -115,6 +122,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             block.grayout();
             $.when(self.loadHisId(), self.loadCommonMasterItems()).done(function() {
+                self.isStart = true;
                 self.selectedHistId(self.latestHistId());
                 if(self.getRelatedMaster() && (self.latestHistId() == '' || self.latestHistId() == null)){
                     error({ messageId: 'MsgJ_JMM018_15' });
@@ -142,26 +150,52 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         
         getMandatoryRetirementRegulation(){
             let self = this;
+            if(self.latestHistId() == '' || self.latestHistId() == null){
+                return;   
+            }else if(!self.isStart){
+                if(self.getRelatedMaster()){
+                    block.grayout();
+                    let param = {historyId: self.selectedHistId(), getRelatedMaster: self.getRelatedMaster()}
+                    new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
+                        console.log(data);
+                        self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                    }).fail(function(err) {
+                        if(self.selectedHistId()==self.latestHistId()){
+                            error({ messageId: 'MsgJ_JMM018_18' });      
+                        }else{
+                            error({ messageId: 'MsgJ_JMM018_19' });
+                        }
+                        self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                    }).always(function() {
+                        block.clear();
+                    });
+                }else{
+                    self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                    error({ messageId: 'MsgJ_JMM018_16' });
+                }
+            }else{
+                self.isStart = false;    
+            } 
+        }
+        
+        add(){
+            let self = this;
             if(self.getRelatedMaster()){
                 block.grayout();
-                let param = {historyId: self.selectedHistId(), getRelatedMaster: self.getRelatedMaster()}
-                new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
+                let param = {historyId: self.selectedHistId(), baseDate: self.getSelectedStartDate()}
+                new service.add(param).done(function(data: any) {
                     console.log(data);
-                    self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                    self.getMandatoryRetirementRegulation();
                 }).fail(function(err) {
-                    if(self.selectedHistId()==self.latestHistId()){
-                        error({ messageId: 'MsgJ_JMM018_18' });      
-                    }else{
-                        error({ messageId: 'MsgJ_JMM018_19' });
-                    }
-                    self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                    error({ messageId: err.messageId });
                 }).always(function() {
                     block.clear();
                 });
             }else{
                 self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
                 error({ messageId: 'MsgJ_JMM018_16' });
-            }    
+            }
+        
         }
         
         openCDialog(item: any): void {
@@ -286,7 +320,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         constructor(param: IDateCaculationTerm) {
             let self = this;
             self.calculationTerm = ko.observable(param ? param.calculationTerm : 1);
-            self.dateSettingDate = ko.observable(param ? param.dateSettingNum : 1);
+            self.dateSettingDate = ko.observable(param ? param.dateSettingNum : '');
             self.dateSettingNum = ko.observable(param ? param.dateSettingDate : '');
         }
     }
@@ -302,7 +336,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         constructor(param: IRetireDateTerm) {
             let self = this;
             self.retireDateTerm = ko.observable(param ? param.retireDateTerm : 0);
-            self.retireDateSettingDate = ko.observable(param ? param.retireDateSettingDate : 1);
+            self.retireDateSettingDate = ko.observable(param ? param.retireDateSettingDate : '');
         }
     }
 
