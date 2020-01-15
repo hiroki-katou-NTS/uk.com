@@ -100,28 +100,43 @@ module jcm008.a {
 
         public register() {
             let self = this;
+            block.grayout();
 
-            let settingChanges = _.filter(self.plannedRetirements(), (p) => {
-                return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
-            });
+            // let settingChanges = _.filter(self.plannedRetirements(), (p) => {
+            //     return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
+            // });
 
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
-            let retiInfos = _.map(settingChanges, (retire) => {
+            let retiInfos = _.map(self.plannedRetirements(), (retire) => {
                 let changed = _.find(groupChanges, (value, key) => {
                     return key == retire.rKey;
                 });
-                for (let row in changed) {
-                    retire[changed[row].columnKey] = changed[row].value;
+                // アルゴリズム[定年退職者情報の新規登録_変更]を実行する(thực hiện thuật toán [tạo mới/thay đổi thông tin người nghỉ hưu])
+                if (changed) {
+                    for (let row in changed) {
+                        if(changed[row].columnKey === 'registrationStatus') {
+                            retire.extendEmploymentFlg = changed[row].value
+                        }
+                        if(changed[row].columnKey === 'flag') {
+                            retire.pendingFlag = 1;
+                            retire.status = 0;    
+                        } else {
+                            retire.pendingFlag = 0;
+                            retire.status = 1;
+                        }
+                        retire[changed[row].columnKey] = changed[row].value;
+                    }
+                } else {
+                    retire.pendingFlag = 0;
+                    retire.status = 1;
                 }
-
+        
                 return retire;
             });
 
-            console.log(retiInfos);
             let data = {
                 retiInfos: retiInfos
             };
-            block.grayout();
             service.register(data)
                 .done(() => {
                     dialog.info({ messageId: "Msg_15" });
@@ -153,6 +168,9 @@ module jcm008.a {
 
         public bindRetirementDateSettingGrid(): void {
             let self = this;
+            if ($('#retirementDateSetting').data("igGrid")) {
+                $('#retirementDateSetting').ntsGrid("destroy");
+            };
             let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
             let dataSources = self.plannedRetirements();
             let rowStates = [];
@@ -160,7 +178,8 @@ module jcm008.a {
             let interviewRecordTxt = getText('JCM008_A222_57');
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
-                data.ageDisplay = data.age + '歳';
+                // data.rKey = idx ++;
+                data.ageDisplay = data.retirementAge + '歳';
                 if (data.presence) {
                     data.interviewRecordTxt = interviewRecordTxt;
                 }
@@ -187,7 +206,7 @@ module jcm008.a {
                 }
                 return data;
             });
-            
+            console.log(dataSources);
             let fixedClmSetting = [
                 { columnKey: 'rKey', isFixed: true },
                 { columnKey: 'flag', isFixed: true },
@@ -237,12 +256,6 @@ module jcm008.a {
                     {
                         name: 'ColumnMoving', 
                         columnMovingDialogContainment: 'window',
-                        // columnSettings: [
-                        //     {columnKey: 'flag', allowMoving: false},
-                        //     {columnKey: 'hrEvaluation1', allowMoving: false},
-                        //     {columnKey: 'hrEvaluation2', allowMoving: false},
-                        //     {columnKey: 'hrEvaluation3', allowMoving: false}
-                        // ]
                     },
                     { name: 'MultiColumnHeaders' },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: fixedClmSetting}
@@ -265,13 +278,12 @@ module jcm008.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '80px', options: self.searchFilter.retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '80px', options: _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'), optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
 
                 ]
             });
-            // $('#retirementDateSetting ')
         }
 
         private buildRetirementDateSettingCol() {
