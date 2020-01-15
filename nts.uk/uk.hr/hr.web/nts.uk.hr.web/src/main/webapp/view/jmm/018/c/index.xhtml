@@ -41,7 +41,7 @@
 					<div id = "labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_C222_2')}</div>
 					<div id = "tableRetire">
 						<table>
-							<thead>
+							<thead style = "display: block;">
 								<tr>
 									<th class = "ui-widget-header idColumn"></th>
 									<th class = "ui-widget-header course">#{i18n.getText('JMM018_C222_6')}</th>
@@ -51,18 +51,18 @@
 								</tr>
 
 							</thead>
-							<tbody data-bind="foreach : dataRetirment">
-									<tr>
-										<td class="column-row">
-											<div id ="check-box" data-bind="ntsCheckBox: { checked: checkBox }, attr:{ tabindex:1 + $index()+1 } "> </div>
-										</td>
-										<td class="column-row"><span class="label " data-bind="text: retirePlanCourseClass().name"></span></td>
-										<td class="column-row"><span class="label " data-bind="text: retirePlanCourseName"></span></td>
-										<td class="column-row"><span class="label " data-bind="text: retirementAge"></span></td>
-										<td class="column-row"><span class="label " data-bind="text: durationFlg"></span></td>
-									</tr> 
-								</tbody>
-							</table>
+							<tbody id="retire-table" data-bind="foreach : dataRetirment">
+								<tr>
+									<td class="column-row">
+										<div id ="check-box" data-bind="ntsCheckBox: { checked: checkBox }, attr:{ tabindex:1 + $index()+1 } "> </div>
+									</td>
+									<td class="column-row course"><span class="label " data-bind="text: retirePlanCourseClass().name"></span></td>
+									<td class="column-row retireName"><span class="label " data-bind="text: retirePlanCourseName"></span></td>
+									<td class="column-row retirementAge"><span class="label " data-bind="text: retirementAge"></span></td>
+									<td class="column-row continueCategory"><span class="label " data-bind="text: durationFlg"></span></td>
+								</tr> 
+							</tbody>							
+						</table>
 					</div>
 				</div>
 			</div>
