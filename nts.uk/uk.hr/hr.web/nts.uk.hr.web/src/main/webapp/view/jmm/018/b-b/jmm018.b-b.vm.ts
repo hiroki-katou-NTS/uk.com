@@ -13,7 +13,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         histList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedHistId: KnockoutObservable<any> = ko.observable('');
         latestHistId: KnockoutObservable<any>;
-        isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
+        isLatestHis: KnockoutObservable<boolean>;
 
         // master
         reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -87,6 +87,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }else{
                     self.isLatestHis(false);
                 }
+                self.getMandatoryRetirementRegulation();
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
@@ -95,11 +96,16 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 });
             };
             self.afterUpdate = () => {
-                alert("Updated");
+//                alert("Updated");
             };
             self.afterDelete = () => {
-                alert("delete");
+//                alert("delete");
             };
+            self.isLatestHis = ko.observable(false)
+            self.isLatestHis.subscribe(function(val){
+                $('.judg').trigger("validate");
+            });
+            
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             
         }
@@ -132,6 +138,30 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             self.hidden('href1', 'B422_12');
             return dfd.promise();
+        }
+        
+        getMandatoryRetirementRegulation(){
+            let self = this;
+            if(self.getRelatedMaster()){
+                block.grayout();
+                let param = {historyId: self.selectedHistId(), getRelatedMaster: self.getRelatedMaster()}
+                new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
+                    console.log(data);
+                    self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                }).fail(function(err) {
+                    if(self.selectedHistId()==self.latestHistId()){
+                        error({ messageId: 'MsgJ_JMM018_18' });      
+                    }else{
+                        error({ messageId: 'MsgJ_JMM018_19' });
+                    }
+                    self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                }).always(function() {
+                    block.clear();
+                });
+            }else{
+                self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                error({ messageId: 'MsgJ_JMM018_16' });
+            }    
         }
         
         openCDialog(item: any): void {

@@ -58,7 +58,6 @@
 						<!-- Retirement age area -->
 						<div class="eachType">
 							<a class="typeRetire" id="B422_15"> #{i18n.getText('JMM018_B422_15')} </a> <hr></hr>
-							
 							<com:ko-if bind="getRelatedMaster">
 								<div>
 									<div>
@@ -161,7 +160,7 @@
 																														optionsValue: 'value',
 																														value: displayNum,
 																														optionsText: 'name',
-																														enable: $parent.isLatestHis &amp;&amp; usageFlg,
+																														enable: $parent.isLatestHis() &amp;&amp; usageFlg,
 																														visibleItemsCount: 10,
 																														width: 60 }"></div>
 														</td>
@@ -171,9 +170,9 @@
 																<div class="cell">
 																	<input class="nts-input judg" data-bind="ntsTextEditor:{
 																										value: passValue,
-																										required: $parent.isLatestHis &amp;&amp; usageFlg,
+																										required: $parent.isLatestHis() &amp;&amp; usageFlg,
 																										readonly: false,
-																										enable: $parent.isLatestHis &amp;&amp; usageFlg,
+																										enable: $parent.isLatestHis() &amp;&amp; usageFlg,
 																										name: '#{i18n.getText('JMM018_B422_15_26')}',
 																										width: 60}" />
 																</div>
@@ -238,16 +237,16 @@
 																					constraint:'DesiredCourseApplicationAge',
 																					name:'#{i18n.getText('JMM018_B422_15_49')}',
 																					value: planCourseApplyTerm().applicationEnableStartAge,
-																					required: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
-																					enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																					required: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
 																					option:{width:'50', unitID:'AGE'}}" />
 																	<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
 																	<input class="cell judg" data-bind="ntsNumberEditor: {
 																					constraint:'DesiredCourseApplicationAge',
 																					name:'#{i18n.getText('JMM018_B422_15_51')}',
 																					value: planCourseApplyTerm().applicationEnableEndAge,
-																					required: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
-																					enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																					required: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
 																					option:{width:'50',unitID:'AGE'}}" />
 																</div>
 															</td>
@@ -257,7 +256,7 @@
 																					optionsValue: 'value',
 																					value: planCourseApplyTerm().endMonth,
 																					optionsText: 'name',
-																					enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
 																					visibleItemsCount: 12,
 																					width: 100}"></div>
 																<div class="buttonDialogC" data-bind="ntsComboBox: {
@@ -265,7 +264,7 @@
 																					optionsValue: 'value',
 																					value: planCourseApplyTerm().endDate,
 																					optionsText: 'name',
-																					enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
 																					visibleItemsCount: 10,
 																					width: 100}"></div>
 															</td>
