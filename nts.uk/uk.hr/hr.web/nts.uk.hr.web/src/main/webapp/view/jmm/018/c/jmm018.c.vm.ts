@@ -43,12 +43,13 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                     // C222_8
                     retirePlanCourseName: obj.retirePlanCourseName,
                     // C222_9
-                    retirementAge: obj.retirementAge.toString(),
+                    retirementAge: obj.retirementAge.toString() + ' ' + getText('JMM018_C222_16'),
                     // C222_10
                     durationFlg: durationFind.name,
                 }
                 tg.push(new RetirementCourse(enterParam));
             });   
+            
             self.dataRetirment(tg);
             dfd.resolve();
             return dfd.promise();
