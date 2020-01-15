@@ -29,6 +29,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 ]);
         commonMasterName: KnockoutObservable<string> = ko.observable("");
         commonMasterItems: KnockoutObservableArray<GrpCmonMaster> = ko.observableArray([]);
+        retirePlanCourseList: [];
         
         // data
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
@@ -99,7 +100,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.afterDelete = () => {
                 alert("delete");
             };
-            
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             
         }
@@ -160,6 +160,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getRelateMaster().done(function(data: any) {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
+                self.retirePlanCourseList = data.retirePlanCourseList;
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
@@ -177,7 +178,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         register(): void{
             let self = this;        
             $('.judg').trigger("validate");
-            _.forEach(self.mandatoryRetirementRegulation().retirePlanCourseList, (obj) => {
+            _.forEach(self.retirePlanCourseList, (obj) => {
 //                if(obj.retireAge() == true && obj.retireCourse() == ""){
 //                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
 //                }
