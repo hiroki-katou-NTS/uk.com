@@ -33,6 +33,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         
         // data
         isStart: boolean;
+        isAddNewHis: boolean;
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
         mandatoryRetirementRegulation: KnockoutObservable<MandatoryRetirementRegulation>;
         
@@ -88,13 +89,18 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }else{
                     self.isLatestHis(false);
                 }
-                self.getMandatoryRetirementRegulation();
+                if(self.isAddNewHis){
+                    self.isAddNewHis = false;
+                    self.latestHistId(newValue);
+                    self.isLatestHis(true); 
+                    self.add();
+                }else{
+                    self.getMandatoryRetirementRegulation();    
+                }
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
-                new service.getLatestHistId().done(function(data: any) {
-                    self.latestHistId(data);
-                });
+                self.isAddNewHis = true;
             };
             self.afterUpdate = () => {
 //                alert("Updated");
@@ -170,6 +176,26 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             }else{
                 self.isStart = false;    
             } 
+        }
+        
+        add(){
+            let self = this;
+            if(self.getRelatedMaster()){
+                block.grayout();
+                let param = {historyId: self.selectedHistId(), baseDate: self.getSelectedStartDate()}
+                new service.add(param).done(function(data: any) {
+                    console.log(data);
+                    self.getMandatoryRetirementRegulation();
+                }).fail(function(err) {
+                    error({ messageId: err.messageId });
+                }).always(function() {
+                    block.clear();
+                });
+            }else{
+                self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                error({ messageId: 'MsgJ_JMM018_16' });
+            }
+        
         }
         
         openCDialog(item: any): void {
