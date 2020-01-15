@@ -106,7 +106,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 //                alert("Updated");
             };
             self.afterDelete = () => {
-//                alert("delete");
+                self.latestHistId(self.selectedHistId());
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -242,15 +242,35 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             return dfd.promise();
         }
 
-        register(): void{
+        update(): void{
             let self = this;        
             $('.judg').trigger("validate");
-            _.forEach(self.retirePlanCourseList, (obj) => {
-//                if(obj.retireAge() == true && obj.retireCourse() == ""){
-//                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
-//                }
-            });  
-            console.log(ko.toJS(self.mandatoryRetirementRegulation));  
+            let validate = true;
+            let mandatoryRetireTerm = [];
+            _.forEach(self.commonMasterItems(), (item) => {
+                if(item.usageFlg() == true && item.enableRetirePlanCourse().length == 0){
+                    if(item.enableRetirePlanCourse().length == 0){
+                        error({ messageId: "MsgJ_JMM018_13"});
+                        validate = false;
+                        return;    
+                    }else{
+                        mandatoryRetireTerm.push(item.collectMandatoryRetireTerm());    
+                    }
+                }
+            });
+            if(validate){
+                self.mandatoryRetirementRegulation().mandatoryRetireTerm = mandatoryRetireTerm;
+                let param = ko.toJS(self.mandatoryRetirementRegulation());
+                param.historyId = self.selectedHistId();
+                block.grayout();
+                new service.update(param).done(function(data: any) {
+                    error({ messageId: "Msg_15"});
+                }).fail(function(err) {
+                    error({ messageId: err.messageId });
+                }).always(function() {
+                    block.clear();
+                });
+            }
         }
         
         hidden(param: string, id: string){
@@ -303,6 +323,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }
                 self.referEvaluationTerm = ko.observableArray(tg); 
             }
+            self.reachedAgeTerm.subscribe(function(val){
+                console.log(val);
+            });
             self.planCourseApplyTerm = ko.observable(param? new PlanCourseApplyTerm(param.planCourseApplyTerm): new PlanCourseApplyTerm(undefined));
         }
     }
@@ -394,7 +417,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             kt = true;
             self.applicationEnableStartAge.subscribe(function(x){
                 if(x > self.applicationEnableEndAge() && kt){
-                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_11"});
+                    error({ messageId: "MsgJ_JMM018_11"});
                     kt = false;
                 }else{
                     kt = true;    
@@ -402,7 +425,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             self.applicationEnableEndAge.subscribe(function(y){
                 if(y < self.applicationEnableStartAge() && kt){
-                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
+                    error({ messageId: "MsgJ_JMM018_12"});
                    kt = false;
                 }else{
                     kt = true;    

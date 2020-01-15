@@ -9,7 +9,7 @@
 
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
-				<button class="proceed" tabindex="1" data-bind="click: register, enable:  isLatestHis() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('JMM018_B3_3')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('JMM018_B3_3')}</button>
 			</div>
 			<div class="tab2">
 				<div class="container cf">
@@ -60,14 +60,14 @@
 							<a class="typeRetire" id="B422_15"> #{i18n.getText('JMM018_B422_15')} </a> <hr></hr>
 							<com:ko-if bind="getRelatedMaster">
 								<div>
-									<div>
+									<div data-bind="with: mandatoryRetirementRegulation">
 										<div class="linkRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_2')}</div>
 										<div class="radioRetire" data-bind="ntsRadioBoxGroup: {
-													options: reachedAgeTermList,
+													options: $parent.reachedAgeTermList,
 													optionsValue: 'value',
 													optionsText: 'name',
-													value: mandatoryRetirementRegulation().reachedAgeTerm,
-													enable: isLatestHis}"> </div>
+													value: reachedAgeTerm,
+													enable: $parent.isLatestHis}"> </div>
 									</div>
 									
 									<!-- publicTerm -->

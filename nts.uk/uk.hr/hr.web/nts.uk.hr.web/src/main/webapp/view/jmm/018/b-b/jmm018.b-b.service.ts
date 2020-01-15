@@ -4,7 +4,8 @@ module nts.uk.com.view.jmm018.tabb.service {
         getLatestHistId: "employmentRegulationHistory/getLatestHistId",
         getRelateMaster: "mandatoryRetirementRegulation/getRelateMaster",
         getMandatoryRetirementRegulation: "mandatoryRetirementRegulation/get",
-        add: "mandatoryRetirementRegulation/add"
+        add: "mandatoryRetirementRegulation/add",
+        update: "mandatoryRetirementRegulation/update"
         
     }
 
@@ -20,5 +21,7 @@ module nts.uk.com.view.jmm018.tabb.service {
     export function add(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.add, param);
     }
-    
+    export function update(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.update, param);
+    }
 }
