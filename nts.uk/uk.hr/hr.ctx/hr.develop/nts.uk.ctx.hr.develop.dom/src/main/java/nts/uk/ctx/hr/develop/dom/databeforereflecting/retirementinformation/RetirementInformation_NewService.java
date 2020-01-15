@@ -99,7 +99,7 @@ public class RetirementInformation_NewService {
 				x.setHistoryId(IdentifierUtil.randomUniqueId());
 				x.setCompanyId(cId);
 				x.setCompanyCode(cCD);
-				x.setWorkId(3);
+				x.setWorkId(2);
 				x.setRequestFlag(RequestFlag.Normal);
 				x.setSelect_code_01("4");
 				x.setSelect_code_03("2");
