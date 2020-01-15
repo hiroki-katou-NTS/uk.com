@@ -90,8 +90,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
-                new service.getLatestCareerPathHist().done(function(data: any) {
-                    self.latestCareerPathHist(data);
+                new service.getLatestHistId().done(function(data: any) {
+                    self.latestHistId(data);
                 });
             };
             self.afterUpdate = () => {
@@ -125,6 +125,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         block.clear();
                         dfd.resolve();
                     });
+                }else{
+                    block.clear();
+                    dfd.resolve();    
                 }
             });
             self.hidden('href1', 'B422_12');
