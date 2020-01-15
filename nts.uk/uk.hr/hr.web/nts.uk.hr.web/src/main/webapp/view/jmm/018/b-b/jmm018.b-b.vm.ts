@@ -15,10 +15,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         latestHistId: KnockoutObservable<any>;
         isLatestHis: KnockoutObservable<boolean> = ko.observable(false);
 
-        
+        // master
         reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
         dateRule: KnockoutObservableArray<any> = ko.observableArray([]);
         dateSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        monthSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         retireDateRule: KnockoutObservableArray<any> = ko.observableArray([]);
         referEvaluationTerm: KnockoutObservableArray<any> = ko.observableArray([]);
         displayNum: KnockoutObservableArray<any> = ko.observableArray([
@@ -26,26 +27,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new ItemModel(2, "2"),
                     new ItemModel(3, "3")
                 ]);
-        monthSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
-        
-        // master
         commonMasterName: KnockoutObservable<string> = ko.observable("");
         commonMasterItems: KnockoutObservableArray<GrpCmonMaster> = ko.observableArray([]);
-        retirePlanCourseList: [];
-        getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
         
-        // control
-        reachedAgeTerm: KnockoutObservable<number> = ko.observable(0);
-        calculationTerm: KnockoutObservable<number> = ko.observable(1);
-        dateSettingDate: KnockoutObservable<number> = ko.observable(1);
-        dateSettingNum: KnockoutObservable<number> = ko.observable(0);
-        retireDateTerm: KnockoutObservable<number> = ko.observable(0);
-        retireDateSettingDate: KnockoutObservable<number> = ko.observable(1);
-        planCourseApplyFlg: KnockoutObservable<boolean> = ko.observable(false);
-        applicationEnableStartAge: KnockoutObservable<number> = ko.observable(50);
-        applicationEnableEndAge: KnockoutObservable<number> = ko.observable(59);
-        endMonth: KnockoutObservable<any> = ko.observable(12);
-        endDate: KnockoutObservable<any> = ko.observable(31);
+        // data
+        getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
         mandatoryRetirementRegulation: KnockoutObservable<MandatoryRetirementRegulation>;
         
         constructor() {
@@ -59,7 +45,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             //ThanhPV
             self.latestHistId = ko.observable('');
-            
             
             self.delVisible = ko.observable(true);
             self.delChecked = ko.observable();
@@ -102,8 +87,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     self.isLatestHis(false);
                 }
             });
-            self.afterRender = () => {
-            };
+            self.afterRender = () => {};
             self.afterAdd = () => {
                 new service.getLatestCareerPathHist().done(function(data: any) {
                     self.latestCareerPathHist(data);
@@ -115,18 +99,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.afterDelete = () => {
                 alert("delete");
             };
-            
-            self.applicationEnableStartAge.subscribe(function(x){
-                if(x > self.applicationEnableEndAge()){
-                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_11"});
-                }
-            });
-            self.applicationEnableEndAge.subscribe(function(y){
-                if(y < self.applicationEnableStartAge()){
-                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
-                }
-            });
-            
             
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             
@@ -146,19 +118,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     let param = {historyId: self.latestHistId(), getRelatedMaster: self.getRelatedMaster()}
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
-                        
-                        let tg = [];
-                        _.forEach(data.referEvaluationTerm, (item) => {
-                            tg.push(new ReferEvaluationItem(item , undefined));
-                        });
-                        let a = []
-                        a.push(new ReferEvaluationItem(undefined, 1));
-                        self.referEvaluationTerm(a);
-                        
-                        self.planCourseApplyFlg(data.planCourseApplyFlg);
-                        
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
-                        
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
@@ -167,10 +127,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     });
                 }
             });
-            
             self.hidden('href1', 'B422_12');
-            block.clear();
-
             return dfd.promise();
         }
         
@@ -203,7 +160,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getRelateMaster().done(function(data: any) {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
-                self.retirePlanCourseList = data.retirePlanCourseList;
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
@@ -221,11 +177,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         register(): void{
             let self = this;        
             $('.judg').trigger("validate");
-            _.forEach(self.retirePlanCourseList, (obj) => {
+            _.forEach(self.mandatoryRetirementRegulation().retirePlanCourseList, (obj) => {
 //                if(obj.retireAge() == true && obj.retireCourse() == ""){
 //                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
 //                }
-            });    
+            });  
+            console.log(ko.toJS(self.mandatoryRetirementRegulation));  
         }
         
         hidden(param: string, id: string){
@@ -359,12 +316,30 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         applicationEnableEndAge: KnockoutObservable<number>;
         endMonth: KnockoutObservable<number>;
         endDate: KnockoutObservable<number>;
+        kt: boolean;
         constructor(param: IPlanCourseApplyTerm) {
             let self = this;
             self.applicationEnableStartAge = ko.observable(param ? param.applicationEnableStartAge : 50);
             self.applicationEnableEndAge = ko.observable(param ? param.applicationEnableEndAge : 59);
             self.endMonth = ko.observable(param ? param.endMonth : 12);
             self.endDate = ko.observable(param ? param.endDate : 31);
+            kt = true;
+            self.applicationEnableStartAge.subscribe(function(x){
+                if(x > self.applicationEnableEndAge() && kt){
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_11"});
+                    kt = false;
+                }else{
+                    kt = true;    
+                }
+            });
+            self.applicationEnableEndAge.subscribe(function(y){
+                if(y < self.applicationEnableStartAge() && kt){
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
+                   kt = false;
+                }else{
+                    kt = true;    
+                }
+            });
         }
     }
     
