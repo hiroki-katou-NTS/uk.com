@@ -104,7 +104,7 @@ public class RetirementInformation_NewService {
 				x.setSelect_code_01("4");
 				x.setSelect_code_03("2");
 			});
-			this.repo.addData(addListDomain);
+			this.repo.addDataNoCheckSid(addListDomain);
 		}
 
 		if (!updateListDomain.isEmpty()) {

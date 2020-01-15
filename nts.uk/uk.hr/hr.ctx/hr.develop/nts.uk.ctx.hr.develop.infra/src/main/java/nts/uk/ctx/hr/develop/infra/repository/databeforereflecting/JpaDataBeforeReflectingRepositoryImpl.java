@@ -59,6 +59,23 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		this.getEntityManager().flush();
 
 	}
+	
+	@Override
+	public void addDataNoCheckSid(List<DataBeforeReflectingPerInfo> listDomain) {
+		
+		if (listDomain.isEmpty()) {
+			return;
+		}
+		
+		List<PreReflecData> listEntity = listDomain.stream().map(i -> {
+			PreReflecData entity = new PreReflecData();
+			return toEntity(i, entity);
+		}).collect(Collectors.toList());
+
+		this.commandProxy().insertAll(listEntity);
+		this.getEntityManager().flush();
+
+	}
 
 	@Override
 	public void updateData(List<DataBeforeReflectingPerInfo> listDomain) {
