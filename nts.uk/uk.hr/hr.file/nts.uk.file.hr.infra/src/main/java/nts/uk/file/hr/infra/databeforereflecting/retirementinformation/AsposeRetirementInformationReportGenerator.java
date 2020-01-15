@@ -326,8 +326,8 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		ws.getCells().get(1, 3).putValue(query.getStartDate() + " ～ " + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
 		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
-		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "全て" : "と表示");
-		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "全て" : "と表示");
+		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "全て" : query.getSelectDepartmentName());
+		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "全て" : query.getSelectEmploymentName());
 	}
 
 }
