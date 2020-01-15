@@ -95,7 +95,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     self.isLatestHis(true); 
                     self.add();
                 }else{
-                    self.getMandatoryRetirementRegulation();    
+                    if(newValue == '' || newValue == null){
+                        self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));   
+                    }else{
+                        self.getMandatoryRetirementRegulation();
+                    }    
                 }
             });
             self.afterRender = () => {};
