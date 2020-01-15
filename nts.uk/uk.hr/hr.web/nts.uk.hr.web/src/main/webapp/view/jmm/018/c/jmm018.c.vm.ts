@@ -65,14 +65,16 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let listData = _.filter(self.dataRetirment(), function(o) { return o.checkBox() == true; });
-            let normal = _.size(listData, function(x) { return x.retirePlanCourseClass().value == 0; });
-            if(normal >= 2){
+            let normal = _.filter(listData, function(x) { return x.retirePlanCourseClass().value == 0; });
+            let size = _.size(normal)
+            if(size >= 2){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_14"});
-            }else if(normal == 0 || !normal){
+            }else if(size == 0 || !size){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
             }else{
+                let listId = _.map(listData, 'retirePlanCourseId');
                 setShared('shareToJMM018B', listData);
-                nts.uk.ui.windows.close();   
+                nts.uk.ui.windows.close();
             }
         }
 }
