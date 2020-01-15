@@ -105,15 +105,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, EmploymentRootAtr rootAtr, 
 			ApplicationType appType, GeneralDate standardDate, SystemAtr sysAtr, Optional<Boolean> lowerApprove) {
-		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain「個人別就業承認ルート」)
-		// ①個人別の該当申請の承認ルートを取得、なかったら②へ
+		// ドメインモデル「個人別承認ルート」を取得する (Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
 		Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, appType, rootAtr, sysAtr.value);
 		if(opPerAppRoot.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRoot.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
@@ -121,83 +116,63 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
-		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-		// ②個人別の共通の承認ルートを取得、なかったら③へ
+		// ドメインモデル「個人別承認ルート」を取得する(Get domain "Individual approval route/Lộ trình phê duyệt cá nhân")
 		Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, sysAtr.value);
 		if(opPerAppRootsOfCommon.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRootsOfCommon.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opPerAppRootsOfCommon.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
+					levelOutput, opPerAppRootsOfCommon.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
+		// 対象者の所属職場を含める上位職場を取得する(Get nơi làm việc cao nhất/ upper workplace bao gồm nơi làm việc của nhân viên mục tiêu)
 		List<String> wpkList = employeeAdapter.findWpkIdsBySid(companyID, employeeID, standardDate);
 		for (String wｋｐId : wpkList) {
+			// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain「職場別就業承認ルート」)
 			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, wｋｐId, standardDate, appType, rootAtr, sysAtr.value);
 			if(opWkpAppRoot.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRoot.get().getApprovalId());
-				/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, opWkpAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
+						levelOutput, opWkpAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
+			// ドメインモデル「職場別承認ルート」を取得する (Get domain "Approval Route workPlace ")
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate, sysAtr.value);
 			if(opWkpAppRootsOfCom.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
-				/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						listApprovalPhaseAfter, opWkpAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-						levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
+						levelOutput, opWkpAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 		}
-		
+		// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
 		Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, appType, rootAtr, sysAtr.value);
 		if(opComAppRoot.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opComAppRoot.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opComAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
+					levelOutput, opComAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
+		// ドメインモデル「会社別承認ルート」を取得する(Get domain model "Approval Route by Company")
 		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, sysAtr.value);
 		if(opCompanyAppRootsOfCom.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opCompanyAppRootsOfCom.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					listApprovalPhaseAfter, opCompanyAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(companyID, standardDate,
-					levelOutput, opPerAppRoot.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
+					levelOutput, opCompanyAppRootsOfCom.get().getApprRoot().getHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		return new ApprovalRootContentOutput(
@@ -464,7 +439,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					resultApprovalFrame);
 		}).collect(Collectors.toList());	
 		return ApprovalRootState.builder()
-				.historyID(histotyID)
 				.listApprovalPhaseState(listApprovalPhaseState)
 				.build();
 			/*
@@ -555,7 +529,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					resultApprovalFrame);
 		}).collect(Collectors.toList());	
 		return ApprovalRootState.builder()
-				.historyID(histotyID)
 				.listApprovalPhaseState(listApprovalPhaseState)
 				.build();
 	}
@@ -563,13 +536,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	@Override
 	public ApprovalRootContentOutput getApprovalRootConfirm(String companyID, String employeeID,
 			ConfirmationRootType confirmAtr, GeneralDate standardDate) {
-		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain「個人別就業承認ルート」)
-		// ①個人別の該当申請の承認ルートを取得、なかったら②へ
+		// ドメインモデル「個人別承認ルート」を取得する(lấy thông tin domain「個人別就業承認ルート」)
 		List<PersonApprovalRoot> perAppRootList = perApprovalRootRepository.findEmpByConfirm(companyID, employeeID, confirmAtr, standardDate);
 		if(!CollectionUtil.isEmpty(perAppRootList)){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(perAppRootList.get(0).getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
@@ -580,18 +550,14 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
-						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-						approvalRootState.getHistoryID(), 
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class),
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
-		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-		// ②個人別の共通の承認ルートを取得、なかったら③へ
+		// ドメインモデル「個人別承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
 		Optional<PersonApprovalRoot> opPerAppRootsOfCommon;
 		try {
 			opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, SystemAtr.WORK.value);
@@ -601,8 +567,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		if(opPerAppRootsOfCommon.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRootsOfCommon.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
@@ -613,23 +577,20 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				approvalRootState = ApprovalRootState.createFromFirst(
 						companyID,
 						appID,  
-						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-						approvalRootState.getHistoryID(), 
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class),
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
+		// 対象者の所属職場を含める上位職場を取得する(lấy dữ liệu Affiliation workplace và Upper workplace)
 		List<String> wpkList = employeeAdapter.findWpkIdsBySid(companyID, employeeID, standardDate);
 		for (String wｋｐId : wpkList) {
+			// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain「職場別就業承認ルート」)
 			List<WorkplaceApprovalRoot> wkpAppRootList = wkpApprovalRootRepository.findEmpByConfirm(companyID, wｋｐId, confirmAtr, standardDate);
 			if(!CollectionUtil.isEmpty(wkpAppRootList)){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(wkpAppRootList.get(0).getApprovalId());
-				/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
@@ -641,14 +602,13 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							companyID,
 							appID,  
 							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-							approvalRootState.getHistoryID(), 
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
+			// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom;
 			try {
 				opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate, SystemAtr.WORK.value);
@@ -658,8 +618,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			}
 			if(opWkpAppRootsOfCom.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
-				/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
@@ -671,21 +629,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							companyID,
 							appID,  
 							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-							approvalRootState.getHistoryID(), 
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 		}
-		
+		// ドメインモデル「会社別承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> comAppRootList = comApprovalRootRepository.findEmpByConfirm(companyID, confirmAtr, standardDate);
 		if(!CollectionUtil.isEmpty(comAppRootList)){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(comAppRootList.get(0).getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
@@ -697,15 +651,13 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		
+		// ドメインモデル「会社別承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
 		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom;
 		try {
 			opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, SystemAtr.WORK.value);
@@ -715,8 +667,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		if(opCompanyAppRootsOfCom.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opCompanyAppRootsOfCom.get().getApprovalId());
-			/*List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
-			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);*/
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, SystemAtr.WORK, Optional.empty());
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
@@ -728,11 +678,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						companyID,
 						appID,  
 						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
-						approvalRootState.getHistoryID(), 
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}

@@ -42,7 +42,6 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 				companyID,
 				appID,  
 				RootType.EMPLOYMENT_APPLICATION, 
-				approvalRootState.getHistoryID(), 
 				appDate, 
 				employeeID, 
 				approvalRootState),

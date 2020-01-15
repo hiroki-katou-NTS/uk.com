@@ -30,9 +30,6 @@ public class WwfdtApproverState extends UkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdpApproverStatePK wwfdpApprovrStatePK;
-	
-    @Column(name="CID")
-    public String companyID;
     /**承認区分*/
 	@Column(name="APPROVAL_ATR")
 	public Integer approvalAtr;

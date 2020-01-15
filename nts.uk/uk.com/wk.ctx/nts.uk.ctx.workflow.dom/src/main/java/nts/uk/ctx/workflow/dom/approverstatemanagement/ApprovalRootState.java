@@ -28,21 +28,18 @@ public class ApprovalRootState extends AggregateRoot {
 	
 	private RootType rootType;
 	
-	private String historyID;
-	
 	private GeneralDate approvalRecordDate;
 	
 	private String employeeID;
 	@Setter
 	private List<ApprovalPhaseState> listApprovalPhaseState;
 	
-	public static ApprovalRootState createFromFirst(String companyID, String appID, RootType rootType, String historyID, 
+	public static ApprovalRootState createFromFirst(String companyID, String appID, RootType rootType,
 			GeneralDate date, String employeeID, ApprovalRootState approvalRootState){
 		if(Strings.isBlank(approvalRootState.getRootStateID())){
 			return ApprovalRootState.builder()
 					.rootStateID(appID)
 					.rootType(rootType)
-					.historyID(historyID)
 					.approvalRecordDate(date)
 					.employeeID(employeeID)
 					.listApprovalPhaseState(approvalRootState.getListApprovalPhaseState().stream()

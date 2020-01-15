@@ -139,7 +139,6 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 		return result.stream().map(x -> new ApprovalRootStateSprExport(
 					x.getRootStateID(), 
 					x.getRootType().value, 
-					x.getHistoryID(), 
 					x.getApprovalRecordDate(), 
 					x.getEmployeeID()))
 			.collect(Collectors.toList());

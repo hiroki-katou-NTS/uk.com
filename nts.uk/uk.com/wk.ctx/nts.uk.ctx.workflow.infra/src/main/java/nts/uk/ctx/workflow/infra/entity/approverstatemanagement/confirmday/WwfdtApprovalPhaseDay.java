@@ -76,7 +76,6 @@ public class WwfdtApprovalPhaseDay extends UkJpaEntity {
 	
 	public ApprovalPhaseState toDomain(){
 		return ApprovalPhaseState.builder()
-//				.rootStateID(this.wwfdpApprovalPhaseDayPK.rootStateID)
 				.phaseOrder(this.wwfdpApprovalPhaseDayPK.phaseOrder)
 				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
 				.approvalForm(EnumAdaptor.valueOf(this.approvalForm, ApprovalForm.class))
