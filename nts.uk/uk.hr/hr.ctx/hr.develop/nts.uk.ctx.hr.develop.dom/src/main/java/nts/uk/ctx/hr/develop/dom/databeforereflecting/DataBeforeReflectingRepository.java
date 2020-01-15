@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface DataBeforeReflectingRepository {
 
 	void addData(List<DataBeforeReflectingPerInfo> listDomain);
+	
+	void addDataNoCheckSid(List<DataBeforeReflectingPerInfo> listDomain);
 
 	void updateData(List<DataBeforeReflectingPerInfo> listDomain);
 
