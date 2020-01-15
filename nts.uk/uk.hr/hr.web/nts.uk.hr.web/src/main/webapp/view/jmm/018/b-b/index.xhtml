@@ -82,9 +82,9 @@
 												dropDownAttachedToBody: true,
 												visibleItemsCount: 10
 												 }"> </div>
-									<div class="retireDateEna" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3)">
+									<div class="retireDateEna margin-left" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3)">
 										<span> 
-											<input style="margin-left: 30px;" class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
+											<input class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
 													value: dateSettingNum,
 													required: true,
 													readonly: false,
@@ -95,8 +95,8 @@
 										<span class="label" data-bind="visible: calculationTerm() == 2" >#{i18n.getText('JMM018_B422_17_7_1')}</span>
 										<span class="label" data-bind="visible: calculationTerm() == 3" >#{i18n.getText('JMM018_B422_17_7_2')}</span>
 									</div>
-									<div class="retireDateEna" data-bind="visible: calculationTerm() == 6 ">
-										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+									<div class="retireDateEna margin-left" data-bind="visible: calculationTerm() == 6 ">
+										<div class="B422_15_2 " data-bind="ntsComboBox: {
 													options: $parent.dateSelectItem,
 													optionsValue: 'value',
 													value: dateSettingDate,
@@ -121,8 +121,8 @@
 												visibleItemsCount: 10,
 												width: 300
 												 }"> </div>
-									<div class="retireDateEna" data-bind="visible: retireDateTerm() == 1">
-										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+									<div class="retireDateEna margin-left" data-bind="visible: retireDateTerm() == 1">
+										<div class="B422_15_2 " data-bind="ntsComboBox: {
 													options: $parent.dateSelectItem,
 													optionsValue: 'value',
 													value: retireDateSettingDate,
