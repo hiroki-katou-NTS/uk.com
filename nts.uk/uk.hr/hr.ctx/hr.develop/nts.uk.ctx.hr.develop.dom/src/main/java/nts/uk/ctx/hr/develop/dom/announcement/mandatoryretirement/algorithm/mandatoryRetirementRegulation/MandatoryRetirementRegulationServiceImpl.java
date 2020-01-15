@@ -360,7 +360,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		
 		if(!departmentId.isEmpty()) {
 			retirementInforList.removeIf(c->{
-				return departmentId.contains(c.getDepartmentId());
+				return !departmentId.contains(c.getDepartmentId());
 			});
 			if(retirementInforList.isEmpty()) {
 				return new ArrayList<>();

@@ -119,7 +119,7 @@ interface IDepartment {
 }
 
 interface IEmployment {
-    code: string;
+    id: string;
     name: string;
 }
 
@@ -183,7 +183,7 @@ class ISearchParams {
         this.startDate = param.retirementPeriod().startDate;
         this.endDate = param.retirementPeriod().endDate;
         this.allSelectDepartment = param.selectAllDepartment();
-        this.selectDepartment = _.map(param.department(), (d) => {return d.name;});
+        this.selectDepartment = _.map(param.department(), (d) => {return d.id;});
         this.allSelectEmployment = param.selectAllEmployment();
         this.selectEmployment = _.map(param.employment(), (d) => {return d.code;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();

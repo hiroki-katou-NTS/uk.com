@@ -115,10 +115,33 @@ module nts.uk.com.view.jdl0110.a {
                 }
 
                 var selectedCode: any = self.selectedMulWorkplace();
-                if (!self.isMultipleSelect) {
-                    selectedCode = self.selectedSelWorkplace();
+                
+                if(self.startMode == StartMode.DEPARTMENT) {
+                    let selected = [];
+                    let dataList = $('#workplaceList').getDataList();
+                    if (!self.isMultipleSelect) {
+                        selectedCode = self.selectedSelWorkplace();
+                    }
+                    _.forEach(dataList, (value) => {
+                        if(value.children && value.children.length > 0) {
+                            _.forEach(value.children, (child) => {
+                                if(_.includes(selectedCode, child.id)){
+                                    selected.push(child);
+                                }
+                            });
+                        }
+                        if(_.includes(selectedCode, value.id)){
+                            selected.push(value);
+                        }
+                    });
+                    nts.uk.ui.windows.setShared('outputDepartmentJDL0110', selected);
+                } else {
+                    if (!self.isMultipleSelect) {
+                        selectedCode = self.selectedSelWorkplace();
+                    }
+                    nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
                 }
-                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                
                 nts.uk.ui.windows.setShared('baseDateCDL008', self.baseDate());
                 nts.uk.ui.windows.close();
             }

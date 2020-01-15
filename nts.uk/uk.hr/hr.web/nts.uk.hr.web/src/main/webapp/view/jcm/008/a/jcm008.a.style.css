@@ -80,3 +80,6 @@
 .sheet1{
 	visibility: hidden;
 }
+.nts-grid-wrapper table tr td.ntsgrid-disable {
+	background-color: #dddddd;
+}

@@ -183,30 +183,42 @@ module jcm008.a {
                 if (data.presence) {
                     data.interviewRecordTxt = interviewRecordTxt;
                 }
+
+                if(data.pendingFlag === 1) {
+                    data.flag = true;
+                }
                 
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
+                        if(data.notificationCategory === 1) {
+                            cellStates.push(new CellState(data.rKey, 'desiredWorkingCourseId', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        }
                         break;
                     case 1:
                         data.registrationStatus = '承認待ち';
+                        if(data.notificationCategory === 1) {
+                            cellStates.push(new CellState(data.rKey, 'desiredWorkingCourseId', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        }
                         break;
                     case 2:
                         data.registrationStatus = '反映待ち';
                         cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
                         cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        cellStates.push(new CellState(data.rKey, 'desiredWorkingCourseId', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
                         break;
                     case 3:
                         data.registrationStatus = '反映済み';
                         cellStates.push(new CellState(data.rKey, 'flag', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
                         cellStates.push(new CellState(data.rKey, 'extendEmploymentFlg', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                        cellStates.push(new CellState(data.rKey, 'desiredWorkingCourseId', [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
                         break;
                     default:
                         break;
                 }
                 return data;
             });
-            console.log(dataSources);
+            
             let fixedClmSetting = [
                 { columnKey: 'rKey', isFixed: true },
                 { columnKey: 'flag', isFixed: true },
@@ -297,7 +309,7 @@ module jcm008.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '80px', options: _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'), optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '120px', options: _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'), optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
 
@@ -311,7 +323,7 @@ module jcm008.a {
                 { headerText: 'key', key: 'rKey', dataType: 'string' },
                 { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                 { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '110px', ntsControl: 'RetirementStatusCb' },
-                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '110px'}
+                { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '110px', ntsControl: 'Label' }
             ];
             
             if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
@@ -319,7 +331,7 @@ module jcm008.a {
             }
            
             columns = columns.concat([
-                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '110px' },
+                { headerText: getText('JCM008_A222_26'), key: 'employeeCode', dataType: 'string', width: '110px', ntsControl: 'Label'},
                 { headerText: getText('JCM008_A222_27'), key: 'employeeName', dataType: 'string', width: '100px', ntsControl: 'EmployeeName' },
                 { headerText: getText('JCM008_A222_28'), key: 'businessnameKana', dataType: 'string', width: '120px', ntsControl: 'Label' },
                 { headerText: getText('JCM008_A222_29'), key: 'birthday', dataType: 'string', width: '95px', ntsControl: 'Label'},
@@ -337,7 +349,7 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
                         let hcGroups = [];
                         for (let hc = 0; hc < item.displayNum; hc ++) {
-                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
                         }
 
                         columns.push(hcGroups.length > 1 ? {headerText: getText('JCM008_A222_36'), width: '80px', group: hcGroups} : { headerText: getText('JCM008_A222_36'), key: 'hrEvaluation1', dataType: 'string', width: '80px', ntsControl: 'Label' });
@@ -346,7 +358,7 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
                         let paGroups = [];
                         for (let pa = 0; pa < item.displayNum; pa ++) {
-                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
                         }
                         columns.push(paGroups.length > 1 ? {headerText: getText('JCM008_A222_37'), width: '80px', group: paGroups} : { headerText: getText('JCM008_A222_37'), key: 'healthStatus1', dataType: 'string', width: '80px', ntsControl: 'Label' });
                     }
@@ -354,7 +366,7 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
                         let scGroups = [];
                         for (let sc = 0; sc < item.displayNum; sc ++) {
-                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
                         }
                         columns.push( scGroups.length > 1 ? {headerText: getText('JCM008_A222_38'), width: '80px', group: scGroups} : { headerText: getText('JCM008_A222_38'), key: 'stressStatus1', dataType: 'string', width: '80px', ntsControl: 'Label'});
                     }
@@ -403,7 +415,7 @@ module jcm008.a {
             block.grayout();
             setShared('inputCDL008', {
                 selectedCodes: self.searchFilter.department().map(function (elem) {
-                    return elem.workplaceId;
+                    return elem.id;
                 }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
@@ -415,7 +427,7 @@ module jcm008.a {
             });
             modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
                 block.clear();
-                let data = getShared('outputCDL008');
+                let data = getShared('outputDepartmentJDL0110');
                 self.searchFilter.department(data);
             });
         }
