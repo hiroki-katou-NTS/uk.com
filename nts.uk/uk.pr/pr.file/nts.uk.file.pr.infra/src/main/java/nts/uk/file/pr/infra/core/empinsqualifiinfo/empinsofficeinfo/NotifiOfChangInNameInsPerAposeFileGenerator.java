@@ -83,9 +83,10 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 textBuilder.appendText(setValue(112, 290, element.getCompanyInfor().getCompanyName(), 9));
                                 //A3_1
                                 String postCd = element.getCompanyInfor().getPostCd();
-                                textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
+                                textBuilder.appendText(setValue(150, 201, formatPostalCode(postCd), 9));
                                 //A3_2
-                                textBuilder.appendText(setValue(210, 190, formatTooLongText(element.getCompanyInfor().getAdd_1() + element.getCompanyInfor().getAdd_2(),60), 9));
+                                textBuilder.appendText(setValue(150, 191, formatTooLongText(element.getCompanyInfor().getAdd_1(), 60), 9));
+                                textBuilder.appendText(setValue(150, 181, element.getCompanyInfor().getAdd_2(), 9));
                                 //A3_3
                                 textBuilder.appendText(setValue(150, 160, element.getCompanyInfor().getRepname(), 9));
                                 //A3_4
@@ -99,22 +100,24 @@ public class NotifiOfChangInNameInsPerAposeFileGenerator extends AsposePdfReport
                                 textBuilder.appendText(setValue(112, 290, element.getLaborInsuranceOffice().getLaborOfficeName().v(), 9));
                                 //A3_1
                                 if (element.getLaborInsuranceOffice().getBasicInformation() != null) {
-                                    String postCd = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
-                                    textBuilder.appendText(setValue(150, 190, formatPostalCode(postCd), 9));
+                                    String postCd =  element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPostalCode().get().v() : "";
+                                    textBuilder.appendText(setValue(150, 201,formatPostalCode(postCd), 9));
                                     //A3_2
-                                    String addressLabor;
-                                    if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
-                                        addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
+                                    String add_1 = "";
+                                    String add_2 = "";
+                                    if ( element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent() && element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()){
+                                        add_1 = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString();
+                                        add_2 = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                     } else {
                                         if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().isPresent()) {
-                                            addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString() + (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "");
-                                        } else {
-                                            addressLabor = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString() : "";
+                                            add_1 = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress1().get().toString();
+                                        }
+                                        if (element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().isPresent()) {
+                                            add_1 = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getAddress2().get().toString();
                                         }
                                     }
-
-                                    textBuilder.appendText(setValue(210, 190, formatTooLongText(addressLabor,60), 9));
-                                    //A3_3
+                                    textBuilder.appendText(setValue(150, 191, formatTooLongText(add_1, 60), 9));
+                                    textBuilder.appendText(setValue(150, 181, add_2, 9));
                                     textBuilder.appendText(setValue(150, 160, element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getRepresentativeName().get().v() : "", 9));
                                     //A3_4
                                     String phoneNumber = element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().isPresent() ? element.getLaborInsuranceOffice().getBasicInformation().getStreetAddress().getPhoneNumber().get().v() : "";

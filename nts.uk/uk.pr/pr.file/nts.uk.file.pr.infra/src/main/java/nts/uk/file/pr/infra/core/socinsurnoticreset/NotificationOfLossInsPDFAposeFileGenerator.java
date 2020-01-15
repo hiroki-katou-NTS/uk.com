@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -165,8 +166,11 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),1) : "");
         worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),2) :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getAdd_1() + company.getAdd_2() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getAdd1() + data.getAdd2() : "");
+        Style style = worksheets.getRangeByName(sheetName + "!D1_6").get(0,0).getStyle();
+        style.setTextWrapped(true);
+        worksheets.getRangeByName(sheetName + "!D1_6").setStyle(style);
+        worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (company.getAdd_1() + "\n" + company.getAdd_2()) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (data.getAdd1() + "\n" + data.getAdd2()) : "");
         worksheets.getRangeByName(sheetName + "!D1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!D1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
@@ -240,8 +244,11 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),1) : "");
         worksheets.getRangeByName(sheetName + "!A1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),2) :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
-        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatTooLongText(company.getAdd_1() + company.getAdd_2(), 60) :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatTooLongText(data.getAdd1() + data.getAdd2(), 60) : "");
+        Style style = worksheets.getRangeByName(sheetName + "!A1_6").get(0,0).getStyle();
+        style.setTextWrapped(true);
+        worksheets.getRangeByName(sheetName + "!A1_6").setStyle(style);
+        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (formatTooLongText(company.getAdd_1(), 60) + "\n" +(company.getAdd_2() != null ? company.getAdd_2() : "")) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (formatTooLongText(data.getAdd1(), 60) + "\n" + (data.getAdd2() != null ? data.getAdd2() : "")) : "");
         worksheets.getRangeByName(sheetName + "!A1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :

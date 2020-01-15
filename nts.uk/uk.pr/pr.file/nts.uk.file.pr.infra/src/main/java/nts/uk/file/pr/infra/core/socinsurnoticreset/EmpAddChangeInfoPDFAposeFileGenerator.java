@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.error.BusinessException;
@@ -396,7 +397,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                 int d = japaneseDate.day();
                 worksheet.getRangeByName(i + "!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             }
-            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()), 60));
+            Style style = worksheet.getRangeByName(i + "!A3_2").get(0,0).getStyle();
+            style.setTextWrapped(true);
+            worksheet.getRangeByName(i + "!A3_2").setStyle(style);
+            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(empAddChangeInfoExport.getAddress1(), 60) + "\n" + (empAddChangeInfoExport.getAddress2() != null ? empAddChangeInfoExport.getAddress2() : ""));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
             worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null && empAddChangeInfoExport.getPhoneNumber().length() > 0?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));
