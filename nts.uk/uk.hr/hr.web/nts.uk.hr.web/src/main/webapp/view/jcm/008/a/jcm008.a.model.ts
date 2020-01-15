@@ -161,6 +161,8 @@ class ISearchParams {
     allSelectEmployment: boolean;
     selectEmployment: Array<string>;
     includingReflected: boolean;
+    selectDepartmentName: string;
+    selectEmploymentName: string;
     constructor(param: SearchFilterModel) {
         this.includingReflected = param.includingReflected();
         this.retirementAgeSetting = param.retirementAgeDesignation();
@@ -175,6 +177,8 @@ class ISearchParams {
         this.allSelectEmployment = param.selectAllEmployment();
         this.selectEmployment = _.map(param.employment(), (d) => {return d.code;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
+        this.selectDepartmentName = param.departmentDisplay;
+        this.selectEmploymentName = param.employmentDisplay;
     }
 }
 
