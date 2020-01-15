@@ -117,18 +117,35 @@ module jcm008.a {
                         if(changed[row].columnKey === 'registrationStatus') {
                             retire.extendEmploymentFlg = changed[row].value
                         }
-                        if(changed[row].columnKey === 'flag') {
-                            retire.pendingFlag = 1;
-                            retire.status = 0;    
-                        } else {
-                            retire.pendingFlag = 0;
-                            retire.status = 1;
+                        if(changed[row].columnKey === 'desiredWorkingCourseId') {
+                            let selectedPlan = _.filter(self.searchFilter.retirementCourses(), (plan) => {
+                                return plan.retirePlanCourseId === changed[row].value;
+                            });
+                            if(selectedPlan) {
+                                retire.desiredWorkingCourseId = selectedPlan.retirePlanCourseId;
+                                retire.desiredWorkingCourseCd = selectedPlan.retirePlanCourseCode;
+                                retire.desiredWorkingCourseName = selectedPlan.retirePlanCourseName;
+                            }
                         }
+                        if(changed[row].columnKey === 'flag') {
+                            if(changed[row].value) {
+                                retire.pendingFlag = 1;
+                                retire.status = 0;
+                            } else {
+                                retire.pendingFlag = 0;
+                                retire.status = 1;
+                            }    
+                        } 
                         retire[changed[row].columnKey] = changed[row].value;
                     }
                 } else {
-                    retire.pendingFlag = 0;
-                    retire.status = 1;
+                    if(retire.flag) {
+                        retire.pendingFlag = 1;
+                        retire.status = 0;
+                    } else {
+                        retire.pendingFlag = 0;
+                        retire.status = 1;
+                    }
                 }
         
                 return retire;
@@ -184,10 +201,8 @@ module jcm008.a {
                     data.interviewRecordTxt = interviewRecordTxt;
                 }
 
-                if(data.pendingFlag === 1) {
-                    data.flag = true;
-                }
-                
+                data.flag = data.pendingFlag === 1 ? true : false;
+            
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
@@ -245,6 +260,10 @@ module jcm008.a {
                     }
                 }
             });
+            console.log(columns);
+            console.log(dataSources);
+            console.log(sheets);
+            console.log(fixedClmSetting);
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',

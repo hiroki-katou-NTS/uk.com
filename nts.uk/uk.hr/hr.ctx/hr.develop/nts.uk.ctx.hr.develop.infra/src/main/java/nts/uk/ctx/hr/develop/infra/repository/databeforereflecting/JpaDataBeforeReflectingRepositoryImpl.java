@@ -205,6 +205,8 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.stattus = domain.stattus.value;
 		
 		entity.releaseDate = domain.releaseDate;
+		entity.onHoldFlag = domain.onHoldFlag.value;
+		entity.registerDate = domain.registerDate;
 		
 		entity.select_id_01 = domain.select_id_01; // retirementCategory
 		entity.select_id_02 = domain.select_id_02; // retirementCategory

@@ -61,7 +61,7 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 		String personName = cmd.getPersonName();
 		String workName = cmd.getWorkName();
 		int requestFlag = cmd.getNotificationCategory();
-		GeneralDate registerDate = cmd.getInputDate();
+		GeneralDate registerDate = GeneralDate.today();
 		GeneralDateTime releaseDate = GeneralDateTime
 				.fromString(cmd.getReleaseDate().toString("yyyy-MM-dd") + TIME_DAY_START, DATE_TIME_FORMAT);
 		int onHoldFlag = cmd.getPendingFlag();
@@ -86,6 +86,7 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 		
 		domain.setSelect_id_02(cmd.getDesiredWorkingCourseId());
 		domain.setSelect_id_03(cmd.getRetirementReasonCtgID1());
+		domain.setSelect_code_04(select_code_04);
 
 		return domain;
 	}
