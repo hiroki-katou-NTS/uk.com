@@ -79,10 +79,15 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 		String select_name_02 = cmd.getDesiredWorkingCourseName();
 		String select_name_03 = cmd.getRetirementReasonCtgName1();
 
-		return new DataBeforeReflectingPerInfo(historyId, contractCode, companyId, companyCode, pId, sId, scd, workId,
-				personName, workName, requestFlag, registerDate, releaseDate, onHoldFlag, status, histId_Refer, date_01,
-				select_code_01, select_code_02, select_code_03, select_code_04, select_name_01, select_name_02,
-				select_name_03);
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo(historyId, contractCode, companyId,
+				companyCode, pId, sId, scd, workId, personName, workName, requestFlag, registerDate, releaseDate,
+				onHoldFlag, status, histId_Refer, date_01, select_code_01, select_code_02, select_code_03,
+				select_code_04, select_name_01, select_name_02, select_name_03);
+		
+		domain.setSelect_id_02(cmd.getDesiredWorkingCourseId());
+		domain.setSelect_id_03(cmd.getRetirementReasonCtgID1());
+
+		return domain;
 	}
 
 }

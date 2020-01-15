@@ -206,6 +206,17 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		
 		entity.releaseDate = domain.releaseDate;
 		
+		entity.select_id_01 = domain.select_id_01; // retirementCategory
+		entity.select_id_02 = domain.select_id_02; // retirementCategory
+		entity.select_id_03 = domain.select_id_03; // retirementCategory
+		entity.select_id_04 = domain.select_id_04; // retirementCategory
+		entity.select_id_05 = domain.select_id_05; // retirementCategory
+		entity.select_id_06 = domain.select_id_06; // retirementCategory
+		entity.select_id_07 = domain.select_id_07; // retirementCategory
+		entity.select_id_08 = domain.select_id_08; // retirementCategory
+		entity.select_id_09 = domain.select_id_09; // retirementCategory
+		entity.select_id_10 = domain.select_id_10; // retirementCategory
+		
 		entity.select_code_01 = domain.select_code_01; // retirementCategory
 		entity.select_code_02 = domain.select_code_02; // retirementCategory
 		entity.select_code_03 = domain.select_code_03; // retirementReasonCtgCode1
