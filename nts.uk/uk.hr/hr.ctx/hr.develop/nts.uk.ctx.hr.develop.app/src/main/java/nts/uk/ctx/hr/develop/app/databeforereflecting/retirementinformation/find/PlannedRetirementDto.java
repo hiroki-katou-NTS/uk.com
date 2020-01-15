@@ -74,7 +74,7 @@ public class PlannedRetirementDto {
 	// 保留フラグ
 	private int pendingFlag;
 	// ステータス
-	private int status;
+	private Integer status;
 	// 反映先_履歴ID
 	private String dst_HistId;
 	// 入力日
