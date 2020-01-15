@@ -68,25 +68,27 @@
 												value: mandatoryRetirementRegulation().reachedAgeTerm,
 												enable: isLatestHis}"> </div>
 								</div>
-								<div>
+								
+								<!-- publicTerm -->
+								<div data-bind="with: mandatoryRetirementRegulation().publicTerm" >
 									<div class="linkRetire frameRetire B422_15_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_4')}</div>
 									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
-												options: dateRule,
+												options: $parent.dateRule,
 												optionsValue: 'value',
-												value: mandatoryRetirementRegulation().publicTerm().calculationTerm,
+												value: calculationTerm,
 												optionsText: 'name',
 												columns: [{ prop: 'name', length: 10 }],
-												enable: isLatestHis,
+												enable: $parent.isLatestHis,
 												dropDownAttachedToBody: true,
 												visibleItemsCount: 10
 												 }"> </div>
-									<div class="retireDateEna" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3) ">
+									<div class="retireDateEna" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3)">
 										<span> 
 											<input style="margin-left: 30px;" class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
-													value: mandatoryRetirementRegulation().publicTerm().dateSettingNum,
+													value: dateSettingNum,
 													required: true,
 													readonly: false,
-													enable: isLatestHis,
+													enable: $parent.isLatestHis,
 													constraint: 'Integer_0_99',
 													name: '#{i18n.getText('JMM018_B422_15_6')}'}" />
 										</span> 
@@ -95,41 +97,44 @@
 									</div>
 									<div class="retireDateEna" data-bind="visible: calculationTerm() == 6 ">
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
-													options: dateSelectItem,
+													options: $parent.dateSelectItem,
 													optionsValue: 'value',
-													value: mandatoryRetirementRegulation().publicTerm().dateSettingDate,
+													value: dateSettingDate,
 													optionsText: 'name',
 													columns: [{ prop: 'name', length: 10 }],
-													enable: isLatestHis,
+													enable: $parent.isLatestHis,
 													visibleItemsCount: 10,
 													width: 75
 													 }"> </div>
 									</div>
 								</div>
-								<div>
+								
+								<!-- retireDateTerm -->
+								<div data-bind="with: mandatoryRetirementRegulation().retireDateTerm">
 									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_9')}</div>
 									<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
-												options: retireDateRule,
+												options: $parent.retireDateRule,
 												optionsValue: 'value',
-												value: mandatoryRetirementRegulation().retireDateTerm().retireDateTerm,
+												value: retireDateTerm,
 												optionsText: 'name',
-												enable: isLatestHis,
+												enable: $parent.isLatestHis,
 												visibleItemsCount: 10,
 												width: 300
 												 }"> </div>
 									<div class="retireDateEna" data-bind="visible: retireDateTerm() == 1">
 										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
-													options: dateSelectItem,
+													options: $parent.dateSelectItem,
 													optionsValue: 'value',
-													value: mandatoryRetirementRegulation().retireDateTerm().retireDateSettingDate,
+													value: retireDateSettingDate,
 													optionsText: 'name',
 													columns: [{ prop: 'name', length: 10 }],
-													enable: isLatestHis,
+													enable: $parent.isLatestHis,
 													visibleItemsCount: 10,
 													width: 75
 													 }"> </div>
 									</div>
 								</div>
+								
 								<div>
 									<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_12')}</div>
 									<div class="linkRetire frameRetire" id="tableRetire">
@@ -220,9 +225,9 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
+													<tr data-bind="with: mandatoryRetirementRegulation">
 														<td class="column-row">
-															<div class="appCon" data-bind="ntsCheckBox: { checked: planCourseApplyFlg, enable: isLatestHis }"></div>
+															<div class="appCon" data-bind="ntsCheckBox: { checked: planCourseApplyFlg, enable: $parent.isLatestHis }"></div>
 															<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
 														</td>
 														<td class="column-row">
@@ -230,37 +235,37 @@
 																<input class="cell judg" data-bind="ntsNumberEditor: {
 																				constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_49')}',
-																				value: applicationEnableStartAge,
-																				required: isLatestHis &amp;&amp; planCourseApplyFlg,
-																				enable: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				value: planCourseApplyTerm().applicationEnableStartAge,
+																				required: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																				enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
 																				option:{width:'50', unitID:'AGE'}}" />
 																<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
 																<input class="cell judg" data-bind="ntsNumberEditor: {
 																				constraint:'DesiredCourseApplicationAge',
 																				name:'#{i18n.getText('JMM018_B422_15_51')}',
-																				value: applicationEnableEndAge,
-																				required: isLatestHis &amp;&amp; planCourseApplyFlg,
-																				enable: isLatestHis &amp;&amp; planCourseApplyFlg,
+																				value: planCourseApplyTerm().applicationEnableEndAge,
+																				required: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																				enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
 																				option:{width:'50',unitID:'AGE'}}" />
 															</div>
 														</td>
 														<td class="column-row">
 															<div class="buttonDialogC" data-bind="ntsComboBox: {
-																							options: monthSelectItem,
-																							optionsValue: 'value',
-																							value: endMonth,
-																							optionsText: 'name',
-																							enable: isLatestHis &amp;&amp; planCourseApplyFlg,
-																							visibleItemsCount: 12,
-																							width: 100}"></div>
+																				options: $parent.monthSelectItem,
+																				optionsValue: 'value',
+																				value: planCourseApplyTerm().endMonth,
+																				optionsText: 'name',
+																				enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																				visibleItemsCount: 12,
+																				width: 100}"></div>
 															<div class="buttonDialogC" data-bind="ntsComboBox: {
-																							options: dateSelectItem,
-																							optionsValue: 'value',
-																							value: endDate,
-																							optionsText: 'name',
-																							enable: (isLatestHis() &amp;&amp; planCourseApplyFlg()),
-																							visibleItemsCount: 10,
-																							width: 100}"></div>
+																				options: $parent.dateSelectItem,
+																				optionsValue: 'value',
+																				value: planCourseApplyTerm().endDate,
+																				optionsText: 'name',
+																				enable: $parent.isLatestHis &amp;&amp; planCourseApplyFlg,
+																				visibleItemsCount: 10,
+																				width: 100}"></div>
 														</td>
 													</tr>
 												</tbody>

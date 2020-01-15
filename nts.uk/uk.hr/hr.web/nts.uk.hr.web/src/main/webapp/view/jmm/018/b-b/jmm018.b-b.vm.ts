@@ -126,9 +126,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_12"});
                 }
             });
-            self.planCourseApplyFlg.subscribe(function(val){
-                $('.judg').trigger("validate");
-            });
+            
             
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             
@@ -263,6 +261,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.publicTerm = ko.observable(param? new DateCaculationTerm(param.publicTerm): new DateCaculationTerm(undefined));
             self.retireDateTerm = ko.observable(param? new RetireDateTerm(param.retireDateTerm): new RetireDateTerm(undefined));
             self.planCourseApplyFlg = ko.observable(param? param.planCourseApplyFlg: false);
+            self.planCourseApplyFlg.subscribe(function(val){
+                $('.judg').trigger("validate");
+            });
             self.mandatoryRetireTerm = param? param.mandatoryRetireTerm: [];
             if(param != undefined){
                 let tg = [];
