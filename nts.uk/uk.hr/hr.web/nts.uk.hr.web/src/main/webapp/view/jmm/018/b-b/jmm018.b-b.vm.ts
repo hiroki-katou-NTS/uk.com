@@ -262,6 +262,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     }
                 }
             });
+            if(self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableStartAge() > self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableEndAge() && self.mandatoryRetirementRegulation().planCourseApplyFlg()){
+                validate = false;
+                error({ messageId: "MsgJ_JMM018_11"});
+            }
             if(validate){
                 self.mandatoryRetirementRegulation().mandatoryRetireTerm = mandatoryRetireTerm;
                 let param = ko.toJS(self.mandatoryRetirementRegulation());
