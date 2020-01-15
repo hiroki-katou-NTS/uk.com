@@ -218,7 +218,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					SystemAtr.WORK,
 					Optional.empty());
 		} else {
-			ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).orElseThrow(()->
+			ApprovalRootState approvalRootState = approvalRootStateRepository.findByID(appID, 0).orElseThrow(()->
 					new RuntimeException("data WWFDT_APPROVAL_ROOT_STATE error: ID ="+appID)
 			);
 			approvalRootContentOutput = new ApprovalRootContentOutput(approvalRootState, ErrorFlag.NO_ERROR);

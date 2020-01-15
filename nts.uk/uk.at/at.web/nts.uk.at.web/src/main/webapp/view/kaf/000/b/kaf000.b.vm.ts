@@ -727,6 +727,48 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         callCMM045A() {
             shrvm.model.CommonProcess.callCMM045();
         }
+        
+        frameCount(listFrame) {
+            let self = this;    
+            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).countBy().values().value()[0];        
+        }
+        
+        approverCount(listApprover) {
+            let self = this;
+            return _.chain(listApprover).countBy().values().value()[0];     
+        }
+        
+        getApproverAtr(approver) {
+            if(approver.approvalAtrName() !='未承認'){
+                if(approver.approverName().length > 0){
+                    if(approver.approverMail().length > 0){
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
+                    }
+                } else {
+                    if(approver.representerMail().length > 0){
+                        return approver.representerName() + '(@)';
+                    } else {
+                        return approver.representerName();
+                    }
+                }
+            } else {
+                var s = '';
+                s = s + approver.approverName();
+                if(approver.approverMail().length > 0){
+                    s = s + '(@)';
+                }
+                if(approver.representerName().length > 0){
+                    if(approver.representerMail().length > 0){
+                        s = s + '(' + approver.representerName() + '(@))';
+                    } else {
+                        s = s + '(' + approver.representerName() + ')';
+                    }
+                }   
+                return s;
+            }        
+        }
     }
 
     export module model {

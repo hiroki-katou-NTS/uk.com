@@ -98,7 +98,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CFS_DAY_BY_APPROVER;
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
 	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
-			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
+			+ " WHERE a.rootStateID = :appID"
 			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -133,19 +133,19 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfdtApprovalRootState e");
-		builderString.append(" WHERE e.wwfdpApprovalRootStatePK.rootStateID = :rootStateID");
+		builderString.append(" WHERE e.rootStateID = :rootStateID");
 		SELECT_APP_BY_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfdtApprovalRootDay e");
-		builderString.append(" WHERE e.wwfdpApprovalRootDayPK.rootStateID = :rootStateID");
+		builderString.append(" WHERE e.rootStateID = :rootStateID");
 		SELECT_CF_DAY_BY_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM WwfdtApprovalRootMonth e");
-		builderString.append(" WHERE e.wwfdpApprovalRootMonthPK.rootStateID = :rootStateID");
+		builderString.append(" WHERE e.rootStateID = :rootStateID");
 		SELECT_CF_MONTH_BY_ID = builderString.toString();
 
 		// builderString = new StringBuilder();
@@ -296,10 +296,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString = new StringBuilder();
 		builderString.append("SELECT c");
 		builderString.append(" FROM WwfdtApprovalRootState c");
-		builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID IN ");
+		builderString.append(" WHERE c.rootStateID IN ");
 		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID");
 		builderString.append(" FROM WwfdtAppRootStateSimple a JOIN WwfdtAppStateSimple b ");
-		builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID ");
+		builderString.append(" ON a.rootStateID = b.wwfdpApproverStatePK.rootStateID ");
 		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
 		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
 		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID");
