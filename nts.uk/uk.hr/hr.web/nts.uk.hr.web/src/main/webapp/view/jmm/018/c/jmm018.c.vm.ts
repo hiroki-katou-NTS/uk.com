@@ -32,7 +32,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             _.forEach(listSorted, (obj) => {
                  
                 let durationFind = _.find(self.durationList, function(item) {
-                    return obj.id == item.id;
+                    return obj.durationFlg == item.value;
                 });                
                 let kt = _.find(param.listSelect, {'retirePlanCourseId': obj.retirePlanCourseId});
                 
@@ -123,13 +123,4 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         }
     }
 
-    class ItemModel {
-        value: number;
-        name: string;
-
-        constructor(value: number, name: string) {
-            this.value = value;
-            this.name = name;
-        }
-    }
 }

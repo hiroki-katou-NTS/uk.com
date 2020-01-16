@@ -5,6 +5,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import error = nts.uk.ui.dialog.error;
+    import info = nts.uk.ui.dialog.info;
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModel {
@@ -142,6 +143,16 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                        _.forEach(self.commonMasterItems(), (item) => {
+                            let tg = _.find(data.mandatoryRetireTerm, h => h.empCommonMasterItemId == item.commonMasterItemId)
+                            if(tg){
+                                item.usageFlg(tg.usageFlg);
+                                item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse, self.retirePlanCourseList);
+                            }else{
+                                item.usageFlg(false);
+                                item.setEnableRetirePlanCourse([],[]);
+                            }
+                        });
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
@@ -168,6 +179,18 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                        let listItemCommon = self.commonMasterItems();
+                        _.forEach(listItemCommon, (item) => {
+                            let tg = _.find(data.mandatoryRetireTerm, h => h.empCommonMasterItemId == item.commonMasterItemId)
+                            if(tg){
+                                item.usageFlg(tg.usageFlg);
+                                item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse, self.retirePlanCourseList);
+                            }else{
+                                item.usageFlg(false);
+                                item.setEnableRetirePlanCourse([],[]);
+                            }
+                        });
+                        self.commonMasterItems(listItemCommon);
                     }).fail(function(err) {
                         if(self.selectedHistId()==self.latestHistId()){
                             error({ messageId: 'MsgJ_JMM018_18' });      
@@ -219,7 +242,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
                 let param = getShared('shareToJMM018B');
                 if(param != undefined){
-                    item.setEnableRetirePlanCourse(param);
+                    item.setEnableRetirePlanCourse(param, self);
                 }
             })
         }
@@ -267,14 +290,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let validate = true;
             let mandatoryRetireTerm = [];
             _.forEach(self.commonMasterItems(), (item) => {
-                if(item.usageFlg() == true && item.enableRetirePlanCourse().length == 0){
-                    if(item.enableRetirePlanCourse().length == 0){
-                        error({ messageId: "MsgJ_JMM018_13"});
-                        validate = false;
-                        return;    
-                    }else{
-                        mandatoryRetireTerm.push(item.collectMandatoryRetireTerm());    
-                    }
+                if(item.usageFlg() && item.enableRetirePlanCourse().length == 0){
+                    error({ messageId: "MsgJ_JMM018_13"});
+                    validate = false;
+                    return;    
+                }else if(item.enableRetirePlanCourse().length > 0){
+                    mandatoryRetireTerm.push(item.collectMandatoryRetireTerm());    
                 }
             });
             if(self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableStartAge() > self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableEndAge() && self.mandatoryRetirementRegulation().planCourseApplyFlg()){
@@ -287,7 +308,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 param.historyId = self.selectedHistId();
                 block.grayout();
                 new service.update(param).done(function(data: any) {
-                    error({ messageId: "Msg_15"});
+                    info({ messageId: "Msg_15"});
                 }).fail(function(err) {
                     error({ messageId: err.messageId });
                 }).always(function() {
@@ -489,14 +510,22 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.enableRetirePlanCourse = ko.observable([]); 
             self.enableRetirePlanCourseText = ko.observable("");
         }
-        setUsageFlg(usageFlg: boolean): void{
-            let self = this;
-            self.usageFlg(usageFlg);
-        }
-        setEnableRetirePlanCourse(enableRetirePlanCourse: any[]): void{
+        setEnableRetirePlanCourse(enableRetirePlanCourse: any[], master: any[]): void{
             let self = this;
             self.enableRetirePlanCourse(enableRetirePlanCourse);
-            self.enableRetirePlanCourseText(enableRetirePlanCourse.toString());
+            let names = '';
+            _.forEach(enableRetirePlanCourse, (id) => {
+                let tg = _.find(master, h => h.retirePlanCourseId == id.retirePlanCourseId)
+                if(tg){
+                    let name = tg.retirePlanCourseName + ' (' +tg.retirementAge.toString() +  getText('JMM018_C222_16') + '、' + _.find(__viewContext.enums.DurationFlg, h => h.value == tg.durationFlg).name + ')'; 
+                    if(names == ''){
+                        names = name;     
+                    }else{
+                        names = names + '　、' + name; 
+                    }
+                }
+            });
+            self.enableRetirePlanCourseText(names);
         }
         
         collectMandatoryRetireTerm (): any{
