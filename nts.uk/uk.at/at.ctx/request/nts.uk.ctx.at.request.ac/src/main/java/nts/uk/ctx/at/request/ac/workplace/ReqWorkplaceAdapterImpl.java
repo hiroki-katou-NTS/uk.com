@@ -44,14 +44,14 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Inject
 	private SyWorkplacePub wpkPub;
-
+	
 	/**
 	 * アルゴリズム「社員から職場を取得する」を実行する
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
-		Optional<SWkpHistExport> wkpExport = wkpPub.findBySid(sID, date);
+		Optional<SWkpHistExport> wkpExport = wkpPub.findBySidNew(sID, date);
 		if (wkpExport.isPresent()) {
 			return toImport(wkpExport.get());
 		}
@@ -114,5 +114,4 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
 		return wpkPub.findParentWpkIdsByWkpIdDesc(companyId, workplaceId, date);
 	}
-
 }

@@ -27,11 +27,11 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="with: viewmodelA">
 				<!-- A1_2: Tab 会社 -->
-				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTabCom">#{i18n.getText('Com_Company')}</a></li>
 				<!-- A1_3: Tab 職場 -->
-				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="text: a1_3, visible: visibleTab"></a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="text: a1_3, visible: visibleTabWkp"></a></li>
 				<!-- A1_4: Tab 個人 -->
-				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li><a href="#tabpanel-3" role="tab-navigator" data-bind="visible: visibleTabPs">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -48,7 +48,7 @@
 					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
-					<div style="margin-top: 10px;">
+					<div id="hoatt" style="margin-top: 10px;" >
 						<table>
 							<tr>
 								<td>

@@ -262,4 +262,6 @@ public interface SyWorkplacePub {
 	
 	//RequestList30 NEW
 	Optional<SWkpHistExport> findBySidNew(String employeeId, GeneralDate baseDate);
+	
+	Optional<SWkpHistExport> findByWkpIdNEW(String companyId, String wkpId);
 }

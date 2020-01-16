@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.request.app.find.setting.request.application.AppUseAtrDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationUseAtrFinder;
+import nts.uk.ctx.at.request.app.find.setting.request.application.ApproverRegisterSetDto;
 import nts.uk.ctx.at.request.dom.application.approval.ApprovalInfoInterface;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -29,7 +30,12 @@ public class ApprovalInfoWebsevice {
 	//HOATT - CMM018_2
 	@POST
 	@Path("app-useAtr")
-	public List<AppUseAtrDto> appUseAtr(String appId){
-		return appUseAtrFinder.getAppUseAtr();
+	public List<AppUseAtrDto> appUseAtr(String workplaceID){
+		return appUseAtrFinder.getAppUseAtr(workplaceID);
+	}
+	@POST
+	@Path("appSet")
+	public ApproverRegisterSetDto getAppSet(){
+		return appUseAtrFinder.getAppSet(AppContexts.user().companyId());
 	}
 }

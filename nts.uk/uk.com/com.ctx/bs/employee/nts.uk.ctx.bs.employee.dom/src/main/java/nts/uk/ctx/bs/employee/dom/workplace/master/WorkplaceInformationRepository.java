@@ -43,5 +43,6 @@ public interface WorkplaceInformationRepository {
 	 * @return
 	 */
 	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate);
-
+	
+	public Optional<WorkplaceInformation> getInfoWkpNew(String companyId, String wkpId);
 }

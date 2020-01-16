@@ -1013,4 +1013,13 @@ public class WorkplacePubImp implements SyWorkplacePub {
 				.workplaceCode(wkpInfo.getWorkplaceCode().v()).workplaceName(wkpInfo.getWorkplaceName().v())
 				.wkpDisplayName(wkpInfo.getWorkplaceDisplayName().v()).build());
 	}
+
+	@Override
+	public Optional<SWkpHistExport> findByWkpIdNEW(String companyId, String wkpId) {
+		return repoWkpNew.getInfoWkpNew(companyId, wkpId)
+				.map(c -> SWkpHistExport.builder()
+				.workplaceCode(c.getWorkplaceCode().v())
+				.workplaceName(c.getWorkplaceName().v())
+				.wkpDisplayName(c.getWorkplaceDisplayName().v()).build());
+	}
 }

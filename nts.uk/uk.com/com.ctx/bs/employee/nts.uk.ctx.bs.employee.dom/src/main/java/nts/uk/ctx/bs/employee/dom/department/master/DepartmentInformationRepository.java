@@ -34,4 +34,5 @@ public interface DepartmentInformationRepository {
 	
 	public void deleteDepartmentInfor(String companyId, String depHistId, String depId);
 
+	public Optional<DepartmentInformation> getInfoDep(String companyId, String depId);
 }

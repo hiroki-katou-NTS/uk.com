@@ -9,8 +9,11 @@ module nts.uk.com.view.cmm018.shr {
             getInfoEmployee: "workflow/approvermanagement/workroot/getInforPerson",
             getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
             getNameConfirmType: "workflow/approvermanagement/workroot/find/confirmRootType",
-            getWpInfo: "workflow/approvermanagement/workroot/find/wpInfo",
-            getWpLogin: "workflow/approvermanagement/workroot/find-wpInfo-login"
+            getWkpDepInfo: "workflow/approvermanagement/workroot/find/wkpDepInfo",
+            getWpLogin: "workflow/approvermanagement/workroot/find-wpInfo-login",
+            settingCas005: "at/auth/workplace/employmentrole/getemproleSet",
+            settingKaf022: "at/request/application/approval/appSet",
+            setAppUseKaf022: "at/request/application/approval/app-useAtr",
         }
         
         export function updateHistory(data): JQueryPromise<any> {
@@ -37,12 +40,21 @@ module nts.uk.com.view.cmm018.shr {
         export function getNameConfirmType(): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getNameConfirmType);
         }
-        export function getWpInfo(workplaceId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getWpInfo, workplaceId);
+        export function getWkpDepInfo(param): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getWkpDepInfo, param);
         }
         //get wpName
         export function getWpName(): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getWpLogin);
+        }
+        export function settingCas005(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.settingCas005);
+        }
+        export function settingKaf022(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.settingKaf022);
+        }
+        export function setAppUseKaf022(workplaceID): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.setAppUseKaf022, workplaceID);
         }
     } 
 }

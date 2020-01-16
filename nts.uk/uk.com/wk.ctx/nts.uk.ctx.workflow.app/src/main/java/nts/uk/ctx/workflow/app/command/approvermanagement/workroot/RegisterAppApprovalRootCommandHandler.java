@@ -32,6 +32,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -56,6 +57,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private CreateDailyApprover creDailyAppr;
 	private static final int COMPANY = 0;
 	private static final int WORKPLACE = 1;
+	private static final int SHUUGYOU = 0;
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAppApprovalRootCommand> context) {
 		//____________New__________
@@ -480,12 +482,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		if(sDate.after(GeneralDate.today())){//履歴の開始日＞システム日付
 			return;
 		}
-		// TODO
-		//COMMENT TAM THOI
-		//指定社員の中間データを作成する（日別）
-//		creDailyAppr.createDailyApprover(data.getEmployeeId(), RecordRootType.CONFIRM_WORK_BY_DAY, sDate, sDate);
-		//指定社員の中間データを作成する（月別）
-//		creDailyAppr.createDailyApprover(data.getEmployeeId(), RecordRootType.CONFIRM_WORK_BY_MONTH, sDate, sDate);
+		if(data.getSystemAtr() == SHUUGYOU){
+			//指定社員の中間データを作成する（日別）
+			creDailyAppr.createDailyApprover(data.getEmployeeId(), RecordRootType.CONFIRM_WORK_BY_DAY, sDate, sDate);
+			//指定社員の中間データを作成する（月別）
+			creDailyAppr.createDailyApprover(data.getEmployeeId(), RecordRootType.CONFIRM_WORK_BY_MONTH, sDate, sDate);
+		}
+
 	}
 	/**
 	 * Add new history

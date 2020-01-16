@@ -20,5 +20,9 @@ public interface WorkplaceApproverAdapter {
 	Optional<WorkplaceImport> findByWkpId(String workplaceId, GeneralDate baseDate);
 	
 	WorkplaceImport findBySid(String employeeId, GeneralDate baseDate);
+	
+	Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId);
+	
+	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId);
 
 }

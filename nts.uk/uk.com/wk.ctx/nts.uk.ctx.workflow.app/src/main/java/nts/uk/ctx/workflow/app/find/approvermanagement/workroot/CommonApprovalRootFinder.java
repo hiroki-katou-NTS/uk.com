@@ -26,6 +26,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
@@ -76,6 +77,7 @@ public class CommonApprovalRootFinder {
 	
 	private static final int COMPANY = 0;
 	private static final int WORKPLACE = 1;
+	private static final int SHUUGYOU = 0;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * まとめて登録モード
@@ -127,18 +129,16 @@ public class CommonApprovalRootFinder {
 	 * @param workplaceId
 	 * @return
 	 */
-	public WorkplaceImport getWpInfo(String workplaceId){
-		GeneralDate baseDate = GeneralDate.today();
-		Optional<WorkplaceImport> wpInfo = adapterWp.findByWkpId(workplaceId, baseDate);
-		String name = "";
-		String code = "";
-		WorkplaceImport wpResult = null;
-		if(wpInfo.isPresent()){
-			code = wpInfo.get().getWkpCode();
-			name = wpInfo.get().getWkpName();
+	public WkpDepInfo getWkpDepInfo(String id, int sysAtr){
+		String companyId = AppContexts.user().companyId();
+		Optional<WkpDepInfo> wkpDepOp = Optional.empty();
+		if(sysAtr == SHUUGYOU){
+			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id);
+		}else{
+			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id);
 		}
-		wpResult = new WorkplaceImport(workplaceId, code, name);
-		return wpResult;
+		if(!wkpDepOp.isPresent()) return new WkpDepInfo(id, "", "コード削除済");
+		return wkpDepOp.get();
 	}
 	/**
 	 * get All Company Approval Root(grouping by history)

@@ -235,9 +235,9 @@ module nts.uk.com.view.cmm018.a.sub {
                         lstEventID: []};
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     self.workplaceIdB(data.workplaceId); 
-                    servicebase.getWpInfo(data.workplaceId).done(function(wpInfo){
-                        __viewContext.viewModel.viewmodelA.wpCode(wpInfo.wkpCode);
-                        __viewContext.viewModel.viewmodelA.wpName(wpInfo.wkpName);
+                    servicebase.getWkpDepInfo({id: data.workplaceId, sysAtr: 0}).done(function(wpInfo){
+                        __viewContext.viewModel.viewmodelA.wpCode(wpInfo.code);
+                        __viewContext.viewModel.viewmodelA.wpName(wpInfo.name);
                     });
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     if(data == null || data === undefined || data.lstWorkplaceRoot.length == 0){

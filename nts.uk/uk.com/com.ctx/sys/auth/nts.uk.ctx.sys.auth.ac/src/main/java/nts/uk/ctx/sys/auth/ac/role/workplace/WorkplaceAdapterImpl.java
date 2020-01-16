@@ -40,8 +40,6 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Inject
 	private WorkplacePub wkpNewPub;
-	@Inject
-	private WorkplaceAdapter workplaceAdapter;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter#findListWkpIdByBaseDate(nts.arc.time.GeneralDate)

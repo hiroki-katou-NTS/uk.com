@@ -111,7 +111,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
                 alreadySettingList: self.alreadySettingList,
-                selectedWorkplaceId: self.selectedWorkplaceId
+                selectedId: self.selectedWorkplaceId
             });
 
             self.selectVer27.subscribe(v => {

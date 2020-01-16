@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
@@ -39,6 +41,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
@@ -128,6 +131,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("getInforPerson")
 	public PersonImport getPsInfor(String SID) {
+		if(Strings.isBlank(SID)){
+			SID = AppContexts.user().employeeId();
+		}
 		return psInfo.getPersonInfo(SID);
 	}
 	@POST
@@ -173,9 +179,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 		return EnumAdaptor.convertToValueNameList(ConfirmationRootType.class);
 	}
 	@POST
-	@Path("find/wpInfo")
-	public WorkplaceImport getWpInfo(String workplaceId){
-		return comFinder.getWpInfo(workplaceId);
+	@Path("find/wkpDepInfo")
+	public WkpDepInfo getWpInfo(WkpDepParam param){
+		return comFinder.getWkpDepInfo(param.getId(), param.getSysAtr());
 	}
 
 	@POST

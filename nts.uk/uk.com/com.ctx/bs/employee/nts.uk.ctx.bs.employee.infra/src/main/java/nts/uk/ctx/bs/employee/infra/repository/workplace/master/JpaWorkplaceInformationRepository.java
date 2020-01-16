@@ -153,5 +153,15 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 				.getList(i -> i.toDomain());
 		if(lst.isEmpty()) return Optional.empty();
 		return Optional.of(lst.get(0));
+	}
+
+	@Override
+	public Optional<WorkplaceInformation> getInfoWkpNew(String companyId, String wkpId) {
+		String GET_INFO_BY_ID = "SELECT i FROM BsymtWorkplaceInfor i"
+				+ " WHERE i.pk.companyId = :companyId " + "AND i.pk.workplaceId = :wkpId";
+		return this.queryProxy().query(GET_INFO_BY_ID, BsymtWorkplaceInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("wkpId", wkpId)
+				.getSingle(i -> i.toDomain());
 	};
 }

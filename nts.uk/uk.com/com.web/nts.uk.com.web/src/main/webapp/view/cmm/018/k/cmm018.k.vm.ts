@@ -309,7 +309,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let specWkpId = null;
             //決定情報をチェック
             if(self.selectTypeSet() == TypeSet.PERSON){//PERSON
-                lstApprover = self.approverList();
+                _.each(self.approverList(), function(appr, index){
+                    lstApprover.push({id: appr.id, code: appr.code, name: appr.name, dispOrder: index + 1}
+                });
+//                lstApprover = self.approverList();
                 approvalForm = self.selectFormSet();
                 confirmSet = self.selectedCbbCode();
             }else if(self.selectTypeSet() == TypeSet.SPEC_WKP){//CHI DINH
