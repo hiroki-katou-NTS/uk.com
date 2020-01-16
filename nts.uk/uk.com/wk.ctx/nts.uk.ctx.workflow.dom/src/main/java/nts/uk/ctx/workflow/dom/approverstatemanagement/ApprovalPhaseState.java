@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -67,6 +68,28 @@ public class ApprovalPhaseState extends DomainObject {
 	private boolean isApprover(String employeeId) {
 		return listApprovalFrame.stream()
 				.anyMatch(f -> f.isApprover(employeeId));
+	}
+	
+	public Optional<ApproverInfor> getNotApproved() {
+		for(ApprovalFrame approvalFrame : listApprovalFrame) {
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.isNotApproved()) {
+					return Optional.of(approverInfor);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
+	public Optional<ApproverInfor> getApproved() {
+		for(ApprovalFrame approvalFrame : listApprovalFrame) {
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.isApproved()) {
+					return Optional.of(approverInfor);
+				}
+			}
+		}
+		return Optional.empty();
 	}
 	
 //	private boolean isRepresenter(String employeeId) {

@@ -45,4 +45,12 @@ public class ApproverInfor extends DomainObject {
 				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
 				agentID, approvalDate, approvalReason);
 	}
+	
+	public boolean isNotApproved() {
+		return approvalAtr!=ApprovalBehaviorAtr.UNAPPROVED;
+	}
+	
+	public boolean isApproved() {
+		return approvalAtr==ApprovalBehaviorAtr.APPROVED;
+	}
 }
