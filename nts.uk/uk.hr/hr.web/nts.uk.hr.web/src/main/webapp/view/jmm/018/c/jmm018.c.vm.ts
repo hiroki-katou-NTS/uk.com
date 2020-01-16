@@ -27,8 +27,9 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             self.retirePlanCourseClassList = __viewContext.enums.RetirePlanCourseClass;
             
             let param = getShared('employmentTypeToC');
-           let tg = [];
-            _.forEach(param.listInfor, (obj) => {
+            let tg = [];
+            let listSorted = _.sortBy(param.listInfor, ['durationFlg', 'retirementAge']);
+            _.forEach(listSorted, (obj) => {
                  
                 let durationFind = _.find(self.durationList, function(item) {
                     return obj.durationFlg == item.value;
