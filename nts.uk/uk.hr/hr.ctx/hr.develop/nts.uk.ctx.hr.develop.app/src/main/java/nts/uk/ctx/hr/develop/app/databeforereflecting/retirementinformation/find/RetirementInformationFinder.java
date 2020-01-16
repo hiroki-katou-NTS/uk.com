@@ -128,8 +128,13 @@ public class RetirementInformationFinder {
 				.collect(Collectors.toList());
 
 		if (retiredEmployees.size() > 2000) {
-			throw new BusinessException(" MsgJ_JCM008_8");
+			throw new BusinessException("MsgJ_JCM008_8");
 		}
+		
+		if (retiredEmployees.size() == 0) {
+			throw new BusinessException("MsgJ_JCM008_2");
+		}
+		
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
 		List<RetirementInformation_New> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,

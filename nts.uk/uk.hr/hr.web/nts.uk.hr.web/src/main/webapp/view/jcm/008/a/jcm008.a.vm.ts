@@ -24,6 +24,10 @@ module jcm008.a {
             self.employeeInfo = ko.observable({});
             self.referEvaluationItems = ko.observableArray([]);
             $(".employee-info-pop-up").ntsPopup("hide");
+            
+            $(window).resize(function() {
+                self.setScroll();
+            });
         }
 
         /** start page */
@@ -92,6 +96,7 @@ module jcm008.a {
                     } else {
                         dialog.bundledErrors(error);
                     }
+                    self.bindRetirementDateSettingGrid();
                 })
                 .always(() => {
                     block.clear();
@@ -471,6 +476,25 @@ module jcm008.a {
                 let data = getShared('CDL002Output');
                 self.searchFilter.employment(data);
             });
+        }
+
+        public caculator(): any {
+                let contentArea = $("#contents-area")[0].getBoundingClientRect().height
+                //height of combobox of display page size = 44
+                let groupArea = 44 + $("#main-left-area")[0].getBoundingClientRect().height;
+			return {contentAreaHeight: contentArea, gridAreaHeight: contentArea - groupArea};
+        }
+
+        public setScroll() {
+            let self = this,
+                objCalulator = self.caculator();
+            // số dòng hiện tại + 2 line header + height group + height của page
+            // let heightGrid = ($("#grid").ntsGrid("rows").length + 2) * 23 + 107 + 46;
+            //+1 để không xuất hiện scroll bên IE
+            $("#retirementDateSetting").ntsGrid("option", "height", objCalulator.gridAreaHeight + 'px');
+            // $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
+            // $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
+
         }
 
         /**
