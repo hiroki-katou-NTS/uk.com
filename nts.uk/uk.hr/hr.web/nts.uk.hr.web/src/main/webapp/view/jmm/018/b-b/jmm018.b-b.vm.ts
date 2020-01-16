@@ -102,6 +102,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }else{
                     if(newValue == '' || newValue == null){
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));   
+                        _.forEach(self.commonMasterItems(), (item) => {
+                            item.usageFlg(false);
+                            item.setEnableRetirePlanCourse([],[]);
+                        });
                     }else{
                         self.getMandatoryRetirementRegulation();
                     }    
