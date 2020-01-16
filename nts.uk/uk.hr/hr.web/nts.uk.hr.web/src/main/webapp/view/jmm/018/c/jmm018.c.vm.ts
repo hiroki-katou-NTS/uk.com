@@ -74,7 +74,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
             }else{
                 let listId = _.map(listData, 'retirePlanCourseId');
-                setShared('shareToJMM018B', listData);
+                setShared('shareToJMM018B', listId);
                 nts.uk.ui.windows.close();
             }
         }
