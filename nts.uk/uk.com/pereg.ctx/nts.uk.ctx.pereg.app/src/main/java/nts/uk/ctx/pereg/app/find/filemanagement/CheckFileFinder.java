@@ -120,7 +120,7 @@ public class CheckFileFinder {
 	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
-	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256");
+	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256", "IS00789", "IS00842", "IS01017");
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;

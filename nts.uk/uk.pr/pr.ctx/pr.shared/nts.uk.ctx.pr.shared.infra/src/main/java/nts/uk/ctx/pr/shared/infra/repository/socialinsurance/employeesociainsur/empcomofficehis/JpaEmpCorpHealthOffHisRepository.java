@@ -1,9 +1,25 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.empcomofficehis;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisRepository;
@@ -12,13 +28,7 @@ import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empc
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomofficehis.QqsmtEmpCorpOffHisPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 @Stateless
@@ -207,7 +217,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
                 + " START_DATE, END_DATE, SYAHO_OFFICE_CD)"
                 + " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
                 + " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-                + " HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL, SYAHO_OFFICE_CD); ";
+                + " HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL, SYAHO_OFFICE_CD_VAL); ";
         String cid = AppContexts.user().companyId();
         String insCcd = AppContexts.user().companyCode();
         String insScd = AppContexts.user().employeeCode();
@@ -235,7 +245,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
             sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
             sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");
             sql = sql.replace("END_DATE_VAL","'" +  dateHistItem.end() + "'");
-            sql = sql.replace("SYAHO_OFFICE_CD","'" +  c.getSocialInsurOfficeCode() + "'");
+            sql = sql.replace("SYAHO_OFFICE_CD_VAL","'" +  c.getSocialInsurOfficeCode() + "'");
 
             sb.append(sql);
         });
@@ -273,4 +283,154 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
         System.out.println(records);
     }
 
+	@Override
+	public Map<String, DateHistoryItem> getAllEmpCorpHealthOffHisBySidsAndBaseDate(String cid, List<String> sids,
+			GeneralDate standardDate) {
+		
+		Map<String, DateHistoryItem> result = new HashMap<String, DateHistoryItem>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			
+			String sql = "SELECT * FROM QQSDT_SYAHO_OFFICE_INFO "
+					
+					+ "WHERE CID =? and START_DATE <= ? "
+					
+					+ "AND END_DATE >= ? AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")";
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				
+				stmt.setString(1, cid);
+				
+				stmt.setDate(2, Date.valueOf(standardDate.localDate()));
+				
+				stmt.setDate(3, Date.valueOf(standardDate.localDate()));
+				
+				for (int i = 0 ; i < subList.size(); i++) {
+					
+					stmt.setString( 4 + i, subList.get(i));
+					
+				}
+				
+				new NtsResultSet(stmt.executeQuery()).forEach(rec -> {
+					
+					result.put(rec.getString("SID"), new DateHistoryItem(rec.getString("HIST_ID"),
+							
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE"))));
+				
+				});
+				
+			}catch (SQLException e) {
+				
+				throw new RuntimeException(e);
+			}
+			
+		});
+		
+		return result;
+	}
+
+	@Override
+	public List<EmpCorpHealthOffHis> getByCidAndSidsDesc(String cid, List<String> sids) {
+		
+		List<EmpCorpHealthOffHis> result = new ArrayList<>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			
+			String sql = "SELECT * FROM QQSDT_SYAHO_OFFICE_INFO "
+					
+					+ " WHERE CID =?"
+					
+					+ " SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
+					
+					+ " ORDER BY SID, START_DATE DESC";;
+			
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				
+				stmt.setString(1, cid);
+				
+				for (int i = 0 ; i < subList.size(); i++) {
+					
+					stmt.setString( 4 + i, subList.get(i));
+					
+				}
+				
+				List<QqsmtEmpCorpOffHis> entities= new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new QqsmtEmpCorpOffHis(
+			                new QqsmtEmpCorpOffHisPk(rec.getString("CID"), rec.getString("SID"), rec.getString("HIST_ID")),
+			                rec.getGeneralDate("START_DATE"),
+			                rec.getGeneralDate("END_DATE"),
+			                rec.getString("SYAHO_OFFICE_CD"));
+				
+				});
+				
+				Map<String, List<QqsmtEmpCorpOffHis>> mapResult = entities
+		                .stream().collect(Collectors.groupingBy(e -> e.empCorpOffHisPk.employeeId));
+				
+				mapResult.forEach( (key,value) -> {
+					
+		            result.add(QqsmtEmpCorpOffHis.toDomain(value));
+		            
+		        });
+
+			}catch (SQLException e) {
+				
+				throw new RuntimeException(e);
+			}
+			
+		});
+		
+		return result;
+	}
+
+	@Override
+	public void updateAllCps003(List<EmpCorpHealthOffParam> domains) {
+        
+		String UP_SQL = "UPDATE QQSDT_SYAHO_OFFICE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+                + " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL, SYAHO_OFFICE_CD = SYAHO_OFFICE_CD_VAL"
+                + " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL AND SID = SID_VAL;";
+        
+		String cid = AppContexts.user().companyId();
+		
+        String updCcd = AppContexts.user().companyCode();
+        
+        String updScd = AppContexts.user().employeeCode();
+        
+        String updPg = AppContexts.programId();
+
+        StringBuilder sb = new StringBuilder();
+        
+        domains.stream().forEach(c ->{
+        	
+            String sql = UP_SQL;
+            
+            sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() +"'");
+            
+            sql = sql.replace("UPD_CCD_VAL", "'" + updCcd +"'");
+            
+            sql = sql.replace("UPD_SCD_VAL", "'" + updScd +"'");
+            
+            sql = sql.replace("UPD_PG_VAL", "'" + updPg +"'");
+            
+            sql = sql.replace("START_DATE_VAL", "'" + c.getHistoryItem().start() + "'");
+            
+            sql = sql.replace("END_DATE_VAL","'" +  c.getHistoryItem().end() + "'");
+            
+            sql = sql.replace("SYAHO_OFFICE_CD_VAL", "'" + c.getSocialInsurOfficeCode() +"'");
+
+            sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryItem().identifier() +"'");
+            
+            sql = sql.replace("CID_VAL", "'" + cid +"'");
+            
+            sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() +"'");
+            
+            sb.append(sql);
+            
+        });
+        
+        int  records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+        
+        System.out.println(records);
+        
+	}
+	
 }

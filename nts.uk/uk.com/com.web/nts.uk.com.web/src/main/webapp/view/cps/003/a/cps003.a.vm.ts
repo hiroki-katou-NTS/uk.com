@@ -1113,6 +1113,8 @@ module cps003.a.vm {
                                 control.inputProcess = combo;
                             }
                             
+                            
+                            
                             if (control.controlType === "DatePicker") {
                                 let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];
                                 if (dp) {

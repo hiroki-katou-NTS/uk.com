@@ -1,15 +1,14 @@
 package nts.uk.ctx.pr.shared.ac.wageprovision.processdatecls;
 
-import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.CurrProcessYmPub;
-import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateImport;
-import sun.util.resources.ru.CurrencyNames_ru_RU;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
+
+import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.CurrProcessYmPub;
+import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.CurrentProcessDateImport;
 
 @Stateless
 public class CurrentProcessDateAdapterImpl implements CurrentProcessDateAdapter {

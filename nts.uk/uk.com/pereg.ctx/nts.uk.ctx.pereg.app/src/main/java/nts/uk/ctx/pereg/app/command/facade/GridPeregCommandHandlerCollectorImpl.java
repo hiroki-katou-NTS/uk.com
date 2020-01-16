@@ -104,6 +104,12 @@ import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCo
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.AddEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.UpdateEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregListCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
@@ -227,7 +233,13 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00068	特別休暇２０付与残数
 			new TypeLiteral<PeregAddListCommandHandler<AddSpecialLeaveGrant20Command>>(){},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregAddListCommandHandler<AddStampCardCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddStampCardCommand>>(){},
+			//CS00075 社員社保事業所
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpCorpHealthOffHisCommand>>(){},
+			// CS00082 社員健康保険資格情報
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpHealInsQualifiInfoCommand>>(){},
+			// CS00092 社員社会保険等級情報
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpSocialInsGradeInforCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -306,7 +318,13 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			//CS00069 打刻カード番号
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateStampCardCommand>>(){},
 			//CS00070  労働条件2
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>>(){}
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateWorkingCondition2Command>>(){},
+			//CS00075 社員社保事業所
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>>(){},
+			//CS00082 社員健康保険資格情報
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>(){},
+			//CS00092 社員社会保険等級情報
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>>(){}
 			);
 	
 	@Override

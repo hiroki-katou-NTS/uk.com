@@ -83,30 +83,47 @@ public class EmpHealInsQualifiInfoFinder implements PeregFinder<EmpHealInsQualif
 
     @Override
     public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp peregQueryByListEmp) {
+    	
         String cId = AppContexts.user().companyId();
+        
         List<GridPeregDomainDto> result = new ArrayList<>();
+        
         List<String> empIds = peregQueryByListEmp.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+        
         peregQueryByListEmp.getEmpInfos().forEach(c -> {
+        	
             result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+            
         });
-        Map<String, List<EmplHealInsurQualifiInfor>> qualifiInforList  = emplHealInsurQualifiInforRepository
-                .getEmplHealInsurQualifiInfor(cId, empIds, peregQueryByListEmp.getStandardDate())
-                .stream()
-                .collect(Collectors.groupingBy(c->c.getMourPeriod().get(0).identifier()));
+        
+        //histid, List<EmplHealInsurQualifiInfor>
+        Map<String, List<EmplHealInsurQualifiInfor>> qualifiInforList  = 
+        		
+        		emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(cId, empIds, peregQueryByListEmp.getStandardDate())
+        		
+                .stream().collect(Collectors.groupingBy(c->c.getMourPeriod().get(0).identifier()));
 
-        List<String> hisIds = qualifiInforList.values().stream().map(c->c.get(0).getMourPeriod().get(0).identifier()).collect(Collectors.toList());
+        List<String> hisIds = new ArrayList<>(qualifiInforList.keySet());
 
         Map<String, List<HealInsurNumberInfor>> numberInfors = healInsurNumberInforRepository.findByHistoryId(hisIds)
+        		
                 .stream().collect(Collectors.groupingBy(c->c.getHistoryId()));
 
         result.stream().forEach(c->{
+        	
             List<HealInsurNumberInfor> numberInfor = numberInfors.get(c.getEmployeeId());
+            
             if (numberInfor != null){
+            	
                 HealInsurNumberInfor healInsurNumberInfor = numberInfor.get(0);
+                
                 EmplHealInsurQualifiInfor emplHealInsurQualifiInfor = qualifiInforList.get(healInsurNumberInfor.getHistoryId()).get(0);
+                
                 c.setPeregDomainDto(EmpHealInsQualifiInfoDto.createFromDomain(emplHealInsurQualifiInfor, healInsurNumberInfor));
+                
             }
         });
+        
         return result;
     }
 
