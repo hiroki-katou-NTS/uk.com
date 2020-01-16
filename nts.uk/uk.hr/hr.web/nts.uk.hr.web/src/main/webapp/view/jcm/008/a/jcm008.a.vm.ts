@@ -205,8 +205,6 @@ module jcm008.a {
             let rowStates = [];
             let cellStates = [];
             let interviewRecordTxt = getText('JCM008_A222_57');
-            let firstItem =
-                _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode')[0];
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
                 // data.rKey = idx ++;
@@ -247,9 +245,6 @@ module jcm008.a {
                     default:
                         break;
                 }
-                if (firstItem) {
-                    data.desiredWorkingCourseId = data.desiredWorkingCourseId == null ? firstItem.retirePlanCourseId : data.desiredWorkingCourseId;
-               }
                 return data;
             });
             
@@ -284,6 +279,20 @@ module jcm008.a {
             console.log(sheets);
             console.log(fixedClmSetting);
             
+            let retirementCourses = [{
+                employmentCode: "",
+                employmentName: "",
+                retirePlanCourseClass: 0,
+                retirementAge: null,
+                retireDateBase: "",
+                retireDateTerm: { retireDateTerm: 0, retireDateSettingDate: 0 },
+                retirePlanCourseId: null,
+                retirePlanCourseCode: "",
+                retirePlanCourseName: "",
+                durationFlg: 0
+            }];
+            
+            retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'));
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -348,7 +357,7 @@ module jcm008.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '120px', options: _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'), optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '120px', options: retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
 
@@ -423,30 +432,50 @@ module jcm008.a {
                 return retiredEmp.rKey === id;
             });
 
-            let emp = {
-                code: selectedEmp.employeeCode,
-                name: selectedEmp.employeeName,
-                kanaName: selectedEmp.businessnameKana,
-                sex: selectedEmp.gender === 1 ? '男性' : '女性',
-                dob: selectedEmp.birthday,
-                age: selectedEmp.age + '歳',
-                department: selectedEmp.departmentName,
-                position: selectedEmp.position.positionName,
-                employment: selectedEmp.employmentName,
-                image: selectedEmp.avatarFile ? liveView(selectedEmp.avatarFile.facePhotoFileID) : 'images/avatar.png' 
-            };
 
-            self.employeeInfo(emp);
-            $(".employee-info-pop-up").ntsPopup({
-                trigger: '.nts-grid-control-' + key + '-' + id,
-                position: {
-                    my: "left top",
-                    at: "left bottom",
-                    of: '.nts-grid-control-' + key + '-' + id
-                },
-                showOnStart: true,
-                dismissible: true
-            });
+            let param = {
+                employeeId: selectedEmp.employeeId,
+                personId: selectedEmp.personID,
+                baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                dispDepartment: true,
+                dispPosition: true,
+                dispEmployment: true
+            };
+            block.grayout();
+            service.findEmployeeInfo(param).done((data) => {
+                block.clear();
+                
+                if (!data) {
+                    return;
+                }
+                
+                let emp = {
+                    code: data.employeeCode,
+                    name: data.employeeName,
+                    kanaName: data.businessnameKana,
+                    sex: data.gender === 1 ? '男性' : '女性',
+                    dob: data.birthday,
+                    age: data.age + '歳',
+                    department: data.department?data.department.departmentName:null,
+                    position: data.position?data.position.positionName:null,
+                    employment: data.employment?data.employment.employmentName:null,
+                    image: data.avatarFile ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png'
+                };
+
+                self.employeeInfo(emp);
+                $(".employee-info-pop-up").ntsPopup({
+                    trigger: '.nts-grid-control-' + key + '-' + id,
+                    position: {
+                        my: "left top",
+                        at: "left bottom",
+                        of: '.nts-grid-control-' + key + '-' + id
+                    },
+                    showOnStart: true,
+                    dismissible: true
+                });
+            })
+
+
         };
 
         public choseDepartment() {
@@ -454,7 +483,7 @@ module jcm008.a {
             block.grayout();
             setShared('inputCDL008', {
                 selectedCodes: self.searchFilter.department().map(function (elem) {
-                    return elem.id;
+                    return elem.code;
                 }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
