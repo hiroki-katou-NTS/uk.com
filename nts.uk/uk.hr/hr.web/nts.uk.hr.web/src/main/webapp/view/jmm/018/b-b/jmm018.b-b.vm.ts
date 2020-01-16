@@ -216,7 +216,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             setShared('employmentTypeToC', employmentType);
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
                 let param = getShared('shareToJMM018B');
-                item.setEnableRetirePlanCourse(param);
+                item.setRetirePlanCourseId(param);
             })
         }
         
