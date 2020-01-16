@@ -307,8 +307,8 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 	public DataBeforeReflectingPerInfo(String historyId, String contractCode, String companyId, String companyCode,
 			String pId, String sId, String scd, Integer workId, String personName, String workName,
 			int requestFlag, GeneralDate registerDate, GeneralDateTime releaseDate, int onHoldFlag, int status,
-			String histId_Refer, GeneralDateTime date_01, String select_code_01, String select_code_0,
-			String select_code_03, String select_code_04, String select_name_01, String select_name_0,
+			String histId_Refer, GeneralDateTime date_01, String select_code_01, String select_code_02,
+			String select_code_03, String select_code_04, String select_name_01, String select_name_02,
 			String select_name_03) {
 		this.historyId = historyId;
 		this.contractCode = contractCode;
@@ -328,9 +328,11 @@ public class DataBeforeReflectingPerInfo extends AggregateRoot {
 		this.histId_Refer = histId_Refer;
 		this.date_01 = date_01;
 		this.select_code_01 = select_code_01;
+		this.select_code_02 = select_code_02;
 		this.select_code_03 = select_code_03;
 		this.select_code_04 = select_code_04;
 		this.select_name_01 = select_name_01;
+		this.select_name_02 = select_name_02;
 		this.select_name_03 = select_name_03;
 	}
 

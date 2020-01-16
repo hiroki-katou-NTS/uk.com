@@ -97,6 +97,7 @@ module jcm008.a {
                     } else {
                         dialog.bundledErrors(error);
                     }
+                    self.plannedRetirements([]);
                     self.bindRetirementDateSettingGrid();
                     self.setScroll();
                 })
@@ -125,16 +126,7 @@ module jcm008.a {
                         if(changed[row].columnKey === 'registrationStatus') {
                             retire.extendEmploymentFlg = changed[row].value
                         }
-                        if(changed[row].columnKey === 'desiredWorkingCourseId') {
-                            let selectedPlan = _.filter(self.searchFilter.retirementCourses(), (plan) => {
-                                return plan.retirePlanCourseId === changed[row].value;
-                            });
-                            if(selectedPlan) {
-                                retire.desiredWorkingCourseId = selectedPlan.retirePlanCourseId;
-                                retire.desiredWorkingCourseCd = selectedPlan.retirePlanCourseCode;
-                                retire.desiredWorkingCourseName = selectedPlan.retirePlanCourseName;
-                            }
-                        }
+
                         if(changed[row].columnKey === 'flag') {
                             if(changed[row].value) {
                                 retire.pendingFlag = 1;
@@ -143,17 +135,29 @@ module jcm008.a {
                                 retire.pendingFlag = 0;
                                 retire.status = 1;
                             }    
-                        } 
+                        }
+                         
                         retire[changed[row].columnKey] = changed[row].value;
                     }
                 } else {
-                    if(retire.flag) {
-                        retire.pendingFlag = 1;
-                        retire.status = 0;
-                    } else {
-                        retire.pendingFlag = 0;
-                        retire.status = 1;
+                    if (retire.status != 3 && retire.status != 2) {
+                        if (retire.flag) {
+                            retire.pendingFlag = 1;
+                            retire.status = 0;
+                        } else {
+                            retire.pendingFlag = 0;
+                            retire.status = 1;
+                        }
                     }
+                }
+                
+                let selectedPlan = _.find(self.searchFilter.retirementCourses(), (plan) => {
+                    return plan.retirePlanCourseId === retire.desiredWorkingCourseId;
+                });
+                
+                if (selectedPlan) {
+                    retire.desiredWorkingCourseCd = selectedPlan.retirePlanCourseCode;
+                    retire.desiredWorkingCourseName = selectedPlan.retirePlanCourseName;
                 }
         
                 return retire;
@@ -201,6 +205,8 @@ module jcm008.a {
             let rowStates = [];
             let cellStates = [];
             let interviewRecordTxt = getText('JCM008_A222_57');
+            let firstItem =
+                _.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode')[0];
             dataSources = _.map(dataSources, (data) => {
                 data.rKey = data.sid.replace(/[^\w\s]/gi, '');
                 // data.rKey = idx ++;
@@ -210,7 +216,9 @@ module jcm008.a {
                 }
 
                 data.flag = data.pendingFlag === 1 ? true : false;
-            
+                
+                
+                
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
@@ -239,6 +247,9 @@ module jcm008.a {
                     default:
                         break;
                 }
+                if (firstItem) {
+                    data.desiredWorkingCourseId = data.desiredWorkingCourseId == null ? firstItem.retirePlanCourseId : data.desiredWorkingCourseId;
+               }
                 return data;
             });
             
@@ -486,13 +497,22 @@ module jcm008.a {
                 let contentArea = $("#contents-area")[0].getBoundingClientRect().height
                 //height of combobox of display page size = 44
                 let groupArea = 45 + $("#main-left-area")[0].getBoundingClientRect().height;
-			return {contentAreaHeight: contentArea, gridAreaHeight: contentArea - groupArea};
+            
+                let contentAreaWidth = $("#contents-area")[0].getBoundingClientRect().width;
+
+                let gridAreaWidth = $("#main-area")[0].getBoundingClientRect().width;
+                return { contentAreaHeight: contentArea, gridAreaHeight: contentArea - groupArea, contentAreaWidth: contentAreaWidth, gridAreaWidth: gridAreaWidth };
         }
 
         public setScroll() {
             let self = this,
-                objCalulator = self.caculator();
-            $("#retirementDateSetting").igGrid("option", "height", objCalulator.gridAreaHeight + 'px');
+                objCalulator = self.caculator(),
+                height = objCalulator.gridAreaHeight > 466 ? 466 : objCalulator.gridAreaHeight,
+                width = objCalulator.gridAreaWidth > 1200 ? 1200 : objCalulator.gridAreaWidth;
+            $("#retirementDateSetting").igGrid("option", "height", height + 'px');
+            $("#retirementDateSetting").igGrid("option", "width", width + 'px');
+            
+            
             // $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
             // $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
 
