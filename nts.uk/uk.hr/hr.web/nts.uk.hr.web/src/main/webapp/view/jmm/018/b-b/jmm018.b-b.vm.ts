@@ -141,7 +141,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     let param = {historyId: self.latestHistId(), getRelatedMaster: self.getRelatedMaster()}
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
-                        self.commonMasterItems()[0].usageFlg(false);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
@@ -226,6 +225,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
+                if(self.commonMasterItems().length > 0){
+                    self.commonMasterItems()[0].usageFlg(false);    
+                } 
                 dfd.resolve();
             });
             return dfd.promise();
@@ -242,7 +244,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
                 });
-                tg[0].usageFlg(true);
+                if(self.latestHistId() == null){
+                    tg[0].usageFlg(true);
+                }
                 self.commonMasterItems(tg);
                 self.getRelatedMaster(true);
             }).fail(function(err) {
