@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -39117,6 +39120,8 @@ var nts;
                                     }
                                 });
                                 $input.on(events.Handler.KEY_UP, function (evt) {
+                                    if (self.containerClass().contains(ntsControls.DATE_PICKER.toLowerCase()))
+                                        return;
                                     self.validate(data.controlDef, $input.val(), data).success(function (t) {
                                         cell = self.cellBelongTo($input);
                                         errors.clear(self.$containedGrid, cell);
@@ -39173,7 +39178,7 @@ var nts;
                                             my: "left top",
                                             at: "left bottom",
                                             collision: "flip flip"
-                                        });
+                                        }).css("z-index", 11000);
                                         _(internal._datePickerBoard).keys()
                                             .filter(function (k) { return k !== data.controlDef.format; })
                                             .forEach(function (k) {
