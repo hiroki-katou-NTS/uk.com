@@ -5139,7 +5139,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (_.size(descriptor.elements) > 0 && !util.isNullOrUndefined(idx) 
                     && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
                     if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
-                        return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)];
+                        return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
                     }
                     
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
