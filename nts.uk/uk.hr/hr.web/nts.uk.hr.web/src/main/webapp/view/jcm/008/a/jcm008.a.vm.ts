@@ -114,7 +114,8 @@ module jcm008.a {
             // });
 
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
-            let retiInfos = _.map(self.plannedRetirements(), (retire) => {
+            let datas = _.filter(self.plannedRetirements(), (r) => {return !(r.status === 2 || r.status === 3) })
+            let retiInfos = _.map(datas, (retire) => {
                 let changed = _.find(groupChanges, (value, key) => {
                     return key == retire.rKey;
                 });
