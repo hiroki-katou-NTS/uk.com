@@ -6,6 +6,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         dataRetirment: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -20,7 +21,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
             dfd = $.Deferred();
-            
+            block.grayout();
             self.durationList = __viewContext.enums.DurationFlg;
             
             self.retirePlanCourseClassList = __viewContext.enums.RetirePlanCourseClass;
@@ -51,6 +52,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             });   
             
             self.dataRetirment(tg);
+            block.clear();
             dfd.resolve();
             return dfd.promise();
         }
@@ -65,16 +67,20 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         register() {
             let self = this;
             let dfd = $.Deferred();
+            block.grayout();
             let listData = _.filter(self.dataRetirment(), function(o) { return o.checkBox() == true; });
             let normal = _.filter(listData, function(x) { return x.retirePlanCourseClass().value == 0; });
             let size = _.size(normal)
             if(size >= 2){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_14"});
+                block.clear();
             }else if(size == 0 || !size){
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
+                block.clear();
             }else{
                 let listId = _.map(listData, 'retirePlanCourseId');
                 setShared('shareToJMM018B', listId);
+                block.clear();
                 nts.uk.ui.windows.close();
             }
         }
