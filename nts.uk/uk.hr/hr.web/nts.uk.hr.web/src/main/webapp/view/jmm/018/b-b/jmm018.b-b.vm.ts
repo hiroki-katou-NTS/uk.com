@@ -267,7 +267,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let validate = true;
             let mandatoryRetireTerm = [];
             _.forEach(self.commonMasterItems(), (item) => {
-                if(item.usageFlg() == true && item.enableRetirePlanCourse().length == 0){
+                if(item.usageFlg()){
                     if(item.enableRetirePlanCourse().length == 0){
                         error({ messageId: "MsgJ_JMM018_13"});
                         validate = false;
