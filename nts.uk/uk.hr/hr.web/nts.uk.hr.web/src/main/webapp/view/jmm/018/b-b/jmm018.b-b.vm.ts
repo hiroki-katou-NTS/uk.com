@@ -42,7 +42,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             // radio button
             self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm); 
-            _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 4 || n.value == 5;});           
+            _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});           
             self.dateRule = (__viewContext.enums.DateRule);
             self.dateSelectItem = (__viewContext.enums.DateSelectItem);
             self.retireDateRule = (__viewContext.enums.RetireDateRule);
