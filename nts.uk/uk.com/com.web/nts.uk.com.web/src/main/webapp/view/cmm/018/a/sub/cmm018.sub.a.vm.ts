@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 _.each(lstRoot, function(root){
                     self.items.push(self.convertlistRoot(root));
                 });
-                let colorBackGr: any = self.fillColorbackGr();
+                let colorBackGr: any = self.fillColorbackGr(lstRoot);
                 let heightG = __viewContext.viewModel.viewmodelA.systemAtr() == 1 ? 430 : 530;
                 if(mode == vmbase.MODE.SHINSEI){
                     heightG = 200;
@@ -217,10 +217,10 @@ module nts.uk.com.view.cmm018.a.sub {
                 return root.employRootAtr == Number(empRType) && root.appTypeValue == Number(appType);
             });
         }
-        fillColorbackGr(): Array<vmbase.CellState>{
+        fillColorbackGr(lstRoot): Array<vmbase.CellState>{
             let self = this;
             let result = [];
-            _.each(__viewContext.viewModel.viewmodelA.cpA(), function(root) {
+            _.each(lstRoot, function(root) {
                 let rowId = root.employRootAtr +'_'+ root.appTypeValue;
                 result.push(new vmbase.CellState(rowId,'appName',['appNameBgColor']));
                 result.push(new vmbase.CellState(rowId,'deleteRoot',['phaseBgColorNot']));

@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm018.a {
         export class ScreenModel{
             //===================
             systemAtr: KnockoutObservable<number> = ko.observable(0);
-            lstAppDis: Array<number> = [0,1,2,3,4,6,7,8,9,10,11,12,13,14];
+            lstAppDis: Array<number> = [];
             c1_1: KnockoutObservable<string> = ko.observable('');
             c1_3: KnockoutObservable<string> = ko.observable('');
             c1_4: KnockoutObservable<string> = ko.observable('');
@@ -462,8 +462,9 @@ module nts.uk.com.view.cmm018.a {
              * get all data company
              * mode A: まとめて登録モード
              */
-            preStart(transferData){
+            preStart(transferData): JQueryPromise<any>{
                 let self = this;
+                let dfd = $.Deferred();
                 //get param url
                 let url = $(location).attr('search');
                 let urlParam: number = url.split("=")[1];
@@ -472,10 +473,19 @@ module nts.uk.com.view.cmm018.a {
                     self.rowHist(5);
                 }
                 vmbase.ProcessHandler.getSettingApprovalUnit(self.systemAtr()).done(function(setTing){
-                    let result = vmbase.ProcessHandler.checkDis(setTing);
-                    self.unitSet(result);
+                    if(setTing.companyUnit==0 && setTing.workplaceUnit==0 && setTing.employeeUnit==0){
+                        //エラーメッセージ「Msg_1607」を表示
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1607" }).then(() => {
+                            //トップページを戻す
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        });
+                        return;
+                    }
+                    self.unitSet(setTing);
                     self.startPage(transferData);
+                    dfd.resolve(); 
                 });
+                return dfd.promise();
             }
             getAppDis(): JQueryPromise<any>{
                 let dfd = $.Deferred();
@@ -484,9 +494,15 @@ module nts.uk.com.view.cmm018.a {
                     servicebase.getNameAppType().done(function(lstName){
                        _.each(lstUse, function(item){
                            if(item.useAtr == 1){
+                               self.lstAppDis.push(item.appType);
                                self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(lstName, item.appType).localizedName,1));
                            }
                         });
+                        self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
+                        self.lstNameAppType.push(new vmbase.ApplicationType(1, getText('CMM018_108'),2));
+                        if(self.systemAtr() == 0){
+                            __viewContext.viewModel.viewmodelSubB.lstNameAppType(self.lstNameAppType());
+                        }
                         dfd.resolve(); 
                     });
                 });
@@ -673,7 +689,7 @@ module nts.uk.com.view.cmm018.a {
                         employeeId: '',
                         /**申請種類*/
                         lstAppType: self.lstAppDis,
-                        /**届出種類ID,プログラムID(インベント)*/
+                        /**届出種類ID*/
                         lstNoticeID: [],
                         /**プログラムID(インベント)*/
                         lstEventID: []};
@@ -1599,7 +1615,7 @@ module nts.uk.com.view.cmm018.a {
                     self.listAppPhase(self.checklist(itemRoot.lstAppPhase));
                     //TH: co data
                     if(itemRoot.applicationType == null && itemRoot.employmentRootAtr ==0){
-                        lstbyApp.push(new vmbase.CompanyAppRootADto(color, itemRoot.employmentRootAtr, null,' 共通ルート', itemRoot.approvalId,
+                        lstbyApp.push(new vmbase.CompanyAppRootADto(color, itemRoot.employmentRootAtr, null,getText('CMM018_109'), itemRoot.approvalId,
                                         itemRoot.historyId,itemRoot.branchId,
                                         self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
                                         self.listAppPhase()[3],self.listAppPhase()[4]));
@@ -1607,7 +1623,7 @@ module nts.uk.com.view.cmm018.a {
                 });
                 //TH: khong co data
                 if(lstbyApp.length < 1){
-                    lstbyApp.push(new vmbase.CompanyAppRootADto(false, 0, null,' 共通ルート', '', '', '', a, a, a, a, a));
+                    lstbyApp.push(new vmbase.CompanyAppRootADto(false, 0, null,getText('CMM018_109'), '', '', '', a, a, a, a, a));
                 }
                 _.each(self.lstNameAppType(), function(item: vmbase.ApplicationType, index){
                     let check = false;
@@ -1640,7 +1656,7 @@ module nts.uk.com.view.cmm018.a {
                     color = itemRoot.lstAppPhase.length > 0 ? true : false;
                     self.listAppPhase(self.checklist(itemRoot.lstAppPhase));
                     let appType = vmbase.ProcessHandler.findAppbyValue(itemRoot.applicationType,itemRoot.employmentRootAtr,self.lstNameAppType());
-                    appName = itemRoot.employmentRootAtr == 0 ? '共通ルート' : appType.localizedName;
+                    appName = itemRoot.employmentRootAtr == 0 ? getText('CMM018_109') : appType.localizedName;
                         lstbyApp.push(new vmbase.CompanyAppRootADto(color, itemRoot.employmentRootAtr, itemRoot.applicationType,appName, itemRoot.approvalId,
                                         itemRoot.historyId,itemRoot.branchId,
                                         self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
@@ -1651,12 +1667,12 @@ module nts.uk.com.view.cmm018.a {
                     let app = vmbase.ProcessHandler.findAppbyValue(null, 0, lstAppCur);
                     let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'',0,'',0,0,0);
                     if(app == undefined){
-                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, 0, null, '共通ルート', '0', '','', a, a, a, a, a));
+                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, 0, null, getText('CMM018_109'), '0', '','', a, a, a, a, a));
                     }
                     _.each(self.lstNameAppType(), function(appType, index){
                         index++;
                         if(appType.value != 14 && !vmbase.ProcessHandler.checkExist(lstbyApp, appType.value, appType.employRootAtr)){
-                            lstbyApp.push(new vmbase.CompanyAppRootADto(false, appType.employRootAtr, appType.value, appType.employRootAtr == 0 ? '共通ルート' : appType.localizedName, index.toString(), '','', a, a, a, a, a)); 
+                            lstbyApp.push(new vmbase.CompanyAppRootADto(false, appType.employRootAtr, appType.value, appType.employRootAtr == 0 ? getText('CMM018_109') : appType.localizedName, index.toString(), '','', a, a, a, a, a)); 
                         }
                     });
                 }
@@ -1677,7 +1693,7 @@ module nts.uk.com.view.cmm018.a {
                             lstbyApp.push(new vmbase.CompanyAppRootADto(false, appType.employRootAtr, objType == null ? null : objType.value, appType.employRootAtr == 0 ? '共通ルート' : objType.localizedName, index.toString(), '','', a, a, a, a, a)); 
                         }
                     });
-                    lstbyApp.push(new vmbase.CompanyAppRootADto(false,0,null,'共通ルート','16', '','', a, a, a, a, a));
+                    lstbyApp.push(new vmbase.CompanyAppRootADto(false,0,null,getText('CMM018_109'),'16', '','', a, a, a, a, a));
                 }else{
                     _.each(lstAppType, function(appType, index){
                         if(appType.value != 14){

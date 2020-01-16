@@ -12,6 +12,8 @@ module nts.uk.com.view.cmm018.a.start {
             viewmodelSubB: new cmm018.a.sub.viewmodelSubB.ScreenModel(),
             viewmodelSubA: new cmm018.a.sub.viewmodelSubA.ScreenModel()
         };
-             __viewContext.bind(__viewContext.viewModel);
+        __viewContext.viewModel.viewmodelA.preStart().done(() => {
+            __viewContext.bind(__viewContext.viewModel);
+        });
     });
 }

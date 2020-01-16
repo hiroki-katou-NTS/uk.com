@@ -647,7 +647,6 @@ module nts.uk.com.view.cmm018.shr {
                 //       1: 社員参照範囲と同じ(ALL_EMPLOYEE_REF_RANGE)
                         //取得した「承認者・代行者指定時社員参照」をチェック
                         if(empAgent == 0){//「全社員」の場合
-//                            result = this.checkDis(empRoleSet);
                             dfd.resolve(appSet);
                         } 
                         //「社員参照範囲と同じ」の場合
@@ -658,7 +657,6 @@ module nts.uk.com.view.cmm018.shr {
                         //2: 部門（配下含まない） DEPARTMENT_ONLY
                         //3: 自分のみ ONLY_MYSELF
                         if(empRef == 0){//「全社員」の場合
-//                            result = this.checkDis(empRoleSet);
                             dfd.resolve(appSet);
                         }else if(empRef == 3){//「自分のみ」の場合
                             //社員単位の表示区分　＝　申請承認設定．承認者の登録設定．社員単位の表示区分

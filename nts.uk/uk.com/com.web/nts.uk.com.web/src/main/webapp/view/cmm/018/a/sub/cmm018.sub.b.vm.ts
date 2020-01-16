@@ -138,17 +138,6 @@ module nts.uk.com.view.cmm018.a.sub {
                     self.comRoot.valueHasMutated();
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
-                //____get name application type___
-                servicebase.getNameAppType().done(function(lstNameApp){
-                    _.each(lstNameApp, function(item){
-                         self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName, 1));
-                    });
-                    servicebase.getNameConfirmType().done(function(lstNameCfr){
-                        _.each(lstNameCfr, function(item){
-                            self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName, 2));
-                        });
-                    });
-                });
             }
             /**
              * get data company mode 申請個別
@@ -351,7 +340,7 @@ module nts.uk.com.view.cmm018.a.sub {
             findNameApp(applicationType: number, employmentRootAtr: number): string{
                 let self = this;
                 if(applicationType == null && employmentRootAtr ==0){//common
-                    return '共通ルート';
+                    return getText('CMM018_109');
                 }
                 let name = vmbase.ProcessHandler.findAppbyValue(applicationType,employmentRootAtr,self.lstNameAppType());
                 return name.localizedName;
@@ -508,7 +497,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         appCommon.push(new vmbase.DataTree(itemRoot.approvalId, itemRoot.startDate + '～' + itemRoot.endDate,itemRoot.employmentRootAtr, []));
                     }
                 });
-                aa.push(new vmbase.DataTreeB('共通ルート',appCommon.length > 0 ? '●共通ルート' : '共通ルート', _.orderBy(appCommon, ["nameAppType"], ["desc"])));  
+                aa.push(new vmbase.DataTreeB(getText('CMM018_109'),appCommon.length > 0 ? '●' + getText('CMM018_109') : getText('CMM018_109'), _.orderBy(appCommon, ["nameAppType"], ["desc"])));  
                 //lay theo don  
                 _.each(self.lstNameAppType(), function(item: vmbase.ApplicationType){
                     let lstbyApp: Array<vmbase.Com> = [];
@@ -619,7 +608,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 block.invisible();
                 let self = this;
                 let appCur: vmbase.ApplicationType = self.findAppbyName(self.singleSelectedCode());
-                if(self.singleSelectedCode() == null || self.singleSelectedCode() == '共通ルート' || 
+                if(self.singleSelectedCode() == null || self.singleSelectedCode() == getText('CMM018_109') || 
                             self.singleSelectedCode() == getText("CMM018_7") || appCur != undefined){
                     dialog.alertError({ messageId: "Msg_181" }).then(function(){
                         block.clear();
@@ -811,7 +800,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         let app = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
                             self.comRoot(new vmbase.CompanyAppRootADto(false, employRootAtr, 
-                                appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
+                                appTypeValue, app == undefined ? getText('CMM018_109') : app.localizedName, '-1', '',
                                 '',b,b,b,b,b));
                     }else{
                         self.findHistoryLastofApp(appTypeValue,employRootAtr); //list right
@@ -988,7 +977,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
                                 if(code == undefined){
-                                    self.singleSelectedCode('共通ルート');
+                                    self.singleSelectedCode(getText('CMM018_109'));
                                 }else{
                                     self.singleSelectedCode(code.localizedName);
                                 }
@@ -1003,7 +992,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
                                 if(code == undefined){
-                                    self.singleSelectedCode('共通ルート');
+                                    self.singleSelectedCode(getText('CMM018_109'));
                                 }else{
                                     self.singleSelectedCode(code.localizedName);
                                 }
@@ -1017,7 +1006,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
                                 if(code == undefined){
-                                    self.singleSelectedCode('共通ルート');
+                                    self.singleSelectedCode(getText('CMM018_109'));
                                 }else{
                                     self.singleSelectedCode(code.localizedName);
                                 }
@@ -1086,6 +1075,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     self.employeeId(id);
                     self.getDataPersonPr();
                 }
+                __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
             }
             /**
              * display item right TH 1,2,appName
@@ -1099,7 +1089,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     let a = new vmbase.CompanyAppRootADto(false, 0, 0, '', '', '','', b, b, b, b, b);
                     self.comRoot(a);
                 }
-                if(codeChanged == '共通ルート'){//1
+                if(codeChanged == getText('CMM018_109')){//1
                     let a = new vmbase.CompanyAppRootADto(false, 0, 0, codeChanged, '', '','', b, b, b, b, b);
                     self.comRoot(a);
                 }
@@ -1118,7 +1108,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let histLast = self.findHistBestNew(appType, employRootAtr, self.tabSelectedB());
                 let value = vmbase.ProcessHandler.findAppbyValue(appType, employRootAtr, self.lstNameAppType());
                 if(value == undefined){
-                    value = new vmbase.ApplicationType(null, '共通ルート',0 );
+                    value = new vmbase.ApplicationType(null, getText('CMM018_109'),0 );
                 }
                 let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
                 if(histLast == null){
@@ -1134,7 +1124,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                     let lstAppPhase = __viewContext.viewModel.viewmodelA.checklist(histNew.lstAppPhase);
                     let rootNew = new vmbase.CompanyAppRootADto(histNew == undefined ? false : true, employRootAtr, appType, 
-                                            value == undefined ? '共通ルート' : value.localizedName, '','','',
+                                            value == undefined ? getText('CMM018_109') : value.localizedName, '','','',
                                             lstAppPhase[0],lstAppPhase[1],lstAppPhase[2],lstAppPhase[3],lstAppPhase[4]);
                     self.comRoot(rootNew);
                 }
