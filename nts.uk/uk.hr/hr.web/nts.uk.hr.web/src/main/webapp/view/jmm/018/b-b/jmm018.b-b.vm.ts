@@ -212,13 +212,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             block.grayout();
             let employmentType = {
                 listInfor: self,
-                listSelect: item.getRetirePlanCourseId()
+                listSelect: item.enableRetirePlanCourse()
             }
             setShared('employmentTypeToC', employmentType);
             block.clear();
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
                 let param = getShared('shareToJMM018B');
-                item.setRetirePlanCourseId(param);
+                item.setEnableRetirePlanCourse(param);
             })
         }
         
@@ -476,14 +476,16 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         commonMasterItemId: string;
         commonMasterItemName: string;
         usageFlg: KnockoutObservable<boolean>;
-        enableRetirePlanCourse: KnockoutObservableArray<any> = ko.observableArray([]);
-        enableRetirePlanCourseText: KnockoutObservable<string> = ko.observable("");
+        enableRetirePlanCourse: KnockoutObservableArray<any>;
+        enableRetirePlanCourseText: KnockoutObservable<string>;
         constructor(param: IGrpCmonMaster) {
             let self = this;
             self.displayNumber = param.displayNumber;
             self.usageFlg = ko.observable(false);
             self.commonMasterItemId = param.commonMasterItemId;
             self.commonMasterItemName = param.commonMasterItemName;
+            self.enableRetirePlanCourse = ko.observable([]); 
+            self.enableRetirePlanCourseText = ko.observable("");
         }
         setUsageFlg(usageFlg: boolean): void{
             let self = this;
@@ -493,22 +495,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             self.enableRetirePlanCourse(enableRetirePlanCourse);
             self.enableRetirePlanCourseText(enableRetirePlanCourse.toString());
-        }
-        getRetirePlanCourseId(): any{
-            let self = this;
-            let id = [];
-            _.forEach(self.enableRetirePlanCourse(), (item) => {
-                id.push(item.retirePlanCourseId);
-            });
-            return id; 
-        }
-        setRetirePlanCourseId(retirePlanCourseIds: any[]): void{
-            let self = this;
-            let tg = [];
-            _.forEach(retirePlanCourseIds, (id) => {
-                tg.push({retirePlanCourseId: id});
-            });
-            self.enableRetirePlanCourse(tg); 
         }
         
         collectMandatoryRetireTerm (): any{
