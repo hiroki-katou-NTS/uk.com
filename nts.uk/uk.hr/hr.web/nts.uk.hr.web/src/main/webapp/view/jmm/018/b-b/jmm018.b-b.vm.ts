@@ -40,11 +40,15 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         constructor() {
             let self = this;
             // radio button
-            self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm);            
+            self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm); 
+            _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 4 || n.value == 5;});           
             self.dateRule = (__viewContext.enums.DateRule);
             self.dateSelectItem = (__viewContext.enums.DateSelectItem);
             self.retireDateRule = (__viewContext.enums.RetireDateRule);
             self.monthSelectItem = (__viewContext.enums.MonthSelectItem);
+            
+            __viewContext.primitiveValueConstraints.Integer_0_99.min = 1;
+            __viewContext.primitiveValueConstraints.Integer_0_99.max = 90;
             
             //ThanhPV
             self.latestHistId = ko.observable('');
@@ -84,7 +88,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }
             });
             self.selectedHistId.subscribe(function(newValue) {
-                if (self.latestHistId() === newValue) {
+                if (newValue != null && self.latestHistId() === newValue) {
                     self.isLatestHis(true);
                 }else{
                     self.isLatestHis(false);
@@ -130,12 +134,14 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 self.selectedHistId(self.latestHistId());
                 if(self.getRelatedMaster() && (self.latestHistId() == '' || self.latestHistId() == null)){
                     error({ messageId: 'MsgJ_JMM018_15' });
+                    self.isStart = false;
                     dfd.resolve();
                     block.clear();
                 }else if(self.getRelatedMaster() && self.latestHistId() != '' && self.latestHistId() != null){
                     let param = {historyId: self.latestHistId(), getRelatedMaster: self.getRelatedMaster()}
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
+                        self.commonMasterItems()[0].usageFlg(false);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
@@ -236,6 +242,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
                 });
+                tg[0].usageFlg(true);
                 self.commonMasterItems(tg);
                 self.getRelatedMaster(true);
             }).fail(function(err) {
