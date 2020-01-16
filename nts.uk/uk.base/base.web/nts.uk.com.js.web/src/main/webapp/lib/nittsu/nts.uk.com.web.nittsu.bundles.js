@@ -41600,8 +41600,11 @@ var nts;
                                     return (descriptor.fixedTable || fixedColumns.getFixedTable($grid)).find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx_1 + ")");
                                 }
                             }
-                            if (!uk.util.isNullOrUndefined(idx) && idx >= descriptor.startRow
-                                && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
+                            if (_.size(descriptor.elements) > 0 && !uk.util.isNullOrUndefined(idx)
+                                && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
+                                if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
+                                    return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
+                                }
                                 return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                             }
                             return $grid.igGrid("cellById", rowId, key);
