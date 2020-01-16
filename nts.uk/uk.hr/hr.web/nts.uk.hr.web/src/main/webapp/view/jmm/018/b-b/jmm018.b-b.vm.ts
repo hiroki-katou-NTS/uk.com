@@ -359,11 +359,21 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         calculationTerm: KnockoutObservable<number>;
         dateSettingDate: KnockoutObservable<number>;
         dateSettingNum: KnockoutObservable<number>;
+        dateSettingNumRequire: KnockoutObservable<boolean>;
         constructor(param: IDateCaculationTerm) {
             let self = this;
             self.calculationTerm = ko.observable(param ? param.calculationTerm : 1);
             self.dateSettingDate = ko.observable(param ? param.dateSettingNum : '');
             self.dateSettingNum = ko.observable(param ? param.dateSettingDate : '');
+            self.dateSettingNumRequire = ko.observable(false);
+            self.calculationTerm.subscribe(function(val){
+                if(val == 2 || val == 3){
+                    self.dateSettingNumRequire(true);    
+                }else{
+                    self.dateSettingNumRequire(false);
+                }
+                $('.judg').trigger("validate");
+            });
         }
     }
 

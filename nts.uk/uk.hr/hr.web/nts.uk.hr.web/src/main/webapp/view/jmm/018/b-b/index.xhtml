@@ -84,16 +84,16 @@
 													 }"> </div>
 										<div class="retireDateEna margin-left" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3)">
 											<span> 
-												<input class="nts-input" id="inpDate" data-bind="ntsNumberEditor:{
+												<input class="nts-input judg" id="inpDate" data-bind="ntsNumberEditor:{
 														value: dateSettingNum,
-														required: true,
+														required: dateSettingNumRequire,
 														readonly: false,
 														enable: $parent.isLatestHis,
 														constraint: 'Integer_0_99',
 														name: '#{i18n.getText('JMM018_B422_15_6')}'}" />
 											</span> 
-											<span class="label" data-bind="visible: calculationTerm() == 2" >#{i18n.getText('JMM018_B422_17_7_1')}</span>
-											<span class="label" data-bind="visible: calculationTerm() == 3" >#{i18n.getText('JMM018_B422_17_7_2')}</span>
+											<span class="label" data-bind="visible: calculationTerm() == 2" >#{i18n.getText('JMM018_B422_15_7_1')}</span>
+											<span class="label" data-bind="visible: calculationTerm() == 3" >#{i18n.getText('JMM018_B422_15_7_2')}</span>
 										</div>
 										<div class="retireDateEna margin-left" data-bind="visible: calculationTerm() == 6 ">
 											<div class="B422_15_2 " data-bind="ntsComboBox: {
