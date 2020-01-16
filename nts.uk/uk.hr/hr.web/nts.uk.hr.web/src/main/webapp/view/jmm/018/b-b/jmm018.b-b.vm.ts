@@ -209,11 +209,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         
         openCDialog(item: any): void {
             let self = this;
+            block.grayout();
             let employmentType = {
                 listInfor: self,
                 listSelect: item.getRetirePlanCourseId()
             }
             setShared('employmentTypeToC', employmentType);
+            block.clear();
             nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
                 let param = getShared('shareToJMM018B');
                 item.setRetirePlanCourseId(param);
