@@ -33,7 +33,8 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                 let durationFind = _.find(self.durationList, function(item) {
                     return obj.id == item.id;
                 });                
-                let kt = _.find(param.listSelect, {'retirePlanCourseId': obj.retirePlanCourseId});
+                let listId = _.map(param.listSelect, 'retirePlanCourseId');
+                let kt = _.find(listId, {'retirePlanCourseId': obj.retirePlanCourseId});
                 
                 let enterParam = {
                     retirePlanCourseId: obj.retirePlanCourseId,
@@ -78,7 +79,6 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                 nts.uk.ui.dialog.error({ messageId: "MsgJ_JMM018_13"});
                 block.clear();
             }else{
-                let listId = _.map(listData, 'retirePlanCourseId');
                 setShared('shareToJMM018B', listData);
                 block.clear();
                 nts.uk.ui.windows.close();
