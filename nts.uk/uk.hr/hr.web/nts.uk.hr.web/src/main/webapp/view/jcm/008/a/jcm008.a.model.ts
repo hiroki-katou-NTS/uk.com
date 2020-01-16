@@ -173,6 +173,7 @@ class ISearchParams {
     includingReflected: boolean;
     selectDepartmentName: string;
     selectEmploymentName: string;
+    hidedColumns: Array<String>;
     constructor(param: SearchFilterModel) {
         this.includingReflected = param.includingReflected();
         this.retirementAgeSetting = param.retirementAgeDesignation();
