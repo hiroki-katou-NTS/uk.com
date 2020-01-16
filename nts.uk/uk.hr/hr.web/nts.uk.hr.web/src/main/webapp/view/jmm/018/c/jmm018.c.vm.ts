@@ -79,7 +79,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                 block.clear();
             }else{
                 let listId = _.map(listData, 'retirePlanCourseId');
-                setShared('shareToJMM018B', listId);
+                setShared('shareToJMM018B', listData);
                 block.clear();
                 nts.uk.ui.windows.close();
             }
