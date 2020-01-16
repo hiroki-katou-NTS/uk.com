@@ -33,8 +33,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
                 let durationFind = _.find(self.durationList, function(item) {
                     return obj.id == item.id;
                 });                
-                let listId = _.map(param.listSelect, 'retirePlanCourseId');
-                let kt = _.find(listId, {'retirePlanCourseId': obj.retirePlanCourseId});
+                let kt = _.find(param.listSelect, {'retirePlanCourseId': obj.retirePlanCourseId});
                 
                 let enterParam = {
                     retirePlanCourseId: obj.retirePlanCourseId,
