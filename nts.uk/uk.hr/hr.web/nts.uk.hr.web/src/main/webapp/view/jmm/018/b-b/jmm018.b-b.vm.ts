@@ -5,6 +5,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import error = nts.uk.ui.dialog.error;
+    import info = nts.uk.ui.dialog.info;
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModel {
@@ -307,7 +308,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 param.historyId = self.selectedHistId();
                 block.grayout();
                 new service.update(param).done(function(data: any) {
-                    error({ messageId: "Msg_15"});
+                    info({ messageId: "Msg_15"});
                 }).fail(function(err) {
                     error({ messageId: err.messageId });
                 }).always(function() {
