@@ -14,12 +14,6 @@ public class EmployeeInformationQuery {
 
 	private String baseDate;
 
-	private Boolean dispDepartment;
-
-	private Boolean dispPosition;
-
-	private Boolean dispEmployment;
-
 	public GeneralDate getBaseDate() {
 		return GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 

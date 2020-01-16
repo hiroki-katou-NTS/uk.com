@@ -436,10 +436,7 @@ module jcm008.a {
             let param = {
                 employeeId: selectedEmp.employeeId,
                 personId: selectedEmp.personID,
-                baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                dispDepartment: true,
-                dispPosition: true,
-                dispEmployment: true
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
             };
             block.grayout();
             service.findEmployeeInfo(param).done((data) => {
@@ -451,8 +448,8 @@ module jcm008.a {
                 
                 let emp = {
                     code: data.employeeCode,
-                    name: data.employeeName,
-                    kanaName: data.businessnameKana,
+                    name: data.businessName,
+                    kanaName: data.businessNameKana,
                     sex: data.gender === 1 ? '男性' : '女性',
                     dob: data.birthday,
                     age: data.age + '歳',
