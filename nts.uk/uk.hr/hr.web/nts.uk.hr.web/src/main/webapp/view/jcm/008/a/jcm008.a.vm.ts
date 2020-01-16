@@ -84,6 +84,7 @@ module jcm008.a {
                     self.plannedRetirements(_.values(mergedEmpInfo));
                     self.bindRetirementDateSettingGrid();
                     self.searchFilter.confirmCheckRetirementPeriod(false);
+                    self.setScroll();
                 })
                 .fail((error) => {
                     dfd.reject();
@@ -97,6 +98,7 @@ module jcm008.a {
                         dialog.bundledErrors(error);
                     }
                     self.bindRetirementDateSettingGrid();
+                    self.setScroll();
                 })
                 .always(() => {
                     block.clear();
@@ -269,6 +271,7 @@ module jcm008.a {
             console.log(dataSources);
             console.log(sheets);
             console.log(fixedClmSetting);
+            
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -301,10 +304,10 @@ module jcm008.a {
                     { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
                     { name: 'Resizing' },
                     { name: 'Hiding' },
-                    {
-                        name: 'ColumnMoving', 
-                        columnMovingDialogContainment: 'window',
-                    },
+                    // {
+                    //     name: 'ColumnMoving', 
+                    //     columnMovingDialogContainment: 'window',
+                    // },
                     { name: 'MultiColumnHeaders' },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: fixedClmSetting},
                     
@@ -481,17 +484,14 @@ module jcm008.a {
         public caculator(): any {
                 let contentArea = $("#contents-area")[0].getBoundingClientRect().height
                 //height of combobox of display page size = 44
-                let groupArea = 44 + $("#main-left-area")[0].getBoundingClientRect().height;
+                let groupArea = 45 + $("#main-left-area")[0].getBoundingClientRect().height;
 			return {contentAreaHeight: contentArea, gridAreaHeight: contentArea - groupArea};
         }
 
         public setScroll() {
             let self = this,
                 objCalulator = self.caculator();
-            // số dòng hiện tại + 2 line header + height group + height của page
-            // let heightGrid = ($("#grid").ntsGrid("rows").length + 2) * 23 + 107 + 46;
-            //+1 để không xuất hiện scroll bên IE
-            $("#retirementDateSetting").ntsGrid("option", "height", objCalulator.gridAreaHeight + 'px');
+            $("#retirementDateSetting").igGrid("option", "height", objCalulator.gridAreaHeight + 'px');
             // $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
             // $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
 

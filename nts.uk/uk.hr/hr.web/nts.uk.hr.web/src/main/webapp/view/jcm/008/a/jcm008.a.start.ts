@@ -3,5 +3,6 @@ __viewContext.ready(function() {
     screenModel.start().done(function(){
         __viewContext.bind(screenModel);
         $('.ntsStartDatePicker').focus();
+        screenModel.setScroll();
     });
 });
