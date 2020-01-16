@@ -142,6 +142,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                        _.forEach(self.commonMasterItems(), (item) => {
+                            let tg = _.find(data.mandatoryRetireTerm, h => h.empCommonMasterItemId == item.commonMasterItemId)
+                            if(tg){
+                                item.usageFlg(tg.usageFlg);
+                                item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse);
+                            }
+                        });
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
@@ -168,6 +175,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
+                        _.forEach(self.commonMasterItems(), (item) => {
+                            let tg = _.find(data.mandatoryRetireTerm, h => h.empCommonMasterItemId == item.commonMasterItemId)
+                            if(tg){
+                                item.usageFlg(tg.usageFlg);
+                                item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse);
+                            }
+                        });
                     }).fail(function(err) {
                         if(self.selectedHistId()==self.latestHistId()){
                             error({ messageId: 'MsgJ_JMM018_18' });      
@@ -488,10 +502,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.commonMasterItemName = param.commonMasterItemName;
             self.enableRetirePlanCourse = ko.observable([]); 
             self.enableRetirePlanCourseText = ko.observable("");
-        }
-        setUsageFlg(usageFlg: boolean): void{
-            let self = this;
-            self.usageFlg(usageFlg);
         }
         setEnableRetirePlanCourse(enableRetirePlanCourse: any[]): void{
             let self = this;
