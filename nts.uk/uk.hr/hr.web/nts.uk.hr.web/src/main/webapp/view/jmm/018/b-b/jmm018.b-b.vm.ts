@@ -147,6 +147,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             if(tg){
                                 item.usageFlg(tg.usageFlg);
                                 item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse);
+                            }else{
+                                item.usageFlg(false);
+                                item.setEnableRetirePlanCourse([]);
                             }
                         });
                     }).fail(function(err) {
@@ -175,13 +178,18 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     new service.getMandatoryRetirementRegulation(param).done(function(data: any) {
                         console.log(data);
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(data));
-                        _.forEach(self.commonMasterItems(), (item) => {
+                        let listItemCommon = self.commonMasterItems();
+                        _.forEach(listItemCommon, (item) => {
                             let tg = _.find(data.mandatoryRetireTerm, h => h.empCommonMasterItemId == item.commonMasterItemId)
                             if(tg){
                                 item.usageFlg(tg.usageFlg);
                                 item.setEnableRetirePlanCourse(tg.enableRetirePlanCourse);
+                            }else{
+                                item.usageFlg(false);
+                                item.setEnableRetirePlanCourse([]);
                             }
                         });
+                        self.commonMasterItems(listItemCommon);
                     }).fail(function(err) {
                         if(self.selectedHistId()==self.latestHistId()){
                             error({ messageId: 'MsgJ_JMM018_18' });      
@@ -281,14 +289,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let validate = true;
             let mandatoryRetireTerm = [];
             _.forEach(self.commonMasterItems(), (item) => {
-                if(item.usageFlg()){
-                    if(item.enableRetirePlanCourse().length == 0){
-                        error({ messageId: "MsgJ_JMM018_13"});
-                        validate = false;
-                        return;    
-                    }else{
-                        mandatoryRetireTerm.push(item.collectMandatoryRetireTerm());    
-                    }
+                if(item.usageFlg() && item.enableRetirePlanCourse().length == 0){
+                    error({ messageId: "MsgJ_JMM018_13"});
+                    validate = false;
+                    return;    
+                }else if(item.enableRetirePlanCourse().length > 0){
+                    mandatoryRetireTerm.push(item.collectMandatoryRetireTerm());    
                 }
             });
             if(self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableStartAge() > self.mandatoryRetirementRegulation().planCourseApplyTerm().applicationEnableEndAge() && self.mandatoryRetirementRegulation().planCourseApplyFlg()){
