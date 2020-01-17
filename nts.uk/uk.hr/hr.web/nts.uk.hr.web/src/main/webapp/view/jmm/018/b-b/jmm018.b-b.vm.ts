@@ -106,6 +106,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             item.usageFlg(false);
                             item.setEnableRetirePlanCourse([],[]);
                         });
+                        self.commonMasterItems()[0].usageFlg(true);
                     }else{
                         self.getMandatoryRetirementRegulation();
                     }    
