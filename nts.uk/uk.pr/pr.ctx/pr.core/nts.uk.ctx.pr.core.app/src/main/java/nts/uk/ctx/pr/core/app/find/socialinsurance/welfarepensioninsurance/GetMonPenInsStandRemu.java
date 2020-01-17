@@ -25,7 +25,7 @@ public class GetMonPenInsStandRemu {
     @Inject
     private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
-    // 等級から厚生年金保険標準報酬月額を取得する
+    // 等級から厚生年金保険標準報酬月額を取得する - IS01022
     public Long getMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
         Long standardMonthlyFee = null;
 

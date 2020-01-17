@@ -90,7 +90,7 @@ public class EmpSocialInsGradeService {
             
             YearMonthPeriod period = histories.get(k).get(0).items().get(0).span();
             
-            String employmentCode = mapEmpHists.containsKey(k) ? mapEmpHists.get(k).getEmploymentCode() : "";
+            String employmentCode = mapEmpHists.containsKey(k) ? (mapEmpHists.get(k).getEmploymentCode()== null? "":mapEmpHists.get(k).getEmploymentCode())  : "";
             
             YearMonth currentYm = mapYearMonth.get(employmentCode);
             

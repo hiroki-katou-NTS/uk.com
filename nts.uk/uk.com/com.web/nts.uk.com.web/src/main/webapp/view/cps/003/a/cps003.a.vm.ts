@@ -1108,12 +1108,16 @@ module cps003.a.vm {
                         
                         if (control) {
                             self.gridOptions.ntsControls.push(control);
-                            let combo = cps003.control.COMBOBOX[self.category.catCode() + "_" + d.itemCode]; 
+                            let combo = cps003.control.COMBOBOX[self.category.catCode() + "_" + d.itemCode],
+                                number_Lan = cps003.control.NUMBER_Lan[self.category.catCode() + "_" + d.itemCode]; 
+                            
                             if (combo) {
                                 control.inputProcess = combo;
                             }
                             
-                            
+                            if (number_Lan) {
+                                control.inputProcess = number_Lan;
+                            }
                             
                             if (control.controlType === "DatePicker") {
                                 let dp = cps003.control.DATE_RANGE[self.category.catCode() + "_" + d.itemCode];

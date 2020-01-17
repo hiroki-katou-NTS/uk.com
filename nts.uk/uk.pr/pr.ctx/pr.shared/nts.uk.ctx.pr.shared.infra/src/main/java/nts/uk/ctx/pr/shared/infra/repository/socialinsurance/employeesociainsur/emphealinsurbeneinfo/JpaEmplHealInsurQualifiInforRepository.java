@@ -38,7 +38,8 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_BY_ID_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId =:employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate AND f.empHealInsurQiPk.hisId =:hisId";
     private static final String SELECT_BY_ID_LIST = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId IN :employeeId AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     private static final String SELECT_BY_ID_EMPIDS = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId IN :employeeId";
-    private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE f.empHeaslInsurQiPk.employeeId =:employeeId ORDER BY f.startDate DESC ";
+    
+    private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.employeeId =:employeeId ORDER BY f.startDate DESC ";
     private static final String SELECT_BY_EMPID_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.employeeId =:employeeId AND f.empHealInsurQiPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
 
@@ -320,7 +321,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 			
 			sql = sql.replace("END_DATE_VAL","'" +   c.getItemAdded().end() + "'");
 			
-			sql = sql.replace("KAIHO_NUM", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)+ "'");
+			sql = sql.replace("KAIHO_NUM_VAL", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)+ "'");
 			
 			sql = sql.replace("KENHO_NUM_VAL", "'" + c.getHisItem().getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null) + "'");
 			

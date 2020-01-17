@@ -4,7 +4,7 @@ module nts.layout {
         ko: any = window['ko'],
         moment: any = window['moment'];
 
-    import ajax = nts.uk.request.ajax;
+    import ajax = nts.uk.request.ajax;getHealInsStandCompMonth
     import modal = nts.uk.ui.windows.sub.modal;
     import nou = nts.uk.util.isNullOrUndefined;
     import setShared = nts.uk.ui.windows.setShared;

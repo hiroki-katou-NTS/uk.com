@@ -17,7 +17,7 @@ import java.util.Optional;
 public class JpaHealInsNumberInfoRepository extends JpaRepository implements HealInsurNumberInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
-    private static final String GET_ALL_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.hisId =:hisId";
+    private static final String GET_ALL_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.hisId IN :hisId";
     private static final String SELECT_BY_ID_EMPIDS = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId IN :employeeId";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND f.empHealInsurQiPk.hisId =:hisId AND  f.empHealInsurQiPk.cid =:cid ";
 
@@ -142,7 +142,7 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
     public void updateAll(List<HealInsurNumberInfor> items) {
         String UP_SQL = "UPDATE QQSDT_KENHO_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
                 + " START_DATE = START_DATE, END_DATE = END_DATE, KAIHO_NUM = KAIHO_NUM, KENHO_NUM = KENHO_NUM"
-                + " WHERE empHealInsurQiPk.HIST_ID = HIST_ID AND empHealInsurQiPk.CID = CID;";
+                + " WHERE HIST_ID = HIST_ID AND CID = CID;";
         String updCcd = AppContexts.user().companyCode();
         String updScd = AppContexts.user().employeeCode();
         String updPg = AppContexts.programId();

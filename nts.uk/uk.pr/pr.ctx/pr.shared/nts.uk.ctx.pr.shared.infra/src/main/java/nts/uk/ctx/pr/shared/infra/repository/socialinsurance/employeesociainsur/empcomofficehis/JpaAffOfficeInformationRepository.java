@@ -83,7 +83,7 @@ public class JpaAffOfficeInformationRepository extends JpaRepository implements 
 			
 			String sql = "SELECT * FROM QQSDT_SYAHO_OFFICE_INFO a"
 					
-					  + " WHERE  a.CID =:cid AND  a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")";
+					  + " WHERE  a.CID =? AND  a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 				try(PreparedStatement statement = this.connection().prepareStatement(sql)){
 					

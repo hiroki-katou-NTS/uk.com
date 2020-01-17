@@ -24,7 +24,7 @@ public class GetHealInsStandCompMonth {
     @Inject
     private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
 
-    // 等級から健康保険標準報酬月額を取得する
+    // 等級から健康保険標準報酬月額を取得する -IS01020
     public Long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
         Long standardMonthlyFee = null;
 
@@ -78,7 +78,7 @@ public class GetHealInsStandCompMonth {
         return result;
     }
 
-    // 報酬月額から健康保険標準報酬月額と健康保険等級を取得する
+    // 報酬月額から健康保険標準報酬月額と健康保険等級を取得する - IS01021
     public HealthInsStandGradePerMonthDto getHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
 
         HealthInsStandGradePerMonthDto perMonthDto = new HealthInsStandGradePerMonthDto();

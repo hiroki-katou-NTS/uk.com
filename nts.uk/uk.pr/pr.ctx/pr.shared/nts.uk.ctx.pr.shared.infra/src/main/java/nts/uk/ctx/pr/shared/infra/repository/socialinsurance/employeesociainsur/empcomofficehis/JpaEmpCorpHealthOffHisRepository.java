@@ -350,7 +350,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 				
 				for (int i = 0 ; i < subList.size(); i++) {
 					
-					stmt.setString( 4 + i, subList.get(i));
+					stmt.setString( 2 + i, subList.get(i));
 					
 				}
 				
