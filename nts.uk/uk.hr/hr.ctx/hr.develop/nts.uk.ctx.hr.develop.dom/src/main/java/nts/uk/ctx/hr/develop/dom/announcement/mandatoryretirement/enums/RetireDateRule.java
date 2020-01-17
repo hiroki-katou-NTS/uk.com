@@ -20,11 +20,11 @@ public enum RetireDateRule {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	RetireDateRule(int value, String name) {
+	RetireDateRule(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

@@ -14,11 +14,11 @@ public enum EvaluationItem {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	EvaluationItem(int value, String name) {
+	EvaluationItem(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }
