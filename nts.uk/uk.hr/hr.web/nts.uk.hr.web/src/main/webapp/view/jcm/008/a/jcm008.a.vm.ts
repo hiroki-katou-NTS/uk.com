@@ -352,6 +352,7 @@ module jcm008.a {
 
                 ]
             });
+            self.bindHidingEvent();
         }
 
         private buildRetirementDateSettingCol() {
@@ -418,6 +419,10 @@ module jcm008.a {
             }
 
             columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
+            _.forEach(self.hidedColumns, (key) => {
+                hidedColumnsCf.push({columnKey: key, allowHiding: true, hidden: true});
+            });
+
             return {columns: columns, hidedColumnsCf: hidedColumnsCf};
         }
 
@@ -538,6 +543,18 @@ module jcm008.a {
             $("#retirementDateSetting").igGrid("option", "height", height + 'px');
             $("#retirementDateSetting").igGrid("option", "width", width + 'px');
 
+        }
+
+        public bindHidingEvent() {
+            let self = this;
+            $("#retirementDateSetting").on("iggridhidingcolumnhiding", function (e, args) {
+                self.hidedColumns.push(args.columnKey);
+                console.log(self.hidedColumns);
+            });
+            $("#retirementDateSetting").on("iggridhidingcolumnshowing", function (e, args) {
+                self.hidedColumns = self.hidedColumns.filter(v => v !== args.columnKey); 
+                console.log(self.hidedColumns);
+            });
         }
 
         /**
