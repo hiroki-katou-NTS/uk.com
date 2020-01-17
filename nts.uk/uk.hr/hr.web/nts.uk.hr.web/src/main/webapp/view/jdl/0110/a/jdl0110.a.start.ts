@@ -1,4 +1,5 @@
 module nts.uk.com.view.jdl0110.a {
+    import StartMode = kcp.share.tree.StartMode;
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
@@ -6,9 +7,12 @@ module nts.uk.com.view.jdl0110.a {
             $('#workplaceList').focusTreeGridComponent();
             // Check selected code.
             if (screenModel.isMultipleSelect && screenModel.selectedMulWorkplace().length > 0) {
-                let selectedCodes = $('#workplaceList').find('#multiple-tree-grid').igTreeGrid("selectedRows");
-                let selectedCodesExist = selectedCodes.filter(item => item.index > -1).map(item => item.id);
-                screenModel.selectedMulWorkplace(selectedCodesExist);
+                if(screenModel.startMode == StartMode.WORKPLACE) {
+                    let selectedCodes = $('#workplaceList').find('#multiple-tree-grid').igTreeGrid("selectedRows");
+                    let selectedCodesExist = selectedCodes.filter(item => item.index > -1).map(item => item.id);
+                    screenModel.selectedMulWorkplace(selectedCodesExist);
+                }
+               
                 return;
             }
             if (!screenModel.selectedSelWorkplace()) {
