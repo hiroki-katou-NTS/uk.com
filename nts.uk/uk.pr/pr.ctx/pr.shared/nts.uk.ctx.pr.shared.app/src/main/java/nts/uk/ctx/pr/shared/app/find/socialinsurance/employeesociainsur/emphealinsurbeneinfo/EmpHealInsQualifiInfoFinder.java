@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empheal
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -101,9 +102,19 @@ public class EmpHealInsQualifiInfoFinder implements PeregFinder<EmpHealInsQualif
         		
         		emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInfor(cId, empIds, peregQueryByListEmp.getStandardDate())
         		
-                .stream().collect(Collectors.groupingBy(c->c.getMourPeriod().get(0).identifier()));
-
-        List<String> hisIds = new ArrayList<>(qualifiInforList.keySet());
+                .stream().collect(Collectors.groupingBy(c-> c.getEmployeeId()));
+        
+        List<String> hisIds = new ArrayList<>();
+        
+        qualifiInforList.forEach((k, v) ->{
+        	
+        	if(!CollectionUtil.isEmpty(v)) {
+        		
+        		hisIds.add(v.get(0).getMourPeriod().get(0).identifier());
+        		
+        	}
+        	
+        });
 
         Map<String, List<HealInsurNumberInfor>> numberInfors = healInsurNumberInforRepository.findByHistoryId(hisIds)
         		
@@ -111,17 +122,18 @@ public class EmpHealInsQualifiInfoFinder implements PeregFinder<EmpHealInsQualif
 
         result.stream().forEach(c->{
         	
-            List<HealInsurNumberInfor> numberInfor = numberInfors.get(c.getEmployeeId());
-            
-            if (numberInfor != null){
+        	List<EmplHealInsurQualifiInfor> emplHealInsurQualifiInfor = qualifiInforList.get(c.getEmployeeId());
+        	
+            if (!CollectionUtil.isEmpty(emplHealInsurQualifiInfor)){
             	
-                HealInsurNumberInfor healInsurNumberInfor = numberInfor.get(0);
+            	List<HealInsurNumberInfor> numberInfor = numberInfors.get(emplHealInsurQualifiInfor.get(0).getMourPeriod().get(0).identifier());
+            	
+                HealInsurNumberInfor healInsurNumberInfor = CollectionUtil.isEmpty(numberInfor) == true? null: numberInfor.get(0);
                 
-                EmplHealInsurQualifiInfor emplHealInsurQualifiInfor = qualifiInforList.get(healInsurNumberInfor.getHistoryId()).get(0);
-                
-                c.setPeregDomainDto(EmpHealInsQualifiInfoDto.createFromDomain(emplHealInsurQualifiInfor, healInsurNumberInfor));
+                c.setPeregDomainDto(EmpHealInsQualifiInfoDto.createFromDomain(emplHealInsurQualifiInfor.get(0), healInsurNumberInfor));
                 
             }
+            
         });
         
         return result;
