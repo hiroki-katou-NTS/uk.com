@@ -111,10 +111,6 @@ module jcm008.a {
             let self = this;
             block.grayout();
 
-            // let settingChanges = _.filter(self.plannedRetirements(), (p) => {
-            //     return _.find($("#retirementDateSetting").ntsGrid("updatedCells"), { 'rowId': p.rKey })
-            // });
-
             let groupChanges = _.groupBy($("#retirementDateSetting").ntsGrid("updatedCells"), 'rowId');
             let datas = _.filter(self.plannedRetirements(), (r) => {return !(r.status === 2 || r.status === 3) })
             let retiInfos = _.map(datas, (retire) => {
@@ -216,8 +212,6 @@ module jcm008.a {
 
                 data.flag = data.pendingFlag === 1 ? true : false;
                 
-                
-                
                 switch (data.status) {
                     case 0:
                         data.registrationStatus = '';
@@ -262,7 +256,9 @@ module jcm008.a {
                 { columnKey: 'employeeCode', isFixed: true },
                 { columnKey: 'employeeName', isFixed: true }
             ]);
-            let columns = self.buildRetirementDateSettingCol();
+            let clConfig = self.buildRetirementDateSettingCol();
+            let columns = clConfig.columns;
+            let hidedColumnsCf = clConfig.hidedColumnsCf;
             let sheets = [];
             _.forEach(columns, (col) => {
                 if( _.indexOf(_.map(fixedClmSetting, 'columnKey'), col.key) === -1 ) {
@@ -275,11 +271,7 @@ module jcm008.a {
                     }
                 }
             });
-            console.log(columns);
-            console.log(dataSources);
-            console.log(sheets);
-            console.log(fixedClmSetting);
-            
+
             let retirementCourses = [{
                 employmentCode: "",
                 employmentName: "",
@@ -292,8 +284,8 @@ module jcm008.a {
                 retirePlanCourseName: "",
                 durationFlg: 0
             }];
-            
             retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'));
+
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
                 width: '1200px',
@@ -320,16 +312,12 @@ module jcm008.a {
                     {
                         name: 'Filtering', type: 'local', mode: 'simple',
                         dataFiltered: function (evt, ui) {
-                            // $('#retirementDateSetting').css('height', '425px');
+
                         }
                     },
                     { name: 'Paging', pageSize: 10, currentPageIndex: 0 },
                     { name: 'Resizing' },
-                    { name: 'Hiding' },
-                    // {
-                    //     name: 'ColumnMoving', 
-                    //     columnMovingDialogContainment: 'window',
-                    // },
+                    { name: 'Hiding' , columnSettings: hidedColumnsCf},
                     { name: 'MultiColumnHeaders' },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: fixedClmSetting},
                     
@@ -370,11 +358,12 @@ module jcm008.a {
             let self = this;
             let columns = [
                 { headerText: 'key', key: 'rKey', dataType: 'string' },
-                { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '70px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
+                { headerText: getText('JCM008_A222_22'), key: 'flag', dataType: 'boolean', width: '103px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                 { headerText: getText('JCM008_A222_23'), key: 'extendEmploymentFlg', dataType: 'number', width: '110px', ntsControl: 'RetirementStatusCb' },
                 { headerText: getText('JCM008_A222_24'), key: 'registrationStatus', dataType: 'string', width: '110px', ntsControl: 'Label' }
             ];
-            
+
+            let hidedColumnsCf = [];
             if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
                 columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '140px', ntsControl: 'WorkingCourseCb' });
             }
@@ -398,7 +387,9 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.PERSONNEL_ASSESSMENT && item.displayNum > 0 && item.usageFlg) {
                         let hcGroups = [];
                         for (let hc = 0; hc < item.displayNum; hc ++) {
-                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: 'hrEvaluation' + (hc + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
+                            let hcKey = 'hrEvaluation' + (hc + 1);
+                            hcGroups.push({ headerText: getText('JCM008_A222_36_' + (hc + 3)), key: hcKey, dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            hidedColumnsCf.push({columnKey: hcKey, allowHiding: false});
                         }
 
                         columns.push(hcGroups.length > 1 ? {headerText: getText('JCM008_A222_36'), width: '80px', group: hcGroups} : { headerText: getText('JCM008_A222_36'), key: 'hrEvaluation1', dataType: 'string', width: '80px', ntsControl: 'Label' });
@@ -407,7 +398,9 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.HEALTH_CONDITION && item.displayNum > 0 && item.usageFlg) {
                         let paGroups = [];
                         for (let pa = 0; pa < item.displayNum; pa ++) {
-                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: 'healthStatus' + (pa + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
+                            let paKey = 'healthStatus' + (pa + 1)
+                            paGroups.push({ headerText: getText('JCM008_A222_37_' + (pa + 3)), key: paKey, dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            hidedColumnsCf.push({columnKey: paKey, allowHiding: false});
                         }
                         columns.push(paGroups.length > 1 ? {headerText: getText('JCM008_A222_37'), width: '80px', group: paGroups} : { headerText: getText('JCM008_A222_37'), key: 'healthStatus1', dataType: 'string', width: '80px', ntsControl: 'Label' });
                     }
@@ -415,7 +408,9 @@ module jcm008.a {
                     if(item.evaluationItem == EvaluationItem.STRESS_CHECK && item.displayNum > 0 && item.usageFlg) {
                         let scGroups = [];
                         for (let sc = 0; sc < item.displayNum; sc ++) {
-                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: 'stressStatus' + (sc + 1), dataType: 'string', width: '50px' , ntsControl: 'Label'});
+                            let scKey = 'stressStatus' + (sc + 1);
+                            scGroups.push({ headerText: getText('JCM008_A222_38_' + (sc + 3)), key: scKey, dataType: 'string', width: '40px' , ntsControl: 'Label'});
+                            hidedColumnsCf.push({columnKey: scKey, allowHiding: false});
                         }
                         columns.push( scGroups.length > 1 ? {headerText: getText('JCM008_A222_38'), width: '80px', group: scGroups} : { headerText: getText('JCM008_A222_38'), key: 'stressStatus1', dataType: 'string', width: '80px', ntsControl: 'Label'});
                     }
@@ -423,7 +418,7 @@ module jcm008.a {
             }
 
             columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
-            return columns;
+            return {columns: columns, hidedColumnsCf: hidedColumnsCf};
         }
 
         public showModal(id, key, el) {
@@ -478,8 +473,6 @@ module jcm008.a {
                     dismissible: true
                 });
             })
-
-
         };
 
         public choseDepartment() {
@@ -487,7 +480,7 @@ module jcm008.a {
             block.grayout();
             setShared('inputCDL008', {
                 selectedCodes: self.searchFilter.department().map(function (elem) {
-                    return elem.code;
+                    return elem.id;
                 }),
                 baseDate: moment(new Date()).toDate(),
                 isMultiple: true,
@@ -499,7 +492,7 @@ module jcm008.a {
             });
             modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
                 block.clear();
-                let data = getShared('outputDepartmentJDL0110');
+                let data = getShared('outputDepartmentJDL0110') ? getShared('outputDepartmentJDL0110') : [];
                 self.searchFilter.department(data);
             });
         }
@@ -521,7 +514,7 @@ module jcm008.a {
             });
             modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function () {
                 block.clear();
-                let data = getShared('CDL002Output');
+                let data = getShared('CDL002Output') ? getShared('CDL002Output') : [];
                 self.searchFilter.employment(data);
             });
         }
