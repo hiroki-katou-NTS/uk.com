@@ -104,8 +104,9 @@ public class RetirementInformationFinder {
 
 		List<String> sIDs = result.getRetiredEmployees().stream().map(x -> x.getSId()).collect(Collectors.toList());
 
-		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor
-				.getEmployeeInfos(Optional.ofNullable(null), sIDs, GeneralDate.today());
+		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor.getEmployeeInfos(
+				Optional.ofNullable(null), sIDs, GeneralDate.today(), Optional.ofNullable(true),
+				Optional.ofNullable(true), Optional.ofNullable(true));
 
 		result.setEmployeeImports(employeeImports);
 
@@ -130,11 +131,10 @@ public class RetirementInformationFinder {
 		if (retiredEmployees.size() > 2000) {
 			throw new BusinessException("MsgJ_JCM008_8");
 		}
-		
+
 		if (retiredEmployees.size() == 0) {
 			throw new BusinessException("MsgJ_JCM008_2");
 		}
-		
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
 		List<RetirementInformation_New> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,
@@ -155,8 +155,8 @@ public class RetirementInformationFinder {
 				.departmentCode(plan.getDepartmentCode()).departmentName(plan.getDepartmentName())
 				.jobTitleId(plan.getPositionId()).jobTitleCd(plan.getPositionCode())
 				.jobTitleName(plan.getPositionName()).employmentCode(plan.getEmploymentCode())
-				.employmentName(plan.getEmploymentName()).retirementAge(plan.getAge()).retirementDate(plan.getRetirementDate())
-				.releaseDate(plan.getReleaseDate())
+				.employmentName(plan.getEmploymentName()).retirementAge(plan.getAge())
+				.retirementDate(plan.getRetirementDate()).releaseDate(plan.getReleaseDate())
 				.hrEvaluation1(plan.getHrEvaluation1().isPresent() ? plan.getHrEvaluation1().get() : null)
 				.hrEvaluation2(plan.getHrEvaluation2().isPresent() ? plan.getHrEvaluation2().get() : null)
 				.hrEvaluation3(plan.getHrEvaluation3().isPresent() ? plan.getHrEvaluation3().get() : null)

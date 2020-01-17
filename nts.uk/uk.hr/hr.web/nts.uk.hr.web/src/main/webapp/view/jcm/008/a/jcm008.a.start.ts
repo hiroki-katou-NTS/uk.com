@@ -5,4 +5,12 @@ __viewContext.ready(function() {
         $('.ntsStartDatePicker').focus();
         screenModel.setScroll();
     });
+    $("#retirementDateSetting").on("iggridhidingcolumnhiding", function (e, args) {
+        screenModel.hidedColumns.push(args.columnKey);
+        console.log(screenModel.hidedColumns);
+    });
+    $("#retirementDateSetting").on("iggridhidingcolumnshowing", function (e, args) {
+        screenModel.hidedColumns = screenModel.hidedColumns.filter(v => v !== args.columnKey); 
+        console.log(screenModel.hidedColumns);
+    });
 });

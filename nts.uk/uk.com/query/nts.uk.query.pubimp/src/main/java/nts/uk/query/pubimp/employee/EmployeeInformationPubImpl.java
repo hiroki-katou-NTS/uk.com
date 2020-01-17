@@ -78,16 +78,16 @@ public class EmployeeInformationPubImpl implements EmployeeInformationPub {
 
 	@Override
 	public List<EmployeeInformationExport> getEmployeeInfos(Optional<List<String>> pIds, List<String> sIds,
-			GeneralDate baseDate) {
+			GeneralDate baseDate, Optional<Boolean> getDepartment, Optional<Boolean> getPosition, Optional<Boolean> getEmployment) {
 		// 社員の情報を取得する (Get thông tin nhân viên/employee information)
-
+		
 		List<EmployeeInformationExport> empInfos = this.repo.find(EmployeeInformationQuery.builder()
 				.employeeIds(sIds)
 				.referenceDate(baseDate)
 				.toGetWorkplace(false)
-				.toGetDepartment(true)
-				.toGetPosition(true)
-				.toGetEmployment(true)
+				.toGetDepartment(getDepartment.isPresent() ? getDepartment.get() : false)
+				.toGetPosition(getPosition.isPresent() ? getPosition.get() : false)
+				.toGetEmployment(getEmployment.isPresent() ? getEmployment.get() : false)
 				.toGetClassification(false)
 				.toGetEmploymentCls(false)
 				.build()).stream().map(item -> toExport(item)).collect(Collectors.toList());;

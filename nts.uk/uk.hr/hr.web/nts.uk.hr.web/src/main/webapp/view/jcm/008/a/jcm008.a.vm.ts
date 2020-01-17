@@ -15,7 +15,7 @@ module jcm008.a {
         plannedRetirements: KnockoutObservable<Array<PlannedRetirementDto>>;
         employeeInfo: KnockoutObservable<IEmployee>;
         referEvaluationItems: KnockoutObservable<Array<ReferEvaluationItem>>;
-
+        hidedColumns: Array<String>;
         constructor() {
             let self = this;
             self.searchFilter = new SearchFilterModel();
@@ -23,8 +23,9 @@ module jcm008.a {
             self.searchFilter.retirementCourses = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
             self.referEvaluationItems = ko.observableArray([]);
+            self.hidedColumns = [];
             $(".employee-info-pop-up").ntsPopup("hide");
-            
+             
             $(window).resize(function() {
                 self.setScroll();
             });
@@ -436,7 +437,10 @@ module jcm008.a {
             let param = {
                 employeeId: selectedEmp.employeeId,
                 personId: selectedEmp.personID,
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
+                baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                getDepartment: true,
+                getPosition: true,
+                getEmployment: true
             };
             block.grayout();
             service.findEmployeeInfo(param).done((data) => {
@@ -456,7 +460,10 @@ module jcm008.a {
                     department: data.department?data.department.departmentName:null,
                     position: data.position?data.position.positionName:null,
                     employment: data.employment?data.employment.employmentName:null,
-                    image: data.avatarFile ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png'
+                    image: data.avatarFile ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png',
+                    showDepartment: param.getDepartment,
+                    showPosition: param.getPosition,
+                    showEmployment: param.getEmployment,
                 };
 
                 self.employeeInfo(emp);
@@ -537,10 +544,6 @@ module jcm008.a {
                 width = objCalulator.gridAreaWidth > 1200 ? 1200 : objCalulator.gridAreaWidth;
             $("#retirementDateSetting").igGrid("option", "height", height + 'px');
             $("#retirementDateSetting").igGrid("option", "width", width + 'px');
-            
-            
-            // $(".wrapScroll").css({ overflow: "auto", height: objCalulator.contentAreaHeight + "px" });
-            // $("#grid_container").css("max-height", objCalulator.gridAreaHeight + 'px');
 
         }
 
@@ -551,6 +554,7 @@ module jcm008.a {
             let self = this;
             self.searchFilter.confirmCheckRetirementPeriod(true);
             let param = new ISearchParams(self.searchFilter);
+            param.hidedColumns = self.hidedColumns;
             block.grayout();
             service.outPutFileExcel(param).done((data1) => {
                 block.clear();

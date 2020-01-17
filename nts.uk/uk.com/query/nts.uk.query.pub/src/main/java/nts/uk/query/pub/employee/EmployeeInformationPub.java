@@ -31,5 +31,5 @@ public interface EmployeeInformationPub {
 	 * @return 社員情報のリスト
 	 */
 	public List<EmployeeInformationExport> getEmployeeInfos(Optional<List<String>> pIds, List<String> sIds,
-			GeneralDate baseDate);
+			GeneralDate baseDate, Optional<Boolean> getDepartment, Optional<Boolean> getPosition, Optional<Boolean> getEmployment);
 }

@@ -74,14 +74,21 @@
 					<div id="pop-bottom">
 						<!-- A1_9 -->
 						<!-- A1_10 -->
-						<p>#{i18n.getText('JAP0070_A1_9')}: <span data-bind="text: employeeInfo().department"></span>
+						<p data-bind="if:employeeInfo().showDepartment">
+							#{i18n.getText('JAP0070_A1_9')}: <span
+								data-bind="text: employeeInfo().department"></span>
 						</p>
 						<!-- A1_11 -->
 						<!-- A1_12 -->
-						<p>#{i18n.getText('JAP0070_A1_11')}: <span data-bind="text: employeeInfo().position"></span></p>
+						<p data-bind="if:employeeInfo().showPosition">
+							#{i18n.getText('JAP0070_A1_11')}: <span
+								data-bind="text: employeeInfo().position"></span>
+						</p>
 						<!-- A1_13 -->
 						<!-- A1_4 -->
-						<p>#{i18n.getText('JAP0070_A1_13')}: <span data-bind="text: employeeInfo().employment"></span>
+						<p data-bind="if:employeeInfo().showEmployment">
+							#{i18n.getText('JAP0070_A1_13')}: <span
+								data-bind="text: employeeInfo().employment"></span>
 						</p>
 					</div>
 				</div>
