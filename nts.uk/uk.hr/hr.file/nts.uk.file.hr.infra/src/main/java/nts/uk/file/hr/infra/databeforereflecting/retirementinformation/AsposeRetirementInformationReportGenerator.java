@@ -156,7 +156,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			int rowIndex = FIRST_ROW_FILL;
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
-			
+			this.settingTableHeader(ws);
 			int page = 1;
 			for (int i = 0; i < exportData.size(); i++) {
 
@@ -235,7 +235,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			
 			this.settingHeader(ws, query, companyName);
 			this.settingTitle(ws);
-			this.settingTableHeader(ws);
+			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
