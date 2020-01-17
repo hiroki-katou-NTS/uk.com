@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
@@ -46,6 +50,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class LogBasicInformationFinder {
 
 	@Inject
@@ -78,7 +83,6 @@ public class LogBasicInformationFinder {
 
 	public List<LogBasicInfoDto> findByOperatorsAndDate(LogParams logParams) {
 			List<LogBasicInfoDto> lstLogBacsicInfo = new ArrayList<>();
-			Map<String, String> mapEmployeeCodes;
 			// get login info
 			LoginUserContext loginUserContext = AppContexts.user();
 			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
@@ -110,17 +114,20 @@ public class LogBasicInformationFinder {
 				switch (recordTypeEnum) {
 				case LOGIN:
 						// Set data of login record
-						List<LoginRecord> loginRecords = this.loginRecordRepository.logRecordInfor(operationIds);
+						List<LoginRecord> loginRecords = this.loginRecordRepository.logRecordInforScreenF(operationIds);
 						if(!CollectionUtil.isEmpty(loginRecords)){
+							
 							// Get list employeeCode operator by list information operator
-							mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,loginRecords,null,null,null);
+							Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo, loginRecords, null, null, null);
 							List<LogBasicInfoDto> logBasicLst = loginRecords.stream().map(loginRecord ->{
 								// Convert log basic info to DTO
 								LogBasicInformation logBasicInformation = mapLogBasicInfo.get(loginRecord.getOperationId());
 								LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
 								UserInfo userDto = logBasicInformation.getUserInfo();
 								if (userDto != null) {
-									logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+									logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null? "": mapEmployeeCodes.get(userDto.getEmployeeId()));
+								}else {
+									logBasicInfoDto.setEmployeeCodeLogin("");
 								}
 								// Set user login name
 								logBasicInfoDto.setUserNameLogin(userDto.getUserName());
@@ -137,12 +144,13 @@ public class LogBasicInformationFinder {
 				case START_UP:
 					break;
 				case UPDATE_PERSION_INFO:
+				{
 					String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
 					// Get persion info log
 					List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
-							.findByTargetAndDate(operationIds,logParams.getListTagetEmployeeId());
+							.findByTargetAndDateScreenF(operationIds, logParams.getListTagetEmployeeId());
 					// Get list employeeCode operator by list information operator
-					mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo, null, listPersonInfoCorrectionLog, null, null);
+					final Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo, null, listPersonInfoCorrectionLog, null, null);
 					
 					// Get Map Order list
 					List<String> itemDefinitionIds = new ArrayList<>();
@@ -194,8 +202,11 @@ public class LogBasicInformationFinder {
 								// Setting infor logBasicInfoDto
 								UserInfo userDto = logBasicInformation.getUserInfo();
 								// get employee code login
+								//CLI003: fix bug #109166, 109165
 								if (userDto != null) {
-									logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+									logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null? "": mapEmployeeCodes.get(userDto.getEmployeeId()));
+								}else {
+									logBasicInfoDto.setEmployeeCodeLogin("");
 								}
 								// get user login name
 								logBasicInfoDto.setUserNameLogin(userDto.getUserName());
@@ -218,15 +229,23 @@ public class LogBasicInformationFinder {
 						// Convert data to list
 						lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
 					break;
+				}
 				case DATA_CORRECT:
 					TargetDataType targetDataType= TargetDataType.of(logParams.getTargetDataType()) ;
 					Map<String,LogBasicInfoDto> mapCheckLogBasic = new HashMap<>();
+					
+					CollectionUtil.split(operationIds, 1000, operationIdSubList -> {
+
+						if(mapCheckLogBasic.size() > 1000) {
+							return;
+						}
+						
 						// get data correct log
-						List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
-								operationIds, logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
+						List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDateScreenF(
+								operationIdSubList, logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
 						if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
 							// Get list employeeCode operator by list information operator
-							mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,null,null,lstDataCorectLog,null);
+							Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,null,null,lstDataCorectLog,null);
 							// tối ưu lấy header
 							Map<String, TargetDataCorrect> itemOutHeaders = lstDataCorectLog.stream()
 									.filter(distinctByKey(DataCorrectionLog::getTargetDataType))
@@ -250,9 +269,12 @@ public class LogBasicInformationFinder {
 									
 								}else{
 									UserInfo userDto = logBasicInformation.getUserInfo();
+									//CLI003: fix bug #109166, 109165
 									// get employee code login
 									if (userDto != null) {
-										logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+										logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null? "": mapEmployeeCodes.get(userDto.getEmployeeId()));
+									}else {
+										logBasicInfoDto.setEmployeeCodeLogin("");
 									}
 									// get user login name
 									logBasicInfoDto.setUserNameLogin(userDto.getUserName());
@@ -271,6 +293,7 @@ public class LogBasicInformationFinder {
 								
 							});
 						}
+					});
 					// xử lý input map to lists
 					lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheckLogBasic.values());
 					break;
@@ -281,12 +304,12 @@ public class LogBasicInformationFinder {
 				if(recordTypeEnum.code == RecordTypeEnum.START_UP.code){
 					Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
 					// get start page log
-					List<StartPageLog> startPageLogs = this.startPageLogRepository.findBy(cid,
+					List<StartPageLog> startPageLogs = this.startPageLogRepository.findByScreenF(cid,
 							logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
 							logParams.getEndDateOperator());
 					if (!CollectionUtil.isEmpty(startPageLogs)) {
 						// Get list employee code
-						mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
+						Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
 						List<LogBasicInfoDto> logBasicInfoDtoInter = startPageLogs.stream().map(startPageLog -> {
 							// Convert log basic info to DTO
 							LogBasicInformation logBasicInformation = startPageLog.getBasicInfo();
@@ -298,9 +321,12 @@ public class LogBasicInformationFinder {
 									+ logBasicInformation.getTargetProgram().getScreenId()
 									+ logBasicInformation.getTargetProgram().getQueryString();
 							logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+							//CLI003: fix bug #109166, 109165
 							// Get employee code user login
 							if (userDto != null) {
-								logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+								logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null?"": mapEmployeeCodes.get(userDto.getEmployeeId()));
+							}else {
+								logBasicInfoDto.setEmployeeCodeLogin("");
 							}
 							// get user login name
 							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
@@ -405,6 +431,128 @@ public class LogBasicInformationFinder {
 				.getEmployeeCodesByEmpIds(employeeIds.stream().distinct().collect(Collectors.toList()));
 	}
 	
+	public LogParams prepareDataScreenI(LogScreenIParam param) {
+		int maxlength = 1000;
+		
+		List<LogBasicInfoModel> logBasicInforCsv = new ArrayList<>();
+		
+		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(param.getLogParams().getRecordType());
+		
+		List<LogBasicInfoDto> data = findByOperatorsAndDate(param.getLogParams());
+
+		//CLI003: fix bug #108873, #108865
+		if (recordTypeEnum == RecordTypeEnum.LOGIN || recordTypeEnum == RecordTypeEnum.START_UP) {
+			
+			Comparator<LogBasicInfoDto> compareByName = Comparator
+					.comparing(LogBasicInfoDto::getModifyDateTime, (s1, s2) -> {
+						return s2.compareTo(s1);
+					}).thenComparing(LogBasicInfoDto::getEmployeeCodeLogin);
+			
+			data.sort(compareByName);
+		}
+
+		if (recordTypeEnum == RecordTypeEnum.UPDATE_PERSION_INFO || recordTypeEnum == RecordTypeEnum.DATA_CORRECT) {
+			
+			Comparator<LogBasicInfoDto> compareByName = Comparator
+					.comparing(LogBasicInfoDto::getModifyDateTime, (s1, s2) -> {
+						return s2.compareTo(s1);
+					}).thenComparing(LogBasicInfoDto::getEmployeeCodeTaget);
+			
+			data.sort(compareByName);
+		}
+		
+		int countLog = 1;
+		
+		List<LogBasicInfoDto> listLogBasicInforModel = new ArrayList<>();
+		
+		for (LogBasicInfoDto logBasicInfoModel : data) {
+			
+			if (countLog <= maxlength) {
+				
+				if (recordTypeEnum == RecordTypeEnum.LOGIN || recordTypeEnum == RecordTypeEnum.START_UP) {
+					listLogBasicInforModel.add(logBasicInfoModel);
+				}
+
+				if (recordTypeEnum == RecordTypeEnum.UPDATE_PERSION_INFO) {
+					listLogBasicInforModel.add(logBasicInfoModel);
+				}
+
+				if (recordTypeEnum == RecordTypeEnum.DATA_CORRECT) {
+					listLogBasicInforModel.add(logBasicInfoModel);
+				}
+				
+				countLog++;
+			}
+		}
+
+		for (LogBasicInfoDto logBaseInfo : listLogBasicInforModel) {
+			
+			List<DataCorrectLogModel> lstDataCorrect = new ArrayList<>();
+			
+			List<PerCateCorrectRecordModel> lstPerCorrect = new ArrayList<>();
+			
+			switch (recordTypeEnum.code) {
+			
+			// UPDATE_PERSION_INFO
+			case 3:
+				// setting list persion correct
+				for (LogPerCateCorrectRecordDto persionCorrect : logBaseInfo.getLstLogPerCateCorrectRecordDto()) {
+					lstPerCorrect.add(new PerCateCorrectRecordModel(persionCorrect.getOperationId(),
+							persionCorrect.getTargetDate(), persionCorrect.getCategoryName(),
+							persionCorrect.getItemName(), persionCorrect.getValueBefore(),
+							persionCorrect.getValueAfter(), persionCorrect.getInfoOperateAttr()));
+				}
+				break;
+				
+			// DATA_CORRECT
+			case 6:
+				for (LogDataCorrectRecordRefeDto dataCorrect : logBaseInfo.getLstLogDataCorrectRecordRefeDto()) {
+					lstDataCorrect.add(new DataCorrectLogModel(dataCorrect.getOperationId(),
+							dataCorrect.getTargetDate(), dataCorrect.getTargetDataType(), dataCorrect.getItemName(),
+							dataCorrect.getValueBefore(), dataCorrect.getValueAfter(), dataCorrect.getRemarks(),
+							dataCorrect.getCorrectionAttr()));
+				}
+				break;
+				
+			default:
+				break;
+			}
+
+			LogBasicInfoModel logBasicCsv = new LogBasicInfoModel(logBaseInfo, lstDataCorrect, lstPerCorrect);
+			
+			logBasicInforCsv.add(logBasicCsv);
+		}
+		
+		List<LogBasicInfoDto> lstLogBasicInfoDto  = logBasicInforCsv.stream().map(c -> { 
+			return new LogBasicInfoDto(c.getParentKey(), c.getOperationId(),
+					c.getUserNameLogin(), c.getEmployeeCodeLogin(),
+					c.getUserIdTaget(), c.getUserNameTaget(),
+					"", c.getEmployeeCodeTaget(), "", c.getModifyDateTime(),
+					c.getProcessAttr(), 
+					c.getLstLogDataCorrectRecordRefeDto().stream().map(d ->{
+						return new LogDataCorrectRecordRefeDto(d.getParentKey(), d.getChildrentKey(),
+								d.getOperationId(), d.getTargetDate(), d.getTargetDataType(), d.getItemName(),
+								d.getValueBefore(), d.getValueAfter(), d.getRemarks(), d.getCorrectionAttr(),
+								"", "",1);
+					}).collect(Collectors.toList()),
+					c.getLstLogPerCateCorrectRecordDto().stream().map(d ->{
+						return new LogPerCateCorrectRecordDto(
+						d.getParentKey(), d.getChildrentKey(),
+						d.getOperationId(), d.getCategoryName(),
+						d.getTargetDate(), d.getItemName(),
+						d.getValueBefore(), d.getValueAfter(),
+						d.getInfoOperateAttr());
+					}).collect(Collectors.toList()),
+					c.getLstLogOutputItemDto(), 
+					c.getMenuName(), c.getNote(),
+					c.getMethodName(), c.getLoginStatus());
+		}).collect(Collectors.toList()); 
+		
+		LogParams logParams = new LogParams(param.getLogParams().getRecordType(), param.getLstHeaderDto(), param.getLstSubHeaderDto(),  lstLogBasicInfoDto);
+		
+		return logParams;
+	}
+	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 	    Set<Object> seen = ConcurrentHashMap.newKeySet();
 	    return t -> seen.add(keyExtractor.apply(t));
@@ -417,6 +565,206 @@ public class LogBasicInformationFinder {
 		public TargetDataCorrect(int recordType, int targetKey) {
 			this.recordType = recordType;
 			this.targetKey = targetKey;
+		}
+	}
+	
+	@Getter
+	@Setter
+	public class DataCorrectLogModel{
+		private String parentKey;
+		private String childrentKey;
+		private String operationId;
+		private String targetDate;
+        private int targetDataType;
+        private String itemName;
+        private String valueBefore;
+        private String valueAfter;
+        private String remarks;
+        private String correctionAttr;
+        private int showOrder;
+		public DataCorrectLogModel(String operationId, String targetDate, int targetDataType, String itemName,
+				String valueBefore, String valueAfter, String remarks,  String correctionAttr) {
+			super();
+			this.operationId = operationId;
+			this.targetDate = targetDate;
+			this.targetDataType = targetDataType;
+			this.itemName = itemName;
+			this.valueBefore = valueBefore;
+			this.valueAfter = valueAfter;
+			this.remarks = remarks;
+			this.correctionAttr = correctionAttr;
+		}
+	}
+	
+	@Setter
+	@Getter
+	public class PerCateCorrectRecordModel {
+        private String parentKey;
+        private String childrentKey;
+        private String operationId;
+        private String targetDate;
+        private String categoryName;
+        private String itemName;
+        private String valueBefore;
+        private String valueAfter;
+        private String infoOperateAttr;
+		public PerCateCorrectRecordModel(String operationId, String targetDate, String categoryName, String itemName,
+				String valueBefore, String valueAfter, String infoOperateAttr) {
+			super();
+			this.operationId = operationId;
+			this.targetDate = targetDate;
+			this.categoryName = categoryName;
+			this.itemName = itemName;
+			this.valueBefore = valueBefore;
+			this.valueAfter = valueAfter;
+			this.infoOperateAttr = infoOperateAttr;
+		}
+        
+	}
+	
+	/**
+	 * The enum of RECORD_TYPE
+	 */
+    public  enum ITEM_NO {
+        ITEM_NO1(1),
+        ITEM_NO2(2),
+        ITEM_NO3(3),
+        ITEM_NO4(4),
+        ITEM_NO5(5),
+        ITEM_NO6(6),
+        ITEM_NO7(7),
+        ITEM_NO8(8),
+        ITEM_NO9(9),
+        ITEM_NO10(10),
+        ITEM_NO11(11),
+        ITEM_NO12(12),
+        ITEM_NO13(13),
+        ITEM_NO14(14),
+        ITEM_NO15(15),
+        ITEM_NO16(16),
+        ITEM_NO17(17),
+        ITEM_NO18(18),
+        ITEM_NO19(19),
+        ITEM_NO20(20),
+        ITEM_NO21(21),
+        ITEM_NO22(22),
+        ITEM_NO23(23),
+        ITEM_NO24(24),
+        ITEM_NO25(25),
+        ITEM_NO26(26),
+        ITEM_NO27(27),
+        ITEM_NO28(28),
+        ITEM_NO29(29),
+        ITEM_NO30(30),
+        ITEM_NO31(31),
+        ITEM_NO32(32),
+        ITEM_NO33(33),
+        ITEM_NO34(34),
+        ITEM_NO35(35),
+        ITEM_NO36(36),
+        ITEM_NO99(99);
+    	
+    	public int value;
+    	
+    	ITEM_NO(int value) {
+    		this.value = value;
+    	}
+    }	
+
+    /**
+    * The enum of property setting data
+    */
+    public enum ITEM_PROPERTY {
+        ITEM_SRT(0, "string"),
+        ITEM_USER_NAME_LOGIN(1, "userNameLogin"),
+        ITEM_EMP_CODE_LOGIN(2, "employeeCodeLogin"),
+        ITEM_MODIFY_DATE(3, "modifyDateTime"),
+        ITEM_LOGIN_STATUS(4, "loginStatus"),
+        ITEM_METHOD_NAME(5, "methodName"),
+        ITEM_NOTE(6, "note"),
+        ITEM_MENU_NAME(7, "menuName"),
+        ITEM_USER_NAME_TAGET (8, "userNameTaget"),
+        ITEM_EMP_CODE_TAGET (9, "employeeCodeTaget"),
+        ITEM_PROCESS_ATTR (10, "processAttr"),
+        ITEM_CATEGORY_NAME (11, "categoryName"),
+        ITEM_TAGET_DATE (12, "targetDate"),
+        ITEM_INFO_OPERATE_ATTR (13, "infoOperateAttr"),
+        ITEM_NAME (14, "itemName"),
+        ITEM_VALUE_BEFOR (15, "valueBefore"),
+        ITEM_VALUE_AFTER (16, "valueAfter"),
+        ITEM_CORRECT_ATTR (17, "correctionAttr"),
+        ITEM_OPERATION_ID (18, "operationId"),
+        ITEM_PARRENT_KEY (19, "parentKey");
+        
+    	/** The code. */
+    	public  int code;
+
+    	/** The name id. */
+    	public  String name;
+
+    	private ITEM_PROPERTY(int code, String name) {
+    		this.code = code;
+    		this.name = name;
+    	}
+    }
+	@Setter
+	@Getter
+	public class LogBasicInfoModel{
+        private String parentKey;
+        private String operationId;
+        private String userNameLogin;
+        private String employeeCodeLogin;
+        private String userIdTaget;
+        private String userNameTaget;
+        private String employeeCodeTaget;
+        private String modifyDateTime;
+        private String menuName;
+        private String note;
+        private String methodName;
+        private String loginStatus;
+        private String processAttr;
+        private List<DataCorrectLogModel> lstLogDataCorrectRecordRefeDto = new ArrayList<>();
+        private List<LogOutputItemDto> lstLogOutputItemDto = new ArrayList<>();
+        private List<PerCateCorrectRecordModel> lstLogPerCateCorrectRecordDto = new ArrayList<>();
+		public LogBasicInfoModel(String userNameLogin, String employeeCodeLogin, String userIdTaget, String userNameTaget,
+				String employeeCodeTaget, String modifyDateTime, String processAttr, List<LogOutputItemDto> lstLogOutputItemDto,
+				String menuName, String note, String methodName, String loginStatus, 
+				List<DataCorrectLogModel> lstLogDataCorrectRecordRefeDto, 
+				List<PerCateCorrectRecordModel> lstLogPerCateCorrectRecordDto) {
+			super();
+			this.userNameLogin = userNameLogin;
+			this.employeeCodeLogin = employeeCodeLogin;
+			this.userIdTaget = userIdTaget;
+			this.userNameTaget = userNameTaget;
+			this.employeeCodeTaget = employeeCodeTaget;
+			this.modifyDateTime = modifyDateTime;
+			this.processAttr = processAttr;
+			
+			this.lstLogOutputItemDto.addAll(lstLogOutputItemDto);
+			this.menuName = menuName;
+			this.note = note;
+			this.methodName = methodName;
+			this.loginStatus = loginStatus;
+		}
+		
+		public LogBasicInfoModel(LogBasicInfoDto logBaseInfo, List<DataCorrectLogModel> lstLogDataCorrectRecordRefeDto,  List<PerCateCorrectRecordModel> lstLogPerCateCorrectRecordDto) {
+			this.userNameLogin = logBaseInfo.getUserNameLogin();
+			this.employeeCodeLogin = logBaseInfo.getEmployeeCodeLogin();
+			this.userIdTaget = logBaseInfo.getUserIdTaget();
+			this.userNameTaget = logBaseInfo.getUserNameTaget();
+			this.employeeCodeTaget = logBaseInfo.getEmployeeCodeTaget();
+			this.modifyDateTime = logBaseInfo.getModifyDateTime();
+			this.processAttr = logBaseInfo.getProcessAttr();
+			if(!CollectionUtil.isEmpty(logBaseInfo.getLstLogOutputItemDto())) {
+				this.lstLogOutputItemDto.addAll(logBaseInfo.getLstLogOutputItemDto());
+			}
+			this.menuName = logBaseInfo.getMenuName();
+			this.note = logBaseInfo.getNote();
+			this.methodName = logBaseInfo.getMethodName();
+			this.loginStatus = logBaseInfo.getLoginStatus();
+			this.lstLogDataCorrectRecordRefeDto
+					.addAll(lstLogDataCorrectRecordRefeDto);
+			this.lstLogPerCateCorrectRecordDto.addAll(lstLogPerCateCorrectRecordDto);
 		}
 	}
 }
