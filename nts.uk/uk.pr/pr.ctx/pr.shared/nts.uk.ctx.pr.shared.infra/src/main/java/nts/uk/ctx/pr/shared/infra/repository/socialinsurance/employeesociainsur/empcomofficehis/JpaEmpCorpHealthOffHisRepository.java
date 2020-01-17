@@ -340,7 +340,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 					
 					+ " WHERE CID =?"
 					
-					+ " SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
+					+ " AND SID IN ( "+ NtsStatement.In.createParamsString(subList)+")"
 					
 					+ " ORDER BY SID, START_DATE DESC";;
 			
