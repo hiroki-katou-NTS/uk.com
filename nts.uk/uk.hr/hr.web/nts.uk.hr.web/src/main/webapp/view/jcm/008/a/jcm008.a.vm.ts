@@ -437,7 +437,10 @@ module jcm008.a {
             let param = {
                 employeeId: selectedEmp.employeeId,
                 personId: selectedEmp.personID,
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
+                baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                getDepartment: true,
+                getPosition: true,
+                getEmployment: true
             };
             block.grayout();
             service.findEmployeeInfo(param).done((data) => {
@@ -457,7 +460,10 @@ module jcm008.a {
                     department: data.department?data.department.departmentName:null,
                     position: data.position?data.position.positionName:null,
                     employment: data.employment?data.employment.employmentName:null,
-                    image: data.avatarFile ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png'
+                    image: data.avatarFile ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png',
+                    showDepartment: param.getDepartment,
+                    showPosition: param.getPosition,
+                    showEmployment: param.getEmployment,
                 };
 
                 self.employeeInfo(emp);

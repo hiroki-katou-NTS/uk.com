@@ -20,7 +20,8 @@ public class EmployeeInformationFinder {
 
 		List<EmployeeInformationImport> empInfos = this.empInfoAdaptor.getEmployeeInfos(
 				Optional.ofNullable(Arrays.asList(query.getPersonId())), Arrays.asList(query.getEmployeeId()),
-				query.getBaseDate());
+				query.getBaseDate(), Optional.ofNullable(query.getGetDepartment()),
+				Optional.ofNullable(query.getGetPosition()), Optional.ofNullable(query.getGetEmployment()));
 
 		if (!empInfos.isEmpty()) {
 			return empInfos.get(0);

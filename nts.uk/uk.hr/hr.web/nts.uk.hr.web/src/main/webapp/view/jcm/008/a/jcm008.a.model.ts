@@ -29,6 +29,9 @@ interface IEmployee {
     department: string;
     position: string;
     employment: string;
+    showDepartment: boolean,
+    showPosition: boolean,
+    showEmployment: boolean,
 }
 
 class ScreenSetting {
