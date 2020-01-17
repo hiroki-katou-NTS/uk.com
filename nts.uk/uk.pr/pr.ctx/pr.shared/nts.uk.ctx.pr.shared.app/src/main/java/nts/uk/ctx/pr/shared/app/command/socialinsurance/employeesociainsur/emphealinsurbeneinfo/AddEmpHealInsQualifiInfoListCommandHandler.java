@@ -123,7 +123,7 @@ implements PeregAddListCommandHandler<AddEmpHealInsQualifiInfoCommand>{
 			
 		}
 		
-		return null;
+		return result;
 	}
 
 }
