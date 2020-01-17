@@ -139,7 +139,18 @@ public class EmpSocialInsGradeService {
      * @return map (key, value) = (employment code, current processing date)
      */
     public Map<String, YearMonth> getMapProcessYear(String cid, List<String> employmentCodes) {
-        return null;
+    	
+    	Map<String, YearMonth> results = new HashMap<String, YearMonth>();
+    	
+    	employmentCodes.stream().forEach(c ->{
+    		
+    		YearMonth yearMonth =  getProcessYear(cid, c);
+    		
+    		results.put(c, yearMonth);
+    		
+    	});
+    	
+        return results;
     }
 
     /**

@@ -126,6 +126,11 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 			
 		}
 		
+		if(sidErrorLst.isEmpty()) {
+			
+			errorExceptionLst.add(new MyCustomizeException("Invalid", sidErrorLst));
+		}
+		
 		return errorExceptionLst;
 	}
 

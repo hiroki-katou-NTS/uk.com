@@ -143,7 +143,7 @@ public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHi
         		
         		EmpCorpHealthOffHisDto item = new EmpCorpHealthOffHisDto(
         				
-                        e.getEmployeeId(),
+        				dateHistoryItem.identifier(),
                         
                         dateHistoryItem.start(),
                         

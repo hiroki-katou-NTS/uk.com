@@ -1,16 +1,15 @@
 package nts.uk.ctx.pr.shared.ac.wageprovision.processdatecls;
 
-import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.EmploymentTiedProcessYmPub;
-import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearAdapter;
-import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearImport;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.EmploymentTiedProcessYmPub;
+import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.EmpTiedProYearImport;
 @Stateless
 public class EmpTiedProYearAdapterImpl implements EmpTiedProYearAdapter {
 
