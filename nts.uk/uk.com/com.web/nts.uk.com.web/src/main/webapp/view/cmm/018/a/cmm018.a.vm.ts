@@ -99,10 +99,8 @@ module nts.uk.com.view.cmm018.a {
             //emp info: TH goi tu man application
             empInfoLabel: KnockoutObservable<string> = ko.observable("");
             items: KnockoutObservableArray<any> = ko.observableArray([]);
-            constructor(transferData: any) {
+            constructor() {
                 let self = this;
-                //call method start page
-                self.preStart(transferData);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
                     

@@ -14,6 +14,9 @@ module nts.uk.com.view.cmm018.shr {
             settingCas005: "at/auth/workplace/employmentrole/getemproleSet",
             settingKaf022: "at/request/application/approval/appSet",
             setAppUseKaf022: "at/request/application/approval/app-useAtr",
+            setDisHR: "hrdev/approvalSet/appRootSet",
+            settingJnh011: "hr/notice/report/findByAbol",
+            settingJmm018: "hrdeveventmenu/eventmenuoperation/findByApprUse"
         }
         
         export function updateHistory(data): JQueryPromise<any> {
@@ -37,9 +40,6 @@ module nts.uk.com.view.cmm018.shr {
         export function getInfoEmLogin(): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getInfoEmLogin);
         }
-        export function getNameConfirmType(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getNameConfirmType);
-        }
         export function getWkpDepInfo(param): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getWkpDepInfo, param);
         }
@@ -55,6 +55,18 @@ module nts.uk.com.view.cmm018.shr {
         }
         export function setAppUseKaf022(workplaceID): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.setAppUseKaf022, workplaceID);
+        }
+        //PersonalReportClassificationWebService
+        export function settingJnh011(): JQueryPromise<any> {
+            return nts.uk.request.ajax("hr", paths.settingJnh011);
+        }
+        //HrApprovalRooteSetWs
+        export function setDisHR(): JQueryPromise<any> {
+            return nts.uk.request.ajax("hr", paths.setDisHR);
+        }
+        //EventManageWebservice
+        export function settingJmm018(): JQueryPromise<any> {
+            return nts.uk.request.ajax("hr", paths.settingJmm018);
         }
     } 
 }
