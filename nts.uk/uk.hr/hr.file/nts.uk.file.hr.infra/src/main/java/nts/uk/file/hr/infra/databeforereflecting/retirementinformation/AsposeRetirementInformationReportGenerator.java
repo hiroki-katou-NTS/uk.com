@@ -277,11 +277,11 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			int totalColInGroup = 3;
 			if ((setting.isPresent() && !setting.get().isUsageFlg()) || !setting.isPresent()) {
 				for (int j = 0; j < totalColInGroup; j++) {
-					delColList.add(delColNumber + j);
+					delColList.add(delColNumber - j);
 				}
 			} else {
 				for (int j = 0; j < totalColInGroup - setting.get().getDisplayNum(); j++) {
-					delColList.add(delColNumber + j);
+					delColList.add(delColNumber - j);
 				}
 
 			}
@@ -304,13 +304,13 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		switch (evaluationItem) {
 
 		case PERSONNEL_ASSESSMENT:
-			colNumber = PER_EVAL_1;
+			colNumber = PER_EVAL_3;
 			break;
 		case HEALTH_CONDITION:
-			colNumber = HEATH_STATUS_1;
+			colNumber = HEATH_STATUS_3;
 			break;
 		case STRESS_CHECK:
-			colNumber = STRESS_CHECK_1;
+			colNumber = STRESS_CHECK_3;
 			break;
 
 		}
