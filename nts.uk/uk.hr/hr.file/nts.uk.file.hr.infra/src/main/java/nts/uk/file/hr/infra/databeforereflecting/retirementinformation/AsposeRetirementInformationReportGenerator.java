@@ -30,7 +30,10 @@ import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
+import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -48,7 +51,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 	private static final String TITLE = "定年退職者一覧";
 
 	private static final int FIRST_ROW_FILL = 7;
-	
+
 	private static final int MAX_LINE = 26;
 
 	private static final int RETENTION = 0;
@@ -83,19 +86,19 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, SearchRetiredResultDto dataSource,
-			SearchRetiredEmployeesQuery query, String companyName) {
+			SearchRetiredEmployeesQuery query, String companyName, List<ReferEvaluationItem> referEvaluaItems) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			// set up page prepare print
-			this.writeFileExcel(worksheets, dataSource, query, companyName);
+			this.writeFileExcel(worksheets, dataSource, query, companyName, referEvaluaItems);
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 
-			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(
-					REPORT_FILE_NAME + REPORT_FILE_EXTENSION)));
+			designer.saveAsExcel(
+					this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME + REPORT_FILE_EXTENSION)));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -103,7 +106,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 	}
 
 	private void writeFileExcel(WorksheetCollection wsc, SearchRetiredResultDto dto, SearchRetiredEmployeesQuery query,
-			String companyName) {
+			String companyName, List<ReferEvaluationItem> referEvaluaItems) {
 		try {
 
 			List<PlannedRetirementDto> exportData = dto.getRetiredEmployees();
@@ -112,6 +115,8 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
 			this.settingHeader(ws, query, companyName);
+			this.settingTitle(ws);
+			this.settingTableHeader(ws);
 			int page = 1;
 			for (int i = 0; i < exportData.size(); i++) {
 
@@ -124,6 +129,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				if (i == exportData.size() - 1) {
 					ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
 				}
+				// content
 				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getNotificationCategory() == 0 ? "空白" : "保留");
 				ws.getCells().get(rowIndex, RETIREMENT)
 						.putValue(EnumAdaptor.valueOf(entity.getExtendEmploymentFlg(), ResignmentDivision.class).name);
@@ -135,7 +141,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME).putValue(entity.getBusinessName());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME_KANA).putValue(entity.getBusinessnameKana());
 				ws.getCells().get(rowIndex, BIRTH_DAY).putValue(convertToString(entity.getBirthday()));
-				ws.getCells().get(rowIndex, AGE).putValue(entity.getAge());
+				ws.getCells().get(rowIndex, AGE).putValue(entity.getRetirementAge());
 				ws.getCells().get(rowIndex, DEPARTMENT_CODE).putValue(entity.getDepartmentCode());
 				ws.getCells().get(rowIndex, DEPARTMENT_NAME).putValue(entity.getDepartmentName());
 				ws.getCells().get(rowIndex, EMPLOYMENT_CODE).putValue(entity.getEmploymentCode());
@@ -157,10 +163,9 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 						interViewOpt.isPresent() ? convertToString(interViewOpt.get().getInterviewDate()) : "");
 				ws.getCells().get(rowIndex, INTERVIEWER)
 						.putValue(interViewOpt.isPresent() ? interViewOpt.get().getBusinessName() : "");
-				setBorder(wsc.get(0),rowIndex);
-				
-				
-				
+				setBorder(wsc.get(0), rowIndex);
+
+				// line break
 				if (page == 1) {
 					if (rowIndex % (MAX_LINE + FIRST_ROW_FILL) == 0) {
 						HorizontalPageBreakCollection hPageBreaks = ws.getHorizontalPageBreaks();
@@ -174,17 +179,115 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 						page++;
 					}
 				}
+
 				rowIndex++;
 			}
-			if (exportData.size() == 0) {
-				ws.getCells().deleteRows(rowIndex, 2);
-			}
-			
-				
-				
+			// remove evalua by setting
+			removeColumnEvalue(ws, referEvaluaItems);
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void removeColumnEvalue(Worksheet ws, List<ReferEvaluationItem> referEvaluaItems) {
+		
+		int deletedCol = 0;
+		
+		int totalItemType = 3;
+		
+		for (int i = 0; i < totalItemType; i++) {
+			int currentItemType = i;
+
+			int delColNumber = getStartCol(EnumAdaptor.valueOf(i, EvaluationItem.class));
+			Optional<ReferEvaluationItem> setting = referEvaluaItems.stream()
+					.filter(x -> x.getEvaluationItem().value == currentItemType).findFirst();
+			
+			if ((setting.isPresent() && !setting.get().isUsageFlg()) || !setting.isPresent()) {
+				deletedCol = deleteCol(ws, delColNumber, 0, deletedCol);
+			} else {
+				deletedCol = deleteCol(ws, delColNumber, setting.get().getDisplayNum(), deletedCol);
+			}
+
+		}
+	}
+
+	private int deleteCol(Worksheet ws, int delColNumber, Integer displayNum, int deletedCol) {
+
+		int totalColInGroup = 3;
+
+		if (displayNum == totalColInGroup) {
+			return 0;
+		}
+
+		int numberCol = totalColInGroup - displayNum;
+
+		for (int i = 0; i < numberCol; i++) {
+			ws.getCells().deleteColumn(delColNumber - deletedCol);
+
+			deletedCol++;
+		}
+		return deletedCol;
+	}
+
+	private int getStartCol(EvaluationItem evaluationItem) {
+		int colNumber = 0;
+		switch (evaluationItem) {
+
+		case PERSONNEL_ASSESSMENT:
+			colNumber = PER_EVAL_3;
+			break;
+		case HEALTH_CONDITION:
+			colNumber = HEATH_STATUS_3;
+			break;
+		case STRESS_CHECK:
+			colNumber = STRESS_CHECK_3;
+			break;
+
+		}
+		return colNumber;
+	}
+
+	private void settingTableHeader(Worksheet ws) {
+		int rowIndex = FIRST_ROW_FILL - 1;
+
+		ws.getCells().get(rowIndex, RETENTION).putValue(TextResource.localize("JCM008_P3_1"));
+		ws.getCells().get(rowIndex, RETIREMENT).putValue(TextResource.localize("JCM008_P3_2"));
+		ws.getCells().get(rowIndex, STATUS).putValue(TextResource.localize("JCM008_P3_3"));
+		ws.getCells().get(rowIndex, DESIRED_CODE).putValue(TextResource.localize("JCM008_P3_4"));
+		ws.getCells().get(rowIndex, DESIRED_NAME).putValue(TextResource.localize("JCM008_P3_4_1"));
+		ws.getCells().get(rowIndex, EMPLOYEE_CD).putValue(TextResource.localize("JCM008_P3_5"));
+		ws.getCells().get(rowIndex, EMPLOYEE_NAME).putValue(TextResource.localize("JCM008_P3_6"));
+		ws.getCells().get(rowIndex, EMPLOYEE_NAME_KANA).putValue(TextResource.localize("JCM008_P3_7"));
+		ws.getCells().get(rowIndex, BIRTH_DAY).putValue(TextResource.localize("JCM008_P3_8"));
+		ws.getCells().get(rowIndex, AGE).putValue(TextResource.localize("JCM008_P3_9"));
+		ws.getCells().get(rowIndex, DEPARTMENT_CODE).putValue(TextResource.localize("JCM008_P3_10"));
+		ws.getCells().get(rowIndex, DEPARTMENT_NAME).putValue(TextResource.localize("JCM008_P3_11"));
+		ws.getCells().get(rowIndex, EMPLOYMENT_CODE).putValue(TextResource.localize("JCM008_P3_12"));
+		ws.getCells().get(rowIndex, EMPLOYMENT_NAME).putValue(TextResource.localize("JCM008_P3_13"));
+		ws.getCells().get(rowIndex, JOIN_DATE).putValue(TextResource.localize("JCM008_P3_14"));
+		ws.getCells().get(rowIndex, RETI_DATE).putValue(TextResource.localize("JCM008_P3_15"));
+		ws.getCells().get(rowIndex, RELEASE_DATE).putValue(TextResource.localize("JCM008_P3_16"));
+		ws.getCells().get(rowIndex, INPUT_DATE).putValue(TextResource.localize("JCM008_P3_17"));
+		ws.getCells().get(rowIndex, PER_EVAL_1).putValue(TextResource.localize("JCM008_P3_18"));
+		ws.getCells().get(rowIndex, PER_EVAL_2).putValue(TextResource.localize("JCM008_P3_19"));
+		ws.getCells().get(rowIndex, PER_EVAL_3).putValue(TextResource.localize("JCM008_P3_20"));
+		ws.getCells().get(rowIndex, HEATH_STATUS_1).putValue(TextResource.localize("JCM008_P3_21"));
+		ws.getCells().get(rowIndex, HEATH_STATUS_2).putValue(TextResource.localize("JCM008_P3_22"));
+		ws.getCells().get(rowIndex, HEATH_STATUS_3).putValue(TextResource.localize("JCM008_P3_23"));
+		ws.getCells().get(rowIndex, STRESS_CHECK_1).putValue(TextResource.localize("JCM008_P3_24"));
+		ws.getCells().get(rowIndex, STRESS_CHECK_2).putValue(TextResource.localize("JCM008_P3_25"));
+		ws.getCells().get(rowIndex, STRESS_CHECK_3).putValue(TextResource.localize("JCM008_P3_26"));
+		ws.getCells().get(rowIndex, INTERVIEW_DATE).putValue(TextResource.localize("JCM008_P3_27"));
+		ws.getCells().get(rowIndex, INTERVIEWER).putValue(TextResource.localize("JCM008_P3_28"));
+
+	}
+
+	private void settingTitle(Worksheet ws) {
+		ws.getCells().get(1, 0).putValue(TextResource.localize("JCM008_P2_1"));
+		ws.getCells().get(2, 0).putValue(TextResource.localize("JCM008_P2_4"));
+		ws.getCells().get(3, 0).putValue(TextResource.localize("JCM008_P2_6"));
+		ws.getCells().get(4, 0).putValue(TextResource.localize("JCM008_P2_8"));
 	}
 
 	private void setBorder(Worksheet worksheet, int rowIndex) {
@@ -223,8 +326,8 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		ws.getCells().get(1, 3).putValue(query.getStartDate() + " ～ " + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
 		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
-		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "と表示" : "全て");
-		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "と表示" : "全て");
+		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "全て" : query.getSelectDepartmentName());
+		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "全て" : query.getSelectEmploymentName());
 	}
 
 }

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
-import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryRepository;
+import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryService;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.dto.RegulationHistoryDto;
 import test.empregulationhistory.dto.EmpRegulationHistListDto;
 import test.empregulationhistory.dto.EmploymentRegulationHistoryDto;
@@ -17,7 +17,7 @@ import test.empregulationhistory.param.EmpRegHisParamDto;
 public class FinderTest {
 
 	@Inject
-	private EmploymentRegulationHistoryRepository repo;
+	private EmploymentRegulationHistoryService repo;
 	
 	@Inject
 	private EmploymentRegulationHistoryInterface empRegHisInter;

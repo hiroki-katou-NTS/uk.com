@@ -51,4 +51,6 @@ public class EmployeeInformation {
 
 	/** The employment cls. */
 	Optional<Integer> employmentCls; // 就業区分
+	
+	int gender;
 }

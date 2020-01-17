@@ -105,15 +105,24 @@ public class RetiInforRegisInfoCommand {
 	private String retirementReasonCtgName1;
 	
 	public GeneralDate getInputDate() {
-		return convertToGenDate(this.inputDate);
+		if(this.inputDate != null) {
+			return convertToGenDate(this.inputDate);
+		}
+		return null;
 	}
 
 	public GeneralDate getReleaseDate() {
-		return convertToGenDate(this.releaseDate);
+		if(this.releaseDate != null) {
+			return convertToGenDate(this.releaseDate);
+		}
+		return null;
 	}
 
 	public GeneralDate getRetirementDate() {
-		return convertToGenDate(this.retirementDate);
+		if(this.retirementDate != null) {
+			return convertToGenDate(this.retirementDate);
+		}
+		return null;
 	}
 
 	private GeneralDate convertToGenDate(String date) {

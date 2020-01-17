@@ -299,21 +299,21 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		
 		if(retirementAge.isPresent()) {
-			retireTermList.removeIf(c-> c.getRetirementAge().v() == retirementAge.get().v());
+			retireTermList.removeIf(c-> !(c.getRetirementAge().v() == retirementAge.get().v()));
 			if(retireTermList.isEmpty()) {
 				return new ArrayList<>();
 			}else {
 				if(!employmentCode.isEmpty()) {
-					retireTermList.removeIf(c->employmentCode.contains(c.getEmploymentCode()));
+					retireTermList.removeIf(c->!employmentCode.contains(c.getEmploymentCode()));
 					if(retireTermList.isEmpty()) {
 						return new ArrayList<>();
 					}
 				}
 			}
 		}else {
-			retireTermList.removeIf(c-> c.getRetirePlanCourseClass() == RetirePlanCourseClass.STANDARD_COURSE);
+			retireTermList.removeIf(c-> !(c.getRetirePlanCourseClass() == RetirePlanCourseClass.STANDARD_COURSE));
 			if(!employmentCode.isEmpty()) {
-				retireTermList.removeIf(c->employmentCode.contains(c.getEmploymentCode()));
+				retireTermList.removeIf(c->!employmentCode.contains(c.getEmploymentCode()));
 				if(retireTermList.isEmpty()) {
 					return new ArrayList<>();
 				}
@@ -360,7 +360,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		
 		if(!departmentId.isEmpty()) {
 			retirementInforList.removeIf(c->{
-				return departmentId.contains(c.getDepartmentId());
+				return !departmentId.contains(c.getDepartmentId());
 			});
 			if(retirementInforList.isEmpty()) {
 				return new ArrayList<>();

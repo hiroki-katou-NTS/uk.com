@@ -12,11 +12,11 @@ public enum RetirePlanCourseClass {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	RetirePlanCourseClass(int value, String name) {
+	RetirePlanCourseClass(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

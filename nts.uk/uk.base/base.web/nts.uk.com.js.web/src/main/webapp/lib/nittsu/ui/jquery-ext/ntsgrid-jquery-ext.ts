@@ -5741,11 +5741,15 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(colIdx)) {
                     let colIdx = descriptor.isFixedColumn(key);
                     if (!util.isNullOrUndefined(colIdx)) {
-                        return descriptor.fixedTable.find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
+                        return (descriptor.fixedTable || fixedColumns.getFixedTable($grid)).find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
                     }
                 }
-                if (!util.isNullOrUndefined(idx) && idx >= descriptor.startRow 
-                    && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                if (_.size(descriptor.elements) > 0 && !util.isNullOrUndefined(idx) 
+                    && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                    if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
+                        return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
+                    }
+                    
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                 }
                 
