@@ -2,9 +2,15 @@ package nts.uk.file.hr.infra.databeforereflecting.retirementinformation;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -25,6 +31,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetiDateDto;
+import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementCourseDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
@@ -39,6 +47,39 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposeRetirementInformationReportGenerator extends AsposeCellsReportGenerator
 		implements RetirementInformationGenerator {
+
+	private static final Map<String, List<Integer>> COL_MAP = createMap();
+
+	private static Map<String, List<Integer>> createMap() {
+		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
+		result.put("flag", Arrays.asList(0));
+		result.put("extendEmploymentFlg", Arrays.asList(1));
+		result.put("registrationStatus", Arrays.asList(2));
+		result.put("desiredWorkingCourseId", Arrays.asList(3, 4));
+		result.put("employeeCode", Arrays.asList(5));
+		result.put("employeeName", Arrays.asList(6));
+		result.put("businessnameKana", Arrays.asList(7));
+		result.put("birthday", Arrays.asList(8));
+		result.put("ageDisplay", Arrays.asList(9));
+		result.put("departmentName", Arrays.asList(10, 11));
+		result.put("employmentName", Arrays.asList(12, 13));
+		result.put("dateJoinComp", Arrays.asList(14));
+		result.put("retirementDate", Arrays.asList(15));
+		result.put("releaseDate", Arrays.asList(16));
+		result.put("inputDate", Arrays.asList(17));
+		result.put("hrEvaluation1", Arrays.asList(18));
+		result.put("hrEvaluation2", Arrays.asList(19));
+		result.put("hrEvaluation3", Arrays.asList(20));
+		result.put("healthStatus1", Arrays.asList(21));
+		result.put("healthStatus2", Arrays.asList(22));
+		result.put("healthStatus3", Arrays.asList(23));
+		result.put("stressStatus1", Arrays.asList(24));
+		result.put("stressStatus2", Arrays.asList(25));
+		result.put("stressStatus3", Arrays.asList(26));
+		result.put("interviewRecordTxt", Arrays.asList(27, 28));
+
+		return Collections.unmodifiableMap(result);
+	}
 
 	private static final String TEMPLATE_FILE = "report/定年退職者一覧_Template.xlsx";
 
@@ -86,13 +127,14 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, SearchRetiredResultDto dataSource,
-			SearchRetiredEmployeesQuery query, String companyName, List<ReferEvaluationItem> referEvaluaItems) {
+			SearchRetiredEmployeesQuery query, String companyName, List<ReferEvaluationItem> referEvaluaItems,
+			RetiDateDto retiDto) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			// set up page prepare print
-			this.writeFileExcel(worksheets, dataSource, query, companyName, referEvaluaItems);
+			this.writeFileExcel(worksheets, dataSource, query, companyName, referEvaluaItems, retiDto);
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -106,7 +148,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 	}
 
 	private void writeFileExcel(WorksheetCollection wsc, SearchRetiredResultDto dto, SearchRetiredEmployeesQuery query,
-			String companyName, List<ReferEvaluationItem> referEvaluaItems) {
+			String companyName, List<ReferEvaluationItem> referEvaluaItems, RetiDateDto retiDto) {
 		try {
 
 			List<PlannedRetirementDto> exportData = dto.getRetiredEmployees();
@@ -114,9 +156,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 			int rowIndex = FIRST_ROW_FILL;
 			Worksheet ws = wsc.get(0);
 			int lineCopy = 3;
-			this.settingHeader(ws, query, companyName);
-			this.settingTitle(ws);
-			this.settingTableHeader(ws);
+			
 			int page = 1;
 			for (int i = 0; i < exportData.size(); i++) {
 
@@ -130,7 +170,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 					ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
 				}
 				// content
-				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getNotificationCategory() == 0 ? "空白" : "保留");
+				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "空白" : "保留");
 				ws.getCells().get(rowIndex, RETIREMENT)
 						.putValue(EnumAdaptor.valueOf(entity.getExtendEmploymentFlg(), ResignmentDivision.class).name);
 				ws.getCells().get(rowIndex, STATUS)
@@ -182,52 +222,81 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 				rowIndex++;
 			}
+			List<Integer> delCols = new ArrayList<Integer>();
+			
 			// remove evalua by setting
-			removeColumnEvalue(ws, referEvaluaItems);
-
+			delCols.addAll(getRetiDelCols(retiDto.getRetirementCourses()));
+			// remove by Reti Setting ()
+			delCols.addAll(getEvalueRemoveCols( referEvaluaItems));
+			// remove by hidden column in UI
+			delCols.addAll(getHidendRemoveCols( query.getHidedColumns()));
+			
+			deleteCol(ws, delCols);
+			
+			this.settingHeader(ws, query, companyName);
+			this.settingTitle(ws);
+			this.settingTableHeader(ws);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void removeColumnEvalue(Worksheet ws, List<ReferEvaluationItem> referEvaluaItems) {
-		
-		int deletedCol = 0;
-		
+	private List<Integer> getRetiDelCols(List<RetirementCourseDto> retirementCourses) {
+		List<Integer> delCols = new ArrayList<Integer>();
+		if (retirementCourses.isEmpty()) {
+			delCols.addAll(COL_MAP.get("desiredWorkingCourseId"));
+		}
+
+		return delCols;
+	}
+
+	private List<Integer> getHidendRemoveCols(List<String> hidedColumns) {
+		List<Integer> delColList = new ArrayList<Integer>();
+
+		hidedColumns.forEach(x -> {
+			if (COL_MAP.get(x) != null) {
+				delColList.addAll(COL_MAP.get(x));
+			}
+		});
+
+		return delColList;
+	}
+
+	private List<Integer> getEvalueRemoveCols(List<ReferEvaluationItem> referEvaluaItems) {
+
+		List<Integer> delColList = new ArrayList<Integer>();
+
 		int totalItemType = 3;
-		
+
 		for (int i = 0; i < totalItemType; i++) {
 			int currentItemType = i;
 
 			int delColNumber = getStartCol(EnumAdaptor.valueOf(i, EvaluationItem.class));
 			Optional<ReferEvaluationItem> setting = referEvaluaItems.stream()
 					.filter(x -> x.getEvaluationItem().value == currentItemType).findFirst();
-			
+			int totalColInGroup = 3;
 			if ((setting.isPresent() && !setting.get().isUsageFlg()) || !setting.isPresent()) {
-				deletedCol = deleteCol(ws, delColNumber, 0, deletedCol);
+				for (int j = 0; j < totalColInGroup; j++) {
+					delColList.add(delColNumber + j);
+				}
 			} else {
-				deletedCol = deleteCol(ws, delColNumber, setting.get().getDisplayNum(), deletedCol);
+				for (int j = 0; j < totalColInGroup - setting.get().getDisplayNum(); j++) {
+					delColList.add(delColNumber + j);
+				}
+
 			}
 
 		}
+		return delColList;
 	}
 
-	private int deleteCol(Worksheet ws, int delColNumber, Integer displayNum, int deletedCol) {
-
-		int totalColInGroup = 3;
-
-		if (displayNum == totalColInGroup) {
-			return 0;
-		}
-
-		int numberCol = totalColInGroup - displayNum;
-
-		for (int i = 0; i < numberCol; i++) {
-			ws.getCells().deleteColumn(delColNumber - deletedCol);
-
+	private void deleteCol(Worksheet ws, List<Integer> delCol) {
+		int deletedCol = 0;
+		List<Integer> sortedDelcol = delCol.stream().distinct().sorted().collect(Collectors.toList());
+		for (int i = 0; i < sortedDelcol.size(); i++) {
+			ws.getCells().deleteColumn(sortedDelcol.get(i) - deletedCol);
 			deletedCol++;
 		}
-		return deletedCol;
 	}
 
 	private int getStartCol(EvaluationItem evaluationItem) {
@@ -235,13 +304,13 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 		switch (evaluationItem) {
 
 		case PERSONNEL_ASSESSMENT:
-			colNumber = PER_EVAL_3;
+			colNumber = PER_EVAL_1;
 			break;
 		case HEALTH_CONDITION:
-			colNumber = HEATH_STATUS_3;
+			colNumber = HEATH_STATUS_1;
 			break;
 		case STRESS_CHECK:
-			colNumber = STRESS_CHECK_3;
+			colNumber = STRESS_CHECK_1;
 			break;
 
 		}

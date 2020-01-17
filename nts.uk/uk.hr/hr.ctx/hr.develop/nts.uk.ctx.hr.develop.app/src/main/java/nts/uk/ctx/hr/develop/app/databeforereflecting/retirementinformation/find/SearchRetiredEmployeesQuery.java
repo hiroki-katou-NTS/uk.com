@@ -43,6 +43,8 @@ public class SearchRetiredEmployeesQuery {
 
 	private String selectEmploymentName;
 	
+	private List<String> hidedColumns;
+	
 	public void setStartDate(String date) {
 		this.startDate = GeneralDate.fromString(date, DATE_FORMAT);
 	}
