@@ -18,7 +18,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 
         // master
         reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
-        dateRule: KnockoutObservableArray<any> = ko.observableArray([]);
+        dateRule: KnockoutObservableArray<any>;
         dateSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         monthSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         retireDateRule: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -43,8 +43,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             // radio button
             self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm); 
-            _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});           
-            self.dateRule = (__viewContext.enums.DateRule);
+            //_.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});           
+            self.dateRule = ko.observableArray([
+                    new ItemModel(1, getText('JMM018_B422_15_5_1')),
+                    new ItemModel(2, getText('JMM018_B422_15_5_2')),
+                    new ItemModel(3, getText('JMM018_B422_15_5_3')),
+                    new ItemModel(6, getText('JMM018_B422_15_5_6')),
+                ]);
             self.dateSelectItem = (__viewContext.enums.DateSelectItem);
             self.retireDateRule = (__viewContext.enums.RetireDateRule);
             self.monthSelectItem = (__viewContext.enums.MonthSelectItem);
