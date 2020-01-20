@@ -22,11 +22,11 @@ public enum DateRule {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	DateRule(int value, String name) {
+	DateRule(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

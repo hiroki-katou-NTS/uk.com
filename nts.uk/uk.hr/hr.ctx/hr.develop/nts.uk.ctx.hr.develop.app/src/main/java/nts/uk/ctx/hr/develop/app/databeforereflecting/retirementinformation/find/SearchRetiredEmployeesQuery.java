@@ -33,11 +33,17 @@ public class SearchRetiredEmployeesQuery {
 	// （A222_7_3）部門選択 = 空白
 	private List<String> selectDepartment;
 
+	private String selectDepartmentName;
+
 	// （A222_9_1）すべて選択 = チェックなし
 	private boolean allSelectEmployment;
 
 	// （A222_9_3）雇用選択 = 空白
 	private List<String> selectEmployment;
+
+	private String selectEmploymentName;
+	
+	private List<String> hidedColumns;
 	
 	public void setStartDate(String date) {
 		this.startDate = GeneralDate.fromString(date, DATE_FORMAT);

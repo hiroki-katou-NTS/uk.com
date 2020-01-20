@@ -139,6 +139,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					.employeeCode(e.employeeCode)
 					.businessName(p.businessName)
 					.businessNameKana(p.businessNameKana)
+					.gender(p.gender)
 					.workplace(Optional.empty())
 					.classification(Optional.empty())
 					.department(Optional.empty())

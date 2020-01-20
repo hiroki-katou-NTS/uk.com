@@ -11,8 +11,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.RequestFlag;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.service.DataBeforeReflectingPerInfoService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.retirementinfo.RetirementCategory;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RetirementInformation_NewService {
@@ -34,18 +36,19 @@ public class RetirementInformation_NewService {
 		return RetirementInformation_New.builder().historyId(datareflect.getHistoryId())
 				.desiredWorkingCourseCd(datareflect.getSelect_code_02()).retirementDate(datareflect.getDate_01())
 				.releaseDate(datareflect.getReleaseDate()).sId(datareflect.getSId())
-				.extendEmploymentFlg(
-						EnumAdaptor.valueOf(Integer.valueOf(datareflect.getSelect_code_04()), ResignmentDivision.class))
+				.extendEmploymentFlg(datareflect.getSelect_code_04() != null ? EnumAdaptor
+						.valueOf(Integer.valueOf(datareflect.getSelect_code_04()), ResignmentDivision.class) : null)
 				.employeeName(datareflect.getPersonName()).scd(datareflect.getScd())
 				.companyId(datareflect.getCompanyId()).workName(datareflect.getWorkName())
-				.status(EnumAdaptor.valueOf(datareflect.getStattus().value, Status.class))
+				.status(datareflect.getStattus() != null
+						? EnumAdaptor.valueOf(datareflect.getStattus().value, Status.class) : null)
 				.dst_HistId(datareflect.getHistId_Refer()).desiredWorkingCourseId(datareflect.getSelect_id_02())
 				.pendingFlag(datareflect.getOnHoldFlag()).companyCode(datareflect.getCompanyCode())
 				.PersonName(datareflect.getPersonName()).desiredWorkingCourseName(datareflect.getSelect_name_02())
 				.contractCode(datareflect.getContractCode()).workId(datareflect.getWorkId())
 				.inputDate(datareflect.getRegisterDate())
-				.retirementCategory(EnumAdaptor.valueOf(Integer.valueOf(datareflect.getSelect_code_01()).intValue(),
-						RetirementCategory.class))
+				.retirementCategory(datareflect.getSelect_code_01() != null ? EnumAdaptor.valueOf(
+						Integer.valueOf(datareflect.getSelect_code_01()).intValue(), RetirementCategory.class) : null)
 				.notificationCategory(datareflect.getRequestFlag())
 				.retirementReasonCtgID1(datareflect.getSelect_id_03())
 				.retirementReasonCtgCd1(datareflect.getSelect_code_03())
@@ -90,14 +93,24 @@ public class RetirementInformation_NewService {
 		// 個人情報反映前データを変更する (Thay đổi data trước khi phản ánh thông tin cá nhân)
 
 		if (!addListDomain.isEmpty()) {
-			this.repo.addData(addListDomain);
+			String cId = AppContexts.user().companyId();
+			String cCD = AppContexts.user().companyCode();
+			addListDomain.forEach(x -> {
+				x.setHistoryId(IdentifierUtil.randomUniqueId());
+				x.setCompanyId(cId);
+				x.setCompanyCode(cCD);
+				x.setWorkId(2);
+				x.setRequestFlag(RequestFlag.Normal);
+				x.setSelect_code_01("4");
+				x.setSelect_code_03("2");
+			});
+			this.repo.addDataNoCheckSid(addListDomain);
 		}
 
 		if (!updateListDomain.isEmpty()) {
-			updateListDomain.forEach(x -> {
-				x.setHistoryId(IdentifierUtil.randomUniqueId());
-			});
-			this.repo.updateData(updateListDomain);
+			this.repo.updateData(updateListDomain.stream()
+					.filter(x -> !x.getStattus().equals(Status.Approved) && !x.getStattus().equals(Status.Reflected))
+					.collect(Collectors.toList()));
 		}
 	}
 

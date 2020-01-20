@@ -66,4 +66,6 @@ public class EmployeeInformationExport {
 	//年齢
 	int age;
 	
+	int gender;
+	
 }

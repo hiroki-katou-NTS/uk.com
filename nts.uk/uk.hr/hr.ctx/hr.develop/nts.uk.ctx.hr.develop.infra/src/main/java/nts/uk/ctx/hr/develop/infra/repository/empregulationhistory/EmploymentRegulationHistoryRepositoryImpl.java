@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.hr.develop.dom.empregulationhistory.EmploymentRegulationHistory;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryRepository;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.dto.RegulationHistoryDto;
 import nts.uk.ctx.hr.develop.infra.entity.empregulationhistory.JshmtEmpRegHistory;
@@ -57,7 +58,7 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 	}
 
 	@Override
-	public void updateEmpRegulationHist(String cId, String historyId, GeneralDate startDate) {
+	public void updateEmpRegulationHist(String cId, String historyId, GeneralDate startDate, GeneralDate endDate) {
 		Optional<JshmtEmpRegHistory> entity = 
 				this.queryProxy().query(SELECT_BY_ID, JshmtEmpRegHistory.class)
 				.setParameter("cId", cId)
@@ -65,6 +66,7 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 				.getSingle();
 		if(entity.isPresent()) {
 			entity.get().startDate = startDate;
+			entity.get().endDate = endDate;
 			this.commandProxy().update(entity.get());
 		}
 	}
@@ -75,6 +77,18 @@ public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository imp
 		.setParameter("cId", cId)
 		.setParameter("historyId", historyId)
 		.executeUpdate();
+	}
+
+	@Override
+	public Optional<EmploymentRegulationHistory> get(String cId) {
+		List<DateHistoryItem> lis = this.queryProxy().query(SELECT_LIST_DATE_HIS_ID, JshmtEmpRegHistory.class)
+				.setParameter("cId", cId)
+				.getList(c->c.toDomain());
+		if(lis.isEmpty()) {
+			return Optional.empty();
+		}else {
+			return Optional.of(new EmploymentRegulationHistory(cId, lis));
+		}
 	}
 
 }

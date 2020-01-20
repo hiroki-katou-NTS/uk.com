@@ -52,4 +52,6 @@ public class EmployeeInformationImport {
 	// 年齢
 	int age;
 	
+	int gender;
+	
 }
