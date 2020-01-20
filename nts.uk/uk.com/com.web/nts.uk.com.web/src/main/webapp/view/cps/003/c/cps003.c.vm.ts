@@ -249,7 +249,7 @@ module cps003.c.vm {
                         }
                         
                         if (!dt) return;
-                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
+                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE) {
                             let momentObj = moment.utc(item.value, "YYYY/MM/DD");
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" || !momentObj.isValid() ? item.value : momentObj.toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
