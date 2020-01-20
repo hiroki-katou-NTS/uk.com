@@ -33,6 +33,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retirePlanCourseList: [];
         
         // data
+        changeLatest: boolean;
         isStart: boolean;
         isAddNewHis: boolean;
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
@@ -110,20 +111,27 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             self.commonMasterItems()[0].usageFlg(true);
                         }
                     }else{
-                        self.loadHisId().done(function() {
+                        if(self.changeLatest){
+                            self.loadHisId().done(function() {
+                                self.getMandatoryRetirementRegulation();
+                            });    
+                        }else{
                             self.getMandatoryRetirementRegulation();
-                        });
+                        }
+                        
                     }    
                 }
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
                 self.isAddNewHis = true;
+                self.changeLatest = true;
             };
             self.afterUpdate = () => {
 //                alert("Updated");
             };
             self.afterDelete = () => {
+                self.changeLatest = true;
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -268,6 +276,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 if(self.commonMasterItems().length > 0){
                     self.commonMasterItems()[0].usageFlg(false);    
                 } 
+                self.changeLatest = false;
                 dfd.resolve();
             });
             return dfd.promise();
