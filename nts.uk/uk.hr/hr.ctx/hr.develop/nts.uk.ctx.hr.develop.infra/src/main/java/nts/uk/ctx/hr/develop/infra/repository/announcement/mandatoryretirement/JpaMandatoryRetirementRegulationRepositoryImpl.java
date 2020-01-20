@@ -19,7 +19,8 @@ import nts.uk.ctx.hr.develop.infra.entity.announcement.mandatoryretirement.Jshmt
 public class JpaMandatoryRetirementRegulationRepositoryImpl extends JpaRepository implements RetirePlanCourceRepository {
 
 	private static final String GET_BY_CID = "SELECT c FROM JshmtRetirePlanCourse c "
-			+ "WHERE c.companyId = :companyId ";
+			+ "WHERE c.companyId = :companyId "
+			+ "AND c.notUsageFlg = 0 ";
 	
 	private static final String GET_BY_CID_ASC = GET_BY_CID 
 			+ "ORDER BY c.retirePlanCourseClass, c.retirePlanCourseCode";
