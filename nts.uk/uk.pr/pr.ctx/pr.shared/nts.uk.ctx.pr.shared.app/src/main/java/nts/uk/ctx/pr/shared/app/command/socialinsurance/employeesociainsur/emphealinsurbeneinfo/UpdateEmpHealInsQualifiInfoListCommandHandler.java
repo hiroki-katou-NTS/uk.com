@@ -62,7 +62,7 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 
 		List<EmplHealInsurQualifiInforParams> domainIntermediates = new ArrayList<>();
 		
-		List<EmplHealInsurQualifiInfor> listDomain = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforDesc(cid, sids);
+		List<EmplHealInsurQualifiInfor> listDomain = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforDescCps003(cid, sids);
 
 		Map<String, List<EmplHealInsurQualifiInfor>> histBySidsMap = listDomain.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 

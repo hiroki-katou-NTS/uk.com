@@ -4,7 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -24,6 +26,8 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQi;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtEmpHealInsurQiPk;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implements EmplHealInsurQualifiInforRepository {
@@ -42,6 +46,8 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
     private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.employeeId =:employeeId ORDER BY f.startDate DESC ";
     private static final String SELECT_BY_EMPID_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.employeeId =:employeeId AND f.empHealInsurQiPk.cid =:cid AND f.startDate <= :baseDate AND f.endDate >= :baseDate";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND  f.empHealInsurQiPk.hisId =:hisId ";
+
+    private static final String SELECT_BY_LIST_EMP_CPS003 =  "SELECT f FROM QqsmtEmpHealInsurQi f WHERE  f.empHealInsurQiPk.employeeId IN :employeeIds  AND f.empHealInsurQiPk.cid =:cid";
 
     @Override
     public boolean checkEmplHealInsurQualifiInforEndDate(GeneralDate start, GeneralDate end, List<String> empIds) {
@@ -207,6 +213,39 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
         String cid = AppContexts.user().companyId();
         this.commandProxy().remove(QqsmtEmpHealInsurQi.class, new QqsmtEmpHealInsurQiPk(employeeId, hisId, cid));
     }
+    
+    @Override
+    public List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforDescCps003(String cid, List<String> empIds) {
+    	
+    	List<EmplHealInsurQualifiInfor> resultList = new ArrayList<>();
+    	
+    	List<QqsmtEmpHealInsurQi>  listEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_CPS003, QqsmtEmpHealInsurQi.class)
+                .setParameter("cid", cid)
+                .setParameter("employeeIds", empIds)
+                .getList();
+    	if (listEntity.isEmpty()) {
+			return new ArrayList<>();
+		}
+    	
+    	// mapping sid with list list entity
+    	Map<String, List<QqsmtEmpHealInsurQi>> entitiesByEmployee = listEntity.stream()
+				.collect(Collectors.groupingBy(item -> item.getEmpHealInsurQiPk().getEmployeeId()));
+    	
+    	entitiesByEmployee.forEach((employeeId, entitiesOfEmp) -> {
+    		List<EmpHealthInsurBenefits> mourPeriod = convertToHistoryItems(entitiesOfEmp);
+    		EmplHealInsurQualifiInfor domain = new EmplHealInsurQualifiInfor(employeeId, mourPeriod);
+			resultList.add(domain);
+		});
+    	
+		return resultList;
+    }
+
+	private List<EmpHealthInsurBenefits> convertToHistoryItems(List<QqsmtEmpHealInsurQi> entities) {
+		List<EmpHealthInsurBenefits> mourPeriod =  entities.stream()
+				.map(ent -> new EmpHealthInsurBenefits(ent.empHealInsurQiPk.hisId, new DateHistoryItem(ent.empHealInsurQiPk.hisId, new DatePeriod(ent.startDate, ent.endDate))))
+				.collect(Collectors.toList());
+		return mourPeriod;
+	}
 
 	@Override
 	public List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforDesc(String cid, List<String> empIds) {

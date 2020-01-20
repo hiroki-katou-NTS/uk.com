@@ -49,4 +49,6 @@ public interface EmplHealInsurQualifiInforRepository {
     void updateAllDomain(List<EmplHealInsurQualifiInforParams> params);
 
     void remove(String employeeId, String hisId);
+
+	List<EmplHealInsurQualifiInfor> getEmplHealInsurQualifiInforDescCps003(String cid, List<String> empIds);
 }
