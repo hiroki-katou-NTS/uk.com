@@ -358,23 +358,26 @@ module cps003 {
             CS00036_IS00383: true,
             CS00036_IS00384: true
         },
+        
+        valueOld :any,
+        
         NUMBER_Lan = {
-            CS00092_IS01020: (v, obj, id) =>{
-                
+            CS00092_IS01020: (id, itemCode, v, obj) =>{
+
                 getHealInsStandCompMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01021");
                 
             },
-            CS00092_IS01021: (v, obj, id) =>{
+            CS00092_IS01021: (id, itemCode, v, obj) =>{
                 
-                getHealthInsuranceStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023");
+                getHealthInsuranceStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01020");
                 
             },
-            CS00092_IS01022: (v, obj, id) =>{
+            CS00092_IS01022: (id, itemCode, v, obj) =>{
                 
                 getMonthlyPensionInsStandardRemuneration(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01023");
             
             },
-            CS00092_IS01023:  (v, obj, id) =>{
+            CS00092_IS01023:  (id, itemCode, v, obj) =>{
                 
                 getWelfarePensionStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023");
             
@@ -1958,7 +1961,7 @@ module cps003 {
                 || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
                 
                 || _.isNaN(healInsGradeParam))  return;
-
+            block();
             fetch.getWelfarePensionStandardGradePerMonth({ 
             
                 sid: sid,
@@ -1988,7 +1991,9 @@ module cps003 {
                     $grid.mGrid("updateCell", o.id, pensionInsStandCompenMonthlyCode, "");
 
                 }
-                
+                clear();
+            }).failed(res =>{
+                    
             });
             
         }          
@@ -2043,8 +2048,14 @@ module cps003 {
                 if (!resultCode) return;
 
                 if (res) {
+                    
+                    if(res != result){
+                        
+                        $grid.mGrid("updateCell", o.id, resultCode, res);
+                        
+                    }
 
-                    $grid.mGrid("updateCell", o.id, resultCode, res);
+                    
 
                 } else {
 
@@ -2059,7 +2070,7 @@ module cps003 {
         // getHealthInsuranceStandardGradePerMonth
         function getHealthInsuranceStandardGradePerMonth(v, o, startYMCode, healInsGradeCode, healInsStandMonthlyRemuneCode,
         
-            pensionInsGradeCode, pensionInsStandCompenMonthlyCode) {
+            pensionInsGradeCode, pensionInsStandCompenMonthlyCode, resultCode) {
             
             if (_.isNil(v)) return;
             
@@ -2086,7 +2097,8 @@ module cps003 {
                 || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
                 
                 || _.isNaN(healInsGradeParam))  return;
-
+            
+            block();
             fetch.getHealthInsuranceStandardGradePerMonth({ 
             
                 sid: sid,
@@ -2106,10 +2118,19 @@ module cps003 {
                 if (!resultCode) return;
 
                 if (res) {
-
-                    $grid.mGrid("updateCell", o.id, healInsGradeCode, res.healthInsuranceGrade);
                     
-                    $grid.mGrid("updateCell", o.id, healInsStandMonthlyRemuneCode, res.standardMonthlyFee);
+                    if(res.healthInsuranceGrade != healInsGradeParam){
+                        
+                        $grid.mGrid("updateCell", o.id, healInsGradeCode, res.healthInsuranceGrade);
+                        
+                    }
+                    
+                    if( res.standardMonthlyFee != healInsStandMonthlyRemuneParam){
+                        
+                        $grid.mGrid("updateCell", o.id, healInsStandMonthlyRemuneCode, res.standardMonthlyFee);
+                        
+                    }
+                    
 
                 } else {
 
@@ -2118,6 +2139,8 @@ module cps003 {
                     $grid.mGrid("updateCell", o.id, healInsStandMonthlyRemuneCode, "");
                     
                 }
+                
+                unblock();
                 
             });
             

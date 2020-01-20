@@ -217,7 +217,7 @@ public class JpaEmpSocialInsGradeRepository extends JpaRepository implements Emp
 
 			String sql = "SELECT * FROM QQSMT_SYAHO_GRA_HIST a"
 
-					+ " WHERE  a.CID =:cid"
+					+ " WHERE  a.CID = ?"
 
 					+ " AND  a.SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 

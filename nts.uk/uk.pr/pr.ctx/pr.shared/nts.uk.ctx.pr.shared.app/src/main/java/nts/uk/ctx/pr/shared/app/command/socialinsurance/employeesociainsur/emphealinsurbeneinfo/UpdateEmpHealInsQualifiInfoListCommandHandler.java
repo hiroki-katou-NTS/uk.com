@@ -139,7 +139,7 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 
 		if (!sidErrorLst.isEmpty()) {
 
-			errorExceptionLst.add(new MyCustomizeException("invalid employmentHistory", sidErrorLst));
+			errorExceptionLst.add(new MyCustomizeException("Invalid EmpHealInsQualifiInfo", sidErrorLst));
 
 		}
 
