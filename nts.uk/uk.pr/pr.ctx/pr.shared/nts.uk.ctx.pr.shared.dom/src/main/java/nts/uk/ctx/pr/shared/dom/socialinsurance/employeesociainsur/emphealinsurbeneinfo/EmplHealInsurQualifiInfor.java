@@ -30,6 +30,7 @@ public class EmplHealInsurQualifiInfor extends AggregateRoot implements Continuo
     private List<EmpHealthInsurBenefits> mourPeriod;
     
     public EmplHealInsurQualifiInfor(String employeeId, List<EmpHealthInsurBenefits> mourPeriod) {
+    	super();
         this.employeeId = employeeId;
         this.mourPeriod = mourPeriod;
     }

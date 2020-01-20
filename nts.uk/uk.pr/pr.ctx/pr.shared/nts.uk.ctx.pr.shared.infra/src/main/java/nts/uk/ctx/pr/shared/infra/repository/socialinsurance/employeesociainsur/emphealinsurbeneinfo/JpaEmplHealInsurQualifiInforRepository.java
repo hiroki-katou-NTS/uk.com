@@ -239,16 +239,17 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 							
 							r.getString("KAIHO_NUM"),  r.getString("KENHO_NUM"));
 					
-					return entity.toDomain();
-					
+					EmplHealInsurQualifiInfor dm =  entity.toDomain();
+					return dm;
 				});
+				
 				
 				if(!CollectionUtil.isEmpty(domains)) {
 					
 					results.addAll(domains);
 					
 				}
-
+				
 
 			} catch (SQLException e) {
 				
@@ -258,7 +259,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 			
 		});
 		
-		return new ArrayList<>();
+		return results;
 		
 	}
 
@@ -418,7 +419,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 			
 			sql = sql.replace("END_DATE_VAL","'" +  c.getItemAdded().end() + "'");
 			
-			sql = sql.replace("KAIHO_NUM", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)+ "'");
+			sql = sql.replace("KAIHO_NUM_VAL", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)+ "'");
 			
 			sql = sql.replace("KENHO_NUM_VAL", "'" + c.getHisItem().getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null) + "'");
 			
