@@ -273,7 +273,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getRelateMaster().done(function(data: any) {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
-                self.retirePlanCourseList = data.retirePlanCourseList;
+                _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});  
+                self.retirePlanCourseList = _.remove(data.retirePlanCourseList, function(n) {return n.retirePlanCourseClass == 0;});
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
