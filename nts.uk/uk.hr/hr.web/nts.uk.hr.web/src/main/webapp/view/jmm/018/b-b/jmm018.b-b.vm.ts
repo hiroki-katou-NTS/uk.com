@@ -202,11 +202,15 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         });
                         self.commonMasterItems(listItemCommon);
                     }).fail(function(err) {
-                        if(self.selectedHistId()==self.latestHistId()){
-                            error({ messageId: 'MsgJ_JMM018_18' });      
-                        }else{
-                            error({ messageId: 'MsgJ_JMM018_19' });
-                        }
+                        block.grayout();
+                        self.loadHisId().done(function() {
+                            if(self.selectedHistId()==self.latestHistId()){
+                                error({ messageId: 'MsgJ_JMM018_18' });      
+                            }else{
+                                error({ messageId: 'MsgJ_JMM018_19' });
+                            }
+                            block.clear();
+                        });
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
                     }).always(function() {
                         block.clear();
