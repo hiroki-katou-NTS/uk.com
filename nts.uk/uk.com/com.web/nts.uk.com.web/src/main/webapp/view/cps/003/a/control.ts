@@ -359,8 +359,6 @@ module cps003 {
             CS00036_IS00384: true
         },
         
-        valueOld :any,
-        
         NUMBER_Lan = {
             CS00092_IS01020: (id, itemCode, v, obj) =>{
 
