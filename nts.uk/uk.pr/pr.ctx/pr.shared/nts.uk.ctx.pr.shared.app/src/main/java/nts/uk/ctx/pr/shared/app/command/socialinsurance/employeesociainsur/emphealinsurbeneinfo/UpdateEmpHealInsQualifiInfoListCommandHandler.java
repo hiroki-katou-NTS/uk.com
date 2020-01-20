@@ -61,12 +61,10 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 		List<String> sids = command.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		List<EmplHealInsurQualifiInforParams> domainIntermediates = new ArrayList<>();
+		
+		List<EmplHealInsurQualifiInfor> listDomain = emplHealInsurQualifiInforRepository.getEmplHealInsurQualifiInforDesc(cid, sids);
 
-		Map<String, List<EmplHealInsurQualifiInfor>> histBySidsMap = emplHealInsurQualifiInforRepository
-
-				.getEmplHealInsurQualifiInforDesc(cid, sids).stream()
-
-				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		Map<String, List<EmplHealInsurQualifiInfor>> histBySidsMap = listDomain.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
 		command.stream().forEach(c -> {
 
