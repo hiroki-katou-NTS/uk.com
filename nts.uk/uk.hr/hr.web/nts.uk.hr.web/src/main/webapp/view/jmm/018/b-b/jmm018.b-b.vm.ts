@@ -106,7 +106,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             item.usageFlg(false);
                             item.setEnableRetirePlanCourse([],[]);
                         });
-                        self.commonMasterItems()[0].usageFlg(true);
+                        if(self.commonMasterItems().length > 0){
+                            self.commonMasterItems()[0].usageFlg(true);
+                        }
                     }else{
                         self.getMandatoryRetirementRegulation();
                     }    
@@ -120,7 +122,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 //                alert("Updated");
             };
             self.afterDelete = () => {
-                self.latestHistId(self.selectedHistId());
+                block.grayout();
+                self.loadHisId().done(function() {
+                    block.clear();
+                });
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -197,11 +202,15 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         });
                         self.commonMasterItems(listItemCommon);
                     }).fail(function(err) {
-                        if(self.selectedHistId()==self.latestHistId()){
-                            error({ messageId: 'MsgJ_JMM018_18' });      
-                        }else{
-                            error({ messageId: 'MsgJ_JMM018_19' });
-                        }
+                        block.grayout();
+                        self.loadHisId().done(function() {
+                            if(self.selectedHistId()==self.latestHistId()){
+                                error({ messageId: 'MsgJ_JMM018_18' });      
+                            }else{
+                                error({ messageId: 'MsgJ_JMM018_19' });
+                            }
+                            block.clear();
+                        });
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
                     }).always(function() {
                         block.clear();
@@ -257,6 +266,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
+                if ( self.latestHistId() == self.selectedHistId()) {
+                    self.isLatestHis(true);
+                }else{
+                    self.isLatestHis(false);
+                }
                 if(self.commonMasterItems().length > 0){
                     self.commonMasterItems()[0].usageFlg(false);    
                 } 
@@ -271,7 +285,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getRelateMaster().done(function(data: any) {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
-                self.retirePlanCourseList = data.retirePlanCourseList;
+                _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});  
+                self.retirePlanCourseList = _.remove(data.retirePlanCourseList, function(n) {return n.retirePlanCourseClass == 0;});
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
