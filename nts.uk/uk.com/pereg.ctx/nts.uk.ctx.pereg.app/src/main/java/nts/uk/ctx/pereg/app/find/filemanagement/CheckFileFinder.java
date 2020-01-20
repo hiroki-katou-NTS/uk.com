@@ -1122,6 +1122,7 @@ public class CheckFileFinder {
 				}
 				break;
 			case DATE:
+				DateItemDto dateDto = (DateItemDto) dataTypeState;
 				itemDto.setValue(value == null || value == "" ? null : value); 
 				DateConstraint dateContraint = (DateConstraint) contraint;
 				if (gridHead.isRequired()) {
@@ -1131,22 +1132,59 @@ public class CheckFileFinder {
 						itemErrors.add(error);
 						break;
 					} else {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
-							break;
+						if(dateDto.getDateItemType() == 2) {
+							if(value.toString() != null) {
+								String[] valueSplit = value.toString().split("[-/]");
+								String valueComvert = valueSplit.length == 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								Optional<String> date = dateContraint.validateString(valueComvert);
+								if(date.isPresent()) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), date.get());
+									itemErrors.add(error);
+									break;
+								}
+								
+							}
+							
+						}else {
+							
+							Optional<String>  string = dateContraint.validateString(value.toString());
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
+							}
+							
 						}
+
 					}
 				} else {
 					if (itemDto.getValue() != null) {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
-							break;
+						if(dateDto.getDateItemType() == 2) {
+							if(value.toString() != null) {
+								String[] valueSplit = value.toString().split("[-/]");
+								String valueComvert = valueSplit.length == 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								Optional<String> date = dateContraint.validateString(valueComvert);
+								if(date.isPresent()) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), date.get());
+									itemErrors.add(error);
+									break;
+								}
+								
+							}
+							
+						}else {
+							
+							Optional<String>  string = dateContraint.validateString(value.toString());
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
+							}
+							
 						}
 					}
 				}
@@ -1601,6 +1639,12 @@ public class CheckFileFinder {
 		aMap.put("CS00021", new Periods(Arrays.asList(new Period("IS00255", null), new Period("IS00256", null))));
 		// 労働条件２
 		aMap.put("CS00070", new Periods(Arrays.asList(new Period("IS00781", null), new Period("IS00782", null))));
+		
+		aMap.put("CS00075", new Periods(Arrays.asList(new Period("IS00787", null), new Period("IS00788", null))));
+		
+		aMap.put("CS00082", new Periods(Arrays.asList(new Period("IS00841", null), new Period("IS00842", null))));
+		
+		aMap.put("CS00092", new Periods(Arrays.asList(new Period("IS01016", null), new Period("IS01017", null))));
 		return aMap;
 	}
 	
