@@ -1135,7 +1135,7 @@ public class CheckFileFinder {
 						if(dateDto.getDateItemType() == 2) {
 							if(value.toString() != null) {
 								String[] valueSplit = value.toString().split("[-/]");
-								String valueComvert = valueSplit.length == 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								String valueComvert = valueSplit.length >= 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
 								Optional<String> date = dateContraint.validateString(valueComvert);
 								if(date.isPresent()) {
 									itemDto.setError(true);
@@ -1164,7 +1164,7 @@ public class CheckFileFinder {
 						if(dateDto.getDateItemType() == 2) {
 							if(value.toString() != null) {
 								String[] valueSplit = value.toString().split("[-/]");
-								String valueComvert = valueSplit.length == 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								String valueComvert = valueSplit.length >= 2 ? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
 								Optional<String> date = dateContraint.validateString(valueComvert);
 								if(date.isPresent()) {
 									itemDto.setError(true);
