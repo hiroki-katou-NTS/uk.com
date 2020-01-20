@@ -122,7 +122,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 //                alert("Updated");
             };
             self.afterDelete = () => {
-                self.latestHistId(self.selectedHistId());
+                block.grayout();
+                self.loadHisId().done(function() {
+                    block.clear();
+                });
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -259,6 +262,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
+                if ( self.latestHistId() == self.selectedHistId()) {
+                    self.isLatestHis(true);
+                }else{
+                    self.isLatestHis(false);
+                }
                 if(self.commonMasterItems().length > 0){
                     self.commonMasterItems()[0].usageFlg(false);    
                 } 
