@@ -9,7 +9,7 @@
 
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
-				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('JMM018_B3_3')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; getRelatedMaster() &amp;&amp; $root.errors.isEmpty() ">#{i18n.getText('JMM018_B3_3')}</button>
 			</div>
 			<div class="contents-area tab2">
 				<div class="container cf">
