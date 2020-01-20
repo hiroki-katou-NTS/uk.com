@@ -110,7 +110,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             self.commonMasterItems()[0].usageFlg(true);
                         }
                     }else{
-                        self.getMandatoryRetirementRegulation();
+                        self.loadHisId().done(function() {
+                            self.getMandatoryRetirementRegulation();
+                        });
                     }    
                 }
             });
@@ -122,10 +124,6 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 //                alert("Updated");
             };
             self.afterDelete = () => {
-                block.grayout();
-                self.loadHisId().done(function() {
-                    block.clear();
-                });
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -202,15 +200,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                         });
                         self.commonMasterItems(listItemCommon);
                     }).fail(function(err) {
-                        block.grayout();
-                        self.loadHisId().done(function() {
-                            if(self.selectedHistId()==self.latestHistId()){
-                                error({ messageId: 'MsgJ_JMM018_18' });      
-                            }else{
-                                error({ messageId: 'MsgJ_JMM018_19' });
-                            }
-                            block.clear();
-                        });
+                        if(self.selectedHistId()==self.latestHistId()){
+                            error({ messageId: 'MsgJ_JMM018_18' });      
+                        }else{
+                            error({ messageId: 'MsgJ_JMM018_19' });
+                        }
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
                     }).always(function() {
                         block.clear();
@@ -266,7 +260,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
-                if ( self.latestHistId() == self.selectedHistId()) {
+                if (self.latestHistId() == self.selectedHistId() && self.selectedHistId() != '' && self.selectedHistId() != null) {
                     self.isLatestHis(true);
                 }else{
                     self.isLatestHis(false);
