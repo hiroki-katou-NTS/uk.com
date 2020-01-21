@@ -306,6 +306,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 self.commonMasterItems(tg);
                 self.getRelatedMaster(true);
             }).fail(function(err) {
+                self.getRelatedMaster(false);
+                self.commonMasterItems([]);
+                self.retirePlanCourseList = [];
                 error({ messageId: err.messageId });
             }).always(function() {
                 dfd.resolve();
