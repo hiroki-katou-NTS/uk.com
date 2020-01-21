@@ -44,7 +44,7 @@ module nts.uk.com.view.jmm018.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let _self = this;
-                        //_self.start_page();
+                        _self.screenModelTab2(new viewModelTab2.ScreenModel());
                         _self.screenModelTab2().start();
                         _self.removeErrorMonitor();
                     }
