@@ -169,6 +169,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             }
                         });
                     }).fail(function(err) {
+                        self.setDefaultMandatoryRetireTerm();
                         error({ messageId: err.messageId });
                     }).always(function() {
                         block.clear();
