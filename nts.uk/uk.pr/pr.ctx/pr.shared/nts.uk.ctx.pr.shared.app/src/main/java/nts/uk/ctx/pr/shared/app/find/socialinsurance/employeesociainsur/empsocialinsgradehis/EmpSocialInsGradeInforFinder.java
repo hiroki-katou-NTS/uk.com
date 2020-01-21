@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGrade;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeRepository;
@@ -115,7 +116,20 @@ public class EmpSocialInsGradeInforFinder implements PeregFinder<EmpSocialInsGra
 			
 			String currentGradeMap = currentGradeMaps.get(c.getEmployeeId());
 			
-			c.setPeregDomainDto(EmpSocialInsGradeInforDto.fromDomain(empSocialInsGrade.getHistory(), empSocialInsGrade.getInfos().get(0), currentGradeMap));
+			if(empSocialInsGrade != null){
+				
+				c.setPeregDomainDto(EmpSocialInsGradeInforDto.fromDomain(empSocialInsGrade.getHistory(), empSocialInsGrade.getInfos().get(0), currentGradeMap));
+				
+				if(!CollectionUtil.isEmpty(empSocialInsGrade.getInfos())) {
+					
+					c.setPeregDomainDto(EmpSocialInsGradeInforDto.fromDomain(empSocialInsGrade.getHistory(), empSocialInsGrade.getInfos().get(0), currentGradeMap));
+					
+				}else {
+					
+					c.setPeregDomainDto(EmpSocialInsGradeInforDto.fromDomain(empSocialInsGrade.getHistory(), null , currentGradeMap));
+				}
+				
+			}
 			
 		});
 		

@@ -78,7 +78,7 @@ implements PeregAddListCommandHandler<AddEmpHealInsQualifiInfoCommand>{
 				
 		        EmpHealthInsurBenefits dateItem = new EmpHealthInsurBenefits(newHistID,
 		                new DateHistoryItem(newHistID,
-		                        new DatePeriod(c.getStartDate(), c.getEndDate() != null ? c.getEndDate() : GeneralDate.max()
+		                        new DatePeriod(c.getStartDate()!= null? c.getStartDate() : GeneralDate.min(), c.getEndDate() != null ? c.getEndDate() : GeneralDate.max()
 		        )));
 		        
 				List<EmplHealInsurQualifiInfor> histBySidLst = histBySidsMap.get(c.getEmployeeId());

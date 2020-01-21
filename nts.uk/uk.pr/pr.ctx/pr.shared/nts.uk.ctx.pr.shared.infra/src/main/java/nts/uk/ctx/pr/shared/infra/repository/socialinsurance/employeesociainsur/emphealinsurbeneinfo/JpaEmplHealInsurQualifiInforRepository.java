@@ -361,9 +361,9 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 			
 			sql = sql.replace("END_DATE_VAL","'" +   c.getItemAdded().end() + "'");
 			
-			sql = sql.replace("KAIHO_NUM_VAL", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null)+ "'");
+			sql = sql.replace("KAIHO_NUM_VAL", "'" + c.getHisItem().getCareInsurNumber().map(e -> e.v().isEmpty() ? "" : e.v()).orElse("")+ "'");
 			
-			sql = sql.replace("KENHO_NUM_VAL", "'" + c.getHisItem().getHealInsNumber().map(e -> e.v().isEmpty() ? null : e.v()).orElse(null) + "'");
+			sql = sql.replace("KENHO_NUM_VAL", "'" + c.getHisItem().getHealInsNumber().map(e -> e.v().isEmpty() ? "" : e.v()).orElse("") + "'");
 			
 			sb.append(sql);
 		});
