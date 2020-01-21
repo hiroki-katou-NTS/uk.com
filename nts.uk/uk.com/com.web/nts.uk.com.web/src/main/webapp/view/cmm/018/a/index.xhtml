@@ -106,21 +106,23 @@
 								</div>
 								<!-- A3: List -->
 								<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 370px;">
-									<div>
+									<div style="padding-top: 10px">
 										<!-- A3_1: Label 有効期間 -->
 										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 										<!-- A3_2: 選択する期間 -->
 										<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 									</div>
-									<div data-bind="with: $parent.viewmodelSubA">
+<!-- 									<div data-bind="with: $parent.viewmodelSubA">
 										<button data-bind="click: resize1">Resizecolum1</button>
 										<button data-bind="click: resize2">Resizecolum2</button>
 										<button data-bind="click: resize3">Resizecolum3</button>
 										<button data-bind="click: cal1">cal</button>
 										<div style="display: inline-block;">
 										<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
+									</div> -->
+									<div style="margin-top: 10px;margin-left: 20px;">
+										<table id="grid_matome"></table>
 									</div>
-									<table id="grid_matome"></table>
 								</div>
 							</div>
 							<!-- JINJI -->
@@ -160,9 +162,7 @@
 								<br/>
 								<!-- A3: List -->
 								<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
-									<div data-bind="with: $parent.viewmodelSubA">
 										<table id="grid_matome"></table>
-									</div>
 								</div>
 								</div>
 							</div>
@@ -295,7 +295,9 @@
 									<!-- C3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table id="grid_matomeC"></table>
+								<div style="margin-top: 10px;margin-left: 20px;">
+									<table id="grid_matomeC"></table>
+								</div>
 							</div>
 						</div>
 						<!-- JINJI -->
@@ -467,7 +469,9 @@
 									<!-- E3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<table id="grid_matomeE"></table>
+								<div style="margin-top: 10px;margin-left: 20px;">
+									<table id="grid_matomeE"></table>
+								</div>
 								</div>
 							</div>
 							<!-- JINJI -->

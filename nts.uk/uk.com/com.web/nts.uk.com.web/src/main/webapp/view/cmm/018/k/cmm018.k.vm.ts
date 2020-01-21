@@ -11,7 +11,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     export class ScreenModel{
         //==========
         lstJob: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        k2_1: KnockoutObservable<string> = ko.observable('');
+        k2_2: KnockoutObservable<string> = ko.observable('');
         //承認形態
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([
                 new ButtonSelect(1, resource.getText('CMM018_63')),//全員承認
@@ -232,9 +233,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         bindData(selectTypeSet: number){
             var self = this;
             if(selectTypeSet == TypeSet.PERSON){//PERSON
+                self.k2_1(getText('CMM018_61'));
+                self.k2_2(getText('CMM018_62'));
                 self.enableListWp(true);
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
             }else if(selectTypeSet == TypeSet.SPEC_WKP){//CHI DINH
+                self.k2_1(getText('CMM018_110'));
+                self.k2_2(getText('CMM018_111'));
                 self.enableListWp(true);
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
                 if(self.lstJobGS().length > 0) return; //データがある 
@@ -254,6 +259,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
                 
             }else{//GROUP
+                self.k2_1(getText('CMM018_110'));
+                self.k2_2(getText('CMM018_111'));
                 self.enableListWp(false);
                 if(self.lstJobG().length > 0) return;//データがある
                 if(self.lstJob().length > 0){
