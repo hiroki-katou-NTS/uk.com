@@ -97,15 +97,11 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 						} else {
 							
 							sidErrorLst.add(c.getEmployeeId());
-							
-							return;
 						}
 						
 					} else {
 						
 						sidErrorLst.add(c.getEmployeeId());
-						
-						return;
 						
 					}
 					

@@ -368,7 +368,7 @@ public class JpaEmpCorpHealthOffHisRepository extends JpaRepository implements E
 				
 				mapResult.forEach( (key,value) -> {
 					
-		            result.add(QqsmtEmpCorpOffHis.toDomain(value));
+		            result.add(QqsmtEmpCorpOffHis.toDomainCps(value));
 		            
 		        });
 
