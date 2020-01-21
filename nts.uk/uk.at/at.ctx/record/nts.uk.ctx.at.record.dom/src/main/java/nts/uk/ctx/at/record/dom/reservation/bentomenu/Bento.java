@@ -99,7 +99,7 @@ public class Bento {
 	 * @param quantity
 	 * @return
 	 */
-	public BentoDetailsAmountTotal calculateAmount(Integer quantity) {
+	public BentoDetailsAmountTotal calculateAmount(int quantity) {
 		return BentoDetailsAmountTotal.calculate(frameNo, quantity, amount1.v(), amount2.v());
 	}
 }

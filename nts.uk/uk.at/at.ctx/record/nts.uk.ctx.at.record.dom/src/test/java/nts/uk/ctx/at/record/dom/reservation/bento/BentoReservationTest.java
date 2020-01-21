@@ -40,9 +40,9 @@ public class BentoReservationTest {
 	}
 	
 	@Test
-	public void isCancel() {	
+	public void checkCancelPossible() {	
 		BentoReservation bentoReservation = BentoInstanceHelper.getBentoReservation("cardNo", GeneralDate.today(), 1, true);
-		BusinessExceptionAssert.id("Msg_1586", () -> bentoReservation.isCancel());
+		BusinessExceptionAssert.id("Msg_1586", () -> bentoReservation.checkCancelPossible());
 	}
 
 }

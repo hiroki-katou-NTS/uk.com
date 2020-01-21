@@ -70,7 +70,7 @@ public class BentoReservation extends AggregateRoot{
 	 * @return
 	 */
 	public Optional<BentoReservation> cancelReservation(GeneralDateTime dateTime) {
-		isCancel();
+		checkCancelPossible();
 		List<BentoReservationDetail> afterDetails = bentoReservationDetails.stream().filter(x -> !x.getDateTime().equals(dateTime)).collect(Collectors.toList());
 		if(CollectionUtil.isEmpty(afterDetails)) {
 			return Optional.empty();
@@ -82,7 +82,7 @@ public class BentoReservation extends AggregateRoot{
 	/**
 	 * 取消可能かチェックする
 	 */
-	public void isCancel() {
+	public void checkCancelPossible() {
 		if(ordered) {
 			throw new BusinessException("Msg_1586");
 		}

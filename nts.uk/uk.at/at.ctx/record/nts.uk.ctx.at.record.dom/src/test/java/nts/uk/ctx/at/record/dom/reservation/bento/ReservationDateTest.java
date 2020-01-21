@@ -10,14 +10,20 @@ public class ReservationDateTest {
 	
 	@Test
 	public void isPastDay() {
-		ReservationDate reservationDate = BentoInstanceHelper.getDate("2019/12/20");
-		assertThat(reservationDate.isPastDay()).isTrue();
+		ReservationDate reservationDate1 = BentoInstanceHelper.getYesterday();
+		ReservationDate reservationDate2 = BentoInstanceHelper.getToday();
+		assertThat(reservationDate1.isPastDay()).isTrue();
+		assertThat(reservationDate2.isPastDay()).isFalse();
 	}
 	
 	@Test
 	public void isToday() {
-		ReservationDate reservationDate = BentoInstanceHelper.getToday();
-		assertThat(reservationDate.isToday()).isTrue();
+		ReservationDate reservationDate1 = BentoInstanceHelper.getYesterday();
+		ReservationDate reservationDate2 = BentoInstanceHelper.getToday();
+		ReservationDate reservationDate3 = BentoInstanceHelper.getTomorrow();
+		assertThat(reservationDate1.isToday()).isFalse();
+		assertThat(reservationDate2.isToday()).isTrue();
+		assertThat(reservationDate3.isToday()).isFalse();
 	}
 
 }

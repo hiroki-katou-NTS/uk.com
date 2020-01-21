@@ -23,12 +23,9 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 
 public class BentoInstanceHelper {
 	
@@ -106,10 +103,26 @@ public class BentoInstanceHelper {
 				ReservationClosingTimeFrame.FRAME1);
 	}
 	
+	public static ReservationDate getYesterday() {
+		return new ReservationDate(
+				GeneralDate.today().addDays(-1), 
+				ReservationClosingTimeFrame.FRAME1);
+	}
+	
 	public static ReservationDate getToday() {
 		return new ReservationDate(
 				GeneralDate.today(), 
 				ReservationClosingTimeFrame.FRAME1);
+	}
+	
+	public static ReservationDate getTomorrow() {
+		return new ReservationDate(
+				GeneralDate.today().addDays(1), 
+				ReservationClosingTimeFrame.FRAME1);
+	}
+	
+	public static GeneralDateTime getStartToday() {
+		return GeneralDateTime.legacyDateTime(GeneralDate.today().date());
 	}
 	
 	public static BentoMenu menu(Bento... menu) {
@@ -131,15 +144,15 @@ public class BentoInstanceHelper {
 				amount2 != null);
 	}
 	
-	public static Bento bentoFrame2(int frameNo, Integer amount1, Integer amount2) {
+	public static Bento bento(int frameNo, Integer amount1, Integer amount2, boolean reserveFrame1, boolean reserveFrame2) {
 		return new Bento(
 				frameNo,
 				name("name" + frameNo),
 				amount(amount1 != null ? amount1 : 0),
 				amount(amount2 != null ? amount2 : 0),
 				unit("unit"),
-				false,
-				true);
+				reserveFrame1,
+				reserveFrame2);
 	}
 	
 	public static BentoAmount amount(int value) {
@@ -174,16 +187,9 @@ public class BentoInstanceHelper {
 		return new BentoReservationClosingTime(closingTime1, Optional.empty());
 	}
 	
-	public static List<BentoDetailsAmountTotal> getDetailsAmountTotalLst(BentoDetailsAmountTotal... detail) {
-		return Arrays.asList(detail);
+	public static BentoReservationClosingTime closingTimes(ReservationClosingTime closingTime1, ReservationClosingTime closingTime2) {
+		return new BentoReservationClosingTime(closingTime1, Optional.of(closingTime2));
 	}
-	
-	public static List<BentoItemByClosingTime> getMenu1(BentoMenu bentoMenu) {
-		return bentoMenu.getMenu().stream()
-				.filter(x -> x.isReservationTime1Atr())
-				.map(x -> new BentoItemByClosingTime(x.getFrameNo(), x.getName(), x.getAmount1(), x.getAmount2(), x.getUnit()))
-				.collect(Collectors.toList());
-	} 
 	
 	public static Map<Integer, BentoReservationCount> bentoDetails(Map<Integer, Integer> map) {
 		Map<Integer, BentoReservationCount> result = map.entrySet().stream()

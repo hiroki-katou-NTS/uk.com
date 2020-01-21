@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import static nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper.bento;
-import static nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper.menu;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -15,11 +17,12 @@ import nts.arc.testing.exception.BusinessExceptionAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 
 public class BentoMenuTest {
 	
@@ -35,18 +38,6 @@ public class BentoMenuTest {
 		assertThatThrownBy(() -> 
 			BentoInstanceHelper.getBentoMenuFull()
 		).as("full list test").isInstanceOf(RuntimeException.class);
-	}
-	
-	@Test
-	public void reserve_empty() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2021/01/31", 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = Collections.emptyMap();
-		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu();
-		assertThatThrownBy(() -> 
-			bentoMenu.reserve(registerInfor, reservationDate, dateTime, bentoDetails)
-		).as("empty list test").isInstanceOf(RuntimeException.class);
 	}
 	
 	@Test
@@ -82,61 +73,76 @@ public class BentoMenuTest {
 	}
 	
 	@Test
+	public void reserve_success() {
+		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
+		ReservationDate reservationDate = BentoInstanceHelper.getTomorrow();
+		GeneralDateTime dateTime = GeneralDateTime.now();
+		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
+		BentoMenu bentoMenu = BentoInstanceHelper.menu(
+				bento(1, 20, 10, true, false),
+	 			bento(2, 100, 30, false, true));
+		BentoReservation bentoReservation = bentoMenu.reserve(registerInfor, reservationDate, dateTime, bentoDetails);
+		
+		assertThat(bentoReservation.getRegisterInfor().equals(registerInfor)).isTrue();
+		assertThat(bentoReservation.getReservationDate().equals(reservationDate)).isTrue();
+		
+		Optional<BentoReservationDetail> opBentoReservationDetail = bentoReservation.getBentoReservationDetails().stream().filter(x -> x.getFrameNo()==1).findAny();
+	
+		assertThat(opBentoReservationDetail.isPresent()).isTrue();
+		
+		BentoReservationDetail bentoReservationDetail = opBentoReservationDetail.get();
+		
+		assertThat(bentoReservationDetail.getFrameNo()).isEqualTo(1);
+		assertThat(bentoReservationDetail.getDateTime()).isEqualTo(dateTime);
+		assertThat(bentoReservationDetail.getBentoCount().v()).isEqualTo(1);
+		assertThat(bentoReservationDetail.isAutoReservation()).isFalse();
+	}
+	
+	@Test
 	public void getByClosingTime() {
-		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu();
+		BentoMenu bentoMenu = BentoInstanceHelper.menu(
+				bento(1, 20, 10, true, true), // bento 1: frame1, frame2
+	 			bento(2, 100, 30, true, false), // bento2: frame1
+	 			bento(3, 50, 20, false, true)); // bento3: frame2
 		BentoMenuByClosingTime closingTime = bentoMenu.getByClosingTime();
 		
-		assertThat(closingTime.isReservationTime1Atr()).isFalse();
-		assertThat(closingTime.isReservationTime2Atr()).isTrue();
+		List<Integer> listFrame1No = closingTime.getMenu1().stream().map(x -> x.getFrameNo()).collect(Collectors.toList()); // frame1: no1, no2
+		List<Integer> listFrame2No = closingTime.getMenu2().stream().map(x -> x.getFrameNo()).collect(Collectors.toList()); // frame2: no1, no3
+		
+		assertThat(listFrame1No.containsAll(Arrays.asList(1, 2))).isTrue();
+		assertThat(listFrame2No.containsAll(Arrays.asList(1, 3))).isTrue();
 	}
 	
 	@Test
 	public void receptionCheck_pastDay() {
-		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu();
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		ReservationDate reservationDate = BentoInstanceHelper.getDate("2019/12/20");
+		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu(); // closing time = 10:00
+		GeneralDateTime dateTime = GeneralDateTime.now(); // today
+		ReservationDate reservationDate = BentoInstanceHelper.getYesterday(); // yesterday
 		BusinessExceptionAssert.id("Msg_1584", () -> bentoMenu.receptionCheck(dateTime, reservationDate));
 	}
 	
 	@Test
-	public void receptionCheck_toDay() {
-		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu();
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		ReservationDate today = BentoInstanceHelper.getToday();
+	public void receptionCheck_todayCantReverse() {
+		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu(); // closing time = 10:00
+		GeneralDateTime dateTime = BentoInstanceHelper.getStartToday().addMinutes(720); // today 12:00
+		ReservationDate today = BentoInstanceHelper.getToday(); // today
 		BusinessExceptionAssert.id("Msg_1585", () -> bentoMenu.receptionCheck(dateTime, today));
 	}
 	
+	
 	@Test
-	public void calculateTotalAmount() {
-		Map<Integer, Integer> bentoDetails = new HashMap<>();
-		bentoDetails.put(1, 5);
-		bentoDetails.put(2, 3);
-		
-	 	BentoMenu bentoMenu = menu(
-	 			bento(1, 20, 10),
-	 			bento(2, 100, 30));
-	 	
-	 	assertAmounts(
-	 			bentoMenu.calculateTotalAmount(bentoDetails),
-	 			5 * 20 + 3 * 100,
-	 			5 * 10 + 3 * 30);
+	public void receptionCheck_todayCanReverse() {
+		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu(); // closing time = 10:00
+		GeneralDateTime dateTime = BentoInstanceHelper.getStartToday(); // today 00:00
+		ReservationDate today = BentoInstanceHelper.getToday(); // today
+		bentoMenu.receptionCheck(dateTime, today);
 	}
 	
 	@Test
-	public void calculateTotalAmount_invalidFrame() {
-		Map<Integer, Integer> bentoDetails = new HashMap<>();
-		bentoDetails.put(1, 5);
-		bentoDetails.put(2, 3);
-		
-	 	BentoMenu bentoMenu = menu(bento(1, 20, 10));
-	 	
-	 	assertThatThrownBy(() -> 
-			bentoMenu.calculateTotalAmount(bentoDetails)
-		).as("fail at day").isInstanceOf(RuntimeException.class);
-	}
-
-	private static void assertAmounts(BentoAmountTotal amount, int expectAmount1, int expectAmount2) {
-		assertThat(amount.getTotalAmount1()).isEqualTo(expectAmount1);
-		assertThat(amount.getTotalAmount2()).isEqualTo(expectAmount2);
+	public void receptionCheck_futureDay() {
+		BentoMenu bentoMenu = BentoInstanceHelper.getBentoMenu(); // closing time = 10:00
+		GeneralDateTime dateTime = BentoInstanceHelper.getStartToday().addDays(1); // tomorrow
+		ReservationDate today = BentoInstanceHelper.getToday(); // today
+		bentoMenu.receptionCheck(dateTime, today);
 	}
 }
