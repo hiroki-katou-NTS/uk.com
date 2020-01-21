@@ -15,6 +15,8 @@ public interface EmpSocialInsGradeRepository {
     void update(EmpSocialInsGradeHis history, EmpSocialInsGradeInfo info);
     
     void updateAll(List<EmpSocialInsGradeHisInter> params);
+    
+    void updateAllInfo(List<EmpSocialInsGradeInfo> params);
 
     void delete(String cId, String sId, String histId);
 

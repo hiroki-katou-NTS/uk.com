@@ -33,6 +33,9 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 
     @Inject
     private EmpSocialInsGradeService service;
+    
+    @Inject
+    private EmpSocialInsGradeRepository empSocialInsGradeRepository;
 
 	@Override
 	public String targetCategoryCd() {
@@ -67,6 +70,8 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 		List<EmpSocialInsGradeHisInter> domainIntermediates = new ArrayList<>();
 		
 		Map<String, EmpSocialInsGrade> histBySidsMap = repository.getBySidsAndCid(cid, sids);
+		
+		List<EmpSocialInsGradeInfo> infos = new ArrayList<>();
 			
 		command.stream().forEach(c -> {
 			
@@ -122,6 +127,27 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 						return;
 						
 					}
+				}else {
+					
+		            EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(
+		            		
+		                    c.getHistoryId(),
+		                    
+		                    c.getSocInsMonthlyRemune().intValue(),
+		                    
+		                    c.getCalculationAtr().intValue(),
+		                    
+		                    c.getHealInsStandMonthlyRemune() != null ? c.getHealInsStandMonthlyRemune().intValue() : null,
+		                    
+		                    c.getHealInsGrade() != null ? c.getHealInsGrade().intValue() : null,
+		                    		
+		                    c.getPensionInsStandCompenMonthly() != null ? c.getPensionInsStandCompenMonthly().intValue() : null,
+		                    		
+		                    c.getPensionInsGrade() != null ? c.getPensionInsGrade().intValue() : null);
+					
+		            
+		            infos.add(info);
+		            
 				}
 
 				
@@ -138,6 +164,11 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 			
 			service.updateAll(domainIntermediates);
 			
+		}
+		
+		if(!infos.isEmpty()) {
+			
+			this.empSocialInsGradeRepository.updateAllInfo(infos);
 		}
 		
 		if(!sidErrorLst.isEmpty()) {

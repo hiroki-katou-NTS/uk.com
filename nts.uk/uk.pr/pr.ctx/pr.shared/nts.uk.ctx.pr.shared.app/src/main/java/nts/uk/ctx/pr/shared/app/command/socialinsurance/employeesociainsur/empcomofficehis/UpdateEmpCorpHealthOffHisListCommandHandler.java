@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisInter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisRepository;
@@ -34,6 +35,9 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 
 	@Inject
 	private EmpCorpHealthOffHisService empCorpHealthOffHisService;
+	
+	@Inject
+	private AffOfficeInformationRepository affOfficeInformationRepository;
 
 	@Override
 	public String targetCategoryCd() {
@@ -67,6 +71,8 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 		
 		Map<String, List<EmpCorpHealthOffHis>> existHistMap = empCorpHealthOffHisRepo.getByCidAndSidsDesc(cid, sids)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		 
+		List<AffOfficeInformation> updateInfos = new ArrayList<>();
 		
 		cmd.stream().forEach(c -> {
 			
@@ -105,6 +111,12 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 						
 					}
 					
+				}else {
+					
+					AffOfficeInformation updateInfo = new AffOfficeInformation(c.getHistId(), new SocialInsuranceOfficeCode(c.getCode()));
+					
+					updateInfos.add(updateInfo);
+					
 				}
 
 			} catch (BusinessException e) {
@@ -120,6 +132,11 @@ implements PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>{
 			
 			this.empCorpHealthOffHisService.updateAllCPS003(domainIntermediates);
 			
+		}
+		
+		if(!updateInfos.isEmpty()) {
+			
+			this.affOfficeInformationRepository.updateAll(updateInfos);
 		}
 		
 		if(sidErrorLst.isEmpty()) {

@@ -15,7 +15,9 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGrade;
@@ -25,6 +27,7 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsg
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeRepository;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtSyahoGraHist;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empsocialinsgradehis.QqsmtSyahoGraHistPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -298,6 +301,58 @@ public class JpaEmpSocialInsGradeRepository extends JpaRepository implements Emp
 
 		this.commandProxy().updateAll(entities);
 
+	}
+
+	@Override
+	public void updateAllInfo(List<EmpSocialInsGradeInfo> params) {
+		
+	     String UP_SQL = "UPDATE QQSMT_SYAHO_GRA_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+	                + " SYAHO_HOSYU_REAL = SYAHO_HOSYU_REAL_VAL, "
+	                + " KENHO_TOQ = KENHO_TOQ_VAL, KENHO_HOSYU = KENHO_HOSYU_VAL, "
+	                + " KOUHO_TOQ = KOUHO_TOQ_VAL, KOUHO_HOSYU = KOUHO_HOSYU_VAL, "
+	                + " CAL_ATR = CAL_ATR_VAL"
+	                + " WHERE HIST_ID = HIST_ID_VAL;";
+	     
+	        String updCcd = AppContexts.user().companyCode();
+	        
+	        String updScd = AppContexts.user().employeeCode();
+	        
+	        String updPg = AppContexts.programId();
+
+	        StringBuilder sb = new StringBuilder();
+	        
+	        params.stream().forEach(c -> {
+	        	
+	            String sql = UP_SQL;
+	            
+	            sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+	            
+	            sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+	            
+	            sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+	            
+	            sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+	            
+	            sql = sql.replace("SYAHO_HOSYU_REAL_VAL", ""+  c.getSocInsMonthlyRemune().v() +"");
+	            
+	            sql = sql.replace("KENHO_TOQ_VAL", ""+ c.getHealInsGrade().map(PrimitiveValueBase::v).orElse(null) +"");
+	            
+	            sql = sql.replace("KENHO_HOSYU_VAL", ""+ c.getHealInsStandMonthlyRemune().map(PrimitiveValueBase::v).orElse(null) +"");
+
+	            sql = sql.replace("KOUHO_TOQ_VAL", ""+ c.getPensionInsGrade().map(PrimitiveValueBase::v).orElse(null) +"");
+	            
+	            sql = sql.replace("KOUHO_HOSYU_VAL", ""+ c.getPensionInsStandCompenMonthly().map(PrimitiveValueBase::v).orElse(null)+"");
+
+	            sql = sql.replace("CAL_ATR_VAL", "" + c.getCalculationAtr().value + "");
+	            
+	            sql = sql.replace("HIST_ID_VAL", "'" + c.getHistId() + "'");
+	            
+	            sb.append(sql);
+	        });
+	        
+	        int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+	        
+	        System.out.println(records);
 	}
 	
 }

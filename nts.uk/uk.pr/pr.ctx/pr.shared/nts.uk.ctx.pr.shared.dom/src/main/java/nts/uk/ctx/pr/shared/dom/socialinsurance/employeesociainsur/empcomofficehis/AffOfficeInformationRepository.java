@@ -19,7 +19,9 @@ public interface AffOfficeInformationRepository
 
     void add(AffOfficeInformation domain);
 
-    void update(AffOfficeInformation domain);
+    void update(AffOfficeInformation domains);
+    
+    void updateAll(List<AffOfficeInformation> domains);
 
     void remove(String socialInsuranceOfficeCd, String hisId);
 
