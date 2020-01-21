@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class ParamAddManRetireRegDto {
 	
 	private String baseDate;
 	
-	private List<RetirePlanCourceDto> retirePlanCourseList;
+	private List<RetirePlanCourceParamDto> retirePlanCourseList;
 	
 	private List<GrpCmmMastItImport> commonMasterItems;
 
@@ -31,8 +32,14 @@ public class ParamAddManRetireRegDto {
 		return GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 	}
 	
-	public Optional<RetirePlanCourceDto> getMaxRetirePlanCource() {
-		return this.retirePlanCourseList.stream().max(Comparator.comparingInt(RetirePlanCourceDto::getRetirementAge)).filter(c-> c.getRetirePlanCourseClass() == 0 && c.getDurationFlg() == 0);
+	public Optional<RetirePlanCourceParamDto> getMaxRetirePlanCource() {
+		List<RetirePlanCourceParamDto> t = this.retirePlanCourseList.stream().filter(c->{ 
+			return c.getRetirePlanCourseClass() == 0 && c.getDurationFlg() == 0;
+		}).collect(Collectors.toList());
+		if(t.isEmpty()) {
+			return Optional.empty();
+		}
+		return t.stream().max(Comparator.comparingInt(RetirePlanCourceParamDto::getRetirementAge));
 	}
 	
 	public GrpCmmMastItImport getMinOrderCmmMastIt() {

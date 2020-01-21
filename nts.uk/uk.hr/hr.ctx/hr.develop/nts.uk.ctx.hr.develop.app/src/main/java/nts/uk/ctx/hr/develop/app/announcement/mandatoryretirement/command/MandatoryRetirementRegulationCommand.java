@@ -84,7 +84,7 @@ public class MandatoryRetirementRegulationCommand {
 			DateCaculationTerm.createFromJavaType(1, null, null), 
 			RetireDateTerm.createFromJavaType(0, null), 
 			false, 
-			new ArrayList<>(), 
+			mandatoryRetireTerm, 
 			df, 
 			PlanCourseApplyTerm.createFromJavaType(50, 59, 12, 31));
 	}
