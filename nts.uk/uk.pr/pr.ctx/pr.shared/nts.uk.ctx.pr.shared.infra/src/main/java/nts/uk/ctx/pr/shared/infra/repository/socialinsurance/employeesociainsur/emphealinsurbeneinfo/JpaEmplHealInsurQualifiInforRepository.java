@@ -268,7 +268,7 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 					
 				}
 				
-				List<EmplHealInsurQualifiInfor> domains = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+				List<QqsmtEmpHealInsurQi> entities = new NtsResultSet(stmt.executeQuery()).getList(r -> {
 					
 					QqsmtEmpHealInsurQi entity =  new QqsmtEmpHealInsurQi(
 							
@@ -277,16 +277,18 @@ public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implem
 							r.getGeneralDate("START_DATE"), r.getGeneralDate("END_DATE"),
 							
 							r.getString("KAIHO_NUM"),  r.getString("KENHO_NUM"));
-					
-					EmplHealInsurQualifiInfor dm =  entity.toDomain();
-					return dm;
+					return entity;
 				});
 				
 				
-				if(!CollectionUtil.isEmpty(domains)) {
+				if(!CollectionUtil.isEmpty(entities)) {
+					Map<String, List<QqsmtEmpHealInsurQi>> entitieMaps = entities.stream().collect(Collectors.groupingBy(c -> c.empHealInsurQiPk.employeeId));
 					
-					results.addAll(domains);
-					
+					entitieMaps.forEach((k, v) ->{
+						
+						results.add(QqsmtEmpHealInsurQi.toDomain(v));
+						
+					});
 				}
 				
 

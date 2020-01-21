@@ -14,12 +14,14 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealInsQualifiInfoService;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealthInsurBenefits;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInfor;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforParams;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmplHealInsurQualifiInforRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInfor;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.HealInsurNumberInforRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
@@ -35,6 +37,8 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 	@Inject
 	private EmpHealInsQualifiInfoService empHealInsQualifiInfoService;
 
+	@Inject
+	private HealInsurNumberInforRepository healInsurNumberInforRepository;
 	@Override
 	public String targetCategoryCd() {
 		return "CS00082";
@@ -66,6 +70,7 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 
 		Map<String, List<EmplHealInsurQualifiInfor>> histBySidsMap = listDomain.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 
+		List<HealInsurNumberInfor> healInsurNumberInfors = new ArrayList<>();
 		command.stream().forEach(c -> {
 
 			try {
@@ -101,16 +106,23 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 
 							sidErrorLst.add(c.getEmployeeId());
 
-							return;
 						}
 					} else {
 
 						sidErrorLst.add(c.getEmployeeId());
 
-						return;
 
 					}
+				}else {
+					
+					
+					HealInsurNumberInfor numberInfor = HealInsurNumberInfor.createFromJavaType(c.getHistoryId(),
+							
+							c.getNurCaseInsNumber(), c.getHealInsNumber());
+					
+					healInsurNumberInfors.add(numberInfor);
 				}
+				
 
 			} catch (BusinessException e) {
 
@@ -134,6 +146,14 @@ public class UpdateEmpHealInsQualifiInfoListCommandHandler
 			}
 
 		}
+		
+		if(!CollectionUtil.isEmpty(healInsurNumberInfors)) {
+			
+			this.healInsurNumberInforRepository.updateAll(healInsurNumberInfors);
+			
+		}
+
+			
 
 		if (!sidErrorLst.isEmpty()) {
 
