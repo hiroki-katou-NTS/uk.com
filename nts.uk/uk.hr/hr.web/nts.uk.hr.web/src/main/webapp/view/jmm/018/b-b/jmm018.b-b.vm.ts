@@ -18,7 +18,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
 
         // master
         reachedAgeTermList: KnockoutObservableArray<any> = ko.observableArray([]);
-        dateRule: KnockoutObservableArray<any> = ko.observableArray([]);
+        dateRule: KnockoutObservableArray<any> = ko.observableArray([
+                    new ItemModel(1, getText('JMM018_B422_15_5_1')),
+                    new ItemModel(2, getText('JMM018_B422_15_5_2')),
+                    new ItemModel(3, getText('JMM018_B422_15_5_3')),
+                    new ItemModel(6, getText('JMM018_B422_15_5_6')),
+                ]);
         dateSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         monthSelectItem: KnockoutObservableArray<any> = ko.observableArray([]);
         retireDateRule: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -33,6 +38,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         retirePlanCourseList: [];
         
         // data
+        changeLatest: boolean;
         isStart: boolean;
         isAddNewHis: boolean;
         getRelatedMaster: KnockoutObservable<boolean> = ko.observable(false);
@@ -42,8 +48,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             // radio button
             self.reachedAgeTermList(__viewContext.enums.ReachedAgeTerm); 
-            _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});           
-            self.dateRule = (__viewContext.enums.DateRule);
+            //_.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});           
             self.dateSelectItem = (__viewContext.enums.DateSelectItem);
             self.retireDateRule = (__viewContext.enums.RetireDateRule);
             self.monthSelectItem = (__viewContext.enums.MonthSelectItem);
@@ -106,21 +111,31 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             item.usageFlg(false);
                             item.setEnableRetirePlanCourse([],[]);
                         });
-                        self.commonMasterItems()[0].usageFlg(true);
+                        if(self.commonMasterItems().length > 0){
+                            self.commonMasterItems()[0].usageFlg(true);
+                        }
                     }else{
-                        self.getMandatoryRetirementRegulation();
+                        if(self.changeLatest){
+                            self.loadHisId().done(function() {
+                                self.getMandatoryRetirementRegulation();
+                            });    
+                        }else{
+                            self.getMandatoryRetirementRegulation();
+                        }
+                        
                     }    
                 }
             });
             self.afterRender = () => {};
             self.afterAdd = () => {
                 self.isAddNewHis = true;
+                self.changeLatest = true;
             };
             self.afterUpdate = () => {
 //                alert("Updated");
             };
             self.afterDelete = () => {
-                self.latestHistId(self.selectedHistId());
+                self.changeLatest = true;
             };
             self.isLatestHis = ko.observable(false)
             self.isLatestHis.subscribe(function(val){
@@ -257,9 +272,15 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let dfd = $.Deferred();
             new service.getLatestHistId().done(function(data: any) {
                 self.latestHistId(data);
+                if (self.latestHistId() == self.selectedHistId() && self.selectedHistId() != '' && self.selectedHistId() != null) {
+                    self.isLatestHis(true);
+                }else{
+                    self.isLatestHis(false);
+                }
                 if(self.commonMasterItems().length > 0){
                     self.commonMasterItems()[0].usageFlg(false);    
                 } 
+                self.changeLatest = false;
                 dfd.resolve();
             });
             return dfd.promise();
@@ -271,7 +292,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             new service.getRelateMaster().done(function(data: any) {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
-                self.retirePlanCourseList = data.retirePlanCourseList;
+                _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});  
+                self.retirePlanCourseList = _.remove(data.retirePlanCourseList, function(n) {return n.retirePlanCourseClass == 0;});
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
@@ -393,8 +415,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
         constructor(param: IDateCaculationTerm) {
             let self = this;
             self.calculationTerm = ko.observable(param ? param.calculationTerm : 1);
-            self.dateSettingDate = ko.observable(param ? param.dateSettingNum : '');
-            self.dateSettingNum = ko.observable(param ? param.dateSettingDate : '');
+            self.dateSettingDate = ko.observable(param ? param.dateSettingDate : '');
+            self.dateSettingNum = ko.observable(param ? param.dateSettingNum : '');
             self.dateSettingNumRequire = ko.observable(false);
             self.calculationTerm.subscribe(function(val){
                 if(val == 2 || val == 3){

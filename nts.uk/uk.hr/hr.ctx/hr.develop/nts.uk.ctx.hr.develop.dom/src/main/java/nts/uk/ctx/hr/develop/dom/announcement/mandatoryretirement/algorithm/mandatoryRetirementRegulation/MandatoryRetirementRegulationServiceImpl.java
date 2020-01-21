@@ -324,20 +324,22 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
 			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(c.getRetirementAge().v()*-1).addDays(-1), endDate.addYears(c.getRetirementAge().v()*-1).addDays(-1)))).collect(Collectors.toList()));
 		}else {
-			searchConditionList.addAll(retireTermList.stream().map(c-> {
+			searchConditionList.addAll(retireTermList.stream().map(c -> {
 				GeneralDate s = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day());
 				GeneralDate e = GeneralDate.ymd(endDate.year(), endDate.month(), endDate.day());
-				if(startDate.month() == 2 && startDate.day() == 29 && GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
-					 s = GeneralDate.ymd(startDate.year() - c.getRetirementAge().v(), startDate.month(), 28);
-				}else {
-					s.addYears(c.getRetirementAge().v()*-1);
+				if (startDate.month() == 2 && startDate.day() == 29
+						&& GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+					s = GeneralDate.ymd(startDate.year() - c.getRetirementAge().v(), startDate.month(), 28);
+				} else {
+					s = s.addYears(c.getRetirementAge().v() * -1);
 				}
-				if(endDate.month() == 2 && endDate.day() == 29 && GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+				if (endDate.month() == 2 && endDate.day() == 29
+						&& GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
 					e = GeneralDate.ymd(endDate.year() - c.getRetirementAge().v(), endDate.month(), 28);
-				}else {
-					e.addYears(c.getRetirementAge().v()*-1);
+				} else {
+					e = e.addYears(c.getRetirementAge().v() * -1);
 				}
-				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s,e));
+				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s, e));
 			}).collect(Collectors.toList()));
 		}
 		//List<社員>{個人ID、社員ID、雇用コード、誕生日、入社日}
