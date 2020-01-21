@@ -138,6 +138,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.appType(data.appTypeName);
                 //承認形態
                 if(data.typeSetting == TypeSet.PERSON){
+                    if(data.formSetting == 2){
+                       self.selectedCbbCode(data.confirmedPerson);
+                       self.setDataForCbb();
+                    }
                     self.selectFormSet(data.formSetting);
                 }else if(data.typeSetting == TypeSet.GROUP){
                     self.selectFormSetG(data.formSetting);

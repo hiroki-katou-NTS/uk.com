@@ -55,6 +55,7 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history (get from db)
         export class DataFullDto{
             workplaceId: string;
+            companyName: string;
             lstCompany: Array<DataDisplayComDto> ;
             lstWorkplace: Array<DataDisplayWpDto> ;
             lstPerson: Array<DataDisplayPsDto> ;
@@ -63,7 +64,6 @@ module nts.uk.com.view.cmm018.shr {
         export class DataDisplayComDto{
             id: number;
             overLap: boolean;
-            companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
         }
         //data after grouping history of work place

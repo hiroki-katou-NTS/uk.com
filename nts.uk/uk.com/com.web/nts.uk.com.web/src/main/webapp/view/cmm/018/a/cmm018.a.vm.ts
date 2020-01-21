@@ -622,11 +622,13 @@ module nts.uk.com.view.cmm018.a {
                         self.enableRegister(false); 
                         self.lstCompany([]);
                         self.enableDelete(false);
+                        self.nameCompany(data != null ? data.companyName : '');
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     } 
+                    self.nameCompany(data.companyName);
                     self.enableDelete(true);
                     self.enableRegister(true); 
                     self.checkAddHistory(false);
