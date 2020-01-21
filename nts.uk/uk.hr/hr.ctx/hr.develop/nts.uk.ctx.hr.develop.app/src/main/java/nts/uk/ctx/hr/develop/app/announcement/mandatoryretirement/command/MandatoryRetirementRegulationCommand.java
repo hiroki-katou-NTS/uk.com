@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.MandatoryRetirementRegulationDto;
 import nts.uk.ctx.hr.develop.app.announcement.mandatoryretirement.dto.ParamAddManRetireRegDto;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.EnableRetirePlanCourse;
+import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetireTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.MandatoryRetirementRegulation;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.PlanCourseApplyTerm;
 import nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.RetireDateTerm;
@@ -61,13 +63,19 @@ public class MandatoryRetirementRegulationCommand {
 				for (int i = 0; i < 3; i++) {
 					df.add(ReferEvaluationItem.createFromJavaType(i, false, 1, "B"));
 				}
+				List<MandatoryRetireTerm> mandatoryRetireTerm = new ArrayList<>();
+				List<EnableRetirePlanCourse>  enableRetirePlanCourse = new ArrayList<>();
+				if(param.getMaxRetirePlanCource().isPresent()) {
+					enableRetirePlanCourse.add(new EnableRetirePlanCourse(param.getMaxRetirePlanCource().get().getRetirePlanCourseId()));
+				}
+				mandatoryRetireTerm.add(new MandatoryRetireTerm(param.getMinOrderCmmMastIt().getCommonMasterItemId(), true, enableRetirePlanCourse));
 				service.addMandatoryRetirementRegulation(cId, 
 						param.getHistoryId(), 
 						0,
 						DateCaculationTerm.createFromJavaType(1, null, null), 
 						RetireDateTerm.createFromJavaType(0, null), 
 						false, 
-						new ArrayList<>(), 
+						mandatoryRetireTerm, 
 						df, 
 						PlanCourseApplyTerm.createFromJavaType(50, 59, 12, 31));
 			}
