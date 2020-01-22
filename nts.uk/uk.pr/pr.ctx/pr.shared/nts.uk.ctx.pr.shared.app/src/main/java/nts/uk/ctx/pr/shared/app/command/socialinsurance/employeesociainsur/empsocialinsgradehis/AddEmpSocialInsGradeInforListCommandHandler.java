@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.CalculationAtr;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGrade;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisInter;
@@ -88,9 +89,9 @@ public class AddEmpSocialInsGradeInforListCommandHandler
 
 				EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(newHistID,
 
-						c.getSocInsMonthlyRemune().intValue(),
+						c.getSocInsMonthlyRemune() == null? 0: c.getSocInsMonthlyRemune().intValue(),
 
-						c.getCalculationAtr().intValue(),
+						c.getCalculationAtr() == null? CalculationAtr.SCHEDULED.value:  c.getCalculationAtr().intValue(),
 
 						c.getHealInsStandMonthlyRemune() != null ? c.getHealInsStandMonthlyRemune().intValue() : null,
 
