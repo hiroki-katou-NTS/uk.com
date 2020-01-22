@@ -14,11 +14,14 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.CalculationAtr;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGrade;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeHisInter;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInfo;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeService;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empsocialinsgradehis.MonthlyRemuneration;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -94,21 +97,29 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 				                   
 									c.getEndYM() != null ? c.getEndYM().yearMonth() : GeneralDate.max().yearMonth()));
 
-				            EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(
-				            		
-				                    c.getHistoryId(),
-				                    
-				                    c.getSocInsMonthlyRemune().intValue(),
-				                    
-				                    c.getCalculationAtr().intValue(),
-				                    
-				                    c.getHealInsStandMonthlyRemune() != null ? c.getHealInsStandMonthlyRemune().intValue() : null,
-				                    
-				                    c.getHealInsGrade() != null ? c.getHealInsGrade().intValue() : null,
-				                    		
-				                    c.getPensionInsStandCompenMonthly() != null ? c.getPensionInsStandCompenMonthly().intValue() : null,
-				                    		
-				                    c.getPensionInsGrade() != null ? c.getPensionInsGrade().intValue() : null);
+							EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(
+
+									c.getHistoryId(),
+
+									c.getSocInsMonthlyRemune() == null
+											? (CollectionUtil.isEmpty(empSocialInsGrade.getInfos()) == true?  0: empSocialInsGrade.getInfos().get(0).getSocInsMonthlyRemune().v())
+											: c.getSocInsMonthlyRemune().intValue(),
+
+									c.getCalculationAtr() == null
+											? (CollectionUtil.isEmpty(empSocialInsGrade.getInfos()) == true?  CalculationAtr.SCHEDULED.value: empSocialInsGrade.getInfos().get(0).getCalculationAtr().value)
+											: c.getCalculationAtr().intValue(),
+
+									c.getHealInsStandMonthlyRemune() != null
+											? c.getHealInsStandMonthlyRemune().intValue()
+											: null,
+
+									c.getHealInsGrade() != null ? c.getHealInsGrade().intValue() : null,
+
+									c.getPensionInsStandCompenMonthly() != null
+											? c.getPensionInsStandCompenMonthly().intValue()
+											: null,
+
+									c.getPensionInsGrade() != null ? c.getPensionInsGrade().intValue() : null);
 
 							domainIntermediates.add(new EmpSocialInsGradeHisInter(empSocialInsGrade.getHistory(), info, itemToBeUpdated.get()));
 						
@@ -128,16 +139,16 @@ implements PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>{
 						
 					}
 				}else {
-					
+					EmpSocialInsGrade empSocialInsGrade = histBySidsMap.get(c.getEmployeeId());
 		            EmpSocialInsGradeInfo info = new EmpSocialInsGradeInfo(
 		            		
 		                    c.getHistoryId(),
 		                    
-		                    c.getSocInsMonthlyRemune().intValue(),
+		                    c.getSocInsMonthlyRemune()== null? 0: c.getSocInsMonthlyRemune().intValue(),
 		                    
-		                    c.getCalculationAtr().intValue(),
+		                    c.getCalculationAtr() == null? CalculationAtr.SCHEDULED.value: c.getCalculationAtr().intValue(),
 		                    
-		                    c.getHealInsStandMonthlyRemune() != null ? c.getHealInsStandMonthlyRemune().intValue() : null,
+		                    c.getHealInsStandMonthlyRemune() != null ? c.getHealInsStandMonthlyRemune().intValue() : 0,
 		                    
 		                    c.getHealInsGrade() != null ? c.getHealInsGrade().intValue() : null,
 		                    		
