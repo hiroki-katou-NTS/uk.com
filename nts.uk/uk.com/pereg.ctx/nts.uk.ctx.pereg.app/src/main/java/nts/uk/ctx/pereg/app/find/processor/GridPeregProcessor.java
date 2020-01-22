@@ -114,6 +114,8 @@ public class GridPeregProcessor {
 	private static final List<String> nextGrantDayLst = Arrays.asList("IS00282");
 	// 次回時間年休付与上限 - nextTimeMaxTime
 	private static final List<String> nextTimeMaxTimeLst = Arrays.asList("IS00283");
+	
+	
 	public GridEmployeeDto getGridLayout(PeregGridQuery query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();

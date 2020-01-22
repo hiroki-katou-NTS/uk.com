@@ -249,7 +249,7 @@ module cps003.c.vm {
                         }
                         
                         if (!dt) return;
-                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
+                        if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE) {
                             let momentObj = moment.utc(item.value, "YYYY/MM/DD");
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" || !momentObj.isValid() ? item.value : momentObj.toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
@@ -987,7 +987,17 @@ module cps003.c.vm {
                         let col = _.find(self.gridOptions.columns, column => column.key === item.itemCode);
                         if (col && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.READONLY_BUTTON && col.perInfoTypeState.dataTypeValue !== ITEM_SINGLE_TYPE.RELATE_CATEGORY
                             && !_.find(regEmp.input.items, it => it.itemCode === item.itemCode)) {
-                            regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: self.convertType(col.perInfoTypeState, item.value), logType: col.perInfoTypeState.dataTypeValue }); 
+                            if (col.perInfoTypeState.dataTypeValue == ITEM_SINGLE_TYPE.DATE) {
+                                if (_.isNil(item.value) || (item.value instanceof moment && !item.value.isValid())) {
+                                    regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: self.convertType(col.perInfoTypeState, item.value), logType: col.perInfoTypeState.dataTypeValue });
+                                } else {
+                                    let date = moment(item.value).format("YYYY/MM/DD");
+                                    regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: date, text: date, defValue: item.defValue, defText: item.defText, type: self.convertType(col.perInfoTypeState, item.value), logType: col.perInfoTypeState.dataTypeValue });
+                                }
+                            } else {
+                                regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: item.value, text: item.textValue, defValue: item.defValue, defText: item.defText, type: self.convertType(col.perInfoTypeState, item.value), logType: col.perInfoTypeState.dataTypeValue });
+                            }
+                            
                         }
                     });
                 });

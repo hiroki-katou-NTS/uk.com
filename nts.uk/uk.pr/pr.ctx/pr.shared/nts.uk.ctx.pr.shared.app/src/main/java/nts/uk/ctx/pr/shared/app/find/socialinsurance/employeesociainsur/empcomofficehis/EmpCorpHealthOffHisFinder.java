@@ -1,11 +1,22 @@
 package nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformation;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.AffOfficeInformationRepository;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHis;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisRepository;
-import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisService;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -15,14 +26,6 @@ import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Stateless
 public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHisDto> {
 
@@ -31,9 +34,6 @@ public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHi
 
     @Inject
     private AffOfficeInformationRepository affOfficeInformationRepository;
-
-    @Inject
-    private EmpCorpHealthOffHisService empCorpHealthOffHisService;
 
     @Override
     public String targetCategoryCode() {
@@ -111,37 +111,54 @@ public class EmpCorpHealthOffHisFinder implements PeregFinder<EmpCorpHealthOffHi
     @Override
     public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query) {
 
-//        List<GridPeregDomainDto> result = new ArrayList<>();
-//        List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-//        val empCorpList = empCorpHealthOffHisRepository.getBySidsAndBaseDate(sids, query.getStandardDate());
-//        List<String> listFirstHisIds = new ArrayList<>();
-//        query.getEmpInfos().stream().forEach(e -> {
-//            result.add(new GridPeregDomainDto(e.getEmployeeId(), e.getPersonId(), null));
-//            val itemPerId = empCorpList.stream().filter( item -> item.getEmployeeId().equalsIgnoreCase(e.getEmployeeId())).findFirst();
-//            if (itemPerId.isPresent()) {
-//                listFirstHisIds.add(itemPerId.get().getPeriod().get(0).identifier());
-//            }
-//        });
-//
-//        Map<String, String> affOfficeInfos = affOfficeInformationRepository.getByHistIds(listFirstHisIds).stream().collect(Collectors.toMap(e -> e.getHistoryId(), e -> e.getSocialInsurOfficeCode().v()));
-//
-//        result.stream().forEach( e-> {
-//            val empCorpHealOffOpt = empCorpList.stream()
-//                    .filter(item -> item.getEmployeeId().equals(e.getEmployeeId())).findFirst();
-//            if (empCorpHealOffOpt.isPresent()) {
-//                val affOfficeOpt = affOfficeInfos.get(empCorpHealOffOpt.get().getPeriod().get(0).identifier());
-//                EmpCorpHealthOffHisDto item = new EmpCorpHealthOffHisDto(
-//                        empCorpHealOffOpt.get().getEmployeeId(),
-//                        empCorpHealOffOpt.get().getPeriod().get(0).start(),
-//                        empCorpHealOffOpt.get().getPeriod().get(0).end(),
-//                        affOfficeOpt
-//                );
-//                e.setPeregDomainDto(item);
-//            }
-//        });
-//
-//        return result;
-        return null;
+        
+		String cid = AppContexts.user().companyId();
+
+		List<GridPeregDomainDto> result = new ArrayList<>();
+
+		List<String> sids = query.getEmpInfos().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+
+		query.getEmpInfos().forEach(c -> {
+			
+			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
+			
+		});
+		
+		//sid, DateHistoryItem
+		Map<String, DateHistoryItem> dateHistLst = empCorpHealthOffHisRepository.getAllEmpCorpHealthOffHisBySidsAndBaseDate(cid, sids, query.getStandardDate());
+		
+		List<String> historyIds = dateHistLst.values().stream().map(c -> c.identifier())
+				.collect(Collectors.toList());
+		
+		Map<String, List<AffOfficeInformation>> infosByHistId = this.affOfficeInformationRepository.getAllAffOfficeInformationByHistId(cid, historyIds)
+				.stream().collect(Collectors.groupingBy(c -> c.getHistoryId()));
+
+        result.stream().forEach( e-> {
+        	
+        	DateHistoryItem dateHistoryItem = dateHistLst.get(e.getEmployeeId());
+        	
+        	if(dateHistoryItem != null) {
+        		
+        		List<AffOfficeInformation> info = infosByHistId.get(dateHistoryItem.identifier());
+        		
+        		EmpCorpHealthOffHisDto item = new EmpCorpHealthOffHisDto(
+        				
+        				dateHistoryItem.identifier(),
+                        
+                        dateHistoryItem.start(),
+                        
+                        dateHistoryItem.end(),
+                        
+                        info.isEmpty() == true? null : info.get(0).getSocialInsurOfficeCode().v()
+                );
+        		
+        		e.setPeregDomainDto(item);
+        		
+        	}
+        	
+        });
+
+        return result;
     }
 
     @Override

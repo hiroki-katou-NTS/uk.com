@@ -1109,6 +1109,7 @@ module cps003.a.vm {
                         if (control) {
                             self.gridOptions.ntsControls.push(control);
                             let combo = cps003.control.COMBOBOX[self.category.catCode() + "_" + d.itemCode]; 
+                            
                             if (combo) {
                                 control.inputProcess = combo;
                             }
@@ -1905,7 +1906,9 @@ module cps003.a.vm {
                     }
                     
                     item.dataType = "number";
-                    let timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
+                    let timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key],
+                        numberType = cps003.control.NUMBER_Lan[self.category.catCode() + "_" + item.key];
+                    if (numberType) item.inputProcess = numberType;
                     if (timeNumber) item.inputProcess = timeNumber;
                     sort.columnKey = item.key;
                     sort.allowSorting = true;

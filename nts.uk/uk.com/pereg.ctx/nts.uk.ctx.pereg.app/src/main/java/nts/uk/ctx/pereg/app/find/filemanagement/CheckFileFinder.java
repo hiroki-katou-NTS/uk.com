@@ -120,7 +120,7 @@ public class CheckFileFinder {
 	
 	private final static List<String> itemSpecialLst = Arrays.asList("IS00003", "IS00004","IS00015","IS00016");
 	
-	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256");
+	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256", "IS00789", "IS00842", "IS01017");
 	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
@@ -553,45 +553,78 @@ public class CheckFileFinder {
 
 	}
 	
-	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, 
-			EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
-			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain, 
-			 Periods period, List<ItemError> itemErrors, int index,
-			 HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems,
-			 String sid) {
+	private void setValueItemDto(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell,
+
+			EmployeeRowDto employeeDto, String header, String headerTemp, List<GridEmpHead> headerReal,
+
+			HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain,
+
+			Periods period, List<ItemError> itemErrors, int index,
+
+			HashMap<Boolean, List<PerInfoItemDefForLayoutDto>> perItems,
+
+			String sid) {
+
 		// lấy emloyeeCode, employeeName
 		if (header.equals(TextResource.localize("CPS003_28"))) {
+
 			// employeeId
 			Optional<EmployeeDataMngInfo> emp = employees.stream()
 					.filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
+
 			if (!emp.isPresent())
 				return;
+
 			employeeDto.setEmployeeCode(cell.getValue() == null ? "" : cell.getValue().getText());
+
 			employeeDto.setEmployeeId(emp.get().getEmployeeId());
+
 			employeeDto.setPersonId(emp.get().getPersonId());
-			if(!category.isHistoryCategory()) {
-				AffCompanyHist affComHist = this.companyHistRepo.getAffCompanyHistoryOfEmployee(emp.get().getEmployeeId());
+
+			if (!category.isHistoryCategory()) {
+
+				AffCompanyHist affComHist = this.companyHistRepo
+						.getAffCompanyHistoryOfEmployee(emp.get().getEmployeeId());
+
 				AffCompanyHistByEmployee affHistEmp = affComHist.getAffCompanyHistByEmployee(emp.get().getEmployeeId());
-				List<AffCompanyHistItem>  affHistItemLst = affHistEmp.getLstAffCompanyHistoryItem();
+
+				List<AffCompanyHistItem> affHistItemLst = affHistEmp.getLstAffCompanyHistoryItem();
+
 				AffCompanyHistItem affHistItem = affHistItemLst.get(0);
+
 				valueStartCode = affHistItem.start();
 			}
-			
+
 		} else if (header.equals(TextResource.localize("CPS003_29"))) {
+
 			employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
+
 		} else {
+
 			boolean isSelf = sid.equals(employeeDto.getEmployeeId());
+
 			List<PerInfoItemDefForLayoutDto> itemAuths = perItems.get(isSelf);
+
 			String value = null;
-			if(cell.getValue() != null) {
-				switch(cell.getValue().getType()) {
+
+			if (cell.getValue() != null) {
+
+				switch (cell.getValue().getType()) {
+
 				case TEXT:
+
 					String tmp = cell.getValue().getText();
+
 					value = tmp.contains("-") == true ? tmp.replace("-", "/") : tmp;
+
 					List<String> ddMMyyy = Arrays.asList("dd/MM/yyyy", "dd-MM-yyyy");
+
 					List<String> MMddyyy = Arrays.asList("MM/dd/yyyy", "MM-dd-yyyy");
+
 					Optional<SimpleDateFormat> dateFormat = validateDate(value);
+
 					Optional<DateTimeFormatter> dateTime = validateDateTime(value);
+
 					if (dateFormat.isPresent()) {
 
 						if (ddMMyyy.contains(dateFormat.get().toPattern())) {
@@ -601,157 +634,270 @@ public class CheckFileFinder {
 							if (dateSplit.length == 3) {
 
 								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+
 										Integer.valueOf(dateSplit[1]).intValue(),
+
 										Integer.valueOf(dateSplit[0]).intValue()).toString();
 							}
-						}else if (MMddyyy.contains(dateFormat.get().toPattern())) {
+
+						} else if (MMddyyy.contains(dateFormat.get().toPattern())) {
 
 							String[] dateSplit = value.split("[-/]");
 
 							if (dateSplit.length == 3) {
 
 								value = GeneralDate.ymd(Integer.valueOf(dateSplit[2]).intValue(),
+
 										Integer.valueOf(dateSplit[0]).intValue(),
+
 										Integer.valueOf(dateSplit[1]).intValue()).toString();
 
 							}
-						}else {
+						} else {
+
 							value = GeneralDate.fromString(value, "yyyy/MM/dd").toString();
+
 						}
 					}
-					
+
 					if (dateTime.isPresent()) {
+
 						List<String> yyyyMMdd = Arrays.asList("yyyyMMdd");
+
 						if (yyyyMMdd.contains("yyyyMMdd")) {
+
 							try {
+
 								value = LocalDate.parse(value, dateTime.get()).toString().replace("-", "/");
+
 							} catch (Exception e) {
+
 								break;
+
 							}
+
 						}
 
 					}
+
 					break;
+
 				case NUMBER:
-					value = value == ""? null:String.valueOf(cell.getValue().getDecimal());
+
+					value = value == "" ? null : String.valueOf(cell.getValue().getDecimal());
+
 					break;
+
 				case DATE:
+
 					String date = cell.getValue().getDate().toString();
-					value = date.contains("-") == true? date.replace("-", "/"): date;
+
+					value = date.contains("-") == true ? date.replace("-", "/") : date;
+
 					break;
+
 				case DATETIME:
+
 					value = cell.getValue().getDateTime().toString();
+
 					break;
-				default: break;
+
+				default:
+					break;
+
 				}
+
 			}
 
 			// lấy dữ liệu của itemName
 			boolean isSelectionCode = headerTemp.contains("（コード）");
+
 			if (isSelectionCode) {
+
 				CheckFileFinder.header = headerTemp.split("（")[0];
+
 			}
+
 			Optional<GridEmpHead> headerGridOpt = headerReal.stream().filter(c -> {
+
 				if (isSelectionCode) {
+
 					return c.getItemName().equals(CheckFileFinder.header);
+
 				} else {
+
 					return c.getItemName().equals(headerTemp);
+
 				}
+
 			}).findFirst();
 
 			if (headerGridOpt.isPresent()) {
-				
+
 				// check quyền cho từng row để xem item nào được hiển thị giá trị
 				boolean isAuth = false;
-				
+
 				GridEmpHead headerGrid = headerGridOpt.get();
-				
-				for(PerInfoItemDefForLayoutDto ia: itemAuths) {
-					
-					if(!ia.getItemCode().equals(headerGrid.getItemCode())) {
-						
-						for(PerInfoItemDefForLayoutDto iaChild: ia.getLstChildItemDef()) {
-							
-							if(iaChild.getItemCode().equals(headerGrid.getItemCode())) {
-								
+
+				for (PerInfoItemDefForLayoutDto ia : itemAuths) {
+
+					if (!ia.getItemCode().equals(headerGrid.getItemCode())) {
+
+						for (PerInfoItemDefForLayoutDto iaChild : ia.getLstChildItemDef()) {
+
+							if (iaChild.getItemCode().equals(headerGrid.getItemCode())) {
+
 								isAuth = true;
-								
+
 								break;
 							}
 						}
-						
-						if(isAuth) break;
-					}else {
-						
+
+						if (isAuth)
+							break;
+					} else {
+
 						isAuth = true;
 					}
 				}
 
-				if(isAuth) {
-					
+				if (isAuth) {
+
 					Object contraint = contraintList.get(headerGrid.getItemCode());
+
 					// trường hợp lấy ra baseDate theo file import, lấy startDate
 					if (category.isHistoryCategory()) {
-						if (headerGrid.getItemCode().equals(period.getPeriods().get(0).getItem())) {
-							DateConstraint dateContraint = (DateConstraint) contraint;
-							Optional<String> error = dateContraint.validateString(value == null ? "" : value);
 
-							if (error.isPresent()) {
-								valueStartCode = GeneralDate.today();
+						if (headerGrid.getItemCode().equals(period.getPeriods().get(0).getItem())) {
+
+							DateConstraint dateContraint = (DateConstraint) contraint;
+
+							Optional<String> error;
+
+							if (dateContraint.getDateType() == DateType.YEARMONTH) {
+
+								String valueCheck = value == null ? "" : value;
+
+								String[] valueSplit = value.split("[/-]");
+
+								valueCheck = valueSplit.length >= 2 ? valueSplit[0] + "/" + valueSplit[1] : valueCheck;
+
+								error = dateContraint.validateString(valueCheck);
+
+								if (error.isPresent()) {
+
+									valueStartCode = GeneralDate.today();
+
+								} else {
+
+									valueStartCode = value == null ? GeneralDate.today()
+											: GeneralDate.fromString(valueCheck + "/01", "yyyy/MM/dd");
+								}
+
 							} else {
-								valueStartCode = value == null ? GeneralDate.today()
-										: GeneralDate.fromString(value, "yyyy/MM/dd");
+
+								error = dateContraint.validateString(value == null ? "" : value);
+
+								if (error.isPresent()) {
+
+									valueStartCode = GeneralDate.today();
+
+								} else {
+
+									valueStartCode = value == null ? GeneralDate.today()
+											: GeneralDate.fromString(value, "yyyy/MM/dd");
+
+								}
+
 							}
+
 						}
 					}
+
 					ItemRowDto empBody = new ItemRowDto();
+
 					if (isSelectionCode) {
+
 						String selectionCode = value == null ? "" : value;
+
 						empBody.setItemCode(headerGrid.getItemCode());
+
 						empBody.setItemName(headerGrid.getItemName());
+
 						empBody.setItemOrder(headerGrid.getItemOrder());
+
 						empBody.setValue(selectionCode);
+
 						SingleItemDto singleDto = (SingleItemDto) headerGrid.getItemTypeState();
+
 						empBody.setDataType(singleDto.getDataTypeState().getDataTypeValue());
-						List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
+
+						List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category,
+								employeeDto.getEmployeeId(), empBody, items);
+
 						// thuật toán lấy selectionId, workplaceId, codeName,...
 						Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> {
+
 							if (c.getOptionText().contains(JP_SPACE)) {
+
 								String[] stringSplit = c.getOptionText().split(JP_SPACE);
+
 								if (stringSplit[0].equals(selectionCode)) {
+
 									return true;
 								}
+
 								return false;
+
 							} else {
+
 								if (c.getOptionValue().equals(selectionCode)) {
+
 									return true;
+
 								}
+
 								return false;
 							}
 
 						}).findFirst();
+
 						empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
+
 						empBody.setLstComboBoxValue(comboxLst);
+
 						validateCombox(employeeDto.getEmployeeId(), headerGrid, empBody, itemErrors, index, comboxLst);
+
 						items.add(empBody);
+
 					} else {
 						if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+
 							empBody.setItemCode(headerGrid.getItemCode());
+
 							empBody.setItemName(headerGrid.getItemName());
+
 							empBody.setItemOrder(headerGrid.getItemOrder());
+
 							convertValue(employeeDto.getEmployeeId(), empBody, headerGrid,
 									cell.getValue() == null ? null : value, contraint, itemErrors, index);
+
 							empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
+
 							items.add(empBody);
+
 						}
+
 					}
-									
+
 				}
-				
-				headerRemain.add(headerGrid);	
+
+				headerRemain.add(headerGrid);
+
 			}
+
 		}
-		
+
 	}
 	
 	
@@ -1122,6 +1268,7 @@ public class CheckFileFinder {
 				}
 				break;
 			case DATE:
+				DateItemDto dateDto = (DateItemDto) dataTypeState;
 				itemDto.setValue(value == null || value == "" ? null : value); 
 				DateConstraint dateContraint = (DateConstraint) contraint;
 				if (gridHead.isRequired()) {
@@ -1131,22 +1278,59 @@ public class CheckFileFinder {
 						itemErrors.add(error);
 						break;
 					} else {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
-							break;
+						if(dateDto.getDateItemType() == 2) {
+							if(value.toString() != null) {
+								String[] valueSplit = value.toString().split("[-/]");
+								String valueComvert = valueSplit.length >= 2? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								Optional<String> date = dateContraint.validateString(valueComvert);
+								if(date.isPresent()) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), date.get());
+									itemErrors.add(error);
+									break;
+								}
+								
+							}
+							
+						}else {
+							
+							Optional<String>  string = dateContraint.validateString(value.toString());
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
+							}
+							
 						}
+
 					}
 				} else {
 					if (itemDto.getValue() != null) {
-						Optional<String>  string = dateContraint.validateString(value.toString());
-						if (string.isPresent()) {
-							itemDto.setError(true);
-							ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
-							itemErrors.add(error);
-							break;
+						if(dateDto.getDateItemType() == 2) {
+							if(value.toString() != null) {
+								String[] valueSplit = value.toString().split("[-/]");
+								String valueComvert = valueSplit.length >= 2 ? valueSplit[0]+ "/" + valueSplit[1]: value.toString();
+								Optional<String> date = dateContraint.validateString(valueComvert);
+								if(date.isPresent()) {
+									itemDto.setError(true);
+									ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), date.get());
+									itemErrors.add(error);
+									break;
+								}
+								
+							}
+							
+						}else {
+							
+							Optional<String>  string = dateContraint.validateString(value.toString());
+							if (string.isPresent()) {
+								itemDto.setError(true);
+								ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), string.get());
+								itemErrors.add(error);
+								break;
+							}
+							
 						}
 					}
 				}
@@ -1601,6 +1785,12 @@ public class CheckFileFinder {
 		aMap.put("CS00021", new Periods(Arrays.asList(new Period("IS00255", null), new Period("IS00256", null))));
 		// 労働条件２
 		aMap.put("CS00070", new Periods(Arrays.asList(new Period("IS00781", null), new Period("IS00782", null))));
+		
+		aMap.put("CS00075", new Periods(Arrays.asList(new Period("IS00787", null), new Period("IS00788", null))));
+		
+		aMap.put("CS00082", new Periods(Arrays.asList(new Period("IS00841", null), new Period("IS00842", null))));
+		
+		aMap.put("CS00092", new Periods(Arrays.asList(new Period("IS01016", null), new Period("IS01017", null))));
 		return aMap;
 	}
 	

@@ -1,16 +1,20 @@
 package nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance;
 
-import lombok.val;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensStandGradePerMonthDto;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
-import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsStandardMonthlyInformation;
-import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.*;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import lombok.val;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensStandGradePerMonthDto;
+import nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance.HealthInsStandardMonthlyInformation;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensation;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionGradePerRewardMonthlyRange;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardGradePerMonth;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
+import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 
 @Stateless
 public class GetMonPenInsStandRemu {
@@ -18,7 +22,7 @@ public class GetMonPenInsStandRemu {
     @Inject
     private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
-    // 等級から厚生年金保険標準報酬月額を取得する
+    // 等級から厚生年金保険標準報酬月額を取得する - IS01022
     public Long getMonthlyPensionInsStandardRemuneration(HealthInsStandardMonthlyInformation param) {
         Long standardMonthlyFee = null;
 
@@ -37,7 +41,6 @@ public class GetMonPenInsStandRemu {
 
         return standardMonthlyFee;
     }
-
 
     // 報酬月額から厚生年金保険標準報酬月額と厚生年金保険等級を取得する
     public WelfarePensStandGradePerMonthDto getWelfarePensionStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {

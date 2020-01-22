@@ -67,7 +67,8 @@ public class EmpSocialInsGradeService {
      * @param baseDate  the standard date
      * @return map (key, value) = (sid, currentGrade)
      */
-    public Map<String, String> getMapCurrentGrade(Map<String, EmpSocialInsGradeHis> histories, GeneralDate baseDate) {
+    public Map<String, String> getMapCurrentGrade(Map<String,  List<EmpSocialInsGradeHis>> histories, GeneralDate baseDate) {
+    	
         String cid = AppContexts.user().companyId();
 
         // Get map<sid, employment hist>
@@ -82,20 +83,35 @@ public class EmpSocialInsGradeService {
 
         // Map<sid, currentGrade>
         Map<String, String> result = new HashMap<>();
+        
         histories.keySet().forEach(k -> {
+        	
             String currentGrade;
-            YearMonthPeriod period = histories.get(k).items().get(0).span();
-            String employmentCode = mapEmpHists.containsKey(k) ? mapEmpHists.get(k).getEmploymentCode() : "";
+            
+            YearMonthPeriod period = histories.get(k).get(0).items().get(0).span();
+            
+            String employmentCode = mapEmpHists.containsKey(k) ? (mapEmpHists.get(k).getEmploymentCode()== null? "":mapEmpHists.get(k).getEmploymentCode())  : "";
+            
             YearMonth currentYm = mapYearMonth.get(employmentCode);
+            
             if (period.start().greaterThan(currentYm)) {
+            	
                 currentGrade = FUTURE_HISTORY;
+                
             } else if (period.end().lessThan(currentYm)) {
+            	
                 currentGrade = PASS_HISTORY;
+                
             } else {
+            	
                 currentGrade = PRESENT_HISTORY;
+                
             }
+            
             result.put(k, currentGrade);
+            
         });
+        
         return result;
     }
 
@@ -123,7 +139,18 @@ public class EmpSocialInsGradeService {
      * @return map (key, value) = (employment code, current processing date)
      */
     public Map<String, YearMonth> getMapProcessYear(String cid, List<String> employmentCodes) {
-        return null;
+    	
+    	Map<String, YearMonth> results = new HashMap<String, YearMonth>();
+    	
+    	employmentCodes.stream().forEach(c ->{
+    		
+    		YearMonth yearMonth =  getProcessYear(cid, c);
+    		
+    		results.put(c, yearMonth);
+    		
+    	});
+    	
+        return results;
     }
 
     /**
@@ -142,6 +169,42 @@ public class EmpSocialInsGradeService {
         history.items().add(lastItem);
 
         repository.add(history, info);
+    }
+    
+    /**
+     * Insert 2 domains to database
+     * cps003
+     * @param history 社員社会保険等級履歴
+     * @param info    社員社会保険等級情報
+     */
+    public void addAll(List<EmpSocialInsGradeHisInter> params) {
+    	
+    	List<EmpSocialInsGradeHisInter> inserts = new ArrayList<>();
+    	
+		params.stream().forEach(c -> {
+
+			EmpSocialInsGradeHis history = c.getHistory();
+			
+			if (history.getYearMonthHistoryItems().isEmpty()) {
+				return;
+			}
+			
+			// Insert last element
+	        YearMonthHistoryItem lastItem = history.items().get(history.items().size() - 1);
+	       
+	        history.items().clear();
+	        
+	        history.items().add(lastItem);
+	        
+	        inserts.add(new EmpSocialInsGradeHisInter(history, c.getInfo(), null));
+	        
+		});
+		
+		if(!inserts.isEmpty()) {
+			
+			 repository.addAll(inserts);
+			
+		}
     }
 
     /**
@@ -165,5 +228,55 @@ public class EmpSocialInsGradeService {
         history.items().add(itemToBeUpdate);
 
         repository.update(history, info);
+    }
+    
+    /**
+     * Update 2 domains to database
+     * cps003
+     * @param history 社員社会保険等級履歴
+     * @param info    社員社会保険等級情報
+     * @param item itemToBeUpdate
+     */
+    public void updateAll(List<EmpSocialInsGradeHisInter> params) {
+    	
+    	List<EmpSocialInsGradeHisInter> update = new ArrayList<>();
+    	
+    	params.stream().forEach(c ->{
+    		
+    		 EmpSocialInsGradeHis history = c.getHistory();
+    		 
+    		 if (history.getYearMonthHistoryItems().isEmpty()) {
+    			 
+    	            return;
+    	            
+    	        }
+    		 
+    		 Optional<YearMonthHistoryItem> itemToBeUpdate = history.items()
+    				 
+    	                .stream()
+    	                
+    	                .filter(e -> e.identifier().equals(c.getItem().identifier()))
+    	                
+    	                .findFirst();
+    		 
+    		 if(itemToBeUpdate.isPresent()) {
+    			 
+    			 history.items().clear();
+     	        
+        		 history.items().add(itemToBeUpdate.get());
+        		 
+        		 update.add(new EmpSocialInsGradeHisInter(history, c.getInfo(), null));
+    		 }
+    		 
+    	});
+        
+        
+    	if(!update.isEmpty()) {
+    		
+    		repository.updateAll(update);
+    	}
+        
+
+        
     }
 }

@@ -84,7 +84,9 @@ public class HealthInsuranceWebservice {
     public void deleteHealthInsuranceFeeRate(HealthInsuranceCommand command) {
     	deleteHealthInsuranceCommandHandler.handle(command);
     }
-
+    
+    
+    
     @POST
     @Path("getHealInsStandCompMonth")
     public Long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {

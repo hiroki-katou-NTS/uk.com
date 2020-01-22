@@ -17,7 +17,7 @@ import java.util.Optional;
 public class JpaHealInsNumberInfoRepository extends JpaRepository implements HealInsurNumberInforRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpHealInsurQi f";
-    private static final String GET_ALL_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.hisId =:hisId";
+    private static final String GET_ALL_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE f.empHealInsurQiPk.hisId IN :hisId";
     private static final String SELECT_BY_ID_EMPIDS = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.cid =:cid AND f.empHealInsurQiPk.employeeId IN :employeeId";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empHealInsurQiPk.employeeId =:employeeId AND f.empHealInsurQiPk.hisId =:hisId AND  f.empHealInsurQiPk.cid =:cid ";
 
@@ -101,8 +101,8 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
             sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
             sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
-            sql = sql.replace("KAIHO_NUM_VAL", "'" + c.getCareInsurNumber()+ "'");
-            sql = sql.replace("KENHO_NUM_VAL",  "'"+ c.getHealInsNumber()+ "'");
+            sql = sql.replace("KAIHO_NUM_VAL", c.getCareInsurNumber().isPresent() == true? "'" + c.getCareInsurNumber().get().v()+ "'" : "null");
+            sql = sql.replace("KENHO_NUM_VAL",  c.getHealInsNumber().isPresent() == true? "'"+ c.getHealInsNumber().get().v()+ "'" : "null");
             sb.append(sql);
         });
 
@@ -127,8 +127,8 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
         sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
         sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-        sql = sql.replace("KAIHO_NUM_VAL", "'" + domain.getCareInsurNumber() + "'");
-        sql = sql.replace("KENHO_NUM_VAL", "'" + domain.getHealInsNumber() + "'");
+        sql = sql.replace("KAIHO_NUM_VAL", domain.getCareInsurNumber().isPresent() == true? "'" + domain.getCareInsurNumber().get().v() + "'": "null");
+        sql = sql.replace("KENHO_NUM_VAL", domain.getHealInsNumber().isPresent() == true? "'" + domain.getHealInsNumber().get().v() + "'": "null");
 
         sql = sql.replace("HIST_ID_VAL", "'" + domain.getHistoryId() + "'");
         sql = sql.replace("CID_VAL", "'" + cid + "'");
@@ -141,8 +141,8 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
     @Override
     public void updateAll(List<HealInsurNumberInfor> items) {
         String UP_SQL = "UPDATE QQSDT_KENHO_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-                + " START_DATE = START_DATE, END_DATE = END_DATE, KAIHO_NUM = KAIHO_NUM, KENHO_NUM = KENHO_NUM"
-                + " WHERE empHealInsurQiPk.HIST_ID = HIST_ID AND empHealInsurQiPk.CID = CID;";
+                + " KAIHO_NUM = KAIHO_NUM_VAL, KENHO_NUM = KENHO_NUM_VAL"
+                + " WHERE HIST_ID = HIST_ID_VAL;";
         String updCcd = AppContexts.user().companyCode();
         String updScd = AppContexts.user().employeeCode();
         String updPg = AppContexts.programId();
@@ -150,18 +150,26 @@ public class JpaHealInsNumberInfoRepository extends JpaRepository implements Hea
         StringBuilder sb = new StringBuilder();
         items.stream().forEach(c -> {
             String sql = UP_SQL;
+            
             sql = sql.replace("UPD_DATE_VAL", "'" + GeneralDateTime.now() + "'");
+            
             sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
+            
             sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
+            
             sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-            sql = sql.replace("KAIHO_NUM", "'" + c.getCareInsurNumber() + "'");
-            sql = sql.replace("KENHO_NUM", "'" + c.getHealInsNumber() + "'");
+            sql = sql.replace("KAIHO_NUM_VAL", c.getCareInsurNumber().isPresent() == true? "'" +  c.getCareInsurNumber().get().v() + "'": "null");
+            
+            sql = sql.replace("KENHO_NUM_VAL", c.getHealInsNumber().isPresent() == true? "'" + c.getHealInsNumber().get().v() + "'" : "null");
 
-            sql = sql.replace("HIST_ID", "'" + c.getHistoryId() + "'");
+            sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
+            
             sb.append(sql);
         });
+        
         int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
+        
         System.out.println(records);
     }
 

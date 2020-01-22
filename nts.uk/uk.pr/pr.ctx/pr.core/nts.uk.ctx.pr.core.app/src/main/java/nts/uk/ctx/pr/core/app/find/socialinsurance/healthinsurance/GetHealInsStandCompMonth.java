@@ -1,17 +1,22 @@
 package nts.uk.ctx.pr.core.app.find.socialinsurance.healthinsurance;
 
-import lombok.val;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsStandGradePerMonthDto;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsuranceStandardGradePerMonthDto;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
-import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.*;
-import nts.uk.ctx.pr.core.dom.socialinsurance.welfarepensioninsurance.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import lombok.val;
+import nts.uk.ctx.pr.core.app.command.socialinsurance.salaryhealth.dto.HealthInsStandGradePerMonthDto;
+import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceGradePerRewardMonthlyRange;
+import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardGradePerMonth;
+import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
+import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthlyRepository;
+import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.MonthlyHealthInsuranceCompensation;
 
 @Stateless
 public class GetHealInsStandCompMonth {
@@ -19,7 +24,7 @@ public class GetHealInsStandCompMonth {
     @Inject
     private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
 
-    // 等級から健康保険標準報酬月額を取得する
+    // 等級から健康保険標準報酬月額を取得する -IS01020
     public Long getHealInsStandCompMonth(HealthInsStandardMonthlyInformation param) {
         Long standardMonthlyFee = null;
 
@@ -38,7 +43,7 @@ public class GetHealInsStandCompMonth {
         return standardMonthlyFee;
     }
 
-    // 報酬月額から健康保険標準報酬月額と健康保険等級を取得する
+    // 報酬月額から健康保険標準報酬月額と健康保険等級を取得する - IS01021
     public HealthInsStandGradePerMonthDto getHealthInsuranceStandardGradePerMonth(HealthInsStandardMonthlyInformation param) {
 
         HealthInsStandGradePerMonthDto perMonthDto = new HealthInsStandGradePerMonthDto();
