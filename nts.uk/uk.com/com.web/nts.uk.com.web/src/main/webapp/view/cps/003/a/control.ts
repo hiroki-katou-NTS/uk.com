@@ -14,6 +14,7 @@ module cps003 {
     let ITEM_STRING_DTYPE = (cps003.a || cps003.c).vm.ITEM_STRING_DTYPE;
     
     export module control {
+        let editedHistories = {};
         export const selectGroups: Array<IGroupControl> = [
             {  
                 ctgCode: 'CS00017',
@@ -346,6 +347,7 @@ module cps003 {
             getWelfarePensionStandardGradePerMonth: (param: IHealInsStandMonParam) => ajax('pr', `ctx/core/socialinsurance/healthinsurance/getWelfarePensionStandardGradePerMonth`, param),
         };
         
+        
         export let SELECT_BUTTON = {}, RELATE_BUTTON = {}, WORK_TIME = {}, DATE_RANGE = {}, TIME_RANGE = {}, TIME_RANGE_GROUP = {},
         HALF_INT = { 
             CS00035_IS00366: true,
@@ -358,26 +360,50 @@ module cps003 {
             CS00036_IS00383: true,
             CS00036_IS00384: true
         },
-        
+       
         NUMBER_Lan = {
             CS00092_IS01020: (id, itemCode, v, obj) =>{
-
+                
+                let dfd = $.Deferred();
+                
                 getHealInsStandCompMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01021");
+               
+                dfd.resolve();
+                
+                return dfd.promise();
                 
             },
             CS00092_IS01021: (id, itemCode, v, obj) =>{
                 
+                let dfd = $.Deferred();
+                
                 getHealthInsuranceStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01020");
+                
+                dfd.resolve();
+                
+                return dfd.promise();
                 
             },
             CS00092_IS01022: (id, itemCode, v, obj) =>{
                 
+                let dfd = $.Deferred();
+                
                 getMonthlyPensionInsStandardRemuneration(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01023");
+                
+                dfd.resolve();
+                
+                return dfd.promise();
             
             },
             CS00092_IS01023:  (id, itemCode, v, obj) =>{
                 
-                getWelfarePensionStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023");
+                let dfd = $.Deferred();
+                
+                getWelfarePensionStandardGradePerMonth(v, obj, "IS01016",  "IS01020", "IS01021", "IS01022", "IS01023", "IS01022");
+                
+                dfd.resolve();
+                
+                return dfd.promise();
             
             }
         },
@@ -1932,9 +1958,9 @@ module cps003 {
         // getWelfarePensionStandardGradePerMonth
         function getWelfarePensionStandardGradePerMonth(v, o, startYMCode, healInsGradeCode, healInsStandMonthlyRemuneCode,
         
-            pensionInsGradeCode, pensionInsStandCompenMonthlyCode) {
+            pensionInsGradeCode, pensionInsStandCompenMonthlyCode, resultCode) {
             
-            if (_.isNil(v)) return;
+            if (_.isNil(v)) return;       
             
             let sid = o.employeeId,
                 //IS01016
@@ -1959,7 +1985,7 @@ module cps003 {
                 || inputDate.diff(moment.utc("9999/12/31"), "days", true) > 0
                 
                 || _.isNaN(healInsGradeParam))  return;
-            block();
+            
             fetch.getWelfarePensionStandardGradePerMonth({ 
             
                 sid: sid,
@@ -1975,6 +2001,8 @@ module cps003 {
                 pensionInsStandCompenMonthly: pensionInsStandCompenMonthlyParam
                 
             }).done(res => {
+                
+                if(!resultCode) return;
 
                 if (res) {
                     
@@ -1989,9 +2017,7 @@ module cps003 {
                     $grid.mGrid("updateCell", o.id, pensionInsStandCompenMonthlyCode, "");
 
                 }
-                clear();
-            }).failed(res =>{
-                    
+                
             });
             
         }          
@@ -2002,6 +2028,30 @@ module cps003 {
             pensionInsGradeCode, pensionInsStandCompenMonthlyCode, resultCode) {
             
             if (_.isNil(v)) return;
+ 
+            let rowHist = editedHistories[o.id];
+             
+            if (!_.isNil(rowHist)) {
+                
+                let itemHist = rowHist[pensionInsGradeCode];
+                
+                if (v === itemHist) {
+                    
+                    return;
+                    
+                }
+                
+                rowHist[pensionInsGradeCode] = v;
+                
+            } else {
+                
+                let rowHistObj = {};
+                
+                rowHistObj[pensionInsGradeCode] = v;
+                
+                editedHistories[o.id] = rowHistObj;
+                
+            }            
             
             let sid = o.employeeId,
                 //IS01016
@@ -2053,8 +2103,6 @@ module cps003 {
                         
                     }
 
-                    
-
                 } else {
 
                     $grid.mGrid("updateCell", o.id, resultCode, "");
@@ -2070,7 +2118,7 @@ module cps003 {
         
             pensionInsGradeCode, pensionInsStandCompenMonthlyCode, resultCode) {
             
-            if (_.isNil(v)) return;
+            if (_.isNil(v)) return;             
             
             let sid = o.employeeId,
                 //IS01016
@@ -2096,7 +2144,6 @@ module cps003 {
                 
                 || _.isNaN(healInsGradeParam))  return;
             
-            block();
             fetch.getHealthInsuranceStandardGradePerMonth({ 
             
                 sid: sid,
@@ -2137,19 +2184,41 @@ module cps003 {
                     $grid.mGrid("updateCell", o.id, healInsStandMonthlyRemuneCode, "");
                     
                 }
-                
-                unblock();
+
                 
             });
             
         }
         
-    
-         function getHealInsStandCompMonth(v, o, startYMCode, healInsGradeCode, healInsStandMonthlyRemuneCode,
+        function getHealInsStandCompMonth(v, o, startYMCode, healInsGradeCode, healInsStandMonthlyRemuneCode,
         
             pensionInsGradeCode, pensionInsStandCompenMonthlyCode, resultCode) {
             
             if (_.isNil(v)) return;
+             
+            let rowHist = editedHistories[o.id];
+             
+            if (!_.isNil(rowHist)) {
+                
+                let itemHist = rowHist[healInsGradeCode];
+                
+                if (v === itemHist) {
+                    
+                    return;
+                    
+                }
+                
+                rowHist[healInsGradeCode] = v;
+                
+            } else {
+                
+                let rowHistObj = {};
+                
+                rowHistObj[healInsGradeCode] = v;
+                
+                editedHistories[o.id] = rowHistObj;
+                
+            }
             
             let sid = o.employeeId,
                 //IS01016
