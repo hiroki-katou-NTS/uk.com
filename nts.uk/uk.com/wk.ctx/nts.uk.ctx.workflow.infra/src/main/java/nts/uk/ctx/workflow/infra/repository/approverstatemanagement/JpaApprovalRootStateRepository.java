@@ -98,7 +98,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CFS_DAY_BY_APPROVER;
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
 	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
-			+ " WHERE a.rootStateID = :appID"
+			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
 			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -772,7 +772,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		List<ApprovalRootState> listAppRootState = new ArrayList<>();
 
 		String query = BASIC_SELECT + " LEFT JOIN KRQDT_APPLICATION app" + " ON root.ROOT_STATE_ID = app.APP_ID"
-				+ " WHERE approver.APPROVER_CHILD_ID = 'approverID'" + " AND approver.CID = 'companyID'"
+				+ " WHERE approver.APPROVER_ID = 'approverID'"
 				+ " AND app.APP_DATE >= 'startDate'" + " AND app.APP_DATE <= 'endDate'";
 
 		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));

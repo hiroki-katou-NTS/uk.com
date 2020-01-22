@@ -112,19 +112,21 @@ public class ApproveImpl implements ApproveService {
 								approverInfor.setApprovalDate(GeneralDate.today());
 								approverInfor.setApprovalReason(memo);
 								breakLoop = true;
+							} else {
+								continue;
 							}
-							continue;
+						} else {
+							// ループ中の承認者情報．承認区分　＝　承認済み
+							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approverInfor.setApproverID(employeeID);
+							approverInfor.setAgentID("");
+							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalReason(memo);
+							breakLoop = true;
 						}
-						// ループ中の承認者情報．承認区分　＝　承認済み
-						approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-						approverInfor.setApproverID(employeeID);
-						approverInfor.setAgentID("");
-						approverInfor.setApprovalDate(GeneralDate.today());
-						approverInfor.setApprovalReason(memo);
-						breakLoop = true;
 					} else {
 						// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
-						if(!(approverInfor.getApproverID().equals(employeeID))|
+						if(!(approverInfor.getApproverID().equals(employeeID))||
 							(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID))){
 							continue;
 						}

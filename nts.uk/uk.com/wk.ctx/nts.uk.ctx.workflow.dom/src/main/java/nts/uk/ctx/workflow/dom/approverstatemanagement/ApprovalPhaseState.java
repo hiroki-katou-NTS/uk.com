@@ -92,6 +92,17 @@ public class ApprovalPhaseState extends DomainObject {
 		return Optional.empty();
 	}
 	
+	public Optional<ApproverInfor> getNotUnApproved() {
+		for(ApprovalFrame approvalFrame : listApprovalFrame) {
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.isNotUnApproved()) {
+					return Optional.of(approverInfor);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
 //	private boolean isRepresenter(String employeeId) {
 //		return listApprovalFrame.stream()
 //				.anyMatch(f -> f.isRepresenter(employeeId));

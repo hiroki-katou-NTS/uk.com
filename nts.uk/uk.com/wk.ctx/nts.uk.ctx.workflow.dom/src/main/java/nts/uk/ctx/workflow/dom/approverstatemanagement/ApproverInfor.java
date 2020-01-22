@@ -47,10 +47,14 @@ public class ApproverInfor extends DomainObject {
 	}
 	
 	public boolean isNotApproved() {
-		return approvalAtr!=ApprovalBehaviorAtr.UNAPPROVED;
+		return approvalAtr!=ApprovalBehaviorAtr.APPROVED;
 	}
 	
 	public boolean isApproved() {
 		return approvalAtr==ApprovalBehaviorAtr.APPROVED;
+	}
+	
+	public boolean isNotUnApproved() {
+		return approvalAtr!=ApprovalBehaviorAtr.UNAPPROVED;
 	}
 }
