@@ -46,11 +46,12 @@ public class RemandImpl implements RemandService {
 		List<ApprovalPhaseState> listUpperPhase = listApprovalPhase.stream().filter(x -> x.getPhaseOrder() >= order).collect(Collectors.toList());
 		listUpperPhase.forEach(approvalPhaseState -> {
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//				approvalFrame.setApproverID("");
-//				approvalFrame.setRepresenterID("");
-//				approvalFrame.setApprovalDate(null);
-//				approvalFrame.setApprovalReason("");
+				approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+					approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+					approverInfor.setAgentID("");
+					approverInfor.setApprovalDate(null);
+					approverInfor.setApprovalReason("");
+				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
