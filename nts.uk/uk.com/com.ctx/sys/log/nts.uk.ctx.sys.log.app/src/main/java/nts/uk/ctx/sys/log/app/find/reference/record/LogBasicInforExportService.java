@@ -19,9 +19,13 @@ import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
 @Stateless
-public class LogBasicInforExportService extends ExportService<LogParams> {
+public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 	@Inject
 	private CSVReportGenerator generator;
+	
+	//CLI003: fix bug #108873, #108865
+	@Inject
+	private LogBasicInformationFinder logBasicFinder;
 
 	private static final String FILE_EXTENSION = ".csv";
 	private static final String PRIMAKY = "primarykey";
@@ -29,7 +33,8 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 	private static final String PGID = "CLI003";
 	private List<String> listHeader = new ArrayList<>();
 
-	private void getTextHeader(LogParams params) {
+	//CLI003: fix bug #108873, #108865
+	private void getTextHeader(LogScreenIParam params) {
 		listHeader = new ArrayList<>();
 		List<LogOutputItemDto> lstOutputItemDto = params.getLstHeaderDto();
 		for (LogOutputItemDto logOutputItemDto : lstOutputItemDto) {
@@ -158,23 +163,26 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 
 
 	@Override
-	protected void handle(ExportServiceContext<LogParams> context) {
-		LogParams params = context.getQuery();
+	protected void handle(ExportServiceContext<LogScreenIParam> context) {
+		LogScreenIParam params = context.getQuery();
 		this.getTextHeader(params);
-		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(params.getRecordType());
+		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(params.getLogParams().getRecordType());
+		//CLI003: fix bug #108873, #108865
+		LogParams logParams = this.logBasicFinder.prepareDataScreenI(params);
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		switch (recordTypeEnum) {
+		//CLI003: fix bug #108873, #108865
 		case LOGIN:
-			dataSource = getLogRecordData(params);
+			dataSource = getLogRecordData(logParams);
 			break;
 		case START_UP:
-			dataSource = getStartUpData(params);
+			dataSource = getStartUpData(logParams);
 			break;
 		case UPDATE_PERSION_INFO:
-			dataSource = getPersionCorrectLog(params);
+			dataSource = getPersionCorrectLog(logParams);
 			break;
 		case DATA_CORRECT:
-			dataSource = getDataCorrectLog(params);
+			dataSource = getDataCorrectLog(logParams);
 			break;
 
 		default:
