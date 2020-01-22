@@ -26,7 +26,7 @@ public interface RegistrationPersonReportRepository {
 
 	void update(RegistrationPersonReport domain);
 
-	void remove(String cid, int reportId);
+	void remove(String cid, Integer reportId);
 
 	int getMaxReportId(String sid, String cid);
 

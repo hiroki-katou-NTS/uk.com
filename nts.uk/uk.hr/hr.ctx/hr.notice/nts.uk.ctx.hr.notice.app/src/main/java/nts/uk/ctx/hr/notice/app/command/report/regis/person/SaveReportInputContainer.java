@@ -21,10 +21,12 @@ public class SaveReportInputContainer {
 	 
 	 List<ItemsByCategory> inputs;
 	 
+	 List<ItemDfCommand> listItemDf;
+	 
 	 String cid; // 会社ID
 	 String rootSateId; // ルートインスタンスID
-	 int workId; // 業務ID
-	 int reportID; // 届出ID
+	 Integer workId; // 業務ID
+	 Integer reportID; // 届出ID
 	 int  reportLayoutID; // 個別届出種類ID
 	 String reportCode; // 届出コード
 	 String reportName; // 届出名

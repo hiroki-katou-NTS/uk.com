@@ -32,7 +32,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
  *
  */
 @Stateless
-public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
+public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
@@ -40,19 +40,9 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	@Inject
 	private ReportItemRepository reportItemRepo;
 	
-	/** The Constant TIME_DAY_START. */
-	public static final String TIME_DAY_START = " 00:00:00";
-
-	/** The Constant DATE_TIME_FORMAT. */
-	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
-	public static final String MAX_DATE = "9999/12/31";
-	public static final String MIN_DATE = "1900/01/01";
-
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -64,6 +54,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	
 	private void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
+		String pid = AppContexts.user().personId();
+		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		String rootSateId = IdentifierUtil.randomUniqueId();
 		Integer reportIDMax = repo.getMaxReportId(sid, cid);
@@ -76,26 +68,26 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 				.reportLayoutID(data.reportLayoutID)
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
-				.reportDetail("") // chưa đặt hàng lần này
-				.regStatus(RegistrationStatus.Save_Draft)
-				.aprStatus(ApprovalStatusForRegis.Not_Started)
+				.reportDetail("") // chưa đặt hàng lần n
+				.regStatus(RegistrationStatus.Registration)
+				.aprStatus(ApprovalStatusForRegis.Not_Started) // tam thoi
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
-				.inputPid("")
+				.inputPid(pid)
 				.inputSid(sid)
-				.inputScd("")
+				.inputScd(scd)
 				.inputBussinessName("")
 				.inputDate(GeneralDateTime.now())
-				.appPid("")
+				.appPid(pid)
 				.appSid(sid)
-				.appScd("")
+				.appScd(scd)
 				.appBussinessName("")
 				.appDate(GeneralDateTime.now())
 				.appDevId(sid)
-				.appDevCd("")
+				.appDevCd(scd)
 				.appDevName("")
-				.appPosId("")
-				.appPosCd("")
+				.appPosId(sid)
+				.appPosCd(scd)
 				.appPosName("")
 				.reportType(ReportType.EMPLOYEE_REGISTRATION) // tam thoi
 				.sendBackSID(data.sendBackSID)
@@ -119,11 +111,10 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
-			for (int j = 0; j < items.size(); j++) { // COM1_000000000000000_CS00001_IS00001
+			for (int j = 0; j < items.size(); j++) {
 				ItemValue itemValue = items.get(j);
-				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
-				
-				ItemDfCommand itemDfCommand = itemDfCommandOpt.get();
+				ItemDfCommand itemDfCommand = listItemDf.stream().filter(it -> it.itemDefId == itemValue.definitionId())
+						.findFirst().get();
 				
 				int layoutItemType = 0;
 				switch (itemDfCommand.layoutItemType) {
@@ -169,6 +160,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	private void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
 		String sid = AppContexts.user().employeeId();
+		String pid = AppContexts.user().personId();
+		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
 		if (!domainReportOpt.isPresent()) {
@@ -181,28 +174,27 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		domainReport.setReportName(data.reportName);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
-		domainReport.setInputPid("");
+		domainReport.setInputPid(pid);
 		domainReport.setInputSid(sid);
-		domainReport.setInputScd("");
+		domainReport.setInputScd(scd);
 		domainReport.setInputBussinessName("");
 		domainReport.setInputDate(GeneralDateTime.now());
 		domainReport.setAppSid(sid);
-		domainReport.setAppScd("");
-		domainReport.setAppPid("");
+		domainReport.setAppScd(scd);
+		domainReport.setAppPid(pid);
 		domainReport.setAppBussinessName("");
 		domainReport.setAppDate(GeneralDateTime.now());
 		domainReport.setAppDevId(sid);
-		domainReport.setAppDevCd("");
+		domainReport.setAppDevCd(scd);
 		domainReport.setAppDevName("");
 		domainReport.setAppPosId(sid);
-		domainReport.setAppPosCd("");
+		domainReport.setAppPosCd(scd);
 		domainReport.setAppPosName("");
 		domainReport.setSendBackSID(data.sendBackSID);
 		domainReport.setSendBackComment(data.sendBackComment);
 		
 		// remove list reportItem
 		reportItemRepo.deleteByReportId(cid, reportId);
-		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportId);
 		
 		repo.update(domainReport);

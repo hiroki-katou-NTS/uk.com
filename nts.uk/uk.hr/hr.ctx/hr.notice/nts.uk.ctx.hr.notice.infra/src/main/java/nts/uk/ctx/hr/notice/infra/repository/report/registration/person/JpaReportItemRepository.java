@@ -33,12 +33,16 @@ public class JpaReportItemRepository extends JpaRepository implements ReportItem
 		entity.workId          = domain.getWorkId();
 		entity.reportLayoutID  = domain.getReportLayoutID();
 		entity.reportName      = domain.getReportName(); 
-		entity.layoutItemType  = domain.getLayoutItemType().value; 
+		entity.layoutItemType  = domain.getLayoutItemType().value;
+		entity.categoryId      = domain.getCategoryId();
 		entity.ctgName         = domain.getCtgName(); 
 		entity.fixedAtr        = domain.isFixedAtr(); 
+		entity.itemId          = domain.getItemId();
 		entity.itemName        = domain.getItemName(); 
 		entity.dspOrder        = domain.getDspOrder();
-		entity.workId          = domain.getReflectID();
+		entity.layoutDisOrder  = domain.getLayoutDisOrder();
+		entity.reflectID       = domain.getReflectID();
+		entity.contractCode    = domain.getContractCode();
 		entity.saveDataAtr     = domain.getSaveDataAtr();
 		switch (domain.getSaveDataAtr()) {
 		case 1:
