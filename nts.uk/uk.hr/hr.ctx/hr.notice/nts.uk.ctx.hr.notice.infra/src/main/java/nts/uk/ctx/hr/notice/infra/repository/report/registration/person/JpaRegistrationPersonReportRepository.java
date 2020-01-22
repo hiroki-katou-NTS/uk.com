@@ -14,7 +14,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
-import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegisPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

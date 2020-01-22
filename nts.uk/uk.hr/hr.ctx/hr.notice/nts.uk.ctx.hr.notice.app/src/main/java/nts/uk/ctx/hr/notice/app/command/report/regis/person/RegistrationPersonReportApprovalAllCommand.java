@@ -15,4 +15,6 @@ public class RegistrationPersonReportApprovalAllCommand {
 	private String inputName;
 	// 承認状況
 	private Integer approvalStatus;
+	// 承認届出
+	private boolean approvalReport;
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -23,7 +22,7 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 
 	@Inject
 	private ApprovalPersonReportRepository repo;
-	
+
 	@Inject
 	private RegisterApproveCommentHandler approve;
 
@@ -42,15 +41,13 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 		if (reportList.size() > 99) {
 			throw new BusinessException("Msgj_46");
 		}
-
-		List<ApproveReportCommand> approveCmds = new ArrayList<ApproveReportCommand>();
 		reportList.forEach(x -> {
-			approveCmds.add(new ApproveReportCommand(String.valueOf(x.getReportID()), x.getRootSatteId(),
-					TextResource.localize("A1_1_1"), ActionApprove.APPROVE));
+			ApproveReportCommand approveCmd = new ApproveReportCommand(String.valueOf(x.getReportID()),
+					x.getRootSatteId(), TextResource.localize("A1_1_1"), ActionApprove.APPROVE);
 
 			// アルゴリズム[承認処理]を実行する
-			
-			
+			this.approve.approveReport(approveCmd);
+
 		});
 
 	}

@@ -121,7 +121,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 			query = String.format(query, approvalStatus);
 		}
 
-		query += "AND r.aprSid = %s";
+		query += " AND r.aprSid = '%s'";
 		query = String.format(query, sId);
 
 		return this.queryProxy().query(query, JhndtReportApproval.class).setParameter("cId", cId)
