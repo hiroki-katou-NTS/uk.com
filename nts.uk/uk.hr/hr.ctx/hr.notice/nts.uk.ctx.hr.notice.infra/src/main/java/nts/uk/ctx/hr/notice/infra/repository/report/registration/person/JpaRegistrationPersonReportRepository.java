@@ -141,9 +141,8 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 		if (approvalStatus != null) {
 			if (approvalReport) {
-				query += " AND a.aprStatusName = %s";
-				query += " AND r.aprStatus = %s";
-				String.format(query, approvalStatus, approvalStatus);
+				query += " AND a.aprStatusName = '%s'  AND r.aprStatus = %s";
+				query = String.format(query, approvalStatus, approvalStatus);
 			} else {
 				query += " AND r.aprStatus = %s";
 				query = String.format(query, approvalStatus);
@@ -151,12 +150,12 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		}
 		
 		if (approvalReport) {
-			query += "AND r.aprSid = %s";
+			query += " AND a.aprSid = '%s'";
 			query = String.format(query, sId);
 		} else {
 			if (!StringUtil.isNullOrEmpty(inputName, false)) {
-				query += " AND (r.inputBussinessName LIKE %s OR r.appBussinessName LIKE %s )";
-				query = String.format(query, inputName);
+				query += " AND (r.inputBussinessName LIKE '%s' OR r.appBussinessName LIKE '%s' )";
+				query = String.format(query, inputName, inputName);
 			}
 		}
 		
