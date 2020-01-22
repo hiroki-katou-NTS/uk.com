@@ -107,13 +107,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }else{
                     if(newValue == '' || newValue == null){
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));   
-                        _.forEach(self.commonMasterItems(), (item) => {
-                            item.usageFlg(false);
-                            item.setEnableRetirePlanCourse([],[]);
-                        });
-                        if(self.commonMasterItems().length > 0){
-                            self.commonMasterItems()[0].usageFlg(true);
-                        }
+                        self.setDefaultMandatoryRetireTerm();
                     }else{
                         if(self.changeLatest){
                             self.loadHisId().done(function() {
@@ -143,7 +137,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             });
             
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
-            
+            self.setDefaultMandatoryRetireTerm();
         }
 
         start(): JQueryPromise<any> {
@@ -154,6 +148,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 self.isStart = true;
                 self.selectedHistId(self.latestHistId());
                 if(self.getRelatedMaster() && (self.latestHistId() == '' || self.latestHistId() == null)){
+                    self.setDefaultMandatoryRetireTerm();
                     error({ messageId: 'MsgJ_JMM018_15' });
                     self.isStart = false;
                     dfd.resolve();
@@ -174,6 +169,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             }
                         });
                     }).fail(function(err) {
+                        self.setDefaultMandatoryRetireTerm();
                         error({ messageId: err.messageId });
                     }).always(function() {
                         block.clear();
@@ -218,11 +214,13 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                             error({ messageId: 'MsgJ_JMM018_19' });
                         }
                         self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                        self.setDefaultMandatoryRetireTerm();
                     }).always(function() {
                         block.clear();
                     });
                 }else{
                     self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                    self.setDefaultMandatoryRetireTerm();
                     error({ messageId: 'MsgJ_JMM018_16' });
                 }
             }else{
@@ -234,7 +232,10 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             if(self.getRelatedMaster()){
                 block.grayout();
-                let param = {historyId: self.selectedHistId(), baseDate: self.getSelectedStartDate()}
+                let param = {historyId: self.selectedHistId(), 
+                             baseDate: self.getSelectedStartDate(),
+                             retirePlanCourseList: self.retirePlanCourseList,
+                             commonMasterItems: self.commonMasterItems()}
                 new service.add(param).done(function(data: any) {
                     console.log(data);
                     self.getMandatoryRetirementRegulation();
@@ -245,6 +246,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 });
             }else{
                 self.mandatoryRetirementRegulation(new MandatoryRetirementRegulation(undefined));
+                self.setDefaultMandatoryRetireTerm();
                 error({ messageId: 'MsgJ_JMM018_16' });
             }
         
@@ -293,7 +295,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 console.log(data);
                 self.commonMasterName(data.commonMasterName);
                 _.remove(__viewContext.enums.DateRule, function(n) {return n.value == 0 || n.value == 4 || n.value == 5;});  
-                self.retirePlanCourseList = _.remove(data.retirePlanCourseList, function(n) {return n.retirePlanCourseClass == 0;});
+                self.retirePlanCourseList = data.retirePlanCourseList;
                 let tg = [];
                 _.forEach(_.orderBy(data.commonMasterItems,['displayNumber'], ['asc']), (item) => {
                     tg.push(new GrpCmonMaster(item));
@@ -304,6 +306,9 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 self.commonMasterItems(tg);
                 self.getRelatedMaster(true);
             }).fail(function(err) {
+                self.getRelatedMaster(false);
+                self.commonMasterItems([]);
+                self.retirePlanCourseList = [];
                 error({ messageId: err.messageId });
             }).always(function() {
                 dfd.resolve();
@@ -349,6 +354,28 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             $('#'+ param).addClass('isDisabled');
             var elmnt = document.getElementById(id);
             elmnt.scrollIntoView();
+        }
+        
+        setDefaultMandatoryRetireTerm(): void{
+            let self = this;       
+            //set default checks
+            if(self.commonMasterItems().length > 0 && self.retirePlanCourseList.length > 0){ 
+                let empCommonMasterItemId = _.orderBy(self.commonMasterItems() ,['displayNumber'], ['asc'])[0].commonMasterItemId;
+                let retirePlanCourseFilter = _.filter(self.retirePlanCourseList, { 'retirePlanCourseClass': 0, 'durationFlg': 0 });
+                if(retirePlanCourseFilter.length > 0){
+                    let retirePlanCourseId = _.orderBy(retirePlanCourseFilter,['retirementAge'], ['desc'])[0].retirePlanCourseId;
+                    let mandatoryRetireTerm = [{empCommonMasterItemId: empCommonMasterItemId, usageFlg: true, enableRetirePlanCourse:[{retirePlanCourseId: retirePlanCourseId}]}];
+                    self.mandatoryRetirementRegulation().mandatoryRetireTerm = mandatoryRetireTerm;
+                    let listItemCommon = self.commonMasterItems();
+                    _.forEach(listItemCommon, (item) => {
+                        item.usageFlg(false);
+                        item.setEnableRetirePlanCourse([],[]);
+                    });
+                    self.commonMasterItems(listItemCommon);
+                    self.commonMasterItems()[0].usageFlg(true);
+                    self.commonMasterItems()[0].setEnableRetirePlanCourse([{retirePlanCourseId: retirePlanCourseId}],self.retirePlanCourseList);
+                }
+            }
         }
     }
     
