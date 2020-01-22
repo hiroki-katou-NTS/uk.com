@@ -17,6 +17,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 
 /**
  * 
@@ -46,25 +47,25 @@ public class ReleaseImpl implements ReleaseService {
 			if(CollectionUtil.isEmpty(listApprover)){
 				continue;
 			}
-//			Boolean allFrameUnapproveFlag = approvalPhaseState.getListApprovalFrame().stream()
-//					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
-//			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&allFrameUnapproveFlag;
-//			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-//				continue;
-//			}
-			Boolean canRelease = this.canReleaseCheck(approvalPhaseState, employeeID);
-			if(canRelease.equals(Boolean.FALSE)){
+			Optional<ApproverInfor> notUnApproved = approvalPhaseState.getNotUnApproved();
+			boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&!notUnApproved.isPresent();
+			if(phaseNotApprovalFlag){
+				continue;
+			}
+			boolean canRelease = this.canReleaseCheck(approvalPhaseState, employeeID);
+			if(!canRelease){
 				break;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-//				if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
-//						(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
-//					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//					approvalFrame.setApproverID("");
-//					approvalFrame.setRepresenterID("");
-//					approvalFrame.setApprovalDate(null);
-//					approvalFrame.setApprovalReason("");
-//				}
+				approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+					if(approverInfor.getApproverID().equals(employeeID) ||
+							(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+						approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+						approverInfor.setAgentID("");
+						approverInfor.setApprovalDate(null);
+						approverInfor.setApprovalReason("");
+					}
+				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 			approvalRootStateRepository.update(approvalRootState, rootType);
@@ -76,25 +77,36 @@ public class ReleaseImpl implements ReleaseService {
 	@Override
 	public Boolean canReleaseCheck(ApprovalPhaseState approvalPhaseState, String employeeID) {
 		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
-//			return approvalPhaseState.getListApprovalFrame().stream()
-//				.filter(x -> (Strings.isNotBlank(x.getApproverID()) && x.getApproverID().equals(employeeID))||
-//						(Strings.isNotBlank(x.getRepresenterID()) && x.getRepresenterID().equals(employeeID)))
-//				.findAny().map(y ->true).orElse(false);
+			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+				for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+					if(approverInfor.getApproverID().equals(employeeID) ||
+							(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 		Optional<ApprovalFrame> opConfirmFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opConfirmFrame.isPresent()){
-//			ApprovalFrame approvalFrame = opConfirmFrame.get();
-//			if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
-//					(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
-//				return true;
-//			}
-//			return false;
+			ApprovalFrame approvalFrame = opConfirmFrame.get();
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.getApproverID().equals(employeeID) ||
+						(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+					return true;
+				}
+			}
+			return false;
 		}
-//		return approvalPhaseState.getListApprovalFrame().stream()
-//				.filter(x -> (Strings.isNotBlank(x.getApproverID()) && x.getApproverID().equals(employeeID))||
-//						(Strings.isNotBlank(x.getRepresenterID()) && x.getRepresenterID().equals(employeeID)))
-//				.findAny().map(y ->true).orElse(false);
-		return null;
+		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.getApproverID().equals(employeeID) ||
+						(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
