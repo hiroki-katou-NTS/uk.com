@@ -31,6 +31,8 @@ module jhn001.a.viewmodel {
         enaRemove : KnockoutObservable<boolean> = ko.observable(true);
         
         listItemDf = [];
+        missingDocName = '';
+        reportIdFromJhn003 = null;
         
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
@@ -38,11 +40,15 @@ module jhn001.a.viewmodel {
             { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
         ]);
         
-        constructor() {
+        constructor(dataShareJhn003) {
             let self = this,
                 layout = self.layout(),
                 layouts = self.layouts;
-
+            
+            if (dataShareJhn003) {
+                self.reportIdFromJhn003 = dataShareJhn003.reportId;
+            }
+            
             self.reportClsId.subscribe(id => {
                 self.listItemDf = [];
                 if (id) {
@@ -51,6 +57,12 @@ module jhn001.a.viewmodel {
 
                     if (objReport == undefined || objReport == null) {
                         return;
+                    }
+                    
+                    if(objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined){
+                        self.enaRemove(false);
+                    }else{
+                        self.enaRemove(true);
                     }
 
                     let query = {
@@ -93,8 +105,7 @@ module jhn001.a.viewmodel {
                 }
             });
             
-            let reportLayoutId = null ;
-            self.start(reportLayoutId);
+            self.start(self.reportIdFromJhn003);
         }
         
         setListItemDf(clsItems: any) {
@@ -141,7 +152,13 @@ module jhn001.a.viewmodel {
         setListDocument(listdatafile: any) {
             let self = this;
             var lstDoc = [];
+            var missingDocName = '';
             for (var i = 0; i < listdatafile.length; i++) {
+                
+                if(listdatafile[i].fileName == null){
+                    missingDocName = missingDocName + listdatafile[i].sampleFileName + ' 、';
+                }
+                 
                 let obj = {
                     docName: listdatafile[i].docName,
                     ngoactruoc: '(',
@@ -161,7 +178,21 @@ module jhn001.a.viewmodel {
                 }
                 lstDoc.push(obj);
             }
+            if (missingDocName != '') {
+                self.missingDocName = text('JHN001_B2_3_7_1') + missingDocName.substring(0, missingDocName.length - 1);
+            } else {
+                self.missingDocName = text('JHN001_B2_3_7_1');
+            }
             self.layout().listDocument(lstDoc);
+        }
+        
+        getMissingDocName() {
+            let self = this;
+            var lstDoc = self.layout().listDocument();
+            let missingDocName = '';
+            
+            
+            
         }
         
         getListReportSaveDraft(): JQueryPromise<any> {
@@ -187,7 +218,7 @@ module jhn001.a.viewmodel {
             let self = this;
         }
 
-        start(reportLayoutId?: string): JQueryPromise<any> {
+        start(reportIdFromJhn003): JQueryPromise<any> {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
@@ -208,12 +239,30 @@ module jhn001.a.viewmodel {
                             message     : x.clsDto.message,
                             reportId    : x.reportID,
                             sendBackComment : x.sendBackComment,
+                            rootSateId  : x.rootSateId,
+                            reportType  : x.clsDto.reportType,
                             workId : null
+                            
                         }
                     });
                     _.each(_.orderBy(_data, ['displayOrder'], ['asc']), d => layouts.push(d));
                     if (_data) {
-                        self.reportClsId(reportLayoutId == null ? _data[0].reportClsId : reportLayoutId);
+                        if (reportIdFromJhn003 == undefined || reportIdFromJhn003 == null) {
+                            if(self.reportClsId() == "" || self.reportClsId() == null){
+                                self.reportClsId(_data[0].reportClsId);
+                            }else{
+                                self.reportClsId(self.reportClsId());
+                            }
+                            
+                        } else {
+                            let objReport = _.find(_data, function(o) { return o.reportId == reportIdFromJhn003; })
+
+                            if (objReport == undefined || objReport == null) {
+                                self.reportClsId(_data[0].reportClsId);
+                            }
+
+                            self.reportClsId(objReport.reportClsId);
+                        }
                     }
                 } else {
                     self.createNewLayout();
@@ -245,7 +294,7 @@ module jhn001.a.viewmodel {
             let reportLayoutId = self.reportClsId();
             if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
                 return;
-
+            
             let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
 
             if (objReport == undefined || objReport == null) {
@@ -262,6 +311,9 @@ module jhn001.a.viewmodel {
                 reportType : objReport.reportType ,
                 sendBackComment : objReport.sendBackComment ,
                 workId : objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft : 0,
+                missingDocName: self.missingDocName
             };
 
              // trigger change of all control in layout
@@ -277,7 +329,7 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.start(reportLayoutId);
+                        self.start(null);
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -316,6 +368,9 @@ module jhn001.a.viewmodel {
                 reportType : objReport.reportType ,
                 sendBackComment : objReport.sendBackComment ,
                 workId : objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft: 1,
+                missingDocName: self.missingDocName
             };
 
              // trigger change of all control in layout
@@ -331,19 +386,24 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.start(reportLayoutId);
+                        self.start(null);
                     });
                 }).fail((mes: any) => {
                     unblock();
                 });
             }, 50);
-
         }
         
         attachedFile() {
             let self = this,
                 layout = self.layout,
-                layouts = self.layouts;
+                layouts = self.layouts,
+                controls = self.layout().listItemCls();
+            
+            // refresh data from layout
+            self.layout().outData.refresh();
+            let inputs = self.layout().outData();
+            
             let reportLayoutId = self.reportClsId();
             if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
                 return;
@@ -354,9 +414,28 @@ module jhn001.a.viewmodel {
                 return;
             }
             
+            let command = {
+                inputs: inputs,
+                listItemDf: self.listItemDf,
+                reportID: objReport.reportId,
+                reportLayoutID: reportLayoutId,
+                reportCode: objReport.reportCode,
+                reportName: objReport.reportName,
+                reportType: objReport.reportType,
+                sendBackComment: objReport.sendBackComment,
+                workId: objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft: 1,
+                missingDocName: self.missingDocName
+            };
+
+            // trigger change of all control in layout
+            lv.checkError(controls);
+            
             let param = {
                 reportId: string = objReport.reportId,
-                layoutReportId: number = reportLayoutId
+                layoutReportId: number = reportLayoutId,
+                command : command
             };
             
             setShared("JHN001F_PARAMS", param );
@@ -368,16 +447,41 @@ module jhn001.a.viewmodel {
                     unblock();
                 });
             });
-            
-            
         }
         
         remove() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
-            
-            
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
+                let reportLayoutId = self.reportClsId();
+                if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                    return;
+
+                let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
+
+                if (objReport == undefined || objReport == null) {
+                    return;
+                }
+
+                let objRemove = {
+                    reportId: string = objReport.reportId
+                };
+
+                service.removeData(objRemove).done(() => {
+                    info({ messageId: "Msg_40" }).then(function() {
+                        self.start();
+                    });
+                }).fail((mes: any) => {
+                    unblock();
+                });
+            }).ifNo(() => { });
         }
     }
 

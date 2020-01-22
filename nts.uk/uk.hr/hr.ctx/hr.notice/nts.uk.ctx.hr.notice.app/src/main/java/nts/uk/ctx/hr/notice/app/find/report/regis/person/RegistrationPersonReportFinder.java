@@ -46,6 +46,7 @@ public class RegistrationPersonReportFinder {
 					if (report.isPresent()) {
 						dto.setReportID(report.get().getReportID());
 						dto.setSendBackComment(report.get().getSendBackComment());
+						dto.setRootSateId(report.get().getRootSateId());
 					}
 				}else{
 					dto.setReportID(null);

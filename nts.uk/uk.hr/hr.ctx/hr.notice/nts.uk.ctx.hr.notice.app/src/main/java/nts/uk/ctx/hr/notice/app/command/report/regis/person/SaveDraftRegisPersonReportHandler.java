@@ -62,54 +62,60 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		}
 	}
 	
-	private void insertData(SaveReportInputContainer data) {
+	public void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
+		String pid = AppContexts.user().personId();
+		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = IdentifierUtil.randomUniqueId();
-		Integer reportIDMax = repo.getMaxReportId(sid, cid);
+		String rootSateId = data.rootSateId;
+		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
+		
+		if (rootSateId == null) {
+			rootSateId = IdentifierUtil.randomUniqueId();
+		}
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
-				.rootSateId(rootSateId)
+				.rootSateId(data.isSaveDraft == 1 ? null : rootSateId)
 				.workId(data.workId)
-				.reportID(reportIDMax + 1)
+				.reportID(reportIDNew)
 				.reportLayoutID(data.reportLayoutID)
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
-				.reportDetail("") // chưa đặt hàng lần này
-				.regStatus(RegistrationStatus.Save_Draft)
+				.reportDetail(null) // chưa đặt hàng lần này
+				.regStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration)
 				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
-				.inputPid("")
+				.inputPid(pid)
 				.inputSid(sid)
-				.inputScd("")
+				.inputScd(scd)
 				.inputBussinessName("")
 				.inputDate(GeneralDateTime.now())
-				.appPid("")
+				.appPid(pid)
 				.appSid(sid)
-				.appScd("")
+				.appScd(scd)
 				.appBussinessName("")
 				.appDate(GeneralDateTime.now())
 				.appDevId(sid)
-				.appDevCd("")
+				.appDevCd(scd)
 				.appDevName("")
-				.appPosId("")
-				.appPosCd("")
+				.appPosId(sid)
+				.appPosCd(scd)
 				.appPosName("")
-				.reportType(ReportType.EMPLOYEE_REGISTRATION) // tam thoi
+				.reportType(EnumAdaptor.valueOf(data.reportType, ReportType.class))
 				.sendBackSID(data.sendBackSID)
 				.sendBackComment(data.sendBackComment)
 				.delFlg(false)
 				.build();
 		
-		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDMax);
+		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
 	}
 	
-	private List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
+	public List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
 
 		List<ReportItem> listReportItem = new ArrayList<ReportItem>();
 		List<ItemDfCommand> listItemDf = data.listItemDf;
@@ -119,7 +125,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
-			for (int j = 0; j < items.size(); j++) { // COM1_000000000000000_CS00001_IS00001
+			for (int j = 0; j < items.size(); j++) { 
 				ItemValue itemValue = items.get(j);
 				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
 				
@@ -138,7 +144,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 					break;
 				}
 				
-				ReportItem reportItem = ReportItem.builder().cid(cid).workId(0).reportID(reportId + 1)
+				ReportItem reportItem = ReportItem.builder().cid(cid).workId(0).reportID(reportId)
 						.reportLayoutID(data.reportLayoutID).reportName(data.reportName)
 						.layoutItemType(EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class))
 						.categoryId(itemDfCommand.categoryId).ctgCode(itemDfCommand.categoryCode)
@@ -166,7 +172,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	}
 	
 
-	private void updateData(SaveReportInputContainer data) {
+	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
@@ -179,6 +185,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		domainReport.setReportLayoutID(data.reportLayoutID);
 		domainReport.setReportCode(data.reportCode);
 		domainReport.setReportName(data.reportName);
+		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
 		domainReport.setInputPid("");
@@ -197,6 +204,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		domainReport.setAppPosId(sid);
 		domainReport.setAppPosCd("");
 		domainReport.setAppPosName("");
+		domainReport.setReportType(EnumAdaptor.valueOf(data.reportType, ReportType.class));
 		domainReport.setSendBackSID(data.sendBackSID);
 		domainReport.setSendBackComment(data.sendBackComment);
 		

@@ -31,6 +31,7 @@ module jhn001.f.vm {
         items: Array<GridItem> = [];
 
         comboColumns = [{ prop: 'name', length: 12 }];
+        dataShare : any;
 
 
         constructor() {
@@ -63,7 +64,9 @@ module jhn001.f.vm {
             let self = this,
                 dfd = $.Deferred();
             self.items = [];
-            let param = getShared('JHN001F_PARAMS') || null;
+            let dataShare  = getShared('JHN001F_PARAMS') || null;
+            self.dataShare =  dataShare;
+            let param = {reportId : dataShare.dataShare , layoutReportId : dataShare.layoutReportId};
             var dfdGetData = service.getData(param);
 
             block();
@@ -102,9 +105,10 @@ module jhn001.f.vm {
                 fileSize:  fileInfo.originalSize, //ファイルサイズ    đơn vị byte int
                 delFlg:  0, //削除済     0:未削除、1:削除済 int 
                 sampleFileID:  row[0].sampleFileId, //サンプルファイルID String
-                sampleFileName:  row[0].sampleFileName,     
+                sampleFileName:  row[0].sampleFileName,
+                layoutReportId : self.dataShare.layoutReportId,
+                dataLayout :  self.dataShare.command     
             }
-            debugger;
 
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();

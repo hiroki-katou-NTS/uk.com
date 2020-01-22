@@ -74,18 +74,36 @@ module jhn001.b.vm {
      
         continueProcess() {
             let self = this;
-            
-            if(self.reportId()){
-                setShared('JHN001B_PARAMS', {
-                    obj:  _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); })
-                });
-                close();
-            }
+            let reportId = self.reportId();
+
+            if (reportId == null || reportId == '' || reportId == undefined)
+                return;
+
+            setShared('JHN001B_PARAMS', {
+                obj: _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); })
+            });
+            close();
         }
         
         deleteSaveDraft() {
             let self = this;
             let reportId = self.reportId();
+
+            if(reportId == null || reportId == '' || reportId == undefined)
+                return;
+            
+            let objRemove = {
+                reportId: string = reportId
+            };
+
+            block();
+            service.removeData(objRemove).done(() => {
+                info({ messageId: "Msg_40" }).then(function() {
+                    self.start();
+                });
+            }).fail((mes: any) => {
+                unblock();
+            });
         }
 
         close() {

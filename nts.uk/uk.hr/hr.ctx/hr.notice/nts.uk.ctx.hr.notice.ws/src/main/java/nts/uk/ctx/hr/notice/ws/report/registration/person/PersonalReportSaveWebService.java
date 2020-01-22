@@ -5,10 +5,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.DelRegisPersonReportHandler;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.RemoveReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveDraftRegisPersonReportHandler;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveReportInputContainer;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
@@ -26,7 +26,7 @@ public class PersonalReportSaveWebService {
 	private DelRegisPersonReportHandler del;
 	
 	@Inject
-	private SaveDraftRegisPersonReportHandler saveDarft;
+	private SaveDraftRegisPersonReportHandler save;
 	
 	@POST
 	@Path("getAll")
@@ -35,23 +35,22 @@ public class PersonalReportSaveWebService {
 		return finder.getListReportSaveDraft(sid);
 	}
 	
-	
 	@POST
-	@Path("remove/{reportId}")
-	public void remove(@PathParam("reportId") Integer reportId) {
-		del.handle(reportId);
+	@Path("remove")
+	public void remove(RemoveReportCommand command ) {
+		del.handle(command);
 	}
 	
 	@POST
 	@Path("saveDraft")
 	public void saveDraft(SaveReportInputContainer inputContainer) {
-		this.saveDarft.handle(inputContainer);
+		this.save.handle(inputContainer);
 	}
 	
 	@POST
 	@Path("save")
 	public void save(SaveReportInputContainer inputContainer) {
-		this.saveDarft.handle(inputContainer);
+		this.save.handle(inputContainer);
 	}
 	
 }

@@ -14,6 +14,7 @@ public class PersonalReportDto{
 	
 	 Integer reportID;
 	 String sendBackComment;
+	 String rootSateId;
 	 PersonalReportClassificationDto clsDto;
 
 }

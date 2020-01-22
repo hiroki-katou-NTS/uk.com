@@ -12,7 +12,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,26 +19,21 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class DelRegisPersonReportHandler extends CommandHandler<Integer>{
+public class DelRegisPersonReportHandler extends CommandHandler<RemoveReportCommand>{
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
 	
-	@Inject
-	private ReportItemRepository reportItemRepo;
-
 	@Override
-	protected void handle(CommandHandlerContext<Integer> context) {
-		Integer reportId = context.getCommand();
+	protected void handle(CommandHandlerContext<RemoveReportCommand> context) {
+		RemoveReportCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
+		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, command.reportId);
 		if (!domainReportOpt.isPresent()) {
 			return;
 		}
 		
-		repo.remove(cid, reportId);
-		reportItemRepo.deleteByReportId(cid, reportId);
-		
+		repo.remove(cid, command.reportId);
 	}
 	
 }

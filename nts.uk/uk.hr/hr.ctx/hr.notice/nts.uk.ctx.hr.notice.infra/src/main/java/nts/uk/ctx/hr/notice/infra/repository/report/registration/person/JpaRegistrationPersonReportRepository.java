@@ -125,7 +125,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				.setParameter("reportId", reportId).getSingle();
 		JhndtReportRegis entity = entityOpt.get();
 		entity.setDelFlg(1);
-		entity.setDraftSaveDate(GeneralDateTime.now());
+		//entity.setDraftSaveDate(GeneralDateTime.now());
 		this.commandProxy().update(entity);
 	}
 
