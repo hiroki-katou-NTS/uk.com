@@ -454,6 +454,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }
                 $('.judg').trigger("validate");
             });
+            if(param != undefined && (param.calculationTerm == 2 || param.calculationTerm == 3)){
+                self.dateSettingNumRequire(true);
+                setTimeout(() => {
+                    $('.judg').trigger("validate");                     
+                }, 1);    
+            }
         }
     }
 
