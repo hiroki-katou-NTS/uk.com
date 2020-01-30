@@ -464,8 +464,24 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
         }
         getTargetDate() {
-            var self = this;
-            self.dateCtoE = self.dateValue().startDate + " ~ " + self.dateValue().endDate;
+            var self = this,
+                checkLogType = parseInt(self.logTypeSelectedCode()),
+                targetDataType = self.dataTypeSelectedCode();
+            self.checkFormatDate('1');
+            self.dateValue.valueHasMutated();
+            if (checkLogType == RECORD_TYPE.DATA_CORRECT
+                && (targetDataType === '2' || targetDataType === '3'
+                    || targetDataType === '6' || targetDataType === '7')) {
+                self.checkFormatDate('2');
+            }
+            if (self.checkFormatDate() === '2') {
+                let startDate = nts.uk.time.formatDate(moment(self.dateValue().startDate, "YYYY/MM").toDate(), "yyyy/MM"),
+                    endDate = nts.uk.time.formatDate(moment(self.dateValue().endDate, "YYYY/MM").toDate(), "yyyy/MM");
+                self.dateCtoE = startDate + " ~ " + endDate;
+            }else{
+                self.dateCtoE = self.dateValue().startDate + " ~ " + self.dateValue().endDate;
+            }
+            
         }
         getTargetNumber() {
             var self = this;
