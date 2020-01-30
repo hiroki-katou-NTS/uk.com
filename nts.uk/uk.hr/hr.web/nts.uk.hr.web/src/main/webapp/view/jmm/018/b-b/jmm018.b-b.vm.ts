@@ -180,6 +180,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     dfd.resolve();    
                 }
             });
+            $('#panel-scroll').height(window.innerHeight - 360);
             self.hidden('href1', 'B422_12');
             return dfd.promise();
         }

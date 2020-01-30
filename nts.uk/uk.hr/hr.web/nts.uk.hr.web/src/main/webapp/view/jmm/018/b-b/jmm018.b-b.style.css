@@ -103,9 +103,8 @@
 	width: 20px;
 }
 
-.tab2 .panel-croll{
+.tab2 .panel-scroll{
 	overflow-y: scroll;
-	height: 620px;
 }
 
 .tab2 .isDisabled {
