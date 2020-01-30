@@ -286,35 +286,24 @@ module nts.uk.at.view.kmr002.a.model {
             self.endTime(end != null ? moment.utc(moment.duration(end, 'm').asMilliseconds()).format("HH:mm") : '');
             let timeSt = start != null ? start : 0;
             if (data.listOrder.length > index && data.listOrder[index].ordered) {
-                self.isVisible(true);
                 self.textError(getText('KMR002_6'));
                 self.setDisPlay(false);
             } else if (dateSelect < dateNow) {
-                self.isVisible(true);
                 self.textError(getText('KMR002_9'));
                 self.setDisPlay(false);
             } else if (dateSelect == dateNow) {
                 if (timeSt <= timeNow && timeNow <= end) {
                     self.isVisible(false);
                     self.isError(false);
-                    if (self.mealSelected() == 1) {
-                        self.isEnableLunch(true);
-                    } else {
-                        self.isEnableDinner(true);
-                    }
                 } else {
                     self.isVisible(true);
                     self.isError(false);
-                    if (self.mealSelected() == 1) {
-                        self.isEnableLunch(false);
-                    } else {
-                        self.isEnableDinner(false);
-                    }
                 }
+                self.isEnableLunch((self.startLunch() <= timeNow && timeNow <= self.finishLunch()) ? true : false);
+                self.isEnableDinner((self.startDinner() <= timeNow && timeNow <= self.finishDinner()) ? true : false);
                 self.isEnable((!self.isEnableLunch() && !self.isEnableDinner()) ? false : true);
                 
             } else {
-                self.isVisible(false);
                 self.setDisPlay(true);
             }
 
@@ -324,6 +313,7 @@ module nts.uk.at.view.kmr002.a.model {
 
         public setDisPlay(value: boolean) {
             let self = this;
+            self.isVisible(!value);
             self.isError(!value);
             self.isEnableLunch(value);
             self.isEnableDinner(value);
