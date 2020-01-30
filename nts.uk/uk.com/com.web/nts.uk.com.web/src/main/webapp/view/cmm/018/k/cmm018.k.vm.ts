@@ -87,12 +87,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         
         lstTmp: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor(){
-            var self = this;
-            //Subscribe PERSON - CHI DINH - GROUP
-            self.selectTypeSet.subscribe(function(newValue){
-                if(self.checkEmpty(newValue)) return;
-                self.bindData(newValue);
-            });
+            let self = this;
+            self.itemListCbb.push(new vmbase.ApproverDtoK('','','指定しない',0,0));
             //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
             self.treeGrid = {
@@ -109,7 +105,16 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 width: 310,
                 startMode: data.systemAtr
             };
-            
+            //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
+            self.approverList.subscribe(function(){
+                self.setDataForCbb();
+            });
+            self.getData();
+            //Subscribe PERSON - CHI DINH - GROUP
+            self.selectTypeSet.subscribe(function(newValue){
+                if(self.checkEmpty(newValue)) return;
+                self.bindData(newValue);
+            });
             let specLabel = data.systemAtr == 0 ? resource.getText('CMM018_100') : resource.getText('CMM018_101'); 
             //承認者指定種類
             //０：会社、１：職場、２：個人
@@ -133,7 +138,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.cbbEnable(false);    
                 }
             });
-            self.getData();
+
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appTypeName);
@@ -173,15 +178,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     });
                 }
             })
-            //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
-            self.approverList.subscribe(function(){
-                self.setDataForCbb();
-            })
             
-            //check 
-            $('#swap-list').on("swaplistgridsizeexceed", function(evt, $list, max) { 
-                error({ messageId: 'Msg_300'});
-            })
         }// end constructor
         
         checkEmpty(value: any){
@@ -204,12 +201,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let self = this;
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
             if(data.approverInfor.length <= 0) return;
-            if(self.selectTypeSet() == TypeSet.PERSON){
+            if(data.typeSetting == TypeSet.PERSON){
                 _.forEach(data.approverInfor, function(item){
                     self.approverList.push({id: item.id, code: item.code, name: item.name, dispOrder: item.dispOrder});
                 });
                 self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
-            }else if(self.selectTypeSet() == TypeSet.GROUP){
+            }else if(data.typeSetting == TypeSet.GROUP){
                 _.each(data.approverInfor, function(appr){
                     if(appr.dispOrder == 1){
                         self.lstGroup1.push({code: appr.code, name: appr.name, dispOrder: appr.dispOrder});
@@ -244,14 +241,24 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
                 if(self.lstJobGS().length > 0) return; //データがある 
                 if(self.lstJob().length > 0){
-                    self.lstJobGS(_.clone(self.lstJob()));
-                    self.lstSpec1(_.clone(self.lstJob()));
+                    let lst = _.clone(self.lstJob());
+                    self.lstJobGS(lst);
+                    _.each(lst, function(i){
+                        if(self.checkExLstR(self.lstSpec2(), i) === undefined){
+                            self.lstSpec1.push(i);
+                        }
+                    });
                 }else{
                     block.invisible();
                     service.jobGroup().done(function(data: any){
-                        self.lstJob(_.clone(data));
-                        self.lstJobGS(_.clone(data));
-                        self.lstSpec1(_.clone(data));
+                        let lst = _.clone(data);
+                        self.lstJob(lst);
+                        self.lstJobGS(lst);
+                         _.each(lst, function(i){
+                            if(self.checkExLstR(self.lstSpec2(), i) === undefined){
+                                self.lstSpec1.push(i);
+                            }
+                        });
                         block.clear(); 
                     }).fail(function(res: any){
                         block.clear();
@@ -264,14 +271,24 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.enableListWp(false);
                 if(self.lstJobG().length > 0) return;//データがある
                 if(self.lstJob().length > 0){
-                    self.lstJobG(_.clone(self.lstJob()));
-                    self.lstGroup(_.clone(self.lstJob()));
+                    let lst = _.clone(self.lstJob());
+                    self.lstJobG(lst);
+                    _.each(lst, function(i){
+                        if((self.checkExLstR(self.lstGroup1(), i) === undefined) && (self.checkExLstR(self.lstGroup2(), i) === undefined)){
+                            self.lstGroup.push(i);
+                        }
+                    });
                 }else{
                     block.invisible();
                     service.jobGroup().done(function(data: any){
-                        self.lstJob(_.clone(data));
-                        self.lstJobG(_.clone(data));
-                        self.lstGroup(_.clone(data));
+                        let lst = _.clone(data);
+                        self.lstJob(lst);
+                        self.lstJobG(lst);
+                        _.each(lst, function(i){
+                            if((self.checkExLstR(self.lstGroup1(), i) === undefined) && (self.checkExLstR(self.lstGroup2(), i) === undefined)){
+                                self.lstGroup.push(i);
+                            }
+                        });
                         block.clear(); 
                     }).fail(function(res: any){
                         block.clear();
@@ -279,7 +296,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
             }
         }
-         
+        checkExLstR(lst, i){
+            return _.find(lst, function(a){
+               return a.code == i.code; 
+            });
+        } 
         getDataWpl(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
@@ -321,9 +342,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //決定情報をチェック
             if(self.selectTypeSet() == TypeSet.PERSON){//PERSON
                 _.each(self.approverList(), function(appr, index){
-                    lstApprover.push({id: appr.id, code: appr.code, name: appr.name, dispOrder: index + 1}
+                    lstApprover.push({id: appr.id, code: appr.code, name: appr.name, dispOrder: index + 1});
                 });
-//                lstApprover = self.approverList();
                 approvalForm = self.selectFormSet();
                 confirmSet = self.selectedCbbCode();
             }else if(self.selectTypeSet() == TypeSet.SPEC_WKP){//CHI DINH
