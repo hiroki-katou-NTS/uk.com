@@ -209,7 +209,7 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged == null){
                         return;
                     }
-                    self.currentCode();
+                    self.currentCode('');
                     self.historyStr('');
                     self.enableDelete(true);
                     self.enableCreatNew(true);
@@ -232,7 +232,7 @@ module nts.uk.com.view.cmm018.a {
                             }else{
                                 self.currentCode(null);
                             }
-                        });;
+                        });
                     }
                     //TH: tab person
                     else{
@@ -242,7 +242,7 @@ module nts.uk.com.view.cmm018.a {
                             }else{
                                 self.currentCode(null);
                             }    
-                        });;
+                        });
                         $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                     }
                 });
@@ -1342,7 +1342,7 @@ module nts.uk.com.view.cmm018.a {
             /**
              * find history moi nhat theo loai don
              */
-            findHistBestNewA(appType: number, employRootAtr: number, rootType: number): any {
+            findHistBestNewA(appType: any, employRootAtr: number, rootType: number): any {
                 let self = this;
                 //TH: company
                 if(rootType == vmbase.RootType.COMPANY){
@@ -1356,9 +1356,7 @@ module nts.uk.com.view.cmm018.a {
                     _.each(lstComRoot, function(root){
                         lstCompany.push(root.company);
                     });
-                    let rootType = _.filter(lstCompany, function(root){
-                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
-                    });
+                    let rootType = self.filterByEmpR(lstCompany, employRootAtr, appType);
                     let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
                     return lstHistorySort[0];
                 }
@@ -1374,9 +1372,7 @@ module nts.uk.com.view.cmm018.a {
                     _.each(lstWpRoot, function(root){
                         lstWorkplace.push(root.workplace);
                     });
-                    let rootType = _.filter(lstWorkplace, function(root){
-                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
-                    });
+                    let rootType = self.filterByEmpR(lstWorkplace, employRootAtr, appType);
                     let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
                     return lstHistorySort[0];
                 }
@@ -1392,13 +1388,37 @@ module nts.uk.com.view.cmm018.a {
                     _.each(lstPsRoot, function(root){
                         lstPerson.push(root.person);
                     });
-                    let rootType = _.filter(lstPerson, function(root){
-                        return root.applicationType == appType  && root.employmentRootAtr == employRootAtr;
-                    });
+                    let rootType = self.filterByEmpR(lstPerson, employRootAtr, appType);
                     let lstHistorySort = _.orderBy(rootType, ["startDate"], ["desc"]);
                     return lstHistorySort[0];
                 }
-            } 
+            }
+            //file root by type, empR
+            filterByEmpR(lstRoot, employRootAtr, appType){
+                let rootType = [];
+                if(employRootAtr == 2){
+                    rootType = _.filter(lstRoot, function(root){
+                        return root.confirmationRootType == appType  && root.employmentRootAtr == 2;
+                    });
+                }else if(employRootAtr == 4){
+                    rootType = _.filter(lstRoot, function(root){
+                        return root.noticeId == appType  && root.employmentRootAtr == 4;
+                    });
+                }else if(employRootAtr == 5){
+                    rootType = _.filter(lstRoot, function(root){
+                        return root.busEventId == appType  && root.employmentRootAtr == 5;
+                    });
+                }else if(employRootAtr == 0){
+                    rootType = _.filter(lstRoot, function(root){
+                        return root.employmentRootAtr == 0;
+                    });
+                }else{
+                     rootType = _.filter(lstRoot, function(root){
+                        return root.applicationType == appType  && root.employmentRootAtr == 1;
+                    });   
+                }
+                return rootType;
+            }
             /**
              * find appRootHist is selected of company
              * mode A: まとめて登録モード
@@ -1745,18 +1765,21 @@ module nts.uk.com.view.cmm018.a {
              * open dialog L: 未登録社員リスト
              */
             openDialogL(){
+                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
                modal("/view/cmm/018/l/index.xhtml");   
             }
             /**
              * open dialog M: マスタリスト
              */
             openDialogM(){
+                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
                modal("/view/cmm/018/m/index.xhtml");
             }
             /**
              * open dialog N: 承認者一覧
              */
             openDialogN(){
+                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
                modal("/view/cmm/018/n/index.xhtml");
             }
             checkColor(lstAppPhase: Array<vmbase.ApprovalPhaseDto>, int: number): boolean{

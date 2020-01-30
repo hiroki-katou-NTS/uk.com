@@ -80,10 +80,10 @@ module nts.uk.com.view.cmm018.shr {
         }
         //app type
         export class ApplicationType{
-            value: number;
+            value: any;
             localizedName: string;
             employRootAtr: number;
-            constructor(value: number, localizedName: string, employRootAtr: number){
+            constructor(value: any, localizedName: string, employRootAtr: number){
                 this.value = value;
                 this.localizedName = localizedName;
                 this.employRootAtr = employRootAtr;
@@ -420,6 +420,10 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: string;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class WpApprovalRootDto{
             /**会社ID*/
@@ -444,6 +448,10 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: string;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class PsApprovalRootDto{
             /**会社ID*/
@@ -468,6 +476,10 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: string;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class ApprovalPhaseDto{
             approver: Array<ApproverDto>;

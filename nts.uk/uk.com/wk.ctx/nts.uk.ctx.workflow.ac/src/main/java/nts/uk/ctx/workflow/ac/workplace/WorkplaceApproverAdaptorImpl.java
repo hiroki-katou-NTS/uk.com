@@ -72,8 +72,8 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	}
 
 	@Override
-	public Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId) {
-		return wpPub.findByWkpIdNEW(companyId, wkpId)
+	public Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate) {
+		return wpPub.findByWkpIdNEW(companyId, wkpId, baseDate)
 				.map(c -> new WkpDepInfo(c.getWorkplaceId(), c.getWorkplaceCode(), c.getWorkplaceName()));
 	}
 

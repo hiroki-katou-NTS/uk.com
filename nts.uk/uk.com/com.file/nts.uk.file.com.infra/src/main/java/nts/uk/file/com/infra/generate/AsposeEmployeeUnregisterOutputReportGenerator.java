@@ -40,7 +40,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
 
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+//		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
@@ -55,9 +55,9 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 
 	}
 

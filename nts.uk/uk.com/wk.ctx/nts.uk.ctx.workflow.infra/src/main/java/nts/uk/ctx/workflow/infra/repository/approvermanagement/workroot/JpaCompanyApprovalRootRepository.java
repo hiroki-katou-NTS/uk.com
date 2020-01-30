@@ -54,7 +54,8 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	
 	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
 			+ " AND c.startDate <= :baseDate"
-			+ " AND c.endDate >= :baseDate";
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.sysAtr = :sysAtr";
 	private static final String FIND_BY_APP_TYPE = FIND_BY_CID 
 			   + " AND c.applicationType = :applicationType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
@@ -349,10 +350,11 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		return entity;
 	}
 	@Override
-	public List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate) {
+	public List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate, int sysAtr) {
 		return this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("baseDate", baseDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c->toDomainComApR(c));
 	}
 	/**

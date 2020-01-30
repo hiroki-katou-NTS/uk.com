@@ -133,7 +133,7 @@ public class CommonApprovalRootFinder {
 		String companyId = AppContexts.user().companyId();
 		Optional<WkpDepInfo> wkpDepOp = Optional.empty();
 		if(sysAtr == SHUUGYOU){
-			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id);
+			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id, GeneralDate.today());
 		}else{
 			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id);
 		}

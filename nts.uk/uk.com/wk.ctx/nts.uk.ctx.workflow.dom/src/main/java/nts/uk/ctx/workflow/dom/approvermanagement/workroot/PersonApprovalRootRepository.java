@@ -107,7 +107,7 @@ public interface PersonApprovalRootRepository {
 	 * @param baseDate ・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
 	 * @return
 	 */
-	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate);
+	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Person Approval Root By type
 	 * @param companyId

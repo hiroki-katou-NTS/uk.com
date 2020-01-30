@@ -1015,8 +1015,8 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	}
 
 	@Override
-	public Optional<SWkpHistExport> findByWkpIdNEW(String companyId, String wkpId) {
-		return repoWkpNew.getInfoWkpNew(companyId, wkpId)
+	public Optional<SWkpHistExport> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate) {
+		return repoWkpNew.getWkpNewByIdDate(companyId, wkpId, baseDate)
 				.map(c -> SWkpHistExport.builder()
 				.workplaceCode(c.getWorkplaceCode().v())
 				.workplaceName(c.getWorkplaceName().v())

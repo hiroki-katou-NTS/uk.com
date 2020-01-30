@@ -39,7 +39,7 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 		String companyID = AppContexts.user().companyId();
 		
 		// get data
-		MasterApproverRootOutput masterApp = masterRoot.masterInfors(companyID, query.getBaseDate(),
+		MasterApproverRootOutput masterApp = masterRoot.masterInfors(companyID, query.getSysAtr(), query.getBaseDate(),
 				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
 		
 		// check condition

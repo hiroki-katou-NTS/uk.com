@@ -104,7 +104,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param baseDate・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate);
+	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Work place Approval Root By type
 	 * @param companyId

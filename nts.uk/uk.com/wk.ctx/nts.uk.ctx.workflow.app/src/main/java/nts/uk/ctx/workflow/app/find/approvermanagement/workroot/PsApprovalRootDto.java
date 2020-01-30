@@ -28,6 +28,10 @@ public class PsApprovalRootDto {
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
 	private int employmentRootAtr;
+	/**届出ID*/
+	private String noticeId;
+	/**各業務エベントID*/
+	private String busEventId;
 	
 	public static PsApprovalRootDto fromDomain(PersonApprovalRoot domain){
 		return new PsApprovalRootDto(domain.getCompanyId(),
@@ -40,6 +44,8 @@ public class PsApprovalRootDto {
 					domain.getApprRoot().getBranchId(),
 					domain.getApprRoot().getAnyItemApplicationId(),
 					domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value,
-					domain.getApprRoot().getEmploymentRootAtr().value);
+					domain.getApprRoot().getEmploymentRootAtr().value,
+					domain.getApprRoot().getNoticeId(),
+					domain.getApprRoot().getBusEventId());
 	}
 }

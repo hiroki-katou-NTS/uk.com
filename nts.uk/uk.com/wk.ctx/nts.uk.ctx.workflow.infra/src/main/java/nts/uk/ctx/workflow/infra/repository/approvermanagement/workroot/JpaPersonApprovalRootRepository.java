@@ -61,7 +61,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private static final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
-			   + " ORDER BY c.wwfmtPsApprovalRootPK.employeeId";
+			   + " AND c.sysAtr = :sysAtr";
 	 private static final String FIND_BY_APP_TYPE = FIN_BY_EMP
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType"
@@ -415,10 +415,11 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		return entity;
 	}
 	@Override
-	public List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate) {
+	public List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr) {
 		List<PersonApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c->toDomainPsApR(c));
 		return data;
 	}

@@ -57,7 +57,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_ALL + " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
-			+ " ORDER BY  c.wwfmtWpApprovalRootPK.workplaceId ";
+			+ " AND c.sysAtr = :sysAtr";
 	private static final String FIND_BY_APP_TYPE = FIND_BY_WKPID
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType"
@@ -372,10 +372,12 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		return entity;
 	}
 	
-	public List<WorkplaceApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate){
-		List<WorkplaceApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtWpApprovalRoot.class)
+	public List<WorkplaceApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr){
+		List<WorkplaceApprovalRoot> data = this.queryProxy()
+				.query(FIND_ALL_BY_BASEDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c->toDomainWpApR(c));
 		return data;
 	}

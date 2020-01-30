@@ -102,7 +102,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param baseDate
 	 * @return
 	 */
-	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate);
+	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Company Approval Root By type
 	 * @param companyId

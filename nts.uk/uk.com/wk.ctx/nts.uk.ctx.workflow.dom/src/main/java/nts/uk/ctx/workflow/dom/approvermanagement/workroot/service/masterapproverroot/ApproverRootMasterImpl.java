@@ -66,6 +66,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private static final String ROOT_COMMON = "共通ルート";
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
+			int sysAtr,
 			GeneralDate baseDate, 
 			boolean isCompany, 
 			boolean isWorkplace,
@@ -75,12 +76,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		MasterEmployeeOutput empRootOutput = new MasterEmployeeOutput(new HashMap<>(), new ArrayList<>());
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
 		if(isCompany) {//Lay data COMPANY
-			comMasterInfor = this.getComApprovalInfor(companyID, baseDate);
+			comMasterInfor = this.getComApprovalInfor(companyID, baseDate, sysAtr);
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {//Lay data WORKPLACE
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);
+			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {				
 				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate);				
@@ -89,7 +90,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
 		if(isPerson) {//Lay data PERSON
 			//ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
-			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate);
+			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstPss)) {
 				empRootOutput = this.getPsRootInfor(lstPss, companyID);
@@ -316,10 +317,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param baseDate
 	 * @return
 	 */
-	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate) {
+	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate, int sysAtr) {
 		//CompanyApprovalInfor comMasterInfor = null;
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
+		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate, sysAtr);
 		//Thong tin company
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		//list root by COM

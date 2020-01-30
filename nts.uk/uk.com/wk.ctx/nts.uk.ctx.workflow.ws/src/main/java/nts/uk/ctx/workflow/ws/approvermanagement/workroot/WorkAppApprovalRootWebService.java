@@ -26,7 +26,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.Cmm053EmployeeSe
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeRegisterApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
@@ -47,7 +46,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.EmployeeRegisterApprovalRoot;
 import nts.uk.shr.com.context.AppContexts;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
@@ -67,8 +65,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeAdapter employeeAdapter;
 	@Inject
 	private SyJobTitleAdapter jobTitle;
-	@Inject
-	private EmployeeRegisterApprovalRoot registerApprovalRoot;
 	@Inject
 	private InsertHistoryCmm053CmdHandler insertByManager;
 	@Inject
@@ -110,14 +106,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	
 	@POST
-	@Path("testInUnregistry")
-	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(GeneralDate baseDate){
-		//GeneralDate date = GeneralDate.fromString(baseDate, "yyyy-mm-dd");
-		List<EmployeeUnregisterOutput> data =empUnregister.lstEmployeeUnregister(baseDate); 
-		return data;
-	}
-	
-	@POST
 	@Path("testMasterDat")
 	public MasterApproverRootOutput masterInfor(MasterApproverRootDto dto) {
 		MasterApproverRootOutput data = empUnregister.masterInfors(dto);
@@ -147,20 +135,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
 		String companyId = AppContexts.user().companyId();
 		return jobTitle.findAll(companyId, baseDate);
-	}
-	/**
-	 * 
-	 * @param baseDate
-	 * @param lstEmpIds
-	 * @param rootAtr:　申請共通を選んだとrootAtr：０、以外：１
-	 * @param lstApps
-	 * @return
-	 */
-	@POST
-	@Path("getEmployeeRegisterApprovalRoot")
-	public void lstEmps(EmployeeRegisterApprovalRootDto data){
-		String companyId = AppContexts.user().companyId();
-		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(), data.getLstApps());
 	}
 	@POST
 	@Path("getJobtitleName")
