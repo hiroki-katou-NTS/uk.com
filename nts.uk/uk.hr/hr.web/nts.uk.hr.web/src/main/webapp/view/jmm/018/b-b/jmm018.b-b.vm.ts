@@ -151,6 +151,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.grayout();
+            self.selectedHistId('');
             $.when(self.loadHisId(), self.loadCommonMasterItems()).done(function() {
                 self.isStart = true;
                 self.selectedHistId(self.latestHistId());
