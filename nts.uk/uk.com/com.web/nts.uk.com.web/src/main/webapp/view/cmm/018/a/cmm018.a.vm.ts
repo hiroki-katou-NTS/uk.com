@@ -653,7 +653,6 @@ module nts.uk.com.view.cmm018.a {
                         }); 
                     }
                     self.cpA(self.convertlistRoot(lstRoot,false));
-                    self.cpA.valueHasMutated();
                     let itemHist = self.findHistory(self.currentCode());
                     if(itemHist != undefined){
                         if (itemHist.overLap == '※' || itemHist.overLap == true) {
@@ -663,6 +662,7 @@ module nts.uk.com.view.cmm018.a {
                             self.cpA(self.convertlistRoot(lstRoot, false));
                         }
                     }
+                     __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     self.dataI(null);
                     block.clear();
                     dfd.resolve();
@@ -736,7 +736,6 @@ module nts.uk.com.view.cmm018.a {
                         }); 
                     }
                     self.cpA(self.convertlistRoot(lstRoot,false));
-                    self.cpA.valueHasMutated();
                     let itemHist = self.findHistory(self.currentCode());
                     if(itemHist != undefined){    
                     if (itemHist.overLap == '※' || itemHist.overLap == true) {
@@ -812,7 +811,6 @@ module nts.uk.com.view.cmm018.a {
                                         item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
                         });
                     }
-                    self.cpA.valueHasMutated();
                     let itemHist: vmbase.ListHistory = self.findHistory(self.currentCode());
                     if(itemHist != undefined){
                         if(itemHist.overLap == '※' || itemHist.overLap == true){
@@ -1069,7 +1067,7 @@ module nts.uk.com.view.cmm018.a {
                         self.idOld(self.currentCode());
                     }
                     self.listHistory.valueHasMutated()
-                    self.cpA.valueHasMutated();
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN( self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     self.currentCode(-1);
                     block.clear();
                 });
@@ -1220,7 +1218,7 @@ module nts.uk.com.view.cmm018.a {
                     appTypeName = '共通';
                 }
                 let typeSet = 1;
-                let tabSel = self.selectedModeCode() == 0 ? self.tabSelected() : __viewContext.viewModel.viewmodelSubB.tabSelectedB()
+                let tabSel = self.selectedModeCode() == 0 ? self.tabSelected() : __viewContext.viewModel.viewmodelSubB.tabSelectedB();
                 if(tabSel == 2){
                     typeSet = 0;
                 }else{
@@ -1307,8 +1305,15 @@ module nts.uk.com.view.cmm018.a {
             deleteRow(approvalId: string, employRootAtr: number){
                 let self = this;
                 let objSelected: vmbase.CompanyAppRootADto = self.findApprovalA(approvalId);
-                let lstNew = self.cpA();
-                self.cpA([]);
+                let modeA = __viewContext.viewModel.viewmodelA.selectedModeCode();
+                let lstNew = [];
+                if(modeA == vmbase.MODE.SHINSEI){
+                    lstNew.push(__viewContext.viewModel.viewmodelSubB.comRoot());
+                }else{
+                    lstNew = self.cpA();
+                    self.cpA([]);
+                }
+                
                 let lstRootNew: Array<vmbase.CompanyAppRootADto> = [];
                 let rootDelete: vmbase.CompanyAppRootADto;//item delete
                 _.each(lstNew, function(item: vmbase.CompanyAppRootADto){
@@ -1324,8 +1329,15 @@ module nts.uk.com.view.cmm018.a {
                         empty,empty,empty,empty,empty);
                 lstRootNew.push(rootNew);
                 let lstSort = vmbase.ProcessHandler.orderByList(lstRootNew);
-                self.cpA(lstSort);
-                __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                let tabSel = self.selectedModeCode() == 0 ? self.tabSelected() : __viewContext.viewModel.viewmodelSubB.tabSelectedB();
+                if(modeA == vmbase.MODE.SHINSEI){
+                    let a = lstRootNew[0];
+                     __viewContext.viewModel.viewmodelSubB.comRoot(a);
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN([a], tabSel, vmbase.MODE.SHINSEI);
+                }else{
+                    self.cpA(lstSort);
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
+                }
            }
             findApprovalA(value: string): vmbase.CompanyAppRootADto {
                 let self = this;
