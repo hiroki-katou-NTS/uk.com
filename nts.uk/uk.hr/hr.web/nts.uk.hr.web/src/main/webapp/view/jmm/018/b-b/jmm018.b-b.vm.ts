@@ -257,6 +257,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             block.grayout();
             let employmentType = {
                 listInfor: self,
+                commonMasterItemName: item.commonMasterItemName,
                 listSelect: item.enableRetirePlanCourse()
             }
             setShared('employmentTypeToC', employmentType);
