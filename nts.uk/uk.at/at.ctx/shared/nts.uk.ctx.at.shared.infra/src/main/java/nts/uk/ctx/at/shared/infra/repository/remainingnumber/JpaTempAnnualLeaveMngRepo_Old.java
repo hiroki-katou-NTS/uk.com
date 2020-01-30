@@ -9,17 +9,17 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository_Old;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * リポジトリ実装：暫定年休管理データ
+ * 繝ｪ繝昴ず繝医Μ螳溯｣��ｼ壽圻螳壼ｹｴ莨醍ｮ｡逅�繝�繝ｼ繧ｿ
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnualLeaveMngRepository {
+public class JpaTempAnnualLeaveMngRepo_Old extends JpaRepository implements TempAnnualLeaveMngRepository_Old {
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -47,7 +47,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			+ " WHERE a.PK.employeeId = :employeeID"
 			+ " ORDER BY a.PK.ymd ASC";
 	
-	/** 検索 */
+	/** 讀懃ｴ｢ */
 	@Override
 	public Optional<TempAnnualLeaveManagement> find(String employeeId, GeneralDate ymd) {
 		
@@ -56,7 +56,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 				.map(c -> c.toDomain());
 	}
 	
-	/** 検索　（期間） */
+	/** 讀懃ｴ｢縲��ｼ域悄髢難ｼ� */
 	@Override
 	public List<TempAnnualLeaveManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
 
@@ -67,14 +67,14 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 				.getList(c -> c.toDomain());
 	}
 
-	/** 登録および更新 */
+	/** 逋ｻ骭ｲ縺翫ｈ縺ｳ譖ｴ譁ｰ */
 	@Override
 	public void persistAndUpdate(TempAnnualLeaveManagement domain) {
 
-		// キー
+		// 繧ｭ繝ｼ
 		val key = new KrcdtAnnleaMngTempPK(domain.getEmployeeId(), domain.getYmd());
 		
-		// 登録・更新
+		// 逋ｻ骭ｲ繝ｻ譖ｴ譁ｰ
 		KrcdtAnnleaMngTemp entity = this.getEntityManager().find(KrcdtAnnleaMngTemp.class, key);
 		if (entity == null){
 			entity = new KrcdtAnnleaMngTemp();
@@ -86,14 +86,14 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 		}
 	}
 	
-	/** 削除 */
+	/** 蜑企勁 */
 	@Override
 	public void remove(String employeeId, GeneralDate ymd) {
 
 		this.commandProxy().remove(KrcdtAnnleaMngTemp.class, new KrcdtAnnleaMngTempPK(employeeId, ymd));
 	}
 	
-	/** 削除　（期間） */
+	/** 蜑企勁縲��ｼ域悄髢難ｼ� */
 	@Override
 	public void removeByPeriod(String employeeId, DatePeriod period) {
 		
@@ -104,7 +104,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 				.executeUpdate();
 	}
 	
-	/** 削除　（基準日以前） */
+	/** 蜑企勁縲��ｼ亥渕貅匁律莉･蜑搾ｼ� */
 	@Override
 	public void removePastYmd(String employeeId, GeneralDate criteriaDate) {
 		

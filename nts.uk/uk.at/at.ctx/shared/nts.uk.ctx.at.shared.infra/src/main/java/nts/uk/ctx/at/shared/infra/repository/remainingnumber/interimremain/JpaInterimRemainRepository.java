@@ -170,4 +170,99 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		});
 		return resultList;
 	}
+	
+	// Fix bug 109524
+		/** 検索 */
+		@Override
+		public Optional<InterimRemain> find(String sId, GeneralDate ymd) {
+			String QUERY_BY_ID = "SELECT s FROM KrcmtInterimRemainMng s WHERE s.sId = :sId" + " s.ymd = :ymd";
+			Optional<KrcmtInterimRemainMng> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtInterimRemainMng.class)
+					.setParameter("sId", sId).setParameter("ymd", ymd).getSingle();
+			if (entity.isPresent()) {
+				return Optional.ofNullable(convertToDomainSet(entity.get()));
+			}
+			return Optional.empty();
+		}
+
+		// Fix bug 109524
+		/** 検索 （期間） */
+		@SneakyThrows
+		@Override
+		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+		public List<InterimRemain> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
+			try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+					+ " WHERE SID = ?" + " AND YMD >= ?" + " AND YMD <= ?" + " ORDER BY YMD");) {
+				sql.setString(1, employeeId);
+				sql.setDate(2, Date.valueOf(period.start().localDate()));
+				sql.setDate(3, Date.valueOf(period.end().localDate()));
+				List<InterimRemain> entities = new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
+				if (entities.isEmpty()) {
+					return new ArrayList<>();
+				}
+				return entities;
+			}
+		}
+
+		// Fix bug 109524
+		/** 削除 */
+		@Override
+		public void remove(String sId, GeneralDate ymd) {
+			String sql = "delete  from KrcmtInterimRecMng a + WHERE c.sId = :employeeId" + " AND c.ymd >= :ymd";
+			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("ymd", ymd).executeUpdate();
+		}
+
+		// Fix bug 109524
+		/** 削除 （期間） */
+		@Override
+		public void removeByPeriod(String sId, DatePeriod period) {
+			String sql = "delete  from KrcmtInterimRecMng a + WHERE c.sId = :employeeId" + " AND c.ymd >= :startYmd"
+					+ " AND c.ymd <= :endYmd";
+			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("startYmd", period.start())
+					.setParameter("endYmd", period.end()).executeUpdate();
+		}
+
+		// Fix bug 109524
+		/** 削除 （基準日以前） */
+		@Override
+		public void removePastYmd(String sId, GeneralDate criteriaDate) {
+			String sql = "delete  from KrcmtInterimRecMng a + WHERE c.sId = :employeeId" + " AND c.ymd <= :endYmd";
+			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("ymd", criteriaDate)
+					.executeUpdate();
+		}
+
+		// Fix bug 109524
+		@SneakyThrows
+		@Override
+		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+		public List<InterimRemain> findBySidWorkTypePeriod(String sId, String workTypeCode, DatePeriod period) {
+			try (PreparedStatement sql = this.connection().prepareStatement(
+					"SELECT * FROM KRCMT_INTERIM_REMAIN_MNG a1" + " INNER JOIN KRCMT_INTERIM_ANNUAL_MNG a2 "
+							+ " ON a1.REMAIN_MNG_ID = a2.ANNUAL_MNG_ID" + " WHERE a1.SID = ? " + " AND a2.WORKTYPE_CODE = ?"
+							+ " AND a1.YMD >= ?" + " AND a1.YMD <= ?" + " ORDER BY YMD");) {
+				sql.setString(1, sId);
+				sql.setDate(2, Date.valueOf(period.start().localDate()));
+				sql.setDate(3, Date.valueOf(period.end().localDate()));
+				List<InterimRemain> entities = new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
+				if (entities.isEmpty()) {
+					return new ArrayList<>();
+				}
+				return entities;
+			}
+		}
+
+		// Fix bug 109524
+		@SneakyThrows
+		@Override
+		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+		public List<InterimRemain> findByEmployeeID(String sId) {
+			try (PreparedStatement sql = this.connection()
+					.prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG a1" + " WHERE SID = ?");) {
+				sql.setString(1, sId);
+				List<InterimRemain> entities = new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
+				if (entities.isEmpty()) {
+					return new ArrayList<>();
+				}
+				return entities;
+			}
+		}
 }

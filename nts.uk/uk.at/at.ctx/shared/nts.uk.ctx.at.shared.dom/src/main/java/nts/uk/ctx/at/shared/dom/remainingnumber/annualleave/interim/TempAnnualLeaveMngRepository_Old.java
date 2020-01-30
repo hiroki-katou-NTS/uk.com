@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * リポジトリ：暫定年休管理データ
  * @author shuichu_ishida
  */
-public interface TempAnnualLeaveMngRepository {
+public interface TempAnnualLeaveMngRepository_Old {
 	
 	/**
 	 * @param employeeID
