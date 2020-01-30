@@ -830,6 +830,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}	
 		// 序列の並び順を比較(So sánh thứ tự sắp xép của cấp bậc)
 		Integer jobOrder = simpleJobTitleImportList.get(0).getDisporder();
+		if(jobOrder==null) {
+			result = true;
+			return result;
+		}
 		if(jobOrder >= opDispOrder.get()) {
 			return result;
 		}
@@ -928,10 +932,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			return ErrorFlag.NO_APPROVER;
 		}
 		for(LevelInforOutput levelInforOutput : levelInforLst) {
-			if(levelInforOutput.getApproverLst().size() > 10) {
+			Integer approverCount = levelInforOutput.getApproverLst().stream()
+					.collect(Collectors.summingInt(x -> x.getApproverInfoLst().size()));
+			if(approverCount > 10) {
 				return ErrorFlag.APPROVER_UP_10;
 			} 
-			if(levelInforOutput.getApproverLst().size() <= 0) {
+			if(approverCount <= 0) {
 				return ErrorFlag.NO_APPROVER;
 			}
 			if(levelInforOutput.getApprovalForm() == ApprovalForm.EVERYONE_APPROVED.value){

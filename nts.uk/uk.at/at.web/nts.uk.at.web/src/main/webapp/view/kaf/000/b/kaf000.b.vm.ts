@@ -728,9 +728,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shrvm.model.CommonProcess.callCMM045();
         }
         
+        getFrameIndex(loopPhase, loopFrame, loopApprover) {
+            let self = this;
+            if(_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
+            }
+            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);    
+        }
+        
         frameCount(listFrame) {
             let self = this;    
-            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).countBy().values().value()[0];        
+            if(_.size(listFrame) > 1) { 
+                return _.size(listFrame);
+            }
+            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).value()[0];        
         }
         
         approverCount(listApprover) {
