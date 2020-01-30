@@ -94,6 +94,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }
             });
             self.selectedHistId.subscribe(function(newValue) {
+                nts.uk.ui.errors.clearAll();
                 if (newValue != null && self.latestHistId() === newValue) {
                     self.isLatestHis(true);
                 }else{
@@ -140,7 +141,8 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             self.setDefaultMandatoryRetireTerm();
             $(window).resize(function() {
                 if(window.innerHeight > 400){
-                    $('#panel-scroll').height(window.innerHeight - 360);
+                    $('#panel-scroll').height(window.innerHeight - 171);
+                    $('#tabpanel-2').height(window.innerHeight - 97);
                 }
             });
         }
@@ -185,8 +187,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     dfd.resolve();    
                 }
             });
-            $('#panel-scroll').height(window.innerHeight - 360);
-            self.hidden('href1', 'B422_12');
+            $('#tabpanel-2').height(window.innerHeight - 97);
+            $('#panel-scroll').height(window.innerHeight - 171);
+//            self.hidden('href1', 'B422_12');
+            $('.hyperlink').removeClass('isDisabled');
+            $('#href1').addClass('isDisabled');
             return dfd.promise();
         }
         

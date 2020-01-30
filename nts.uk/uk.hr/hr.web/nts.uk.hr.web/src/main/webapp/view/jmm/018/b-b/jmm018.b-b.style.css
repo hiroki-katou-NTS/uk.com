@@ -1,4 +1,8 @@
 @CHARSET "UTF-8";
+#tabpanel-2{
+	overflow-y: scroll;
+}
+
 .tab2 {padding: 10px;}
 
 .tab2 .linkRetire{
