@@ -1217,7 +1217,8 @@ module nts.uk.com.view.cmm018.a {
                     appTypeName = '共通';
                 }
                 let typeSet = 1;
-                if(self.tabSelected() == 2){
+                let tabSel = self.selectedModeCode() == 0 ? self.tabSelected() : __viewContext.viewModel.viewmodelSubB.tabSelectedB()
+                if(tabSel == 2){
                     typeSet = 0;
                 }else{
                     typeSet = self.approverInfor().length == 0 ? 1 : self.approverInfor()[0].approvalAtr;
@@ -1228,7 +1229,7 @@ module nts.uk.com.view.cmm018.a {
                                         formSetting: formSetting,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: confirmedPerson, //確定者
-                                        tab: self.tabSelected(),//０：会社、１：職場、２：個人
+                                        tab: tabSel,//０：会社、１：職場、２：個人
                                         typeSetting: typeSet,//0:個人、1:職格、2: 特定職場
                                         specWkpId: specWkp
                                         });
@@ -1286,13 +1287,13 @@ module nts.uk.com.view.cmm018.a {
                     }
                     if(modeA == vmbase.MODE.SHINSEI){
                         __viewContext.viewModel.viewmodelSubB.comRoot(a);
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN([a], self.tabSelected(), vmbase.MODE.SHINSEI);
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN([a], tabSel, vmbase.MODE.SHINSEI);
                     }else{
                         let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
                         dataOld.push(a);
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
                     }
                 }); 
             }
