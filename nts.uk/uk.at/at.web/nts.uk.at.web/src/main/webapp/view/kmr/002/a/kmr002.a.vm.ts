@@ -79,7 +79,7 @@ module nts.uk.at.view.kmr002.a.model {
 
                 }).fail(() => {
 
-                    error({ messageId: "Msg_1589" }).then(() => {
+                    error({ messageId: "Msg_1604" }).then(() => {
 
                         uk.request.jumpToTopPage();
 
@@ -146,7 +146,7 @@ module nts.uk.at.view.kmr002.a.model {
             }
             if ((self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0)
                 || (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0)) {
-                error({ messageId: "Msg_1589" });
+                error({ messageId: "Msg_1604" });
             }
 
             self.mealSelected.subscribe((value) => {
@@ -452,7 +452,7 @@ module nts.uk.at.view.kmr002.a.model {
             }
             if (!self.isUpdate() && self.date()) {
                 if (detailLst.length == 0) {
-                    error({ messageId: "Msg_1589" });
+                    error({ messageId: "Msg_1605" });
                     nts.uk.ui.block.clear();
                     return;
                 }
