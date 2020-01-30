@@ -896,8 +896,9 @@ module nts.uk.com.view.cmm018.a {
                             lstAppType = self.lstAppType;
                         }else{//selected item
                             self.itemOld(self.findComRoot(self.currentCode()));
-                            appType = self.itemOld().lstCompanyRoot[0].company.applicationType;
-                            employRootAtr  = self.itemOld().lstCompanyRoot[0].company.employmentRootAtr;
+                            let it = self.itemOld().lstCompanyRoot[0].company;
+                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                            employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
                         let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.COMPANY);
@@ -913,8 +914,9 @@ module nts.uk.com.view.cmm018.a {
                             lstAppType = self.lstAppType;
                         }else{
                             self.itemOld(self.findWpRoot(self.currentCode()));
-                            appType = self.itemOld().lstWorkplaceRoot[0].workplace.applicationType;
-                            employRootAtr  = self.itemOld().lstWorkplaceRoot[0].workplace.employmentRootAtr;
+                            let it = self.itemOld().lstWorkplaceRoot[0].workplace;
+                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                            employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
                         let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.WORKPLACE);
@@ -930,8 +932,9 @@ module nts.uk.com.view.cmm018.a {
                             lstAppType = self.lstAppType;
                         }else{
                             self.itemOld(self.findPsRoot(self.currentCode()));
-                            appType = self.itemOld().lstPersonRoot[0].person.applicationType;
-                            employRootAtr  = self.itemOld().lstPersonRoot[0].person.employmentRootAtr;
+                            let it = self.itemOld().lstPersonRoot[0].person;
+                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                            employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
                         let histLAst = self.findHistBestNewA(appType, employRootAtr, vmbase.RootType.PERSON);
