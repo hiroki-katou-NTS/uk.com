@@ -138,6 +138,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             self.setDefaultMandatoryRetireTerm();
+            $(window).resize(function() {
+                if(window.innerHeight > 400){
+                    $('#panel-scroll').height(window.innerHeight - 360);
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
