@@ -388,20 +388,24 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let self = this;
             if(self.selectTypeSet() == TypeSet.SPEC_WKP){//CHI DINH
                 if(self.checkEmpty(self.selectSpec1())) return;
-                if(self.lstSpec2().length >= 5){
-                    error({ messageId: 'Msg_300'});
-                    return;
-                }
                 let itemSl = self.findJobGSelect(self.lstSpec1(), self.selectSpec1());
                 _.remove(self.lstSpec1(), function(item) {
-                      return item.code == self.selectSpec1();
-                    });
+                    return item.code == self.selectSpec1();
+                });
+                if(self.lstSpec2().length >= 1){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_1588', messageParams: [1] });
+                    let itemOld = self.lstSpec2()[0];
+                    self.lstSpec1().push(itemOld);
+                }
+                
+                self.lstSpec2([]);
                 self.lstSpec2.push(itemSl);
+                
                 self.selectSpec1('');
             }else{//GROUP
                 if(self.checkEmpty(self.selectG())) return;
                 if(self.lstGroup1().length + self.lstGroup2().length >= 5){
-                    error({ messageId: 'Msg_300'});
+                    error({ messageId: 'Msg_1588', messageParams: [5] });
                     return;
                 }
                 let itemSl = self.findJobGSelect(self.lstGroup(), self.selectG());
