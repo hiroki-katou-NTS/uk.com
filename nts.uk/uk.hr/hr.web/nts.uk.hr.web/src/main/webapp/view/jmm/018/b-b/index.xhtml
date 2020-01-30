@@ -44,7 +44,7 @@
 						<a id = "href8" class="hyperlink linkRetire" href="#B422_19" data-bind = "click: hidden('href8', 'B422_19')">#{i18n.getText('JMM018_B422_9')}</a>
 					</div>
 					<div>
-					<div class="panel panel-frame frameRetire panel-croll">
+					<div class="panel panel-frame frameRetire panel-scroll" id="panel-scroll" >
 						<div class="eachType">
 							<a class="typeRetire" id="B422_12"> #{i18n.getText('JMM018_B422_12')} </a> <hr></hr>
 						</div>
@@ -66,6 +66,7 @@
 													options: $parent.reachedAgeTermList,
 													optionsValue: 'value',
 													optionsText: 'name',
+													enable: $parent.isLatestHis,
 													value: reachedAgeTerm}"> </div>
 									</div>
 									

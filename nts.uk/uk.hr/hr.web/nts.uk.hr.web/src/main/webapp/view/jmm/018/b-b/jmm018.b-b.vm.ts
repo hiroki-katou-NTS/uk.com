@@ -138,6 +138,11 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             
             self.mandatoryRetirementRegulation = ko.observable(new MandatoryRetirementRegulation(undefined));
             self.setDefaultMandatoryRetireTerm();
+            $(window).resize(function() {
+                if(window.innerHeight > 400){
+                    $('#panel-scroll').height(window.innerHeight - 360);
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -180,6 +185,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                     dfd.resolve();    
                 }
             });
+            $('#panel-scroll').height(window.innerHeight - 360);
             self.hidden('href1', 'B422_12');
             return dfd.promise();
         }
@@ -257,6 +263,7 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
             block.grayout();
             let employmentType = {
                 listInfor: self,
+                commonMasterItemName: item.commonMasterItemName,
                 listSelect: item.enableRetirePlanCourse()
             }
             setShared('employmentTypeToC', employmentType);
@@ -453,6 +460,12 @@ module nts.uk.com.view.jmm018.tabb.viewmodel {
                 }
                 $('.judg').trigger("validate");
             });
+            if(param != undefined && (param.calculationTerm == 2 || param.calculationTerm == 3)){
+                self.dateSettingNumRequire(true);
+                setTimeout(() => {
+                    $('.judg').trigger("validate");                     
+                }, 1);    
+            }
         }
     }
 
