@@ -96,7 +96,7 @@ public class LogBasicInformationAllFinder {
 	@Inject
 	private CSVReportGenerator generator;
 	
-	private static final int LIMIT = 10000;
+	private static final int LIMIT = 50000;
 	
 	private static final String PGID = "CLI003";
 	
