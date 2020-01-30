@@ -471,21 +471,23 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			whereBuilder.append(" AND rfDate BETWEEN empHis.START_DATE AND empHis.END_DATE");
 			orderBy.add("empHisItem.EMP_CD");
 		}
-		
+		// department info
 		if (sortDepartment) {
-			// implement later
+			joinBuilder.append(" LEFT JOIN BSYMT_AFF_DEP_HIST depHis ON employee.SID = depHis.SID AND employee.CID = depHis.CID")
+					.append(" LEFT JOIN BSYMT_AFF_DEP_HIST_ITEM depHisItem ON depHis.HIST_ID = depHisItem.HIST_ID")
+					.append(" LEFT JOIN BSYMT_DEP_INFO depInfo ON depHisItem.DEP_ID = depInfo.DEP_ID")
+					.append(" LEFT JOIN BSYMT_DEP_CONFIG depconf ON depconf.DEP_HIST_ID = depInfo.DEP_HIST_ID AND depInfo.CID = depconf.CID");
+			orderBy.add("depInfo.HIERARCHY_CD");
 		}
 		// Workplace info
 		if (sortWorkplace) {
 			joinBuilder.append(" LEFT JOIN BSYMT_AFF_WORKPLACE_HIST wplHis ON employee.SID = wplHis.SID AND employee.CID = wplHis.CID")
 				   .append(" LEFT JOIN BSYMT_AFF_WPL_HIST_ITEM wplHisItem ON wplHis.HIST_ID = wplHisItem.HIST_ID")
-				   .append(" LEFT JOIN BSYMT_WORKPLACE_INFO wplInfo ON wplHisItem.WORKPLACE_ID = wplInfo.WKPID")
-				   .append(" LEFT JOIN BSYMT_WORKPLACE_HIST wplInfoHis ON wplInfo.HIST_ID = wplInfoHis.HIST_ID AND wplInfo.CID = wplInfoHis.CID")
-				   .append(" LEFT JOIN BSYMT_WKP_CONFIG_INFO wkpconfinf ON wkpconfinf.WKPID = wplHisItem.WORKPLACE_ID")
-				   .append(" LEFT JOIN BSYMT_WKP_CONFIG wkpconf ON wkpconf.HIST_ID = wkpconfinf.HIST_ID AND wkpconf.CID = wkpconfinf.CID");
+				   .append(" LEFT JOIN BSYMT_WKP_INFO wkpInfo ON wplHisItem.WORKPLACE_ID = wkpInfo.WKPID")
+				   .append(" LEFT JOIN BSYMT_WKP_CONFIG_2 wkpconf ON wkpconf.WKP_HIST_ID = wkpInfo.WKP_HIST_ID AND wkpconf.CID = wkpInfo.CID");
 			whereBuilder.append(" AND rfDate BETWEEN wplHis.START_DATE AND wplHis.END_DATE")
 						.append(" AND rfDate BETWEEN wkpconf.START_DATE AND wkpconf.END_DATE");
-			orderBy.add("wkpconfinf.HIERARCHY_CD");
+			orderBy.add("wkpInfo.HIERARCHY_CD");
 		}
 		// Classification info
 		if (sortClassification) {
