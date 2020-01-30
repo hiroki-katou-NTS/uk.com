@@ -13,6 +13,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.exception.BusinessExceptionAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -28,7 +29,7 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_fail_pastDay() {
 		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2019/12/20", 1);
+		ReservationDate reservationDate = BentoInstanceHelper.getYesterday();
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
 		
@@ -46,8 +47,8 @@ public class BentoReserveModifyServiceTest {
 	@Test
 	public void reserve_fail_toDay() {
 		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate(GeneralDate.today(), 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
+		ReservationDate reservationDate = BentoInstanceHelper.getToday();
+		GeneralDateTime dateTime = BentoInstanceHelper.getStartToday().addHours(12);
 		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
 	
 		new Expectations() {{
@@ -160,7 +161,19 @@ public class BentoReserveModifyServiceTest {
 			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
 		}};
 		
-		BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run();
+		AtomTask task = BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails);
+		
+		new Verifications() {{
+			require.delete((BentoReservation) any);
+			times = 0;
+		}};
+		
+		new Verifications() {{
+			require.reserve((BentoReservation) any);
+			times = 0;
+		}};
+		
+		task.run();
 		
 		new Verifications() {{
 			require.delete((BentoReservation) any);

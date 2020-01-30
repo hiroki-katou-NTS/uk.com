@@ -42,8 +42,8 @@ public class BentoAmountTotal {
 	 * @return
 	 */
 	public static BentoAmountTotal createNew(List<BentoDetailsAmountTotal> detailsAmountTotal) {
-		Integer sum1 = detailsAmountTotal.stream().map(x -> x.getAmount1()).collect(Collectors.summingInt(Integer::intValue));
-		Integer sum2 = detailsAmountTotal.stream().map(x -> x.getAmount2()).collect(Collectors.summingInt(Integer::intValue));
+		int sum1 = detailsAmountTotal.stream().map(x -> x.getAmount1()).collect(Collectors.summingInt(Integer::intValue));
+		int sum2 = detailsAmountTotal.stream().map(x -> x.getAmount2()).collect(Collectors.summingInt(Integer::intValue));
 		return new BentoAmountTotal(sum1, sum2, detailsAmountTotal);
 	}
 	

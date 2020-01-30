@@ -79,7 +79,7 @@ module nts.uk.at.view.kmr002.a.model {
 
                 }).fail(() => {
 
-                    error({ messageId: "Msg_1589" }).then(() => {
+                    error({ messageId: "Msg_1604" }).then(() => {
 
                         uk.request.jumpToTopPage();
 
@@ -146,7 +146,7 @@ module nts.uk.at.view.kmr002.a.model {
             }
             if ((self.mealSelected() == 1 && data.bentoMenuByClosingTimeDto.menu1.length == 0)
                 || (self.mealSelected() == 2 && data.bentoMenuByClosingTimeDto.menu2.length == 0)) {
-                error({ messageId: "Msg_1589" });
+                error({ messageId: "Msg_1604" });
             }
 
             self.mealSelected.subscribe((value) => {
@@ -286,35 +286,24 @@ module nts.uk.at.view.kmr002.a.model {
             self.endTime(end != null ? moment.utc(moment.duration(end, 'm').asMilliseconds()).format("HH:mm") : '');
             let timeSt = start != null ? start : 0;
             if (data.listOrder.length > index && data.listOrder[index].ordered) {
-                self.isVisible(true);
                 self.textError(getText('KMR002_6'));
                 self.setDisPlay(false);
             } else if (dateSelect < dateNow) {
-                self.isVisible(true);
                 self.textError(getText('KMR002_9'));
                 self.setDisPlay(false);
             } else if (dateSelect == dateNow) {
                 if (timeSt <= timeNow && timeNow <= end) {
                     self.isVisible(false);
                     self.isError(false);
-                    if (self.mealSelected() == 1) {
-                        self.isEnableLunch(true);
-                    } else {
-                        self.isEnableDinner(true);
-                    }
                 } else {
                     self.isVisible(true);
                     self.isError(false);
-                    if (self.mealSelected() == 1) {
-                        self.isEnableLunch(false);
-                    } else {
-                        self.isEnableDinner(false);
-                    }
                 }
+                self.isEnableLunch((self.startLunch() <= timeNow && timeNow <= self.finishLunch()) ? true : false);
+                self.isEnableDinner((self.startDinner() <= timeNow && timeNow <= self.finishDinner()) ? true : false);
                 self.isEnable((!self.isEnableLunch() && !self.isEnableDinner()) ? false : true);
                 
             } else {
-                self.isVisible(false);
                 self.setDisPlay(true);
             }
 
@@ -324,6 +313,7 @@ module nts.uk.at.view.kmr002.a.model {
 
         public setDisPlay(value: boolean) {
             let self = this;
+            self.isVisible(!value);
             self.isError(!value);
             self.isEnableLunch(value);
             self.isEnableDinner(value);
@@ -462,7 +452,7 @@ module nts.uk.at.view.kmr002.a.model {
             }
             if (!self.isUpdate() && self.date()) {
                 if (detailLst.length == 0) {
-                    error({ messageId: "Msg_1589" });
+                    error({ messageId: "Msg_1605" });
                     nts.uk.ui.block.clear();
                     return;
                 }

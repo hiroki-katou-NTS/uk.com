@@ -27,7 +27,7 @@ public class BentoReserveModifyService {
 		return AtomTask.of(() -> {
 			if(opBeforeBento.isPresent()) {
 				// 4: 取消可能かチェックする()
-				opBeforeBento.get().isCancel();
+				opBeforeBento.get().checkCancelPossible();
 				
 				// 5: delete
 				require.delete(opBeforeBento.get());
