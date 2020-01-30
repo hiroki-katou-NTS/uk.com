@@ -278,9 +278,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }).done((data) =>{
                             self.resetForceAction();
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(), urlParam);
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(), urlParam)
+                            .done(() => {
+                                nts.uk.ui.block.clear();         
+                            });
                             self.convertAppOvertimeReferDto(data);
-                            nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
                             if(res.messageId == 'Msg_426'){
@@ -306,7 +308,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }
                     }
                     return dfd.promise();
-                    });
+                });
                 self.prePostSelected.subscribe(function(value) {
                     $('#kaf005-pre-post-select').ntsError('clear');
                     self.clearErrorA6_8();
