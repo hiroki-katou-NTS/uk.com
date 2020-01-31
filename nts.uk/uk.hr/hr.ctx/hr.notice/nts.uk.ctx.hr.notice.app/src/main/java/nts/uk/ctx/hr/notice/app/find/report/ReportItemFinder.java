@@ -445,6 +445,13 @@ public class ReportItemFinder {
 
 		GeneralDate comboBoxStandardDate = GeneralDate.today();
 		
+		if(perInfoCategory.getCategoryCode().equals("CS00003")) {
+			
+			getSingleOptionData(perInfoCategory, comboBoxStandardDate, classItemList, itemDatas);
+			
+			return;
+		}
+		
 		switch (perInfoCategory.getCategoryType()) {
 		
 		case 1:
