@@ -325,14 +325,14 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 			}
 			return true;
 		}
-		if(currentPhase.getPhaseOrder()==1){
+		if(currentPhase.getPhaseOrder()==5){
 			if(currentPhase.getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
 				return false;
 			}
 			return true;
 		}
 		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()
-				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
 				.findFirst().get();
 		if(lowestPhase.getPhaseOrder()==currentPhase.getPhaseOrder()){
 			return true;
@@ -340,8 +340,8 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		
 		// ループ中のフェーズの番号-１から、降順にループする
 		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
-				.stream().filter(x -> x.getPhaseOrder()<currentPhase.getPhaseOrder())
-				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
+				.stream().filter(x -> x.getPhaseOrder()>currentPhase.getPhaseOrder())
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
 				.findFirst().get();
 		if(lowerPhase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 			return true;

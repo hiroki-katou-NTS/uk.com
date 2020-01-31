@@ -70,7 +70,7 @@ public class WwfdtFullJoinState {
 													.entrySet().stream().map(t -> {
 														return ApproverInfor.convert(
 																t.getValue().get(0).getApproverID(), 
-																t.getValue().get(0).getAppPhaseAtr(), 
+																t.getValue().get(0).getApprovalAtr(), 
 																t.getValue().get(0).getAgentID(), 
 																t.getValue().get(0).getApprovalDate(), 
 																t.getValue().get(0).getApprovalReason());
