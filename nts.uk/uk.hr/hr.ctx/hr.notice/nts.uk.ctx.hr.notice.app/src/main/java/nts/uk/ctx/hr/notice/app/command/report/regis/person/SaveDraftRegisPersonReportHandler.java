@@ -175,6 +175,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
 		String sid = AppContexts.user().employeeId();
+		String pid = AppContexts.user().personId();
+		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
 		if (!domainReportOpt.isPresent()) {
@@ -188,21 +190,21 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
-		domainReport.setInputPid("");
+		domainReport.setInputPid(pid);
 		domainReport.setInputSid(sid);
-		domainReport.setInputScd("");
+		domainReport.setInputScd(scd);
 		domainReport.setInputBussinessName("");
 		domainReport.setInputDate(GeneralDateTime.now());
 		domainReport.setAppSid(sid);
-		domainReport.setAppScd("");
-		domainReport.setAppPid("");
+		domainReport.setAppScd(scd);
+		domainReport.setAppPid(pid);
 		domainReport.setAppBussinessName("");
 		domainReport.setAppDate(GeneralDateTime.now());
 		domainReport.setAppDevId(sid);
-		domainReport.setAppDevCd("");
+		domainReport.setAppDevCd(scd);
 		domainReport.setAppDevName("");
 		domainReport.setAppPosId(sid);
-		domainReport.setAppPosCd("");
+		domainReport.setAppPosCd(scd);
 		domainReport.setAppPosName("");
 		domainReport.setReportType(EnumAdaptor.valueOf(data.reportType, ReportType.class));
 		domainReport.setSendBackSID(data.sendBackSID);

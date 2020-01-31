@@ -32,6 +32,8 @@ module jhn001.f.vm {
 
         comboColumns = [{ prop: 'name', length: 12 }];
         dataShare : any;
+        reportIdNew = '';
+        totalFileSize = 0;
 
 
         constructor() {
@@ -77,6 +79,7 @@ module jhn001.f.vm {
                     self.items.push(new GridItem(item));
                 });
                 let sum = (totalSize / 1024).toFixed(2);
+                self.totalFileSize = totalSize;
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
                 unblock();
                 dfd.resolve();
@@ -87,13 +90,31 @@ module jhn001.f.vm {
         pushData(fileInfo, id) {
             let self = this;
             
+            // check xem đã có file hay chưa, có rồi thì không có upload nua.
             let row :IReportFileManagement  = _.filter(self.items, function(o) { return o.id ==id; });
             if(_.size(row) == 0){
                 return;
             }
+            
+            if(fileInfo.id = '' || fileInfo.id == null || fileInfo.id == undefined){
+                return;    
+            }
+            
+            // check file size.
+            var maxSize = 10;
+            if (maxSize && fileInfo.originalSize > (maxSize * 1048576)) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msgj_28', messageParams: [maxSize] });
+                return;
+            }
+
+            // check tổng size
+            let totalSize = self.totalFileSize + fileInfo.originalSize;
+            if (totalSize > (maxSize * 1048576)) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msgj_28', messageParams: [maxSize] });
+                return;
+            }
+          
             let objAdd = {
-                cid:  row[0].cid,//会社ID String
-                reportID: row[0].reportID , //届出ID int
                 docID: row[0].docID , //書類ID int
                 docName:  row[0].docName, //書類名 String
                 fileId:  fileInfo.id, //ファイルID String
@@ -106,13 +127,15 @@ module jhn001.f.vm {
                 delFlg:  0, //削除済     0:未削除、1:削除済 int 
                 sampleFileID:  row[0].sampleFileId, //サンプルファイルID String
                 sampleFileName:  row[0].sampleFileName,
+                reportID:        self.dataShare.reportID , //届出ID int
                 layoutReportId : self.dataShare.layoutReportId,
-                dataLayout :  self.dataShare.command     
+                dataLayout :     self.dataShare.command     
             }
 
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();
-            service.addDocument(objAdd).done(() => {
+            service.addDocument(objAdd).done((data: any) => {
+                debugger;
                 __viewContext['viewModel'].start().done(() => {
                     init();
                     $('.filenamelabel').hide();

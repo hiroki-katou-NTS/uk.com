@@ -9,7 +9,6 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class AddDocumentReportCommand {
 	 String cid; //会社ID
-	 Integer reportID; //届出ID
 	 int docID; //書類ID
 	 String docName; //書類名
 	 String fileId; //ファイルID
@@ -22,6 +21,7 @@ public class AddDocumentReportCommand {
 	 int delFlg; //削除済     0:未削除、1:削除済
 	 String sampleFileID; //サンプルファイルID
 	 String sampleFileName;
-	 int layoutReportId;
+	 String reportID; //届出ID
+	 String layoutReportId;
 	 SaveReportInputContainer dataLayout;
 }

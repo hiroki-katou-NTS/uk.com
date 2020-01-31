@@ -59,7 +59,15 @@ module jhn001.a.viewmodel {
                         return;
                     }
                     
-                    if(objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined){
+                    // A1.3
+                    if(objReport.regStatus != null && objReport.regStatus == 2){
+                        self.enaSaveDraft(false);
+                    }else{
+                        self.enaSaveDraft(true);
+                    }
+                    
+                    // A1.6
+                    if(objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)){
                         self.enaRemove(false);
                     }else{
                         self.enaRemove(true);
@@ -241,6 +249,8 @@ module jhn001.a.viewmodel {
                             sendBackComment : x.sendBackComment,
                             rootSateId  : x.rootSateId,
                             reportType  : x.clsDto.reportType,
+                            regStatus   : x.regStatus, // Save_Draft(1) , Registration(2)
+                            aprStatus   : x.aprStatus, // Not_Started(0)
                             workId : null
                             
                         }
@@ -434,7 +444,7 @@ module jhn001.a.viewmodel {
             
             let param = {
                 reportId: string = objReport.reportId,
-                layoutReportId: number = reportLayoutId,
+                layoutReportId: string = reportLayoutId,
                 command : command
             };
             
@@ -476,12 +486,18 @@ module jhn001.a.viewmodel {
 
                 service.removeData(objRemove).done(() => {
                     info({ messageId: "Msg_40" }).then(function() {
-                        self.start();
+                        self.reportClsId(null);
+                        self.start(null);
                     });
                 }).fail((mes: any) => {
                     unblock();
                 });
             }).ifNo(() => { });
+        }
+        
+        public backTopScreenTopReport(): void {
+            let self = this;
+            nts.uk.request.jump("hr", "/view/jhc/002/a/index.xhtml");
         }
     }
 

@@ -33,27 +33,39 @@ public class RegistrationPersonReportFinder {
 
 		List<PersonalReportDto> result = new ArrayList<PersonalReportDto>();
 
+		// danh sách report
 		List<RegistrationPersonReport> listReport = repo.getListBySIds(sid);
 
+		// danh sách report bên màn hình JHN011.
 		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(false);
 
+		
 		if (!listReportJhn011.isEmpty()) {
-			listReportJhn011.forEach(rp -> {
+			listReportJhn011.stream().forEach(rp -> {
+				
 				PersonalReportDto dto = new PersonalReportDto();
-				dto.setClsDto(rp);
 				if (!listReport.isEmpty()) {
 					Optional<RegistrationPersonReport> report = listReport.stream().filter(rpt -> rpt.getReportLayoutID() == rp.getReportClsId()).findFirst();
 					if (report.isPresent()) {
+						if (report.get().isDelFlg()) {
+							return;
+						}
 						dto.setReportID(report.get().getReportID());
 						dto.setSendBackComment(report.get().getSendBackComment());
 						dto.setRootSateId(report.get().getRootSateId());
+						dto.setRegStatus(report.get().getRegStatus().value);
+						dto.setAprStatus(report.get().getAprStatus().value);
 					}
 				}else{
 					dto.setReportID(null);
 					dto.setSendBackComment("");
+					dto.setRegStatus(null);
+					dto.setAprStatus(null);
 				}
+				dto.setClsDto(rp);
 				result.add(dto);
 			});
+			
 			return result;
 		}
 		return new ArrayList<>();

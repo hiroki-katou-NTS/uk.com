@@ -17,7 +17,7 @@ module jhn001.a.service {
         }
     };
     
-
+    // chỉ bao gồm những report chưa xóa.
     export function getAll() {
         return ajax(format(paths.getAll));
     }

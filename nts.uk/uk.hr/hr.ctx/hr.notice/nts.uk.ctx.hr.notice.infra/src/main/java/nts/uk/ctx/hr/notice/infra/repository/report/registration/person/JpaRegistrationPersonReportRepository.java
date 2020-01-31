@@ -9,11 +9,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
-import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegisPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,11 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
-	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
+	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid ORDER BY c.reportName ASC";
 	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
 	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid "
 			+ " and c.inputSid = :sid and c.appSid = :sid "
-			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
+			+ " and c.regStatus = 1 and c.delFlg = 1 ORDER BY c.reportName ASC ";
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";

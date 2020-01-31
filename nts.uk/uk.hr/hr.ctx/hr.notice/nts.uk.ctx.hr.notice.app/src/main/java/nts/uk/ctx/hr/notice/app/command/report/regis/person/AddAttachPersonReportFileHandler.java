@@ -6,11 +6,13 @@ package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachmentPersonReportFile;
@@ -31,7 +33,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
  *
  */
 @Stateless
-public class AddAttachPersonReportFileHandler extends CommandHandler<AddDocumentReportCommand> {
+public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<AddDocumentReportCommand, String> {
 
 	@Inject
 	private AttachPersonReportFileRepository repoReportFile;
@@ -42,14 +44,13 @@ public class AddAttachPersonReportFileHandler extends CommandHandler<AddDocument
 	@Inject
 	private ReportItemRepository reportItemRepo;
 
+	
 	@Override
-	protected void handle(CommandHandlerContext<AddDocumentReportCommand> context) {
+	protected String handle(CommandHandlerContext<AddDocumentReportCommand> context) {
 		AddDocumentReportCommand command = context.getCommand();
 		GeneralDateTime fileStorageDate = GeneralDateTime.now();
 		
 		String sid = AppContexts.user().employeeId();
-		String pid = AppContexts.user().personId();
-		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		
 		if (command.reportID == null) {
@@ -57,17 +58,22 @@ public class AddAttachPersonReportFileHandler extends CommandHandler<AddDocument
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(command.cid, reportIdNew,
 					command.docID, command.docName, command.fileId, command.fileName,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
-					command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
+							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
 			repoReportFile.add(domain);
 			
-			List<AttachmentPersonReportFile> listFile = repoReportFile.getListDomainByReportId(cid, reportIdNew);
-			if (listFile.size() == 1) {
-				 // đăng ký SaveDraft
-				
-				
-			}
+			saveDraft(command.dataLayout, reportIdNew);
 			
+			return reportIdNew.toString();
+		} else {
+			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(command.cid, Integer.valueOf(command.reportID),
+					command.docID, command.docName, command.fileId, command.fileName,
+					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
+							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
+			
+			repoReportFile.add(domain);
+			
+			return "";
 		}
 	}
 	
@@ -76,7 +82,6 @@ public class AddAttachPersonReportFileHandler extends CommandHandler<AddDocument
 		String pid = AppContexts.user().personId();
 		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = data.rootSateId;
 		
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
@@ -174,4 +179,5 @@ public class AddAttachPersonReportFileHandler extends CommandHandler<AddDocument
 		}
 		return listReportItem;
 	}
+
 }
