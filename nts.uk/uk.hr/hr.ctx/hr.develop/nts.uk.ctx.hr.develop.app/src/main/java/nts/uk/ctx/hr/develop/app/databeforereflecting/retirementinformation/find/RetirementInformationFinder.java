@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -171,8 +172,14 @@ public class RetirementInformationFinder {
 
 	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation_New> retirementEmployees,
 			List<PlannedRetirementDto> retiredEmployees) {
+		
 		List<PlannedRetirementDto> result = new ArrayList<PlannedRetirementDto>();
 
+		retiredEmployees = retiredEmployees.stream()
+				.sorted(Comparator.comparing(PlannedRetirementDto::getRetirementDate)
+						.thenComparing(PlannedRetirementDto::getScd))
+				.collect(Collectors.toList());
+		
 		result.addAll(retiredEmployees);
 		// 定年退職予定者リストと定年退職者情報リストをマージする(Merger list người dự định nghỉ hưu và
 		// list thông tin người nghỉ hưu)
