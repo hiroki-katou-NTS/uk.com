@@ -197,7 +197,7 @@ module jcm008.a {
             if ($('#retirementDateSetting').data("igGrid")) {
                 $('#retirementDateSetting').ntsGrid("destroy");
             };
-            let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
+            let comboColumns = [{ prop: 'retirePlanCourseName', length: 5 }];
             let dataSources = self.plannedRetirements();
             let rowStates = [];
             let cellStates = [];
@@ -495,10 +495,14 @@ module jcm008.a {
                 isShowBaseDate: true,
                 startMode: 1
             });
-            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
+            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function() {
                 block.clear();
-                let data = getShared('outputDepartmentJDL0110') ? getShared('outputDepartmentJDL0110') : [];
-                self.searchFilter.department(data);
+                let data = getShared('outputDepartmentJDL0110') ? getShared('outputDepartmentJDL0110') : [],
+                    isCancel = getShared('CDL008Cancel') ? getShared('CDL008Cancel') : false
+                    ;
+                if (!isCancel) {
+                    self.searchFilter.department(data);
+                }
             });
         }
 
@@ -519,8 +523,12 @@ module jcm008.a {
             });
             modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function () {
                 block.clear();
-                let data = getShared('CDL002Output') ? getShared('CDL002Output') : [];
-                self.searchFilter.employment(data);
+                let data = getShared('CDL002Output') ? getShared('CDL002Output') : [],
+                    isCancel = getShared('CDL002Cancel') ? getShared('CDL002Cancel') : false;
+                
+                if (!isCancel) {
+                    self.searchFilter.employment(data);
+                }
             });
         }
 
