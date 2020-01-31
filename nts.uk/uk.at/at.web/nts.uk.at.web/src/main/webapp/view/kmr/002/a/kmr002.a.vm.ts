@@ -54,11 +54,10 @@ module nts.uk.at.view.kmr002.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred<any>(), oldValue;
-            
-            
+
             self.date.subscribe((_oldValue) => {
                 oldValue = _oldValue;
-            });
+            }, this, 'beforeChange');
 
             self.date.subscribe((value) => {
                 if ((oldValue != undefined) && (oldValue.toDateString() == value.toDateString())) {
@@ -88,16 +87,17 @@ module nts.uk.at.view.kmr002.a.model {
 
                     error({ messageId: "Msg_1604" }).then(() => {
 
-                            uk.request.jumpToTopPage();
+                        uk.request.jumpToTopPage();
 
-                        });
+                    });
 
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
             });
+
             if (self.date() == undefined) {
-                self.date(new Date());    
+                self.date(new Date())
             }
             dfd.resolve();
             return dfd.promise();
