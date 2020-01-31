@@ -523,7 +523,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHrEvaluationDispNumber() +1)));
 			Map<String, List<PersonnelAssessmentResults>> mapSid = HREvaluation.getPersonnelAssessmentsResult().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<PersonnelAssessmentResults> personList = mapSid.get(id);
@@ -545,7 +545,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHealthStatusRefer()) {
-			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1));
+			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHealthStatusDispNumber() +1)));
 			Map<String, List<MedicalhistoryItemResults>> mapSid = medicalhistoryManagement.getMedicalhistoryItemResults().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<MedicalhistoryItemResults> personList = mapSid.get(id);
@@ -567,7 +567,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isStressStatusRefer()) {
-			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getStressStatusDispNumber()) +1));
+			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getStressStatusDispNumber() +1)));
 			Map<String, List<StressCheckResults>> mapSid = stressCheckManagement.getStressChecks().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<StressCheckResults> personList = mapSid.get(id);
