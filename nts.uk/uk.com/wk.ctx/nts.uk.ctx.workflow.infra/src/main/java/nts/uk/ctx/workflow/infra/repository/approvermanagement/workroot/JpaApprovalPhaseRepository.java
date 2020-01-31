@@ -41,7 +41,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private static final String DELETE_APHASE_BY_APPROVALID = "DELETE from WwfmtApprovalPhase c "
 			+ " WHERE c.wwfmtApprovalPhasePK.approvalId = :approvalId";
 	private static final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
-			+ " AND c.phaseOrder = 1";
+			+ " AND c.wwfmtApprovalPhasePK.phaseOrder = 1";
 
 	/**
 	 * get All Approval Phase by Code
