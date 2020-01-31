@@ -5,13 +5,11 @@ module nts.uk.at.view.kmr002.a.model {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     import service = nts.uk.at.view.kmr002.a.service;
-    import errors = nts.uk.ui.errors;
     export class ScreenModel {
-        date: KnockoutObservable<any> = ko.observable();
+        date: KnockoutObservable<string> = ko.observable('');
         lunch: KnockoutObservable<string> = ko.observable('');
         dinner: KnockoutObservable<string> = ko.observable('');
         sum: KnockoutObservable<string> = ko.observable('');
@@ -55,14 +53,8 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this,
                 dfd = $.Deferred<any>(), oldValue;
 
-            self.date.subscribe((_oldValue) => {
-                oldValue = _oldValue;
-            }, this, 'beforeChange');
-
             self.date.subscribe((value) => {
-                if ((oldValue != undefined) && (oldValue.toDateString() == value.toDateString())) {
-                    return;
-                }
+                
                 let momentDate = moment(value);
                 if (momentDate instanceof moment && !momentDate.isValid()) {
                     self.isEnable(false);
@@ -95,9 +87,8 @@ module nts.uk.at.view.kmr002.a.model {
                     nts.uk.ui.block.clear();
                 });
             });
-
-            if (self.date() == undefined) {
-                self.date(new Date())
+            if (self.date() == '') {
+                self.date((new Date()).toISOString().substr(0,10) + 'T00:00:00.000Z');
             }
             dfd.resolve();
             return dfd.promise();
