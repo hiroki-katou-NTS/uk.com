@@ -99,6 +99,8 @@ public class DailyPerformanceMobileWebService {
 		session.setAttribute("resultReturn", null);
 		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
 		dtoResult.setApprovalConfirmCache(null);
+		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
+		dtoResult.setMapCellState(null);
 		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;

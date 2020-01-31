@@ -31,4 +31,7 @@ public interface WorkplaceExport {
 	 * @param histId
 	 */
 	public List<WkpInfoDto> getPastWkpInfo(String companyId, List<String> listWkpId, String histId);
+	
+	//RQ560_HOATT_TAMTHOI
+	public List<WkpDto> getWkpConfigRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate);
 }

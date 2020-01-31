@@ -52,9 +52,12 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 				.employeeCode(item.getEmployeeCode())
 				.employeeId(item.getEmployeeId())
 				.employeeName(item.getEmployeeName())
-				.workplaceCode(item.getAffiliationCode())
-				.workplaceId(item.getAffiliationId())
-				.workplaceName(item.getAffiliationName())
+				.workplaceCode(item.getWorkplaceCode())
+				.workplaceId(item.getWorkplaceId())
+				.workplaceName(item.getWorkplaceName())
+//				.workplaceCode(item.getAffiliationCode())
+//				.workplaceId(item.getAffiliationId())
+//				.workplaceName(item.getAffiliationName())
 				.build())
 				.collect(Collectors.toList());
 	}

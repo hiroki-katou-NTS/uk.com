@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.log;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +12,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -65,10 +71,33 @@ public class JpaErrMessageInfoRepository extends JpaRepository implements ErrMes
 	
 	@Override
 	public List<ErrMessageInfo> getAllErrMessageInfoByID(String empCalAndSumExecLogID,int executionContent) {
-		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BYID , KrcdtErrMessageInfo.class)
-				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
-				.setParameter("executionContent", executionContent)
-				.getList(c -> toDomain(c));
+//		List<ErrMessageInfo> data = this.queryProxy().query(SELECT_ERR_MESSAGE_BYID , KrcdtErrMessageInfo.class)
+//				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
+//				.setParameter("executionContent", executionContent)
+//				.getList(c -> toDomain(c));
+		List<ErrMessageInfo> data = new ArrayList<>();
+		String sql = "select * from KRCDT_ERR_MESSAGE_INFO "
+				+ " where EMP_EXECUTION_LOG_ID  = ?"
+				+ " and EXECUTION_CONTENT = ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+						
+			stmt.setString(1, empCalAndSumExecLogID);
+			stmt.setInt(2, executionContent);
+			
+			data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				ErrMessageInfo ent = ErrMessageInfo.createFromJavaType(
+						rec.getString("SID"), 
+						rec.getString("EMP_EXECUTION_LOG_ID"), 
+						rec.getString("RESOURCE_ID"), 
+						rec.getInt("EXECUTION_CONTENT"), 
+						rec.getGeneralDate("DISPOSAL_DAY"),
+						rec.getString("MESSAGE_ERROR"));
+				return ent;
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		return data;
 	}
 

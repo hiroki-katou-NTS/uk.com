@@ -157,29 +157,10 @@ module nts.uk.com.view.cmf003.b {
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
-            
-            maxRows: KnockoutObservable<number> = ko.observable(15);
 
             constructor() {
                 var self = this;
-                if(window.innerHeight - 229 <= 601){
-                    $('#screenB_Btn').css({'top' : '601px', 'bottom' : ''});    
-                } else {
-                    // $('#screenB_Btn').css('top', window.innerHeight - 229 + 'px'); 
-                    $('#screenB_Btn').css({'bottom' : '0px', 'top' : ''});    
-                }
-                if(window.innerHeight - 235 <= 344){
-                    $('#screenD_Btn').css({'top' : '344px', 'bottom' : ''});    
-                } else {
-                    // $('#screenD_Btn').css('top', window.innerHeight - 235 + 'px');  
-                    $('#screenD_Btn').css({'bottom' : '0px', 'top' : ''});   
-                }
-                if(window.innerHeight - 229 <= 641){
-                    $('#screenE_Btn').css({'top' : '641px', 'bottom' : ''}); 
-                } else {
-                    // $('#screenE_Btn').css('top', window.innerHeight - 229 + 'px');  
-                    $('#screenE_Btn').css({'bottom' : '0px', 'top' : ''});   
-                }
+                
                 
                 self.isCompressPass = ko.observable(false);
                 self.isSymbol = ko.observable(false);
@@ -394,7 +375,7 @@ module nts.uk.com.view.cmf003.b {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: self.maxRows(),
+                    maxRows: 15,
                     disableSelection : true
                 };
                 
@@ -402,23 +383,6 @@ module nts.uk.com.view.cmf003.b {
                     self.lstPersonComponentOption.disableSelection = value == 0 ? true : false;
                     $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
                 });
-                
-                $(window).resize(() => {
-                    let calcRows = Math.round((window.innerHeight - 480)/24);
-                    if(calcRows <=3) {
-                        self.maxRows(3);    
-                    } else {
-                        self.maxRows(calcRows);    
-                    }
-                    self.lstPersonComponentOption.maxRows = self.maxRows();
-                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);    
-                    if(window.innerHeight - 235 <= 344){
-                        $('#screenD_Btn').css({'top' : '344px', 'bottom' : ''});    
-                    } else {
-                        // $('#screenD_Btn').css('top', window.innerHeight - 235 + 'px');  
-                        $('#screenD_Btn').css({'bottom' : '0px', 'top' : ''});   
-                    }
-                }).trigger('resize');
 
             }//end constructor
 
@@ -557,9 +521,9 @@ module nts.uk.com.view.cmf003.b {
                         dfd.resolve();
                     }
                 }
-				
-				self.employeeList(employeeSearchs);
-				self.lstPersonComponentOption.disableSelection = self.selectedTitleAtr() == 0? true: false;
+                
+                self.employeeList(employeeSearchs);
+                self.lstPersonComponentOption.disableSelection = self.selectedTitleAtr() == 0? true: false;
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
 
                 return dfd.promise();
