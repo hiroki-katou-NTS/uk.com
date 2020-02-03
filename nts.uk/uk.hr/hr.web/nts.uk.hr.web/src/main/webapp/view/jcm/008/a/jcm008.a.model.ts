@@ -146,7 +146,7 @@ class SearchFilterModel {
     selectAllEmployment: KnockoutObservable<boolean> = ko.observable(true);
     confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
     retirementCourses: KnockoutObservable<IRetirementCourses>;
-    retirementCoursesStadard: KnockoutObservable<IRetirementCourses>;
+    retirementCoursesStandard: KnockoutObservable<IRetirementCourses>;
     retirementCoursesEarly: KnockoutObservable<IRetirementCourses>;
     retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
     selectedRetirementAge: KnockoutObservable<string> = ko.observable({});

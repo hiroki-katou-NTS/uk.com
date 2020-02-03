@@ -22,15 +22,23 @@ module jcm008.a {
             self.plannedRetirements = ko.observableArray([]);
             self.searchFilter.retirementCourses = ko.observableArray([]);
             self.searchFilter.retirementCoursesEarly = ko.observableArray([]);
+            self.searchFilter.retirementCoursesStandard = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
             self.referEvaluationItems = ko.observableArray([]);
             self.hidedColumns = [];
             $(".employee-info-pop-up").ntsPopup("hide");
-             
+
             $(window).resize(function() {
                 self.setScroll();
             });
+
+            self.searchFilter.retirementCourses.subscribe((newVal) => {
+
+                self.searchFilter.retirementCoursesEarly(_.sortBy(_.filter(newVal, function(o) { return o.retirePlanCourseClass != 0; }), ['employmentCode', 'retirementAge']));
+                self.searchFilter.retirementCoursesStandard(_.sortBy(_.filter(newVal, function(o) { return o.retirePlanCourseClass == 0; }), ['employmentCode', 'retirementAge']));
+            });
         }
+        
 
         /** start page */
         start() {
@@ -48,7 +56,7 @@ module jcm008.a {
                     return c;
                 });
                 
-                self.searchFilter.retirementCoursesEarly(_.sortBy(_.filter(data.retirementCourses, function(o) { return o.retirePlanCourseClass != 0; }), ['employmentCode', 'retirementAge']));
+                
                 self.searchFilter.retirementCourses(_.sortBy(data.retirementCourses, ['employmentCode', 'retirementAge']));
 
                 let retirementAge = _.map(self.searchFilter.retirementCoursesEarly(), (rc) => {
@@ -188,7 +196,7 @@ module jcm008.a {
                     { headerText: getText('JCM008_A222_15'), key: 'retireDateBase', dataType: 'string', width: '262px' },
 
                 ],
-                dataSource: self.searchFilter.retirementCourses(),
+                dataSource: self.searchFilter.retirementCoursesStandard(),
                 dataSourceType: 'json',
                 responseDataKey: 'results'
             });
