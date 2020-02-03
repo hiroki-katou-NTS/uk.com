@@ -195,7 +195,8 @@ public class RetirementInformationFinder {
 		// check includingReflected nếu không =true thì lọc re những giá trị có
 		// status =3
 		if (!isIncludingReflected) {
-			result = result.stream().filter(x -> x.getStatus() != 3).collect(Collectors.toList());
+			result = result.stream().filter(x -> x.getStatus() == null || x.getStatus() != 3)
+					.collect(Collectors.toList());
 		}
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
