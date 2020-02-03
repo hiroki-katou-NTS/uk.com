@@ -138,14 +138,14 @@ public class RetirementInformationFinder {
 		}
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
+		// mặc định set includingReflected = true để lấy hết ra giá trị
 		List<RetirementInformation_New> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,
-				retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList()),
-				Optional.ofNullable(query.isIncludingReflected()));
+				retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList()), Optional.ofNullable(true));
 
 		// アルゴリズム[定年退職者一覧の表示]を実行する(thực hiện thuật toán [hiển thị danh sách
 		// người nghỉ hưu])
 
-		return createListRetiredEmployees(retirementEmployees, retiredEmployees);
+		return createListRetiredEmployees(retirementEmployees, retiredEmployees, query.isIncludingReflected());
 	}
 
 	private PlannedRetirementDto toPlannedRetirementDto(RetirementPlannedPersonDto plan) {
@@ -171,15 +171,14 @@ public class RetirementInformationFinder {
 	}
 
 	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation_New> retirementEmployees,
-			List<PlannedRetirementDto> retiredEmployees) {
-		
+			List<PlannedRetirementDto> retiredEmployees, boolean isIncludingReflected) {
+
 		List<PlannedRetirementDto> result = new ArrayList<PlannedRetirementDto>();
 
-		retiredEmployees = retiredEmployees.stream()
-				.sorted(Comparator.comparing(PlannedRetirementDto::getRetirementDate)
-						.thenComparing(PlannedRetirementDto::getScd))
+		retiredEmployees = retiredEmployees.stream().sorted(Comparator
+				.comparing(PlannedRetirementDto::getRetirementDate).thenComparing(PlannedRetirementDto::getScd))
 				.collect(Collectors.toList());
-		
+
 		result.addAll(retiredEmployees);
 		// 定年退職予定者リストと定年退職者情報リストをマージする(Merger list người dự định nghỉ hưu và
 		// list thông tin người nghỉ hưu)
@@ -192,6 +191,12 @@ public class RetirementInformationFinder {
 		});
 		// アルゴリズム[面談記録チェック]を実行する(Thực hiện thuật toán [check báo cáo kết quả
 		// phỏng vấn])
+
+		// check includingReflected nếu không =true thì lọc re những giá trị có
+		// status =3
+		if (!isIncludingReflected) {
+			result = result.stream().filter(x -> x.getStatus() != 3).collect(Collectors.toList());
+		}
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
 
