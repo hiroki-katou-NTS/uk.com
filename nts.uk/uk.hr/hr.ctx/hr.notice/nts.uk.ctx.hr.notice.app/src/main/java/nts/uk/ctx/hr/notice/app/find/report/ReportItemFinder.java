@@ -26,7 +26,6 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSettingRepository;
-import nts.uk.ctx.hr.notice.dom.report.valueImported.DateRangeItemImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
@@ -84,7 +83,6 @@ public class ReportItemFinder {
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					params.getReportLayoutId());
 			
-			
 		}
 		 
 		int reportLayoutId = getReportLayoutId(params, reportClsOpt);
@@ -123,6 +121,7 @@ public class ReportItemFinder {
 
 			}
 		}
+		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
 						itemInter, documentSampleDtoLst)
@@ -321,13 +320,13 @@ public class ReportItemFinder {
 				case 6:
 
 					// get data
-					getDataforSingleItem(sid, ctg, GeneralDate.today(), itemDatas, classItemList);
+					getDataforSingleItem(sid, ctg, itemDatas, classItemList);
 
 					break;
 
 				case 2:
 
-					getDataforListItem(sid, ctg, GeneralDate.today(), classItemList.get(0), itemDatas);
+					getDataforListItem(sid, ctg, classItemList.get(0), itemDatas);
 
 					break;
 
@@ -386,17 +385,6 @@ public class ReportItemFinder {
 
 	}
 
-	private void matchOptionalItemData(String recordId, List<LayoutReportClsDto> classItemList,
-			List<ReportItem> dataItems) {
-		
-		for (LayoutReportClsDto classItem : classItemList) {
-			
-			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
-			
-		}
-		
-	}
-
 	public void matchDataToValueItems(String recordId, List<LayoutHumanInfoValueDto> valueItems,
 			List<ReportItem> dataItems) {
 		
@@ -438,113 +426,27 @@ public class ReportItemFinder {
 	 * @param employeeId
 	 * @param query
 	 */
-	private void getDataforSingleItem(String employeeId, PerInfoCtgShowImport perInfoCategory, GeneralDate standardDate,
+	private void getDataforSingleItem(String employeeId, PerInfoCtgShowImport perInfoCategory,
 			List<ReportItem> itemDatas, List<LayoutReportClsDto> classItemList) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
-
-		GeneralDate comboBoxStandardDate = GeneralDate.today();
 		
-		switch (perInfoCategory.getCategoryType()) {
-		
-		case 1:
-			
-			getSingleOptionData(perInfoCategory, comboBoxStandardDate, classItemList, itemDatas);
-			
-			break;
-			
-		case 3:
-			
-		case 4:
-			
-		case 5:
-			
-		case 6:
-			
-			getPersDataHistoryType(perInfoCategory, comboBoxStandardDate, classItemList, itemDatas);
-			
-			break;
-			
-		default:
-			
-			break;
-			
-		}
-
-		// For each classification item to get combo box list
-		// layoutControlComboBox.getComboBoxListForSelectionItems(employeeId,
-		// perInfoCategory, classItemList, comboBoxStandardDate);
-
-		// set default value
-		// initDefaultValue.setDefaultValue(classItemList);
+		getSingleOptionData(perInfoCategory, classItemList, itemDatas);
 
 	}
 
-	private void getSingleOptionData(PerInfoCtgShowImport perInfoCategory, GeneralDate comboBoxStandardDate,
+	private void getSingleOptionData(PerInfoCtgShowImport perInfoCategory, 
 			List<LayoutReportClsDto> classItemList, List<ReportItem> itemDatas) {
 		
 		if (itemDatas != null) {
-
+			
 			mapListItemClass(itemDatas, classItemList);
-
-			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 			
-			for (String itemCode : standardDateItemCodes) {
-
-				Optional<ReportItem> itemDataOpt = itemDatas.stream().filter(c -> c.getItemCd().equals(itemCode))
-						.findFirst();
-
-				if (itemDataOpt.isPresent()) {
-
-					comboBoxStandardDate = itemDataOpt.get().getDateVal();
-
-					break;
-				}
-			}
 		}
 
 	}
-
-	/**
-	 * @param perInfoCategoryId
-	 * @param authClassItem
-	 * @param personId
-	 * @param stardardDate
-	 *            Target: get data with history case. Person case
-	 */
-	private void getPersDataHistoryType(PerInfoCtgShowImport perInfoCategory, GeneralDate stardardDate,
-			List<LayoutReportClsDto> classItemList, List<ReportItem> itemDatas) {
-		
-		DateRangeItemImport dateRangeItem = this.humanItemPub.getDateRangeItemByCtgId(perInfoCategory.getId());
-		
-		String startDateId = dateRangeItem.getStartDateItemId();
-		
-		String endDateId = dateRangeItem.getEndDateItemId();
-		
-		if (CollectionUtil.isEmpty(itemDatas))
-			return;
-		
-		ReportItem reportItem = itemDatas.get(0);
-		
-		String recordId = String.valueOf(reportItem.getReportID());
-		
-		Optional<ReportItem> startDateOpt = itemDatas.stream().filter(c -> c.getItemId().equals(startDateId))
-				.findFirst();
-		
-		Optional<ReportItem> endDateOpt = itemDatas.stream().filter(c -> c.getItemId().equals(endDateId)).findFirst();
-
-		if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-			
-			if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getDateVal())
-					&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getDateVal())) {
-				
-				matchOptionalItemData(recordId, classItemList, itemDatas);
-				
-			}
-		}
-	}
-
-	private void getDataforListItem(String employeeId, PerInfoCtgShowImport perInfoCategory, GeneralDate standardDate,
+	
+	private void getDataforListItem(String employeeId, PerInfoCtgShowImport perInfoCategory,
 			LayoutReportClsDto classItem, List<ReportItem> itemDatas) {
 
 		classItem.setItems(new ArrayList<>());
@@ -555,12 +457,6 @@ public class ReportItemFinder {
 		classItem.setListItemDf(null);
 
 		classItem.setCategoryCode(perInfoCategory.getCategoryCode());
-
-		// special process with category CS00069 item IS00779. change string length
-		// stampCardLength.updateLength(perInfoCategory, Arrays.asList(classItem));
-		// layoutControlComboBox.getComboBoxListForSelectionItems(employeeId,
-		// perInfoCategory, Arrays.asList(classItem),
-		// GeneralDate.today());
 
 	}
 
