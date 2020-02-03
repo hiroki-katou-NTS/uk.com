@@ -199,7 +199,7 @@ module jcm008.a {
             if ($('#retirementDateSetting').data("igGrid")) {
                 $('#retirementDateSetting').ntsGrid("destroy");
             };
-            let comboColumns = [{ prop: 'retirePlanCourseName', length: 5 }];
+            let comboColumns = [{ prop: 'retirePlanCourseName', length: 10 }];
             let dataSources = self.plannedRetirements();
             let rowStates = [];
             let cellStates = [];
@@ -348,7 +348,7 @@ module jcm008.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '120px', options: retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '150px', options: retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
 
