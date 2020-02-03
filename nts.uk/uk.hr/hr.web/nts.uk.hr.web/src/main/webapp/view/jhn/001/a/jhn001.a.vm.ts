@@ -52,6 +52,9 @@ module jhn001.a.viewmodel {
             self.reportClsId.subscribe(id => {
                 self.listItemDf = [];
                 if (id) {
+                    
+                    nts.uk.ui.errors.clearAll();
+                    
                     block();
                     let objReport = _.find(self.layouts(), function(o) { return o.id == id; })
 
@@ -440,22 +443,19 @@ module jhn001.a.viewmodel {
             };
 
             // trigger change of all control in layout
-            lv.checkError(controls);
-            
+            //lv.checkError(controls);
+            nts.uk.ui.errors.clearAll();
+
             let param = {
-                reportId: string = objReport.reportId,
-                layoutReportId: string = reportLayoutId,
+                reportId: number = objReport.reportId,
+                layoutReportId: number = reportLayoutId,
                 command : command
             };
             
             setShared("JHN001F_PARAMS", param );
             
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
-                console.log('test open dialog f');
-                // get lại list file document
-                self.getListDocument(param).done(() => {
-                    unblock();
-                });
+                 self.start(null);
             });
         }
         

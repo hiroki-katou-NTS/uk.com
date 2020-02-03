@@ -55,7 +55,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		
 		if (command.reportID == null) {
 			Integer reportIdNew = repoPersonReport.getMaxReportId(sid, cid) + 1;
-			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(command.cid, reportIdNew,
+			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, reportIdNew,
 					command.docID, command.docName, command.fileId, command.fileName,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
@@ -66,14 +66,14 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			
 			return reportIdNew.toString();
 		} else {
-			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(command.cid, Integer.valueOf(command.reportID),
+			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, Integer.valueOf(command.reportID),
 					command.docID, command.docName, command.fileId, command.fileName,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
 			repoReportFile.add(domain);
 			
-			return "";
+			return command.reportID;
 		}
 	}
 	
