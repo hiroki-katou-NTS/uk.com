@@ -284,8 +284,7 @@ public class RetirementInformationFinder {
 		// アルゴリズム[定年退職期間設定の取得]を実行する(thực hiện thuật toán [lấy setting khoảng
 		// thời gian nghỉ hưu])
 
-		return retirementCourses.stream().filter(x -> x.getRetirePlanCourseClass() == 0 && x.getDurationFlg() == 0)
-				.collect(Collectors.toList());
+		return retirementCourses;
 	}
 
 	private List<RetirementCourseDto> getRetirementCourse(String cId, GeneralDate baseDate) {

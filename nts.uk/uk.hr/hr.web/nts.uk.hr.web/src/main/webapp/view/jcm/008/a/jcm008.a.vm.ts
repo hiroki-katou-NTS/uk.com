@@ -21,6 +21,7 @@ module jcm008.a {
             self.searchFilter = new SearchFilterModel();
             self.plannedRetirements = ko.observableArray([]);
             self.searchFilter.retirementCourses = ko.observableArray([]);
+            self.searchFilter.retirementCoursesEarly = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
             self.referEvaluationItems = ko.observableArray([]);
             self.hidedColumns = [];
@@ -47,9 +48,10 @@ module jcm008.a {
                     return c;
                 });
                 
+                self.searchFilter.retirementCoursesEarly(_.sortBy(_.filter(data.retirementCourses, function(o) { return o.retirePlanCourseClass != 0; }), ['employmentCode', 'retirementAge']));
                 self.searchFilter.retirementCourses(_.sortBy(data.retirementCourses, ['employmentCode', 'retirementAge']));
 
-                let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
+                let retirementAge = _.map(self.searchFilter.retirementCoursesEarly(), (rc) => {
                     return new RetirementAgeSetting(rc.retirementAge.replace('歳', ''), rc.retirementAge);
                 });
                 
@@ -249,7 +251,7 @@ module jcm008.a {
                 { columnKey: 'extendEmploymentFlg', isFixed: true },
                 { columnKey: 'registrationStatus', isFixed: true }
             ];
-            if(self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
+            if(self.searchFilter.retirementCoursesEarly() && self.searchFilter.retirementCoursesEarly().length > 0) {
                 fixedClmSetting.push({ columnKey: 'desiredWorkingCourseId', isFixed: true });
             }
             fixedClmSetting = fixedClmSetting.concat([
@@ -284,7 +286,7 @@ module jcm008.a {
                 retirePlanCourseName: "",
                 durationFlg: 0
             }];
-            retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'));
+            retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCoursesEarly(), 'retirePlanCourseCode'));
 
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
@@ -365,7 +367,7 @@ module jcm008.a {
             ];
 
             let hidedColumnsCf = [];
-            if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
+            if (self.searchFilter.retirementCoursesEarly() && self.searchFilter.retirementCoursesEarly().length > 0) {
                 columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '140px', ntsControl: 'WorkingCourseCb' });
             }
            
