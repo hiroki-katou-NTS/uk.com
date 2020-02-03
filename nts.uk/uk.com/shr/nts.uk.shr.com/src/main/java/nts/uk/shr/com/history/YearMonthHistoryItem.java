@@ -1,7 +1,7 @@
 package nts.uk.shr.com.history;
 
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * Item of history that has a months period.
