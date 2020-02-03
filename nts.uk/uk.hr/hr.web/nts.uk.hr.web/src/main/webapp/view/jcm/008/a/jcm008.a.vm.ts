@@ -368,7 +368,7 @@ module jcm008.a {
 
             let hidedColumnsCf = [];
             if (self.searchFilter.retirementCoursesEarly() && self.searchFilter.retirementCoursesEarly().length > 0) {
-                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '140px', ntsControl: 'WorkingCourseCb' });
+                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '160px', ntsControl: 'WorkingCourseCb' });
             }
            
             columns = columns.concat([
