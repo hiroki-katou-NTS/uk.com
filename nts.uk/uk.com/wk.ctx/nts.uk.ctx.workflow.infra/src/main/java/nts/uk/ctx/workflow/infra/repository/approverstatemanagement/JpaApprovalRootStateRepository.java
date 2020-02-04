@@ -456,7 +456,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			this.commandProxy().remove(WwfdtApprovalRootMonth.class, new WwfdpApprovalRootMonthPK(rootStateID));
 			break;
 		default:
-			this.commandProxy().remove(WwfdtApprovalRootState.class, new WwfdpApprovalRootStatePK(rootStateID));
+			this.commandProxy().remove(WwfdtApprovalRootState.class, rootStateID);
 		}
 	}
 
