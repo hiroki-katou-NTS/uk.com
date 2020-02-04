@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface EmployeeGeneralInfoAdapter.

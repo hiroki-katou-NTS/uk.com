@@ -12,7 +12,7 @@ import lombok.val;
 import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * このクラスは大塚商会に提供するスタブのためのコードです。

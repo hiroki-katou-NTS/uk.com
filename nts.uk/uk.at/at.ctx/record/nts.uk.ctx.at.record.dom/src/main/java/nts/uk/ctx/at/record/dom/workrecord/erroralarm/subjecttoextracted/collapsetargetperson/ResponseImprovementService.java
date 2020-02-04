@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.collap
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 対象者をしぼり込む(レスポンス改善)
  * @author tutk

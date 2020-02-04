@@ -70,7 +70,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {

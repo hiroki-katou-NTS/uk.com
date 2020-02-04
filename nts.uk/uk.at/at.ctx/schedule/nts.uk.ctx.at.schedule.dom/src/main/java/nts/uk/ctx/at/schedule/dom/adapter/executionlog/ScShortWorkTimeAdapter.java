@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.dom.adapter.executionlog;
 import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface ScShortWorkTimeAdapter.
