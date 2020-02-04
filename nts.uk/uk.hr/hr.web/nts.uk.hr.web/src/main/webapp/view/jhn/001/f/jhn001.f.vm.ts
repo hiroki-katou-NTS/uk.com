@@ -68,7 +68,7 @@ module jhn001.f.vm {
             self.items = [];
             let dataShare  = getShared('JHN001F_PARAMS') || null;
             self.dataShare =  dataShare;
-            let param = {reportId : dataShare.dataShare , layoutReportId : dataShare.layoutReportId};
+            let param = {reportId : dataShare.reportId , layoutReportId : dataShare.layoutReportId};
             var dfdGetData = service.getData(param);
 
             block();
@@ -96,7 +96,7 @@ module jhn001.f.vm {
                 return;
             }
             
-            if(fileInfo.id = '' || fileInfo.id == null || fileInfo.id == undefined){
+            if(fileInfo.id == '' || fileInfo.id == null || fileInfo.id == undefined){
                 return;    
             }
             
@@ -127,23 +127,20 @@ module jhn001.f.vm {
                 delFlg:  0, //削除済     0:未削除、1:削除済 int 
                 sampleFileID:  row[0].sampleFileId, //サンプルファイルID String
                 sampleFileName:  row[0].sampleFileName,
-                reportID:        self.dataShare.reportID , //届出ID int
+                reportID:        self.dataShare.reportId , //届出ID int
                 layoutReportId : self.dataShare.layoutReportId,
                 dataLayout :     self.dataShare.command     
             }
 
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();
-            service.addDocument(objAdd).done((data: any) => {
-                debugger;
+            service.addDocument(objAdd).done((data) => {
+                
                 __viewContext['viewModel'].start().done(() => {
+                    //debugger;
                     init();
-                    $('.filenamelabel').hide();
-                    setTimeout(() => {
-                        $('.browser-button').attr("tabindex", 2);
-                        $(".link-button").attr("tabindex", 2);
-                        $(".delete-button").attr("tabindex", 2);
-                    }, 500);
+                    //$('.filenamelabel').hide();
+                    //setTimeout(() => {}, 1500);
                     unblock();
                     dfd.resolve();
                 });
@@ -170,18 +167,16 @@ module jhn001.f.vm {
                         cid: '',
                         fileId: rowItem.fileId
                     }; 
-                service.deleteDocument(command).done(() => {
-                    self.restart();
-                    unblock();
-                }).fail((mes) => {
-                    unblock();
-                });
-                
-                
-                })
-                .fail(function(res) {
-                    console.log(res);
-                });
+                    service.deleteDocument(command).done(() => {
+                        self.restart();
+                        unblock();
+                    }).fail((mes) => {
+                        unblock();
+                    });
+                    })
+                    .fail(function(res) {
+                        console.log(res);
+                    });
                 
                 
             }).ifNo(() => {

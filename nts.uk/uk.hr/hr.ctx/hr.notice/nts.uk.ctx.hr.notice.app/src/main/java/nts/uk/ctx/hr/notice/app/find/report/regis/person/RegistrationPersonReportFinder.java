@@ -42,28 +42,26 @@ public class RegistrationPersonReportFinder {
 		
 		if (!listReportJhn011.isEmpty()) {
 			listReportJhn011.stream().forEach(rp -> {
-				
 				PersonalReportDto dto = new PersonalReportDto();
-				if (!listReport.isEmpty()) {
-					Optional<RegistrationPersonReport> report = listReport.stream().filter(rpt -> rpt.getReportLayoutID() == rp.getReportClsId()).findFirst();
-					if (report.isPresent()) {
-						if (report.get().isDelFlg()) {
-							return;
-						}
+				Optional<RegistrationPersonReport> report = listReport.stream().filter(rpt -> rpt.getReportLayoutID() == rp.getReportClsId()).findFirst();
+				if (report.isPresent()) {
+					if (report.get().isDelFlg() == false) {
 						dto.setReportID(report.get().getReportID());
 						dto.setSendBackComment(report.get().getSendBackComment());
 						dto.setRootSateId(report.get().getRootSateId());
 						dto.setRegStatus(report.get().getRegStatus().value);
 						dto.setAprStatus(report.get().getAprStatus().value);
+						dto.setClsDto(rp);
+						result.add(dto);
 					}
 				}else{
 					dto.setReportID(null);
 					dto.setSendBackComment("");
 					dto.setRegStatus(null);
 					dto.setAprStatus(null);
+					dto.setClsDto(rp);
+					result.add(dto);
 				}
-				dto.setClsDto(rp);
-				result.add(dto);
 			});
 			
 			return result;

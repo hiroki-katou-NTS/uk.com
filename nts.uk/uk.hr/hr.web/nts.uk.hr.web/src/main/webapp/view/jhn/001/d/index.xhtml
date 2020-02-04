@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 1000,
+					height : 700
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jhn001.d.style.css" />
+			<com:scriptfile path="jhn001.d.service.js" />
+			<com:scriptfile path="jhn001.d.vm.js" />
+			<com:scriptfile path="jhn001.d.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="let-select">
+					<label>#{i18n.getText('JHN001_D2_1')}</label>
+				</div>
+				<div>
+					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_2')}</div>
+					<div tabindex="1" class="combobox-return"
+						data-bind="ntsComboBox: {
+														options: listBack,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: selectedBack,
+														optionsText: 'name',
+														width: 300,
+														enable: true,
+														columns: [ { prop: 'name', length: 4 },]}">
+					</div>
+				</div>
+				<div>
+					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_4')}</div>
+					<div tabindex="2" class="combobox-return"
+						data-bind="ntsComboBox: {
+														options: listBack,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: selectedBack,
+														optionsText: 'name',
+														width: 300,
+														enable: true,
+														columns: [ { prop: 'name', length: 4 },]}">
+					</div>
+				</div>
+
+				<div>
+					<div class="return" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('JHN001_D2_3')}</div>
+
+					<textarea class="comment" tabindex="3"
+						data-bind="ntsMultilineEditor: {
+													name:'#{i18n.getText('JHN001_D2_3_1')}',
+													value: backComment,
+													enable: true,
+													readonly: false}"></textarea>
+
+				</div>
+			</div>
+
+
+			<div id="functions-area-bottom">
+				<button tabindex="4" class="proceed x-large">#{i18n.getText('JHN001_D1_1')}</button>
+				<button tabindex="5" data-bind="click: close" id="cancel">#{i18n.getText('JHN001_D1_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

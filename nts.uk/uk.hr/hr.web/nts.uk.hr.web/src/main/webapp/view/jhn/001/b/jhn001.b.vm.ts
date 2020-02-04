@@ -1,6 +1,7 @@
 module jhn001.b.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import info = nts.uk.ui.dialog.info;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -51,7 +52,8 @@ module jhn001.b.vm {
 
             block();
             $.when(dfdGetData).done((listReportDarft: any) => {
-                if (listReportDarft) {
+                debugger;
+                if (listReportDarft.length > 0) {
                     for (var i = 0; i < listReportDarft.length; i++) {
                         let _data = {
                             id: listReportDarft[i].reportID,
@@ -64,6 +66,7 @@ module jhn001.b.vm {
                         listReportDraft.push(_data);
                     }
                     self.reportId(listReportDarft[0].reportID);
+                    unblock();
                 }
                 unblock();
                 dfd.resolve();
@@ -75,13 +78,16 @@ module jhn001.b.vm {
         continueProcess() {
             let self = this;
             let reportId = self.reportId();
+            let listReportDraft = self.listReportDraft();
 
             if (reportId == null || reportId == '' || reportId == undefined)
                 return;
-
-            setShared('JHN001B_PARAMS', {
-                obj: _.find(self.listReportDraft(), function(o) { return o.id == self.reportId(); })
-            });
+            
+            if(listReportDraft.length == 0){
+                reportId = null;
+            }
+            
+            setShared('JHN001B_PARAMS', { reportId : reportId , isClose : false , isContinue : true});
             close();
         }
         
@@ -89,27 +95,33 @@ module jhn001.b.vm {
             let self = this;
             let reportId = self.reportId();
 
-            if(reportId == null || reportId == '' || reportId == undefined)
+            if (reportId == null || reportId == '' || reportId == undefined)
                 return;
-            
+
             let objRemove = {
-                reportId: string = reportId
+                reportId: reportId
             };
 
-            block();
-            service.removeData(objRemove).done(() => {
-                info({ messageId: "Msg_40" }).then(function() {
-                    self.start();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
+                
+                let objRemove = {
+                    reportId: string = reportId
+                };
+
+                service.removeData(objRemove).done(() => {
+                    info({ messageId: "Msg_40" }).then(function() {
+                        self.start();
+                    });
+                }).fail((mes: any) => {
+                    unblock();
                 });
-            }).fail((mes: any) => {
-                unblock();
-            });
+            }).ifNo(() => { });
         }
 
         close() {
-             setShared('JHN001B_PARAMS', {
-                    reportId: null
-                });
+
+            setShared('JHN001B_PARAMS', { reportId: null , isClose : true , isContinue : false});
             close();
         }
     }
