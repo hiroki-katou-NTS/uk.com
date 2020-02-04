@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 //import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetHdDayInPeriodService {
 	

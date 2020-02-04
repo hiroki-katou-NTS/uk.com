@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 

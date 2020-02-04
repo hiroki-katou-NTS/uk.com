@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface IntermediateDataPub {
 	

@@ -6,7 +6,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.ListHashMap;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実績承認ルート中間データ

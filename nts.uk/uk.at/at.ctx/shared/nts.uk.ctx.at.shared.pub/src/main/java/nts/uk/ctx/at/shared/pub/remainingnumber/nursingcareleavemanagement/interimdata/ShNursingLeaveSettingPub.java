@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface ShNursingLeaveSettingPub.

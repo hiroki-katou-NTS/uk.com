@@ -11,7 +11,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.app.command.workplace.dto.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistoryGetMemento;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter

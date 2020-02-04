@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFro
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
 import nts.uk.ctx.at.request.pub.aplicationreflect.AppReflectManagerFromRecordPub;
 import nts.uk.ctx.at.request.pub.aplicationreflect.ProcessStateReflectExport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AppReflectManagerFromRecordPubImpl implements AppReflectManagerFromRecordPub{
 	@Inject
