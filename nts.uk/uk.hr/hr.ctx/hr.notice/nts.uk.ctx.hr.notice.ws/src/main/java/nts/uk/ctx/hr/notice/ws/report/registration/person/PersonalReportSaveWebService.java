@@ -11,6 +11,7 @@ import nts.uk.ctx.hr.notice.app.command.report.regis.person.DelRegisPersonReport
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.RemoveReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveDraftRegisPersonReportHandler;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveReportInputContainer;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.PersonalReportDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,8 +29,17 @@ public class PersonalReportSaveWebService {
 	@Inject
 	private SaveDraftRegisPersonReportHandler save;
 	
+	
 	@POST
 	@Path("getAll")
+	public List<PersonalReportDto> findAll() {
+		String sid = AppContexts.user().employeeId();
+		List<PersonalReportDto> listReport = this.finder.getListReport(sid);
+		return listReport;
+	}
+	
+	@POST
+	@Path("getAll-SaveDraft")
 	public List<RegistrationPersonReport> getListReportSaveDraft() {
 		String sid = AppContexts.user().employeeId();
 		return finder.getListReportSaveDraft(sid);
