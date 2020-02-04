@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,10 +16,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
-import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
@@ -35,6 +32,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
@@ -47,7 +45,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Person
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
-import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
@@ -59,15 +56,11 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
 	private CompanyAdapter comAdapter;
 	@Inject
-	private WorkplaceApproverAdapter wpAdapter;
-	@Inject
 	private ApprovalPhaseRepository phaseRepository;
 	@Inject
 	private PersonAdapter psInfor;
-//	@Inject
-//	private SyJobTitleAdapter jobTitle;
 	@Inject
-	private SyJobTitleAdapter adapterJobtitle;
+	private ApprovalRootCommonService appRootCm;
 	private static final String ROOT_COMMON = "共通ルート";
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
@@ -89,7 +82,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {				
-				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate);				
+				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate, sysAtr);				
 			}
 		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
@@ -158,7 +151,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param baseDate
 	 * @return
 	 */
-	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate){
+	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate, int sysAtr){
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
 		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
 		for(WorkplaceApprovalRoot root: lstWps) {//loop theo wkp
@@ -183,9 +176,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				continue;
 			}
 			//Lay thong tin detail cua workplace
-			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」)
-			Optional<WorkplaceImport> wpOp = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);
-			WorkplaceImport wpDto = wpOp.isPresent() ? wpOp.get() : new WorkplaceImport(root.getWorkplaceId(), "", "マスタ未登録");
+			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場NEW」)
+			WkpDepInfo wkpInf = appRootCm.getWkpDepInfo(root.getWorkplaceId(), sysAtr);
+			WorkplaceImport wpDto = new WorkplaceImport(root.getWorkplaceId(), wkpInf.getCode(), wkpInf.getName());
 			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data
@@ -304,7 +297,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				if(appAtr.equals(ApprovalAtr.PERSON)){
 					lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 				}else{
-					lstApprovers.add(this.getJobGInfo(approver.getJobGCD()).getName());
+					lstApprovers.add(appRootCm.getJobGInfo(approver.getJobGCD()).getName());
 				}
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getPhaseOrder(), phase.getApprovalForm().name, lstApprovers);
@@ -345,11 +338,4 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, this.sortByAppTypeConfirm(comApproverRoots));
 		return comMasterInfor;
 	}
-	//get jobG name
-		private JobGInfor getJobGInfo(String jobGCD){
-			String companyId = AppContexts.user().companyId();
-			List<JobGInfor> lstJG = adapterJobtitle.getJobGInfor(companyId, Arrays.asList(jobGCD));
-			if(lstJG.isEmpty()) return new JobGInfor(jobGCD, "コード削除済");
-			return lstJG.get(0);
-		}
 }

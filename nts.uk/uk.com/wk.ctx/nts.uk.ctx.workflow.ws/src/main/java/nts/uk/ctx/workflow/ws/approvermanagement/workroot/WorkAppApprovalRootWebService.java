@@ -44,7 +44,7 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.shr.com.context.AppContexts;
 @Path("workflow/approvermanagement/workroot")
@@ -71,6 +71,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private UpdateHistoryCmm053CmdHandler updateByManager;
 	@Inject
 	private DeleteHistoryCmm053CmdHandler deleteByManager;
+	@Inject
+	private ApprovalRootCommonService appRootCm;
 	
 	@POST
 	@Path("getbycom")
@@ -155,7 +157,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("find/wkpDepInfo")
 	public WkpDepInfo getWpInfo(WkpDepParam param){
-		return comFinder.getWkpDepInfo(param.getId(), param.getSysAtr());
+		return appRootCm.getWkpDepInfo(param.getId(), param.getSysAtr());
 	}
 
 	@POST

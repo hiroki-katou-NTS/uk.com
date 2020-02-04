@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,15 +17,12 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
-import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoRQ18;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
@@ -42,6 +38,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,7 +64,7 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private WorkplaceApproverAdapter adapterWp;
 	@Inject
-	private SyJobTitleAdapter adapterJobtitle;
+	private ApprovalRootCommonService appRootCm;
 	@Inject
 	private EmployeeAdapter employeeAdapter;
 	@Inject
@@ -75,9 +72,10 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private ApprovalSettingRepository appSetRepo;
 	
+	
 	private static final int COMPANY = 0;
 	private static final int WORKPLACE = 1;
-	private static final int SHUUGYOU = 0;
+//	private static final int SHUUGYOU = 0;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * まとめて登録モード
@@ -124,22 +122,7 @@ public class CommonApprovalRootFinder {
 			return this.getDataPsApprovalRoot(param, companyName);
 		}
 	}
-	/**
-	 * get work place info (id, code, name)
-	 * @param workplaceId
-	 * @return
-	 */
-	public WkpDepInfo getWkpDepInfo(String id, int sysAtr){
-		String companyId = AppContexts.user().companyId();
-		Optional<WkpDepInfo> wkpDepOp = Optional.empty();
-		if(sysAtr == SHUUGYOU){
-			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id, GeneralDate.today());
-		}else{
-			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id);
-		}
-		if(!wkpDepOp.isPresent()) return new WkpDepInfo(id, "", "コード削除済");
-		return wkpDepOp.get();
-	}
+
 	/**
 	 * get All Company Approval Root(grouping by history)
 	 * @param data
@@ -665,7 +648,7 @@ public class CommonApprovalRootFinder {
 						.map(d -> {
 								String name = c.getApprovalAtr().equals(ApprovalAtr.PERSON) ? 
 								this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeName() : 	
-								this.getJobGInfo(d.getJobGCD()) == null ? "" : this.getJobGInfo(d.getJobGCD()).getName();
+								appRootCm.getJobGInfo(d.getJobGCD()) == null ? "" : appRootCm.getJobGInfo(d.getJobGCD()).getName();
 								String confirmName = d.getConfirmPerson() == ConfirmPerson.CONFIRM ? "(確定)" : "";
 								String empCode = c.getApprovalAtr().equals(ApprovalAtr.PERSON) ? 
 										this.getPersonInfo(d.getEmployeeId()) == null ? "" : getPersonInfo(d.getEmployeeId()).getEmployeeCode() : null;
@@ -676,11 +659,5 @@ public class CommonApprovalRootFinder {
 					 c.getApprovalAtr().value))
 				.collect(Collectors.toList());
 	}
-	//get jobG name
-	private JobGInfor getJobGInfo(String jobGCD){
-		String companyId = AppContexts.user().companyId();
-		List<JobGInfor> lstJG = adapterJobtitle.getJobGInfor(companyId, Arrays.asList(jobGCD));
-		if(lstJG.isEmpty()) return new JobGInfor(jobGCD, "コード削除済");
-		return lstJG.get(0);
-	}
+
 }
