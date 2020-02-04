@@ -335,7 +335,7 @@ public class RetirementInformationFinder {
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
 
-		madaOpt.get().getMandatoryRetireTerm().forEach(x -> {
+		madaOpt.get().getMandatoryRetireTerm().stream().filter(x -> x.isUsageFlg()).forEach(x -> {
 
 			retirePlanCourses.addAll(getRetirePlanCoursesData(madaOpt.get(), x, empInfos, retires));
 		});
