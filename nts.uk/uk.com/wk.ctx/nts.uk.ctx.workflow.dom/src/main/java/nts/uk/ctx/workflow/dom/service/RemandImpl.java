@@ -42,8 +42,8 @@ public class RemandImpl implements RemandService {
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		List<ApprovalPhaseState> listApprovalPhase = approvalRootState.getListApprovalPhaseState();
-		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
-		List<ApprovalPhaseState> listUpperPhase = listApprovalPhase.stream().filter(x -> x.getPhaseOrder() >= order).collect(Collectors.toList());
+		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+		List<ApprovalPhaseState> listUpperPhase = listApprovalPhase.stream().filter(x -> x.getPhaseOrder() <= order).collect(Collectors.toList());
 		listUpperPhase.forEach(approvalPhaseState -> {
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
 				approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
