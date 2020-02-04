@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScShortWorkTimeAdapterImpl.

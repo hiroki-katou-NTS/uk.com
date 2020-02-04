@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWrkplcRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless

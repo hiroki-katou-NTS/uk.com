@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRecord {

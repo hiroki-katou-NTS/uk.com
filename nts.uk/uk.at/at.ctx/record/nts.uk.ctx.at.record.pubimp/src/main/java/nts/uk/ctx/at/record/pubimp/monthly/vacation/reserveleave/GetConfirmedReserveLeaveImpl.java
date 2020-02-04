@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.ReserveLeaveUsageE
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：社員の月毎の確定済み年休を取得する

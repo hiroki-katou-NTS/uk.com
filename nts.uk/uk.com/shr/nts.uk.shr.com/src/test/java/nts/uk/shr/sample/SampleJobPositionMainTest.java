@@ -10,7 +10,7 @@ import org.junit.Test;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.sample.history.jobposition.SampleJobPositionMain;
 
 public class SampleJobPositionMainTest {

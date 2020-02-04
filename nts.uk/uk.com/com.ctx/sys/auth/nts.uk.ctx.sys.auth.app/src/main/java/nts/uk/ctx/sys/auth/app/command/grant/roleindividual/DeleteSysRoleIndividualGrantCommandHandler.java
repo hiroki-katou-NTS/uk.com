@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional

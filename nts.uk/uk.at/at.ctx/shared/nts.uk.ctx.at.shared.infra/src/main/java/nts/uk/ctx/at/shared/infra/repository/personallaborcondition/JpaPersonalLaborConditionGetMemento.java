@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaPersonalLaborConditionGetMemento.

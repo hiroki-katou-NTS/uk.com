@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.pub.workrule.closure;
 
 import lombok.Getter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Getter
 public class DCClosureExport {

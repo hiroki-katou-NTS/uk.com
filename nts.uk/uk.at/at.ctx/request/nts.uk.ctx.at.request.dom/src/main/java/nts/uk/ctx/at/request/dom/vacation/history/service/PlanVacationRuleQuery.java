@@ -4,7 +4,7 @@ package nts.uk.ctx.at.request.dom.vacation.history.service;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface PlanVacationRuleQuery {
 	/**

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
