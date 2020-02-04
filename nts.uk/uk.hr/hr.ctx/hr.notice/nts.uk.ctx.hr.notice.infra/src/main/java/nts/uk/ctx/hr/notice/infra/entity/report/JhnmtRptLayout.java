@@ -19,6 +19,9 @@ public class JhnmtRptLayout extends UkJpaEntity implements Serializable {
 	
 	@EmbeddedId
 	public JhnmtRptLayoutPk jhnmtRptLayoutPk;
+	
+	@Column(name = "WORK_ID")
+	public Integer workId;
 
     @Column(name = "RPT_LAYOUT_CD")
 	public String rptLayouCd;
