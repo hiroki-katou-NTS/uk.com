@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.adapter.workplace;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Data
 @Builder

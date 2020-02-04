@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import nts.arc.testing.cdi.TypeDefine;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @ApplicationScoped
 public class CdiTestingTypes implements InitializeWhenDeploy {

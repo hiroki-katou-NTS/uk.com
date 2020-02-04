@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 履歴データを一括して取得し、日ごとに問い合わせられるように保持するクラス

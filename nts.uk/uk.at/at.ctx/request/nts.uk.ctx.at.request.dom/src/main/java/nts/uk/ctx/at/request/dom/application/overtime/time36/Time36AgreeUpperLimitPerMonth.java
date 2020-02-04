@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 /**
  * 36協定上限各月平均時間
  * @author Doan Duy Hung

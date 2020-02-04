@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPer
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorImport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPubExport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmployeeDailyPerErrorAcAdapter implements EmployeeDailyPerErrorAdapter {

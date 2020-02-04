@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.managectualsituation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 社員の締め情報
  */

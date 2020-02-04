@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 暫定年休管理データを作成する
@@ -22,7 +22,7 @@ public interface CreateTempAnnualLeaveManagement {
 	 * @param mode モード
 	 * @return 暫定年休管理データリスト
 	 */
-	List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
+	List<InterimRemain> algorithm(String companyId, String employeeId, DatePeriod period,
 			InterimRemainMngMode mode);
 
 	/**
@@ -35,7 +35,7 @@ public interface CreateTempAnnualLeaveManagement {
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 暫定年休管理データリスト
 	 */
-	List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
+	List<InterimRemain> algorithm(String companyId, String employeeId, DatePeriod period,
 			InterimRemainMngMode mode,
 			Optional<MonAggrCompanySettings> companySets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 

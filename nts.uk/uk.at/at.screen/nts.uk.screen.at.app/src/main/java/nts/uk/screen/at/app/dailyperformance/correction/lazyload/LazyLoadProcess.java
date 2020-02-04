@@ -71,7 +71,7 @@
 //import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 //import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.shr.com.i18n.TextResource;
-//import nts.uk.shr.com.time.calendar.period.DatePeriod;
+//import nts.arc.time.calendar.period.DatePeriod;
 //
 //@Stateless
 //public class LazyLoadProcess {

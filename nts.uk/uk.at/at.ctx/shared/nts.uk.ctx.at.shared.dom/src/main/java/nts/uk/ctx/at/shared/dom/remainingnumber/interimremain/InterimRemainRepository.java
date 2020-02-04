@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface InterimRemainRepository {
 	
@@ -59,4 +59,36 @@ public interface InterimRemainRepository {
 	 * @return
 	 */
 	List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates);
+	
+	// Fix bug 109524
+		/**
+		 * 検索
+		 * 
+		 * @param sID
+		 * @param ymd
+		 * @return
+		 */
+		Optional<InterimRemain> find(String sID, GeneralDate ymd);
+
+		// Fix bug 109524
+		/** 検索 （期間） */
+		List<InterimRemain> findByPeriodOrderByYmd(String employeeId, DatePeriod period);
+
+		// Fix bug 109524
+		/** 削除 */
+		void remove(String sId, GeneralDate ymd);
+
+		// Fix bug 109524
+		/** 削除 （期間） */
+		void removeByPeriod(String sId, DatePeriod period);
+
+		// Fix bug 109524
+		/** 削除 （基準日以前） */
+		void removePastYmd(String sId, GeneralDate criteriaDate);
+
+		// Fix bug 109524
+		List<InterimRemain> findBySidWorkTypePeriod(String employeeId, String workTypeCode, DatePeriod period);
+
+		// Fix bug 109524
+		List<InterimRemain> findByEmployeeID(String sId);
 }
