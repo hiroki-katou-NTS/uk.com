@@ -1,17 +1,32 @@
 package nts.uk.ctx.hr.notice.app.command.report.regis.person.approve;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportAnalysis;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportAnalysisRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyData;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyItem;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyService;
 import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -20,17 +35,29 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportCommand>{
+public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>{
 
 	@Inject
 	private ApprovalPersonReportRepository approvalPersonReportRepo;
+	
+	@Inject
+	private RegistrationPersonReportRepository regisPersonReportRepo;
+	
+	@Inject
+	private ReportAnalysisRepository reportAnalysisRepo;
+	
+	@Inject
+	private ReportItemRepository reportItemRepo;
+	
+	@Inject
+	private PreReflectAnyService preReflectAnyService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<ApproveReportCommand> context) {
 		
 		ApproveReportCommand cmd = context.getCommand();
 		
-		switch(cmd.getActionApprove().value) {
+		switch(cmd.getActionApprove()) {
 		
 		 case 0:
 			 
@@ -69,7 +96,7 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 	private void registerReport(ApproveReportCommand cmd) {
 		
 		//届出IDをキーに人事届出の承認
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportId(cmd.getReportId());
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportId(Integer.valueOf(cmd.getReportId()));
 		
 		approvalPersonReports.stream().forEach(c ->{
 			
@@ -90,7 +117,7 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 		String sid = AppContexts.user().employeeId();
 		
 		//承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( cmd.getReportId(), sid);
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( Integer.valueOf(cmd.getReportId()), sid);
 	
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -130,7 +157,7 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 		String sid = AppContexts.user().employeeId();
 		
 		//承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( cmd.getReportId(), sid);
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( Integer.valueOf(cmd.getReportId()), sid);
 	
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -167,10 +194,12 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 	public void approveReport(ApproveReportCommand cmd) {
 
 		String sid = AppContexts.user().employeeId();
+		
+		String cid = AppContexts.user().companyId();
 
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
 		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo
-				.getListDomainByReportIdAndSid(cmd.getReportId(), sid);
+				.getListDomainByReportIdAndSid(Integer.valueOf(cmd.getReportId()).intValue(), sid);
 		
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -201,7 +230,25 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 		
 		
 		//アルゴリズム[[RQ631]申請書の承認者と状況を取得する。]を実行する(( Thực hiện thuật toán[[RQ631] Get status và approver of application.] )
-	
+		
+		
+		//アルゴリズム[届出分析データのカウント処理]を実行する(Thực hiện thuật toán[Xử lý count data phân tích report] )
+		
+		Optional<RegistrationPersonReport> regisPersonReportOpt =  this.regisPersonReportRepo.getDomainByReportId(cid, Integer.valueOf(cmd.getReportId()));
+		
+		if(regisPersonReportOpt.isPresent()) {
+			
+			String[] monthSplit =  java.time.YearMonth.now().toString().split("-");
+			
+			int yearMonth  = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
+			
+			countData( cid, 1, regisPersonReportOpt.get().getReportLayoutID(), 1, yearMonth);
+			
+		}
+
+		//ドメイン[人事届出の登録]、[届出の項目]のリストを取得して、反映前データに届出情報を取り込む(アルゴリズム[届出データの追加]を実行する)(Lấy list của domain [人事届出の登録]、[届出の項目], import thông tin report vào data trước khi phản ánh (Thực hiện thuật toán [届出データの追加/thêm data report] ))
+		preprareReflectData(cid, Integer.valueOf(cmd.getReportId()));
+		
 	}
 	
 	/**
@@ -215,7 +262,85 @@ public class RegisterApproveCommentHandler extends CommandHandler<ApproveReportC
 	 */
 	private void countData(String cid, int reportDate, int reportLayoutId, int countClsBig, int countClsSmall) {
 		
+		Optional<ReportAnalysis>  reportAnalysisOpt = this.reportAnalysisRepo.getListReportAnalysis(cid, reportLayoutId,  countClsBig,  countClsSmall, reportDate);
 		
+		if(reportAnalysisOpt.isPresent()) {
+			
+			int reportCount = reportAnalysisOpt.get().getReportCount()  + 1;
+			
+			reportAnalysisOpt.get().setReportCount(reportCount);
+			
+			this.reportAnalysisRepo.update(reportAnalysisOpt.get());
+			
+		}
+		
+	}
+	
+	/**
+	 * ドメイン[人事届出の登録]、[届出の項目]のリストを取得して
+	 * 、反映前データに届出情報を取り込む(アルゴリズム[届出データの追加]を実行する)
+	 * @param cid
+	 * @param reportId
+	 */
+	private void preprareReflectData(String cid, Integer reportId) {
+		
+		Optional<RegistrationPersonReport> regisPersonReportOpt =  this.regisPersonReportRepo.getDomainByReportId(cid, reportId);
+		
+		if(regisPersonReportOpt.isPresent()) {
+			
+			List<PreReflectAnyItem> anyItems = new ArrayList<>();
+			
+			RegistrationPersonReport regisReport = regisPersonReportOpt.get();
+			
+			String newHistId = IdentifierUtil.randomUniqueId();
+			
+			PreReflectAnyData anyData = new PreReflectAnyData(newHistId,
+					cid,
+					AppContexts.user().companyCode(),
+					regisReport.getWorkId(),
+					regisReport.getReportType().value,
+					regisReport.getInputDate(),
+					1,
+					regisReport.getAppPid(),
+					regisReport.getAppSid(),
+					regisReport.getAppScd(),
+					regisReport.getAppBussinessName(),
+					regisReport.getReportID(),
+					regisReport.getReportCode(),
+					regisReport.getReportName(),
+					regisReport.getInputDate()
+					);
+			
+			List<ReportItem> reportItems = this.reportItemRepo.getDetailReport(cid, reportId.intValue());
+			
+			
+			if(!CollectionUtil.isEmpty(reportItems)) {
+				
+				String itemHistId = IdentifierUtil.randomUniqueId();
+				
+				anyItems.addAll(reportItems.stream().map(c ->{
+					
+					return new PreReflectAnyItem(itemHistId,
+							newHistId,
+							cid,
+							c.getReportID(),
+							c.getDspOrder(),
+							c.getCategoryId(),
+							c.getCtgCode(),
+							c.getItemId(),
+							c.getItemCd(),
+							c.getSaveDataAtr(),
+							c.getStringVal(),
+							c.getIntVal(),
+							c.getDateVal());
+					
+				}).collect(Collectors.toList()));
+				
+			}
+			
+			preReflectAnyService.preprareReflectData(anyData, anyItems);
+			
+		}
 		
 	}
 

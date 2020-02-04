@@ -13,9 +13,9 @@ public interface ApprovalPersonReportRepository {
 
 	List<ApprovalPersonReport> getListDomainByReportId(String cid, String reprtId);
 	
-	List<ApprovalPersonReport> getListDomainByReportId(String reprtId);
+	List<ApprovalPersonReport> getListDomainByReportId(int reprtId);
 	
-	List<ApprovalPersonReport> getListDomainByReportIdAndSid(String reprtId, String approverId);
+	List<ApprovalPersonReport> getListDomainByReportIdAndSid(int reprtId, String approverId);
 	
 	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid);
 	

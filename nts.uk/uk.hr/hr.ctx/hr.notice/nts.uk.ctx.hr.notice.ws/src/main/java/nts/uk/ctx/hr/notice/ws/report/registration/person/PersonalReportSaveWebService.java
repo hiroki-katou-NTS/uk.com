@@ -11,6 +11,8 @@ import nts.uk.ctx.hr.notice.app.command.report.regis.person.DelRegisPersonReport
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.RemoveReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveDraftRegisPersonReportHandler;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveReportInputContainer;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveReportCommand;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveHandler;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +29,9 @@ public class PersonalReportSaveWebService {
 	
 	@Inject
 	private SaveDraftRegisPersonReportHandler save;
+	
+	@Inject
+	private RegisterApproveHandler registerApproveHandler;
 	
 	@POST
 	@Path("getAll")
@@ -53,4 +58,9 @@ public class PersonalReportSaveWebService {
 		this.save.handle(inputContainer);
 	}
 	
+	@POST
+	@Path("saveScreenC")
+	public void save(ApproveReportCommand approveReportCommand) {
+		this.registerApproveHandler.handle(approveReportCommand);
+	}
 }

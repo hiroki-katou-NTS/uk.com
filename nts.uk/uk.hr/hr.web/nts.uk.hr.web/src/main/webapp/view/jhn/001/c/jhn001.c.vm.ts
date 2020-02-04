@@ -34,15 +34,39 @@ module jhn001.c.viewmodel {
         
         /*　承認ボタン*/
         approve():void {
-            let self = this;    
-        
-        
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.APPROVE};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });
         
         }
         
         /* 否認ボタン*/
         deny(): void{
-            let self = this;    
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.DENY};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
         }
         
         /* 差し戻し*/
@@ -52,13 +76,40 @@ module jhn001.c.viewmodel {
         
         /*　解除*/
         cancel(): void{
-            let self = this;
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.CANCEL};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
         
         }
         
         /* 登録*/
         register(): void{
-            let self = this;    
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.REGISTER};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
+             
         }
         
         start(code?: string): JQueryPromise<any> {
@@ -324,5 +375,13 @@ module jhn001.c.viewmodel {
         COPY = 2,
         OVERRIDE = 3,
         REMOVE = 4
+    }
+    
+    enum ACTION_PROVE {
+        APPROVE = 0,
+        DENY = 1,
+        BACK = 2,
+        CANCEL = 3,
+        REGISTER = 4
     }
 }

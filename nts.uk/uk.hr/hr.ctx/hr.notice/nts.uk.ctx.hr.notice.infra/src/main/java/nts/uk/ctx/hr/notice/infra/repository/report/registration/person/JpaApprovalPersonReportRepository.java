@@ -103,14 +103,14 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<ApprovalPersonReport> getListDomainByReportId(String reprtId) {
+	public List<ApprovalPersonReport> getListDomainByReportId(int reprtId) {
 		return this.queryProxy().query(SEL_BY_REPORT_ID, JhndtReportApproval.class)
 				.setParameter("reportId", reprtId)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<ApprovalPersonReport> getListDomainByReportIdAndSid(String reprtId, String approverId) {
+	public List<ApprovalPersonReport> getListDomainByReportIdAndSid(int reprtId, String approverId) {
 		return this.queryProxy().query(SEL_BY_REPORT_ID_AND_APPROVER_ID, JhndtReportApproval.class)
 				.setParameter("reportId", reprtId)
 				.setParameter("sid", approverId)

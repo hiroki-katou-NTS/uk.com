@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
