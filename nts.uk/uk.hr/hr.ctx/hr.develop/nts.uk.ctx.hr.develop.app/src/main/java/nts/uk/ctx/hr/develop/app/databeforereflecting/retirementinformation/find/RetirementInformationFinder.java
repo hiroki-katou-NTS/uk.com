@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -336,25 +337,33 @@ public class RetirementInformationFinder {
 		// 定年退職コース情報リストを生成する (Tao retirePlanCourseTermList)
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
+		
+		empInfos.forEach(emp -> {
 
-		madaOpt.get().getMandatoryRetireTerm().stream().filter(x -> x.isUsageFlg()).forEach(x -> {
-
-			retirePlanCourses.addAll(getRetirePlanCoursesData(madaOpt.get(), x, empInfos, retires));
+			retirePlanCourses.addAll(
+					getRetirePlanCoursesData(madaOpt.get(), madaOpt.get().getMandatoryRetireTerm(), emp, retires));
 		});
 
 		return retirePlanCourses;
 	}
 
 	private List<RetirementCourseDto> getRetirePlanCoursesData(MandatoryRetirementRegulation mada,
-			MandatoryRetireTerm retireTerm, List<EmploymentInfoImport> empInfos, List<RetirePlanCource> retires) {
+			List<MandatoryRetireTerm> retireTerms, EmploymentInfoImport emp, List<RetirePlanCource> retires) {
 
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
+		
+		Optional<MandatoryRetireTerm> retireTermOpt = retireTerms.stream().filter(
+				reti -> reti.getEmpCommonMasterItemId().equals(emp.getEmpCommonMasterItemId()) && reti.isUsageFlg())
+				.findFirst();
+		
+		if(!retireTermOpt.isPresent()){
+			return Collections.emptyList();
+		}
+		
+		MandatoryRetireTerm  retireTerm = retireTermOpt.get();
 
-		Optional<EmploymentInfoImport> empInfo = empInfos.stream().filter(emp -> emp.getEmpCommonMasterItemId() != null
-				&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId())).findFirst();
-
-		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
-		String employmentName = empInfo.isPresent() ? empInfo.get().getEmploymentName() : null;
+		String employmentCode = emp.getEmploymentCode();
+		String employmentName = emp.getEmploymentName();
 
 		retireTerm.getEnableRetirePlanCourse().forEach(x -> {
 
