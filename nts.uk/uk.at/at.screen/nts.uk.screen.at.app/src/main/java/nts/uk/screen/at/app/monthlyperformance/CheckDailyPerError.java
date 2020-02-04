@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 日別実績のエラーをチェックする

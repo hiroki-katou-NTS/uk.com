@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.auth.pub.grant;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface RoleSetGrantedEmployeePub {
 

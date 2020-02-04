@@ -36,7 +36,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmploymentPubImp.

@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 処理：暫定年休管理データを作成する

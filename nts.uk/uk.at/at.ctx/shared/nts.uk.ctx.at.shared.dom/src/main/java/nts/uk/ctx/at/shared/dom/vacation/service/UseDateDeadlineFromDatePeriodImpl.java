@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-//import nts.uk.shr.com.time.calendar.period.DatePeriod;
+//import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDatePeriod{
 	@Inject

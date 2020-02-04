@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkTypeDivergenceReferenceTimeHistoryRepository.

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface InterimRecAbasMngRepository {
 	

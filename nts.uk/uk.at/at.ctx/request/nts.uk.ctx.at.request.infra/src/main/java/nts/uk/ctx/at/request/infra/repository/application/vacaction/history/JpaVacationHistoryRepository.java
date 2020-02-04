@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistor
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK_;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory_;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaVacationHistoryRepository.
@@ -176,7 +176,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository#countByDatePeriod(java.lang.String, java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod, java.lang.String)
+	 * @see nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository#countByDatePeriod(java.lang.String, java.lang.String, nts.arc.time.calendar.period.DatePeriod, java.lang.String)
 	 */
 	@Override
 	public Integer countByDatePeriod(String companyId, String workTypeCode, DatePeriod datePeriod, String histId) {

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：36協定時間の取得

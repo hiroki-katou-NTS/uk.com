@@ -42,7 +42,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

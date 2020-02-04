@@ -41,7 +41,7 @@ import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
