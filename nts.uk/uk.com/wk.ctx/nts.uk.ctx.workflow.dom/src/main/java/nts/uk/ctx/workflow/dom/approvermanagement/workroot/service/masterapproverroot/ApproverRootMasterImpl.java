@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
@@ -45,6 +47,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Person
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
@@ -61,8 +64,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private ApprovalPhaseRepository phaseRepository;
 	@Inject
 	private PersonAdapter psInfor;
+//	@Inject
+//	private SyJobTitleAdapter jobTitle;
 	@Inject
-	private SyJobTitleAdapter jobTitle;
+	private SyJobTitleAdapter adapterJobtitle;
 	private static final String ROOT_COMMON = "共通ルート";
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
@@ -299,7 +304,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				if(appAtr.equals(ApprovalAtr.PERSON)){
 					lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 				}else{
-					lstApprovers.add(jobTitle.findJobTitleByPositionId(companyID, approver.getJobGCD(), baseDate).getPositionName());
+					lstApprovers.add(this.getJobGInfo(approver.getJobGCD()).getName());
 				}
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getPhaseOrder(), phase.getApprovalForm().name, lstApprovers);
@@ -340,4 +345,11 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, this.sortByAppTypeConfirm(comApproverRoots));
 		return comMasterInfor;
 	}
+	//get jobG name
+		private JobGInfor getJobGInfo(String jobGCD){
+			String companyId = AppContexts.user().companyId();
+			List<JobGInfor> lstJG = adapterJobtitle.getJobGInfor(companyId, Arrays.asList(jobGCD));
+			if(lstJG.isEmpty()) return new JobGInfor(jobGCD, "コード削除済");
+			return lstJG.get(0);
+		}
 }
