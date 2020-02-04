@@ -129,13 +129,7 @@ public class RetirementInformationFinder {
 		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x -> toPlannedRetirementDto(x))
 				.collect(Collectors.toList());
 
-		if (retiredEmployees.size() > 2000) {
-			throw new BusinessException("MsgJ_JCM008_8");
-		}
-
-		if (retiredEmployees.size() == 0) {
-			throw new BusinessException("MsgJ_JCM008_2");
-		}
+		
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
 		// mặc định set includingReflected = true để lấy hết ra giá trị
@@ -197,6 +191,14 @@ public class RetirementInformationFinder {
 		if (!isIncludingReflected) {
 			result = result.stream().filter(x -> x.getStatus() == null || x.getStatus() != 3)
 					.collect(Collectors.toList());
+		}
+		
+		if (result.size() > 2000) {
+			throw new BusinessException("MsgJ_JCM008_8");
+		}
+
+		if (result.size() == 0) {
+			throw new BusinessException("MsgJ_JCM008_2");
 		}
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
@@ -363,16 +365,15 @@ public class RetirementInformationFinder {
 			Optional<RetirePlanCource> retire = retires.stream()
 					.filter(re -> re.getRetirePlanCourseId() == x.getRetirePlanCourseId()).findFirst();
 
-			if (retire.isPresent()) {
+			if (retire.isPresent() && employmentCode != null && employmentName != null) {
 				dto.setRetirePlanCourseClass(retire.get().getRetirePlanCourseClass().value);
 				dto.setRetirementAge(retire.get().getRetirementAge().v());
 				dto.setRetirePlanCourseId(retire.get().getRetirePlanCourseId());
 				dto.setRetirePlanCourseCode(retire.get().getRetirePlanCourseCode());
 				dto.setRetirePlanCourseName(retire.get().getRetirePlanCourseName());
 				dto.setDurationFlg(retire.get().getDurationFlg().value);
+				dtos.add(dto);
 			}
-
-			dtos.add(dto);
 
 		});
 
