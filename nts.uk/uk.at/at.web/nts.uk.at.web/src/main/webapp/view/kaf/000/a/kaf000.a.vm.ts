@@ -154,12 +154,16 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
-        isFirstIndexFrame(loopPhase, loopFrame) {
+        isFirstIndexFrame(loopPhase, loopFrame, loopApprover) {
             let self = this;
+            if(_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;  
+            }
             let firstIndex = _.chain(loopPhase.listApprovalFrame()).filter(x => _.size(x.listApprover()) > 0).orderBy(x => x.frameOrder()).first().value().frameOrder();  
-            if(loopFrame.frameOrder()==firstIndex) {
-                return true;    
-            } 
+            let approver = _.find(loopPhase.listApprovalFrame(), o => o == loopFrame);
+            if(approver) {
+                return approver.frameOrder() == firstIndex;    
+            }
             return false;
         }
         
@@ -173,10 +177,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         frameCount(listFrame) {
             let self = this;    
-            if(_.size(listFrame) > 1) { 
-                return _.size(listFrame);
+            let listExist = _.filter(listFrame, x => _.size(x.listApprover()) > 0);
+            if(_.size(listExist) > 1) { 
+                return _.size(listExist);
             }
-            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).value()[0];        
+            return _.chain(listExist).map(o => self.approverCount(o.listApprover())).value()[0];        
         }
         
         approverCount(listApprover) {
