@@ -751,17 +751,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         
         getApproverAtr(approver) {
             if(approver.approvalAtrName() !='未承認'){
-                if(approver.approverName().length > 0){
-                    if(approver.approverMail().length > 0){
-                        return approver.approverName() + '(@)';
-                    } else {
-                        return approver.approverName();
-                    }
-                } else {
+                if(approver.representerName().length > 0){
                     if(approver.representerMail().length > 0){
                         return approver.representerName() + '(@)';
                     } else {
                         return approver.representerName();
+                    }    
+                } else {
+                    if(approver.approverMail().length > 0){
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
                     }
                 }
             } else {
