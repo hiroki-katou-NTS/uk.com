@@ -6,12 +6,12 @@ package nts.uk.ctx.bs.employee.pubimp.department.aff;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
-import nts.uk.ctx.bs.employee.pub.department.aff.AffDepartmentHistoryExport;
 import nts.uk.ctx.bs.employee.pub.department.aff.AffDepartmentPub;
 import nts.uk.ctx.bs.employee.pub.department.aff.RequestList643Export;
 
@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.pub.department.aff.RequestList643Export;
  * @author laitv
  *
  */
+@Stateless
 public class AffDepartmentPubImpl implements AffDepartmentPub{
 	
 	@Inject
