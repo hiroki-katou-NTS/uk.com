@@ -61,7 +61,6 @@ module jhn001.c.viewmodel {
             invisible();
             service.saveData(cmd).done(function(data) {
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-
                 });
                 unblock();
             }).fail(function(res: any) {
@@ -71,7 +70,13 @@ module jhn001.c.viewmodel {
         
         /* 差し戻し*/
         sendBack(): void{
-            let self = this;
+            let self = this,
+            layout = self.layout();
+            setShared('JHN001D_PARAMS', {reportId: layout.reportId()});
+            invisible();
+            modal('/view/jhn/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                unblock();
+            });
         }
         
         /*　解除*/
@@ -122,7 +127,7 @@ module jhn001.c.viewmodel {
             let reportId: String = url.split("=")[1];
             // get all layout
             layouts.removeAll();
-            service.getDetails({reportId: reportId, reportLayoutId: 1}).done((data: any) => {
+            service.getDetails({reportId: reportId}).done((data: any) => {
                 if (data) {
                     lv.removeDoubleLine(data.classificationItems);
                     self.getDetailReport(layout, data);

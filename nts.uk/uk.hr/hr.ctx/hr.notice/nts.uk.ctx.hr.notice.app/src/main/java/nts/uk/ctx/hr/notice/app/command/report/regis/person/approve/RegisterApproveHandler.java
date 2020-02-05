@@ -105,11 +105,15 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			
 		});
 		
-		this.approvalPersonReportRepo.addAll(approvalPersonReports);
+		this.approvalPersonReportRepo.updateAll(approvalPersonReports);
 	}
 	
 	/**
 	 * 解除処理(Cancel)
+	 * 人事届出の承認.承認日=now
+	 * 人事届出の承認.承認状況=未承認
+	 * 人事届出の承認.承認活性=活性
+	 * 人事届出の承認.コメント=承認コメント
 	 * @param cmd
 	 */
 	private void cancelReport(ApproveReportCommand cmd) {
@@ -125,7 +129,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		approvalPersonReports.stream().forEach(c ->{
 			
 			//人事届出の承認.承認日=now
-			c.setAppDate(approveDay);
+			c.setAprDate(approveDay);
 			
 			//人事届出の承認.承認状況=未承認
 			c.setAprStatus(ApprovalStatus.Not_Acknowledged);
@@ -260,7 +264,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	 *カウント小区分=1:承認済
 	 *
 	 */
-	private void countData(String cid, int reportDate, int reportLayoutId, int countClsBig, int countClsSmall) {
+	public void countData(String cid, int reportDate, int reportLayoutId, int countClsBig, int countClsSmall) {
 		
 		Optional<ReportAnalysis>  reportAnalysisOpt = this.reportAnalysisRepo.getListReportAnalysis(cid, reportLayoutId,  countClsBig,  countClsSmall, reportDate);
 		

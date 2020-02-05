@@ -17,7 +17,7 @@ public class JhndtRptAnalysisPk implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@NotNull
-	@Column(name = "RPTID")
+	@Column(name = "RPT_LAYOUT_ID")
 	public int reportLayoutID; // 届出ID
 	
 	@NotNull

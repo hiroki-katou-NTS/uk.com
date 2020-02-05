@@ -128,7 +128,7 @@ public class ReportItemFinder {
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
-		if(params.getReportId() == null) {
+		if(reportClsOpt.isPresent()) {
 			return reportClsOpt.get().getPReportClsId();
 		}
 		
