@@ -128,7 +128,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			c.setAppDate(approveDay);
 			
 			//人事届出の承認.承認状況=未承認
-			c.setAprStatusName(ApprovalStatus.Not_Acknowledged);
+			c.setAprStatus(ApprovalStatus.Not_Acknowledged);
 			
 			//人事届出の承認.承認活性=活性
 			c.setAprActivity(ApprovalActivity.Activity);
@@ -168,7 +168,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			c.setAppDate(approveDay);
 			
 			//人事届出の承認.承認状況=否認
-			c.setAprStatusName(ApprovalStatus.Deny);
+			c.setAprStatus(ApprovalStatus.Deny);
 			
 			//人事届出の承認.承認活性=否認済
 			c.setAprActivity(ApprovalActivity.Deny);
@@ -210,7 +210,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			c.setAppDate(approveDay);
 			
 			//人事届出の承認.承認状況=承認済
-			c.setAprStatusName(ApprovalStatus.Approved);
+			c.setAprStatus(ApprovalStatus.Approved);
 			
 			//人事届出の承認.承認活性=承認済
 			c.setAprActivity(ApprovalActivity.Approved);

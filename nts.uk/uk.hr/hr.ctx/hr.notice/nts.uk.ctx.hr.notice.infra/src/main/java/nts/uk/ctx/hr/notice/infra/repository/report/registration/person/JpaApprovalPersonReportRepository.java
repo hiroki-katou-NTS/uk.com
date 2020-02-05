@@ -40,7 +40,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 		entity.aprSid  = domain.getAprSid();
 		entity.aprBussinessName  = domain.getAprBussinessName();
 		entity.emailAddress  = domain.getEmailAddress();
-		entity.aprStatusName  = domain.getAprStatusName() == null ? null : domain.getAprStatusName().value;
+		entity.aprStatusName  = domain.getAprStatus() == null ? null : domain.getAprStatus().value;
 		entity.arpAgency  = domain.isArpAgency();
 		entity.comment  = domain.getComment() == null ? null : domain.getComment().toString();
 		entity.aprActivity  = domain.getAprActivity() ==  null ? null : domain.getAprActivity().value;
