@@ -316,7 +316,7 @@ module jhn001.a.viewmodel {
 
             self.layout().listItemCls.removeAll();
             self.layout().sendBackComment('');
-            self.layout().message(text('');
+            self.layout().message('');
             self.layout().listDocument([]);
 
         }

@@ -189,31 +189,39 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		
 		RegistrationPersonReport domainReport = domainReportOpt.get();
+		domainReport.setCid(cid);
 		domainReport.setReportLayoutID(data.reportLayoutID);
 		domainReport.setReportCode(data.reportCode);
 		domainReport.setReportName(data.reportName);
 		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
+		
 		domainReport.setInputPid(employeeInfo.inputPid);
 		domainReport.setInputSid(employeeInfo.inputSid);
 		domainReport.setInputScd(employeeInfo.inputScd);
 		domainReport.setInputBussinessName(employeeInfo.inputBussinessName);
 		domainReport.setInputDate(GeneralDateTime.now());
-		domainReport.setAppSid(employeeInfo.appliPerId);
-		domainReport.setAppScd(employeeInfo.appliPerSid);
-		domainReport.setAppPid(employeeInfo.appliPerScd);
+		
+		domainReport.setAppSid(employeeInfo.appliPerSid);
+		domainReport.setAppScd(employeeInfo.appliPerScd);
+		domainReport.setAppPid(employeeInfo.appliPerId);
 		domainReport.setAppBussinessName(employeeInfo.appliPerBussinessName);
 		domainReport.setAppDate(GeneralDateTime.now());
+		
 		domainReport.setAppDevId(employeeInfo.appDevId);
 		domainReport.setAppDevCd(employeeInfo.appDevCd);
 		domainReport.setAppDevName(employeeInfo.appDevName);
+		
 		domainReport.setAppPosId(employeeInfo.appPosId);
 		domainReport.setAppPosCd(employeeInfo.appPosCd);
 		domainReport.setAppPosName(employeeInfo.appPosName);
+		
 		domainReport.setReportType(EnumAdaptor.valueOf(data.reportType, ReportType.class));
 		domainReport.setSendBackSID(data.sendBackSID);
 		domainReport.setSendBackComment(data.sendBackComment);
+		
+		domainReport.setDelFlg(false);
 		
 		// remove list reportItem
 		reportItemRepo.deleteByReportId(cid, reportId);
