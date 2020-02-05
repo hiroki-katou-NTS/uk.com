@@ -98,7 +98,7 @@ module jhn003.a.vm {
 
             $('#reportList').ntsGrid({
                 autoGenerateColumns: false,
-                width: '908px',
+                width: '953px',
                 height: '295px',
                 primaryKey: 'reportID',
                 virtualization: true,
@@ -200,6 +200,15 @@ module jhn003.a.vm {
         approvalStatus: KnockoutObservable<string> = ko.observable('0');
 
         constructor() {
+            
+            let self = this;
+            
+            self.appDate.subscribe((data) => {
+                if (data.endDate && data.startDate > data.endDate) {
+                    data.endDate = data.startDate;
+                }
+
+            });
         }
     }
 

@@ -162,7 +162,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			query = String.format(query, sId);
 		} else {
 			if (!StringUtil.isNullOrEmpty(inputName, false)) {
-				query += " AND (r.inputBussinessName LIKE '%s' OR r.appBussinessName LIKE '%s' )";
+				query += " AND (r.inputBussinessName LIKE '%%%s%%' OR r.appBussinessName LIKE '%%%s%%' )";
 				query = String.format(query, inputName, inputName);
 			}
 		}
