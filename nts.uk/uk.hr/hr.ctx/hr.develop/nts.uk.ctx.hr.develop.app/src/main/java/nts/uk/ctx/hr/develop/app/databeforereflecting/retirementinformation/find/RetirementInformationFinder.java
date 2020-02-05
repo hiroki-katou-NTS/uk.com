@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -129,13 +130,7 @@ public class RetirementInformationFinder {
 		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x -> toPlannedRetirementDto(x))
 				.collect(Collectors.toList());
 
-		if (retiredEmployees.size() > 2000) {
-			throw new BusinessException("MsgJ_JCM008_8");
-		}
-
-		if (retiredEmployees.size() == 0) {
-			throw new BusinessException("MsgJ_JCM008_2");
-		}
+		
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
 		// mặc định set includingReflected = true để lấy hết ra giá trị
@@ -197,6 +192,14 @@ public class RetirementInformationFinder {
 		if (!isIncludingReflected) {
 			result = result.stream().filter(x -> x.getStatus() == null || x.getStatus() != 3)
 					.collect(Collectors.toList());
+		}
+		
+		if (result.size() > 2000) {
+			throw new BusinessException("MsgJ_JCM008_8");
+		}
+
+		if (result.size() == 0) {
+			throw new BusinessException("MsgJ_JCM008_2");
 		}
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
@@ -334,25 +337,33 @@ public class RetirementInformationFinder {
 		// 定年退職コース情報リストを生成する (Tao retirePlanCourseTermList)
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
+		
+		empInfos.forEach(emp -> {
 
-		madaOpt.get().getMandatoryRetireTerm().stream().filter(x -> x.isUsageFlg()).forEach(x -> {
-
-			retirePlanCourses.addAll(getRetirePlanCoursesData(madaOpt.get(), x, empInfos, retires));
+			retirePlanCourses.addAll(
+					getRetirePlanCoursesData(madaOpt.get(), madaOpt.get().getMandatoryRetireTerm(), emp, retires));
 		});
 
 		return retirePlanCourses;
 	}
 
 	private List<RetirementCourseDto> getRetirePlanCoursesData(MandatoryRetirementRegulation mada,
-			MandatoryRetireTerm retireTerm, List<EmploymentInfoImport> empInfos, List<RetirePlanCource> retires) {
+			List<MandatoryRetireTerm> retireTerms, EmploymentInfoImport emp, List<RetirePlanCource> retires) {
 
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
+		
+		Optional<MandatoryRetireTerm> retireTermOpt = retireTerms.stream().filter(
+				reti -> reti.getEmpCommonMasterItemId().equals(emp.getEmpCommonMasterItemId()) && reti.isUsageFlg())
+				.findFirst();
+		
+		if(!retireTermOpt.isPresent()){
+			return Collections.emptyList();
+		}
+		
+		MandatoryRetireTerm  retireTerm = retireTermOpt.get();
 
-		Optional<EmploymentInfoImport> empInfo = empInfos.stream().filter(emp -> emp.getEmpCommonMasterItemId() != null
-				&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId())).findFirst();
-
-		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
-		String employmentName = empInfo.isPresent() ? empInfo.get().getEmploymentName() : null;
+		String employmentCode = emp.getEmploymentCode();
+		String employmentName = emp.getEmploymentName();
 
 		retireTerm.getEnableRetirePlanCourse().forEach(x -> {
 
@@ -363,16 +374,15 @@ public class RetirementInformationFinder {
 			Optional<RetirePlanCource> retire = retires.stream()
 					.filter(re -> re.getRetirePlanCourseId() == x.getRetirePlanCourseId()).findFirst();
 
-			if (retire.isPresent()) {
+			if (retire.isPresent() && employmentCode != null && employmentName != null) {
 				dto.setRetirePlanCourseClass(retire.get().getRetirePlanCourseClass().value);
 				dto.setRetirementAge(retire.get().getRetirementAge().v());
 				dto.setRetirePlanCourseId(retire.get().getRetirePlanCourseId());
 				dto.setRetirePlanCourseCode(retire.get().getRetirePlanCourseCode());
 				dto.setRetirePlanCourseName(retire.get().getRetirePlanCourseName());
 				dto.setDurationFlg(retire.get().getDurationFlg().value);
+				dtos.add(dto);
 			}
-
-			dtos.add(dto);
 
 		});
 
