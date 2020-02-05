@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
@@ -113,7 +114,39 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 	@Override
 	public void update(RegistrationPersonReport domain) {
-		this.commandProxy().update(toEntity(domain));
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", domain.getCid())
+				.setParameter("reportId", domain.getReportID()).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			updateEntity(entity, domain);
+			this.commandProxy().update(entity);
+		}
+	}
+
+	private void updateEntity(JhndtReportRegis entity, RegistrationPersonReport domain) {
+		entity.regStatus = domain.getRegStatus().value;
+		entity.draftSaveDate =domain.getDraftSaveDate();
+		entity.missingDocName = domain.getMissingDocName();
+		entity.inputPid = domain.getInputPid();
+		entity.inputSid = domain.getInputSid();
+		entity.inputScd = domain.getInputScd();
+		entity.inputBussinessName = domain.getInputBussinessName();
+		entity.inputDate = domain.getInputDate();
+		entity.appPid = domain.getAppPid();
+		entity.appSid = domain.getAppSid();
+		entity.appScd = domain.getAppScd();
+		entity.appBussinessName = domain.getAppBussinessName();
+		entity.appDate = domain.getAppDate();
+		entity.appDevId =domain.getAppDevId();
+		entity.appDevCd = domain.getAppDevCd();
+		entity.appDevName = domain.getAppDevName();
+		entity.appPosId = domain.getAppPosId();
+		entity.appPosCd = domain.getAppPosCd();
+		entity.appPosName = domain.getAppPosName();
+		entity.reportType  = domain.getReportType().value;
+		entity.sendBackSID  = domain.getSendBackSID();
+		entity.sendBackComment = domain.getSendBackComment();
 	}
 
 	@Override
