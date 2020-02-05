@@ -877,6 +877,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 
 	@Override
 	public List<ApproverInfo> checkApproverStatusAndAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
+		List<ApproverInfo> removeLst = new ArrayList<>();
 		// 承認者リストをループ(Loop ApproverList)
 		for(ApproverInfo approverInfo : approverInfoLst) {
 			// 在職状態を取得(lấy trạng thái atwork)
@@ -893,8 +894,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			}
 			// 承認者リストにループ中の承認者を除く(Xóa approver đang loop trong ApproverList)
-			approverInfoLst.remove(approverInfo);
+			removeLst.add(approverInfo);
 		}
+		approverInfoLst.removeAll(removeLst);
 		return approverInfoLst;
 	}
 
