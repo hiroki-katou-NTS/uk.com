@@ -99,7 +99,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
 	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
 			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
-			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
+			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder DESC";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		/*builderString.append("SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE,");
