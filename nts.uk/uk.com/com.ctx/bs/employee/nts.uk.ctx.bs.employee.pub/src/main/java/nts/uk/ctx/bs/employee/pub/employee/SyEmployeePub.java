@@ -229,4 +229,13 @@ public interface SyEmployeePub {
 	List<String> filterSidByCidAndPeriod(String cid, DatePeriod period);
 	
 	Map<String, String> getAllSidAndScdBySids(List<String> sid);
+	
+	/**
+	 * 
+	 * 社員IDから個人社員基本情報を取得
+	 * @param sid
+	 * @return
+	 */
+	PersonInfoJhn001Export getEmployeeInfo(String sid);
+	
 }

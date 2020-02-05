@@ -41,7 +41,7 @@ public class ApprovalPersonReport extends AggregateRoot{
 	private String aprBussinessName; //承認者社員名
 	private String emailAddress; //メールアドレス
 	private int phaseNum; // フェーズ通番
-	private ApprovalStatus aprStatusName; //承認状況
+	private ApprovalStatus aprStatus; //承認状況
 	private int aprNum;//承認者通番
 	private boolean arpAgency;//代行承認
 	private String_Any_400 comment; //コメント
@@ -55,7 +55,7 @@ public class ApprovalPersonReport extends AggregateRoot{
 	
 	public ApprovalPersonReport(String cid, String rootSatteId, int reportID, String reportName,
 			GeneralDateTime refDate, GeneralDateTime inputDate, GeneralDateTime appDate, GeneralDateTime aprDate,
-			String aprSid, String aprBussinessName, String emailAddress, int phaseNum, int aprStatusName,
+			String aprSid, String aprBussinessName, String emailAddress, int phaseNum, int aprStatus,
 			int aprNum, boolean arpAgency, String comment, int aprActivity,
 			int emailTransmissionClass, String appSid, String inputSid, int reportLayoutID,
 			String sendBackSID, Integer sendBackClass) {
@@ -72,7 +72,7 @@ public class ApprovalPersonReport extends AggregateRoot{
 		this.aprBussinessName = aprBussinessName;
 		this.emailAddress = emailAddress;
 		this.phaseNum = phaseNum;
-		this.aprStatusName = EnumAdaptor.valueOf(aprStatusName, ApprovalStatus.class);
+		this.aprStatus = EnumAdaptor.valueOf(aprStatus, ApprovalStatus.class);
 		this.aprNum = aprNum;
 		this.arpAgency = arpAgency;
 		this.comment = new String_Any_400(comment);
