@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentAcFinder implements EmploymentAdapter {

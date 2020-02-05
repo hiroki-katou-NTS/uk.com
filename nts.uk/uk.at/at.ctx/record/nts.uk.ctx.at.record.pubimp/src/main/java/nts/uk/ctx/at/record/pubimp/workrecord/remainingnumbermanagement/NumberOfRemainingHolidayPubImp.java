@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NumberOfRemainingHolidaysPub;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class NumberOfRemainingHolidayPubImp implements NumberOfRemainingHolidaysPub {

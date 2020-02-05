@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerform
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /** 日別実績の勤怠時間 finder */
 @Stateless

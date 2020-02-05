@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento;
 import nts.uk.ctx.sys.gateway.dom.login.HashPassword;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaContractGetMemento.

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCon
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFilterConditionDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckServicePub {

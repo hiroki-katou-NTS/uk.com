@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstallationType;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class LocalContractFormCommandHandler.

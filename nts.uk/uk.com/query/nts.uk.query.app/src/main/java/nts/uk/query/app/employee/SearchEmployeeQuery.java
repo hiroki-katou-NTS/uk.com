@@ -7,7 +7,7 @@ package nts.uk.query.app.employee;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class SearchEmployeeQuery.

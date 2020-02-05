@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmploymentHistoryAdapterImpl.
@@ -36,7 +36,7 @@ public class EmploymentHistoryAdapterImpl extends JpaRepository implements Emplo
 	 * 
 	 * @see nts.uk.query.model.employement.history.EmploymentHistoryAdapter#
 	 * findSIdsByEmpCdsAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<String> findSIdsByEmpCdsAndPeriod(List<String> empCds, DatePeriod period) {

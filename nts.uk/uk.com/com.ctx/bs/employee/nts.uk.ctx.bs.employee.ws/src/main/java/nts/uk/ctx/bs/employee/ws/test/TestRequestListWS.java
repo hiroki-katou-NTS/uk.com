@@ -15,7 +15,7 @@ import nts.uk.ctx.bs.employee.app.find.employment.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder;
 import nts.uk.ctx.bs.employee.app.find.employment.EmploymentInfoExport;
 import nts.uk.ctx.bs.employee.app.find.employment.ObjectParam;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Path("test-request-list")
 @Produces(MediaType.APPLICATION_JSON)
