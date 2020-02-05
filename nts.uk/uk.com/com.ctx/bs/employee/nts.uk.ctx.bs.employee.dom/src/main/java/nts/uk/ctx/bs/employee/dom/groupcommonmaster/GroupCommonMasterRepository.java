@@ -74,5 +74,39 @@ public interface GroupCommonMasterRepository {
 	 */
 	void addGroupCommonMasterUsage(String contractCode, String commonMasterId, String companyId,
 			List<String> masterItemIds);
+	
+	/**
+	 * グループ会社共通マスタの更新
+	 * 
+	 * @param グループ会社共通マスタ(List)
+	 * @author yennth
+	 */
+	void updateGroupCommonMaster(String contractCd, List<GroupCommonMaster> domains);
+	
+	/**
+	 * グループ会社共通マスタ項目の追加
+	 * @param contractCd
+	 * @param commonMasterId
+	 * @param domains
+	 * @author yennth
+	 */
+	void addCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains);
+	
+	/**
+	 * グループ会社共通マスタ項目の更新
+	 * @param contractCd
+	 * @param commonMasterId
+	 * @param domains
+	 * @author yennth
+	 */
+	void updateCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains);
+	
+	/**
+	 * 全ての共通マスタの項目の取得
+	 * @param contractCd
+	 * @return
+	 * @author yennth
+	 */
+	List<GroupCommonMaster> getCommonMaster(String contractCd);
 
 }

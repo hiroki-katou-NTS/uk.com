@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.dom.groupcommonmaster;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,26 +35,29 @@ public class GroupCommonMasterDomainService {
 			return ListMaster.stream().sorted(Comparator.comparing(GroupCommonMaster::getCommonMasterCode))
 					.collect(Collectors.toList());
 		}
-
-		// アルゴリズム [グループ会社共通マスタの追加] を実行する
-		List<GroupCommonMaster> newListMaster = new ArrayList<GroupCommonMaster>();
-
-		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000011", new CommonMasterCode("04"),
-				new CommonMasterName("地域"), "部門マスタ、職場マスタ"));
-
-		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000031", new CommonMasterCode("01"),
-				new CommonMasterName("雇用形態"), "雇用マスタ"));
-
-		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000041", new CommonMasterCode("02"),
-				new CommonMasterName("分類区分"), "分類マスタ1"));
-
-		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000051", new CommonMasterCode("03"),
-				new CommonMasterName("職位グループ"), "職位マスタ"));
-
-		this.addGroupCommonMaster(contractCode, newListMaster);
-
-		return newListMaster.stream().sorted(Comparator.comparing(GroupCommonMaster::getCommonMasterCode))
-				.collect(Collectors.toList());
+		
+		return Collections.emptyList();
+		
+//		update sua tai lieu 
+//		// アルゴリズム [グループ会社共通マスタの追加] を実行する
+//		List<GroupCommonMaster> newListMaster = new ArrayList<GroupCommonMaster>();
+//
+//		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000011", new CommonMasterCode("04"),
+//				new CommonMasterName("地域"), "部門マスタ、職場マスタ"));
+//
+//		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000031", new CommonMasterCode("01"),
+//				new CommonMasterName("雇用形態"), "雇用マスタ"));
+//
+//		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000041", new CommonMasterCode("02"),
+//				new CommonMasterName("分類区分"), "分類マスタ1"));
+//
+//		newListMaster.add(new GroupCommonMaster(new ContractCode(contractCode), "M000051", new CommonMasterCode("03"),
+//				new CommonMasterName("職位グループ"), "職位マスタ"));
+//
+//		this.addGroupCommonMaster(contractCode, newListMaster);
+//
+//		return newListMaster.stream().sorted(Comparator.comparing(GroupCommonMaster::getCommonMasterCode))
+//				.collect(Collectors.toList());
 	}
 
 	/**
@@ -171,5 +173,41 @@ public class GroupCommonMasterDomainService {
 
 		return false;
 	}
-
+	
+	/**
+	 * グループ会社共通マスタの更新
+	 * @param contractCd
+	 * @param domains
+	 * @author yennth
+	 */
+	public void updateGroupCommonMaster(String contractCd,  List<GroupCommonMaster> domains) {
+		this.groupMasterRepo.updateGroupCommonMaster(contractCd, domains);
+	}
+	
+	/**
+	 * グループ会社共通マスタ項目の追加
+	 * @param contractCd
+	 * @author yennth
+	 */
+	public void addCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains) {
+		this.groupMasterRepo.addCommonMasterItem(contractCd, commonMasterId, domains);
+	}
+	
+	/**
+	 * グループ会社共通マスタ項目の更新
+	 * @param contractCd
+	 * @param commonMasterId
+	 * @param domains
+	 * @author yennth
+	 */
+	public void updateCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains) {
+		this.groupMasterRepo.updateCommonMasterItem(contractCd, commonMasterId, domains);
+	}
+	
+	/**
+	 * 全ての共通マスタの項目の取得
+	 */
+	public List<GroupCommonMaster> getCommonMaster(String contractCd){
+		return this.groupMasterRepo.getCommonMaster(contractCd);
+	}
 }
