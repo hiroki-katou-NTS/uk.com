@@ -154,6 +154,15 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
+        isFirstIndexFrame(loopPhase, loopFrame) {
+            let self = this;
+            let firstIndex = _.chain(loopPhase.listApprovalFrame()).filter(x => _.size(x.listApprover()) > 0).orderBy(x => x.frameOrder()).first().value().frameOrder();  
+            if(loopFrame.frameOrder()==firstIndex) {
+                return true;    
+            } 
+            return false;
+        }
+        
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             let self = this;
             if(_.size(loopFrame.listApprover()) > 1) {
@@ -177,17 +186,17 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         getApproverAtr(approver) {
             if(approver.approvalAtrName() !='未承認'){
-                if(approver.approverName().length > 0){
-                    if(approver.approverMail().length > 0){
-                        return approver.approverName() + '(@)';
-                    } else {
-                        return approver.approverName();
-                    }
-                } else {
+                if(approver.representerName().length > 0){
                     if(approver.representerMail().length > 0){
                         return approver.representerName() + '(@)';
                     } else {
                         return approver.representerName();
+                    }    
+                } else {
+                    if(approver.approverMail().length > 0){
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
                     }
                 }
             } else {
