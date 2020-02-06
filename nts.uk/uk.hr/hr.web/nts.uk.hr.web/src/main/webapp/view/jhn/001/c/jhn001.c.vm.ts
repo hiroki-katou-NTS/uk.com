@@ -30,6 +30,9 @@ module jhn001.c.viewmodel {
                 layouts = self.layouts;
             
             self.start();
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'C' }] },
+                Page.NORMAL);
         }
         
         /*　承認ボタン*/
@@ -136,8 +139,16 @@ module jhn001.c.viewmodel {
                     });
                 } else {
                     layout.classifications.removeAll();
-                    unblock();
                 }
+                
+                setTimeout(function(){
+                    
+                     $("#C222_3_1").focus();
+                
+                }, 1000);
+               
+                
+                unblock();
             });
             return dfd.promise();
         }
@@ -394,5 +405,12 @@ module jhn001.c.viewmodel {
         BACK = 2,
         CANCEL = 3,
         REGISTER = 4
+    }
+    
+        
+    enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
     }
 }
