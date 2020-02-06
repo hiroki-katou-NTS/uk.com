@@ -192,7 +192,6 @@ module jhn003.a.vm {
             { code: null, name: "" },
             { code: "0", name: text("JHN003_A222_4_1_1") },
             { code: "1", name: text("JHN003_A222_4_1_2") },
-            { code: "2", name: text("JHN003_A222_4_1_3") },
             { code: "3", name: text("JHN003_A222_4_1_4") },
             { code: "4", name: text("JHN003_A222_4_1_5") },
             { code: "5", name: text("JHN003_A222_4_1_6") }
