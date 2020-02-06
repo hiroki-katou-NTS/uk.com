@@ -11,7 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionGetMemento.

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAda
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.request.pub.aplicationreflect.AppReflectManagerFromRecordPub;
 import nts.uk.ctx.at.request.pub.aplicationreflect.ProcessStateReflectExport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AppReflectManagerAc implements AppReflectManagerAdapter {

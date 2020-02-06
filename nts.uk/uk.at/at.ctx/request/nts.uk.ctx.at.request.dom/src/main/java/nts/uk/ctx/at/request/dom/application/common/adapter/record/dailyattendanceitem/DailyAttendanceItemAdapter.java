@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattenda
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Anh.Bd

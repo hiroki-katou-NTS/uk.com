@@ -35,7 +35,7 @@ import nts.uk.ctx.bs.employee.pub.generalinfo.jobtitle.ExJobTitleHistItemDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.jobtitle.ExJobTitleHistoryDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.workplace.ExWorkPlaceHistoryDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.workplace.ExWorkplaceHistItemDto;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmployeeGeneralInfoPubImpl implements EmployeeGeneralInfoPub {

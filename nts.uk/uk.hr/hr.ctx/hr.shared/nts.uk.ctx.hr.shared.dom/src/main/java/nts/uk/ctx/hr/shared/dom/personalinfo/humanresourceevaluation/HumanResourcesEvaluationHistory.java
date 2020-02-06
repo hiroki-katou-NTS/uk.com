@@ -7,7 +7,7 @@ import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author anhdt

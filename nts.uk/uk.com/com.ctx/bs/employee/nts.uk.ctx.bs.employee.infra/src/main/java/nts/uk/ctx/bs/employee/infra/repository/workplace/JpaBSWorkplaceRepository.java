@@ -31,7 +31,7 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist_;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaBSWorkplaceRepository.
@@ -346,7 +346,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 	 * 
 	 * @see
 	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#findWorkplaces(
-	 * java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * java.util.List, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<Workplace> findWorkplaces(List<String> workplaceIds, DatePeriod datePeriod) {

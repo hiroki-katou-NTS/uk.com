@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyp
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppInterrupDailyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateperApprovalDailyDefault implements CreateperApprovalDailyService {

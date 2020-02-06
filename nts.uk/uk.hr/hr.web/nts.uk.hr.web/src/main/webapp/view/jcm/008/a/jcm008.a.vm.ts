@@ -33,9 +33,21 @@ module jcm008.a {
             });
 
             self.searchFilter.retirementCourses.subscribe((newVal) => {
-
-                self.searchFilter.retirementCoursesEarly(_.sortBy(_.filter(newVal, function(o) { return o.retirePlanCourseClass != 0; }), ['employmentCode', 'retirementAge']));
-                self.searchFilter.retirementCoursesStandard(_.sortBy(_.filter(newVal, function(o) { return o.retirePlanCourseClass == 0; }), ['employmentCode', 'retirementAge']));
+                
+                self.searchFilter.retirementCoursesEarly(
+                    _.chain(newVal)
+                        .filter((o) => { return o.retirePlanCourseClass != 0; })
+                        .uniqBy('retirePlanCourseCode')
+                        .sortBy(['employmentCode', 'retirementAge'])
+                        .value()
+                );
+                
+                self.searchFilter.retirementCoursesStandard(
+                    _.chain(newVal)
+                        .filter((o) => { return o.retirePlanCourseClass == 0; })
+                        .sortBy(['employmentCode', 'retirementAge'])
+                        .value()
+                    );
             });
         }
         

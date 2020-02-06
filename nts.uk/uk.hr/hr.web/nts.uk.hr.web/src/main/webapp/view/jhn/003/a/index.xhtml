@@ -34,7 +34,7 @@
 								</div>
 								<div class="col_group_2">
 									<div id="A222_1_1"
-										data-bind="ntsDateRangePicker: {name: 'JHN003_A222_1_1', required: true, enable: true, value: searchInfo().appDate }" />
+										data-bind="ntsDateRangePicker: {name: '#{i18n.getText('JHN003_A222_1')}', required: true, enable: true, value: searchInfo().appDate }" />
 								</div>
 							</div>
 
@@ -44,11 +44,11 @@
 								</div>
 								<div class="col_group_2">
 									<input id="A222_3_1"
-										data-bind="ntsTextEditor: {name:'JHN003_A222_3_1', value: searchInfo().inputName, enable: true }" />
+										data-bind="ntsTextEditor: {name: '#[JHN003_A222_3_1]', value: searchInfo().inputName, enable: true }" />
 								</div>
 								<div class="col_group_3">
 									<div id="A222_5"
-										data-bind="ntsCheckBox: {name:'JHN003_A222_5', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
+										data-bind="ntsCheckBox: {name: ' #[ JHN003_A222_5 ] ', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
 								</div>
 
 							</div>
@@ -62,7 +62,7 @@
 								<div class="col_group_2">
 									<div id="A222_2_1"
 										data-bind="ntsComboBox: {
-														name: 'JHN003_A222_2_1',
+														name:' #[ JHN003_A222_2_1 ] ',
 														options: searchInfo().reportItems,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -83,7 +83,7 @@
 								<div class="col_group_2">
 									<div id="A222_2_1"
 										data-bind="ntsComboBox: {
-														name: 'JHN003_A222_4_1',
+														name: ' #[ JHN003_A222_4_1 ] ' ,
 														options: searchInfo().approvalItems,
 														optionsValue: 'code',
 														visibleItemsCount: 5,

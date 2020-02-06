@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 
 /**
@@ -31,7 +31,7 @@ public class WkpHistWithPeriodAdapterImpl implements WkpHistWithPeriodAdapter{
 	private SyWorkplacePub syWorkplacePub;
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter#getLstHistByWkpsAndPeriod(java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter#getLstHistByWkpsAndPeriod(java.util.List, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<WkpHistWithPeriodImport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period) {

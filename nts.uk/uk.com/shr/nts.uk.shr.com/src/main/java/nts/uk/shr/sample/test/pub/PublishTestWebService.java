@@ -16,7 +16,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/sample/test/pub")
