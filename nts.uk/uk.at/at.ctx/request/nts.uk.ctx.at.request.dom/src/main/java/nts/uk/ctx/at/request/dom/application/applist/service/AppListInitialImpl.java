@@ -514,20 +514,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			// 申請一覧共通設定.承認状況＿取消がチェックあり(True)の場合 - A4_1_6: check
 			if (param.isCancelStatus()
-					&& (state.equals(ReflectedState_New.CANCELED) || state.equals(ReflectedState_New.WAITCANCEL))) {// 反映状態.実績反映状態
-																													// ＝
-																													// 取消または取消待ち
+					&& (state.equals(ReflectedState_New.CANCELED) || state.equals(ReflectedState_New.WAITCANCEL))) {// 反映状態.実績反映状態 ＝ 取消または取消待ち
 				check = true;
 			}
-			if (check) {
-				// 条件 bo sung: phase truoc do phai duoc approval thi moi hien
-				// thi don
+			if (check) {// 条件 bo sung: phase truoc do phai duoc approval thi moi hien thi don
 				// int phaseOrderCur = status.getPhaseOrder().intValue();
 				PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(),
 						appFull.getLstPhaseState());
-				int phaseMin = this.phaseNotApprMin(appFull.getLstPhaseState());
-				// if(phaseOrderCur == 1 || this.checkApprove(statusPhase,
-				// phaseOrderCur)){//phase truoc do da approve
+				int phaseMin = this.phaseNotApprMax(appFull.getLstPhaseState());
+				// if(phaseOrderCur == 1 || this.checkApprove(statusPhase, phaseOrderCur)){//phase truoc do da approve
 				if (status.getPhaseOrder().intValue() <= phaseMin) {
 					lstAppFilter3.add(appFull.getApplication());
 					lstAppFullFilter3.add(appFull);
@@ -616,8 +611,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				AppCompltLeaveFull appSub = null;
 				String appDateSub = null;
 				String appInputSub = null;
-				// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6
-				// - 申請一覧リスト取得振休振出
+				// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
 				AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
 				if (!sync.isSync()) {// TH k co don lien ket
 					// lay thong tin chi tiet
@@ -654,8 +648,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			lstAppFilter.addAll(lstCompltSync);
 			// アルゴリズム「申請一覧リスト取得出張」を実行する
 			// TODO Auto-generated method stub
-			// アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 -
-			// 申請一覧リスト取得実績
+			// アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
 			// loai bo nhung don dong bo
 			List<ApplicationFullOutput> lstCount = lstAppFullFilter3.stream()
 					.filter(c -> !lstSyncId.contains(c.getApplication().getAppID())).collect(Collectors.toList());
@@ -669,11 +662,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					sID, new ArrayList<>(), lstWkType, lstWkTime, device);
 		}
 
-		// imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi
-		// bo qua
+		// imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoibo qua
 		// TODO Auto-generated method stub
-		// アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 -
-		// 申請一覧リスト取得マスタ情報
+		// アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 		DataMasterOutput lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId,
 				new DatePeriod(param.getStartDate(), param.getEndDate()), device);
 
@@ -1357,32 +1348,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @return
 	 */
 	private PhaseFrameStatus findPhaseFrameStatus(List<ApprovalPhaseStateImport_New> lstPhase, String sID) {
-		// PhaseFrameStatus status = new PhaseFrameStatus();
-		int phaseNotApprMin = this.phaseNotApprMin(lstPhase);
+		int phaseNotApprMin = this.phaseNotApprMax(lstPhase);
 		List<PhaseFrameStatus> lstStt = new ArrayList<>();
-		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder));
+		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if (frame.getFrameStatus() != null) {
-				// status.setPhaseOrder(appPhase.getPhaseOrder());
-				// status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(),
-				// ApprovalBehaviorAtrImport_New.class));
-				// status.setPhaseStatus(appPhase.getApprovalAtr());
-				// status.setAgentId(frame.getAgentId());
 				lstStt.add(new PhaseFrameStatus(appPhase.getPhaseOrder(), appPhase.getApprovalAtr(),
 						EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class),
 						frame.getAgentId()));
 			}
 		}
-		if (lstStt.isEmpty())
-			return new PhaseFrameStatus();
+		if (lstStt.isEmpty()) return new PhaseFrameStatus();
 		PhaseFrameStatus status = lstStt.get(0);
 		for (PhaseFrameStatus stt : lstStt) {
 			if (stt.getPhaseOrder() == phaseNotApprMin)
 				return stt;
-			if (stt.getPhaseOrder() > phaseNotApprMin)
-				return status;
 			if (stt.getPhaseOrder() < phaseNotApprMin)
+				return status;
+			if (stt.getPhaseOrder() > phaseNotApprMin)
 				status = stt;
 		}
 		return status;
@@ -1400,21 +1384,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private FrameOutput checkPhaseCurrent(ApprovalPhaseStateImport_New phase, String sID) {
 		List<ApprovalFrameImport_New> lstFrame = phase.getListApprovalFrame();
 		FrameOutput statusFrame = new FrameOutput();
-		/*
 		for (ApprovalFrameImport_New frame : lstFrame) {
-			if (this.checkExistEmp(frame.getListApprover(), sID)) {
-				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
-				statusFrame.setAgentId(frame.getRepresenterID());
-				break;
-			}
-			// TH login la agent va da approval
-			if (frame.getRepresenterID() != null && frame.getRepresenterID().equals(sID)) {
-				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
-				statusFrame.setAgentId(frame.getRepresenterID());
-				break;
+			List<ApproverStateImport_New> listApprover = frame.getListApprover();
+			for(ApproverStateImport_New appr : listApprover) {
+				if (appr.getApproverID().equals(sID)) {
+					statusFrame.setFrameStatus(appr.getApprovalAtr().value);
+					statusFrame.setAgentId(appr.getAgentID());
+					break;
+				}
+				// TH login la agent va da approval
+				if (appr.getAgentID() != null && appr.getAgentID().equals(sID)) {
+					statusFrame.setFrameStatus(appr.getApprovalAtr().value);
+					statusFrame.setAgentId(appr.getAgentID());
+					break;
+				}
 			}
 		}
-		*/
 		return statusFrame;
 	}
 
@@ -1425,16 +1410,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param sID
 	 * @return
 	 */
-	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID) {
-		boolean check = false;
-		for (ApproverStateImport_New approver : listApprover) {
-			if (approver.getApproverID().equals(sID)) {
-				check = true;
-				break;
-			}
-		}
-		return check;
-	}
+//	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID) {
+//		boolean check = false;
+//		for (ApproverStateImport_New approver : listApprover) {
+//			if (approver.getApproverID().equals(sID)) {
+//				check = true;
+//				break;
+//			}
+//		}
+//		return check;
+//	}
 
 	/**
 	 * calculate status of application
@@ -1464,14 +1449,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private int calAppAproval(ReflectedState_New appStatus, PhaseFrameStatus status) {
 		switch (appStatus.value) {
 		case 0:// APP: 未反映 - NOTREFLECTED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {// Phase:
-																							// 未承認
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {// Frame:
-																								// 未承認
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
+				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Frame: 未承認
 					return 5;
 				}
-				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Frame:
-																								// 承認済
+				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 承認済
 					return 4;
 				}
 				return 0;
@@ -1482,33 +1464,27 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				return 0;
 			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Phase:
-																							// 承認済
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Frame:
-																									// 未承認/承認済
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
 					return 4;
 				}
 				return 0;
 			}
 			return 0;
 		case 1:// APP: 反映待ち - WAITREFLECTION
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Phase:
-																							// 承認済
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Frame:
-																									// 未承認/承認済
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
 					return 4;
 				}
 				return 0;
 			}
 			return 0;
 		case 2:// APP: 反映済 - REFLECTED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Phase:
-																							// 承認済
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Frame:
-																									// 未承認/承認済
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Frame: 未承認/承認済
 					return 4;
 				}
 				return 0;
@@ -1517,64 +1493,52 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		case 5:// APP: 差し戻し - REMAND
 			return 0;
 		case 6:// APP: 否認 - DENIAL
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {// Phase:
-																							// 未承認
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 1;
 				}
 				return 0;
 			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Phase:
-																							// 承認済
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 1;
 				}
 				return 0;
 			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Phase:
-																						// 否認
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Phase: 否認
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 1;
 				}
 				return 0;
 			}
 			return 0;
 		default:// APP: 取消待ち - WAITCANCEL/取消済 - CANCELED
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {// Phase:
-																							// 未承認
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 3;
 				}
 				return 0;
 			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {// Phase:
-																							// 承認済
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {//Phase: 承認済
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 3;
 				}
 				return 0;
 			}
-			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Phase:
-																						// 否認
+			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Phase: 否認
 				if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {// Frame:
-																									// 未承認/承認済/否認
+						|| status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {//Frame: 未承認/承認済/否認
 					return 3;
 				}
 				return 0;
@@ -1715,30 +1679,31 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// dk1
 		List<ApprovalPhaseStateImport_New> lstPhase = app.getLstPhaseState();
 		ApproverStt check = new ApproverStt(false, null);
-		/*
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			int frameCount = appPhase.getListApprovalFrame().size();
 			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
-				// 承認枠.承認区分!=未承認
-				if (!frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
-					if (this.checkDifNotAppv(frame, sID)) {
-						check = new ApproverStt(true, null);
-						;
-						break;
-					}
-				} else {// 承認枠.承認区分 = 未承認
-					ApproverStt checkNotAppv = this.checkNotAppv(frame, lstAgent, appPhase.getApprovalAtr(),
-							app.getApplication(), sID, frameCount);
-					if (checkNotAppv.isCheck()) {
-						check = new ApproverStt(true, checkNotAppv.getApprId());
-						;
-						break;
+				List<ApproverStateImport_New> listApprover = frame.getListApprover();
+				for(ApproverStateImport_New appr : listApprover) {
+					// 承認枠.承認区分!=未承認
+					if (!appr.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
+						if (this.checkDifNotAppv(appr, sID)) {
+							check = new ApproverStt(true, null);
+							;
+							break;
+						}
+					} else {// 承認枠.承認区分 = 未承認
+						ApproverStt checkNotAppv = this.checkNotAppv(appr, lstAgent, appPhase.getApprovalAtr(),
+								app.getApplication(), sID, frameCount);
+						if (checkNotAppv.isCheck()) {
+							check = new ApproverStt(true, checkNotAppv.getApprId());
+							;
+							break;
+						}
 					}
 				}
 			}
 
 		}
-		*/
 		return check;
 	}
 
@@ -1748,18 +1713,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param frame
 	 * @return
 	 */
-	private boolean checkDifNotAppv(ApprovalFrameImport_New frame, String sID) {
-		/*
-		if (Strings.isNotBlank(frame.getApproverID()) && frame.getApproverID().equals(sID)) {
+	private boolean checkDifNotAppv(ApproverStateImport_New approver, String sID) {
+		if (approver.getApproverID().equals(sID)) {
 			return true;
 		}
-		if (Strings.isNotBlank(frame.getRepresenterID()) && frame.getRepresenterID().equals(sID)) {
+		if (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(sID)) {
 			return true;
 		}
-		if (this.checkExistEmp(frame.getListApprover(), sID)) {
-			return true;
-		}
-		*/
+//		if (this.checkExistEmp(frame.getListApprover(), sID)) {
+//			return true;
+//		}
 		return false;
 	}
 
@@ -1769,7 +1732,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param frame
 	 * @return
 	 */
-	private ApproverStt checkNotAppv(ApprovalFrameImport_New frame, List<AgentDataRequestPubImport> lstAgent,
+	private ApproverStt checkNotAppv(ApproverStateImport_New appr, List<AgentDataRequestPubImport> lstAgent,
 			ApprovalBehaviorAtrImport_New phaseAtr, Application_New app, String sID, int frameCount) {
 		// ※前提条件：「申請.反映情報 ＝ 未反映」且 「自身の承認フェーズ ＝ 未承認/差し戻し」の場合
 		if (frameCount <= 1
@@ -1779,8 +1742,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			return new ApproverStt(false, null);
 		}
 		// １．承認予定者より取得（自身が承認する申請）
-		if (this.checkExistEmp(frame.getListApprover(), sID)) {// 承認枠.承認者リスト(複数ID)
-																// ＝ログイン者社員ID
+		if (appr.getApproverID().equals(sID)) {// 承認枠.承認者リスト(複数ID) ＝ ログイン者社員ID
 			return new ApproverStt(true, null);
 		}
 		// ２．取得したドメイン「代行者管理」より代理者指定されている場合は取得
@@ -1789,7 +1751,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String idAppr = null;
 		for (AgentDataRequestPubImport agent : lstAgent) {
 			// 2019/05/14 EA修正履歴 No.3436 #107724
-			if (this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())) {
+			if (appr.getApproverID().equals(agent.getEmployeeId())) {
 				lstId.add(agent.getAgentSid1());
 				idAppr = agent.getEmployeeId();
 			}
@@ -1799,6 +1761,36 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new ApproverStt(false, null);
 	}
+//	private ApproverStt checkNotAppv(ApprovalFrameImport_New frame, List<AgentDataRequestPubImport> lstAgent,
+//			ApprovalBehaviorAtrImport_New phaseAtr, Application_New app, String sID, int frameCount) {
+//		// ※前提条件：「申請.反映情報 ＝ 未反映」且 「自身の承認フェーズ ＝ 未承認/差し戻し」の場合
+//		if (frameCount <= 1
+//				&& (!app.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.NOTREFLECTED)
+//						|| (!phaseAtr.equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
+//								&& !phaseAtr.equals(ApprovalBehaviorAtrImport_New.REMAND)))) {
+//			return new ApproverStt(false, null);
+//		}
+//		// １．承認予定者より取得（自身が承認する申請）
+//		if (this.checkExistEmp(frame.getListApprover(), sID)) {// 承認枠.承認者リスト(複数ID)
+//																// ＝ログイン者社員ID
+//			return new ApproverStt(true, null);
+//		}
+//		// ２．取得したドメイン「代行者管理」より代理者指定されている場合は取得
+//		// 申請.申請日付 ＝ 代行者管理：代行承認.代行依頼期間 &&承認枠.承認者リスト（複数ID）＝ 代行者管理：代行承認.代行依頼者\
+//		List<String> lstId = new ArrayList<>();
+//		String idAppr = null;
+//		for (AgentDataRequestPubImport agent : lstAgent) {
+//			// 2019/05/14 EA修正履歴 No.3436 #107724
+//			if (this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())) {
+//				lstId.add(agent.getAgentSid1());
+//				idAppr = agent.getEmployeeId();
+//			}
+//		}
+//		if (lstId.contains(sID)) {// 代行承認.承認代行者 ＝ ログイン者社員ID
+//			return new ApproverStt(true, idAppr);
+//		}
+//		return new ApproverStt(false, null);
+//	}
 
 	/**
 	 * convert status phase －：承認フェーズ.承認区分 ＝ 未承認 〇：承認フェーズ.承認区分 ＝ 承認済
@@ -1819,16 +1811,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
 			}
 			phaseStatus += phaseI;
-			// Doi ung theo QA #90893
-			// String phaseI = "";
-			// Integer status = this.findPhaseStatus(lstPhaseState, i);
-			// if(status == null){
-			// continue;
-			// }
-			// phase exist
-			// lstPhaseAtr.add(status);
-			// phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
-			// phaseStatus += phaseI;
 		}
 		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
@@ -2061,22 +2043,24 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return 0;
 	}
 
-	private int phaseNotApprMin(List<ApprovalPhaseStateImport_New> lstPhase) {
-		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder));
-		int phaseApprMax = 0;
-		int phaseNotAppr = lstPhase.get(0).getPhaseOrder();
-		if (lstPhase.get(0).getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED))
-			return phaseNotAppr;
+	private int phaseNotApprMax(List<ApprovalPhaseStateImport_New> lstPhase) {
+		//SX: Ph5-4-3-2-1
+		Collections.sort(lstPhase, Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
+		int phaseApprMin = 0;
+		int phaseNotAppr = lstPhase.get(0).getPhaseOrder();//phmax (5)
+		//TH PhMax chua appr
+		if (lstPhase.get(0).getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) return phaseNotAppr;
+		//check tung ph
 		for (ApprovalPhaseStateImport_New phase : lstPhase) {
 			if (phase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)) {
-				phaseApprMax = phase.getPhaseOrder().intValue();
+				phaseApprMin = phase.getPhaseOrder().intValue();
 			} else {
-				if (phaseNotAppr <= phaseApprMax)
+				if (phaseNotAppr >= phaseApprMin)
 					phaseNotAppr = phase.getPhaseOrder().intValue();
 			}
 		}
-		if (phaseApprMax == lstPhase.get(lstPhase.size() - 1).getPhaseOrder())
-			phaseNotAppr = phaseApprMax;
+		if (phaseApprMin == lstPhase.get(lstPhase.size() - 1).getPhaseOrder())
+			phaseNotAppr = phaseApprMin;
 		return phaseNotAppr;
 	}
 
