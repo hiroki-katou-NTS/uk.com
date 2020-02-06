@@ -9,7 +9,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleSetMemento.

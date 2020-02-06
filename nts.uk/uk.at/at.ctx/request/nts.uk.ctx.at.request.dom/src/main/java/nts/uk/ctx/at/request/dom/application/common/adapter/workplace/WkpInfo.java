@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workplace;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanc
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless

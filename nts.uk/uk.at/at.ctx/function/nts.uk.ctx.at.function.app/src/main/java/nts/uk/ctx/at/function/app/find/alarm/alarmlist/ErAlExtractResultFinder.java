@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeI
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractExecuteType;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlExtractResultFinder {

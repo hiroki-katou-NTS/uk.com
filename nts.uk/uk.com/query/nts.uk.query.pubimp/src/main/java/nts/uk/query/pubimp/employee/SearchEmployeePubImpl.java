@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
 import nts.uk.query.pub.employee.SearchEmployeePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SearchEmployeePubImpl.

@@ -5,7 +5,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PeriodVactionCalInfor;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnualHolidayPlanManaAdapter {
 	/**

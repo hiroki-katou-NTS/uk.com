@@ -41,7 +41,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPer
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveOfEmployeeSevice{
 	@Inject

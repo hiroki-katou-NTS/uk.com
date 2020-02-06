@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceHistoryDto.

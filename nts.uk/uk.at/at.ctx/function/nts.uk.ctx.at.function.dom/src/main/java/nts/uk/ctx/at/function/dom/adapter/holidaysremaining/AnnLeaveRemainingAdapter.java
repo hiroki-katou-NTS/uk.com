@@ -2,8 +2,8 @@ package nts.uk.ctx.at.function.dom.adapter.holidaysremaining;
 
 import java.util.List;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface AnnLeaveRemainingAdapter {
 	/**

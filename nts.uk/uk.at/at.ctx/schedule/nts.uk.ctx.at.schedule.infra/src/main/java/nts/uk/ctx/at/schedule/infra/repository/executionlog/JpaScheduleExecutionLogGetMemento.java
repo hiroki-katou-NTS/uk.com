@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaScheduleExecutionLogGetMemento.

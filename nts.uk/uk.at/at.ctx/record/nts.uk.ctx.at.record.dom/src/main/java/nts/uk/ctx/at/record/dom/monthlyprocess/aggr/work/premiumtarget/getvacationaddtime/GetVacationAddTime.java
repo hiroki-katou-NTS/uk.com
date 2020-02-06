@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacat
 
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 休暇加算時間を取得する

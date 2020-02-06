@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.adapter.workplace;
 
 import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 社員所属職場履歴を取得

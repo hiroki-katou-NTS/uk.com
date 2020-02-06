@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultIm
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AttendanceResultImportAdapter.

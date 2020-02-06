@@ -6,7 +6,7 @@ package nts.uk.query.model.employee.history;
 
 import java.util.List;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface EmployeeHistoryRepository.

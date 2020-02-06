@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.Continuo
 import nts.uk.ctx.at.record.pub.fixedcheckitem.FixedCheckItemPub;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class FixedCheckItemPubImpl implements FixedCheckItemPub {

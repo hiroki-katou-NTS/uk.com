@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DailyIn
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDetailInfor{
 	@Inject

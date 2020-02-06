@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter

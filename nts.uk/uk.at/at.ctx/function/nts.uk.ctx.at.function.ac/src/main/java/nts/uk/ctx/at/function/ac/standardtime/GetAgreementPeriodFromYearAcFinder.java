@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYea
 import nts.uk.ctx.at.record.pub.standardtime.GetAgreementPeriodFromYearPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 /**

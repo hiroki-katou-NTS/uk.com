@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 public class SelectionHistory implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {

@@ -15,7 +15,7 @@ import nts.uk.ctx.bs.employee.dom.employee.service.SyCompanyAdapter;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.AffComHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.AffCompanyHistExport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SyCompanyAdapterImp implements SyCompanyAdapter{

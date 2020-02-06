@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImporte
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentStatusImported;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

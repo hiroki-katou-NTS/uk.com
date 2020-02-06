@@ -7,7 +7,7 @@ package nts.uk.ctx.at.function.dom.statement;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WkpHistWithPeriodAdapter.

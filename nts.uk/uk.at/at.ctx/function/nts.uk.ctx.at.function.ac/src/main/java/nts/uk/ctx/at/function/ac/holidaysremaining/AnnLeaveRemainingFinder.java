@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
 import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnLeaGrantRemDataPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnualLeaveGrantRemainDataExport;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {

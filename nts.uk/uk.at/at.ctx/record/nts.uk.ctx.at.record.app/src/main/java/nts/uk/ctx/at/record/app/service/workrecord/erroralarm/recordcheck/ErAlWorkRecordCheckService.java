@@ -45,7 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.Busin
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckService {

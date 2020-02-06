@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHo
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 //import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class PlanAnnualUserDetailExportImpl implements PlanAnnualUserDetailExport{
 	@Inject

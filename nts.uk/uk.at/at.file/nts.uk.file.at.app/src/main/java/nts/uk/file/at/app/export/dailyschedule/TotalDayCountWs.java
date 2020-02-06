@@ -21,7 +21,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.NumberOfItem;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Total day count class

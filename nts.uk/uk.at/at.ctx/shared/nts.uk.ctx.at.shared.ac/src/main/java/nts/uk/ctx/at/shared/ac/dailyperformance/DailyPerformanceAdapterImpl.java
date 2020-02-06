@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.RouteSituationImport;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 
@@ -53,7 +53,7 @@ public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter#appEmpStatusExport(java.lang.String, nts.arc.time.calendar.period.DatePeriod, java.lang.Integer)
+	 * @see nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter#appEmpStatusExport(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod, java.lang.Integer)
 	 */
 	@Override
 	public AppEmpStatusImport appEmpStatusExport(String employeeID, DatePeriod period, Integer rootType) {

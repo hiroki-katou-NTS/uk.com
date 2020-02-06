@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceH
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ApplicationContentServiceImpl implements IApplicationContentService {

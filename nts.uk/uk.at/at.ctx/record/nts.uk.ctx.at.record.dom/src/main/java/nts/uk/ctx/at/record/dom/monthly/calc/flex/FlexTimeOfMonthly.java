@@ -52,7 +52,7 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.ReferencePredTim
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績のフレックス時間

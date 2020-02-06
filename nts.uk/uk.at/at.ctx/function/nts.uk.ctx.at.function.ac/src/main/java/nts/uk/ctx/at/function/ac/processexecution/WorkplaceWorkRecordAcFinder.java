@@ -18,7 +18,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {

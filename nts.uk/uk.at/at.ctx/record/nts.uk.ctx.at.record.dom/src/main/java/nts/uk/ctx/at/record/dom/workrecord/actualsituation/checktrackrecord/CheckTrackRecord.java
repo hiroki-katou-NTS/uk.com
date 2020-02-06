@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 承認すべき月の実績があるかチェックする [RQ594]

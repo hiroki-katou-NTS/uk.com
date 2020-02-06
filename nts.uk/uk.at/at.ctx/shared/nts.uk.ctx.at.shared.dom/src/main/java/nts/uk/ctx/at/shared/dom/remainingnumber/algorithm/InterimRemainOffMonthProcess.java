@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface InterimRemainOffMonthProcess {
 	/**

@@ -23,7 +23,7 @@ import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentHistoryPubImp implements IEmploymentHistoryPub{

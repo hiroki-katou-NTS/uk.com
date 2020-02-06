@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata;
 
 import java.util.List;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnualHolidayPlanManRepository {
 	/**

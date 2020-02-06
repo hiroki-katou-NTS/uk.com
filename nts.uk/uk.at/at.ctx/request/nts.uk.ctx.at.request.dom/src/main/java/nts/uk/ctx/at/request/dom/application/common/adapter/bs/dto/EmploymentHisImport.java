@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 
 import lombok.Value;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Value
 public class EmploymentHisImport {

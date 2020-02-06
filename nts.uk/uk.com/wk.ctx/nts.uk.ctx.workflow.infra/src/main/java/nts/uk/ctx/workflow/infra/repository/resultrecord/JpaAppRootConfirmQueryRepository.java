@@ -24,7 +24,7 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootIntermForQuery;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootRecordConfirmForQuery;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

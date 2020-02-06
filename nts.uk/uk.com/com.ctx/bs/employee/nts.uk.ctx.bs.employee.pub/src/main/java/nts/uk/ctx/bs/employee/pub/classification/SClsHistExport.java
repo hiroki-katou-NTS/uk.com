@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.pub.classification;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SClsHistExport.

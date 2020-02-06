@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.adapter.initswitchsetting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

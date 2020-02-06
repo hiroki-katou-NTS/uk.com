@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.adapter.reserveleave;
 
 import java.util.List;
 
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface GetReserveLeaveNumbersAdpter {
 	

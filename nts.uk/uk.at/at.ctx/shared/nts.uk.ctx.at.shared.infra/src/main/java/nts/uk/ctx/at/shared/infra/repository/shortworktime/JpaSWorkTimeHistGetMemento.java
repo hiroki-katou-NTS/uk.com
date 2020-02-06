@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaSWorkTimeHistGetMemento.

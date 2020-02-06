@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApplicationTypeAdapt
 import nts.uk.ctx.at.request.pub.screen.ApplicationPub;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ApplicationTypePubImpl implements ApplicationTypeAdapter {

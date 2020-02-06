@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.byperiod.anyaggrperiod;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 任意集計期間

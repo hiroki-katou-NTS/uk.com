@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.auth.dom.adapter.workplace;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffWorkplaceHistImport.

@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.ktgwidget;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface OvertimeHoursRepository {
 

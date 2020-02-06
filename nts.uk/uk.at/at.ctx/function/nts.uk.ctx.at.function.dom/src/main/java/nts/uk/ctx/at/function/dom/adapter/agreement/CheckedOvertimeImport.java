@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Number;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Builder
 @Setter
 @Getter

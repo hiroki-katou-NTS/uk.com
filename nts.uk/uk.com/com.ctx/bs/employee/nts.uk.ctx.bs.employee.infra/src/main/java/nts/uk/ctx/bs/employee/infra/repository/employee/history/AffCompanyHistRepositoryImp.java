@@ -37,7 +37,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistP
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfoPk;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCompanyHistRepository {

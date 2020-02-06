@@ -37,7 +37,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstPremiumSet;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
 import nts.uk.shr.com.primitive.Memo;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

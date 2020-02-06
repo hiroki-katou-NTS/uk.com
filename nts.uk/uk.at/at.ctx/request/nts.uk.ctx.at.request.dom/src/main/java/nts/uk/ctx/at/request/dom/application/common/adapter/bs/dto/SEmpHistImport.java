@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 
 import lombok.Data;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * @author loivt
  * 所属雇用履歴を取得
