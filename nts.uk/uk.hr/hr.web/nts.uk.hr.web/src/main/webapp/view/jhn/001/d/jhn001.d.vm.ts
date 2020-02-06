@@ -1,4 +1,4 @@
-module nts.uk.hr.view.jhn001.d.viewmodel {
+module jhn001.d.viewmodel {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -6,13 +6,14 @@ module nts.uk.hr.view.jhn001.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
+    import hasError = nts.uk.ui.errors.hasError;
     import permision = service.getCurrentEmpPermision;
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
-    export class ScreenModel {
+    export class ViewModel {
         listReturn: KnockoutObservableArray<IReturnModel> = ko.observableArray([]);
         selectedReturn: KnockoutObservable<number> = ko.observable(1);
 
@@ -25,11 +26,12 @@ module nts.uk.hr.view.jhn001.d.viewmodel {
             let self = this;
 
             self.listSendBackCls = ko.observableArray([
-                new ItemModel(1, 'gg'),
+                new ItemModel(1, ''),
                 new ItemModel(2, '記載不備'),
                 new ItemModel(3, '添付書類不')
             ]);
             self.selectedSendBackCls = ko.observable(2);
+            self.start();
         }
 
         start(): JQueryPromise<any> {
@@ -45,32 +47,33 @@ module nts.uk.hr.view.jhn001.d.viewmodel {
 
         getDetail(reportId): JQueryPromise<any> {
             let self = this,
-                listReturn = self.listReturn,
+                listData = [],
                 dfd = $.Deferred();
 
             var dfdGetData = service.getDetailRp(reportId);
 
             block();
-            $.when(dfdGetData).done((listReturn: any) => {
+            $.when(dfdGetData).done((result: any) => {
                 debugger;
-                if (listReturn.length > 0) {
-                    for (var i = 0; i < listReturn.length; i++) {
+                if (result.length > 0) {
+                    for (var i = 0; i < result.length; i++) {
                         let _data = {
-                            id: listReturn[i].id,
-                            cid: listReturn[i].cid,
-                            reportID: listReturn[i].reportID,
-                            phaseNum: listReturn[i].phaseNum,
-                            aprNum: listReturn[i].aprNum,
-                            comment: listReturn[i].comment,
-                            inputSid: listReturn[i].inputSid, // sid của người login
-                            appSid: listReturn[i].appSid, // sid của người làm đơn
-                            aprSid: listReturn[i].aprSid,  // sid người approw
-                            sendBackClass: listReturn[i].sendBackClass,
-                            arpAgency: listReturn[i].arpAgency,
-                            infoToDisplay: listReturn[i].infoToDisplay
+                            id: result[i].id,
+                            cid: result[i].cid,
+                            reportID: result[i].reportID,
+                            phaseNum: result[i].phaseNum,
+                            aprNum: result[i].aprNum,
+                            comment: result[i].comment,
+                            inputSid: result[i].inputSid, // sid của người login
+                            appSid: result[i].appSid, // sid của người làm đơn
+                            aprSid: result[i].aprSid,  // sid người approw
+                            sendBackClass: result[i].sendBackClass,
+                            arpAgency: result[i].arpAgency,
+                            infoToDisplay: result[i].infoToDisplay
                         }
-                        listReturn.push(_data);
+                        listData.push(_data);
                     }
+                    self.listReturn(listData);
                     unblock();
                 }
                 unblock();
@@ -79,8 +82,12 @@ module nts.uk.hr.view.jhn001.d.viewmodel {
             return dfd.promise();
         }
 
-        save() {
+        sendBack() {
             let self = this;
+            
+            if (hasError()) {
+                return;
+            }
 
             nts.uk.ui.dialog.confirm({ messageId: "Msgj_8" }).ifYes(() => {
                 block();
@@ -91,7 +98,7 @@ module nts.uk.hr.view.jhn001.d.viewmodel {
                 let command = {
                     reportID: obj.reportID,
                     phaseNum: selectedReturn == 1 ? 0 : obj.phaseNum,
-                    aprNum:   selectedReturn == 1 ? 0obj.aprNum,
+                    aprNum:   selectedReturn == 1 ? 0 : obj.aprNum,
                     comment:  self.sendBackComment(),
                     inputSid: selectedReturn == 1 ? null : obj.inputSid,
                     appSid:   obj.appSid,

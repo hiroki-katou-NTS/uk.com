@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveReportSendBackCommand;
@@ -23,9 +24,9 @@ public class PersonalReportSendBackWebService {
 	private RegisterApproveSendBackCommandHandler save;
 
 	@POST
-	@Path("get")
-	public List<ApprovalPersonReportDto> getListApprovalPersonReport() {
-		return finder.getListDomain(1);
+	@Path("get/{reportId}")
+	public List<ApprovalPersonReportDto> getListApprovalPersonReport(@PathParam("reportId") int reportId) {
+		return finder.getListDomain(reportId);
 	}
 
 	@POST

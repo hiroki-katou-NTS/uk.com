@@ -18,3 +18,14 @@
     height: 50px;
     margin-top: 20px;
 }
+
+.flex {
+    display: flex;
+    margin-left: 35px;
+    margin-top: 20px;
+}
+
+#sendBackComment{
+	width: 560px; 
+	height: 80px;
+}

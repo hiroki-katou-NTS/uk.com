@@ -40,7 +40,7 @@ public class ApprovalPersonReportFinder {
 		String cid = AppContexts.user().companyId();
 		List<ApprovalPersonReportDto> result = new ArrayList<>();
 		
-		List<ApprovalPersonReport> listDomain = repo.getListDomainByReportId(cid, String.valueOf(reportId)).stream()
+		List<ApprovalPersonReport> listDomain = repo.getListDomainByReportId(cid, reportId).stream()
 				.filter(apr -> apr.getAprStatus().value == ApprovalStatus.Approved.value).collect(Collectors.toList());
 		
 		if (listDomain.isEmpty()) {
@@ -61,7 +61,7 @@ public class ApprovalPersonReportFinder {
 				.infoToDisplay("申請者：  " + bussinessNameApplication  ).build();
 		result.add(firstItemCombobox);
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < listDomain.size(); i++) {
 			ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder()
 					.id(i+2)
 					.cid(cid) // 会社ID
@@ -73,7 +73,7 @@ public class ApprovalPersonReportFinder {
 					.appSid(listDomain.get(i).getAppSid())
 					.aprSid(listDomain.get(i).getAprSid())
 					.sendBackClass(listDomain.get(i).getSendBackClass().isPresent() ? listDomain.get(i).getSendBackClass().get().value : 2 )
-					.infoToDisplay("フェーズ" + i + "の承認者" + i + ":  " + "aprBussinessName")
+					.infoToDisplay("フェーズ" + listDomain.get(i).getPhaseNum()  + "の承認者" + listDomain.get(i).getAprNum() + ":  " + listDomain.get(i).getAprBussinessName())
 					.build();
 			result.add(itemCombobox);
 		}

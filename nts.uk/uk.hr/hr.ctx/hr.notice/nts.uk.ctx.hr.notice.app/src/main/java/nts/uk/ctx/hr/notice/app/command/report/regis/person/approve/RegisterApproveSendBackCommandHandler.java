@@ -35,16 +35,17 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 	protected void handle(CommandHandlerContext<ApproveReportSendBackCommand> context) {
 		ApproveReportSendBackCommand command = context.getCommand();
 		String sid = AppContexts.user().employeeId();
+		String cid = AppContexts.user().companyId();
 		Integer reprtId = command.getReportID();
 		
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する(Lấy thông tin của domain 「人事届出の承認/phê duyệt HR report」với key là Approver employee ID, report ID)
-		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(reprtId, sid);
+		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(cid, reprtId, sid);
 		listDomain.forEach(dm -> {
 			dm.setAprDate(GeneralDateTime.now());
 			dm.setAprStatus(ApprovalStatus.Send_Back);
 			dm.setAprActivity(ApprovalActivity.Activity);
 			dm.setComment(new String_Any_400(command.comment == null || command.comment == "" ? null : command.comment));
-			dm.setSendBackClass(command.selectedReturn == 1 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(command.selectedReturn, SendBackClass.class)));
+			dm.setSendBackClass(command.selectedReturn == 1 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(command.sendBackClass, SendBackClass.class)));
 			dm.setSendBackSID(command.selectedReturn == 1 ? Optional.empty() : Optional.of(command.sendBackSID));
 		}) ;
 		

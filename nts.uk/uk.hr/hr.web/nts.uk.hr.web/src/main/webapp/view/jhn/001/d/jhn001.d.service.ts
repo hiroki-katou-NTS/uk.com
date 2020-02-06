@@ -13,7 +13,7 @@ module jhn001.d.service {
     }
 
     export function saveData(obj) {
-        return ajax('hr',paths.remove,obj);
+        return ajax('hr',paths.save, obj);
     }
 
 

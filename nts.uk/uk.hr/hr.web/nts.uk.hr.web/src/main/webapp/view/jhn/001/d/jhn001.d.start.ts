@@ -1,8 +1,8 @@
-module nts.uk.hr.view.jhn001.d {
+module jhn001.d {
+    let __viewContext: any = window['__viewContext'] || {};
+
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.start().done(function() {
-            __viewContext.bind(screenModel);
-        });
+        __viewContext['viewModel'] = new viewmodel.ViewModel();
+        __viewContext.bind(__viewContext['viewModel']);
     });
 }

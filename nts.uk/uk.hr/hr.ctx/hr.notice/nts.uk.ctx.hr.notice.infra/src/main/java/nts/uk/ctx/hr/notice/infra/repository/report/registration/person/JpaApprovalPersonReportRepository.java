@@ -6,17 +6,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.SendBackClass;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApproval;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApprovalPK;
-import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
 
 /**
  * @author laitv
@@ -61,7 +58,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 	
 	@Override
-	public List<ApprovalPersonReport> getListDomainByReportId(String cid, String reprtId) {
+	public List<ApprovalPersonReport> getListDomainByReportId(String cid, int reprtId) {
 		return this.queryProxy().query(getListApproval, JhndtReportApproval.class)
 				.setParameter("cid", cid)
 				.setParameter("reportId", reprtId)

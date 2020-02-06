@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface ApprovalPersonReportRepository {
 
-	List<ApprovalPersonReport> getListDomainByReportId(String cid, String reprtId);
+	List<ApprovalPersonReport> getListDomainByReportId(String cid, int reprtId);
 	
 	List<ApprovalPersonReport> getListDomainByReportId(int reprtId);
 	
