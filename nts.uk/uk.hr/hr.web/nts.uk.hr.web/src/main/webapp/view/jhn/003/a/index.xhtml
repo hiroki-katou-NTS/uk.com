@@ -16,12 +16,17 @@
 			<com:scriptfile path="jhn003.a.service.js" />
 			<com:scriptfile path="jhn003.a.vm.js" />
 			<com:scriptfile path="jhn003.a.start.js" />
+			
+			<com:ValidatorScript>
+			nts.uk.ctx.hr.notice.dom.report.String_Any_20
+			</com:ValidatorScript>
+			
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="A1_1" data-bind="click:approvalAll">#{i18n.getText('JHN003_A1_1')}</button>
+					<button id="A1_1" data-bind="click:approvalAll, enable: approvalAllEnable ">#{i18n.getText('JHN003_A1_1')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
@@ -43,8 +48,8 @@
 									<div id="A222_3" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_3')}</div>
 								</div>
 								<div class="col_group_2">
-									<input id="A222_3_1"
-										data-bind="ntsTextEditor: {name: '#[JHN003_A222_3_1]', value: searchInfo().inputName, enable: true }" />
+									<input id="A222_3_1" 
+										data-bind="ntsTextEditor: {name: '#[JHN003_A222_3_1]', constraint: 'String_Any_20', value: searchInfo().inputName, enable: true  }" />
 								</div>
 								<div class="col_group_3">
 									<div id="A222_5"

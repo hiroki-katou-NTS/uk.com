@@ -25,6 +25,14 @@ module jhn003.a.vm {
 
             return dfd.promise();
         }
+        
+        approvalAllEnable() {
+            let self = this;
+
+            return self.reportList().length > 0 && self.searchInfo().approvalReport() == true;
+        }
+        
+        
 
         approvalAll() {
             let self = this,
@@ -98,8 +106,8 @@ module jhn003.a.vm {
 
             $('#reportList').ntsGrid({
                 autoGenerateColumns: false,
-                width: '953px',
-                height: '295px',
+                width: '908px',
+                height: '279px',
                 primaryKey: 'reportID',
                 virtualization: true,
                 rowVirtualization: true,
