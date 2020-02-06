@@ -2,7 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Data
 @AllArgsConstructor

@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.HistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
 * 社員健康保険得喪期間項目

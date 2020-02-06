@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.dom.employee.service;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.AffCompanyHistExport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface SyCompanyAdapter {
 	

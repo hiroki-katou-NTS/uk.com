@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm;
 
 import java.util.List;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface EmployeeDailyPerErrorPub {
 	

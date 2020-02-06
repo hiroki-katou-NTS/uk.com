@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumAfterCurrentMon;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class GetReserveLeaveNumbersFinder implements GetReserveLeaveNumbersAdpter {
