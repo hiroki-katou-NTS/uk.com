@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder.DeadlineDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AsbRemainTotalInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 
 @Data

@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.infra.entity.socialinsurance.contribution.QpbmtContrib
 import nts.uk.ctx.pr.core.infra.entity.socialinsurance.contribution.QpbmtContributionRatePk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {

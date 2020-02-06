@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface WorkRecordExport {
 

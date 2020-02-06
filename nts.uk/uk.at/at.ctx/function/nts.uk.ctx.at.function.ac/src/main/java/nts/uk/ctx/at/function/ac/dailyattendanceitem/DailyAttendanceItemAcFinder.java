@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemValue;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceResult;
 import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

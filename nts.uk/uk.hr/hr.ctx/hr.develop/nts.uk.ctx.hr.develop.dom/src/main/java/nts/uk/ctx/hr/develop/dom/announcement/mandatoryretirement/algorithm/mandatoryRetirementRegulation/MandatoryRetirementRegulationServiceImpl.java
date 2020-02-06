@@ -57,7 +57,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetirementRegulationService {

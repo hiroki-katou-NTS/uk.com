@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.pub.shift.pattern;
 
 import java.util.Map;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 所定労働日数を取得する

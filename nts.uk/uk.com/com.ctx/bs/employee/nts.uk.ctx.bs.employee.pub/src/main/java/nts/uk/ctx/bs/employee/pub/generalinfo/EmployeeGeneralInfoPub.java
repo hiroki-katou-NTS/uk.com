@@ -2,7 +2,7 @@ package nts.uk.ctx.bs.employee.pub.generalinfo;
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface EmployeeGeneralInfoPub {
 	

@@ -27,7 +27,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryReposi
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author danpv

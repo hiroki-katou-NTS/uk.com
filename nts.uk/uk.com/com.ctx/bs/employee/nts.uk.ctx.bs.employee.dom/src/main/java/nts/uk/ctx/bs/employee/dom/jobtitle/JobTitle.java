@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.shr.com.history.strategic.ContinuousHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitle.

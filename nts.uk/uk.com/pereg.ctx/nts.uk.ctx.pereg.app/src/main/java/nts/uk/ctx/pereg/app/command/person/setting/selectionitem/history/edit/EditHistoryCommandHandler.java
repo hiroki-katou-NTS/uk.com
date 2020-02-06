@@ -10,7 +10,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistor
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
