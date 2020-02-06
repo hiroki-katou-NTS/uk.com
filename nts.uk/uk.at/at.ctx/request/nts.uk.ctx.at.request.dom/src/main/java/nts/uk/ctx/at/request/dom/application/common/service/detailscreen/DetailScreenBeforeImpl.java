@@ -52,7 +52,7 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 		ApprovalBehaviorAtrImport_New loginApprovalAtr = null;
 		List<ApprovalPhaseStateImport_New> approvalPhaseStateLst = approvalRootStateAdapter.getApprovalDetail(appID);
 		// 承認フェーズListを5～1の逆順でループする
-		approvalPhaseStateLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
+		approvalPhaseStateLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder));
 		for(ApprovalPhaseStateImport_New approvalPhase : approvalPhaseStateLst){
 			boolean find = false;
 			for(ApprovalFrameImport_New approvalFrame : approvalPhase.getListApprovalFrame()){
