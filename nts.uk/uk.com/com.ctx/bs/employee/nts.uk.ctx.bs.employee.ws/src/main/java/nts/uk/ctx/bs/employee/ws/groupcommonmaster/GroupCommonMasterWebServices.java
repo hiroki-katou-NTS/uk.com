@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveGroupCommonMaste
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonItemDto;
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonMasterDto;
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonMasterFinder;
+import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.ScreenBSelectCommonMasterDto;
 
 /**
  * 
@@ -46,6 +47,18 @@ public class GroupCommonMasterWebServices extends WebService {
 	@Path("save_master")
 	public void getCurrentHistoryItem(SaveGroupCommonMasterCommand command) {
 		this.saveHandler.handle(command);
+	}
+	
+	@POST
+	@Path("get-items-B-screen-start")
+	public ScreenBSelectCommonMasterDto getCommonItems(CommonItemParam param) {
+		return this.commonFinder.getScreenBStart(param.getContractCd(), param.getCommonMasterId());
+	}
+	
+	@POST
+	@Path("get-items-B-screen")
+	public ScreenBSelectCommonMasterDto selectScreenBGetItem(CommonItemParam param) {
+		return this.commonFinder.selectScreenBGetItem(param.getContractCd(), param.getCommonMasterId());
 	}
 
 }

@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterDomainService;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -73,5 +75,61 @@ public class GroupCommonMasterFinder {
 
 		return groupItems;
 	}
-
+	
+	/**
+	 * 画面Bの起動処理
+	 * @param contractCd
+	 * @param commonMasterId
+	 * @return
+	 * @author yennth
+	 */
+	public ScreenBSelectCommonMasterDto getScreenBStart(String contractCd, String commonMasterId){		
+		// グループ会社共通マスタ項目の取得
+		List<GroupCommonMasterItem> getCommonMasterItem = services.getGroupCommonMasterItem(contractCd, commonMasterId);
+		if(!getCommonMasterItem.isEmpty()) {
+			ScreenBSelectCommonMasterDto screenBCommon = new ScreenBSelectCommonMasterDto(commonMasterId, getCommonMasterItem.stream()
+																												.map(x -> new CommonMasterItemDto(x.getCommonMasterItemId(), 
+																																				x.getCommonMasterItemCode().v(),
+																																				x.getCommonMasterItemName().v(), 
+																																				x.getDisplayNumber(), 
+																																				x.getUsageStartDate(), 
+																																				x.getUsageEndDate(), 
+																																				x.getNotUseCompanyList().stream()
+																																										.map(t -> t.getCompanyId())
+																																										.collect(Collectors.toList())))
+																												.collect(Collectors.toList()));
+			return screenBCommon;
+		}else {
+			throw new BusinessException("Msg_1578");
+		}
+	}
+	
+	/**
+	 * 共通マスタの選択処理
+	 * @param contractCd
+	 * @param commonMasterId
+	 * @return
+	 * @author yennth
+	 */
+	public ScreenBSelectCommonMasterDto selectScreenBGetItem(String contractCd, String commonMasterId){		
+		// グループ会社共通マスタ項目の取得
+		List<GroupCommonMasterItem> getCommonMasterItem = services.getGroupCommonMasterItem(contractCd, commonMasterId);
+		if(!getCommonMasterItem.isEmpty()) {
+			ScreenBSelectCommonMasterDto screenBCommon = new ScreenBSelectCommonMasterDto(commonMasterId, getCommonMasterItem.stream()
+																												.map(x -> new CommonMasterItemDto(x.getCommonMasterItemId(), 
+																																				x.getCommonMasterItemCode().v(),
+																																				x.getCommonMasterItemName().v(), 
+																																				x.getDisplayNumber(), 
+																																				x.getUsageStartDate(), 
+																																				x.getUsageEndDate(), 
+																																				x.getNotUseCompanyList().stream()
+																																										.map(t -> t.getCompanyId())
+																																										.collect(Collectors.toList())))
+																												.collect(Collectors.toList()));
+			return screenBCommon;
+		}else {
+			throw new BusinessException("Msg_1578");
+		}
+	}
+	
 }
