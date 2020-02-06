@@ -11,6 +11,10 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveGroupCommonMasterCommand;
 import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveGroupCommonMasterCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.UpdateCommonMasterCmdHandler;
+import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.UpdateCommonMasterCommand;
+import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.UpdateMasterItemDisplayCmdHandler;
+import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.UpdateMasterItemDisplayCommand;
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonItemDto;
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonMasterDto;
 import nts.uk.ctx.bs.employee.app.find.groupcommonmaster.GroupCommonMasterFinder;
@@ -31,6 +35,12 @@ public class GroupCommonMasterWebServices extends WebService {
 	@Inject
 	private SaveGroupCommonMasterCommandHandler saveHandler;
 
+	@Inject
+	private UpdateMasterItemDisplayCmdHandler updateMasterItem;
+	
+	@Inject
+	private UpdateCommonMasterCmdHandler updateCommon;
+	
 	@POST
 	@Path("get_master")
 	public List<GroupCommonMasterDto> getMaster() {
@@ -61,4 +71,15 @@ public class GroupCommonMasterWebServices extends WebService {
 		return this.commonFinder.selectScreenBGetItem(param.getContractCd(), param.getCommonMasterId());
 	}
 
+	@POST
+	@Path("update-items-B-screen")
+	public void updateCommonItems(UpdateMasterItemDisplayCommand command) {
+		this.updateMasterItem.handle(command);
+	}
+	
+	@POST
+	@Path("update-common-C-screen")
+	public void updateCommonMaster(UpdateCommonMasterCommand command) {
+		this.updateCommon.handle(command);
+	}
 }
