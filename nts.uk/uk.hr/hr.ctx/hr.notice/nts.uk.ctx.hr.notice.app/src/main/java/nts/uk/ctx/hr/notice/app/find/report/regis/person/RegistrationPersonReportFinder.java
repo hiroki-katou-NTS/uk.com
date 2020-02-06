@@ -71,7 +71,7 @@ public class RegistrationPersonReportFinder {
 
 		if ((regisList.size() > 99 && query.isApprovalReport())
 				|| (regisList.size() > 999 && !query.isApprovalReport())) {
-			throw new BusinessException("Msgj_46");
+			throw new BusinessException("MsgJ_46");
 		}
 
 		return regisList
