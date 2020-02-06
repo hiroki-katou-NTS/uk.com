@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthProcess{
 	@Inject

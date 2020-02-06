@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 控除の日数と時間

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface BreakDayOffMngInPeriodQuery {
 	/**

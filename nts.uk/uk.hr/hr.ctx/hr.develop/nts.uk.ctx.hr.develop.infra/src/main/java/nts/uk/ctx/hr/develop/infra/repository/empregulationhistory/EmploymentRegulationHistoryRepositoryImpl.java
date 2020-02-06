@@ -13,7 +13,7 @@ import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegula
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.dto.RegulationHistoryDto;
 import nts.uk.ctx.hr.develop.infra.entity.empregulationhistory.JshmtEmpRegHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentRegulationHistoryRepositoryImpl extends JpaRepository implements EmploymentRegulationHistoryRepository{

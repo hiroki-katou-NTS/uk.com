@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpIn
 import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.employmentinsqualifiinfo.QqsmtEmpInsHist;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHistRepository,EmpInsNumInfoRepository {

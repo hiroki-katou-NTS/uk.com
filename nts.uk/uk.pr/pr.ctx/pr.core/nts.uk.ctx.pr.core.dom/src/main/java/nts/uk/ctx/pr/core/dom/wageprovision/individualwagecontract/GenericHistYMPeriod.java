@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 年月期間の汎用履歴項目

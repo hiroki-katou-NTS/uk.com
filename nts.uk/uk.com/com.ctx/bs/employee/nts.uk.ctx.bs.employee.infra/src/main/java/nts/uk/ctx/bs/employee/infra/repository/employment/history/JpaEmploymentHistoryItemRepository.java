@@ -41,7 +41,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHis
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {

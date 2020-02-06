@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 更新処理自動実行の実行対象社員リストを取得する

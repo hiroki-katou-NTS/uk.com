@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {

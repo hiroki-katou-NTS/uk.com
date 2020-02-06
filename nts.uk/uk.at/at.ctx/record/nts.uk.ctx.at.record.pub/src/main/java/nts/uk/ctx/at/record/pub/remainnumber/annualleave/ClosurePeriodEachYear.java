@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 
 import lombok.Getter;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /*
  * 年月毎締め処理期間
  */

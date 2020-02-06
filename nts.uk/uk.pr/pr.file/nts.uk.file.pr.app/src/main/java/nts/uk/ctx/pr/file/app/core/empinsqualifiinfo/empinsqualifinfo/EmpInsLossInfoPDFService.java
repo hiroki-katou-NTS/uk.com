@@ -24,7 +24,7 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;

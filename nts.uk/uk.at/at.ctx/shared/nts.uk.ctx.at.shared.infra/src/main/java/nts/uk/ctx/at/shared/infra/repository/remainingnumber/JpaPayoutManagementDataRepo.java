@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 @Stateless

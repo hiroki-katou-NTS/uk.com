@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 
 @Stateless

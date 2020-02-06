@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class PerTimeMonActualResultDefault implements PerTimeMonActualResultService {

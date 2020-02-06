@@ -6,7 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 //import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 各処理の期間

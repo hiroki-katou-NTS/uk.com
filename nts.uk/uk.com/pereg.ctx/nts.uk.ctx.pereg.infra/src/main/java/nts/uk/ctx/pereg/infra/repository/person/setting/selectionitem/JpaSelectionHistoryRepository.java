@@ -16,7 +16,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistor
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferen
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ComDivergenceRefTimeHistSaveCommandHandler.

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：年度から集計期間を取得

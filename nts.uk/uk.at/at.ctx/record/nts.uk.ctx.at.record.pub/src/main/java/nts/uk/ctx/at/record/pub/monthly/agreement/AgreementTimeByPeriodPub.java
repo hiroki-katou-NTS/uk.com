@@ -11,8 +11,8 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 指定期間36協定時間の取得

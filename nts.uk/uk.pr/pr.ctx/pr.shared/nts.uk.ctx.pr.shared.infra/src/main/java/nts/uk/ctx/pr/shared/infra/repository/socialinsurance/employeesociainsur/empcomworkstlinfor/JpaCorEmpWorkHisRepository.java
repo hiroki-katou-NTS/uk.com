@@ -5,7 +5,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.empcomworkstlinfor.*;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.empcomworkstlinfor.QqsmtCorEmpWorkHis;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.util.List;

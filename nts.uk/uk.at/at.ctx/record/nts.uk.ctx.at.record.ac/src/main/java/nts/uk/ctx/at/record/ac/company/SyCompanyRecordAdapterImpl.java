@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmJobTitleHisImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface PersonInfoAdapter.

@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.infra.entity.socialinsurance.healthinsurance.QpbmtBonu
 import nts.uk.ctx.pr.core.infra.entity.socialinsurance.healthinsurance.QpbmtBonusHealthInsuranceRatePk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 賞与健康保険料率

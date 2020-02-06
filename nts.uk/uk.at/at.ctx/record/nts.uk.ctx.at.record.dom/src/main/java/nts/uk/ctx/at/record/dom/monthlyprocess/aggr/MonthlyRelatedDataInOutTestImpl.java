@@ -47,7 +47,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * テスト実装：月別実績関連データの永続化入出力

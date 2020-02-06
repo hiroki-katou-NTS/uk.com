@@ -155,7 +155,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless

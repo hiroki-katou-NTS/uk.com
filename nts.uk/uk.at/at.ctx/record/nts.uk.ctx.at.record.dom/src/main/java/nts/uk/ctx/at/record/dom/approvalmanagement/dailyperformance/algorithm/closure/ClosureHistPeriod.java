@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.c
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author ThanhNX

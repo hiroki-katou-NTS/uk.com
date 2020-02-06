@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferen
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistorySetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeHistoryRepository.
@@ -198,7 +198,7 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
 	 * CompanyDivergenceReferenceTimeHistoryRepository#findByDatePeriod(java.lang.
-	 * String, nts.arc.time.calendar.period.DatePeriod, java.lang.String)
+	 * String, nts.uk.shr.com.time.calendar.period.DatePeriod, java.lang.String)
 	 */
 	@Override
 	public CompanyDivergenceReferenceTimeHistory findByDate(String companyId, GeneralDate date) {

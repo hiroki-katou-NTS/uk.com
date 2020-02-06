@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の任意項目

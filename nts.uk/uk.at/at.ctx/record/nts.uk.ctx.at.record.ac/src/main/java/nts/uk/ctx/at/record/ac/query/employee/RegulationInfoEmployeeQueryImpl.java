@@ -19,7 +19,7 @@ import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
 import nts.uk.query.pub.person.EmployeeInfoDto;
 import nts.uk.query.pub.person.EmployeeInfoPublisher;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQueryAdapter {

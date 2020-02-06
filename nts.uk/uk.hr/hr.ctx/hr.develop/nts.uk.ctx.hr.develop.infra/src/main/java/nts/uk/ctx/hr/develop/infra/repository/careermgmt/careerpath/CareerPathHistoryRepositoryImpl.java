@@ -14,7 +14,7 @@ import nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.CareerPathHistoryReposito
 import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPath;
 import nts.uk.ctx.hr.develop.infra.entity.careermgmt.careerpath.JhcmtCareerPathPK;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CareerPathHistoryRepositoryImpl extends JpaRepository implements CareerPathHistoryRepository{

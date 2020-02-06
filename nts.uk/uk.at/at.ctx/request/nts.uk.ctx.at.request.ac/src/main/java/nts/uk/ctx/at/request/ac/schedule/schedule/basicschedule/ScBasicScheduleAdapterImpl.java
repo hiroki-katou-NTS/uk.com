@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung

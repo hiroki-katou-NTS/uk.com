@@ -8,7 +8,7 @@ import java.util.List;
 
 import nts.arc.error.BundledBusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class HistoryPolicy.

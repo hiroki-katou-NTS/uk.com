@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の休出時間

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ApprovalRootStateAdapter {
 	/**

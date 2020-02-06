@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 //import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class AnnualHolidayPlanManaAdapterImpl implements AnnualHolidayPlanManaAdapter{
 	@Inject

@@ -39,7 +39,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung

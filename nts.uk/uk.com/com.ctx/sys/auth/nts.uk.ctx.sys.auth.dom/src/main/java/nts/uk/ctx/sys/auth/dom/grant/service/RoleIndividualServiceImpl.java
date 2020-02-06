@@ -19,7 +19,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RoleIndividualServiceImpl implements RoleIndividualService {

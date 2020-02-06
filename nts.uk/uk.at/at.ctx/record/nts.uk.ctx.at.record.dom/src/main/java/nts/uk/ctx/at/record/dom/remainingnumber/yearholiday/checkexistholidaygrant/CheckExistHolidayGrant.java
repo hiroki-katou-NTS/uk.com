@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 次回年休付与日が指定期間内に存在するかチェック
  * @author tutk

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.FixedCheckItemPub;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	

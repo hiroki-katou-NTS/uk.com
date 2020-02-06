@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFro
 import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 2-2.新規画面登録時承認反映情報の整理

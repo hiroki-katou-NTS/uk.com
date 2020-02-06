@@ -38,7 +38,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung

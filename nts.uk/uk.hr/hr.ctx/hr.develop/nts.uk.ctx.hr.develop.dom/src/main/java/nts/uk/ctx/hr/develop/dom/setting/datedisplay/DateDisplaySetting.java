@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.period.DatePeriod;
 /**
  * @author anhdt
  * 日付表示設定

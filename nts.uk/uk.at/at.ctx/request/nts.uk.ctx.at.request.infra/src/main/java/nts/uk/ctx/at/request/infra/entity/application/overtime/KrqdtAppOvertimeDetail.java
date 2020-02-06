@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

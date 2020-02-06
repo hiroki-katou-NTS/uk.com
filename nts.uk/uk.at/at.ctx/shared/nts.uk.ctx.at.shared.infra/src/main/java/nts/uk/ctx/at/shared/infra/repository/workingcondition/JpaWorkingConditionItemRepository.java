@@ -56,7 +56,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionItemRepository.

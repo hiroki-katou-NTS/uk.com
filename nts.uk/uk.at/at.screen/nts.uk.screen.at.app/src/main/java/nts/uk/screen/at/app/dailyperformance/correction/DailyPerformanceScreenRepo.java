@@ -49,7 +49,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPl
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm

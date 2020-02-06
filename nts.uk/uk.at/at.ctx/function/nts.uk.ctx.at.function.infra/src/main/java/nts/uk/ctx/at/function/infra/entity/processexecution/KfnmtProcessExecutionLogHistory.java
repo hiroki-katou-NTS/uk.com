@@ -24,7 +24,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KFNMT_PROC_EXEC_LOG_HIST")

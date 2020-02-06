@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
 import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class Contract.

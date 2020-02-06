@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPub {

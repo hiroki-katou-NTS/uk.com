@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class SWkpHistImport.
  */

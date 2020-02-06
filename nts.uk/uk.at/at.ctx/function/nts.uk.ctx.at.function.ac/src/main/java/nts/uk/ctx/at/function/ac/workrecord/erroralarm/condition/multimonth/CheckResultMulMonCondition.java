@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CheckResultMulMonCondition implements CheckActualResultMulMonth{

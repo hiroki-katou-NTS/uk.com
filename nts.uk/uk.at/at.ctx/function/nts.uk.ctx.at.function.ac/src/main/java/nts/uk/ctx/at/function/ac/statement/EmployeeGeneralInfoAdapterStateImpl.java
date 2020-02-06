@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmployeeGeneralInfoAdapterStateImpl implements EmployeeGeneralInfoAdapter{

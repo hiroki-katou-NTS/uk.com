@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 public interface AnnualBreakManagePub {

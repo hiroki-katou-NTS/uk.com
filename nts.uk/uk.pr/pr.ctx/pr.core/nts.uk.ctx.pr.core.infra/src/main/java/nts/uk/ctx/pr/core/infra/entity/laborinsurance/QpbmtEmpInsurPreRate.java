@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurPreRate;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurRateId;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

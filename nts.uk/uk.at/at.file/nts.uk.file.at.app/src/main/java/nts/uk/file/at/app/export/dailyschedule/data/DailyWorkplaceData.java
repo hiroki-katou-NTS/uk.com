@@ -7,7 +7,7 @@ import java.util.Map;
 
 import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Instantiates a new daily workplace data.

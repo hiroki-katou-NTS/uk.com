@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.log.dom.pereg;
 import java.util.List;
 
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

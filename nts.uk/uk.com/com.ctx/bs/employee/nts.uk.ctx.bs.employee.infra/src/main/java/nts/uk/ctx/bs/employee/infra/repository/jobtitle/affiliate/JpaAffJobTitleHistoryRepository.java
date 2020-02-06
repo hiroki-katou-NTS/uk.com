@@ -26,7 +26,7 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClas
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffJobTitleHistoryRepository extends JpaRepository implements AffJobTitleHistoryRepository {

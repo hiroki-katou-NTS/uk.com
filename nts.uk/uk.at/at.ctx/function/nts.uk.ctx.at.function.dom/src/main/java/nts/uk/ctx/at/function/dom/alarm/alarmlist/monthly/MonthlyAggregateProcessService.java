@@ -71,8 +71,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 /**
  * 月次の集計処理
  * @author tutk

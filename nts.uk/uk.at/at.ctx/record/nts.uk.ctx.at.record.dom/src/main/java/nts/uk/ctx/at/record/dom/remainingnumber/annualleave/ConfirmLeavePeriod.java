@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave;
 
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 休暇の集計期間を確認する

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.vacation.history.OptionalMaxDay;
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SaveHistoryCommandHandler.

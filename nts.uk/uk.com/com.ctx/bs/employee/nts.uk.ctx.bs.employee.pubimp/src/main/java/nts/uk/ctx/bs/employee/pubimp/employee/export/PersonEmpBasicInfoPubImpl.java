@@ -23,7 +23,7 @@ import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PersonEmpBasicInfoPubImpl implements PersonEmpBasicInfoPub {

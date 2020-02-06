@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMon
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class MonthlyAttendanceResultImportAdapter {

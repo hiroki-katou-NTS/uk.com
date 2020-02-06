@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：暫定年休管理データを作成する

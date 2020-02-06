@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.config;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.GeneralHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceConfigHistory.

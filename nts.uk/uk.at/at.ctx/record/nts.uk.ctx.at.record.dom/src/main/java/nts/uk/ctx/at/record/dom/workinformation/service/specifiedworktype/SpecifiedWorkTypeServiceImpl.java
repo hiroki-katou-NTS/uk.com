@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {

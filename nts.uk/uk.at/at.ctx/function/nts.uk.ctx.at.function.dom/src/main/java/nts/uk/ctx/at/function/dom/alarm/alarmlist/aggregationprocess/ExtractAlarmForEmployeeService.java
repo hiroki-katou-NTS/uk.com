@@ -32,7 +32,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAgg
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ExtractAlarmForEmployeeService {

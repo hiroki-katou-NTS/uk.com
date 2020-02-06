@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaSWorkTimeHistSetMemento.

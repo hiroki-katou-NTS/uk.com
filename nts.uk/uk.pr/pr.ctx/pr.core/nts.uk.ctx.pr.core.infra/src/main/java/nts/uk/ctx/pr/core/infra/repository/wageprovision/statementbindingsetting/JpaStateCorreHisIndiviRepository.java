@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisIndi;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisIndiPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.util.*;

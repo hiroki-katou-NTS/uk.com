@@ -35,7 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：暫定振休・振出管理データ

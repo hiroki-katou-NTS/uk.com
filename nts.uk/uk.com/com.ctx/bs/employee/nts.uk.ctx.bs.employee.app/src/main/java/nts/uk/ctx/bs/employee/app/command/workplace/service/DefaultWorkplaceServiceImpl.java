@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class DefaultWorkplaceServiceImpl.

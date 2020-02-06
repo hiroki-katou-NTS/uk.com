@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract;
 import lombok.Value;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Value
 public class GenericHistYMPeriodCommand {

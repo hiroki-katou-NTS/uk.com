@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingService {

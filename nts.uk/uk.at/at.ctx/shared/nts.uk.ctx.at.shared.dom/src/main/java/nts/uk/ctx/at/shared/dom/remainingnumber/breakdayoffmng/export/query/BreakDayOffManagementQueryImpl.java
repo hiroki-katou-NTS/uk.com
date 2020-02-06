@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuery{

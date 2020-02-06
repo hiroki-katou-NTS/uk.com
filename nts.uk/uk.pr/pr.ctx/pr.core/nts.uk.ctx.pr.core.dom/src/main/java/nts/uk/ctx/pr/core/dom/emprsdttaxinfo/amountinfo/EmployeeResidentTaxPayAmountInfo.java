@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.calendar.Year;
+import nts.uk.shr.com.time.calendar.Year;
 
 import java.math.BigDecimal;
 

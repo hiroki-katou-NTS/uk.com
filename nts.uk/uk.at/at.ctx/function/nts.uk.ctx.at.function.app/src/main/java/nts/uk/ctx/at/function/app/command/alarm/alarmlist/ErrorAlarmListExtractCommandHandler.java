@@ -42,7 +42,7 @@ import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcess
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<ErrorAlarmListCommand> {

@@ -41,8 +41,8 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class MultipleMonthAggregateProcessService {

@@ -8,7 +8,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.ContinuousHistory;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import java.util.List;
 

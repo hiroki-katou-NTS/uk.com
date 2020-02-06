@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 public class MonthlyModifyResult {

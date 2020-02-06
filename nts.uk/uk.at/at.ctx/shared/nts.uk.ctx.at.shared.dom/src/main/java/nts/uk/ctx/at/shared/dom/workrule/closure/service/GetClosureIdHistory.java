@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 締め履歴を取得する

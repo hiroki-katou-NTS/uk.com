@@ -13,7 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveRemainExport{
 	@Inject

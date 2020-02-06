@@ -11,7 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 

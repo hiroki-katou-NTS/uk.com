@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {

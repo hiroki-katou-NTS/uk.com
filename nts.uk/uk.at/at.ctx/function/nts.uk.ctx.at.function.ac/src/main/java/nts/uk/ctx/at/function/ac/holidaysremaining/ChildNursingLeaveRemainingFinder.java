@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.inter
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ChildNursingRemainInforExport;
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ChildNursingLeaveRemainingFinder implements ChildNursingLeaveRemainingAdapter {

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapt
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt

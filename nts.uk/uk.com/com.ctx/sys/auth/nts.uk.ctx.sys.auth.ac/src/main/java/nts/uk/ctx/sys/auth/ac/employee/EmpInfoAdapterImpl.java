@@ -24,7 +24,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class PersonInfoAdapterImpl.

@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.calendar.Year;
-import nts.arc.time.calendar.period.YearPeriod;
+import nts.uk.shr.com.time.calendar.Year;
+import nts.uk.shr.com.time.calendar.period.YearPeriod;
 
 /**
  * 

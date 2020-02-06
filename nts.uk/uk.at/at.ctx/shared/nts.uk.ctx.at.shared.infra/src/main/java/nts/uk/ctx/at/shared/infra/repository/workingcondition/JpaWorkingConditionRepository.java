@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionRepository.

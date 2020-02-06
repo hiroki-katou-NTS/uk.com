@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import java.util.ArrayList;
 import java.util.List;

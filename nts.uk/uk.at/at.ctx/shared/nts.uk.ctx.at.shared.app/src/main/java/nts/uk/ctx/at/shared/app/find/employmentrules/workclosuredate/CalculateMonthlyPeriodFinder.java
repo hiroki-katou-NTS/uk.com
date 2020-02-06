@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.employmentrules.workclosuredate.CalculateMonthlyPeriodService;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CalculateMonthlyPeriodFinder {

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：月別実績の勤怠時間

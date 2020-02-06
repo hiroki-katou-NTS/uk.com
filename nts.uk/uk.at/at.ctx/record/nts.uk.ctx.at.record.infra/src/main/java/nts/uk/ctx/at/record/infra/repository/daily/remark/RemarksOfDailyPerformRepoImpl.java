@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumn;
 import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumnPK;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements RemarksOfDailyPerformRepo {

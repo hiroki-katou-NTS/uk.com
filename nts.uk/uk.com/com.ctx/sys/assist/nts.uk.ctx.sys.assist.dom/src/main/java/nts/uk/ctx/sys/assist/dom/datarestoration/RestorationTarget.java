@@ -16,10 +16,10 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.arc.time.calendar.Year;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.arc.time.calendar.period.YearPeriod;
+import nts.uk.shr.com.time.calendar.Year;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearPeriod;
 
 /**
  * 復旧対象

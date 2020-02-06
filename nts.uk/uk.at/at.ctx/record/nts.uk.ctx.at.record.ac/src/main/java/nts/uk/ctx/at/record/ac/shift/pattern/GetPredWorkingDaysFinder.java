@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.adapter.shift.pattern.GetPredWorkingDaysAdaptor;
 import nts.uk.ctx.at.schedule.pub.shift.pattern.GetPredWorkindDaysPub;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：所定労働日数を取得する

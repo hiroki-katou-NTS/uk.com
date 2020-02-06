@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 

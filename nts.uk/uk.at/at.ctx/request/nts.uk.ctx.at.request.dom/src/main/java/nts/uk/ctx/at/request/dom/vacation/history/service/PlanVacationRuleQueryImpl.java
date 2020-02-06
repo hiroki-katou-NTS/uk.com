@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class PlanVacationRuleQueryImpl implements PlanVacationRuleQuery{
 	@Inject

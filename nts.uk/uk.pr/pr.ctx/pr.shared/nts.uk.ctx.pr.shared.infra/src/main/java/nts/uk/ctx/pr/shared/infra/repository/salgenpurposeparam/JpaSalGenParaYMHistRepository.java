@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenParaYmHis
 import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenParaYmHisPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class JpaSalGenParaYMHistRepository extends JpaRepository implements SalGenParaYMHistRepository

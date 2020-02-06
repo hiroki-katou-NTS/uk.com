@@ -55,7 +55,7 @@ import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.Gr
 import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetExport;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * @author dat.lh

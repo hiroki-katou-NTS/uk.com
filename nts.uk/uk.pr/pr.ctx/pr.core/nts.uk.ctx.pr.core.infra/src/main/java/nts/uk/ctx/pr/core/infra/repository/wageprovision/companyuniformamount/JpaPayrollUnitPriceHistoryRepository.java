@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPric
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHis;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHisPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.lang.reflect.Array;

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.adapter.employment;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 所属雇用履歴

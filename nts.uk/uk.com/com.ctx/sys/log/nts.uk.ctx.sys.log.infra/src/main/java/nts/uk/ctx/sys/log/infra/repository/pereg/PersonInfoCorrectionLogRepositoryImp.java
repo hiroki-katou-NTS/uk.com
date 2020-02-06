@@ -33,7 +33,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo.Valu
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implements IPersonInfoCorrectionLogRepository {

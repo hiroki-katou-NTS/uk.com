@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AppReflectManagerFromRecord {
 	/**

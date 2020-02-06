@@ -62,7 +62,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional

@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceHistorySetMemento.
@@ -41,7 +41,7 @@ public class JpaWorkplaceHistorySetMemento implements WorkplaceHistorySetMemento
 	 * 
 	 * @see
 	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento#setPeriod
-	 * (nts.arc.time.calendar.period.DatePeriod)
+	 * (nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public void setPeriod(DatePeriod period) {

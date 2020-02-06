@@ -63,7 +63,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算　（社員の日別実績を計算）

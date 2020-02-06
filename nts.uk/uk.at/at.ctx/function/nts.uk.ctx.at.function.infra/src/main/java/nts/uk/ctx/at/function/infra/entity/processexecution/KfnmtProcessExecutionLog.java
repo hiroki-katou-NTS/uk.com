@@ -28,7 +28,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPerio
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

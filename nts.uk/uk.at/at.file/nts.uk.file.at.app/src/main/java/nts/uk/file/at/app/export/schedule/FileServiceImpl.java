@@ -14,8 +14,8 @@ import nts.uk.ctx.at.record.dom.workrecord.export.dto.AffiliationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.PeriodInformation;
 import nts.uk.screen.at.app.schedule.service.ScreenService;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class FileServiceImpl implements FileService{

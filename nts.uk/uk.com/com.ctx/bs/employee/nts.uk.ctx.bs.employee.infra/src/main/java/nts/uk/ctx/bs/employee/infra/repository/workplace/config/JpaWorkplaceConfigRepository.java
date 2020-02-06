@@ -26,7 +26,7 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig_;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceConfigRepository.
@@ -256,7 +256,7 @@ public class JpaWorkplaceConfigRepository extends JpaRepository
 	
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findByCompanyIdAndPeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findByCompanyIdAndPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<WorkplaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod period){

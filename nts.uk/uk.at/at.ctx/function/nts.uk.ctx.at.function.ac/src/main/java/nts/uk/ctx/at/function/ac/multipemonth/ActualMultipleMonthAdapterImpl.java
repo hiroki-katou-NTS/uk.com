@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValue
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class ActualMultipleMonthAdapterImpl implements ActualMultipleMonthAdapter {

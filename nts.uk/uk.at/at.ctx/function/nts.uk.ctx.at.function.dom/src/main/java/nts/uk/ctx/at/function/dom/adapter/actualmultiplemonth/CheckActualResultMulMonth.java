@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface CheckActualResultMulMonth {
 	boolean checkMulMonthCheckCond(DatePeriod period, String companyId, String string,

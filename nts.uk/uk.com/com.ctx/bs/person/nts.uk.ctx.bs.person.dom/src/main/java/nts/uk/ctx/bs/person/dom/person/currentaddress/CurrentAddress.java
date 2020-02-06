@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter

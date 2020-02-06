@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 積立年休上限設定期間WORK

@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SaveWorkplaceManagerCommandHandler extends CommandHandlerWithResult<SaveWorkplaceManagerCommand, String> {

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx

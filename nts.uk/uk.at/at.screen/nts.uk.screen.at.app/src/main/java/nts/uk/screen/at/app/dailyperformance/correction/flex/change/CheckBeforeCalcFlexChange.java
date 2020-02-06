@@ -41,7 +41,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
