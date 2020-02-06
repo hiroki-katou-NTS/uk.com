@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.GetAnnLeaUsedDaysPub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.SpecDateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：年休使用日数を取得

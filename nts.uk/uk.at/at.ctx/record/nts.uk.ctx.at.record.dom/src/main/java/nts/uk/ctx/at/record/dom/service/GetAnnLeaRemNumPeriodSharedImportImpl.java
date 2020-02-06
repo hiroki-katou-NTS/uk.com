@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ReserveLeaveErrorImport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWithinPeriodSharedImport{
 	@Inject

@@ -38,7 +38,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class KTG027QueryProcessor {

@@ -7,7 +7,7 @@ import java.util.Optional;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * 管理期間の36協定時間の取得

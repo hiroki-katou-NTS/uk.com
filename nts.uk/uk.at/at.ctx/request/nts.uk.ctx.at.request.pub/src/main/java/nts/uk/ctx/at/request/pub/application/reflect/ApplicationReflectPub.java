@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.pub.application.reflect;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ApplicationReflectPub {
 	/**

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.app.query.reservation.ReservationExportQuery;
 import nts.uk.file.at.app.export.bento.ReservationMonthExportService;
 import nts.uk.file.at.app.export.bento.ReservationMonthQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Path("bento/report")
 @Produces("application/json")
