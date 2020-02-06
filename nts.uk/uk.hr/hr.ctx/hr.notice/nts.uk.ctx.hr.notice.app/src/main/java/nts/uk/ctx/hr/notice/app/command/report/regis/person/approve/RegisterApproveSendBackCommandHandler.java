@@ -40,6 +40,7 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する(Lấy thông tin của domain 「人事届出の承認/phê duyệt HR report」với key là Approver employee ID, report ID)
 		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(cid, reprtId, sid);
+
 		listDomain.forEach(dm -> {
 			dm.setAprDate(GeneralDateTime.now());
 			dm.setAprStatus(ApprovalStatus.Send_Back);

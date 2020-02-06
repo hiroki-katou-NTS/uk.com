@@ -326,9 +326,9 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			
 			if(!CollectionUtil.isEmpty(reportItems)) {
 				
-				String itemHistId = IdentifierUtil.randomUniqueId();
-				
 				anyItems.addAll(reportItems.stream().map(c ->{
+					
+					String itemHistId = IdentifierUtil.randomUniqueId();
 					
 					return new PreReflectAnyItem(itemHistId,
 							newHistId,
