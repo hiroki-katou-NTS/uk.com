@@ -523,7 +523,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						appFull.getLstPhaseState());
 				int phaseMin = this.phaseNotApprMax(appFull.getLstPhaseState());
 				// if(phaseOrderCur == 1 || this.checkApprove(statusPhase, phaseOrderCur)){//phase truoc do da approve
-				if (status.getPhaseOrder().intValue() <= phaseMin) {
+				if (status.getPhaseOrder().intValue() >= phaseMin) {
 					lstAppFilter3.add(appFull.getApplication());
 					lstAppFullFilter3.add(appFull);
 					if (status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
