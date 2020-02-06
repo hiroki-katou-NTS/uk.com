@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.EmployeeApproveDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
 import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItem;
@@ -65,6 +67,8 @@ public class ReportItemFinder {
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
+		
+		List<EmployeeApproveDto> employeeApproveLst = creatEmployeeApproveLst();
 
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
@@ -123,7 +127,7 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst)
+						itemInter, documentSampleDtoLst, employeeApproveLst)
 				: new ReportLayoutDto();
 	}
 	
@@ -506,5 +510,17 @@ public class ReportItemFinder {
 			classItem.setItems(items);
 
 		}
+	}
+	
+	private List<EmployeeApproveDto> creatEmployeeApproveLst(){
+		List<EmployeeApproveDto> result = new ArrayList<>();
+		for(int i = 1; i <=5; i++) {
+			for(int j = 0; j < 5; j++) {
+				result.add(new EmployeeApproveDto(i, j, String.valueOf(i + j), "承認", GeneralDate.today(), "承認"));
+			}
+			
+		}
+		
+		return result;
 	}
 }

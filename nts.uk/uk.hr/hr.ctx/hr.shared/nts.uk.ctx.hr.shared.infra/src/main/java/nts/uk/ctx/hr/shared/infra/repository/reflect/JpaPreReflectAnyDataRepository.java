@@ -6,6 +6,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyData;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyDataRepository;
 import nts.uk.ctx.hr.shared.infra.entity.report.registration.PpedtPreRefectAnyData;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPreReflectAnyDataRepository extends JpaRepository implements PreReflectAnyDataRepository{
@@ -17,6 +18,7 @@ public class JpaPreReflectAnyDataRepository extends JpaRepository implements Pre
 	
 	private PpedtPreRefectAnyData toEntity(PreReflectAnyData  domain) {
 		PpedtPreRefectAnyData entity = new PpedtPreRefectAnyData( domain.getHistId(),
+				AppContexts.user().contractCode(),
 				domain.getCompanyId(),
 				domain.getCompanyCd(),
 				domain.getWorkId(),

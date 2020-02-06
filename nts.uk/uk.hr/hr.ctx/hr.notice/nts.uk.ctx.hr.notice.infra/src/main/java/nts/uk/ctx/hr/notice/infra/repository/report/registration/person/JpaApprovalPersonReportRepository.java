@@ -22,7 +22,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	private static final String getListApproval = "select c FROM  JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 	private static final String SEL_BY_REPORT_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.reportID = :reportId";
-	private static final String SEL_BY_REPORT_ID_AND_APPROVER_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.reportID = :reportId AND c.aprSid = :sid";
+	private static final String SEL_BY_REPORT_ID_AND_APPROVER_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.cid = :cid AND c.pk.reportID = :reportId AND c.aprSid = :sid";
 	private ApprovalPersonReport toDomain(JhndtReportApproval entity) {
 		return entity.toDomain();
 	}
@@ -110,10 +110,11 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<ApprovalPersonReport> getListDomainByReportIdAndSid(int reprtId, String approverId) {
+	public List<ApprovalPersonReport> getListDomainByReportIdAndSid(String cid, int reprtId, String approverId) {
 		return this.queryProxy().query(SEL_BY_REPORT_ID_AND_APPROVER_ID, JhndtReportApproval.class)
 				.setParameter("reportId", reprtId)
 				.setParameter("sid", approverId)
+				.setParameter("cid", cid)
 				.getList(c -> toDomain(c));
 	}
 

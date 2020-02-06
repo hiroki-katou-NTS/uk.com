@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -57,29 +56,31 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		
 		ApproveReportCommand cmd = context.getCommand();
 		
+		String cid = AppContexts.user().companyId();
+		
 		switch(cmd.getActionApprove()) {
 		
 		 case 0:
-			 
-			 approveReport(cmd);
+			 //承認
+			 approveReport(cid, cmd);
 			 
 			 break;
 			 
 		 case 1:
-			 
-			 denyReport(cmd);
+			 //否認する
+			 denyReport(cid, cmd);
 			 
 			 break;
 			 
 		 case 3:
-			 
-			 cancelReport(cmd);
+			 //解除
+			 cancelReport(cid, cmd);
 			 
 			 break;
 		
 		 case 4:
-			 
-			 registerReport(cmd);
+			 //登録
+			 registerReport(cid, cmd);
 			 
 			 break;
 			 
@@ -93,10 +94,13 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	 *登録処理
 	 * @param cmd
 	 */
-	private void registerReport(ApproveReportCommand cmd) {
+	private void registerReport(String cid, ApproveReportCommand cmd) {
+		
+		
+		String sid = AppContexts.user().employeeId();
 		
 		//届出IDをキーに人事届出の承認
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportId(Integer.valueOf(cmd.getReportId()));
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid(cid, Integer.valueOf(cmd.getReportId()), sid);
 		
 		approvalPersonReports.stream().forEach(c ->{
 			
@@ -116,12 +120,12 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	 * 人事届出の承認.コメント=承認コメント
 	 * @param cmd
 	 */
-	private void cancelReport(ApproveReportCommand cmd) {
+	private void cancelReport(String cid, ApproveReportCommand cmd) {
 		
 		String sid = AppContexts.user().employeeId();
 		
 		//承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( Integer.valueOf(cmd.getReportId()), sid);
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid(cid, Integer.valueOf(cmd.getReportId()), sid);
 	
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -154,14 +158,18 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	
 	/**
 	 * 否認する(Không phê duyệt)
+	 * 人事届出の承認.承認日=now
+	 * 人事届出の承認.承認状況=否認
+	 * 人事届出の承認.承認活性=否認済
+	 * 人事届出の承認.コメント=承認コメント
 	 * @param cmd
 	 */
-	private void denyReport(ApproveReportCommand cmd) {
+	private void denyReport(String cid, ApproveReportCommand cmd) {
 		
 		String sid = AppContexts.user().employeeId();
 		
 		//承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
-		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( Integer.valueOf(cmd.getReportId()), sid);
+		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo.getListDomainByReportIdAndSid( cid, Integer.valueOf(cmd.getReportId()), sid);
 	
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -169,7 +177,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		approvalPersonReports.stream().forEach(c ->{
 			
 			//人事届出の承認.承認日=now
-			c.setAppDate(approveDay);
+			c.setAprDate(approveDay);
 			
 			//人事届出の承認.承認状況=否認
 			c.setAprStatus(ApprovalStatus.Deny);
@@ -195,15 +203,13 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	 * 承認する(Phê duyệt)
 	 * @param cmd
 	 */
-	public void approveReport(ApproveReportCommand cmd) {
+	public void approveReport(String cid, ApproveReportCommand cmd) {
 
 		String sid = AppContexts.user().employeeId();
 		
-		String cid = AppContexts.user().companyId();
-
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
 		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo
-				.getListDomainByReportIdAndSid(Integer.valueOf(cmd.getReportId()).intValue(), sid);
+				.getListDomainByReportIdAndSid(cid, Integer.valueOf(cmd.getReportId()).intValue(), sid);
 		
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -246,7 +252,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			
 			int yearMonth  = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
 			
-			countData( cid, 1, regisPersonReportOpt.get().getReportLayoutID(), 1, yearMonth);
+			countData( cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 1, 1);
 			
 		}
 

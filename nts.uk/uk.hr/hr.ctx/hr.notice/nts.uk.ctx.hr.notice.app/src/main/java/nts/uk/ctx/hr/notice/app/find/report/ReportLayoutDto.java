@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.EmployeeApproveDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
@@ -33,11 +34,16 @@ public class ReportLayoutDto {
 	
 	private List<DocumentSampleDto> documentSampleDto;
 	
+	private List<EmployeeApproveDto> employeeApproveLst;
+	
+	
 	public ReportLayoutDto(){
 		
 		this.classificationItems = new ArrayList<>();
 		
 		this.documentSampleDto = new ArrayList<>();
+		
+		this.employeeApproveLst = new ArrayList<>();
 		
 	}
 	
@@ -55,19 +61,20 @@ public class ReportLayoutDto {
 			
 			List<LayoutReportClsDto> classificationItems,
 			
-			List<DocumentSampleDto> documentSampleDtoLst) {
+			List<DocumentSampleDto> documentSampleDtoLst,
+			List<EmployeeApproveDto> employeeApproveLst) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
 		dto.setCompanyId(domain.getCompanyId());
-		
-		dto.setReportId(domain.getPReportClsId());
 		
 		dto.setReportName(domain.getPReportName().v());
 		
 		dto.setClassificationItems(classificationItems);
 		
 		dto.setDocumentSampleDto(documentSampleDtoLst);
+		
+		dto.setEmployeeApproveLst(employeeApproveLst);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			
@@ -78,6 +85,8 @@ public class ReportLayoutDto {
 		}
 		
 		if(registrationPersonReport.isPresent()) {
+			
+			dto.setReportId(registrationPersonReport.get().getReportID());
 			
 			//差し戻しコメントがある
 			if(!StringUtil.isNullOrEmpty(registrationPersonReport.get().getSendBackComment(),true)) {

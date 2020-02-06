@@ -99,7 +99,7 @@ public class JhndtReportApproval extends UkJpaEntity implements Serializable {
 				this.aprSid ,
 				this.aprBussinessName ,
 				this.emailAddress ,
-				this.pk.phaseNum ,
+				this.pk.levelNum ,
 				this.aprStatusName ,
 				this.pk.aprNum ,
 				this.arpAgency ,

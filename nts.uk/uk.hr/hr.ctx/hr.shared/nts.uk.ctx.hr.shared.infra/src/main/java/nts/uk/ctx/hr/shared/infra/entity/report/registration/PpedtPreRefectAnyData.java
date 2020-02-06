@@ -26,6 +26,10 @@ public class PpedtPreRefectAnyData extends UkJpaEntity implements Serializable{
 	public String histId; // 新規GUIDをセット
 	
 	@NotNull
+	@Column(name = "CONTRACT_CD")
+	public String contractCd; 
+	
+	@NotNull
 	@Column(name = "CID")
 	public String companyId; // 会社ID
 	
