@@ -25,4 +25,7 @@ public interface EmployeeInformationAdaptor {
 
 
 	EmployeeInfo getInfoEmp(String sid, String cid, GeneralDate baseDate);
+	
+	// chỉ lấy sid,scd, bussinessName
+	EmployeeInfo getInfoEmp(String sid ); 
 }

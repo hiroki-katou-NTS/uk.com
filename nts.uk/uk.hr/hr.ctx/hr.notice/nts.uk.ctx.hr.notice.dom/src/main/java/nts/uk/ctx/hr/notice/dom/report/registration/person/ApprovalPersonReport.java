@@ -37,7 +37,7 @@ public class ApprovalPersonReport extends AggregateRoot{
 	private GeneralDateTime inputDate; //入力日
 	private GeneralDateTime appDate; //申請日
 	private GeneralDateTime aprDate; //承認日
-	private String aprSid; //承認者社員ID
+	private String aprSid; //承認者社員ID sid của người Approver 
 	private String aprBussinessName; //承認者社員名
 	private String emailAddress; //メールアドレス
 	private int phaseNum; // フェーズ通番
@@ -47,10 +47,10 @@ public class ApprovalPersonReport extends AggregateRoot{
 	private String_Any_400 comment; //コメント
 	private ApprovalActivity aprActivity;//承認活性
 	private EmailTransmissionClass emailTransmissionClass;//メール送信区分
-	private String appSid; //申請者社員ID
-	private String inputSid; //入力者社員ID
+	private String appSid; //申請者社員ID sid của người nộp đơn
+	private String inputSid; //入力者社員ID sid cua người login
 	private int  reportLayoutID;//個別届出種類ID
-	private Optional<String> sendBackSID; //差し戻し先社員ID
+	private Optional<String> sendBackSID; //差し戻し先社員ID sid của người bị return
 	private Optional<SendBackClass> sendBackClass; //差し戻し区分
 	
 	public ApprovalPersonReport(String cid, String rootSatteId, int reportID, String reportName,

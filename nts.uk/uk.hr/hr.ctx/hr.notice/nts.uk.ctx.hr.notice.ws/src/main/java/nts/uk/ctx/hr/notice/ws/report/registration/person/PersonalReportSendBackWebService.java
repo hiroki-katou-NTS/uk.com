@@ -7,23 +7,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.hr.notice.app.command.report.regis.person.DelRegisPersonReportHandler;
-import nts.uk.ctx.hr.notice.app.command.report.regis.person.RemoveReportCommand;
-import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveDraftRegisPersonReportHandler;
-import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveReportInputContainer;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.PersonalReportDto;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveReportSendBackCommand;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveSendBackCommandHandler;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.ApprovalPersonReportDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.ApprovalPersonReportFinder;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
-import nts.uk.shr.com.context.AppContexts;
 
-@Path("hr/notice/report/regis/person")
+@Path("hr/notice/report/regis/person/sendback")
 @Produces("application/json")
 public class PersonalReportSendBackWebService {
 
 	@Inject
 	private ApprovalPersonReportFinder finder;
+	
+	@Inject
+	private RegisterApproveSendBackCommandHandler save;
 
 	@POST
 	@Path("get")
@@ -33,8 +30,8 @@ public class PersonalReportSendBackWebService {
 
 	@POST
 	@Path("save")
-	public void save(SaveReportInputContainer inputContainer) {
-		//this.save.handle(inputContainer);
+	public void save(ApproveReportSendBackCommand command) {
+		this.save.handle(command);
 	}
 
 }

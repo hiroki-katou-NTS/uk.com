@@ -181,4 +181,22 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 		}
 		return empInfo;
 	}
+
+	@Override
+	public EmployeeInfo getInfoEmp(String sid) {
+		EmployeeInfo empInfo = new EmployeeInfo();
+		PersonInfoJhn001Export personInfoExport = empPub.getEmployeeInfo(sid);
+		
+		if (personInfoExport == null) {
+			return null;
+		}
+		
+		if (personInfoExport != null) {
+			empInfo.inputPid = personInfoExport.getPid();
+			empInfo.inputSid = personInfoExport.getEmployeeId();
+			empInfo.inputScd = personInfoExport.getEmployeeCode();
+			empInfo.inputBussinessName = personInfoExport.getBusinessName();
+		}
+		return empInfo;
+	}
 }

@@ -6,11 +6,14 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ApproveReportSendBackCommand {
-	String cid; // 会社ID
-	int reportID; // 届出ID
-	int phaseNum; // フェーズ通番
-	int aprNum;// 承認者通番
-	String returnTo; // combobox 1
-	int sendBackCls;// phân loại trả về. combobox 2
+	Integer reportID; // 届出ID
+	Integer phaseNum; // フェーズ通番
+	Integer aprNum;// 承認者通番
 	String comment; // コメント
+	String inputSid;
+	String appSid;
+	String aprSid;
+	String sendBackSID;
+	Integer sendBackClass;// phân loại trả về. combobox 2
+	Integer selectedReturn;
 }
