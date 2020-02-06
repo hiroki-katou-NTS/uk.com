@@ -101,7 +101,6 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	}
 	@Override
 	public void updateRootCMM053(String companyId, String a27, String a210,PersonApprovalRoot commonRoot, PersonApprovalRoot monthlyRoot, boolean dailyDisplay) {
-		List<Approver> lstApprNew = new ArrayList<>();
 		int phaseOrder = 1;
 		int approverOrder1 = 1;
 		int approverOrder2 = 2;
@@ -109,6 +108,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(commonRoot.getApprovalId());
 			//common
 			if(commonPhase.isPresent()){
+				List<Approver> lstApprNew = new ArrayList<>();
 				//承認フェーズ・承認形態　＝　誰か一人
 				ApprovalPhase phase = commonPhase.get();
 				if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
@@ -129,12 +129,16 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 				}else{//common insert 1 record
 					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
 				}
+				if(Strings.isNotBlank(approvalId) && !lstApprNew.isEmpty()){
+					repoApprover.addAllApprover(approvalId, phaseOrder, lstApprNew);
+				}
 	 		}
 		}
 		if(monthlyRoot != null){
 			//monthly A27
 			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(monthlyRoot.getApprovalId());
 			if(monthlyPhase.isPresent()){
+				List<Approver> lstApprM = new ArrayList<>();
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
 				if(mphase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
@@ -145,12 +149,11 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 				String approvalId = mphase.getApprovalId();
 				//delete approver old
 				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
-				lstApprNew.add(Approver.createSimpleFromJavaType(
+				lstApprM.add(Approver.createSimpleFromJavaType(
 						approverOrder1, null, a27,  ConfirmPerson.NOT_CONFIRM.value, null));
+				repoApprover.addAllApprover(approvalId, phaseOrder, lstApprM);
 			}
 		}
-		if(!lstApprNew.isEmpty()){
-			repoApprover.addAllApprover(monthlyRoot.getApprovalId(), phaseOrder, lstApprNew);
-		}
+		
 	}
 }
