@@ -27,30 +27,30 @@
 				</div>
 				<div>
 					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_2')}</div>
-					<div tabindex="1" class="combobox-return"
+					<div tabindex="1" style="margin-left: 25px" class="combobox-return"
 						data-bind="ntsComboBox: {
-														options: listBack,
+														options: listReturn ,
 														optionsValue: 'id',
 														visibleItemsCount: 5,
-														value: selectedBack,
-														optionsText: 'name',
-														width: 300,
+														value: selectedReturn ,
+														optionsText: 'infoToDisplay',
+														width: 250,
 														enable: true,
-														columns: [ { prop: 'name', length: 4 },]}">
+														columns: [  { prop: 'infoToDisplay', length: 4 }]}">
 					</div>
 				</div>
 				<div>
 					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_4')}</div>
-					<div tabindex="2" class="combobox-return"
+					<div tabindex="2" style="margin-left: 10px" class="combobox-return"
 						data-bind="ntsComboBox: {
-														options: listBack,
+														options: listSendBackCls ,
 														optionsValue: 'id',
 														visibleItemsCount: 5,
-														value: selectedBack,
+														value: selectedSendBackCls ,
 														optionsText: 'name',
-														width: 300,
+														width: 250,
 														enable: true,
-														columns: [ { prop: 'name', length: 4 },]}">
+														columns: [ { prop: 'name', length: 4 }]}">
 					</div>
 				</div>
 
@@ -60,7 +60,7 @@
 					<textarea class="comment" tabindex="3"
 						data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('JHN001_D2_3_1')}',
-													value: backComment,
+													value: sendBackComment ,
 													enable: true,
 													readonly: false}"></textarea>
 
@@ -69,7 +69,7 @@
 
 
 			<div id="functions-area-bottom">
-				<button tabindex="4" class="proceed x-large">#{i18n.getText('JHN001_D1_1')}</button>
+				<button tabindex="4" data-bind="click: save" class="proceed x-large">#{i18n.getText('JHN001_D1_1')}</button>
 				<button tabindex="5" data-bind="click: close" id="cancel">#{i18n.getText('JHN001_D1_2')}</button>
 			</div>
 		</ui:define>

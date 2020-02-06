@@ -6,11 +6,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.SendBackClass;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApproval;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApprovalPK;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
 
 /**
  * @author laitv
@@ -124,5 +130,25 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 		
 		this.commandProxy().updateAll(entities);
 		
+	}
+
+	@Override
+	public void updateSendBack(List<ApprovalPersonReport> domains, int reprtId, String sid) {
+		List<JhndtReportApproval> entities = this.queryProxy()
+				.query(SEL_BY_REPORT_ID_AND_APPROVER_ID, JhndtReportApproval.class).setParameter("reportId", reprtId)
+				.setParameter("sid", sid).getList();
+		String comment = domains.get(0).getComment() == null ?  "" :  domains.get(0).getComment().toString() ;
+		Integer sendBackClass = domains.get(0).getSendBackClass().isPresent() ? domains.get(0).getSendBackClass().get().value : null;
+		String sendBackSID    = domains.get(0).getSendBackSID().isPresent()  ? domains.get(0).getSendBackSID().get() : null;
+		entities.forEach(e -> {
+			e.aprDate = GeneralDateTime.now();
+			e.aprStatusName = ApprovalStatus.Send_Back.value;
+			e.aprActivity = ApprovalActivity.Activity.value;
+			e.comment = comment;
+			e.sendBackClass = sendBackClass;
+			e.sendBackSID = sendBackSID;
+		});
+		this.commandProxy().updateAll(entities);
+
 	}
 }

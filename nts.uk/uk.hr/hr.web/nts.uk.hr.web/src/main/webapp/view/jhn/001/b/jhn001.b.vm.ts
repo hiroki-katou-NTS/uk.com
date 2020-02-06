@@ -74,7 +74,6 @@ module jhn001.b.vm {
             return dfd.promise();
         }
         
-     
         continueProcess() {
             let self = this;
             let reportId = self.reportId();
