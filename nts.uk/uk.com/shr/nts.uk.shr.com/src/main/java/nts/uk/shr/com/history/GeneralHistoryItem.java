@@ -2,7 +2,7 @@ package nts.uk.shr.com.history;
 
 import nts.gul.util.range.ComparableRange;
 import nts.gul.util.value.DiscreteValue;
-import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
+import nts.arc.time.calendar.period.GeneralPeriod;
 
 public abstract class GeneralHistoryItem<S extends GeneralHistoryItem<S, R, T>,
 		R extends GeneralPeriod<R, T>,

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless

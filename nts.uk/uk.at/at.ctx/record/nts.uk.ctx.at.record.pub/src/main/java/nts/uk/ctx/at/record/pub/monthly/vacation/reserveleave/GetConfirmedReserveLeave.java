@@ -5,7 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * 社員の月毎の確定済み積立年休を取得する

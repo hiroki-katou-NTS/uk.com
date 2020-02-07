@@ -47,7 +47,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス実装：36協定

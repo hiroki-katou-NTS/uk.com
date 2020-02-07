@@ -5,13 +5,11 @@ module nts.uk.at.view.kmr002.a.model {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     import service = nts.uk.at.view.kmr002.a.service;
-    import errors = nts.uk.ui.errors;
     export class ScreenModel {
-        date: KnockoutObservable<any> = ko.observable(new Date());
+        date: KnockoutObservable<string> = ko.observable('');
         lunch: KnockoutObservable<string> = ko.observable('');
         dinner: KnockoutObservable<string> = ko.observable('');
         sum: KnockoutObservable<string> = ko.observable('');
@@ -53,12 +51,11 @@ module nts.uk.at.view.kmr002.a.model {
 
         public startPage(): JQueryPromise<any> {
             let self = this,
-                dfd = $.Deferred<any>();
+                dfd = $.Deferred<any>(), oldValue;
 
             self.date.subscribe((value) => {
-
+                
                 let momentDate = moment(value);
-
                 if (momentDate instanceof moment && !momentDate.isValid()) {
                     self.isEnable(false);
                     return;
@@ -77,6 +74,7 @@ module nts.uk.at.view.kmr002.a.model {
 
                     self.initData(data);
 
+                    nts.uk.ui.block.clear();
                 }).fail(() => {
 
                     error({ messageId: "Msg_1604" }).then(() => {
@@ -84,10 +82,14 @@ module nts.uk.at.view.kmr002.a.model {
                         uk.request.jumpToTopPage();
 
                     });
+
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
             });
+            if (self.date() == '') {
+                self.date((new Date()).toISOString().substr(0,10) + 'T00:00:00.000Z');
+            }
             dfd.resolve();
             return dfd.promise();
         }
@@ -302,7 +304,7 @@ module nts.uk.at.view.kmr002.a.model {
                 self.isEnableLunch((self.startLunch() <= timeNow && timeNow <= self.finishLunch()) ? true : false);
                 self.isEnableDinner((self.startDinner() <= timeNow && timeNow <= self.finishDinner()) ? true : false);
                 self.isEnable((!self.isEnableLunch() && !self.isEnableDinner()) ? false : true);
-                
+
             } else {
                 self.setDisPlay(true);
             }

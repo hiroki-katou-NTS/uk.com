@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceIte
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

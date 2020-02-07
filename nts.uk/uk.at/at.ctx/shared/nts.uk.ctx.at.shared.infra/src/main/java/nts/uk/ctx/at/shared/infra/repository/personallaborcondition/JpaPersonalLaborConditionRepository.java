@@ -44,7 +44,7 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
 	 * PersonalLaborConditionRepository#findById(java.lang.String,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public Optional<PersonalLaborCondition> findById(String employeeId, GeneralDate baseDate) {

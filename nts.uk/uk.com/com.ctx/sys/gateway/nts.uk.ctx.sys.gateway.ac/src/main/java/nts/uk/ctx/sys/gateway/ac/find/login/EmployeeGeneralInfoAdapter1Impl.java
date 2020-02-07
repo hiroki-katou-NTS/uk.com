@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoImport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmployeeGeneralInfoAdapter1Impl.
