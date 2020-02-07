@@ -46,8 +46,8 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 			dm.setAprStatus(ApprovalStatus.Send_Back);
 			dm.setAprActivity(ApprovalActivity.Activity);
 			dm.setComment(new String_Any_400(command.comment == null || command.comment == "" ? null : command.comment));
-			dm.setSendBackClass(command.selectedReturn == 1 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(command.sendBackClass, SendBackClass.class)));
-			dm.setSendBackSID(command.selectedReturn == 1 ? Optional.empty() : Optional.of(command.sendBackSID));
+			dm.setSendBackClass(command.sendBackClass == 2 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(command.sendBackClass, SendBackClass.class)));
+			dm.setSendBackSID(Optional.of(command.sendBackSID));
 		}) ;
 		
 		repoApproval.updateSendBack(listDomain, reprtId,  sid  );

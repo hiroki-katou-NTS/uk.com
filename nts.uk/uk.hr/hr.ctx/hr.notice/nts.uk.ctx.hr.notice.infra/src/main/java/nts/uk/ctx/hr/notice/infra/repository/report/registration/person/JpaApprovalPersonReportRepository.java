@@ -14,6 +14,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApproval;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportApprovalPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -132,9 +133,12 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 
 	@Override
 	public void updateSendBack(List<ApprovalPersonReport> domains, int reprtId, String sid) {
+		String cid = AppContexts.user().companyId();
 		List<JhndtReportApproval> entities = this.queryProxy()
-				.query(SEL_BY_REPORT_ID_AND_APPROVER_ID, JhndtReportApproval.class).setParameter("reportId", reprtId)
-				.setParameter("sid", sid).getList();
+				.query(SEL_BY_REPORT_ID_AND_APPROVER_ID, JhndtReportApproval.class)
+				.setParameter("reportId", reprtId)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid).getList();
 		String comment = domains.get(0).getComment() == null ?  "" :  domains.get(0).getComment().toString() ;
 		Integer sendBackClass = domains.get(0).getSendBackClass().isPresent() ? domains.get(0).getSendBackClass().get().value : null;
 		String sendBackSID    = domains.get(0).getSendBackSID().isPresent()  ? domains.get(0).getSendBackSID().get() : null;

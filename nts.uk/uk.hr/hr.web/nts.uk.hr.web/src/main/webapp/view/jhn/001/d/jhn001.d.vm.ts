@@ -1,6 +1,7 @@
 module jhn001.d.viewmodel {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import info = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
@@ -26,11 +27,11 @@ module jhn001.d.viewmodel {
             let self = this;
 
             self.listSendBackCls = ko.observableArray([
-                new ItemModel(1, ''),
-                new ItemModel(2, '記載不備'),
-                new ItemModel(3, '添付書類不')
+                new ItemModel(2, ''),
+                new ItemModel(0, '記載不備'),
+                new ItemModel(1, '添付書類不')
             ]);
-            self.selectedSendBackCls = ko.observable(2);
+            self.selectedSendBackCls = ko.observable(0);
             self.start();
         }
 
@@ -103,7 +104,7 @@ module jhn001.d.viewmodel {
                     inputSid: selectedReturn == 1 ? null : obj.inputSid,
                     appSid:   obj.appSid,
                     aprSid:   selectedReturn == 1 ? null : obj.aprSid,
-                    sendBackClass: selectedSendBackCls == 1 ? null : selectedSendBackCls,
+                    sendBackClass: selectedSendBackCls,
                     sendBackSID: selectedReturn == 1 ? obj.appSid : obj.aprSid,
                     selectedReturn : selectedReturn
                 };
