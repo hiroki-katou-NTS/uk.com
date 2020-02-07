@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaReposit
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuery{
 	

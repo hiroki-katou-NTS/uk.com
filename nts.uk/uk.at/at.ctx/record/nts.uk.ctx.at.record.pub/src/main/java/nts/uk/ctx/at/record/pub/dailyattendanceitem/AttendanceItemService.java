@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface AttendanceItemService {
 

@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx

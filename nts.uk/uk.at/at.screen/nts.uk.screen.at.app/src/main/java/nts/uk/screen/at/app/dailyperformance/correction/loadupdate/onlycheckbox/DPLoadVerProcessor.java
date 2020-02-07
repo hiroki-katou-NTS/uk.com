@@ -30,7 +30,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckInden
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

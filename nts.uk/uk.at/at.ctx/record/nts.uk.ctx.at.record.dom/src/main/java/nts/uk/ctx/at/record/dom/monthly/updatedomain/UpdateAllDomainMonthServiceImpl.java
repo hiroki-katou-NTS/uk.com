@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthService {

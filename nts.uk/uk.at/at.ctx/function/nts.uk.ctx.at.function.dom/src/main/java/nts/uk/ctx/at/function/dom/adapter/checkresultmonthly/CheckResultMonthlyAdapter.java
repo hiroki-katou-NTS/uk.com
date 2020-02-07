@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.AgreementCheckCo
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.SpecHolidayCheckConFunImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface CheckResultMonthlyAdapter {
 	

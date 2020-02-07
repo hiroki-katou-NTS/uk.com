@@ -39,7 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{

@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月間予約台帳
