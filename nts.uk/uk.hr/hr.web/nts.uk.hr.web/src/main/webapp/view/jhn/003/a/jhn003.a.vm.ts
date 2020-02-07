@@ -10,9 +10,24 @@ module jhn003.a.vm {
         searchInfo: KnockoutObservable<SearchInfo> = ko.observable(new SearchInfo());
 
         reportList: KnockoutObservableArray<SearchInfo> = ko.observableArray([]);
+        
+        approvalAllEnable: KnockoutObservableArray<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
+            
+            self.reportList.subscribe((data) => {
+
+                if (data.length > 0 && self.searchInfo().approvalReport()) {
+                    
+                    self.approvalAllEnable(true);
+                    
+                } else {
+                    
+                    self.approvalAllEnable(false);
+                    
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -25,14 +40,6 @@ module jhn003.a.vm {
 
             return dfd.promise();
         }
-        
-        approvalAllEnable() {
-            let self = this;
-
-            return self.reportList().length > 0 && self.searchInfo().approvalReport() == true;
-        }
-        
-        
 
         approvalAll() {
             let self = this,
