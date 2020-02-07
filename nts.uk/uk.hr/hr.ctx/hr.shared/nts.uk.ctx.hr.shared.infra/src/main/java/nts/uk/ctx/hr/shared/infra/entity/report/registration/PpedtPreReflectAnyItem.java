@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,13 +19,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class PpedtPreReflectAnyItem extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "HIST_ID")
-	public String histId; // 新規GUIDをセット
 	
-	@Column(name = "PARENT_HIST_ID")
-	public String parentHistId; // (※1)で作成したGUIDをセット
+	@EmbeddedId
+	public PpedtPreReflectAnyItemPk pk;
 	
 	@Column(name = "CID")
 	public String cid; // 会社ID
@@ -46,7 +42,10 @@ public class PpedtPreReflectAnyItem extends UkJpaEntity implements Serializable 
 	public String itemId; // 項目ID
 	
 	@Column(name = "ITEM_CD")
-	public String itemCode; // 項目コード	
+	public String itemCode; // 項目コード
+	
+	@Column(name = "DST_HIST_ID")
+	public String dstHistId; // ???
 	
 	@Column(name = "SAVE_DATA_ATR")
 	public int saveDataAtr; // 保存データ型
@@ -62,7 +61,7 @@ public class PpedtPreReflectAnyItem extends UkJpaEntity implements Serializable 
 	
 	@Override
 	protected Object getKey() {
-		return this.histId;
+		return this.pk;
 	}
 
 }

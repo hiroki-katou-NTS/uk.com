@@ -40,14 +40,26 @@ public class PpedtPreRefectAnyData extends UkJpaEntity implements Serializable{
 	@Column(name = "WORK_ID")
 	public Integer workId; // 業務ID
 	
+	@Column(name = "WORK_NAME")
+	public String workName; // 業務name
+	
 	@Column(name = "REQUEST_FLG")
-	public Integer reportType; //届出区分
+	public Integer requestFlg; //届出区分
 	
 	@Column(name = "REGIST_DATE")
 	public GeneralDateTime regisDate; //入力日
 	
+	@Column(name = "ON_HOLD_FLG")
+	public Integer holdFlag; //??
+	
 	@Column(name = "STATUS")
-	public int status; // ステータス
+	public Integer status; // ステータス
+	
+	@Column(name = "DST_HIST_ID")
+	public String dstHistId; //???
+	
+	@Column(name = "RELEASE_DATE")
+	public GeneralDateTime releaseDate; //???
 	
 	@Column(name = "PID")
 	public String pid; //申請者個人ID

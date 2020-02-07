@@ -70,7 +70,7 @@
 							<div id="C222_2" class="label warning inlineCustom"  data-bind="text: backCommentContent,  visible: backComment"></div>
 
 
-						<div class="inlineCustom" >
+						<div  style="margin-left: 2px; margin-bottom: 20px;" class="cell valign-center">
 
 							<div id="C222_3" style = "vertical-align: top"
 							
@@ -91,16 +91,16 @@
 															enable: true } " />
 						</div>
 
-						<div style='margin-bottom:10px; margin-left:5px;'>
+						<div style='margin-left: 2px;' class="cell valign-center" >
 						
 								<div id="C222_4" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_C222_4')}</div>
-								<input id="C222_4_1" tabindex="6"
+ 								<input id="C222_4_1" tabindex="6"
 									data-bind="ntsTextEditor: {
 																value: reportName,
 																name: '#[JHN011_B222_1_1]',
 																constraint: 'Code_AlphaNumeric_3',
 																required:true,
-																enable: false } " />				
+																enable: false } " />	
 						</div>
 						
 						<div data-bind="ntsLayoutControl: { 

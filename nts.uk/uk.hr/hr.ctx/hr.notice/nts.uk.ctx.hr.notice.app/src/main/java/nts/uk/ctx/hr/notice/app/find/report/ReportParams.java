@@ -8,4 +8,5 @@ import lombok.Value;
 public class ReportParams {
 	private String reportId;
 	private int reportLayoutId;
+	private boolean screenC;
 }

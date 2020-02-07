@@ -130,7 +130,7 @@ module jhn001.c.viewmodel {
             let reportId: String = url.split("=")[1];
             // get all layout
             layouts.removeAll();
-            service.getDetails({reportId: reportId}).done((data: any) => {
+            service.getDetails({reportId: reportId, screenC: true}).done((data: any) => {
                 if (data) {
                     lv.removeDoubleLine(data.classificationItems);
                     self.getDetailReport(layout, data);

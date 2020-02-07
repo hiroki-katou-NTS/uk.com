@@ -1925,9 +1925,9 @@ module nts.custombinding {
 
                     // focus flag of control
                     def.hasFocus = ko.observable(false);
-                    def.categoryCode = item.categoryCode;
-                    def.categoryName = item.categoryName;  
-                    def.isFixed = item.isFixed;  
+                    def.categoryCode = _.has(item, "categoryCode") == false ? def.categoryCode: item.categoryCode;
+                    def.categoryName = _.has(item, "categoryName") == false ? def.categoryName: item.categoryName;  
+                    def.isFixed = _.has(item, "isFixed") == false ? def.isFixed: item.isFixed; 
                     def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
@@ -2749,7 +2749,7 @@ module nts.custombinding {
                             if (data && data.categoryList && data.categoryList.length) {
                                 let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
 
-                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                if (location.href.indexOf('../../011/layout/b') > -1) {
                                     cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
                                 }
 

@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyItem;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyItemRepository;
 import nts.uk.ctx.hr.shared.infra.entity.report.registration.PpedtPreReflectAnyItem;
+import nts.uk.ctx.hr.shared.infra.entity.report.registration.PpedtPreReflectAnyItemPk;
 
 @Stateless
 public class JpaPreReflectAnyItemRepository extends JpaRepository implements PreReflectAnyItemRepository{
@@ -22,8 +23,9 @@ public class JpaPreReflectAnyItemRepository extends JpaRepository implements Pre
 	}
 	
 	private PpedtPreReflectAnyItem toEntity(PreReflectAnyItem  domain) {
-		PpedtPreReflectAnyItem entity = new PpedtPreReflectAnyItem( domain.getHistId(),
-				domain.getParentHistId(),
+		PpedtPreReflectAnyItem entity = new PpedtPreReflectAnyItem( 
+				new PpedtPreReflectAnyItemPk(domain.getHistId(),
+				domain.getParentHistId()),
 				domain.getCid(),
 				domain.getReportId(),
 				domain.getDispOrder(),
@@ -31,6 +33,7 @@ public class JpaPreReflectAnyItemRepository extends JpaRepository implements Pre
 				domain.getCategoryCode(),
 				domain.getItemId(),
 				domain.getItemCode(),
+				null,
 				domain.getSaveDataAtr(),
 				domain.getStringVal(),
 				domain.getIntVal(),

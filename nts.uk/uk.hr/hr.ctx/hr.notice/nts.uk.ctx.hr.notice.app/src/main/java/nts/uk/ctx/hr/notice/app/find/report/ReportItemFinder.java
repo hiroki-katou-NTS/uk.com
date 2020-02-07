@@ -100,7 +100,7 @@ public class ReportItemFinder {
 		//添付ファイル一覧を表示する(アルゴリズム[添付ファイル一覧を表示する]を実行する)
 		List<DocumentSampleDto> documentSampleDtoLst = this.attachPersonReportFileFinder.findAll(reportLayoutId, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
-		List<LayoutReportClsDto> items = mapItemCls(params.getReportId(), listItemCls);
+		List<LayoutReportClsDto> items = mapItemCls(params, listItemCls);
 
 		List<LayoutReportClsDto> itemInter = new ArrayList<>();
 
@@ -147,7 +147,7 @@ public class ReportItemFinder {
 	 * @param listItemCls
 	 * @return
 	 */
-	private List<LayoutReportClsDto> mapItemCls(String reportId, List<RegisterPersonalReportItem> listItemCls) {
+	private List<LayoutReportClsDto> mapItemCls(ReportParams params, List<RegisterPersonalReportItem> listItemCls) {
 		List<LayoutReportClsDto> result = new ArrayList<>();
 
 		String cid = AppContexts.user().companyId();
@@ -283,9 +283,9 @@ public class ReportItemFinder {
 
 		Map<String, List<ReportItem>> reportItems  = new HashMap<>();
 		
-		if(reportId != null) {
+		if(params.getReportId() != null) {
 			
-			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, Integer.valueOf(reportId)).stream()
+			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, Integer.valueOf(params.getReportId())).stream()
 					.collect(Collectors.groupingBy(c -> c.getCtgCode())));
 		}
 
@@ -323,13 +323,13 @@ public class ReportItemFinder {
 				case 6:
 
 					// get data
-					getDataforSingleItem(sid, ctg, itemDatas, classItemList);
+					getDataforSingleItem(params, sid, ctg, itemDatas, classItemList);
 
 					break;
 
 				case 2:
 
-					getDataforListItem(sid, ctg, classItemList.get(0), itemDatas);
+					getDataforListItem(params, sid, ctg, classItemList.get(0), itemDatas);
 
 					break;
 
@@ -346,7 +346,7 @@ public class ReportItemFinder {
 	private void mapListItemClass(List<ReportItem> itemDatas, List<LayoutReportClsDto> classItemList) {
 
 		if (!CollectionUtil.isEmpty(itemDatas)) {
-
+			
 			classItemList.stream().forEach(c -> {
 
 				if (!CollectionUtil.isEmpty(c.getItems())) {
@@ -429,10 +429,23 @@ public class ReportItemFinder {
 	 * @param employeeId
 	 * @param query
 	 */
-	private void getDataforSingleItem(String employeeId, PerInfoCtgShowImport perInfoCategory,
+	private void getDataforSingleItem(ReportParams params,String employeeId, PerInfoCtgShowImport perInfoCategory,
 			List<ReportItem> itemDatas, List<LayoutReportClsDto> classItemList) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
+		
+		if(params.isScreenC()) {
+			
+			classItemList.stream().forEach(c ->{
+				
+				c.getItems().forEach(i ->{
+					
+					i.setActionRole(ActionRole.VIEW_ONLY);
+					
+				});
+				
+			});
+		}
 		
 		getSingleOptionData(perInfoCategory, classItemList, itemDatas);
 
@@ -449,13 +462,13 @@ public class ReportItemFinder {
 
 	}
 	
-	private void getDataforListItem(String employeeId, PerInfoCtgShowImport perInfoCategory,
+	private void getDataforListItem(ReportParams param, String employeeId, PerInfoCtgShowImport perInfoCategory,
 			LayoutReportClsDto classItem, List<ReportItem> itemDatas) {
 
 		classItem.setItems(new ArrayList<>());
 
 		// get option category data
-		getMultiOptionData(employeeId, perInfoCategory, classItem, itemDatas);
+		getMultiOptionData(param, employeeId, perInfoCategory, classItem, itemDatas);
 
 		classItem.setListItemDf(null);
 
@@ -470,22 +483,30 @@ public class ReportItemFinder {
 				.collect(Collectors.toList());
 	}
 
-	private void getMultiOptionData(String employeeId, PerInfoCtgShowImport perInfoCategory,
+	private void getMultiOptionData(ReportParams params, String employeeId, PerInfoCtgShowImport perInfoCategory,
 			LayoutReportClsDto classItem, List<ReportItem> itemDatas) {
 
-		if (CollectionUtil.isEmpty(itemDatas)) {
-
-			classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
-
-			return;
-		}
+		classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
+		
+		if (CollectionUtil.isEmpty(itemDatas)) return;
 
 		// create new line data
 		List<LayoutHumanInfoValueDto> valueItems = convertDefItem(perInfoCategory, classItem.getListItemDf());
 
+		if(params.isScreenC()) {
+			
+			classItem.getItems().forEach(c ->{
+				
+				c.setActionRole(ActionRole.VIEW_ONLY);
+				
+			});
+			
+		}
+		
 		mapListItemClass(itemDatas, Arrays.asList(classItem));
 
-		classItem.getItems().addAll(valueItems);
+//		
+//		classItem.getItems().addAll(valueItems);
 
 	}
 

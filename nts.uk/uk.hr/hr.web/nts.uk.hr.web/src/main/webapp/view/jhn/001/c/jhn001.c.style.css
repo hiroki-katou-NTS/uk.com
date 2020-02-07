@@ -56,9 +56,9 @@
 }
 
 #C222_1, #C222_2{
-	width: 655px;
-	height: 80px;
-	margin-bottom:10px;
+	width: 880px;
+	height: 45px;
+	margin-bottom: 20px;
 }
 
 .label.warning {
@@ -70,12 +70,13 @@
 
 #C222_3_1{
 	width: 403px; 
-	height: 80px;
+	height: 43px;
 }
 
 #C222_3, #C222_4{
-	width: 220px; 
-	margin-left: 5px !important;
+	width: 215px; 
+	margin-left: 6px !important;
+	margin-bottom: 20px;
 }
 
 #C222_4_1{
@@ -102,7 +103,7 @@
 }
 
 .layout-control .drag-panel{
-	width: 660px !important;
 	height: 345px !important;
+	padding: 2px !important;
 }
 
