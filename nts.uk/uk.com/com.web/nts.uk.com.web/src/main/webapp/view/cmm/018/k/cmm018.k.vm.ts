@@ -359,8 +359,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     error({messageId: 'Msg_1606', messageParams:[getText('CMM018_102')]});
                     return;
                 }
-                let jG1 = self.lstGroup1()[0];
-                lstApprover.push({code: jG1.code, name: jG1.name, dispOrder: 1});
+                if(self.lstGroup1().length > 0){
+                    let jG1 = self.lstGroup1()[0];
+                    lstApprover.push({code: jG1.code, name: jG1.name, dispOrder: 1});
+                }
                 _.each(self.lstGroup2(), function(job, index){
                     lstApprover.push({code: job.code, name: job.name, dispOrder: index + 2});
                 });
