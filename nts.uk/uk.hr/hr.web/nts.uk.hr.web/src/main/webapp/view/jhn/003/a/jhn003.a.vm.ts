@@ -55,7 +55,11 @@ module jhn003.a.vm {
 
             block.grayout();
 
-            service.approvalAll(command)
+            service.approvalAll(command).done(() => {
+
+                dialog.info({ messageId: "Msg_15" });
+
+            })
                 .fail((error) => {
 
                     dialog.info(error);
