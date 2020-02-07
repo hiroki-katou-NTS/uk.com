@@ -28,6 +28,10 @@ module jhn003.a.vm {
                     
                 }
             });
+            
+            self.searchInfo().approvalReport.subscribe((data) => {
+                self.approvalAllEnable(false);
+            });
         }
 
         start(): JQueryPromise<any> {
