@@ -10,9 +10,24 @@ module jhn003.a.vm {
         searchInfo: KnockoutObservable<SearchInfo> = ko.observable(new SearchInfo());
 
         reportList: KnockoutObservableArray<SearchInfo> = ko.observableArray([]);
+        
+        approvalAllEnable: KnockoutObservableArray<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
+            
+            self.reportList.subscribe((data) => {
+
+                if (data.length > 0 && self.searchInfo().approvalReport()) {
+                    
+                    self.approvalAllEnable(true);
+                    
+                } else {
+                    
+                    self.approvalAllEnable(false);
+                    
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -25,14 +40,6 @@ module jhn003.a.vm {
 
             return dfd.promise();
         }
-        
-        approvalAllEnable() {
-            let self = this;
-
-            return self.reportList().length > 0 && self.searchInfo().approvalReport() == true;
-        }
-        
-        
 
         approvalAll() {
             let self = this,
@@ -198,11 +205,11 @@ module jhn003.a.vm {
         reportId: KnockoutObservable<string> = ko.observable('');
         approvalItems: KnockoutObservableArray<ItemModel> = ko.observableArray([
             { code: null, name: "" },
-            { code: "0", name: text("JHN003_A222_4_1_1") },
-            { code: "1", name: text("JHN003_A222_4_1_2") },
-            { code: "3", name: text("JHN003_A222_4_1_4") },
-            { code: "4", name: text("JHN003_A222_4_1_5") },
-            { code: "5", name: text("JHN003_A222_4_1_6") }
+            { code: "1", name: text("JHN003_A222_4_1_1") },
+            { code: "2", name: text("JHN003_A222_4_1_2") },
+            { code: "4", name: text("JHN003_A222_4_1_4") },
+            { code: "5", name: text("JHN003_A222_4_1_5") },
+            { code: "6", name: text("JHN003_A222_4_1_6") }
         ]);
         approvalStatus: KnockoutObservable<string> = ko.observable('0');
 
@@ -230,11 +237,15 @@ module jhn003.a.vm {
     }
 
     enum StatusType {
-        "JHN003_A222_4_1_1" = 0,
-        "JHN003_A222_4_1_2" = 1,
-        "JHN003_A222_4_1_3" = 2,
-        "JHN003_A222_4_1_4" = 3,
-        "JHN003_A222_4_1_5" = 4,
-        "JHN003_A222_4_1_6" = 5,
+        "未着手" = 0,
+        "JHN003_A222_4_1_1" = 1,
+        "JHN003_A222_4_1_2" = 2,
+        "JHN003_A222_4_1_3" = 3,
+        "JHN003_A222_4_1_4" = 4,
+        "JHN003_A222_4_1_5" = 5,
+        "JHN003_A222_4_1_6" = 6,
+        "反映前承認待ち" = 7,
+        "反映待ち" = 8,
+        "反映済" = 9,
     }
 }
