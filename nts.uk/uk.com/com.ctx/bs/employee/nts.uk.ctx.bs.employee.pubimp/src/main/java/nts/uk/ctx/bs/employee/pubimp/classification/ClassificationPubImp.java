@@ -92,7 +92,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 	 * 
 	 * @see nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub#
 	 * findSClsHistBySid(java.lang.String, java.lang.String,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds,
