@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.infra.repository.shift.management;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -132,7 +131,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public Optional<ShiftPalletsOrg> findShiftPalletOrg(int targetUnit, String targetId, int page) {
+	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page) {
 		// TODO Auto-generated method stub
 		return null;
 	}
