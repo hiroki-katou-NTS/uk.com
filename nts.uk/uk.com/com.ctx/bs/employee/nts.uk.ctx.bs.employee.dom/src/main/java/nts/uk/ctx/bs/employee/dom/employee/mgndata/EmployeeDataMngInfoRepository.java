@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 
 public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
@@ -149,6 +150,20 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId);
 	
+	/**
+	 * 個人ID(List)から会社IDに一致する社員に絞り込む 
+	 */
+	List<EmployeeDataMngInfo> findEmployeesMatchingName(List<String> pid, String companyId);
+	
+	/**
+	 * method Fix performance for 個人ID(List)から会社IDに一致する社員に絞り込む 
+	 */
+	List<EmployeeDataMngInfo> findEmployeesMatchingName(String keyWord, String companyId);
+	
+	/**
+	 * 会社IDと社員コード(部分一致)から社員IDListを取得する
+	 */
+	List<EmployeeIdPersonalIdDto> findEmployeePartialMatchCode(String cId, String sCd);
 
 	/**
 	 * Get personIds by employeeIds

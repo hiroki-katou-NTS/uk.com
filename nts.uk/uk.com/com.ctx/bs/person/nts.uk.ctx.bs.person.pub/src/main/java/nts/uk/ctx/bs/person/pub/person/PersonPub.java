@@ -21,7 +21,8 @@ public interface PersonPub {
 	List<PubPersonDto> findByPersonIds(List<String> personIds);
 
 	/**
-	 *  RequestList #86
+	 * RequestList #86
+	 * 
 	 * @param personIds
 	 * @return
 	 */
@@ -33,4 +34,5 @@ public interface PersonPub {
 	 * @return
 	 */
 	List<PersonExport> findByPids(List<String> personIds);
+
 }

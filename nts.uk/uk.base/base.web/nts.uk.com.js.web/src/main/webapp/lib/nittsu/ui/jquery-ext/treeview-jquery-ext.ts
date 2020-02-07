@@ -412,6 +412,8 @@ module nts.uk.ui.jqueryExtentions {
             switch (action) {
                 case 'getSelected':
                     return getSelected($tree);
+                case 'getSelectedID':
+                    return getSelectedID($tree);
                 case 'setSelected':
                     return setSelected($tree, param);
                 case 'deselectAll':
@@ -430,12 +432,30 @@ module nts.uk.ui.jqueryExtentions {
                     return moveUp($tree, param);
                 case 'moveDown':
                     return moveDown($tree, param);
+                case 'getPosition':
+                    return getPosition($tree, param);
             }
         };
         
         function isMultiple($tree: JQuery) {
             let isMulti = $tree.igTree("option", "checkboxMode") !== "off";
             return isMulti;
+        }
+        
+        function getPosition($tree: JQuery, $node) {
+            var offset = 0, siblings = $node.prevAll(), parent = $node;
+//                    var offset = $node[0].offsetTop, parent = $node[0].offsetParent;
+            while (true) {   
+                siblings.each(function(idx, el) {
+                    offset += $(el).height();
+                });
+                parent = $tree.igTree("parentNode", parent);
+                if(_.isNil(parent)){
+                    return offset;
+                }
+                siblings = parent.prevAll();
+            } 
+            return 0;
         }
 
         function getSelected($tree: JQuery): any {
@@ -451,10 +471,24 @@ module nts.uk.ui.jqueryExtentions {
                 if(_.isNil(value) || _.isNil(value.binding) || _.isNil(value.data)){
                    return null;
                 }
-                if(!_.isNil(value)){
-                    value["id"] = value.data[value.binding.valueKey];     
-                }
+                value["id"] = value.data[value.binding.valueKey];     
                 return value;      
+            }
+        }
+
+        function getSelectedID($tree: JQuery): any {
+            let isMulti = isMultiple($tree);
+            if(isMulti){
+                let values = $tree.igTree("checkedNodes");
+                return _.map(values, function(e){
+                    return e.data[e.binding.valueKey];    
+                });  
+            } else {
+                let value: any = $tree.igTree("selectedNode");
+                if(_.isNil(value) || _.isNil(value.binding) || _.isNil(value.data)){
+                   return null;
+                }
+                return value.data[value.binding.valueKey];  
             }
         }
         
@@ -649,6 +683,10 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function setSelected($tree: JQuery, selectedId: any) {
+            var oldSelect = $tree.ntsTreeDrag("getSelectedID");
+            if(_.isEqual(_.flatMapDeep([oldSelect]), (_.flatMapDeep([selectedId])))) {
+                return;
+            }
             deselectAll($tree);
             let isMulti = isMultiple($tree);
             if(isMulti){
@@ -657,7 +695,7 @@ module nts.uk.ui.jqueryExtentions {
                 }  
                 selectedId.forEach(id => {
                     let $node = $tree.igTree("nodesByValue", id);
-                    $tree.igTree("toggleCheckstate", $node);
+                    $tree.igTree("select", $node);
                 });      
             } else {
                 let $node = $tree.igTree("nodesByValue", selectedId);

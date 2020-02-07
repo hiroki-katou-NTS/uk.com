@@ -37,7 +37,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
+						&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType))
 				.collect(Collectors.toList());
 		if(lstPsRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 			lstPsRoots = lstPersonRootInfor
@@ -49,7 +49,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -62,14 +62,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprovalId(), 
 								x.getEmployeeId(), 
 								"",
-								x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getEmploymentAppHistoryItems().get(0).start(),
-								x.getEmploymentAppHistoryItems().get(0).end(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
+								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getHistoryItems().get(0).start(),
+								x.getApprRoot().getHistoryItems().get(0).end(),
+								x.getApprRoot().getBranchId(),
+								x.getApprRoot().getAnyItemApplicationId(),
+								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getEmploymentRootAtr().value))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}			
@@ -83,7 +83,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
-							&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType)))
+							&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType)))
 					.collect(Collectors.toList());
 			if(lstWpRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstWpRoots = lstWorkpalceRootInfor
@@ -96,7 +96,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstWpRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -108,14 +108,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprovalId(), 
 									"", 
 									x.getWorkplaceId(),
-									x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-									x.getEmploymentAppHistoryItems().get(0).start(),
-									x.getEmploymentAppHistoryItems().get(0).end(),
-									x.getBranchId(),
-									x.getAnyItemApplicationId(),
-									x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-									x.getEmploymentRootAtr().value))
+									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getHistoryItems().get(0).start(),
+									x.getApprRoot().getHistoryItems().get(0).end(),
+									x.getApprRoot().getBranchId(),
+									x.getApprRoot().getAnyItemApplicationId(),
+									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getEmploymentRootAtr().value))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}				
@@ -125,7 +125,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」): 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<CompanyApprovalRoot> lstRoots = lstCompanyRootInfor.stream()
 					.filter(x -> x.getCompanyId().equals(companyID)
-								&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
+								&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType))
 					.collect(Collectors.toList());
 			if(lstRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstRoots = lstCompanyRootInfor
@@ -137,7 +137,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -149,14 +149,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprovalId(), 
 									"", 
 									"",
-									x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-									x.getEmploymentAppHistoryItems().get(0).start(),
-									x.getEmploymentAppHistoryItems().get(0).end(),
-									x.getBranchId(),
-									x.getAnyItemApplicationId(),
-									x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-									x.getEmploymentRootAtr().value))
+									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getHistoryItems().get(0).start(),
+									x.getApprRoot().getHistoryItems().get(0).end(),
+									x.getApprRoot().getBranchId(),
+									x.getApprRoot().getAnyItemApplicationId(),
+									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getEmploymentRootAtr().value))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}
@@ -187,14 +187,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprovalId(), 
 							x.getEmployeeId(), 
 							"",
-							x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-							x.getEmploymentAppHistoryItems().get(0).start(),
-							x.getEmploymentAppHistoryItems().get(0).end(),
-							x.getBranchId(),
-							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-							x.getEmploymentRootAtr().value))
+							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							x.getApprRoot().getHistoryItems().get(0).start(),
+							x.getApprRoot().getHistoryItems().get(0).end(),
+							x.getApprRoot().getBranchId(),
+							x.getApprRoot().getAnyItemApplicationId(),
+							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							x.getApprRoot().getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -216,14 +216,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprovalId(), 
 								"", 
 								x.getWorkplaceId(),
-								x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getEmploymentAppHistoryItems().get(0).start(),
-								x.getEmploymentAppHistoryItems().get(0).end(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
+								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getHistoryItems().get(0).start(),
+								x.getApprRoot().getHistoryItems().get(0).end(),
+								x.getApprRoot().getBranchId(),
+								x.getApprRoot().getAnyItemApplicationId(),
+								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getEmploymentRootAtr().value))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}
@@ -241,14 +241,14 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprovalId(), 
 							"", 
 							"",
-							x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-							x.getEmploymentAppHistoryItems().get(0).start(),
-							x.getEmploymentAppHistoryItems().get(0).end(),
-							x.getBranchId(),
-							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-							x.getEmploymentRootAtr().value))
+							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							x.getApprRoot().getHistoryItems().get(0).start(),
+							x.getApprRoot().getHistoryItems().get(0).end(),
+							x.getApprRoot().getBranchId(),
+							x.getApprRoot().getAnyItemApplicationId(),
+							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							x.getApprRoot().getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}

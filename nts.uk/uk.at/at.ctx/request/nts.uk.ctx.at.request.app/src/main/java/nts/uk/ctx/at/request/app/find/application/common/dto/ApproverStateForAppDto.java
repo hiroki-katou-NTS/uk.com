@@ -8,11 +8,21 @@ import lombok.Value;
 public class ApproverStateForAppDto {
 	private String approverID;
 	
+	private Integer approvalAtrValue;
+	
+	private String approvalAtrName;
+	
+	private String agentID;
+	
 	private String approverName;
 	
 	private String representerID;
 	
 	private String representerName;
+	
+	private String approvalDate;
+	
+	private String approvalReason;
 	
 	private String approverMail;
 	

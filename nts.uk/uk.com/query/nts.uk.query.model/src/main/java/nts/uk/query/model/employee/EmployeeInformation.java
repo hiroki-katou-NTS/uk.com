@@ -30,6 +30,9 @@ public class EmployeeInformation {
 
 	/** The business name. */
 	String businessName; // ビジネスネーム
+	
+	/** The business name Kana. */
+	String businessNameKana; // ビジネスネームカナ
 
 	/** The workplace. */
 	Optional<WorkplaceModel> workplace; // 所属職場
@@ -48,4 +51,6 @@ public class EmployeeInformation {
 
 	/** The employment cls. */
 	Optional<Integer> employmentCls; // 就業区分
+	
+	int gender;
 }

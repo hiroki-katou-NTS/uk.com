@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import approve.employee.EmployeeApproverExportService;
 import approve.employee.EmployeeApproverRootQuery;
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmpUnregisterInput;
 import nts.uk.file.com.app.EmployeeUnregisterOutputExportService;
 import nts.uk.file.com.app.company.approval.MasterApproverRootExportService;
 import nts.uk.file.com.app.company.approval.MasterApproverRootQuery;
@@ -24,20 +24,21 @@ public class ApprovalReportWebService {
     @Inject
     private EmployeeApproverExportService employeeService;
 
+    //CMM018 - L
     @POST
     @Path("employeeUnregister")
-    public ExportServiceResult generate(GeneralDate query) {
+    public ExportServiceResult generate(EmpUnregisterInput query) {
 
         return this.reportService.start(query);
     }
-
+    //CMM018 - M
     @POST
     @Path("masterData")
     public ExportServiceResult generate(MasterApproverRootQuery query) {
 
         return this.masterService.start(query);
     }
-
+    //CMM018 - N
     @POST
     @Path("employee")
     public ExportServiceResult generate(EmployeeApproverRootQuery query) {

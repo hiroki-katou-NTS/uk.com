@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,14 +16,16 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import com.google.common.base.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -74,37 +77,35 @@ public class WwfdtApprovalFrameDay extends UkJpaEntity {
 		return wwfdpApprovalFrameDayPK;
 	}
 	
-	public static WwfdtApprovalFrameDay fromDomain(String companyID, GeneralDate date, ApprovalFrame approvalFrame){
+	public static WwfdtApprovalFrameDay fromDomain(String companyID, String rootId, int phaseOrder, ApprovalFrame frame){
+		ApproverInfor approver = frame.getLstApproverInfo().get(0);
 		return WwfdtApprovalFrameDay.builder()
 				.wwfdpApprovalFrameDayPK(
 						new WwfdpApprovalFrameDayPK(
-								approvalFrame.getRootStateID(), 
-								approvalFrame.getPhaseOrder(), 
-								approvalFrame.getFrameOrder()))
-				.approvalAtr(approvalFrame.getApprovalAtr().value)
-				.confirmAtr(approvalFrame.getConfirmAtr().value)
-				.approverID(approvalFrame.getApproverID())
-				.representerID(approvalFrame.getRepresenterID())
-				.approvalDate(approvalFrame.getApprovalDate())
-				.approvalReason(approvalFrame.getApprovalReason())
-				.listWwfdtApproverDay(
-						approvalFrame.getListApproverState().stream()
-						.map(x -> WwfdtApproverDay.fromDomain(companyID, date, x)).collect(Collectors.toList()))
+								rootId, 
+								phaseOrder, 
+								frame.getFrameOrder()))
+				.approvalAtr(approver.getApprovalAtr().value)
+				.confirmAtr(frame.getConfirmAtr().value)
+				.approverID(approver.getApprovalAtr().value == 1 && Strings.isNullOrEmpty(approver.getAgentID()) ? approver.getApproverID() : "")
+				.representerID(approver.getAgentID())
+				.approvalDate(approver.getApprovalDate())
+				.approvalReason(approver.getApprovalReason())
+				.listWwfdtApproverDay(Arrays.asList(WwfdtApproverDay.fromDomain(companyID, rootId, phaseOrder, frame, approver)))
 				.build();
 	}
 	
 	public ApprovalFrame toDomain(){
 		return ApprovalFrame.builder()
-				.rootStateID(this.wwfdpApprovalFrameDayPK.rootStateID)
-				.phaseOrder(this.wwfdpApprovalFrameDayPK.phaseOrder)
 				.frameOrder(this.wwfdpApprovalFrameDayPK.frameOrder)
-				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
+//				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
 				.confirmAtr(EnumAdaptor.valueOf(this.confirmAtr, ConfirmPerson.class))
-				.approverID(this.approverID)
-				.representerID(this.representerID)
-				.approvalDate(this.approvalDate)
-				.approvalReason(this.approvalReason)
-				.listApproverState(this.listWwfdtApproverDay.stream()
+//				.approverID(this.approverID)
+//				.representerID(this.representerID)
+//				.approvalDate(this.approvalDate)
+//				.approvalReason(this.approvalReason)
+//				.appDate(appDate)
+				.lstApproverInfo(this.listWwfdtApproverDay.stream()
 									.map(x -> x.toDomain()).collect(Collectors.toList()))
 				.build();
 	}

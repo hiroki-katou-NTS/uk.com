@@ -1,0 +1,32 @@
+.ccg001-cell mid{
+    height: 360px !important;
+}
+#H3_4, #H3_5 {
+    margin-left: 15px;
+    line-height: 12px;
+}
+#text_Salary{
+    min-width: 500px;
+    padding-top: 15px;
+    padding-left: 25px !important;
+}
+
+#img-calendar{
+    position: absolute;
+    z-index: 1;
+    margin: -14px -11px;
+}
+#H1_5_container {
+    margin: 15px 0px 0px 0px !important;
+}
+
+#H1_1 {
+    width: 700px;
+}
+
+#ccg001-btn-search-drawer{
+    z-index: 1;
+}
+.ccg001-caret-vertical{
+    z-index: 1 !important;
+}

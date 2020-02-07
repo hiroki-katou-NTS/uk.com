@@ -32,7 +32,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmQueryRepository;
@@ -216,30 +216,30 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
-			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
-			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
-			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
-			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
-				ApprovalFrame approvalFrame = new ApprovalFrame();
-				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
-				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-				approvalFrame.setListApproverState(new ArrayList<>());
-				appFrameInstance.getListApprover().forEach(approver -> {
-					ApproverState approverState = new ApproverState();
-					approverState.setRootStateID("");
-					approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-					approverState.setFrameOrder(appFrameInstance.getFrameOrder());
-					approverState.setCompanyID(appRootInstance.getCompanyID());
-					approverState.setDate(appRootConfirm.getRecordDate());
-					approverState.setApproverID(approver);
-					approvalFrame.getListApproverState().add(approverState);
-				});
-				approvalPhaseState.getListApprovalFrame().add(approvalFrame);
-			});
-			approvalRootState.getListApprovalPhaseState().add(approvalPhaseState);
+//			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
+//			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+//			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
+//			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+//			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
+//			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
+//				ApprovalFrame approvalFrame = new ApprovalFrame();
+//				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
+//				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
+//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+//				approvalFrame.setListApproverState(new ArrayList<>());
+//				appFrameInstance.getListApprover().forEach(approver -> {
+//					ApproverInfor approverState = new ApproverInfor();
+//					approverState.setRootStateID("");
+//					approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+//					approverState.setFrameOrder(appFrameInstance.getFrameOrder());
+//					approverState.setCompanyID(appRootInstance.getCompanyID());
+//					approverState.setDate(appRootConfirm.getRecordDate());
+//					approverState.setApproverID(approver);
+//					approvalFrame.getListApproverState().add(approverState);
+//				});
+//				approvalPhaseState.getListApprovalFrame().add(approvalFrame);
+//			});
+//			approvalRootState.getListApprovalPhaseState().add(approvalPhaseState);
 		});
 		// ドメインモデル「就業実績確認状態」の値をoutput「承認ルートインスタンス」に入れる
 		appRootConfirm.getListAppPhase().forEach(appPhaseConfirm -> {
@@ -252,11 +252,11 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
 							.filter(y -> y.getFrameOrder()==appFrameConfirm.getFrameOrder()).findAny();
 					if(opApprovalFrame.isPresent()){
-						ApprovalFrame approvalFrame = opApprovalFrame.get();
-						approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-						approvalFrame.setApprovalDate(appFrameConfirm.getApprovalDate());
-						approvalFrame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
-						approvalFrame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
+//						ApprovalFrame approvalFrame = opApprovalFrame.get();
+//						approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+//						approvalFrame.setApprovalDate(appFrameConfirm.getApprovalDate());
+//						approvalFrame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
+//						approvalFrame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
 					}
 				});
 			}
@@ -320,10 +320,10 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
-				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
-					return;
-				}
-				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+//				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
+//					return;
+//				}
+//				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 		}
 		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する
@@ -547,11 +547,11 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			if(approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
 				break;
 			}
-			Optional<ApprovalFrame> frameApproved = approvalPhaseState.getListApprovalFrame().stream()
-					.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();
-			if(frameApproved.isPresent()){
-				break;
-			}
+//			Optional<ApprovalFrame> frameApproved = approvalPhaseState.getListApprovalFrame().stream()
+//					.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();
+//			if(frameApproved.isPresent()){
+//				break;
+//			}
 		}
 		// output「ルート状況」をセットする
 		if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.UNAPPROVED){

@@ -1,41 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Pivot Data Selector localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Pivot Data Selector localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-/*global define, jQuery */
-(function (factory) {
-	if (typeof define === "function" && define.amd) {
-		define( ["jquery"], factory );
-	} else {
-		factory(jQuery);
-	}
-}
-(function ($) {
-    $.ig = $.ig || {};
-
-    if (!$.ig.PivotDataSelector) {
-        $.ig.PivotDataSelector = {};
-
-        $.extend($.ig.PivotDataSelector, {
-            locale: {
-                invalidBaseElement: " не может быть использован в качестве базового элемента. Вместо этого используйте DIV.",
-                catalog: "Каталог",
-                cube: "Куб",
-                measureGroup: "Группа Мер",
-                measureGroupAll: "(Все)",
-                rows: "Ряды",
-                columns: "Колонки",
-                measures: "Меры",
-                filters: "Фильтры",
-                deferUpdate: "Задержать Обновление",
-                updateLayout: "Обновить Раскладку",
-                selectAll: "Выбрать Все"
-            }
-        });
-    }
-}));// REMOVE_FROM_COMBINED_FILES
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.PivotDataSelector=$.ig.PivotDataSelector||{};$.ig.locale=$.ig.locale||{};$.ig.locale.ru=$.ig.locale.ru||{};$.ig.locale.ru.PivotDataSelector={invalidBaseElement:" не может быть использован в качестве базового элемента. Вместо этого используйте DIV.",catalog:"Каталог",cube:"Куб",measureGroup:"Группа Мер",measureGroupAll:"(Все)",rows:"Ряды",columns:"Колонки",measures:"Меры",filters:"Фильтры",deferUpdate:"Задержать Обновление",updateLayout:"Обновить Раскладку",selectAll:"Выбрать Все"};$.ig.PivotDataSelector.locale=$.ig.PivotDataSelector.locale||$.ig.locale.ru.PivotDataSelector;return $.ig.locale.ru.PivotDataSelector});

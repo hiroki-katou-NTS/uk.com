@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 isMultipleUse: true,
                 isMultiSelect: self.isMultiSelect(),
                 treeType: 1,
-                selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                selectedId: self.multiSelectedWorkplaceId,
                 baseDate: self.baseDate,
                 selectType: 1,
                 isShowSelectButton: true,

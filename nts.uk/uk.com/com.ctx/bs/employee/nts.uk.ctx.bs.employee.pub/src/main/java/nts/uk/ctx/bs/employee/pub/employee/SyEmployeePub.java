@@ -190,6 +190,11 @@ public interface SyEmployeePub {
 	List<TempAbsenceFrameExport> getTempAbsenceFrameByCid(String cid);
 	
 	/**
+	 * [RQ614]社員CD、ビジネスネーム、カナから検索キーワードをもとに社員IDを取得する
+	 */
+	List<EmpInfo614> findEmpByKeyWordsListSid(EmpInfo614Param param);
+
+	/**
 	 * RequestList596 削除された社員を取り除く
 	 * @param sids
 	 * @return

@@ -9,14 +9,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.query.app.employee.LoginEmployeeQuery;
-import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
-import nts.uk.query.app.employee.SearchEmployeeQuery;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.query.app.employee.*;
 
 /**
  * The Class RegulationInfoEmployeeWs.
@@ -92,7 +90,7 @@ public class RegulationInfoEmployeeWs {
 	/**
 	 * Find current login employee.
 	 *
-	 * @param query the login employee query
+	 * @param baseDate the base date
 	 * @return the regulation info employee dto
 	 */
 	@POST

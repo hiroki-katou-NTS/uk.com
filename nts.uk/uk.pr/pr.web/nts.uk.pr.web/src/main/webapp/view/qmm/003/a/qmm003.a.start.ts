@@ -1,9 +1,12 @@
-module qmm003.a.start {
+module nts.uk.pr.view.qmm003.a {
     __viewContext.ready(function() {
-        let screenModel = new qmm003.a.viewmodel.ScreenModel();
-        screenModel.start(undefined).done(function() {
-            nts.uk.ui.confirmSave(screenModel.dirtyObject);
-            __viewContext.bind(screenModel);
+        __viewContext['screenModel'] = new viewmodel.ScreenModel();
+        __viewContext['screenModel'].startPage().done(function() {
+            __viewContext.bind(__viewContext['screenModel']);
+            if (__viewContext['screenModel'].listRsdTaxPayees.length > 0)
+                __viewContext['screenModel'].setSelectedCode(__viewContext['screenModel'].listRsdTaxPayees[0].code);
+            else
+                __viewContext['screenModel'].setSelectedCode("");
         });
     });
 }

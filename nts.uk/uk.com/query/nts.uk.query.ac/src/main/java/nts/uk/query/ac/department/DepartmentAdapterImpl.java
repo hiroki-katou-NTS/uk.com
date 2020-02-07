@@ -1,14 +1,15 @@
 package nts.uk.query.ac.department;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.query.model.department.DepartmentAdapter;
 import nts.uk.query.model.department.DepartmentInfoImport;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 public class DepartmentAdapterImpl implements DepartmentAdapter {

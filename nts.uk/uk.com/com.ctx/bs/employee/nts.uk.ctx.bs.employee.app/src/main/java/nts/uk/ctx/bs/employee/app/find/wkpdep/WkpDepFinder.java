@@ -296,10 +296,13 @@ public class WkpDepFinder {
         // Check start mode (department or workplace)
         switch (findObject.getStartMode()) {
             case WORKPLACE_MODE:
+            	//パラメータ「参照範囲の絞込」をチェックする
             	if (findObject.getRestrictionOfReferenceRange()) {
+            		//ロールIDから参照可能な職場リストを取得する
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
-							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate(), false).getListWorkplaceIds();
-            		return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
+							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate()).getListWorkplaceIds();
+            		//[No.560]職場IDから職場の情報をすべて取得する
+					return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
 							.stream().map(InformationDto::new).collect(Collectors.toList());
 				} else {
 					return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate())

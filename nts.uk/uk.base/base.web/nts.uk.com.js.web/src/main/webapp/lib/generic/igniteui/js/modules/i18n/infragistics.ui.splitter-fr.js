@@ -1,24 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Splitter localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Splitter localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-(function ($) {
-$.ig = $.ig || {};
-
-if (!$.ig.Splitter) {
-	$.ig.Splitter = {};
-
-	$.extend($.ig.Splitter, {
-		locale: {
-		    errorPanels: 'Le nombre de panneaux ne doit pas être supérieur à deux.',
-		    errorSettingOption: "Erreur lors du réglage de l'option."
-		}
-	});
-
-}
-})(jQuery);
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.Splitter=$.ig.Splitter||{};$.ig.locale=$.ig.locale||{};$.ig.locale.fr=$.ig.locale.fr||{};$.ig.locale.fr.Splitter={errorPanels:"Le nombre de panneaux ne doit pas être supérieur à deux.",errorSettingOption:"Erreur lors du réglage de l'option."};$.ig.Splitter.locale=$.ig.Splitter.locale||$.ig.locale.fr.Splitter;return $.ig.locale.fr.Splitter});

@@ -591,6 +591,13 @@ module nts.uk.at.view.kmf022 {
             appReasonDispAtr: KnockoutObservable<number>;
             scheReflectFlg: KnockoutObservable<number>;
             priorityTimeReflectFlg: KnockoutObservable<number>;
+            //ver53
+            companyUnit: KnockoutObservable<number> = ko.observable(1);
+            workplaceUnit: KnockoutObservable<number> = ko.observable(1);
+            employeeUnit: KnockoutObservable<number> = ko.observable(1);
+            itemA18: KnockoutObservableArray<ItemModel> = ko.observableArray([
+                    new ItemModel(1, getText('KAF022_36')),
+                    new ItemModel(0, getText('KAF022_37'))]);
             constructor() {
                 let self = this;
                 self.companyId = ko.observable('');
@@ -640,6 +647,7 @@ module nts.uk.at.view.kmf022 {
                 $("#fixed-table-j").ntsFixedTable({});
                 $("#fixed-table-k").ntsFixedTable({});
                 $("#fixed-table-l").ntsFixedTable({});
+                $("#fixed-table-a18").ntsFixedTable({});
                 self.enableA4_6 = ko.observable(false);
 
                 self.itemListA4_7 = ko.observableArray([
@@ -1785,6 +1793,8 @@ module nts.uk.at.view.kmf022 {
                     self.initDataJ(data);
                     self.initDataK(data);
                     self.initDataR(data);
+                    //ver53
+                    self.initDataA18(data);
                 }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
@@ -1797,7 +1807,15 @@ module nts.uk.at.view.kmf022 {
                 });
 
             }
-
+            initDataA18(data: any){
+                let self = this;
+                let appSet = data.appliSet;
+                if(appSet){
+                    self.companyUnit(appSet.companyUnit);
+                    self.workplaceUnit(appSet.workplaceUnit);
+                    self.employeeUnit(appSet.employeeUnit);
+                }
+            }
             initDataA4(allData: any): void {
                 let self = this;
                 // init data A4
@@ -1947,30 +1965,30 @@ module nts.uk.at.view.kmf022 {
                 }
             }
             initDataA15(): void {
-                let self = this;
-                let date = {
-                    baseDate: new Date().toISOString()
-                };
-                self.listDataA15([]);
-                service.findJobId(date).done((data: any) => {
-                    if (data) {
-                        let jobIds = _.map(data, 'id');
-
-                        let id = {
-                            "jobtitleId": jobIds
-                        };
-                        service.findJobTitleSearchList(id).done(obj => {
-                            _.forEach(data, element => {
-                                let finder = _.find(obj, ['jobId', element.id]);
-                                if (finder) {
-                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
-                                } else {
-                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
-                                }
-                            });
-                        });
-                    }
-                });
+//                let self = this;
+//                let date = {
+//                    baseDate: new Date().toISOString()
+//                };
+//                self.listDataA15([]);
+//                service.findJobId(date).done((data: any) => {
+//                    if (data) {
+//                        let jobIds = _.map(data, 'id');
+//
+//                        let id = {
+//                            "jobtitleId": jobIds
+//                        };
+//                        service.findJobTitleSearchList(id).done(obj => {
+//                            _.forEach(data, element => {
+//                                let finder = _.find(obj, ['jobId', element.id]);
+//                                if (finder) {
+//                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
+//                                } else {
+//                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
+//                                }
+//                            });
+//                        });
+//                    }
+//                });
             }
 
             initDataA16(allData: any): void {
@@ -2304,6 +2322,10 @@ module nts.uk.at.view.kmf022 {
                     data: any = {},
                     dataA4 = [],
                     postion: number = $('.tab-content-1').scrollTop();
+                if(self.companyUnit() == 0 && self.workplaceUnit() == 0 && self.employeeUnit() == 0){
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1590' });
+                    return;
+                }
                 for (let i = 0; i < self.sizeArrayA4(); i++) {
                     dataA4.push({
                         closureId: self.dataA4Display()[i].index,
@@ -2384,6 +2406,9 @@ module nts.uk.at.view.kmf022 {
                     displayPrePostFlg: self.selectedIdA12_5(),
                     displaySearchTimeFlg: self.selectedIdA12_6(),
                     manualSendMailAtr: self.selectedIdA12_7(),
+                    companyUnit: self.companyUnit(),
+                    workplaceUnit: self.workplaceUnit(),
+                    employeeUnit: self.employeeUnit()
 
                     //todo wait -check 
                 };

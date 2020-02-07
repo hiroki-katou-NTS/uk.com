@@ -1,12 +1,14 @@
 package nts.uk.ctx.bs.employee.pubimp.department.master;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
@@ -17,6 +19,8 @@ public class DepartmentPubImpl implements DepartmentPub {
 
 	@Inject
 	private DepartmentExportSerivce depExpService;
+	@Inject
+	private DepartmentInformationRepository depInforRepo;
 
 	@Override
 	public List<DepartmentInforExport> getDepartmentInforByDepIds(String companyId, List<String> listDepartmentId,
@@ -66,6 +70,18 @@ public class DepartmentPubImpl implements DepartmentPub {
 	@Override
 	public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId) {
 		return depExpService.getDepartmentIdAndChildren(companyId, baseDate, departmentId);
+	}
+
+	@Override
+	public Optional<DepartmentExport> getInfoDep(String companyId, String depId) {
+		return depInforRepo.getInfoDep(companyId, depId).
+				map(item -> DepartmentExport.builder()
+				.companyId(item.getCompanyId()).depHistoryId(item.getDepartmentHistoryId())
+				.departmentId(item.getDepartmentId()).departmentCode(item.getDepartmentCode().v())
+				.departmentName(item.getDepartmentName().v()).depDisplayName(item.getDepartmentDisplayName().v())
+				.depGenericName(item.getDepartmentGeneric().v())
+				.outsideDepCode(item.getDepartmentExternalCode().map(ec -> ec.v())).build());
+		
 	}
 
 }

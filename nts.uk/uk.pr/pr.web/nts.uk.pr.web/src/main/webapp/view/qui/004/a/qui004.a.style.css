@@ -1,0 +1,7 @@
+.column-first {
+    width: 125px;
+}
+
+body{
+    overflow-x: hidden;
+}

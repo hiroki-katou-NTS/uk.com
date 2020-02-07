@@ -1,0 +1,55 @@
+@CHARSET "UTF-8";
+
+#labelRequired{
+	margin-left: 20px;
+	margin-top: 10px
+}
+
+.ui-widget-header{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 25px;
+    background: #CFF1A5;
+}
+
+#tableRetire{
+	margin-left: 20px;
+	margin-top: 10px
+}
+
+.idColumn{
+	width: 45px;
+}
+
+.course{
+	width: 100px;
+}
+
+.retireName{
+	width: 200px;
+}
+
+.retirementAge{
+	width: 100px;
+}
+
+.continueCategory{
+	width: 100px;
+}
+
+.column-row{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 25px;
+}
+
+#check-box{
+	margin-left: 5px;
+}
+
+#retire-table{
+    display: block;
+    overflow-y: auto;
+    height: 338px;
+}
+

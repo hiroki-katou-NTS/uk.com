@@ -21,7 +21,7 @@ module nts.uk.ui.jqueryExtentions {
                     var row = null;
                     if ($grid.igGridSelection('option', 'multipleSelection')) {
                         let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                        if (chk[0].getAttribute("data-chk") == "on") {
+                        if (chk.attr("data-chk") == "on") {
                             return;
                         }
                     }
@@ -46,7 +46,7 @@ module nts.uk.ui.jqueryExtentions {
                     var row = null;
                     if ($grid.igGridSelection('option', 'multipleSelection')) {
                         let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                        if (chk[0].getAttribute("data-chk") == "on") {
+                        if (chk.attr("data-chk") == "on") {
                             return;
                         }
                     }
@@ -122,24 +122,14 @@ module nts.uk.ui.jqueryExtentions {
         function setupIgTreeScroll($control: JQuery) {
             var id = $control.attr('id');
             $control.on("selectChange", function() {
-                var selectedRows = $control.ntsTreeDrag("getSelected");   
-                if ($.isArray(selectedRows)) {
-                    selectedRows = selectedRows[0];
-                } 
-                if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
-                    $control.igTree("expandToNode", selectedRows.element);
-                    let index = _.findIndex($control.find("li"), function(e){
-                        return  $(e).is(selectedRows.element);     
-                    });
-                    if(index >= 0){
-                        let scrollTo = index * 29;
-                        let scrollTop = $control.scrollTop();
-                        let height = $control.height();
-                        if(scrollTo < scrollTop || scrollTo > scrollTop + height - 28){
-                            $control.scrollTop(scrollTo);     
-                        }       
-                    }
-                }
+//                var selectedRows = $control.ntsTreeDrag("getSelected");   
+//                if ($.isArray(selectedRows)) {
+//                    selectedRows = selectedRows[0];
+//                } 
+//                if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
+//                    $control.igTree("expandToNode", selectedRows.element);
+//                    setTimeout(() =>{ $control[0].scrollTop = $control.ntsTreeDrag("getPosition", $(selectedRows.element)); }, 100);   
+//                }
             });
             return $control;
         }

@@ -1,24 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Scroll localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Scroll localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-(function ($) {
-    $.ig = $.ig || {};
-
-    if (!$.ig.Scroll) {
-	    $.ig.Scroll = {};
-
-	    $.extend($.ig.Scroll, {
-		    locale: {
-		        errorNoElementLink: 'Ein Element, das verknüpft wird, ist nicht vorhanden.',
-		        errorNoScrollbarLink: 'Ein Scrollbar-Element, das verknüpft wird, ist nicht vorhanden.'
-		    }
-	    });
-
-    }
-})(jQuery);
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.Scroll=$.ig.Scroll||{};$.ig.locale=$.ig.locale||{};$.ig.locale.de=$.ig.locale.de||{};$.ig.locale.de.Scroll={errorNoElementLink:"Ein Element, das verknüpft wird, ist nicht vorhanden.",errorNoScrollbarLink:"Ein Scrollbar-Element, das verknüpft wird, ist nicht vorhanden."};$.ig.Scroll.locale=$.ig.Scroll.locale||$.ig.locale.de.Scroll;return $.ig.locale.de.Scroll});

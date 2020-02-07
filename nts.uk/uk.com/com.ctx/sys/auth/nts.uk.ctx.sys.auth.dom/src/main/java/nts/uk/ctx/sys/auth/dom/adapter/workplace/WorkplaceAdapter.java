@@ -30,7 +30,8 @@ public interface WorkplaceAdapter {
 	 * @return the aff workplace hist import
 	 */
 	Optional<AffWorkplaceHistImport> findWkpByBaseDateAndEmployeeId(GeneralDate baseDate, String employeeId);
-	
+	//NEW 
+	Optional<AffWorkplaceHistImport> findWkpByBaseDateAndSIdNEW(GeneralDate baseDate, String employeeId);
 	
 	/**
 	 * Find list workplace id by cid and wkp id and base date.
@@ -60,4 +61,12 @@ public interface WorkplaceAdapter {
 	
 	// RequestList613: [RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
 	List<String> getWorkplaceId(GeneralDate baseDate, String employeeID);
+	/**
+	 * Lay workplace cap duoi
+	 * @param companyId
+	 * @param baseDate
+	 * @param parentWorkplaceId
+	 * @return
+	 */
+	public List<String> getAllChildrenOfWkpIdNEW(String companyId, GeneralDate baseDate, String parentWorkplaceId);
 }

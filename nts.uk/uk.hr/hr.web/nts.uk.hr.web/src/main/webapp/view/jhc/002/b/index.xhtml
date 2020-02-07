@@ -1,0 +1,682 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:EnumScript>
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.RequirementType
+				nts.uk.ctx.hr.develop.dom.careermgmt.careerpath.YearType
+			</com:EnumScript>
+			<com:ValidatorScript>
+				nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_100
+				nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_0_99
+			</com:ValidatorScript>
+			<com:stylefile path="jhc002.b.style.css" />
+			<com:scriptfile path="jhc002.b.vm.js" />
+			<com:scriptfile path="jhc002.b.service.js" />
+			<com:scriptfile path="jhc002.b.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- Go back Style -->
+				<a class="goback" data-bind="ntsLinkButton: { }, click: backTopAScreen">#{i18n.getText('JHC002_B1_1')}</a>
+				<button class="proceed" tabindex="1" data-bind="click: save, enable: $root.errors.isEmpty()">#{i18n.getText('JHC002_B1_2')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="main-area">
+					<div id="main-center-area">
+						<div class="container cf">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_B222_1')}</div>
+							
+							<!-- table header and input role class -->
+							
+							<div class="contentTable">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable" style="width:330px">
+										<colgroup>
+											<col width="330px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" colspan="1"></th>
+											</tr>
+											<tr>
+												<th class="ui-widget-header" colspan="1">#{i18n.getText('JHC002_B222_8')}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td style="height:150px; vertical-align: text-bottom;"><span data-bind="text: datatransfer.careerTypeName"></span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table">
+									<table id="fixed-table">
+										<colgroup>
+											<com:ko-if bind="_.includes(level(),1)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),2)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),3)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),4)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),5)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),6)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),7)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),8)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),9)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),10)">
+												<col width="260px" />
+											</com:ko-if>
+										</colgroup>
+										<thead>
+											<tr>
+												<com:ko-if bind="_.includes(level(),1)">
+													<th class="ui-widget-header lever1" colspan="1">#{i18n.getText('JHC002_B222_6')} 1</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),2)">
+													<th class="ui-widget-header lever2" colspan="1">#{i18n.getText('JHC002_B222_6')} 2</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),3)">
+													<th class="ui-widget-header lever3" colspan="1">#{i18n.getText('JHC002_B222_6')} 3</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),4)">
+													<th class="ui-widget-header lever4" colspan="1">#{i18n.getText('JHC002_B222_6')} 4</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),5)">
+													<th class="ui-widget-header lever5" colspan="1">#{i18n.getText('JHC002_B222_6')} 5</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),6)">
+													<th class="ui-widget-header lever6" colspan="1">#{i18n.getText('JHC002_B222_6')} 6</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),7)">
+													<th class="ui-widget-header lever7" colspan="1">#{i18n.getText('JHC002_B222_6')} 7</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),8)">
+													<th class="ui-widget-header lever8" colspan="1">#{i18n.getText('JHC002_B222_6')} 8</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),9)">
+													<th class="ui-widget-header lever9" colspan="1">#{i18n.getText('JHC002_B222_6')} 9</th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),10)">
+													<th class="ui-widget-header lever10" colspan="1">#{i18n.getText('JHC002_B222_6')} 10</th>
+												</com:ko-if>
+											</tr>
+											<tr>
+												<com:ko-if bind="_.includes(level(),1)">
+													<th class="ui-widget-header lever1" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 1 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),2)">
+													<th class="ui-widget-header lever2" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 2 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),3)">
+													<th class="ui-widget-header lever3" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 3 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),4)">
+													<th class="ui-widget-header lever4" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 4 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),5)">
+													<th class="ui-widget-header lever5" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 5 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),6)">
+													<th class="ui-widget-header lever6" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 6 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),7)">
+													<th class="ui-widget-header lever7" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 7 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),8)">
+													<th class="ui-widget-header lever8" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 8 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),9)">
+													<th class="ui-widget-header lever9" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 9 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),10)">
+													<th class="ui-widget-header lever10" colspan="1" data-bind="text: _.find(careerClass(), { 'id':(_.find(itemList, { 'careerLevel': 10 }).careerClassItem)}).name"></th>
+												</com:ko-if>
+											</tr>
+										</thead>
+										<tbody >
+											<tr class="careerClassRole">
+												<com:ko-if bind="_.includes(level(),1)">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRole1, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}'}" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),2)">
+													<td><textarea data-bind="ntsMultilineEditor: { value: careerClassRole2, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),3)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole3, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),4)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole4, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),5)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole5, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),6)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole6, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),7)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole7, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),8)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole8, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),9)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole9, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),10)">
+													<td><textarea data-bind="ntsMultilineEditor: { value:  careerClassRole10, constraint: 'String_Any_100', name: '#{i18n.getText('JHC002_B222_12')}' }" /></td>
+												</com:ko-if>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+							<!-- table option select value -->
+							
+							<div style="display: flex;">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable" id="fixed-table3">
+										<colgroup>
+											<col width="330px" />
+										</colgroup>
+										<thead style="display: none;">
+											<tr>
+												<td></td>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: careerOrderList()">
+											<tr>
+												<td style="height:269px; vertical-align: text-bottom;">
+													<div class="textOrder">
+														<span>#{i18n.getText('JHC002_B222_13')}</span>
+														<span data-bind="text: ($index() + 1)"></span>
+													</div>
+													<div class="radioReqType" data-bind="ntsRadioBoxGroup: {
+															options: $parent.requirementType,
+															optionsValue: 'value',
+															optionsText: 'name',
+															value: requirementType,
+															enable: true}"></div>
+													<div class="comboYearType" data-bind="ntsComboBox: {
+															options: $parent.yearType,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: yearType,
+															optionsText: 'name',
+															width: 110,
+															selectFirstIfNull: false,             
+															dropDownAttachedToBody: true,
+															enable: requirementType() == 1,
+															columns: [ { prop: 'name', length: 10 },]}"></div>
+													<div class="comboMasterType" data-bind="ntsComboBox: {
+															options: $parent.masterTypelist,
+															optionsValue: 'code',
+															visibleItemsCount: 10,
+															value: masterType,
+															optionsText: 'name',
+															width: 110,
+															selectFirstIfNull: false,             
+															dropDownAttachedToBody: true,
+															enable: requirementType() == 2,
+															columns: [ { prop: 'name', length: 4 },]}"></div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table" id="table2">
+									<table id="fixed-table2">
+										<colgroup>
+											<com:ko-if bind="_.includes(level(),1)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),2)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),3)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),4)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),5)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),6)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),7)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),8)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),9)">
+												<col width="260px" />
+											</com:ko-if>
+											<com:ko-if bind="_.includes(level(),10)">
+												<col width="260px" />
+											</com:ko-if>
+										</colgroup>
+										<thead style="display: none;">
+											<tr>
+												<com:ko-if bind="_.includes(level(),1)">
+													<th class="ui-widget-header lever1" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),2)">
+													<th class="ui-widget-header lever2" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),3)">
+													<th class="ui-widget-header lever3" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),4)">
+													<th class="ui-widget-header lever4" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),5)">
+													<th class="ui-widget-header lever5" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),6)">
+													<th class="ui-widget-header lever6" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),7)">
+													<th class="ui-widget-header lever7" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),8)">
+													<th class="ui-widget-header lever8" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),9)">
+													<th class="ui-widget-header lever9" colspan="1"></th>
+												</com:ko-if>
+												<com:ko-if bind="_.includes(level(),10)">
+													<th class="ui-widget-header lever10" colspan="1"></th>
+												</com:ko-if>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: career()">
+											<tr class="careerClassRole">
+												<com:ko-if bind="_.includes($parent.level(),1)">
+													<td data-bind="with: lever1()">
+														<div class="inputTextYearType">	
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),2)">
+													<td data-bind="with: lever2()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),3)">
+													<td data-bind="with: lever3()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),4)">
+													<td data-bind="with: lever4()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),5)">
+													<td data-bind="with: lever5()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),6)">
+													<td data-bind="with: lever6()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),7)">
+													<td data-bind="with: lever7()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),8)">
+													<td data-bind="with: lever8()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),9)">
+													<td data-bind="with: lever9()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+												<com:ko-if bind="_.includes($parent.level(),10)">
+													<td data-bind="with: lever10()">
+														<div class="inputTextYearType">
+															
+															<input data-bind="ntsNumberEditor: {
+																value: yearMinimumNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_22')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+															<span>#{i18n.getText('JHC002_B222_23')}</span>
+															<input data-bind="ntsNumberEditor: {
+																value: yearStandardNumber,
+																constraint: 'Integer_0_99',
+																name: '#{i18n.getText('JHC002_B222_24')}',
+																option: {
+													                    width: '50',
+													                    unitID: 'YEARS'
+													                },
+																required: ko.observable(false),
+																enable: requirementType() == 1 &amp;&amp; yearType() != '',
+																readonly: ko.observable(false)}" />
+														</div>
+														<div class="buttonMasterType">
+															<button class="small" data-bind="enable: requirementType() == 2 &amp;&amp; masterType() != '', click: function(){ $parents[1].openDiaLogMasterItem($data); }">#{i18n.getText('JHC002_B222_25')}</button>
+															<span data-bind="text: getNameMasterItemList()" class="limited-label" ></span>
+														</div>
+														<textarea class="inputTextarea" data-bind="ntsMultilineEditor: { value: inputRequirement, constraint: 'String_Any_100', enable: requirementType() == 3, name: '#{i18n.getText('JHC002_B222_27')}'}" />
+													</td>
+												</com:ko-if>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -14,7 +14,8 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param workplaceId
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> getAllWpApprovalRoot(String companyId, String workplaceId);
+	List<WorkplaceApprovalRoot> getWpRootStart(String companyId, String workplaceId, int sysAtr,
+			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * get WpApprovalRoot
@@ -50,7 +51,8 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param rootAtr
 	 * @return
 	 */
-	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr);
+	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType,
+			EmploymentRootAtr rootAtr, int sysAtr);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(共通の)
@@ -60,7 +62,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
+	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date, int sysAtr);
 
 	/**
 	 * add Workplace Approval Root
@@ -102,7 +104,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param baseDate・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate);
+	List<WorkplaceApprovalRoot> findAllByBaseDate(String companyID, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Work place Approval Root By type
 	 * @param companyId

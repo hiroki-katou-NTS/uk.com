@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.master;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author HungTT
@@ -33,5 +35,12 @@ public interface WorkplaceInformationRepository {
 	public void deleteWorkplaceInforOfHistory(String companyId, String wkpHistId);
 	
 	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId);
-
+	/**
+	 * get wkpinfo for new table
+	 * @param companyId
+	 * @param wkpId
+	 * @param baseDate
+	 * @return
+	 */
+	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate);
 }

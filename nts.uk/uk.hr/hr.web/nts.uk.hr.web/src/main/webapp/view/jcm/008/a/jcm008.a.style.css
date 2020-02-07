@@ -1,0 +1,89 @@
+#main-left-area{
+	width: 650px;
+	height: 190px;
+}
+#main-center-area{
+	width: 600px;
+	height: auto;
+}
+#info-accordion{
+	width: 459px;
+}
+.ui-accordion .ui-accordion-content{
+	padding: 0.5em 1em;
+	width: 429px !important;
+}
+.ui-accordion .ui-accordion-header{
+	margin-top: 0px;
+}
+#retirement-period{
+	margin-right: 129px;
+}
+#includingReflected{
+	padding-top: 0px;
+}
+.employee-info-pop-up{
+	position: absolute;
+	border-radius: 5px;
+	width: 250px;
+	height: 200px;
+	background-color: #f1f1f1 !important;
+}
+#emp-avatar{
+	width: 100px;
+	height: 110px;
+	border-radius: 5px;
+}
+/* common */
+.mr-10{
+	margin-right: 10px !important;
+}
+.mr-20{
+	margin-right: 20px;
+}
+.ml-21{
+	margin-left: 21px;
+}
+.ml-16{
+	margin-left: 16px;
+}
+.ml-70{
+	margin-left: 70px;
+}
+.mt-6{
+	margin-top:6px;
+}
+.mt-20{
+	margin-top:20px;
+}
+.mt-4{
+	margin-top:4px;
+}
+.help-button {
+	padding: 3px 9px;
+}
+.line-height{
+	margin-bottom: 10px;
+	width: 650px;
+}
+.check-box-padding{
+	padding: 7px 2px 2px 2px;
+}
+.ui-iggrid-tablebody .nts-checkbox-container{
+	margin-left: 16px;
+}
+.ui-iggrid-fixedcontainer-left {
+	border-right: 2px solid #dddddd!important;
+}
+.txt-center{
+	text-align: center;
+}
+.sheet1{
+	visibility: hidden;
+}
+.nts-grid-sheet-buttons{
+	display: none;
+}
+.nts-grid-wrapper table tr td.ntsgrid-disable {
+	background-color: #dddddd;
+}

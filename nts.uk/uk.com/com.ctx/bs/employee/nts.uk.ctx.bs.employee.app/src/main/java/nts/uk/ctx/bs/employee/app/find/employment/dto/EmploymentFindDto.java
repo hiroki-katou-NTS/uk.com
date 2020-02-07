@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.employment.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -11,6 +13,8 @@ import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentName;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterName;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -31,7 +35,22 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 
 	/** The memo. */
 	private String memo;
+	//グループ会社共通マスタID
+	private String empCommonMasterId;
+	// グループ会社共通マスタ項目ID
+	private String empCommonMasterItemId;
 
+	private boolean showsGroupCompany;
+	
+	private String commonMasterName;
+	
+	private List<CommonMaterItemDto> commonMasterItems;
+	
+	private String errMessage;
+	
+	private String commonMasterItemId;
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,6 +106,16 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
+	}
+
+	@Override
+	public void setEmpCommonMasterId(String empCommonMasterId) {
+		this.empCommonMasterId = empCommonMasterId;
+	}
+
+	@Override
+	public void setEmpCommonMasterItemId(String empCommonMasterItemId) {
+		this.empCommonMasterItemId = empCommonMasterItemId;	
 	}
 
 }

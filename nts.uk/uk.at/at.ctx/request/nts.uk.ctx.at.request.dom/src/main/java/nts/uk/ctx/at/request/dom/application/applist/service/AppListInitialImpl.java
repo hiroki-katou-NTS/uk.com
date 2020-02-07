@@ -1400,6 +1400,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private FrameOutput checkPhaseCurrent(ApprovalPhaseStateImport_New phase, String sID) {
 		List<ApprovalFrameImport_New> lstFrame = phase.getListApprovalFrame();
 		FrameOutput statusFrame = new FrameOutput();
+		/*
 		for (ApprovalFrameImport_New frame : lstFrame) {
 			if (this.checkExistEmp(frame.getListApprover(), sID)) {
 				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
@@ -1413,6 +1414,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				break;
 			}
 		}
+		*/
 		return statusFrame;
 	}
 
@@ -1713,6 +1715,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// dk1
 		List<ApprovalPhaseStateImport_New> lstPhase = app.getLstPhaseState();
 		ApproverStt check = new ApproverStt(false, null);
+		/*
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			int frameCount = appPhase.getListApprovalFrame().size();
 			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
@@ -1735,6 +1738,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 
 		}
+		*/
 		return check;
 	}
 
@@ -1745,7 +1749,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @return
 	 */
 	private boolean checkDifNotAppv(ApprovalFrameImport_New frame, String sID) {
-
+		/*
 		if (Strings.isNotBlank(frame.getApproverID()) && frame.getApproverID().equals(sID)) {
 			return true;
 		}
@@ -1755,6 +1759,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		if (this.checkExistEmp(frame.getListApprover(), sID)) {
 			return true;
 		}
+		*/
 		return false;
 	}
 

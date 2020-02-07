@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.hr.notice.dom.report.Code_AlphaNumeric_3
+					nts.uk.ctx.hr.notice.dom.report.String_Any_20
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-ko-ext.js" />
+			<com:stylefile path="jhn011.b.style.css" />
+			<com:scriptfile path="jhn011.b.service.js" />
+			<com:scriptfile path="jhn011.b.vm.js" />
+			<com:scriptfile path="jhn011.b.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="B1_1" tabindex="1" data-bind="click : createNewLayout, enable: true">#{i18n.getText('JHN011_B1_1')}</button>
+				<button id="B1_2" tabindex="2" class="proceed"
+					data-bind="click: saveDataLayout, enable: enaBtnSave()">#{i18n.getText('JHN011_B1_2')}</button>
+				<button id="B1_5" tabindex="5" class="danger"
+					data-bind="click: removeDataLayout, enable: enaBtnDel()">#{i18n.getText('JHN011_B1_5')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="B221"
+					data-bind="ntsPanel:{width: '28%',direction: 'right', showIcon: true, visible: true}">
+					
+					<div id="B221_2"
+							data-bind="ntsCheckBox: { checked: checkAbolition }" tabindex="-1">#{i18n.getText('JHN011_B221_2')}</div>
+					<div class="cf">
+						<div >
+							<div  id="B221_3"
+								data-bind="ntsSearchBox: {
+									searchMode :'highlight',
+									targetKey: 'id', 
+									mode: 'igGrid',
+									comId: 'B221_4',
+									items: layouts, 
+									selected: 'id',
+									selectedKey: 'id', 
+									fields: ['reportCode', 'reportName'] }" />
+							<table id="B221_4"
+								data-bind="ntsGridList: {
+									options: layouts,
+									optionsValue: 'id',
+									columns: reportColums,
+									multiple: false,
+									value: layout().id,
+									rows:25}">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="B222" data-bind="with: layout">
+						<table class="table_content">
+							<colgroup>
+								<col width="220px" />
+								<col width="*" />
+							</colgroup>
+							<!-- line 1  届出コード/届出名-->
+							<tr>
+								<td class="row_1">
+									<div id="B222_1"
+										data-bind="ntsFormLabel: { constraint: ['Code_AlphaNumeric_3','String_Any_20'] , required: true }">
+										#{i18n.getText('JHN011_B222_1')}</div>
+								</td>
+								<td class="valign-center">
+									<div class="input_002 input_code">
+											<input id="B222_1_1" tabindex="6"
+												data-bind="ntsTextEditor: {
+															value: reportCode,
+															name: '#[JHN011_B222_1_1]',
+															constraint: 'Code_AlphaNumeric_3',
+															required:true,
+															enable: $parent.layout().id() == undefined },
+															attr: { id: 'B222_1_1', NameID: nts.uk.resource.getText('JHN011_B222_1_1')} " />
+															
+											<input id="B222_1_2" tabindex="7"
+												data-bind="ntsTextEditor: {
+															value: reportName,
+															name: '#[JHN011_B222_1_2]',
+															constraint: 'String_Any_20',
+															required:true,
+															enable: true},
+															attr: { id: 'B222_1_2', NameID: nts.uk.resource.getText('JHN011_B222_1_2')}" />
+											<div id="B222_1_3" tabindex="-1" data-bind="ntsCheckBox: { checked: isAbolition }, visible: $parent.layout().id() != undefined">#{i18n.getText('JHN011_B222_1_3')}</div>
+										
+										</div>
+								</td>
+							</tr>
+							<!-- line 2  届出名よみ-->
+							<tr>
+								<td class="row_1">
+									<div id="B222_7"
+										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										#{i18n.getText('JHN011_B222_7')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="B222_7_1" tabindex="8"
+												data-bind="ntsTextEditor: {
+															value: reportNameYomi,
+															name: '#[JHN011_B222_7_1]',
+															constraint: 'String_Any_20',
+															required:false}" />
+										</div>								
+									</div>
+								</td>
+							</tr>
+							<!-- line 3 combox　届出種類 -->
+							<tr>
+								<!-- 届出種類 -->
+								<td class="row_1">
+									<div id="B222_2"
+										data-bind="ntsFormLabel: { required: false }">
+										#{i18n.getText('JHN011_B222_2')}</div>
+								</td>
+								<!-- 届出種類選択 -->
+								<td class="valign-center">
+									<div>
+										<div id="B222_2_1" class="input_002 input_code" tabindex="9"
+											data-bind="ntsComboBox: {
+													options: comboxReportType,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: reportType,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													dropDownAttachedToBody:true,
+													selectFirstIfNull: false,
+													required: false,
+													columns: [
+														{ prop: 'name', length: 2, lengthDropDown: 2}
+													]},attr: { name: nts.uk.resource.getText('JHN011_B222_1_2')}" >
+										</div>															
+									</div>
+								</td>
+							</tr>
+							
+							<!-- line 4  備考-->
+							<tr>
+								<td class="row_1">
+									<div id="B222_3"
+										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										#{i18n.getText('JHN011_B222_3')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="B222_3_1" tabindex="10"
+												data-bind="ntsTextEditor: {
+															value: remark,
+															name: '#[JHN011_B222_3_1]',
+															constraint: 'String_Any_20',
+															required:false}" />
+										</div>								
+									</div>
+								</td>
+							</tr>	
+							
+							<!-- line 5 メモ  -->
+							<tr>
+								<td class="row_1">
+									<div id="B222_4"
+										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										#{i18n.getText('JHN011_B222_4')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="B222_4_1" tabindex="11"
+												data-bind="ntsTextEditor: {
+															value: memo,
+															name: '#[JHN011_B222_4_1]',
+															constraint: 'String_Any_20',
+															required:false}" />
+										</div>								
+									</div>
+								</td>
+							</tr>
+							
+							
+							<!-- line 6  メッセージ-->
+							<tr>
+								<td class="row_1">
+									<div id="B222_5"
+										data-bind="ntsFormLabel: { constraint: ['String_Any_20']}">
+										#{i18n.getText('JHN011_B222_5')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="B222_5_1" tabindex="12"
+												data-bind="ntsTextEditor: {
+															value: message,
+															name: '#[JHN011_B222_5_1]',
+															constraint: 'String_Any_20',
+															required:false}" />
+										</div>								
+									</div>
+								</td>
+							</tr>	
+							
+							<!-- line 7  帳票印刷 -->
+							<tr>
+								<td class="row_1">
+									<div id="B222_6"
+										data-bind="ntsFormLabel: {required: true}">
+										#{i18n.getText('JHN011_B222_6')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div id="B222_6_1" tabindex="13" class="cf input_002 input_code"  data-bind="ntsSwitchButton: {
+											name: '#[JHN011_B222_6_1]',
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: formReport,
+											required: true,
+											enable: true }"></div>																		
+									</div>
+								</td>
+							</tr>								
+							
+																																										
+						</table>
+						<div>
+							<button class="x-large" tabindex="14"
+								data-bind="click: $parent.showDialogC.bind($parent), enable: !!id()">#{i18n.getText('JHN011_B222_101')}</button>
+						</div>
+						<div
+						data-bind="let: { LAYOUT_ACTION: {
+						        INSERT: 0,
+						        UPDATE: 1,
+						        COPY: 2,
+						        OVERRIDE: 3,
+						        REMOVE: 4
+						    } }">
+						<com:ko tag="if" bind="action() == LAYOUT_ACTION.INSERT">
+							<div class="nosetarea">
+							<span>#{i18n.getText('CPS008_44')}</span>
+							</div>
+						</com:ko>
+						<div style="padding-top: 10px"
+							data-bind="ntsLayoutControl: { 
+								data: classifications,
+								editAble: false,
+								outData: outData
+							}"></div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

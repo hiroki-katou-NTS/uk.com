@@ -35,6 +35,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -729,6 +730,51 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return data;
 	}
 	// laitv code end
+	
+	private static final String FIND_EMPLOYEES_MATCHING_COMPANYID = "SELECT e FROM BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.bsymtEmployeeDataMngInfoPk.pId IN :pId "
+			+ "AND e.companyId = :companyId ";
+	
+	@Override
+	public List<EmployeeDataMngInfo> findEmployeesMatchingName(List<String> pid, String companyId) {
+		List<EmployeeDataMngInfo> emps = new ArrayList<>();
+		CollectionUtil.split(pid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ids -> {
+			List<EmployeeDataMngInfo> _emps = queryProxy().query(FIND_EMPLOYEES_MATCHING_COMPANYID, BsymtEmployeeDataMngInfo.class)
+					.setParameter("pId", ids)
+					.setParameter("companyId", companyId)
+					.getList(m -> toDomain(m));
+			emps.addAll(_emps);
+		});
+		return emps;
+	}
+	
+	private static final String FIND_EMPLOYEES_MATCHING_COMPANYID_FIX = "SELECT e FROM BsymtEmployeeDataMngInfo e, BpsmtPerson c "
+			+ "WHERE (c.businessName LIKE CONCAT(:keyWord, '%') " 
+			+ "OR c.businessNameKana LIKE CONCAT(:keyWord, '%')) "
+			+ "AND e.bsymtEmployeeDataMngInfoPk.pId = c.bpsmtPersonPk.pId "
+			+ "AND e.companyId = :companyId ";
+	
+	@Override
+	public List<EmployeeDataMngInfo> findEmployeesMatchingName(String keyWord, String companyId) {
+		return queryProxy().query(FIND_EMPLOYEES_MATCHING_COMPANYID_FIX, BsymtEmployeeDataMngInfo.class)
+				.setParameter("keyWord", keyWord)
+				.setParameter("companyId", companyId)
+				.getList(m -> toDomain(m));
+	}
+	
+	private static final String FIND_EMPLOYEE_PARTIAL_MATCH = "SELECT e FROM BsymtEmployeeDataMngInfo e "
+			+ "WHERE e.companyId = :cId "
+			+ "AND e.employeeCode LIKE CONCAT('%', :sCd, '%') "
+			+ "AND e.delStatus = 0 ";
+
+	@Override
+	public List<EmployeeIdPersonalIdDto> findEmployeePartialMatchCode(String cId, String sCd) {
+		return queryProxy().query(FIND_EMPLOYEE_PARTIAL_MATCH, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cId", cId)
+				.setParameter("sCd", sCd)
+				.getList(m -> new EmployeeIdPersonalIdDto(m.bsymtEmployeeDataMngInfoPk.pId, m.bsymtEmployeeDataMngInfoPk.sId, m.employeeCode));
+	}
+	
 	@Override
 	public List<PerEmpData> getEmploymentInfos(List<String> sids, GeneralDate baseDate) {
 		List<PerEmpData> data = new ArrayList<>();
