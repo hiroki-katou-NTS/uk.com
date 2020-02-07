@@ -1,0 +1,48 @@
+package nts.uk.ctx.at.schedule.dom.shift.management;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.eclipse.persistence.internal.xr.ValueObject;
+
+import lombok.Getter;
+import nts.arc.error.BusinessException;
+
+/**
+ * シフトパレット
+ * 
+ * @author phongtq
+ *
+ */
+
+public class ShiftPallet extends ValueObject {
+	@Inject
+
+	/** 表示情報 */
+	@Getter
+	private ShiftPalletDisplayInfor displayInfor;
+
+	/** 組み合わせ */
+	@Getter
+	private List<ShiftPalletCombinations> combinations;
+
+	public ShiftPallet(ShiftPalletDisplayInfor displayInfor, List<ShiftPalletCombinations> combinations) {
+		// 会社別シフトパレット(最大20個)を修正する。
+		if (1 <= combinations.size() && combinations.size() <= 20) {
+			throw new BusinessException("Msg_1616");
+		}
+		
+	    List<Integer> lstElement = combinations.stream().map(x -> x.getPositionNumber()).distinct().collect(Collectors.toList());
+		
+		if(lstElement.size() < combinations.size()){
+			throw new BusinessException("Msg_1616");
+		}else {
+			combinations.sort((p1, p2)-> p1.getPositionNumber() - p2.getPositionNumber());
+		}
+		
+		this.displayInfor = displayInfor;
+		this.combinations = combinations;
+	}
+}
