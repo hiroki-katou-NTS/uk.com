@@ -7,7 +7,7 @@ package nts.uk.query.pub.employee;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface SearchEmployeePub.

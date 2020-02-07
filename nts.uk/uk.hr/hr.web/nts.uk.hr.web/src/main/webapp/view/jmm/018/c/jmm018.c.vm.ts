@@ -12,7 +12,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
         dataRetirment: KnockoutObservableArray<any> = ko.observableArray([]);
         durationList: [];
         retirePlanCourseClassList: [];
-        
+        title: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
         }
@@ -27,6 +27,7 @@ module nts.uk.at.view.jmm018.c.viewmodel {
             self.retirePlanCourseClassList = __viewContext.enums.RetirePlanCourseClass;
             
             let param = getShared('employmentTypeToC');
+            self.title(param.commonMasterItemName);
             let tg = [];
             let listSorted = _.sortBy(param.listInfor, ['durationFlg', 'retirementAge']);
             _.forEach(listSorted, (obj) => {

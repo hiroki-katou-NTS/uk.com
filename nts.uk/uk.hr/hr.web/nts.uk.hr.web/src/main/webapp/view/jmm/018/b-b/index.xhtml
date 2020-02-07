@@ -9,7 +9,7 @@
 
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
-				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('JMM018_B3_3')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; getRelatedMaster() &amp;&amp; $root.errors.isEmpty() ">#{i18n.getText('JMM018_B3_3')}</button>
 			</div>
 			<div class="contents-area tab2">
 				<div class="container cf">
@@ -34,7 +34,7 @@
 					 	></assy-com>
 					</div>
 					<div>
-						<a id = "href1" class="hyperlink" href="#B422_12" data-bind = "click: hidden('href1', 'B422_12')">#{i18n.getText('JMM018_B422_2')}</a>
+						<a id = "href1" class="hyperlink " href="#B422_12" data-bind = "click: hidden('href1', 'B422_12')">#{i18n.getText('JMM018_B422_2')}</a>
 						<a id = "href2" class="hyperlink linkRetire" href="#B422_13" data-bind = "click: hidden('href2', 'B422_13')">#{i18n.getText('JMM018_B422_3')}</a>
 						<a id = "href3" class="hyperlink linkRetire" href="#B422_14" data-bind = "click: hidden('href3', 'B422_14')">#{i18n.getText('JMM018_B422_4')}</a>
 						<a id = "href4" class="hyperlink linkRetire" href="#B422_15" data-bind = "click: hidden('href4', 'B422_15')">#{i18n.getText('JMM018_B422_5')}</a>
@@ -44,7 +44,7 @@
 						<a id = "href8" class="hyperlink linkRetire" href="#B422_19" data-bind = "click: hidden('href8', 'B422_19')">#{i18n.getText('JMM018_B422_9')}</a>
 					</div>
 					<div>
-					<div class="panel panel-frame frameRetire panel-croll">
+					<div class="panel panel-frame frameRetire panel-scroll" id="panel-scroll" >
 						<div class="eachType">
 							<a class="typeRetire" id="B422_12"> #{i18n.getText('JMM018_B422_12')} </a> <hr></hr>
 						</div>
@@ -66,6 +66,7 @@
 													options: $parent.reachedAgeTermList,
 													optionsValue: 'value',
 													optionsText: 'name',
+													enable: $parent.isLatestHis,
 													value: reachedAgeTerm}"> </div>
 									</div>
 									

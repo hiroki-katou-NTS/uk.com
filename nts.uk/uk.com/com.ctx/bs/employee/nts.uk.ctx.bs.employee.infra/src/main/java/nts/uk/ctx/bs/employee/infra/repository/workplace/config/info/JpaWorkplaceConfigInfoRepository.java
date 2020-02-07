@@ -42,7 +42,7 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig_;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceConfigInfoRepository.

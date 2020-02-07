@@ -10,7 +10,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface EmploymentFinder.

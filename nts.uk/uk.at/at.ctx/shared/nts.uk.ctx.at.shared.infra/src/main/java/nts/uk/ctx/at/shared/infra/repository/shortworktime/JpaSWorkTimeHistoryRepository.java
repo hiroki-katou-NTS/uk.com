@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist_;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaSWorkTimeHistoryRepository.
@@ -205,7 +205,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#
 	 * findByEmpAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public Map<String, ShortWorkTimeHistory> findByEmpAndPeriod(List<String> empIdList,
@@ -246,7 +246,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#
 	 * findLstByEmpAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<ShortWorkTimeHistory> findLstByEmpAndPeriod(List<String> empIdList,

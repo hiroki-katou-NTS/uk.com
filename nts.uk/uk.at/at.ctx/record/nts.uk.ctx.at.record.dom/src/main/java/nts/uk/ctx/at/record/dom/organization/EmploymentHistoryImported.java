@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.organization;
 
 import lombok.Getter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  *  所属雇用履歴 

@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.pubimp.person.info.ctg;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,7 +43,6 @@ public class PerInfoCtgOrderByCompanyPubImpl implements IPerInfoCtgOrderByCompan
 	@Override
 	public HashMap<Integer, HashMap<String, Integer>> getOrderList(List<String> categoryIds,
 			List<String> itemDefinitionIds) {
-		// TODO Auto-generated method stub
 		return repo.getOrderList(categoryIds, itemDefinitionIds);
 	}
 
@@ -74,7 +74,7 @@ public class PerInfoCtgOrderByCompanyPubImpl implements IPerInfoCtgOrderByCompan
 					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
 					p.getCategoryParentCode().v(), p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
 					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value, p.isCanAbolition(),
-					p.getSalaryUseAtr().value, p.getPersonnelUseAtr().value, p.getEmploymentUseAtr().value);
+					p.getSalaryUseAtr().value, p.getPersonnelUseAtr().value, p.getEmploymentUseAtr().value, p.getIsFixed().value);
 
 		}).filter(m -> m != null).collect(Collectors.toList());
 
@@ -91,9 +91,33 @@ public class PerInfoCtgOrderByCompanyPubImpl implements IPerInfoCtgOrderByCompan
 					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value, p.isCanAbolition(),
 					p.getSalaryUseAtr() == null? 0:p.getSalaryUseAtr().value, 
 					p.getPersonnelUseAtr() == null? 0: p.getPersonnelUseAtr().value, 
-					p.getEmploymentUseAtr() == null? 0:p.getEmploymentUseAtr().value);
+					p.getEmploymentUseAtr() == null? 0:p.getEmploymentUseAtr().value, p.getIsFixed().value);
 
 		}).filter(m -> m != null).collect(Collectors.toList());
 		return categoryList;
+	}
+
+	@Override
+	public Optional<PerInfoCtgShowExport> getInfoCtgByCtgIdAndCid(String ctgId, String contractCd) {
+
+		Optional<PersonInfoCategory> categoryOpt = this.perInfoCtgRepositoty.getPerInfoCategory(ctgId, contractCd);
+		if (categoryOpt.isPresent()) {
+			PersonInfoCategory category = categoryOpt.get();
+			return Optional.of(new PerInfoCtgShowExport(category.getPersonInfoCategoryId(),
+					category.getCategoryName().v(), category.getCategoryType().value,
+					category.getCategoryCode().v(), category.getIsAbolition().value,
+					category.getCategoryParentCode().v(),
+					category.getInitValMasterCls() == null ? 1 : category.getInitValMasterCls().value,
+					category.getAddItemCls() == null ? 1 : category.getAddItemCls().value,
+					category.isCanAbolition(),
+					category.getSalaryUseAtr() == null ? 0 : category.getSalaryUseAtr().value,
+					category.getPersonnelUseAtr() == null ? 0 : category.getPersonnelUseAtr().value,
+					category.getEmploymentUseAtr() == null ? 0
+							: category.getEmploymentUseAtr().value,
+							category.getIsFixed().value		
+					));
+			
+		}
+		return Optional.empty();
 	}
 }

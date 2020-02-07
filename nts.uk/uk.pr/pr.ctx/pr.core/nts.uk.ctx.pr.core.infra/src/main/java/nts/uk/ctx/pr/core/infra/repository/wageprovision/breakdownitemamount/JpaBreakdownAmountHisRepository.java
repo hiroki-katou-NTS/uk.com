@@ -6,7 +6,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.BreakdownAmountH
 import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.BreakdownAmountHisRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.breakdownitemamount.QpbmtBreakAmountHis;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.util.List;

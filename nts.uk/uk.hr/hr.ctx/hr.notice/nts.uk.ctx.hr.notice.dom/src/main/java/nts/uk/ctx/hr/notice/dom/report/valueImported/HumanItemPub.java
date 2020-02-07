@@ -9,4 +9,7 @@ public interface HumanItemPub {
 	List<String> getAllItemIds(String cid, List<String> ctgCodes, List<String> itemCds);
 	
 	String getCategoryName(String cid, String categoryCode);
+	
+	DateRangeItemImport getDateRangeItemByCtgId(String categoryId);
+	
 }

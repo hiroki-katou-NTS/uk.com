@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentInfo;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentStatusPubImpl implements EmploymentStatusPub {

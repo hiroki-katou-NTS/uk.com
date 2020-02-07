@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaEmployeeHistoryRepository.
@@ -36,7 +36,7 @@ public class JpaEmployeeHistoryRepository extends JpaRepository implements Emplo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.query.model.employee.history.EmployeeHistoryRepository#
-	 * findEmployeeByEntryDate(nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * findEmployeeByEntryDate(nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<String> findEmployeeByEntryDate(String comId, DatePeriod period) {
@@ -52,7 +52,7 @@ public class JpaEmployeeHistoryRepository extends JpaRepository implements Emplo
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.query.model.employee.history.EmployeeHistoryRepository#
-	 * findEmployeeByRetirementDate(nts.uk.shr.com.time.calendar.period.
+	 * findEmployeeByRetirementDate(nts.arc.time.calendar.period.
 	 * DatePeriod)
 	 */
 	@Override

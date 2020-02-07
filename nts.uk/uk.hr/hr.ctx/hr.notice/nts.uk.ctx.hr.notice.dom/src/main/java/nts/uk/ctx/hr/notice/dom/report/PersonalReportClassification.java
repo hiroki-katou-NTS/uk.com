@@ -20,6 +20,10 @@ import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20;
 public class PersonalReportClassification  extends AggregateRoot {
 	//会社ID
 	private String companyId;
+	
+	//個別届出種類ID
+	private Integer workId;
+	
 	//個別届出種類ID
 	private int pReportClsId;
 	//個別届出コード
@@ -50,7 +54,7 @@ public class PersonalReportClassification  extends AggregateRoot {
 			int displayOrder, boolean isAbolition, Integer reportType, 
 			String remark, String memo, String message, 
 			boolean formReport, boolean agentReportIsCan) {
-		return new PersonalReportClassification(cid, pReportClsId, 
+		return new PersonalReportClassification(cid, null, pReportClsId, 
 				new Code_AlphaNumeric_3(pReportCode),
 				new String_Any_20(pReportName),
 				new String_Any_20(pReportNameReadWay),

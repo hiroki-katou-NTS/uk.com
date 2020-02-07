@@ -4,7 +4,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.util.value.DiscreteValue;
 import nts.uk.shr.com.history.History;
 import nts.uk.shr.com.history.HistoryItem;
-import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
+import nts.arc.time.calendar.period.GeneralPeriod;
 
 /**
  * MustBeResident

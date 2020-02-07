@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisComPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.util.List;

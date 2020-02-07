@@ -3,7 +3,7 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.old;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor
 @Getter

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.adapter.monthlyremain;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface GetConfirmMonthlyAdapter {
 	/**

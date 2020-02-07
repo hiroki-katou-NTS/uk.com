@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.history;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.GeneralHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitleHistory.

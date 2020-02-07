@@ -47,7 +47,7 @@
 				<li data-bind="click: onSelectTabB"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('JMM018_A1_2')}</a></li>
 				<li data-bind="click: onSelectTab2"><a tabindex="3"
-					href="#tabpanel-3" role="tab-navigator" >#{i18n.getText('JMM018_A1_3')}</a></li>
+					href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('JMM018_A1_3')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -55,7 +55,7 @@
 			<div id="tabpanel-1" role="tabpanel" data-bind="with: eventManage()">
 				<ui:include src="../b/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenModelTab2()">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenModelTab2()">
 				<ui:include src="../b-b/index.xhtml" />
 			</div>
 			

@@ -3,7 +3,7 @@ package nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.HistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author anhdt 年月日期間の汎用履歴項目

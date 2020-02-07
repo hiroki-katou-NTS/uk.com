@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMan
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.KrcdtRsvleaMngTemp;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.KrcdtRsvleaMngTempPK;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：暫定積立年休管理データ

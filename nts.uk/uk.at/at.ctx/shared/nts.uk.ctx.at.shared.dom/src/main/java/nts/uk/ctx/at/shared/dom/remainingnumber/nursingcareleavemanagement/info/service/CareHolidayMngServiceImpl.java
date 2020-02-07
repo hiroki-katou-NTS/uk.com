@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNursingRemainOutputPara;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class CareHolidayMngServiceImpl implements CareHolidayMngService{
 

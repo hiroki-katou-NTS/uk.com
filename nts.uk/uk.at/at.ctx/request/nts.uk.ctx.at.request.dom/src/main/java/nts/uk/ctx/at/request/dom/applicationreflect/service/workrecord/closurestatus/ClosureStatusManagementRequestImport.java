@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closures
 
 import java.util.Optional;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ClosureStatusManagementRequestImport {
 	/**

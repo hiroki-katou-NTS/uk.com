@@ -32,7 +32,7 @@ public class MandatoryRetirementRegulationFinder {
 	//アルゴリズム [関連マスタの取得] を実行する(Thực hiện thuật toán [lấy RelatedMaster])
 	public Optional<RelateMasterDto> getRelateMaster(String contractCd, String companyId, String commonMasterId) {
 		Optional<GrpCmonMasterImport> commonMasterItem = commonMasterAdap.findCommonMasterByContract(contractCd, commonMasterId);
-		if(!commonMasterItem.isPresent()) {
+		if(!commonMasterItem.isPresent() || commonMasterItem.get().getCommonMasterItems().isEmpty()) {
 			return Optional.empty();
 		}
 		List<RetirePlanCource> listRetirePlan = retirePlanCourceService.getAllRetirePlanCource(companyId);

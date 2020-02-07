@@ -21,15 +21,36 @@ module jcm008.a {
             self.searchFilter = new SearchFilterModel();
             self.plannedRetirements = ko.observableArray([]);
             self.searchFilter.retirementCourses = ko.observableArray([]);
+            self.searchFilter.retirementCoursesEarly = ko.observableArray([]);
+            self.searchFilter.retirementCoursesStandard = ko.observableArray([]);
             self.employeeInfo = ko.observable({});
             self.referEvaluationItems = ko.observableArray([]);
             self.hidedColumns = [];
             $(".employee-info-pop-up").ntsPopup("hide");
-             
+
             $(window).resize(function() {
                 self.setScroll();
             });
+
+            self.searchFilter.retirementCourses.subscribe((newVal) => {
+                
+                self.searchFilter.retirementCoursesEarly(
+                    _.chain(newVal)
+                        .filter((o) => { return o.retirePlanCourseClass != 0; })
+                        .uniqBy('retirePlanCourseCode')
+                        .sortBy(['employmentCode', 'retirementAge'])
+                        .value()
+                );
+                
+                self.searchFilter.retirementCoursesStandard(
+                    _.chain(newVal)
+                        .filter((o) => { return o.retirePlanCourseClass == 0; })
+                        .sortBy(['employmentCode', 'retirementAge'])
+                        .value()
+                    );
+            });
         }
+        
 
         /** start page */
         start() {
@@ -47,9 +68,10 @@ module jcm008.a {
                     return c;
                 });
                 
+                
                 self.searchFilter.retirementCourses(_.sortBy(data.retirementCourses, ['employmentCode', 'retirementAge']));
 
-                let retirementAge = _.map(self.searchFilter.retirementCourses(), (rc) => {
+                let retirementAge = _.map(self.searchFilter.retirementCoursesEarly(), (rc) => {
                     return new RetirementAgeSetting(rc.retirementAge.replace('歳', ''), rc.retirementAge);
                 });
                 
@@ -186,7 +208,7 @@ module jcm008.a {
                     { headerText: getText('JCM008_A222_15'), key: 'retireDateBase', dataType: 'string', width: '262px' },
 
                 ],
-                dataSource: self.searchFilter.retirementCourses(),
+                dataSource: self.searchFilter.retirementCoursesStandard(),
                 dataSourceType: 'json',
                 responseDataKey: 'results'
             });
@@ -197,7 +219,7 @@ module jcm008.a {
             if ($('#retirementDateSetting').data("igGrid")) {
                 $('#retirementDateSetting').ntsGrid("destroy");
             };
-            let comboColumns = [{ prop: 'retirePlanCourseName', length: 3 }];
+            let comboColumns = [{ prop: 'retirePlanCourseName', length: 10 }];
             let dataSources = self.plannedRetirements();
             let rowStates = [];
             let cellStates = [];
@@ -249,7 +271,7 @@ module jcm008.a {
                 { columnKey: 'extendEmploymentFlg', isFixed: true },
                 { columnKey: 'registrationStatus', isFixed: true }
             ];
-            if(self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
+            if(self.searchFilter.retirementCoursesEarly() && self.searchFilter.retirementCoursesEarly().length > 0) {
                 fixedClmSetting.push({ columnKey: 'desiredWorkingCourseId', isFixed: true });
             }
             fixedClmSetting = fixedClmSetting.concat([
@@ -284,7 +306,7 @@ module jcm008.a {
                 retirePlanCourseName: "",
                 durationFlg: 0
             }];
-            retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCourses(), 'retirePlanCourseCode'));
+            retirementCourses = retirementCourses.concat(_.sortBy(self.searchFilter.retirementCoursesEarly(), 'retirePlanCourseCode'));
 
             $('#retirementDateSetting').ntsGrid({
                 autoGenerateColumns: false,
@@ -346,12 +368,13 @@ module jcm008.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'RetirementStatusCb', width: '75px', options: [new RetirementStatus(0, '退職'), new RetirementStatus(1, '継続')], optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 2 }], controlType: 'ComboBox', enable: true },
-                    { name: 'WorkingCourseCb', width: '120px', options: retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                    { name: 'WorkingCourseCb', width: '150px', options: retirementCourses, optionsValue: 'retirePlanCourseId', optionsText: 'retirePlanCourseName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                     { name: 'EmployeeName', click: function (id, key, el) { self.showModal(id, key, el); }, controlType: 'LinkLabel' },
                     { name: 'InterviewRecord', click: function (id, key, el) { console.log(el); }, controlType: 'LinkLabel' },
 
                 ]
             });
+            self.bindHidingEvent();
         }
 
         private buildRetirementDateSettingCol() {
@@ -364,8 +387,8 @@ module jcm008.a {
             ];
 
             let hidedColumnsCf = [];
-            if (self.searchFilter.retirementCourses() && self.searchFilter.retirementCourses().length > 0) {
-                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '140px', ntsControl: 'WorkingCourseCb' });
+            if (self.searchFilter.retirementCoursesEarly() && self.searchFilter.retirementCoursesEarly().length > 0) {
+                columns.push({ headerText: getText('JCM008_A222_25'), key: 'desiredWorkingCourseId', dataType: 'number', width: '160px', ntsControl: 'WorkingCourseCb' });
             }
            
             columns = columns.concat([
@@ -418,6 +441,10 @@ module jcm008.a {
             }
 
             columns.push({ headerText: getText('JCM008_A222_39'), key: 'interviewRecordTxt', dataType: 'string', width: '100px', ntsControl: 'InterviewRecord' });
+            _.forEach(self.hidedColumns, (key) => {
+                hidedColumnsCf.push({columnKey: key, allowHiding: true, hidden: true});
+            });
+
             return {columns: columns, hidedColumnsCf: hidedColumnsCf};
         }
 
@@ -490,10 +517,14 @@ module jcm008.a {
                 isShowBaseDate: true,
                 startMode: 1
             });
-            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function () {
+            modal('hr', '/view/jdl/0110/a/index.xhtml').onClosed(function() {
                 block.clear();
-                let data = getShared('outputDepartmentJDL0110') ? getShared('outputDepartmentJDL0110') : [];
-                self.searchFilter.department(data);
+                let data = getShared('outputDepartmentJDL0110') ? getShared('outputDepartmentJDL0110') : [],
+                    isCancel = getShared('CDL008Cancel') ? getShared('CDL008Cancel') : false
+                    ;
+                if (!isCancel) {
+                    self.searchFilter.department(data);
+                }
             });
         }
 
@@ -514,8 +545,12 @@ module jcm008.a {
             });
             modal('hr', '/view/jdl/0080/a/index.xhtml').onClosed(function () {
                 block.clear();
-                let data = getShared('CDL002Output') ? getShared('CDL002Output') : [];
-                self.searchFilter.employment(data);
+                let data = getShared('CDL002Output') ? getShared('CDL002Output') : [],
+                    isCancel = getShared('CDL002Cancel') ? getShared('CDL002Cancel') : false;
+                
+                if (!isCancel) {
+                    self.searchFilter.employment(data);
+                }
             });
         }
 
@@ -538,6 +573,18 @@ module jcm008.a {
             $("#retirementDateSetting").igGrid("option", "height", height + 'px');
             $("#retirementDateSetting").igGrid("option", "width", width + 'px');
 
+        }
+
+        public bindHidingEvent() {
+            let self = this;
+            $("#retirementDateSetting").on("iggridhidingcolumnhiding", function (e, args) {
+                self.hidedColumns.push(args.columnKey);
+                console.log(self.hidedColumns);
+            });
+            $("#retirementDateSetting").on("iggridhidingcolumnshowing", function (e, args) {
+                self.hidedColumns = self.hidedColumns.filter(v => v !== args.columnKey); 
+                console.log(self.hidedColumns);
+            });
         }
 
         /**
