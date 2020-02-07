@@ -959,4 +959,23 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 							}).collect(Collectors.toList()));
 				}).collect(Collectors.toList());
 	}
+	/**
+     * [No.309]承認ルートを取得する
+     * Phần đối ứng cho bên Jinji (人事)
+     * 1.社員の対象申請の承認ルートを取得する
+     * @param 会社ID companyID
+     * @param 社員ID employeeID
+     * @param 承認ルート区分 
+     * @param 基準日 date
+     * @param ・対象申請 noticeId
+     * @param システム区分 sysAtr
+     * @return
+     */
+	@Override
+	public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, Integer rootType,
+			GeneralDate date, String appID, int sysAtr) {
+		// TODO Auto-generated method stub
+		//Fix tạm data
+		return ApprovalRootContentExport.fixData();
+	}
 }

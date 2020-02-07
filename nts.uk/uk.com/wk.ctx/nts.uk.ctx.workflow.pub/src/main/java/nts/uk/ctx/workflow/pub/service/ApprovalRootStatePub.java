@@ -283,5 +283,18 @@ public interface ApprovalRootStatePub {
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
     
     public List<ApprovalPhaseStateExport> getApprovalDetail(String appID);
-
+    /**
+     * [No.309]承認ルートを取得する
+     * Phần đối ứng cho bên Jinji (人事)
+     * 1.社員の対象申請の承認ルートを取得する
+     * @param 会社ID companyID
+     * @param 社員ID employeeID
+     * @param 承認ルート区分 
+     * @param 基準日 date
+     * @param ・対象申請 noticeId
+     * @param システム区分 sysAtr
+     * @return
+     */
+    public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, Integer rootType, 
+    		GeneralDate date, String noticeId, int sysAtr);
 }
