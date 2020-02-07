@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +28,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -32,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -427,11 +434,59 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			result.addAll(query.getResultList());
 		});
 
-		return result.parallelStream()
+		List<WorkingCondition> data = result.parallelStream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().parallelStream()
 				.map(item -> new WorkingCondition(new JpaWorkingConditionGetMemento(item)))
 				.collect(Collectors.toList());
+		 return data;
+	}
+	
+	@Override
+	public List<WorkingCondition> getBySidsAndDatePeriodNew(List<String> employeeIds, DatePeriod datePeriod) {
+		// Check exist
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return Collections.emptyList();
+		}
+
+		List<WorkingCondition> result = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "select * from KSHMT_WORKING_COND h" + " where h.SID in ("
+					+ NtsStatement.In.createParamsString(subList) + ")" + " and h.START_DATE <= ?"
+					+ " and h.END_DATE >= ?" + " and h.CID >= ?";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+
+				int i = 0;
+				for (; i < subList.size(); i++) {
+					stmt.setString(1 + i, subList.get(i));
+				}
+
+				stmt.setDate(1 + i, Date.valueOf(datePeriod.end().localDate()));
+				stmt.setDate(2 + i, Date.valueOf(datePeriod.start().localDate()));
+				stmt.setString(3 + i, companyId);
+
+				result.addAll(new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					List<DateHistoryItem> lstHist = new ArrayList<>();
+					lstHist.add(new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE"))));
+					WorkingCondition ent = new WorkingCondition(rec.getString("CID"), rec.getString("SID"), lstHist);
+					return ent;
+				}));
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+
+		});
+
+		Map<String, List<WorkingCondition>> mapGroupSId = result.stream()
+				.collect(Collectors.groupingBy(x -> x.getEmployeeId()));
+		return mapGroupSId.entrySet().stream().map(x -> {
+			WorkingCondition wC = new WorkingCondition(companyId, x.getKey(),
+					x.getValue().stream().flatMap(y -> y.getDateHistoryItem().stream()).collect(Collectors.toList()));
+			return wC;
+		}).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
