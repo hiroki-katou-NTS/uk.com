@@ -165,27 +165,34 @@ module jhn001.a.viewmodel {
             var lstDoc = [];
             var missingDocName = '';
             for (var i = 0; i < listdatafile.length; i++) {
-
-                if (listdatafile[i].fileName == null) {
-                    missingDocName = missingDocName + listdatafile[i].sampleFileName + ' 、';
+                let fileData = listdatafile[i];
+                if (fileData.fileName == null) {
+                    missingDocName = missingDocName + fileData.sampleFileName + ' 、';
                 }
 
+                let urlFileSample = fileData.sampleFileId == null || fileData.sampleFileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.sampleFileId);
+                let urlFile = fileData.fileId == null || fileData.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.fileId);
+                let isShow = true;
+                if(fileData.sampleFileName == null || fileData.sampleFileName == ''){
+                    isShow = false;    
+                }
                 let obj = {
-                    docName: listdatafile[i].docName,
-                    ngoactruoc: '(',
-                    sampleFileName: listdatafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].sampleFileName + '</a>',
-                    ngoacsau: ')',
-                    fileName: listdatafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].fileName + '</a>',
-                    cid: listdatafile[i].cid,
-                    reportLayoutID: listdatafile[i].reportLayoutID,
-                    docID: listdatafile[i].docID,
-                    dispOrder: listdatafile[i].dispOrder,
-                    requiredDoc: listdatafile[i].requiredDoc,
-                    docRemarks: listdatafile[i].docRemarks,
-                    sampleFileId: listdatafile[i].sampleFileId,
-                    reportID: listdatafile[i].reportID,
-                    fileId: listdatafile[i].fileId,
-                    fileSize: listdatafile[i].fileSize
+                    docName: fileData.docName,
+                    ngoactruoc: !isShow ? '' : '(',
+                    sampleFileName: !isShow ? '' : '<a href=' + urlFileSample + ' target="_blank">' + fileData.sampleFileName + '</a>',
+                    ngoacsau:   !isShow ? '' : ')',
+                    fileName: fileData.fileName == null || fileData.fileName == '' ? '' : '<a style="color: blue;" href=' + urlFile + ' target="_blank">' + fileData.fileName + '</a>',
+                    cid: fileData.cid,
+                    reportLayoutID: fileData.reportLayoutID,
+                    docID: fileData.docID,
+                    dispOrder: fileData.dispOrder,
+                    requiredDoc: fileData.requiredDoc,
+                    docRemarks: fileData.docRemarks,
+                    sampleFileId: fileData.sampleFileId,
+                    reportID: fileData.reportID,
+                    fileId: fileData.fileId,
+                    fileSize: fileData.fileSize,
+                    
                 }
                 lstDoc.push(obj);
             }
@@ -484,7 +491,7 @@ module jhn001.a.viewmodel {
             setShared("JHN001F_PARAMS", param);
 
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
-                self.start(null, false);
+                self.getListDocument(param);
             });
         }
 

@@ -77,7 +77,7 @@ module jhn001.f.vm {
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.fileSize;
-                    item.urlFile = nts.uk.request.file.liveViewUrl(item.fileId);
+                    item.urlFile = item.fileId == null || item.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(item.fileId);
                     listItem.push(new GridItem(item));
                 });
                 self.items(listItem);
@@ -103,8 +103,10 @@ module jhn001.f.vm {
                 return;
             }
 
-            if(row[0].fileId)
+            if(row[0].fileId){
+                console.log("đã có file rồi.");
                 return;
+            }
 
             // check file size.
             var maxSize = 10;
@@ -192,19 +194,6 @@ module jhn001.f.vm {
             }).ifNo(() => {
                 unblock();
             });
-        }
-        
-        openFile(id) {
-            let self = this;
-            let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
-            if (_.size(row) == 0) {
-                return;
-            }
-            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + row[0].fileId).done(function(res) {
-                //nts.uk.request.liveView(row[0].fileId);
-                nts.uk.request.specials.donwloadFile(row[0].fileId);
-            });
-
         }
 
         restart() {
