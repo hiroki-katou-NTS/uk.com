@@ -5686,6 +5686,17 @@ module nts.uk.ui.jqueryExtentions {
                         setting.descriptor.headerCells = owner._headerCells;
                         setting.descriptor.headerParent = owner._headerParent;
                     }
+                    
+                    if (owner.dataSource._filter && owner.dataSource._filteredData 
+                        && _.size(owner.dataSource._filteredData) <= _.size(owner.dataSource._origDs)) {
+                        let pk = owner.dataSource.settings.primaryKey;
+                        let keyIdxes = {};
+                        owner.dataSource._filteredData.forEach((d, i) => {
+                            keyIdxes[d[pk]] = i;
+                        });
+                        
+                        setting.descriptor.keyIdxes = keyIdxes;
+                    }
                 });
             }
             

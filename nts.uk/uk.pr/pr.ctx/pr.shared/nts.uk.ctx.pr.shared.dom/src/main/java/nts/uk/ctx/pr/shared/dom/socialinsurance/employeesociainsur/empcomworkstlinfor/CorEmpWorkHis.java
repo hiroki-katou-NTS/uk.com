@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;

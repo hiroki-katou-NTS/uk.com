@@ -16,8 +16,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.exceptions.OptimisticLockException;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -64,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.calendar.period.DatePeriod;
+import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 @Stateless
 public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyResultEmployeeDomainService {
@@ -392,15 +391,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode) {
 
 		List<ProcessState> process = new ArrayList<>();
-		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, employmentCode);
+		
 		for(GeneralDate day: executeDate) {
             //ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
             Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(employeeId, day);
 			try {
 				// 締めIDを取得する
-//				Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-//						.findByEmploymentCD(companyId, employmentCode);
+				Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+						.findByEmploymentCD(companyId, employmentCode);
 				// Optional<ClosureEmployment> closureEmploymentOptional =
 				// this.provider().findClousureEmployementByEmpCd(companyId,
 				// employmentCode);
@@ -449,8 +447,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						}
 					}
 					
-					boolean check = this.empCalAndSumExeLogRepository.checkStopByID(empCalAndSumExecLogID);
-					if (check) {
+					Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+					if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
+							&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
+	//					asyncContext.finishedAsCancelled();
 						process.add(ProcessState.INTERRUPTION);
 						break;
 					}

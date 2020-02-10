@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.dom.emprsdttaxinfo.amountinfo.service;
 
 import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.amountinfo.EmployeeResidentTaxPayAmountInfo;
 import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.amountinfo.EmployeeResidentTaxPayAmountInfoRepository;
-import nts.uk.shr.com.time.calendar.Year;
+import nts.arc.time.calendar.Year;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

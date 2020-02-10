@@ -26,7 +26,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalPhaseStatePK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalRootStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppRootStateSimple;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalPhaseState;
@@ -99,7 +98,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
 	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
 			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID = :appID"
-			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder DESC";
+			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		/*builderString.append("SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE,");
@@ -869,18 +868,18 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		String lstIds = NtsStatement.In.createParamsString(lstApproverID);
 
 		query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
-				+ "phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, "
-				+ "frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON, "
-				+ "approver.APPROVER_CHILD_ID " + "FROM WWFDT_APPROVAL_ROOT_STATE root "
+				+ 	"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, "
+				+ 	"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, "
+				+   "approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE  "
+				+ "FROM WWFDT_APPROVAL_ROOT_STATE root "
 				+ "LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID "
-				+ "LEFT JOIN WWFDT_APPROVAL_FRAME frame ON phase.ROOT_STATE_ID = frame.ROOT_STATE_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER "
-				+ "LEFT JOIN WWFDT_APPROVER_STATE approver ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID AND frame.PHASE_ORDER = approver.PHASE_ORDER AND frame.FRAME_ORDER = approver.FRAME_ORDER "
-				+ "WHERE root.ROOT_STATE_ID IN (SELECT DISTINCT a.ROOT_STATE_ID " + "FROM WWFDT_APPROVER_STATE a "
-				+ "inner join WWFDT_APPROVAL_FRAME b on b.ROOT_STATE_ID = a.ROOT_STATE_ID and b.PHASE_ORDER = a.PHASE_ORDER "
-				+ "inner join WWFDT_APPROVAL_PHASE_ST c on a.ROOT_STATE_ID = c.ROOT_STATE_ID and a.PHASE_ORDER = c.PHASE_ORDER "
-				+ "and a.APPROVAL_RECORD_DATE >= ?  and a.APPROVAL_RECORD_DATE <= ? " + "and c.APP_PHASE_ATR IN ("
-				+ lstPhase + ") " + "and b.APP_FRAME_ATR IN (" + lstFrame + ") " + "and a.APPROVER_CHILD_ID IN ("
-				+ lstIds + ") )";
+				+ "LEFT JOIN WWFDT_APPROVER_STATE approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER "
+				+ "WHERE root.ROOT_STATE_ID IN "
+				+ 	"(SELECT DISTINCT a.ROOT_STATE_ID " + "FROM WWFDT_APPROVER_STATE a "
+				+ 		"inner join WWFDT_APPROVAL_PHASE_ST c on a.ROOT_STATE_ID = c.ROOT_STATE_ID and a.PHASE_ORDER = c.PHASE_ORDER "
+				+ 		"and a.APP_DATE >= ?  and a.APP_DATE <= ? " 
+				+ 		"and c.APP_PHASE_ATR IN (" + lstPhase + ") " 
+				+ 		"and a.APPROVAL_ATR IN (" + lstFrame + ") " + "and a.APPROVER_ID IN (" + lstIds + ") )";
 
 		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
 

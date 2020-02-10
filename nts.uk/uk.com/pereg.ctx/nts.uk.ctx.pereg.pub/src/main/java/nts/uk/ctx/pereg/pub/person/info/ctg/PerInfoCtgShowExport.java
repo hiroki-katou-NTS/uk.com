@@ -16,4 +16,6 @@ public class PerInfoCtgShowExport {
 	private int salaryUseAtr;
 	private int personnelUseAtr;
 	private int employmentUseAtr;
+	// 0:固定なし(Not Fixed), 1:固定(Fixed)
+	private int fixed;
 }

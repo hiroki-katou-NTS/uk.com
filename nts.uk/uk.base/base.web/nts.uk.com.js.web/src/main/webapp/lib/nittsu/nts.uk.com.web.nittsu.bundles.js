@@ -42167,6 +42167,15 @@ var nts;
                                     setting.descriptor.headerCells = owner._headerCells;
                                     setting.descriptor.headerParent = owner._headerParent;
                                 }
+                                if (owner.dataSource._filter && owner.dataSource._filteredData
+                                    && _.size(owner.dataSource._filteredData) <= _.size(owner.dataSource._origDs)) {
+                                    var pk_3 = owner.dataSource.settings.primaryKey;
+                                    var keyIdxes_3 = {};
+                                    owner.dataSource._filteredData.forEach(function (d, i) {
+                                        keyIdxes_3[d[pk_3]] = i;
+                                    });
+                                    setting.descriptor.keyIdxes = keyIdxes_3;
+                                }
                             });
                         }
                         settings.build = build;

@@ -39,7 +39,7 @@ public class LayoutReportClsDto {
 	 * list: [ { value: undefined }, { value: undefined }, { value: undefined }]
 	 * -------------------------------------------------------------------------
 	 */
-	private List<PerInfoItemDefImport> items;
+	private List<LayoutHumanInfoValueDto> items;
 	
 	
 	public LayoutReportClsDto() {
@@ -66,6 +66,39 @@ public class LayoutReportClsDto {
 		this.ctgType = ctgType;
 	}
 
+	
+//	public static LayoutReportClsDto cloneFromItemDef(PerInfoCtgShowImport perInfoCategory,
+//			PerInfoItemDefImport itemDef) {
+//		LayoutReportClsDto dataObject = new LayoutReportClsDto();
+//
+//		dataObject.setPersonInfoCategoryID(itemDef.getPerInfoCtgId());
+//		dataObject.setCategoryCode(perInfoCategory.getCategoryCode());
+//		dataObject.setCategoryName(perInfoCategory.getCategoryName());
+//		dataObject.setCtgType(perInfoCategory.getCategoryType());
+//
+//		dataObject.setItemId(itemDef.getId());
+//		dataObject.setItemName(itemDef.getItemName());
+//		dataObject.setItemCode(itemDef.getItemCode());
+//		dataObject.setItemParentCode(itemDef.getItemParentCode());
+//		dataObject.setRow(0);
+//		dataObject.setRequired(itemDef.getIsRequired() == 1);
+//		dataObject.setShowColor(true);
+//		
+//		//2018/02/11
+//		dataObject.setDispOrder(itemDef.getDispOrder());
+//
+//		dataObject.setType(itemDef.getItemTypeState().getItemType());
+//		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
+//		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
+//			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+//			dataObject.setItem(sigleItem.getDataTypeState());
+//		}
+//		dataObject.setResourceId(itemDef.getResourceId());
+//		dataObject.setInitValue(itemDef.getInitValue());
+//		return dataObject;
+//	}
+	
+	
 //	public static LayoutReportClsDto fromDomain(RegisterPersonalReportItem domain, String ctgId) {
 //		return new LayoutReportClsDto(domain.getPReportClsId(), domain.getDisplayOrder(),
 //				ctgId, domain.getItemType());

@@ -102,6 +102,8 @@ public class PerInfoItemDefImport {
 	
 	private String categoryName;
 	
+	private String initValue;
+	
 	public boolean isSingleItem() {
 		return itemTypeState.itemType == ItemTypeImport.SINGLE_ITEM.value;
 	}

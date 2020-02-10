@@ -200,12 +200,12 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: (isCps007: boolean) => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
+        get_cats: (isCps007: boolean) => ajax('com',`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
-        get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
-        check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
-        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
-        check_mt_se: (param: any) => ajax(`ctx/pereg/person/common/checkStartEndMultiTime`, param),
+        get_cb_data: (param: IComboParam) => ajax('com',`ctx/pereg/person/common/getFlexComboBox`, param),
+        check_start_end: (param: ICheckParam) => ajax('com',`ctx/pereg/person/common/checkStartEnd`, param),
+        check_multi_time: (param: ICheckParam) => ajax('com',`ctx/pereg/person/common/checkMultiTime`, param),
+        check_mt_se: (param: any) => ajax('com', `ctx/pereg/person/common/checkStartEndMultiTime`, param),
         get_ro_data: (param: INextTimeParam) => ajax('com', `at/record/remainnumber/annlea/event/nextTime`, param),
         get_annLeaNumber: (sid: string) => ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
@@ -214,7 +214,7 @@ module nts.layout {
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
         get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param),
-        checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`)
+        checkFunctionNo: () => ajax('com',`ctx/pereg/functions/auth/find-with-role-person-info`)
     }
 
     export class validation {

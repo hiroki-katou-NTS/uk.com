@@ -57,7 +57,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetirementRegulationService {
@@ -324,20 +324,22 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
 			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(c.getRetirementAge().v()*-1).addDays(-1), endDate.addYears(c.getRetirementAge().v()*-1).addDays(-1)))).collect(Collectors.toList()));
 		}else {
-			searchConditionList.addAll(retireTermList.stream().map(c-> {
+			searchConditionList.addAll(retireTermList.stream().map(c -> {
 				GeneralDate s = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day());
 				GeneralDate e = GeneralDate.ymd(endDate.year(), endDate.month(), endDate.day());
-				if(startDate.month() == 2 && startDate.day() == 29 && GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
-					 s = GeneralDate.ymd(startDate.year() - c.getRetirementAge().v(), startDate.month(), 28);
-				}else {
-					s.addYears(c.getRetirementAge().v()*-1);
+				if (startDate.month() == 2 && startDate.day() == 29
+						&& GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+					s = GeneralDate.ymd(startDate.year() - c.getRetirementAge().v(), startDate.month(), 28);
+				} else {
+					s = s.addYears(c.getRetirementAge().v() * -1);
 				}
-				if(endDate.month() == 2 && endDate.day() == 29 && GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+				if (endDate.month() == 2 && endDate.day() == 29
+						&& GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
 					e = GeneralDate.ymd(endDate.year() - c.getRetirementAge().v(), endDate.month(), 28);
-				}else {
-					e.addYears(c.getRetirementAge().v()*-1);
+				} else {
+					e = e.addYears(c.getRetirementAge().v() * -1);
 				}
-				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s,e));
+				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s, e));
 			}).collect(Collectors.toList()));
 		}
 		//List<社員>{個人ID、社員ID、雇用コード、誕生日、入社日}
@@ -521,7 +523,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1));
+			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHrEvaluationDispNumber() +1)));
 			Map<String, List<PersonnelAssessmentResults>> mapSid = HREvaluation.getPersonnelAssessmentsResult().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<PersonnelAssessmentResults> personList = mapSid.get(id);
@@ -543,7 +545,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
 		if(outputObject.isHealthStatusRefer()) {
-			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1));
+			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHealthStatusDispNumber() +1)));
 			Map<String, List<MedicalhistoryItemResults>> mapSid = medicalhistoryManagement.getMedicalhistoryItemResults().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<MedicalhistoryItemResults> personList = mapSid.get(id);
@@ -565,7 +567,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
 		if(outputObject.isStressStatusRefer()) {
-			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getStressStatusDispNumber()) +1));
+			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getStressStatusDispNumber() +1)));
 			Map<String, List<StressCheckResults>> mapSid = stressCheckManagement.getStressChecks().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
 			for(String id: retiredEmployeeId) {
 				List<StressCheckResults> personList = mapSid.get(id);

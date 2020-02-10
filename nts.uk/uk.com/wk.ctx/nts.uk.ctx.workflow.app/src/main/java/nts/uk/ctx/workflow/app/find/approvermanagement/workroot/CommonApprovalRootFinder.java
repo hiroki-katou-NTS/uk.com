@@ -382,6 +382,11 @@ public class CommonApprovalRootFinder {
 	 * @return true, if date1 isOverlap date2
 	 */
 	private boolean isOverlap(ObjectDate date1, ObjectDate date2){
+		if(date1.getStartDate().compareTo(date2.getStartDate()) == 0
+				&& date1.getEndDate().compareTo(date2.getEndDate()) == 0) {
+			return false;
+			
+		}
 		/**
 		 * date 1.........|..............]..........
 		 * date 2............|......................
