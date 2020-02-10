@@ -181,7 +181,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME).putValue(entity.getBusinessName());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME_KANA).putValue(entity.getBusinessnameKana());
 				ws.getCells().get(rowIndex, BIRTH_DAY).putValue(convertToString(entity.getBirthday()));
-				ws.getCells().get(rowIndex, AGE).putValue(entity.getRetirementAge());
+				ws.getCells().get(rowIndex, AGE).putValue(entity.getRetirementAge() + "歳");
 				ws.getCells().get(rowIndex, DEPARTMENT_CODE).putValue(entity.getDepartmentCode());
 				ws.getCells().get(rowIndex, DEPARTMENT_NAME).putValue(entity.getDepartmentName());
 				ws.getCells().get(rowIndex, EMPLOYMENT_CODE).putValue(entity.getEmploymentCode());
@@ -394,7 +394,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 		ws.getCells().get(1, 3).putValue(query.getStartDate() + " ～ " + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
-		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
+		ws.getCells().get(2, 3).putValue(query.getRetirementAge() != null ? query.getRetirementAge() + "歳" : "");
 		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "全て" : query.getSelectDepartmentName());
 		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "全て" : query.getSelectEmploymentName());
 	}
