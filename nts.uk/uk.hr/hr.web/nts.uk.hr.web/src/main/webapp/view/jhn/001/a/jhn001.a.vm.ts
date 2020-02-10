@@ -563,12 +563,6 @@ module jhn001.a.viewmodel {
             let rowData: any = this;
             if (rowData.fileId) {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
-
-                    //                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.originalName).done(function(res) {
-                    //                        console.log(res);
-                    //                    }).fail(function(error) {
-                    //                       console.log(error);
-                    //                    });
                     nts.uk.request.specials.donwloadFile(rowData.fileId);
                 });
             }

@@ -71,13 +71,13 @@ module jhn001.f.vm {
             let dataShare = getShared('JHN001F_PARAMS') || null;
             self.dataShare = dataShare;
             let param = { reportId: dataShare.reportId, layoutReportId: dataShare.layoutReportId };
-            var dfdGetData = service.getData(param);
 
             block();
-            $.when(dfdGetData).done((datafile: Array<IReportFileManagement>) => {
+            service.getData(param).done((datafile: Array<IReportFileManagement>) => {
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.fileSize;
+                    item.urlFile = nts.uk.request.file.liveViewUrl(item.fileId);
                     listItem.push(new GridItem(item));
                 });
                 self.items(listItem);
@@ -193,6 +193,19 @@ module jhn001.f.vm {
                 unblock();
             });
         }
+        
+        openFile(id) {
+            let self = this;
+            let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
+            if (_.size(row) == 0) {
+                return;
+            }
+            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + row[0].fileId).done(function(res) {
+                //nts.uk.request.liveView(row[0].fileId);
+                nts.uk.request.specials.donwloadFile(row[0].fileId);
+            });
+
+        }
 
         restart() {
             let self = this;
@@ -227,6 +240,7 @@ module jhn001.f.vm {
         fileName: string = '';
         fileId: string = '';
         fileSize: number = -1;
+        urlFile: string = '';
 
         constructor(param: IReportFileManagement) {
             this.id = nts.uk.util.randomId();
