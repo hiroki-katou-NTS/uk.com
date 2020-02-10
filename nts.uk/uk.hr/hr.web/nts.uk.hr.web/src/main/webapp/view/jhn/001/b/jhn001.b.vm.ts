@@ -52,7 +52,6 @@ module jhn001.b.vm {
 
             block();
             $.when(dfdGetData).done((listReportDarft: any) => {
-                debugger;
                 if (listReportDarft.length > 0) {
                     for (var i = 0; i < listReportDarft.length; i++) {
                         let _data = {

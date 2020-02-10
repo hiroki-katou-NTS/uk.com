@@ -15,25 +15,6 @@ module jhn001.f.vm {
 
 
     export class ViewModel {
-        fileSize: KnockoutObservable<string> = ko.observable('10Mb');
-        public items: KnockoutObservableArray<GridItem> = ko.observableArray([
-            new GridItem(),
-            new GridItem(),
-            new GridItem()        
-        ]);
-        
-        public start() {
-            let self = this,
-                dfd = $.Deferred();
-            
-            return dfd.resolve(true);
-        }
-        
-        public close() {
-        }
-    }
-
-    export class ViewModel2 {
 
         fileId: KnockoutObservable<string>;
         filename: KnockoutObservable<string>;
@@ -49,8 +30,8 @@ module jhn001.f.vm {
         allowDowloadFile: KnockoutObservable<boolean>;
 
 
-        items: KnockoutObservableArray<GridItem> = [];// ko.observableArray([]);
-
+        items: KnockoutObservableArray<GridItem> = ko.observableArray([]);
+        
         comboColumns = [{ prop: 'name', length: 12 }];
         dataShare: any;
         reportIdNew = '';
@@ -86,7 +67,7 @@ module jhn001.f.vm {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            self.items = [];
+            let listItem = [];
             let dataShare = getShared('JHN001F_PARAMS') || null;
             self.dataShare = dataShare;
             let param = { reportId: dataShare.reportId, layoutReportId: dataShare.layoutReportId };
@@ -97,8 +78,9 @@ module jhn001.f.vm {
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.fileSize;
-                    self.items.push(new GridItem(item));
+                    listItem.push(new GridItem(item));
                 });
+                self.items(listItem);
                 let sum = (totalSize / 1024).toFixed(2);
                 self.totalFileSize = totalSize;
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
@@ -110,16 +92,19 @@ module jhn001.f.vm {
 
         pushData(fileInfo, id) {
             let self = this;
+            
+            if (fileInfo.id == '' || fileInfo.id == null || fileInfo.id == undefined) {
+                return;
+            }
 
             // check xem đã có file hay chưa, có rồi thì không có upload nua.
-            let row: IReportFileManagement = _.filter(self.items, function(o) { return o.id == id; });
+            let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
             if (_.size(row) == 0) {
                 return;
             }
 
-            if (fileInfo.id == '' || fileInfo.id == null || fileInfo.id == undefined) {
+            if(row[0].fileId)
                 return;
-            }
 
             // check file size.
             var maxSize = 10;
@@ -156,12 +141,7 @@ module jhn001.f.vm {
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();
             service.addDocument(objAdd).done((data) => {
-
                 __viewContext['viewModel'].start().done(() => {
-                    //debugger;
-                    init();
-                    //$('.filenamelabel').hide();
-                    //setTimeout(() => {}, 1500);
                     unblock();
                     dfd.resolve();
                 });
@@ -177,16 +157,25 @@ module jhn001.f.vm {
         }
 
 
-        deleteItem(rowItem: IReportFileManagement) {
+        deleteItem(id) {
             let self = this;
+            // check xem đã có file hay chưa, có rồi thì không có upload nua.
+            let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
+            if (_.size(row) == 0) {
+                return;
+            }
+            
+            if(row[0].fileId == null || row[0].fileId == '')
+                return;
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId)
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + row[0].fileId)
                     .done(function(res) {
                         self.fileInfo(res);
                         block();
                         let command = {
                             cid: '',
-                            fileId: rowItem.fileId
+                            fileId: row[0].fileId
                         };
                         service.deleteDocument(command).done(() => {
                             self.restart();
@@ -208,7 +197,6 @@ module jhn001.f.vm {
         restart() {
             let self = this;
             __viewContext['viewModel'].start().done(() => {
-                init();
                 self.filename("");
             });
         }

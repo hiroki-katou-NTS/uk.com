@@ -34,3 +34,9 @@ span.filenamelabel.hyperlink {
 #delete-button {
 	margin-left: 10px;
 }
+
+.hyperlink {
+    color: #0066CC;
+    text-decoration: underline;
+    cursor: pointer;
+}
