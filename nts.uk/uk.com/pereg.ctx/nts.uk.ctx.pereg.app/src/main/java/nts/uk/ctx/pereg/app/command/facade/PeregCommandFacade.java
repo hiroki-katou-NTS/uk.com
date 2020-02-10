@@ -601,6 +601,7 @@ public class PeregCommandFacade {
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
 		case CONTINUOUSHISTORY:
+		case CONTINUOUS_HISTORY_FOR_ENDDATE:
 			if(stringKey != null) {
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(), input.getCategoryName(), infoOperateAttr, lstItemInfo,
 						TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")), Optional.ofNullable(reviseInfo));
