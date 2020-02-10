@@ -170,7 +170,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 					ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
 				}
 				// content
-				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "空白" : "保留");
+				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "" : "保留");
 				ws.getCells().get(rowIndex, RETIREMENT)
 						.putValue(EnumAdaptor.valueOf(entity.getExtendEmploymentFlg(), ResignmentDivision.class).name);
 				ws.getCells().get(rowIndex, STATUS)
