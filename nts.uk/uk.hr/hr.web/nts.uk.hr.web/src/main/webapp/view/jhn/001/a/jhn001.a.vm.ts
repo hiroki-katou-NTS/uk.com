@@ -283,7 +283,7 @@ module jhn001.a.viewmodel {
 
                         }
                     });
-                    _.each(_.orderBy(_data, ['displayOrder'], ['asc']), d => layouts.push(d));
+                    _.each(_data, d => layouts.push(d));
                     if (_data) {
                         if (reportIdFromJhn003 == undefined || reportIdFromJhn003 == null) {
                             if (self.reportClsId() == "" || self.reportClsId() == null ) {
