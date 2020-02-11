@@ -67,7 +67,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate,
-			Integer applicationType, int employmentRootAtr);
+			Integer applicationType, int employmentRootAtr, String id);
 
 	/**
 	 * get PsApprovalRoot
@@ -116,7 +116,8 @@ public interface PersonApprovalRootRepository {
 	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId, Integer applicationType, int employmentRootAtr);
+	List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId, Integer applicationType,
+			int employmentRootAtr, String id);
 	/**
 	 * getPsAppRootLastest
 	 * @param companyId
@@ -173,7 +174,8 @@ public interface PersonApprovalRootRepository {
 	List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID, ConfirmationRootType confirmType, GeneralDate date);
 	
 	Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId);
-	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer applicationType);
+	
+	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer appType, String id);
 	//get by endDate
 	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
 }

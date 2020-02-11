@@ -88,7 +88,12 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and EmployRootAtr
-			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, updateItem.getApplicationType(), updateItem.getEmployRootAtr());
+			Integer employRootAtr = updateItem.getEmployRootAtr();
+			String value = updateItem.getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id);
 			Optional<CompanyApprovalRoot> comAppRootDb = repoCom.getComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 			if(!comAppRootDb.isPresent()){
 				continue;
@@ -175,7 +180,11 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 		}else{
 			// xu li mode rieng
-			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, lstHist.get(0).getApplicationType(), lstHist.get(0).getEmployRootAtr());
+			Integer employRootAtr = lstHist.get(0).getEmployRootAtr();
+			String value = lstHist.get(0).getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstComByApp.isEmpty() && lstComByApp.size() > 1){
 					//history previous 
@@ -218,7 +227,11 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and 
-			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), updateItem.getApplicationType(), updateItem.getEmployRootAtr());
+			Integer employRootAtr = updateItem.getEmployRootAtr();
+			String value = updateItem.getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id);
 			//find history current
 			Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
 			if(!wpAppRootDb.isPresent()){
@@ -310,7 +323,11 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 		}else{
 			//find history by type and 
-			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), lstHist.get(0).getApplicationType(), lstHist.get(0).getEmployRootAtr());
+			Integer employRootAtr = lstHist.get(0).getEmployRootAtr();
+			String value = lstHist.get(0).getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstWpByApp.isEmpty() && lstWpByApp.size() > 1){
 					//history previous 
@@ -358,14 +375,20 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
 		if(objUpdateItem.getEditOrDelete() == EDIT && objUpdateItem.getCheckMode() == PRIVATE){//10.履歴編集を実行する(申請個別設定モード)
-			Integer employmentRootAtr = objUpdateItem.getLstUpdate().get(0).getEmployRootAtr();
-			Integer applicationType = objUpdateItem.getLstUpdate().get(0).getApplicationType();
-			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employmentRootAtr, applicationType);
+			Integer employRootAtr = objUpdateItem.getLstUpdate().get(0).getEmployRootAtr();
+			String value = objUpdateItem.getLstUpdate().get(0).getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employRootAtr, valueI, id);
 			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and 
-			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), updateItem.getApplicationType(), updateItem.getEmployRootAtr());
+			Integer employRootAtr = updateItem.getEmployRootAtr();
+			String value = updateItem.getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), valueI, employRootAtr, id);
 			//find history current
 			Optional<PersonApprovalRoot> psAppRootDb = repoPerson.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());
 			if(!psAppRootDb.isPresent()){
@@ -444,7 +467,11 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 		}else{
 			//find history by type and 
-			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), lstHist.get(0).getApplicationType(), lstHist.get(0).getEmployRootAtr());
+			Integer employRootAtr = lstHist.get(0).getEmployRootAtr();
+			String value = lstHist.get(0).getApplicationType();
+			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), valueI, employRootAtr, id);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstPsByApp.isEmpty() && lstPsByApp.size() > 1){
 					//history previous 

@@ -108,6 +108,22 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			+ " AND c.sysAtr = 1"
 			+ " AND c.employmentRootAtr = 5"
 			+ " AND c.busEventId IN :lstEventID";
+	private static final String FIND_BY_DATE_NTR = FIND_BY_CID 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.noticeId = :noticeId"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private static final String FIND_BY_DATE_EVR = FIND_BY_CID 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.busEventId = :busEventId"
+			   + " AND c.employmentRootAtr = :employmentRootAtr";
+	private static final String FIND_BY_NTR_TYPE = FIND_BY_CID 
+			   + " AND c.noticeId = :noticeId"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
+	private static final String FIND_BY_EVR_TYPE = FIND_BY_CID 
+			   + " AND c.busEventId = :busEventId"
+			   + " AND c.employmentRootAtr = :employmentRootAtr"
+			   + " ORDER BY c.startDate DESC";
 	/**
 	 * getComRootStart CMM018
 	 * @param companyId
@@ -138,13 +154,13 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			if(!lstNoticeID.isEmpty()){
 				lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR4, WwfmtComApprovalRoot.class)
 						.setParameter("companyId", companyId)
-						.setParameter("lstNoticeID", lstAppType)
+						.setParameter("lstNoticeID", lstNoticeID)
 						.getList(c->toDomainComApR(c)));
 			}
 			if(!lstEventID.isEmpty()){
 				lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR5, WwfmtComApprovalRoot.class)
 						.setParameter("companyId", companyId)
-						.setParameter("lstEventID", lstAppType)
+						.setParameter("lstEventID", lstEventID)
 						.getList(c->toDomainComApR(c)));
 			}
 		}
@@ -169,7 +185,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr) {
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr, String id) {
 		//common
 		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_COM_APR_BY_DATE_APP_NULL, WwfmtComApprovalRoot.class)
@@ -184,6 +200,24 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 					.setParameter("companyId", companyId)
 					.setParameter("endDate", endDate)
 					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//notice
+		if(employmentRootAtr == 4){
+			return this.queryProxy().query(FIND_BY_DATE_NTR, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("endDate", endDate)
+					.setParameter("noticeId", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//event
+		if(employmentRootAtr == 5){
+			return this.queryProxy().query(FIND_BY_DATE_EVR, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("endDate", endDate)
+					.setParameter("busEventId", id)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainComApR(c));
 		}
@@ -366,7 +400,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType,
-			int employmentRootAtr) {
+			int employmentRootAtr, String id) {
 		//common
 		if(employmentRootAtr == 0){
 			return this.queryProxy().query(SELECT_COM_APR_APP_NULL, WwfmtComApprovalRoot.class)
@@ -379,6 +413,22 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("confirmationRootType", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//notice
+		if(employmentRootAtr == 4){
+			return this.queryProxy().query(FIND_BY_NTR_TYPE, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("noticeId", applicationType)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		//event
+		if(employmentRootAtr == 5){
+			return this.queryProxy().query(FIND_BY_EVR_TYPE, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("busEventId", id)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainComApR(c));
 		}

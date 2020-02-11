@@ -372,14 +372,14 @@ module nts.uk.com.view.cmm018.shr {
             approvalId: string;
             /**履歴ID*/
             historyId: string;
-            /**申請種類*/
-            applicationType: number;
+            /**種類*/
+            applicationType: any;
             /**就業ルート区分*/
             employmentRootAtr: number;
             branchId: string;
             lstAppPhase: Array<ApprovalPhaseDto>;
             constructor(approvalId: string, historyId: string,
-                        applicationType: number, employmentRootAtr: number, branchId: string,
+                        applicationType: any, employmentRootAtr: number, branchId: string,
                         lstAppPhase: Array<ApprovalPhaseDto>){
                 this.approvalId = approvalId;
                 this.historyId = historyId;
@@ -568,6 +568,8 @@ module nts.uk.com.view.cmm018.shr {
                 let lstB: Array<vmbase.CompanyAppRootADto> = [];//application
                 let lstC: Array<vmbase.CompanyAppRootADto> = [];//confirmation
                 let lstD: Array<vmbase.CompanyAppRootADto> = [];//anyItem
+                let lstE: Array<vmbase.CompanyAppRootADto> = [];//notice
+                let lstF: Array<vmbase.CompanyAppRootADto> = [];//event
                 _.each(lstRoot, function(obj){
                     if(obj.employRootAtr == 0){//common
                         lstA.push(obj);
@@ -581,11 +583,19 @@ module nts.uk.com.view.cmm018.shr {
                     if(obj.employRootAtr == 3){//anyItem
                         lstD.push(obj);
                     }
+                    if(obj.employRootAtr == 4){//notice
+                        lstE.push(obj);
+                    }
+                    if(obj.employRootAtr == 5){//event
+                        lstF.push(obj);
+                    }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);
                 let sortByB =  _.orderBy(lstB, ["appTypeValue"], ["asc"]);
                 let sortByC =  _.orderBy(lstC, ["appTypeValue"], ["asc"]);
                 let sortByD =  _.orderBy(lstD, ["appTypeValue"], ["asc"]);
+                let sortByE =  _.orderBy(lstE, ["appTypeValue"], ["asc"]);
+                let sortByF =  _.orderBy(lstF, ["appTypeValue"], ["asc"]);
                 //push list A (common)
                 _.each(sortByA, function(obj){
                     result.push(obj);
@@ -600,6 +610,14 @@ module nts.uk.com.view.cmm018.shr {
                 });
                 //push list D (anyItem)
                 _.each(sortByD, function(obj){
+                    result.push(obj);
+                });
+                //push list E (notice)
+                _.each(sortByE, function(obj){
+                    result.push(obj);
+                });
+                //push list F (event)
+                _.each(sortByF, function(obj){
                     result.push(obj);
                 });
                 return result;
