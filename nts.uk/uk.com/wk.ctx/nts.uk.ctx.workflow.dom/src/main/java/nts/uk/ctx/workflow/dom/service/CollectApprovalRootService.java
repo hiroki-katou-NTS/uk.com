@@ -78,7 +78,7 @@ public interface CollectApprovalRootService {
 	 * @param jobTitleId 職位ID（承認者）
 	 * @return
 	 */
-	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId);
+	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr);
 	
 	/**
 	 * 7.承認ルートの異常チェック
@@ -140,7 +140,6 @@ public interface CollectApprovalRootService {
 	 * @param companyID
 	 * @param approverGroupCD
 	 * @param specWkpId
-	 * @param empWkpID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -148,7 +147,7 @@ public interface CollectApprovalRootService {
 	 * @param lowerApprove
 	 * @return
 	 */
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String empWkpID, Optional<Integer> opDispOrder,
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, Optional<Integer> opDispOrder,
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
 	
 	/**
@@ -182,7 +181,6 @@ public interface CollectApprovalRootService {
 	 * 上位職場の承認者を探す
 	 * @param companyID
 	 * @param approverGroupCD
-	 * @param empWkpID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -191,7 +189,7 @@ public interface CollectApprovalRootService {
 	 * @param approvalAtr
 	 * @return
 	 */
-	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, String empWkpID, Optional<Integer> opDispOrder, 
+	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, Optional<Integer> opDispOrder, 
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr);
 	
 	/**
@@ -200,5 +198,15 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public ErrorFlag checkApprovalRoot(LevelOutput levelOutput);
+	
+	/**
+	 * 上位職場・部門を取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param systemAtr
+	 * @return
+	 */
+	public List<String> getUpperID(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 	
 }

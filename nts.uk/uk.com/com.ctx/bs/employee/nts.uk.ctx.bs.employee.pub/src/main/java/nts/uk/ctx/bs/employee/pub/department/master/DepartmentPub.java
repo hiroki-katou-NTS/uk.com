@@ -63,4 +63,21 @@ public interface DepartmentPub {
     public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
     
     public Optional<DepartmentExport> getInfoDep(String companyId, String depId);
+    
+    /**
+     * 社員と基準日から所属部門履歴項目を取得する
+     * @param employeeID
+     * @param date
+     * @return
+     */
+    public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
+    
+    /**
+     * 部門の上位部門を取得する
+     * @param companyID
+     * @param departmentID
+     * @param date
+     * @return
+     */
+    public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
 }

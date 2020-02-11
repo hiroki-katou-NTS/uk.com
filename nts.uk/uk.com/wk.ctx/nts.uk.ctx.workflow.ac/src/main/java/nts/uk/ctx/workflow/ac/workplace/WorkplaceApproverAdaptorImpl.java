@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.workflow.ac.workplace;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
@@ -29,6 +31,9 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	private SyWorkplacePub wpPub;
 	@Inject
 	private DepartmentPub depPub;
+	
+	@Inject
+	private WorkplacePub wkpPub;
 
 	/*
 	 * (non-Javadoc)
@@ -82,5 +87,24 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 		return depPub.getInfoDep(companyId, depId)
 				.map(c -> new WkpDepInfo(c.getDepartmentId(), c.getDepartmentCode(), c.getDepartmentName()));
 	}
+	
+	@Override
+	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
+		return depPub.getDepartmentIDByEmpDate(employeeID, date);
+	}
 
+	@Override
+	public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date) {
+		return depPub.getUpperDepartment(companyID, departmentID, date);
+	}
+
+	@Override
+	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date) {
+		return wkpPub.getWorkplaceIDByEmpDate(employeeID, date);
+	}
+
+	@Override
+	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
+		return wkpPub.getUpperWorkplace(companyID, workplaceID, date);
+	}
 }

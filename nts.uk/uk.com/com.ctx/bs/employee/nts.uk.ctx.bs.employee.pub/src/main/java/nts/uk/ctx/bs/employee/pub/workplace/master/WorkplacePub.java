@@ -75,4 +75,21 @@ public interface WorkplacePub {
 	 * @return
 	 */
 //	public List<WorkplaceInforExport> getWkpInforByWkpIds_OLD(String companyId, List<String> listWkpId,	GeneralDate baseDate);
+	
+	/**
+	 * 社員と基準日から所属職場履歴項目を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date);
+	
+	/**
+	 * [No.569]職場の上位職場を取得する
+	 * @param companyID
+	 * @param workplaceID
+	 * @param date
+	 * @return
+	 */
+	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
 }

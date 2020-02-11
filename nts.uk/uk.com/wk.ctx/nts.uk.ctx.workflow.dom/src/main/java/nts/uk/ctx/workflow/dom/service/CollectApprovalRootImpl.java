@@ -263,10 +263,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		WorkplaceImport wkpInfor = wkApproverAdapter.findBySid(employeeID, baseDate);
 		// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
-		List<ApproverInfo> approvers = this.getPersonByWorkplacePosition(companyID, wkpInfor.getWkpId(), baseDate, jobTitleId);
+		/*List<ApproverInfo> approvers = this.getPersonByWorkplacePosition(companyID, wkpInfor.getWkpId(), baseDate, jobTitleId);
 		if (!CollectionUtil.isEmpty(approvers)) {
 			return approvers;
-		}
+		}*/
 
 		// lấy domain 「職位別のサーチ設定」
 		Boolean needsSearch = this.jobtitleSearchSetRepository.finById(companyID, jobTitleId)
@@ -286,11 +286,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// 上位職場の先頭から最後ループ
 		for (String id : wkpIds) {
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
-			List<ApproverInfo> approversByWkp = this.getPersonByWorkplacePosition(companyID, id, baseDate, jobTitleId);
+			/*List<ApproverInfo> approversByWkp = this.getPersonByWorkplacePosition(companyID, id, baseDate, jobTitleId);
 			// If exist break and return
 			if (!CollectionUtil.isEmpty(approversByWkp)) {
 				return approversByWkp;
-			}
+			}*/
 		}
 		return Collections.emptyList();
 	}
@@ -327,28 +327,32 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 	
 	@Override
-	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId) {
-		// 承認者の
-		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId,
-				baseDate);
+	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr) {
+		// アルゴリズム「指定職位の本務兼務社員を取得」を実行する
+		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId, baseDate);
+		// ドメインモデル「職位指定の設定」を取得する
 		Optional<JobAssignSetting> assignSet = jobAssignSetRepository.findById();
 		if (assignSet.get().getIsConcurrently()) {
-			// 本務兼務区分が兼務の対象者を除く
+			// 取得した職位対象者から兼務役職者を除く
 			employeeList.removeIf(x -> x.isConcurrent());
 		}
 		
 		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
-			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
-			if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
-					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
-					(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
-				continue;
-			}
-			WorkplaceImport wkpIdOfEmp = wkApproverAdapter.findBySid(emp.getEmployeeId(), baseDate);
-			if (wkpId.equals(wkpIdOfEmp.getWkpId())) {
-				// truyền tạm approvalAtr = 1
-				approvers.add(ApproverInfo.create(emp));
+			if(systemAtr==SystemAtr.WORK) {
+				// 所属職場を取得する
+				String paramID = wkApproverAdapter.getWorkplaceIDByEmpDate(emp.getEmployeeId(), baseDate);
+				if(paramID.equals(wkpId)) {
+					// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
+					approvers.add(ApproverInfo.create(emp));
+				}
+			} else {
+				// 社員と基準日から所属職場履歴項目を取得する
+				String paramID = wkApproverAdapter.getDepartmentIDByEmpDate(emp.getEmployeeId(), baseDate);
+				if(paramID.equals(wkpId)) {
+					// 取得した承認者の部門をチェック
+					approvers.add(ApproverInfo.create(emp));
+				}
 			}
 		}
 		return approvers;
@@ -690,8 +694,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	@Override
 	public LevelOutput organizeApprovalRoute(String companyID, String employeeID, GeneralDate baseDate,
 			List<ApprovalPhase> listApprovalPhase, SystemAtr systemAtr, Optional<Boolean> lowerApprove) {
-		// 社員と基準日から所属職場履歴項目を取得する(Lấy AffWorkpaceHistoryItem từ employee và BaseDate)
-		String empWkpID = wkApproverAdapter.findBySid(employeeID, baseDate).getWkpId();
 		// 申請者の対象申請の承認者一覧を作成(Tạp ApproverList của TargerApplication của Applicant)
 		LevelOutput result = new LevelOutput(0, new ArrayList<>());
 		// ドメインモデル「承認フェーズ」．順序１～５ループする(loop tu Approval phase1denApproval phase5)
@@ -734,8 +736,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					approverInfoLst = getApproverFromGroup(
 							companyID, 
 							approver.getJobGCD(), 
-							approver.getSpecWkpId(), 
-							empWkpID, 
+							approver.getSpecWkpId(),
 							opDispOrder, 
 							employeeID, 
 							baseDate, 
@@ -745,7 +746,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						approverInfoLst = this.getUpperApproval(
 								companyID, 
 								approver.getJobGCD(), 
-								empWkpID, 
 								opDispOrder, 
 								employeeID, 
 								baseDate, 
@@ -779,11 +779,19 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String empWkpID,
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId,
 			Optional<Integer> opDispOrder, String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove) {
 		List<ApproverInfo> result = new ArrayList<>();
 		// 承認者Gコードから職位情報を取得(Lấy thông tin position từ ApproverGCode)
 		List<String> jobIDLst = syJobTitleAdapter.getJobIDFromGroup(companyID, approverGroupCD);
+		String paramID = "";
+		if(systemAtr==SystemAtr.WORK) {
+			// 社員と基準日から所属部門履歴項目を取得する
+			paramID = wkApproverAdapter.getWorkplaceIDByEmpDate(employeeID, baseDate);
+		} else {
+			// 社員と基準日から所属職場履歴項目を取得する
+			paramID = wkApproverAdapter.getDepartmentIDByEmpDate(employeeID, baseDate);
+		}
 		// 取得したList＜職位ID＞をループ(Loop List<PositionID> đã lấy)
 		for(String jobID : jobIDLst) {
 			// Input．特定職場IDをチェック(Check Input. SepecificWorkplaceID)
@@ -797,9 +805,10 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			// 6.職場に指定する職位の対象者を取得する(getPersonByWorkplacePosition)
 			List<ApproverInfo> approverInfoLoopLst = this.getPersonByWorkplacePosition(
 					companyID, 
-					Strings.isNotBlank(specWkpId) ? specWkpId : empWkpID, 
+					Strings.isNotBlank(specWkpId) ? specWkpId : paramID, 
 					baseDate, 
-					jobID);
+					jobID,
+					systemAtr);
 			// 承認者リストに取得した承認者を追加(THêm Approver đã lấy vào ApproverList)
 			result.addAll(approverInfoLoopLst);
 		}
@@ -901,7 +910,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, String empWkpID, Optional<Integer> opDispOrder, 
+	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, Optional<Integer> opDispOrder, 
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr) {
 		// Input．承認者指定区分をチェック(Check Input . ApproverSettingAtr)
 		if(approvalAtr!=ApprovalAtr.APPROVER_GROUP) {
@@ -914,11 +923,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			return Collections.emptyList();
 		}
 		*/
-		// 職場IDと基準日から上位職場を取得する ( Acquire upper workplace from workplace ID )
-		List<String> upperWkpIDLst = this.employeeAdapter.findWpkIdsBySid(companyID, employeeID, baseDate);
-		for(String upperWkpID : upperWkpIDLst) {
+		// 上位職場・部門を探す
+		List<String> upperIDLst = this.getUpperID(companyID, employeeID, baseDate, systemAtr);
+		for(String loopID : upperIDLst) {
 			// 承認者グループから承認者を取得(Lấy Approver từ ApproverGroup)
-			List<ApproverInfo> approverInfoLst = this.getApproverFromGroup(companyID, approverGroupCD, "", upperWkpID, opDispOrder, employeeID, baseDate, systemAtr, lowerApprove);
+			List<ApproverInfo> approverInfoLst = this.getApproverFromGroup(companyID, approverGroupCD, loopID, opDispOrder, employeeID, baseDate, systemAtr, lowerApprove);
 			// 取得した承認者リストをチェック(Check ApproverList đã  lấy)
 			if(!CollectionUtil.isEmpty(approverInfoLst)) {
 				return approverInfoLst;
@@ -955,5 +964,21 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			}
 		}
 		return ErrorFlag.NO_ERROR;
+	}
+
+	@Override
+	public List<String> getUpperID(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr) {
+		// Input．システム区分をチェック
+		if(systemAtr==SystemAtr.WORK) {
+			// 社員と基準日から所属職場履歴項目を取得する
+			String workplaceID = wkApproverAdapter.getWorkplaceIDByEmpDate(employeeID, date);
+			// [No.569]職場の上位職場を取得する
+			return wkApproverAdapter.getUpperWorkplace(companyID, workplaceID, date);
+		} else {
+			// 社員と基準日から所属部門履歴項目を取得する
+			String departmentID = wkApproverAdapter.getDepartmentIDByEmpDate(employeeID, date);
+			// 部門の上位部門を取得する
+			return wkApproverAdapter.getUpperDepartment(companyID, departmentID, date);
+		} 
 	}
 }
