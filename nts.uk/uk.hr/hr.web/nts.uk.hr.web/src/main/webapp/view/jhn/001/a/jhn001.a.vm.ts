@@ -45,8 +45,8 @@ module jhn001.a.viewmodel {
                 layout = self.layout(),
                 layouts = self.layouts;
             
-            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
-                Page.NORMAL);
+//            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+//                Page.NORMAL);
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
@@ -257,7 +257,7 @@ module jhn001.a.viewmodel {
             return dfd.promise();
         }
 
-        start(reportIdFromJhn003 , opendialogB): JQueryPromise<any> {
+        start(reportId , opendialogB): JQueryPromise<any> {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
@@ -288,15 +288,17 @@ module jhn001.a.viewmodel {
                     });
                     _.each(_data, d => layouts.push(d));
                     if (_data) {
-                        if (reportIdFromJhn003 == undefined || reportIdFromJhn003 == null) {
+                        if (reportId == undefined || reportId == null) {
                             if (self.reportClsId() == "" || self.reportClsId() == null ) {
                                 self.reportClsId(_data[0].reportClsId);
                             } else {
-                                self.reportClsId(self.reportClsId());
+                                let reportClsId = self.reportClsId();
+                                self.reportClsId(null);
+                                self.reportClsId(reportClsId);
                             }
 
                         } else {
-                            let objReport = _.find(_data, function(o) { return o.reportId == reportIdFromJhn003; })
+                            let objReport = _.find(_data, function(o) { return o.reportId == reportId; })
 
                             if (objReport == undefined || objReport == null) {
                                 self.reportClsId(_data[0].reportClsId);
@@ -380,7 +382,7 @@ module jhn001.a.viewmodel {
                 service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.enaRemove(true);
-                        self.start(null, true);
+                        self.start(null, false);
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -438,7 +440,7 @@ module jhn001.a.viewmodel {
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.enaRemove(true);
-                        self.start(null, true);
+                        self.start(null, false);
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -536,7 +538,8 @@ module jhn001.a.viewmodel {
 
         public backTopScreenTopReport(): void {
             let self = this;
-            nts.uk.request.jump("hr", "/view/jhn/003/a/index.xhtml");
+            window.history.back();
+            //nts.uk.request.jump("hr", "/view/jhn/003/a/index.xhtml");
         }
     }
 
@@ -578,12 +581,7 @@ module jhn001.a.viewmodel {
             }
         }
     }
-
-    enum Page {
-        NORMAL = 0,
-        SIDEBAR = 1,
-        FREE_LAYOUT = 2
-    }
+    
 
     interface IItemDf {
         categoryId: string;
@@ -603,6 +601,12 @@ module jhn001.a.viewmodel {
         categoryCode?: string;
         categoryName?: string;
         categoryType?: IT_CAT_TYPE;
+    }
+    
+    export enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
     }
 
     export enum TABS {

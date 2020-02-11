@@ -15,6 +15,7 @@ import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveRepor
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveHandler;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.PersonalReportDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportSaveDraftDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -44,7 +45,7 @@ public class PersonalReportSaveWebService {
 	
 	@POST
 	@Path("getAll-SaveDraft")
-	public List<RegistrationPersonReport> getListReportSaveDraft() {
+	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft() {
 		String sid = AppContexts.user().employeeId();
 		return finder.getListReportSaveDraft(sid);
 	}

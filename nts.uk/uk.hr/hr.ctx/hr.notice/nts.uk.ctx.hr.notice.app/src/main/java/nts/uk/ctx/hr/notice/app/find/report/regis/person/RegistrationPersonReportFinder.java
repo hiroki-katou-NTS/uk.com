@@ -91,8 +91,22 @@ public class RegistrationPersonReportFinder {
 	}
 	
 	
-	public List<RegistrationPersonReport> getListReportSaveDraft(String sid) {
-		List<RegistrationPersonReport> result = repo.getListReportSaveDraft(sid);
+	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft(String sid) {
+		List<RegistrationPersonReport> listDomain = repo.getListReportSaveDraft(sid);
+		if (listDomain.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<RegistrationPersonReportSaveDraftDto> result = new ArrayList<>();
+		result = listDomain.stream().map(dm -> {
+			RegistrationPersonReportSaveDraftDto dto = new RegistrationPersonReportSaveDraftDto();
+			dto.setReportID(dm.getReportID());
+			dto.setReportCode(dm.getReportCode());
+			dto.setReportName(dm.getReportName());
+			dto.setMissingDocName(dm.getMissingDocName());
+			dto.setDraftSaveDate(dm.getDraftSaveDate().toDate().toString());
+			return dto;
+		}).collect(Collectors.toList());
+		
 		return result;
 	};
 	
