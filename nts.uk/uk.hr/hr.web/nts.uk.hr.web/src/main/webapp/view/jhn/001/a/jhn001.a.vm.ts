@@ -170,7 +170,7 @@ module jhn001.a.viewmodel {
             for (var i = 0; i < listdatafile.length; i++) {
                 let fileData = listdatafile[i];
                 if (fileData.fileName == null) {
-                    missingDocName = missingDocName + fileData.sampleFileName + ' 、';
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
                 }
 
                 let urlFileSample = fileData.sampleFileId == null || fileData.sampleFileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.sampleFileId);
@@ -200,9 +200,9 @@ module jhn001.a.viewmodel {
                 lstDoc.push(obj);
             }
             if (missingDocName != '') {
-                self.missingDocName = text('JHN001_B2_3_7_1') + missingDocName.substring(0, missingDocName.length - 1);
+                self.missingDocName =  missingDocName.substring(0, missingDocName.length - 1);
             } else {
-                self.missingDocName = text('JHN001_B2_3_7_1');
+                self.missingDocName = '';
             }
             self.layout().listDocument(lstDoc);
         }
