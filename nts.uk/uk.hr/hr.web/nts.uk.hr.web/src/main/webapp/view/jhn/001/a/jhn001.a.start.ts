@@ -3,12 +3,11 @@ module jhn001.a {
 
     __viewContext.ready(function() {
 
-        let dataShareJhn003: any;
-        this.transferred.ifPresent(data => {
-            dataShareJhn003 = data;
-        });
+        //get param url
+        let url = $(location).attr('search');
+        let reportId: number = url.split("=")[1];
 
-        __viewContext['viewModel'] = new viewmodel.ViewModel(dataShareJhn003);
+        __viewContext['viewModel'] = new viewmodel.ViewModel(reportId);
         __viewContext.bind(__viewContext['viewModel']);
     });
 }

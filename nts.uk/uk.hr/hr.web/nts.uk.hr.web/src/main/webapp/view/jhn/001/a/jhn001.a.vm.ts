@@ -40,13 +40,13 @@ module jhn001.a.viewmodel {
             { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
         ]);
 
-        constructor(dataShareJhn003) {
+        constructor(reportId) {
             let self = this,
                 layout = self.layout(),
                 layouts = self.layouts;
 
-            if (dataShareJhn003) {
-                self.reportIdFromJhn003 = dataShareJhn003.reportId;
+            if (reportId) {
+                self.reportIdFromJhn003 = reportId;
             }
 
             self.reportClsId.subscribe(id => {
