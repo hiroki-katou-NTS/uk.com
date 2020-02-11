@@ -44,6 +44,9 @@ module jhn001.a.viewmodel {
             let self = this,
                 layout = self.layout(),
                 layouts = self.layouts;
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+                Page.NORMAL);
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
@@ -574,6 +577,12 @@ module jhn001.a.viewmodel {
                 });
             }
         }
+    }
+
+    enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
     }
 
     interface IItemDf {
