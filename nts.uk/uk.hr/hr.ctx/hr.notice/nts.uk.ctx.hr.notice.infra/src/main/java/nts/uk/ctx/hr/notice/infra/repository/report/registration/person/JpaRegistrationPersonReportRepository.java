@@ -148,13 +148,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		}
 
 		if (approvalStatus != null) {
-			if (approvalReport) {
-				query += " AND a.aprStatusName = '%s'  AND r.aprStatus = %s";
-				query = String.format(query, approvalStatus, approvalStatus);
-			} else {
-				query += " AND r.aprStatus = %s";
-				query = String.format(query, approvalStatus);
-			}
+			query += " AND r.aprStatus = %s";
+			query = String.format(query, approvalStatus);
+
 		}
 		
 		if (approvalReport) {
