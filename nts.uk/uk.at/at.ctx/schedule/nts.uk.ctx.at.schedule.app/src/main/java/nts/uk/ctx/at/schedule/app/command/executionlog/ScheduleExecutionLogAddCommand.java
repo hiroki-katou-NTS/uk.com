@@ -27,7 +27,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleExecutionLogAddCommand.

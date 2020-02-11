@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.AnnualLeaveUsageExp
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetConfirmedAnnualLeave;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.GetConfirmedReserveLeave;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.ReserveLeaveUsageExport;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class GetConfirmMonthly implements GetConfirmMonthlyAdapter{
 

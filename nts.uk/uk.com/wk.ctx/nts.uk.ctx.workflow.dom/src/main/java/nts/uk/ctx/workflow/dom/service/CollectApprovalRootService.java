@@ -1,15 +1,20 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
+import nts.uk.ctx.workflow.dom.service.output.LevelOutput;
+import nts.uk.ctx.workflow.dom.service.output.LevelOutput.LevelInforOutput.LevelApproverList.LevelApproverInfo;
 /**
  * 承認ルートを取得する
  * @author Doan Duy Hung
@@ -31,7 +36,9 @@ public interface CollectApprovalRootService {
 			String employeeID, 
 			EmploymentRootAtr rootAtr, 
 			ApplicationType appType, 
-			GeneralDate standardDate);
+			GeneralDate standardDate,
+			SystemAtr sysAtr,
+			Optional<Boolean> lowerApprove);
 	
 	/**
 	 * 2.承認ルートを整理する
@@ -107,5 +114,91 @@ public interface CollectApprovalRootService {
 			String employeeID, 
 			ConfirmationRootType confirmAtr, 
 			GeneralDate standardDate);
+	
+	/**
+	 * 2.承認ルートを整理する（二次開発）
+	 * @param companyID
+	 * @param employeeID
+	 * @param baseDate
+	 * @param listApprovalPhase
+	 * @param systemAtr
+	 * @param lowerApprove
+	 * @return
+	 */
+	public LevelOutput organizeApprovalRoute(String companyID, String employeeID, GeneralDate baseDate, List<ApprovalPhase> listApprovalPhase,
+			SystemAtr systemAtr, Optional<Boolean> lowerApprove);
+	
+	/**
+	 * 職位IDから序列の並び順を取得
+	 * @param jobID
+	 * @return
+	 */
+	public Optional<Integer> getDisOrderFromJobID(String jobID, String companyID, GeneralDate baseDate);
+	
+	/**
+	 * 承認者グループから承認者を取得
+	 * @param companyID
+	 * @param approverGroupCD
+	 * @param specWkpId
+	 * @param empWkpID
+	 * @param opDispOrder
+	 * @param employeeID
+	 * @param baseDate
+	 * @param systemType
+	 * @param lowerApprove
+	 * @return
+	 */
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String empWkpID, Optional<Integer> opDispOrder,
+			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
+	
+	/**
+	 * 申請者より、下の職位の承認者とチェック
+	 * @param systemType
+	 * @param jobID
+	 * @param opDispOrder
+	 * @param lowerApprove
+	 * @return
+	 */
+	public boolean checkApproverApplicantOrder(SystemAtr systemAtr, String jobID, Optional<Integer> opDispOrder, 
+			Optional<Boolean> lowerApprove, String companyID, GeneralDate baseDate);
+	
+	/**
+	 * 承認者を整理
+	 * @param approverInfoLst
+	 * @param baseDate
+	 * @return
+	 */
+	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID);
+	
+	/**
+	 * 承認者の在職状態と承認権限をチェック
+	 * @param approverInfoLst
+	 * @param baseDate
+	 * @return
+	 */
+	public List<ApproverInfo> checkApproverStatusAndAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
+	
+	/**
+	 * 上位職場の承認者を探す
+	 * @param companyID
+	 * @param approverGroupCD
+	 * @param empWkpID
+	 * @param opDispOrder
+	 * @param employeeID
+	 * @param baseDate
+	 * @param systemAtr
+	 * @param lowerApprove
+	 * @param approvalAtr
+	 * @return
+	 */
+	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, String empWkpID, Optional<Integer> opDispOrder, 
+			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr);
+	
+	/**
+	 * 7.承認ルートの異常チェック
+	 * @param levelOutput
+	 * @return
+	 */
+	public ErrorFlag checkApprovalRoot(LevelOutput levelOutput);
 	
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.amountinfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.com.time.calendar.Year;
+import nts.arc.time.calendar.Year;
 
 @Setter
 @Getter

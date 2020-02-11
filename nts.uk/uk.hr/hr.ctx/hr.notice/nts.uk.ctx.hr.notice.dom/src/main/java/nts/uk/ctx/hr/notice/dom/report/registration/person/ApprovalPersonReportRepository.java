@@ -5,6 +5,8 @@ package nts.uk.ctx.hr.notice.dom.report.registration.person;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDateTime;
+
 /**
  * @author laitv
  *
@@ -32,4 +34,8 @@ public interface ApprovalPersonReportRepository {
 	void deleteByReportId(int reportID, String cid);
 	
 	void updateSendBack(List<ApprovalPersonReport> domains, int reprtId, String sid);
+
+	List<ApprovalPersonReport> getByJHN003(String cId, String sId, GeneralDateTime startDate, GeneralDateTime endDate,
+			Integer reportId, Integer approvalStatus, String inputName);
+
 }

@@ -3,14 +3,11 @@ package nts.uk.ctx.hr.develop.infra.entity.humanresourcedev.hryear;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.humanresourcedev.hryear.HrPeriodRegulation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

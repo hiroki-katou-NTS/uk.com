@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import lombok.Getter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * RequestList No 197

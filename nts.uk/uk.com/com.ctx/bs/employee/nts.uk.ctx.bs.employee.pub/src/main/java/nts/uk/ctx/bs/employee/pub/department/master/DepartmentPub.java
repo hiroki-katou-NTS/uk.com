@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pub.department.master;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -60,4 +61,6 @@ public interface DepartmentPub {
      * @return
      */
     public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
+    
+    public Optional<DepartmentExport> getInfoDep(String companyId, String depId);
 }

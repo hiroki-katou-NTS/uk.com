@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkingConditionItemRepository.
@@ -66,6 +66,9 @@ public interface WorkingConditionItemRepository {
 	 * @return the by sids and base date
 	 */
 	List<WorkingConditionItem> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
+	
+	List<WorkingConditionItem> getBySidsAndDatePeriodNew(List<String> sIds, DatePeriod datePeriod);
+	
 
 	/**
 	 * Find working condition item by pers work cat.

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.pub.shortworktime.ShShortChildCareFrameExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimeExport;
 import nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -88,7 +88,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 	 * 
 	 * @see nts.uk.ctx.at.shared.pub.shortworktime.ShShortWorkTimePub#
 	 * findShortWorkTimes(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<ShShortWorkTimeExport> findShortWorkTimes(List<String> empIds, DatePeriod period) {

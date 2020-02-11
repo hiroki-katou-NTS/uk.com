@@ -137,4 +137,14 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 		this.commandProxy().update(BsymtDepartmentInfor.fromDomain(department));
 	}
 
+	@Override
+	public Optional<DepartmentInformation> getInfoDep(String companyId, String depId) {
+		String GET_INFO_BY_ID = "SELECT i FROM BsymtDepartmentInfor i "
+				+ "WHERE i.pk.companyId = :companyId " + "AND i.pk.departmentId = :depId";
+		return this.queryProxy().query(GET_INFO_BY_ID, BsymtDepartmentInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("depId", depId)
+				.getSingle(c -> c.toDomain());
+	}
+
 }

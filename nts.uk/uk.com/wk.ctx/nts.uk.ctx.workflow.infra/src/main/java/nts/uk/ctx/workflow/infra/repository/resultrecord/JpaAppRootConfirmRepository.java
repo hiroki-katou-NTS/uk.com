@@ -39,7 +39,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -389,7 +389,9 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			
 			if (this.database().is(DatabaseProduct.MSSQLSERVER)) {
 			    // SQLServerの場合の処理
+				//long startTime = System.currentTimeMillis();
 				internalQueryWithIndex(companyID, date, rootType, results, employeeIDs); 
+				//System.out.print("\n thoi gian findByEmpDate:  " +(System.currentTimeMillis() - startTime) + "\n");
 			} else {
 				internalQuery(companyID, date, rootType, results, employeeIDs); 
 			}
@@ -440,19 +442,19 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		sql.append(" LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame ");
 		sql.append(" with (index(WWFDP_APP_FRAME_CONFIRM)) ");
 		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
-		sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE <= ? AND appRoot.RECORD_DATE >= ?");
-		sql.append(" AND appRoot.EMPLOYEE_ID IN (");
+		sql.append(" WHERE appRoot.EMPLOYEE_ID IN (");
 		sql.append(employeeIDs.stream().map(s -> "?").collect(Collectors.joining(",")));
 		sql.append(" )");
+		sql.append(" AND appRoot.RECORD_DATE <= ? AND appRoot.RECORD_DATE >= ? AND appRoot.CID = ? AND appRoot.ROOT_TYPE = ? ");
 		
 		try (PreparedStatement statement = this.connection().prepareStatement(sql.toString())) {
-			statement.setString(1, companyID);
-			statement.setInt(2, rootType.value);
-			statement.setDate(3, Date.valueOf(date.end().localDate()));
-			statement.setDate(4, Date.valueOf(date.start().localDate()));
 			for (int i = 0; i < employeeIDs.size(); i++) {
-				statement.setString(i + 5, employeeIDs.get(i));
+				statement.setString(i + 1, employeeIDs.get(i));
 			}
+			statement.setDate(1 + employeeIDs.size(), Date.valueOf(date.end().localDate()));
+			statement.setDate(2 + employeeIDs.size(), Date.valueOf(date.start().localDate()));
+			statement.setString(3 + employeeIDs.size(), companyID);
+			statement.setInt(4 + employeeIDs.size(), rootType.value);
 			results.addAll(toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootConfirm(rs))));
 			
 		}

@@ -4,7 +4,11 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,14 +34,14 @@ import nts.uk.query.model.employee.SearchReferenceRange;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
-import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
 import nts.uk.query.model.operationrule.OperationRuleImport;
+import nts.uk.query.model.operationrule.QueryOperationRuleAdapter;
 import nts.uk.query.model.person.QueryPersonAdapter;
 import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -175,7 +179,7 @@ public class RegulationInfoEmployeeFinder {
 
     private void changeListDepartment(RegulationInfoEmpQueryDto queryParam) {
         // Get list department
-        GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
+//        GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
         List<String> depList = new ArrayList<>(); // Processing is not prepared yet
 
         // Check param filterByDepartment

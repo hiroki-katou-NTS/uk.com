@@ -27,6 +27,8 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 	private static final String SEL_BY_REPORT_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.reportID = :reportId";
 	private static final String SEL_BY_REPORT_ID_AND_APPROVER_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.cid = :cid AND c.pk.reportID = :reportId AND c.aprSid = :sid";
+	private static final String SEL = "select r FROM  JhndtReportApproval r";
+
 	private ApprovalPersonReport toDomain(JhndtReportApproval entity) {
 		return entity.toDomain();
 	}
@@ -107,6 +109,29 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 
 	@Override
+		public List<ApprovalPersonReport> getByJHN003(String cId, String sId, GeneralDateTime startDate,
+			GeneralDateTime endDate, Integer reportId, Integer approvalStatus, String inputName) {
+		String query = SEL;
+
+		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
+
+		if (reportId != null) {
+			query += " AND r.reportLayoutID = %s";
+			query = String.format(query, reportId);
+		}
+
+		if (approvalStatus != null) {
+			query += " AND r.aprStatus = %s";
+			query = String.format(query, approvalStatus);
+		}
+
+		query += " AND r.aprSid = '%s'";
+		query = String.format(query, sId);
+
+		return this.queryProxy().query(query, JhndtReportApproval.class).setParameter("cId", cId)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
+	}
+
 	public List<ApprovalPersonReport> getListDomainByReportId(int reprtId) {
 		return this.queryProxy().query(SEL_BY_REPORT_ID, JhndtReportApproval.class)
 				.setParameter("reportId", reprtId)

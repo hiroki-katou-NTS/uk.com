@@ -99,23 +99,23 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 					repoCom.updateComApprovalRoot(comAppRoot);
 				}else{//TH: delete
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(comAppRoot.getApprovalId());
 					for (ApprovalPhase approvalPhase : lstAPhase) {
 						//delete All Approver By Approval Phase Id
-						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+						repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 					}
-					//delete All Approval Phase By Branch Id
-					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getBranchId());
+					//delete All Approval Phase By approvalId
+					repoAppPhase.deleteAllAppPhaseByApprovalId(comAppRoot.getApprovalId());
 					//delete ComApprovalRoot
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, comAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete( )== EDIT){//edit
 					CompanyApprovalRoot com = lstComByApp.get(1);
-					String sDatePre = com.getEmploymentAppHistoryItems().get(0).start().toString();
+					String sDatePre = com.getApprRoot().getHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -136,21 +136,21 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 //						//update history previous
 //						repoCom.updateComApprovalRoot(comAppRootUpdate);
 //				    }
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(comAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(comAppRoot.getApprovalId());
 					}
 					//delete history current
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, comAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}
@@ -229,27 +229,27 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete() == EDIT){//TH: edit
 					repoWorkplace.updateWpApprovalRoot(wpAppRoot);
 				}else{//TH: delete
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(wpAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(wpAppRoot.getApprovalId());
 					}
 					//delete WpApprovalRoot
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, wpAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
 					//history previous
 					WorkplaceApprovalRoot wp = lstWpByApp.get(1);
-					String sDatePre = wp.getEmploymentAppHistoryItems().get(0).start().toString();
+					String sDatePre = wp.getApprRoot().getHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -271,21 +271,21 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 //						//update history previous
 //						repoWorkplace.updateWpApprovalRoot(wpAppRootUpdate);
 //					}
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(wpAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(wpAppRoot.getApprovalId());
 					}
 					//delete history current
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, wpAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}
@@ -355,13 +355,13 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		//ドメインモデル「就業承認ルート履歴」を取得する
 		if(objUpdateItem.getEditOrDelete() == EDIT && objUpdateItem.getCheckMode() == COMMON){//07.履歴編集を実行する(まとめて設定モード)
 			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestCom(companyId, employeeId);
-			if(histL.isPresent()) dateLastest = histL.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
+			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
 		if(objUpdateItem.getEditOrDelete() == EDIT && objUpdateItem.getCheckMode() == PRIVATE){//10.履歴編集を実行する(申請個別設定モード)
 			Integer employmentRootAtr = objUpdateItem.getLstUpdate().get(0).getEmployRootAtr();
 			Integer applicationType = objUpdateItem.getLstUpdate().get(0).getApplicationType();
 			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employmentRootAtr, applicationType);
-			if(histL.isPresent()) dateLastest = histL.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
+			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and 
@@ -376,27 +376,27 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete() == EDIT){//TH: edit hist (J)
 					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//TH: delete hist (J)
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(psAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(psAppRoot.getApprovalId());
 					}
 					//delete PsApprovalRoot
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, psAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
 					//history previous
 					PersonApprovalRoot ps = lstPsByApp.get(1);
-					String sDatePre = ps.getEmploymentAppHistoryItems().get(0).start().toString();
+					String sDatePre = ps.getApprRoot().getHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -405,21 +405,21 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//update history current
 					repoPerson.updatePsApprovalRoot(psAppRoot);
 				}else{//delete 
-					//get all  ApprovalPhase by BranchId
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
+					//get all  ApprovalPhase by approvalId
+					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(psAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
-							repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+							repoApprover.deleteAllApproverByAppPhId(approvalPhase.getApprovalId(), approvalPhase.getPhaseOrder());
 						}
-						//delete All Approval Phase By Branch Id
-						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
+						//delete All Approval Phase By approvalId
+						repoAppPhase.deleteAllAppPhaseByApprovalId(psAppRoot.getApprovalId());
 					}
 					//delete history current
-					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getEmploymentAppHistoryItems().get(0).getHistoryId());
+					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getApprRoot().getHistoryItems().get(0).getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, psAppRoot.getBranchId());
+					repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}

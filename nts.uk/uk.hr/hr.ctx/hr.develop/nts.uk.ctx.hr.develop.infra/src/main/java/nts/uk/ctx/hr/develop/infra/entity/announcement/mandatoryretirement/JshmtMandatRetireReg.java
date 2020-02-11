@@ -87,7 +87,7 @@ public class JshmtMandatRetireReg extends UkJpaEntity implements Serializable {
 		this.historyId = mandatoryRetirementRegulation.getHistoryId();
 		this.reachedAgeTerm = mandatoryRetirementRegulation.getReachedAgeTerm().value;
 		this.calculationTerm = mandatoryRetirementRegulation.getPublicTerm().getCalculationTerm().value;
-		this.dateSettingNum = mandatoryRetirementRegulation.getPublicTerm().getDateSettingNum().intValue();
+		this.dateSettingNum = mandatoryRetirementRegulation.getPublicTerm().getDateSettingNum();
 		this.dateSettingDate = mandatoryRetirementRegulation.getPublicTerm().getDateSettingDate().isPresent()?mandatoryRetirementRegulation.getPublicTerm().getDateSettingDate().get().value : null; 
 		this.retireDateTerm = mandatoryRetirementRegulation.getRetireDateTerm().getRetireDateTerm().value;
 		this.retireDateSettingDate = mandatoryRetirementRegulation.getRetireDateTerm().getRetireDateSettingDate().isPresent()?mandatoryRetirementRegulation.getRetireDateTerm().getRetireDateSettingDate().get().value:null;

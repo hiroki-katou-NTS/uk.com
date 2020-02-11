@@ -7,6 +7,7 @@ package nts.uk.ctx.workflow.dom.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 
@@ -64,4 +65,20 @@ public interface SyJobTitleAdapter {
 	 */
 	// RequestList #158
 	List<SimpleJobTitleImport> findByIds(String companyId,List<String> jobIds, GeneralDate baseDate);
+	/**
+	 * get JobG info
+	 * @param companyId
+	 * @param jobGCd
+	 * @return
+	 */
+	List<JobGInfor> getJobGInfor(String companyId, List<String> jobGCd);
+	
+	/**
+	 * 承認者Gコードから職位情報を取得
+	 * @param companyID
+	 * @param approverGroupCD
+	 * @return
+	 */
+	List<String> getJobIDFromGroup(String companyID, String approverGroupCD); 
+	
 }

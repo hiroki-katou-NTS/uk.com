@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1000, height: 600 };</script>
+			<com:stylefile path="jmm018.c.style.css" />
+			<com:scriptfile path="jmm018.c.service.js" />
+			<com:scriptfile path="jmm018.c.start.js" />
+			<com:scriptfile path="jmm018.c.vm.js" />
+			<com:scriptfile set="IGNITE" />
+			
+		<com:EnumScript>
+			nts.uk.ctx.at.request.dom.application.ApplicationType
+			nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.DurationFlg
+			nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.RetirePlanCourseClass
+		</com:EnumScript>
+		
+		<com:ValidatorScript>
+			nts.uk.ctx.at.request.dom.setting.company.divergencereason.ReasonTempPrimitive
+		</com:ValidatorScript>
+		</ui:define>
+
+
+		
+		<ui:define name="content">
+			<div id="functions-area-bottom">
+				<!-- C3_1 -->
+				<button  class="x-large proceed" data-bind= "click: register">#{i18n.getText('JMM018_C3_1')}</button>
+				<!-- C3_2 -->
+				<button data-bind="click: closeDialog">#{i18n.getText('JMM018_C3_2')}</button>
+
+			</div>
+			<div id="contents-area">
+				<div>
+					<div style = "margin-top: 10px; margin-left: 20px;" data-bind="text: title"></div>
+					<div id = "labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_C222_2')}</div>
+					<div id = "tableRetire">
+						<table>
+							<thead style = "display: block;">
+								<tr>
+									<th class = "ui-widget-header idColumn"></th>
+									<th class = "ui-widget-header course">#{i18n.getText('JMM018_C222_6')}</th>
+									<th class = "ui-widget-header retireName">#{i18n.getText('JMM018_C222_8')}</th>
+									<th class = "ui-widget-header retirementAge">#{i18n.getText('JMM018_C222_9')}</th>
+									<th class = "ui-widget-header continueCategory">#{i18n.getText('JMM018_C222_10')}</th>
+								</tr>
+
+							</thead>
+							<tbody id="retire-table" data-bind="foreach : dataRetirment">
+								<tr>
+									<td class="column-row">
+										<div id ="check-box" data-bind="ntsCheckBox: { checked: checkBox }, attr:{ tabindex:1 + $index()+1 } "> </div>
+									</td>
+									<td class="column-row course"><span class="label " data-bind="text: retirePlanCourseClass().name"></span></td>
+									<td class="column-row retireName"><span class="label " data-bind="text: retirePlanCourseName"></span></td>
+									<td class="column-row retirementAge"><span class="label " data-bind="text: retirementAge"></span></td>
+									<td class="column-row continueCategory"><span class="label " data-bind="text: durationFlg"></span></td>
+								</tr> 
+							</tbody>							
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

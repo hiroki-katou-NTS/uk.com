@@ -8,13 +8,13 @@
             class="mr-20 help-button">?</button>
         <!-- JCM008_A222_3 -->
         <div id="retirement-period" tabindex="3"
-            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod}"></div>
+            data-bind="ntsDateRangePicker: { value: searchFilter.retirementPeriod, required: true}"></div>
         <!-- JCM008_A222_2_2 -->
-        <div id="includingReflected" data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
+        <div id="includingReflected" tabindex="4" data-bind="ntsCheckBox: { checked: searchFilter.includingReflected, enable: true }"
             class="check-box-padding">
             #{i18n.getText('JCM008_A222_2_2')}</div>
     </div>
-    <div class="line-height flex">
+    <div class="line-height flex" data-bind="visible: searchFilter.retirementCoursesEarly().length > 0">
         <!-- JCM008_A222_4 -->
         <div data-bind="ntsCheckBox: { checked: searchFilter.retirementAgeDesignation, enable: true }"
             class="check-box-padding mr-10 ml-16">
@@ -23,11 +23,12 @@
         <button data-bind="ntsHelpButton: {textId: 'JCM008_A222_4_1', position : 'right center'}"
             class="mr-20 help-button">?</button>
         <!-- A222_5_1 -->
-        <div id="combo-box" data-bind="ntsComboBox: {
+        <div id="combo-box" tabindex="5" data-bind="ntsComboBox: {
             options: searchFilter.retirementAges(),
             optionsValue: 'code',
             visibleItemsCount: 5,
             value: searchFilter.selectedRetirementAge,
+            selectFirstIfNull: false,
             enable: searchFilter.retirementAgeDesignation(),
             optionsText: 'name',
             columns: [
@@ -73,6 +74,6 @@
             readonly: true,
             required: true
         }" class="mt-6" />
-        <button tabindex="10" class="normal mt-6 ml-70" data-bind="click: getRetirementData">#{i18n.getText('JCM008_A222_10')}</button>
+        <button tabindex="10" class="normal mt-6 ml-70" data-bind="click: getRetirementData, enable: $root.errors.isEmpty()">#{i18n.getText('JCM008_A222_10')}</button>
     </div>
 </div>

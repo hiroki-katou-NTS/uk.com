@@ -45,7 +45,7 @@ import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmploymentPubImp.
@@ -133,7 +133,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByListSidAndPeriod(java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByListSidAndPeriod(java.util.List, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
@@ -178,7 +178,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	 * 
 	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#
 	 * getEmpHistBySidAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

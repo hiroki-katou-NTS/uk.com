@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.personallaborcondition;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class PersonalLaborCondition.

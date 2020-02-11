@@ -41,7 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQuery{
 	@Inject
@@ -782,6 +782,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				&& !inputParam.getInterimMng().isEmpty()
 				&& !inputParam.isMode()) {
 			for (InterimRemain interimRemain : inputParam.getInterimMng()) {
+				
 				List<InterimRemain> lstInterimDayoffUsen = lstTmpDayoff.stream()
 						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
 				if(!lstInterimDayoffUsen.isEmpty()) {
@@ -806,6 +807,26 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			}
 		}
 		//20181003 DuDT fix bug 101491 ↑
+		if(inputParam.isReplaceChk() 
+				&& inputParam.getCreatorAtr().isPresent()
+				&& inputParam.getProcessDate().isPresent()) {
+			List<InterimRemain> lstDayoffRemove = lstInterimDayoff.stream().filter(x -> x.getCreatorAtr() == inputParam.getCreatorAtr().get()
+					&& x.getYmd().afterOrEquals(inputParam.getProcessDate().get().start())
+					&& x.getYmd().beforeOrEquals(inputParam.getProcessDate().get().end())).collect(Collectors.toList());
+			lstDayoffRemove.stream().forEach(x -> {
+				List<InterimDayOffMng> lstOffMng = lstDayoffMng.stream().filter(a -> a.getDayOffManaId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				lstDayoffMng.removeAll(lstOffMng);
+			});
+			lstInterimDayoff.removeAll(lstDayoffRemove);
+			List<InterimRemain>  lstBreakRemove = lstInterimBreak.stream().filter(x -> x.getCreatorAtr() == inputParam.getCreatorAtr().get()
+					&& x.getYmd().afterOrEquals(inputParam.getProcessDate().get().start())
+					&& x.getYmd().beforeOrEquals(inputParam.getProcessDate().get().end())).collect(Collectors.toList());
+			lstBreakRemove.stream().forEach(x -> {
+				List<InterimBreakMng> lstBre = lstBreakMng.stream().filter(a -> a.getBreakMngId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				lstBreakMng.removeAll(lstBre);
+			});
+			lstInterimBreak.removeAll(lstBreakRemove);
+		}
 		List<BreakDayOffDetail> lstOutputDayoff = this.lstOutputDayoff(inputParam, lstDayoffMng, lstInterimDayoff);
 		lstDetailData.addAll(lstOutputDayoff);
 		
@@ -932,7 +953,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList(),
-				Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty());
 		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();
 	}
 }

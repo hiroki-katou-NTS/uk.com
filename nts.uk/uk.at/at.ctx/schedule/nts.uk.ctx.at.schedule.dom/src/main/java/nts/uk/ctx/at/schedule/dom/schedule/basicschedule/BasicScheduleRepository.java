@@ -12,7 +12,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface BasicScheduleRepository.

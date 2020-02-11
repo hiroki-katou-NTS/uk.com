@@ -19,7 +19,8 @@ public interface PersonApprovalRootRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	List<PersonApprovalRoot> getAllPsApprovalRoot(String companyId, String employeeId);
+	List<PersonApprovalRoot> getPsRootStart(String companyId, String employeeId, int sysAtr,
+			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * delete Person Approval Root
@@ -89,7 +90,8 @@ public interface PersonApprovalRootRepository {
 	 * @param rootAtr
 	 * @return
 	 */
-	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr);
+	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType,
+			EmploymentRootAtr rootAtr, int sysAtr);
 	
 	/**
 	 * 個人別就業承認ルート」を取得する
@@ -98,14 +100,14 @@ public interface PersonApprovalRootRepository {
 	 * @param sid
 	 * @param baseDate
 	 */
-	Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate);
+	Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate, int sysAtr);
 	/**
 	 * ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
 	 * @param companyId
 	 * @param baseDate ・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
 	 * @return
 	 */
-	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate);
+	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Person Approval Root By type
 	 * @param companyId
@@ -172,4 +174,6 @@ public interface PersonApprovalRootRepository {
 	
 	Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId);
 	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer applicationType);
+	//get by endDate
+	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
 }

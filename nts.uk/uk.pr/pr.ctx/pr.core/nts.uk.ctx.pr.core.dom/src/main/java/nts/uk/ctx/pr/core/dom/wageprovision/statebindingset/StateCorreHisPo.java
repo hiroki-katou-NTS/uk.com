@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
 * 明細書紐付け履歴（職位）

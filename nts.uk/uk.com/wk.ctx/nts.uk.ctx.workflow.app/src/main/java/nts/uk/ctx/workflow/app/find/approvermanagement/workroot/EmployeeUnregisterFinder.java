@@ -19,14 +19,14 @@ public class EmployeeUnregisterFinder {
 	@Inject
 	private ApproverRootMaster masterRoot;
 	
-	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(GeneralDate baseDate){
+	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(GeneralDate baseDate, int sysAtr){
 		String companyId = AppContexts.user().companyId();
-		return approvalRoot.lstEmployeeUnregister(companyId, baseDate);
+		return approvalRoot.lstEmployeeUnregister(companyId, baseDate, sysAtr);
 	}
 	
 	public MasterApproverRootOutput masterInfors(MasterApproverRootDto dto) {
 		String companyId = AppContexts.user().companyId();
-		return masterRoot.masterInfors(companyId, dto.getBaseDate(), dto.isChkCompany(), dto.isChkWorkplace(), dto.isChkPerson());
+		return masterRoot.masterInfors(companyId,dto.getSysAtr(), dto.getBaseDate(), dto.isChkCompany(), dto.isChkWorkplace(), dto.isChkPerson());
 	}
 	
 }

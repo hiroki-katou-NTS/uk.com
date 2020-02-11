@@ -39,7 +39,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Leav
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
@@ -270,7 +270,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
 			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
+					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
 			subVacaRemain = subVaca.getRemainDays();//残日数
@@ -288,7 +288,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
 			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
+					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
 			subHdRemain = subHd.getRemainDays();

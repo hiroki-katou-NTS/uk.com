@@ -39,7 +39,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -77,7 +77,7 @@ public class InfomationInitScreenProcess {
 		ObjectShare objectShare = param.objectShare; 
 		Integer closureId = param.closureId;
 		Boolean initScreenOther = param.initFromScreenOther;
-		long timeStart = System.currentTimeMillis();
+		//long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		Boolean needSortEmp = Boolean.FALSE;
@@ -122,8 +122,9 @@ public class InfomationInitScreenProcess {
 //		} else {
 //			screenDto.setClosureId(closureId);
 //		}
-		
+		//System.out.println("time get master" + (System.currentTimeMillis() - timeStart));
 		Pair<Integer, DateRange> resultIndentityPeriod = processor.identificationPeriod(closureId, mode, dateRange);
+		//System.out.println("time get period" + (System.currentTimeMillis() - timeStart));
 		screenDto.setClosureId(resultIndentityPeriod.getLeft());
 		DateRange rangeInit = resultIndentityPeriod.getRight();
 		// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu
@@ -143,7 +144,7 @@ public class InfomationInitScreenProcess {
 		}
 
 		List<String> employeeIdsOri = changeEmployeeIds;
-				
+		//System.out.println("time get employeeId" + (System.currentTimeMillis() - timeStart));	
 		//<<Public>> パラメータに初期値を設定する
 		///期間を変更する
 		String empSelected = sId;
@@ -171,7 +172,7 @@ public class InfomationInitScreenProcess {
 		}
 		screenDto.setDateRange(dateRange);
 		screenDto.setDatePeriodResult(datePeriodResult);
-		
+		//System.out.println("time change period: " + (System.currentTimeMillis() - timeStart));
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
 		/**
@@ -185,7 +186,7 @@ public class InfomationInitScreenProcess {
 		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate()));
 		// only get detail infomation employee when mode 2, 3 extract
-		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
+		//System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		val timeStart1 = System.currentTimeMillis();
 		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		//set name workplace
@@ -210,13 +211,13 @@ public class InfomationInitScreenProcess {
 		// information
 		screenDto.setLstData(processor.getListData(lstEmployeeData, dateRange, displayFormat));
 		//get employee 
-		val timeStart2 = System.currentTimeMillis();
+		//val timeStart2 = System.currentTimeMillis();
 		//List<AffCompanyHistImport> affCompany = changeEmployeeIds.isEmpty() ? Collections.emptyList() : employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		//社員ID（List）と指定期間から所属会社履歴項目を取得
 		Map<String, List<AffComHistItemAtScreen>> affCompanyMap = repo.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(), changeEmployeeIds);
 		
-		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart2)); //slow
-		val timeStart3 = System.currentTimeMillis();
+		//System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart)); //slow
+		//val timeStart3 = System.currentTimeMillis();
 		screenDto.setLstData(processor.setWorkPlace(WPHMap, affCompanyMap, screenDto.getLstData()));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
@@ -226,18 +227,18 @@ public class InfomationInitScreenProcess {
 			setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
 			return Pair.of(screenDto, null);
 		}
-		System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart3));
+		//System.out.println("time map data wplhis, date:" + (System.currentTimeMillis() - timeStart));
 		//パラメータ「表示形式」をチェックする - Đã thiết lập truyền từ UI nên không cần check lấy theo định dạng nào , nhân viên đã được truyền
 		
 		// Lấy thành tích nhân viên theo ngày 
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
-		val timeStart4 = System.currentTimeMillis();
+		//val timeStart4 = System.currentTimeMillis();
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
 		List<DPErrorDto> lstError = processor.getErrorList(screenDto, listEmployeeId);
 		screenDto.setDPErrorDto(lstError);
-		
+		//System.out.println("time get error:" + (System.currentTimeMillis() - timeStart));
 //		Map<String, String> listEmployeeError = lstError.stream()
 //				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 		if (displayFormat == 2) {
@@ -270,7 +271,7 @@ public class InfomationInitScreenProcess {
 		// check show column 本人
 		// check show column 承認
 		//DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId, mode).orElse(null);
-		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart4));
+		//System.out.println("time before get item" + (System.currentTimeMillis() - timeStart4));
 		boolean showButton = true;
 		if (displayFormat == 0) {
 			if (!listEmployeeId.isEmpty() && !sId.equals(listEmployeeId.get(0))) {
@@ -292,12 +293,13 @@ public class InfomationInitScreenProcess {
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		screenDto.setEmployeeIds(listEmployeeId);
 		screenDto.setChangeEmployeeIds(changeEmployeeIds);
+		//System.out.println("time get itemId:" + (System.currentTimeMillis() - timeStart));
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = processor.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.setDisItem(disItem);
 		setStateParam(screenDto, resultPeriod, displayFormat, initScreenOther);
-		System.out.println("time init All" + (System.currentTimeMillis() - timeStart));
+		//System.out.println("time init All" + (System.currentTimeMillis() - timeStart));
 		return Pair.of(screenDto,
 				listEmployeeId.isEmpty() ? null
 						: new ParamCommonAsync(listEmployeeId.get(0), dateRange, screenDto.getEmploymentCode(),

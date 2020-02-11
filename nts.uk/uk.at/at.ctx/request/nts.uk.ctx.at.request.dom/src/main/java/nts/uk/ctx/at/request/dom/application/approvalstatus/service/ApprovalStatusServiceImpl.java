@@ -97,7 +97,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 import nts.uk.shr.com.url.UrlParamAtr;
 import nts.uk.shr.com.url.UrlTaskIncre;
@@ -632,9 +632,23 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// クラス：承認枠
 			for (ApprovalFrameImport_New appFrame : listAppFrame) {
 				// 承認済、否認の場合
-				if (appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
+				Optional<ApproverStateImport_New> opDenyApproverState = appFrame.getListApprover().stream()
+						.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL).findAny();
+				if(opDenyApproverState.isPresent()) {
 					continue;
+				}
+				if(true) {
+					Optional<ApproverStateImport_New> opApproveApproverState = appFrame.getListApprover().stream()
+							.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+					if(opApproveApproverState.isPresent()) {
+						continue;
+					}
+				} else {
+					Optional<ApproverStateImport_New> opNotApproveApproverState = appFrame.getListApprover().stream()
+							.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+					if(!opNotApproveApproverState.isPresent()) {
+						continue;
+					}
 				}
 				// 未承認、差し戻しの場合
 				// アルゴリズム「承認状況未承認メール未承認者取得」を実行する

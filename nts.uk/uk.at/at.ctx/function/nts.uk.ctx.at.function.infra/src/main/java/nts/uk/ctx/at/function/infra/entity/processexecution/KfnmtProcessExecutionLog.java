@@ -28,7 +28,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPerio
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -83,7 +83,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	}
 
 	public ProcessExecutionLog toDomain() {
-		List<ExecutionTaskLog> taskLogList = this.taskLogList.stream().map(x -> x.toDomain())
+		List<ExecutionTaskLog> taskLogList = this.taskLogList.stream().map(x -> x.toNewDomain())
 				.collect(Collectors.toList());
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null

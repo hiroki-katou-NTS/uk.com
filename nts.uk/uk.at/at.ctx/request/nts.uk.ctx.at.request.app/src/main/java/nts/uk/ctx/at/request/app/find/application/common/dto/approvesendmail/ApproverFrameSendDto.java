@@ -9,45 +9,27 @@ import nts.uk.ctx.at.request.dom.application.common.service.application.output.A
 @Value
 @AllArgsConstructor
 public class ApproverFrameSendDto {
-	private Integer phaseOrder;
 	
 	private Integer frameOrder;
 	
-	private Integer approvalAtrValue;
-	
-	private String approvalAtrName;
-	
 	private List<ApproverStateSendDto> listApprover;
-	
-	private String approverID;
-	
-	private String approverName;
-	
-	private String representerID;
-	
-	private String representerName;
-	
-	private String approvalReason;
 	
 	public static ApproverFrameSendDto fromApprovalFrame(ApprovalFrameOutput approvalFrame){
 		return new ApproverFrameSendDto(
-				approvalFrame.getPhaseOrder(), 
 				approvalFrame.getFrameOrder(), 
-				approvalFrame.getApprovalAtr().value,
-				approvalFrame.getApprovalAtr().name, 
 				approvalFrame.getListApprover().stream()
 					.map(x -> new ApproverStateSendDto(
 							x.getApproverID(), 
+							x.getApprovalAtr().value,
+							x.getApprovalAtr().name, 
+							x.getAgentID(),
 							x.getApproverName(),
 							x.getRepresenterID(),
 							x.getRepresenterName(),
+							x.getApprovalReason(),
 							x.getSMail(),
 							x.getSMailAgent()))
-					.collect(Collectors.toList()), 
-				approvalFrame.getApproverID(),
-				approvalFrame.getApproverName(),
-				approvalFrame.getRepresenterID(),
-				approvalFrame.getRepresenterName(),
-				approvalFrame.getApprovalReason());
+					.collect(Collectors.toList())
+				);
 	}
 }

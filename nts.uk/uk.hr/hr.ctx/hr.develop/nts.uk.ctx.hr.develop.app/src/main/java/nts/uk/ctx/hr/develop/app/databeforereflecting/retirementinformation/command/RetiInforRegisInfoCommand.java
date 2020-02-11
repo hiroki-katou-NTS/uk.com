@@ -21,9 +21,9 @@ public class RetiInforRegisInfoCommand {
 	// ビジネスネームカナ
 	private String businessnameKana;
 	// 誕生日
-	private GeneralDate birthday;
+	private String birthday;
 	// 入社日
-	private GeneralDate dateJoinComp;
+	private String dateJoinComp;
 	// 部門ID
 	private String departmentId;
 	// 部門コード
@@ -43,9 +43,9 @@ public class RetiInforRegisInfoCommand {
 	// 年齢
 	private Integer age;
 	// 退職日
-	private GeneralDate retirementDate;
+	private String retirementDate;
 	// 公開日
-	private GeneralDate releaseDate;
+	private String releaseDate;
 	// 人事評価1
 	private String hrEvaluation1;
 	// 人事評価2
@@ -71,7 +71,7 @@ public class RetiInforRegisInfoCommand {
 	// 反映先_履歴ID
 	private String dst_HistId;
 	// 入力日
-	public GeneralDate inputDate;
+	public String inputDate;
 	// 履歴ID
 	private String historyId;
 
@@ -103,5 +103,30 @@ public class RetiInforRegisInfoCommand {
 	private String retirementReasonCtgCd1;
 	// 退職理由区分1_名称
 	private String retirementReasonCtgName1;
+	
+	public GeneralDate getInputDate() {
+		if(this.inputDate != null) {
+			return convertToGenDate(this.inputDate);
+		}
+		return null;
+	}
+
+	public GeneralDate getReleaseDate() {
+		if(this.releaseDate != null) {
+			return convertToGenDate(this.releaseDate);
+		}
+		return null;
+	}
+
+	public GeneralDate getRetirementDate() {
+		if(this.retirementDate != null) {
+			return convertToGenDate(this.retirementDate);
+		}
+		return null;
+	}
+
+	private GeneralDate convertToGenDate(String date) {
+		return GeneralDate.fromString(date, "yyyy/MM/dd");
+	}
 
 }

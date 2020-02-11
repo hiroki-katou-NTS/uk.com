@@ -1,6 +1,7 @@
 package nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,10 @@ import nts.uk.ctx.hr.shared.dom.employment.EmploymentInfoImport;
 import nts.uk.ctx.hr.shared.dom.employment.SyEmploymentAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author sonlb
+ *
+ */
 @Stateless
 public class RetirementInformationFinder {
 
@@ -101,8 +106,9 @@ public class RetirementInformationFinder {
 
 		List<String> sIDs = result.getRetiredEmployees().stream().map(x -> x.getSId()).collect(Collectors.toList());
 
-		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor
-				.getEmployeeInfos(Optional.ofNullable(null), sIDs, GeneralDate.today());
+		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor.getEmployeeInfos(
+				Optional.ofNullable(null), sIDs, GeneralDate.today(), Optional.ofNullable(true),
+				Optional.ofNullable(true), Optional.ofNullable(true));
 
 		result.setEmployeeImports(employeeImports);
 
@@ -115,41 +121,38 @@ public class RetirementInformationFinder {
 
 		// アルゴリズム[定年退職予定者の取得]を実行する(Thực hiện thuật toán [lấy người dự định nghỉ
 		// hưu])
-		List<RetirementPlannedPersonDto> retiplandeds =  this.madaRepo
+		List<RetirementPlannedPersonDto> retiplandeds = this.madaRepo
 				.getMandatoryRetirementListByPeriodDepartmentEmployment(cId, query.getStartDate(), query.getEndDate(),
 						Optional.ofNullable(
 								query.getRetirementAge() != null ? new RetirementAge(query.getRetirementAge()) : null),
 						query.getSelectDepartment(), query.getSelectEmployment());
-		
-		
-		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x-> toPlannedRetirementDto(x)).collect(Collectors.toList());
 
+		List<PlannedRetirementDto> retiredEmployees = retiplandeds.stream().map(x -> toPlannedRetirementDto(x))
+				.collect(Collectors.toList());
 
-		if (retiredEmployees.size() > 2000) {
-			throw new BusinessException(" MsgJ_JCM008_8");
-		}
+		
 
 		// アルゴリズム[定年退職者情報の取得]を実行する(thực hiện thuật toán [lấy RetirementInfo])
+		// mặc định set includingReflected = true để lấy hết ra giá trị
 		List<RetirementInformation_New> retirementEmployees = this.retiInfoService.getRetirementInformation(cId,
-				retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList()),
-				Optional.ofNullable(query.isIncludingReflected()));
+				retiredEmployees.stream().map(x -> x.getSId()).collect(Collectors.toList()), Optional.ofNullable(true));
 
 		// アルゴリズム[定年退職者一覧の表示]を実行する(thực hiện thuật toán [hiển thị danh sách
 		// người nghỉ hưu])
 
-		return createListRetiredEmployees(retirementEmployees, retiredEmployees);
+		return createListRetiredEmployees(retirementEmployees, retiredEmployees, query.isIncludingReflected());
 	}
-	
+
 	private PlannedRetirementDto toPlannedRetirementDto(RetirementPlannedPersonDto plan) {
-		return PlannedRetirementDto.builder().pId(plan.getEmployeeId()).sId(plan.getEmployeeId())
+		return PlannedRetirementDto.builder().pId(plan.getPersonalId()).sId(plan.getEmployeeId())
 				.scd(plan.getEmployeeCode()).businessName(plan.getBusinessName())
 				.businessnameKana(plan.getBusinessNameKana()).birthday(plan.getBirthday())
 				.dateJoinComp(plan.getDateJoinComp()).departmentId(plan.getDepartmentId())
 				.departmentCode(plan.getDepartmentCode()).departmentName(plan.getDepartmentName())
 				.jobTitleId(plan.getPositionId()).jobTitleCd(plan.getPositionCode())
 				.jobTitleName(plan.getPositionName()).employmentCode(plan.getEmploymentCode())
-				.employmentName(plan.getEmploymentName()).age(plan.getAge()).retirementDate(plan.getRetirementDate())
-				.releaseDate(plan.getReleaseDate())
+				.employmentName(plan.getEmploymentName()).retirementAge(plan.getAge())
+				.retirementDate(plan.getRetirementDate()).releaseDate(plan.getReleaseDate())
 				.hrEvaluation1(plan.getHrEvaluation1().isPresent() ? plan.getHrEvaluation1().get() : null)
 				.hrEvaluation2(plan.getHrEvaluation2().isPresent() ? plan.getHrEvaluation2().get() : null)
 				.hrEvaluation3(plan.getHrEvaluation3().isPresent() ? plan.getHrEvaluation3().get() : null)
@@ -163,8 +166,13 @@ public class RetirementInformationFinder {
 	}
 
 	private SearchRetiredResultDto createListRetiredEmployees(List<RetirementInformation_New> retirementEmployees,
-			List<PlannedRetirementDto> retiredEmployees) {
+			List<PlannedRetirementDto> retiredEmployees, boolean isIncludingReflected) {
+
 		List<PlannedRetirementDto> result = new ArrayList<PlannedRetirementDto>();
+
+		retiredEmployees = retiredEmployees.stream().sorted(Comparator
+				.comparing(PlannedRetirementDto::getRetirementDate).thenComparing(PlannedRetirementDto::getScd))
+				.collect(Collectors.toList());
 
 		result.addAll(retiredEmployees);
 		// 定年退職予定者リストと定年退職者情報リストをマージする(Merger list người dự định nghỉ hưu và
@@ -178,6 +186,21 @@ public class RetirementInformationFinder {
 		});
 		// アルゴリズム[面談記録チェック]を実行する(Thực hiện thuật toán [check báo cáo kết quả
 		// phỏng vấn])
+
+		// check includingReflected nếu không =true thì lọc re những giá trị có
+		// status =3
+		if (!isIncludingReflected) {
+			result = result.stream().filter(x -> x.getStatus() == null || x.getStatus() != 3)
+					.collect(Collectors.toList());
+		}
+		
+		if (result.size() > 2000) {
+			throw new BusinessException("MsgJ_JCM008_8");
+		}
+
+		if (result.size() == 0) {
+			throw new BusinessException("MsgJ_JCM008_2");
+		}
 
 		List<String> employeeIds = result.stream().map(x -> x.getSId()).collect(Collectors.toList());
 
@@ -204,6 +227,7 @@ public class RetirementInformationFinder {
 		item.setPendingFlag(reti.getPendingFlag().value);
 		item.setWorkId(reti.getWorkId());
 		item.setDst_HistId(reti.getDst_HistId());
+		item.setInputDate(reti.getInputDate());
 		item.setRetirementCategory(reti.getRetirementCategory().value);
 		item.setNotificationCategory(reti.getNotificationCategory().value);
 		item.setRetirementReasonCtgID1(reti.getRetirementReasonCtgID1());
@@ -211,10 +235,9 @@ public class RetirementInformationFinder {
 		item.setRetirementReasonCtgName1(reti.getRetirementReasonCtgName1());
 	}
 
-
 	private void preSearchWarning(GeneralDate endDate) {
 
-		if (endDate.before(GeneralDate.today().addYears(2))) {
+		if (!endDate.before(GeneralDate.today().addYears(2))) {
 			throw new BusinessException("MsgJ_JCM008_5");
 		}
 	}
@@ -265,8 +288,7 @@ public class RetirementInformationFinder {
 		// アルゴリズム[定年退職期間設定の取得]を実行する(thực hiện thuật toán [lấy setting khoảng
 		// thời gian nghỉ hưu])
 
-		return retirementCourses.stream().sorted(Comparator.comparing(RetirementCourseDto::getRetirePlanCourseCode))
-				.collect(Collectors.toList());
+		return retirementCourses;
 	}
 
 	private List<RetirementCourseDto> getRetirementCourse(String cId, GeneralDate baseDate) {
@@ -315,25 +337,33 @@ public class RetirementInformationFinder {
 		// 定年退職コース情報リストを生成する (Tao retirePlanCourseTermList)
 
 		List<RetirementCourseDto> retirePlanCourses = new ArrayList<RetirementCourseDto>();
+		
+		empInfos.forEach(emp -> {
 
-		madaOpt.get().getMandatoryRetireTerm().forEach(x -> {
-
-			retirePlanCourses.addAll(getRetirePlanCoursesData(madaOpt.get(), x, empInfos, retires));
+			retirePlanCourses.addAll(
+					getRetirePlanCoursesData(madaOpt.get(), madaOpt.get().getMandatoryRetireTerm(), emp, retires));
 		});
 
 		return retirePlanCourses;
 	}
 
 	private List<RetirementCourseDto> getRetirePlanCoursesData(MandatoryRetirementRegulation mada,
-			MandatoryRetireTerm retireTerm, List<EmploymentInfoImport> empInfos, List<RetirePlanCource> retires) {
+			List<MandatoryRetireTerm> retireTerms, EmploymentInfoImport emp, List<RetirePlanCource> retires) {
 
 		List<RetirementCourseDto> dtos = new ArrayList<RetirementCourseDto>();
+		
+		Optional<MandatoryRetireTerm> retireTermOpt = retireTerms.stream().filter(
+				reti -> reti.getEmpCommonMasterItemId().equals(emp.getEmpCommonMasterItemId()) && reti.isUsageFlg())
+				.findFirst();
+		
+		if(!retireTermOpt.isPresent()){
+			return Collections.emptyList();
+		}
+		
+		MandatoryRetireTerm  retireTerm = retireTermOpt.get();
 
-		Optional<EmploymentInfoImport> empInfo = empInfos.stream().filter(emp -> emp.getEmpCommonMasterItemId() != null
-				&& emp.getEmpCommonMasterItemId().equals(retireTerm.getEmpCommonMasterItemId())).findFirst();
-
-		String employmentCode = empInfo.isPresent() ? empInfo.get().getEmploymentCode() : null;
-		String employmentName = empInfo.isPresent() ? empInfo.get().getEmploymentName() : null;
+		String employmentCode = emp.getEmploymentCode();
+		String employmentName = emp.getEmploymentName();
 
 		retireTerm.getEnableRetirePlanCourse().forEach(x -> {
 
@@ -344,16 +374,15 @@ public class RetirementInformationFinder {
 			Optional<RetirePlanCource> retire = retires.stream()
 					.filter(re -> re.getRetirePlanCourseId() == x.getRetirePlanCourseId()).findFirst();
 
-			if (retire.isPresent()) {
+			if (retire.isPresent() && employmentCode != null && employmentName != null) {
 				dto.setRetirePlanCourseClass(retire.get().getRetirePlanCourseClass().value);
 				dto.setRetirementAge(retire.get().getRetirementAge().v());
 				dto.setRetirePlanCourseId(retire.get().getRetirePlanCourseId());
 				dto.setRetirePlanCourseCode(retire.get().getRetirePlanCourseCode());
 				dto.setRetirePlanCourseName(retire.get().getRetirePlanCourseName());
-				dto.setDurationFlg(retire.get().isDurationFlg());
+				dto.setDurationFlg(retire.get().getDurationFlg().value);
+				dtos.add(dto);
 			}
-
-			dtos.add(dto);
 
 		});
 
@@ -371,11 +400,11 @@ public class RetirementInformationFinder {
 
 		case RETIREMENT_DATE_DESIGNATED_DATE:
 			result = retireDateTerm.getRetireDateSettingDate().isPresent()
-					? retireDateTerm.getRetireDateSettingDate().get().name : null;
+					? retireDateTerm.getRetireDateSettingDate().get().nameId : null;
 			break;
 
 		default:
-			result = retireDateTerm.getRetireDateTerm().name;
+			result = retireDateTerm.getRetireDateTerm().nameId;
 			break;
 		}
 

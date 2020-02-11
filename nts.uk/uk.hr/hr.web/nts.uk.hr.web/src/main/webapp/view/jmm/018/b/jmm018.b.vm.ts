@@ -315,7 +315,6 @@ module nts.uk.com.view.jmm018.b {
                 return dfd.promise();
             }
             
-            
         }
     }
 

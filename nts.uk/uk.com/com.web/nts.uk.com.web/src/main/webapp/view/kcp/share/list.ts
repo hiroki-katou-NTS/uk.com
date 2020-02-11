@@ -3,10 +3,7 @@ module kcp.share.list {
         id?: string;
         code: string;
         name?: string;
-        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-        workplaceName?: string;
-//        affiliationName?: string;
-        //end
+        affiliationName?: string;
         isAlreadySetting?: boolean;
         optionalColumn?: any;
     }
@@ -575,10 +572,7 @@ module kcp.share.list {
             // workplace name column
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
-//                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
-                    //end
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
                     template: "<td class='list-component-name-col'>${workplaceName}</td>"
                 });
             }
@@ -934,7 +928,7 @@ module kcp.share.list {
                 var alreadySetColumnSize = data.maxWidth ? '15%' : 40;
                 optionalColumnSize = data.maxWidth ? '20%' : 150;
             } else {
-                codeColumnSize = data.maxWidth ? '25%' : codeColumnSize;
+                codeColumnSize = data.maxWidth ? '30%' : codeColumnSize;
                 var nameColumnSize = data.maxWidth ? '30%' : 170;
                 var workplaceColumnSize = data.maxWidth ? '30%' : 150;
                 var alreadySetColumnSize = data.maxWidth ? '15%' : 40;

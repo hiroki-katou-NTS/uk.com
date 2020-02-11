@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceRefere
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkTypeDivergenceReferenceTimeHistoryRepository.

@@ -58,10 +58,11 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 
 	@Override
 	public List<EmployeeInformationImport> getEmployeeInfos(Optional<List<String>> pIds, List<String> sIds,
-			GeneralDate baseDate) {
+			GeneralDate baseDate, Optional<Boolean> getDepartment, Optional<Boolean> getPosition,
+			Optional<Boolean> getEmployment) {
 
-		return this.empInfo.getEmployeeInfos(pIds, sIds, baseDate).stream().map(x -> toImport(x))
-				.collect(Collectors.toList());
+		return this.empInfo.getEmployeeInfos(pIds, sIds, baseDate, getDepartment, getPosition, getEmployment).stream()
+				.map(x -> toImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 
 	private EmployeeInformationImport toImport(EmployeeInformationExport x) {
 		return EmployeeInformationImport.builder().employeeId(x.getEmployeeId()).employeeCode(x.getEmployeeCode())
-				.businessName(x.getBusinessName()).businessNameKana(x.getBusinessNameKana())
+				.gender(x.getGender()).businessName(x.getBusinessName()).businessNameKana(x.getBusinessNameKana())
 				.workplace(toWorkplace(x.getWorkplace())).classification(toClassification(x.getClassification()))
 				.department(toDepartment(x.getDepartment())).position(toPosition(x.getPosition()))
 				.employment(toEmployment(x.getEmployment())).employmentCls(x.getEmploymentCls())

@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 職場情報変更期間を求める
@@ -30,8 +32,10 @@ public class WkplaceInfoChangePeriod {
 
 	public List<DatePeriod> getWkplaceInfoChangePeriod(String employeeId,DatePeriod datePeriod, List<ExWorkplaceHistItemImport> workplaceItems,boolean useWorkplace){
 		//INPUT「異動時に再作成」をチェックする
+		List<DatePeriod> result = new ArrayList<>();
 		if(!useWorkplace) {
-			return Arrays.asList(datePeriod);
+			result.add(datePeriod);
+			return result;
 		}
 		//ドメインモデル「日別実績の所属情報」を取得する
 		List<AffiliationInforOfDailyPerfor> listAffiliationInforOfDailyPerfor = affInforOfDailyPerforRepo.finds(Arrays.asList(employeeId) , datePeriod);
@@ -39,7 +43,7 @@ public class WkplaceInfoChangePeriod {
 				.collect(Collectors.groupingBy(c -> c.getWplID()));
 		Map<String, List<ExWorkplaceHistItemImport>> mapDateWpl = workplaceItems.stream()
 				.collect(Collectors.groupingBy(c -> c.getWorkplaceId()));
-		List<GeneralDate> lstDateAll = new ArrayList<>();
+		Set<GeneralDate> lstDateAll = new HashSet<>();
 		for (val itemData : mapDateWpl.entrySet()) {
 			String wpl = itemData.getKey();
 			List<DatePeriod> lstPeriod = itemData.getValue().stream().map(x -> x.getPeriod())
@@ -70,7 +74,7 @@ public class WkplaceInfoChangePeriod {
 		
 		List<GeneralDate> lstDateAllSort = lstDateAll.stream().sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
 		if(lstDateAllSort.isEmpty()) {
-			return Collections.emptyList();
+			return new ArrayList<>();
 		}
 		List<DatePeriod> lstResult = new ArrayList<>();
 		GeneralDate start = lstDateAllSort.get(0);

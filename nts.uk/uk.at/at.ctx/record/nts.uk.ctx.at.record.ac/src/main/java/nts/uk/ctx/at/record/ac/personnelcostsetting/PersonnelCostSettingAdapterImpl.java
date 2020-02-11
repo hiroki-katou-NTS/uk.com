@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettin
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PersonCostSettingExport;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PersonnelCostSettingAdapterImpl implements PersonnelCostSettingAdapter{

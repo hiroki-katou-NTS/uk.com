@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.algorithm.man
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,11 +48,16 @@ import nts.uk.ctx.hr.shared.dom.dateTerm.service.DateCaculationTermService;
 import nts.uk.ctx.hr.shared.dom.dateTerm.service.dto.EmployeeDateDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluation;
 import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.HumanResourceEvaluationService;
+import nts.uk.ctx.hr.shared.dom.personalinfo.humanresourceevaluation.PersonnelAssessmentResults;
+import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryItemResults;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryManagement;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.MedicalhistoryServices;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckManagement;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckResults;
+import nts.uk.ctx.hr.shared.dom.personalinfo.stresscheck.StressCheckService;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetirementRegulationService {
@@ -73,6 +79,9 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 	
 	@Inject
 	private MedicalhistoryServices medicalhistoryServices;
+	
+	@Inject
+	private StressCheckService stressCheckService;
 	
 	@Inject
 	private IGetYearStartEndDateByDate iGetYearStartEndDateByDate;
@@ -145,7 +154,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		if(!mandatoryRetirementRegulation.isPresent()) {
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
-		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->c.isUsageFlg());
+		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->!c.isUsageFlg());
 		
 		//退職日条件
 		RetireDateTerm retireDateTerm = mandatoryRetirementRegulation.get().getRetireDateTerm();
@@ -188,7 +197,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 							retirePlanCource.get().getRetirePlanCourseId(), 
 							retirePlanCource.get().getRetirePlanCourseCode(), 
 							retirePlanCource.get().getRetirePlanCourseName(), 
-							retirePlanCource.get().isDurationFlg()));
+							retirePlanCource.get().getDurationFlg()));
 				}
 			}
 		}
@@ -208,7 +217,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			throw new BusinessException("MsgJ_JMM018_2");
 		}
 		//※）List<MandatoryRetireTerm>．xac dinh tuoi nghi huu = 1
-		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->c.isUsageFlg());
+		mandatoryRetirementRegulation.get().getMandatoryRetireTerm().removeIf(c->!c.isUsageFlg());
 		
 		//・年齢到達条件
 		ReachedAgeTerm reachedAgeTerm = mandatoryRetirementRegulation.get().getReachedAgeTerm();
@@ -290,21 +299,21 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		}
 		
 		if(retirementAge.isPresent()) {
-			retireTermList.removeIf(c-> c.getRetirementAge().v() == retirementAge.get().v());
+			retireTermList.removeIf(c-> !(c.getRetirementAge().v() == retirementAge.get().v()));
 			if(retireTermList.isEmpty()) {
 				return new ArrayList<>();
 			}else {
 				if(!employmentCode.isEmpty()) {
-					retireTermList.removeIf(c->employmentCode.contains(c.getEmploymentCode()));
+					retireTermList.removeIf(c->!employmentCode.contains(c.getEmploymentCode()));
 					if(retireTermList.isEmpty()) {
 						return new ArrayList<>();
 					}
 				}
 			}
 		}else {
-			retireTermList.removeIf(c-> c.getRetirePlanCourseClass() == RetirePlanCourseClass.STANDARD_COURSE);
+			retireTermList.removeIf(c-> !(c.getRetirePlanCourseClass() == RetirePlanCourseClass.STANDARD_COURSE));
 			if(!employmentCode.isEmpty()) {
-				retireTermList.removeIf(c->employmentCode.contains(c.getEmploymentCode()));
+				retireTermList.removeIf(c->!employmentCode.contains(c.getEmploymentCode()));
 				if(retireTermList.isEmpty()) {
 					return new ArrayList<>();
 				}
@@ -313,24 +322,27 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		
 		List<SearchCondition> searchConditionList = new ArrayList<>();
 		if(reachedAgeTerm == ReachedAgeTerm.THE_DAY_BEFORE_THE_BIRTHDAY) {
-			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(-c.getRetirementAge().v()).addDays(-1), endDate.addYears(-c.getRetirementAge().v()).addDays(-1)))).collect(Collectors.toList()));
+			searchConditionList.addAll(retireTermList.stream().map(c-> new SearchCondition(c.getEmploymentCode(), new DatePeriod(startDate.addYears(c.getRetirementAge().v()*-1).addDays(-1), endDate.addYears(c.getRetirementAge().v()*-1).addDays(-1)))).collect(Collectors.toList()));
 		}else {
-			searchConditionList.addAll(retireTermList.stream().map(c-> {
+			searchConditionList.addAll(retireTermList.stream().map(c -> {
 				GeneralDate s = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day());
 				GeneralDate e = GeneralDate.ymd(endDate.year(), endDate.month(), endDate.day());
-				if(startDate.month() == 2 && startDate.day() == 29 && GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
-					 s = GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), startDate.month(), 28);
-				}else {
-					s.addYears(c.getRetirementAge().v());
+				if (startDate.month() == 2 && startDate.day() == 29
+						&& GeneralDate.ymd(startDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+					s = GeneralDate.ymd(startDate.year() - c.getRetirementAge().v(), startDate.month(), 28);
+				} else {
+					s = s.addYears(c.getRetirementAge().v() * -1);
 				}
-				if(endDate.month() == 2 && endDate.day() == 29 && GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
-					e = GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), endDate.month(), 28);
-				}else {
-					e.addYears(c.getRetirementAge().v());
+				if (endDate.month() == 2 && endDate.day() == 29
+						&& GeneralDate.ymd(endDate.year() + c.getRetirementAge().v(), 2, 1).lastDateInMonth() != 29) {
+					e = GeneralDate.ymd(endDate.year() - c.getRetirementAge().v(), endDate.month(), 28);
+				} else {
+					e = e.addYears(c.getRetirementAge().v() * -1);
 				}
-				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s,e));
+				return new SearchCondition(c.getEmploymentCode(), new DatePeriod(s, e));
 			}).collect(Collectors.toList()));
 		}
+		//List<社員>{個人ID、社員ID、雇用コード、誕生日、入社日}
 		List<EmployeeBasicInfoImport> employeeList = syEmploymentService.getEmploymentBasicInfo(searchConditionList, GeneralDate.today(), companyId);
 		if(employeeList.isEmpty()) {
 			return new ArrayList<>();
@@ -350,7 +362,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 		
 		if(!departmentId.isEmpty()) {
 			retirementInforList.removeIf(c->{
-				return departmentId.contains(c.getDepartmentId());
+				return !departmentId.contains(c.getDepartmentId());
 			});
 			if(retirementInforList.isEmpty()) {
 				return new ArrayList<>();
@@ -455,7 +467,7 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			return result;
 		}else if(retireDateTerm.getRetireDateTerm() == RetireDateRule.RETIREMENT_DATE_DESIGNATED_DATE) {
 			if(!retireDateTerm.getRetireDateSettingDate().isPresent()) {
-				throw new BusinessException("MsgJ_JMM018_2");
+				throw new BusinessException("MsgJ_JMM018_22");
 			}
 			return result.stream().map(c->{
 					c.setDay(retireDateTerm.getRetireDateSettingDate().get().value);
@@ -504,27 +516,78 @@ public class MandatoryRetirementRegulationServiceImpl implements MandatoryRetire
 			}else if(item.getEvaluationItem() == EvaluationItem.HEALTH_CONDITION) {
 				outputObject.setHealthStatusRefer(item.isUsageFlg());
 				outputObject.setHealthStatusDispNumber(item.getDisplayNum());
-			}else if(item.getEvaluationItem() == EvaluationItem.HEALTH_CONDITION) {
+			}else if(item.getEvaluationItem() == EvaluationItem.STRESS_CHECK) {
 				outputObject.setStressStatusRefer(item.isUsageFlg());
 				outputObject.setStressStatusDispNumber(item.getDisplayNum());
 			}
 		}
 		List<ComprehensiveEvaluationDto> hrEvaluationList = new ArrayList<>();
 		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
+			HumanResourceEvaluation HREvaluation = humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHrEvaluationDispNumber() +1)));
+			Map<String, List<PersonnelAssessmentResults>> mapSid = HREvaluation.getPersonnelAssessmentsResult().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<PersonnelAssessmentResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					hrEvaluationList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<PersonnelAssessmentResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getHrEvaluationDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getHrEvaluationDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					hrEvaluationList.add(dto);
+				}
+			}
 		}
 		List<ComprehensiveEvaluationDto> healthStatusList = new ArrayList<>();
-		if(outputObject.isHrEvaluationRefer()) {
-			MedicalhistoryManagement medicalhistoryManagement = new MedicalhistoryManagement();
-			medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHealthStatusDispNumber()) +1), medicalhistoryManagement);
+		if(outputObject.isHealthStatusRefer()) {
+			MedicalhistoryManagement medicalhistoryManagement = medicalhistoryServices.loadMedicalhistoryItem(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getHealthStatusDispNumber() +1)));
+			Map<String, List<MedicalhistoryItemResults>> mapSid = medicalhistoryManagement.getMedicalhistoryItemResults().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<MedicalhistoryItemResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					healthStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<MedicalhistoryItemResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getHealthStatusDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getHealthStatusDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					healthStatusList.add(dto);
+				}
+			}
 		}
 		List<ComprehensiveEvaluationDto> stressStatusList = new ArrayList<>();
-		if(outputObject.isHrEvaluationRefer()) {
-			HumanResourceEvaluation humanResourceEvaluation = new HumanResourceEvaluation();
-			humanResourceEvaluationService.loadHRevaluation(retiredEmployeeId, GeneralDate.today().addYears((-1 * outputObject.getHrEvaluationDispNumber()) +1), humanResourceEvaluation);
+		if(outputObject.isStressStatusRefer()) {
+			StressCheckManagement stressCheckManagement = stressCheckService.loadStressCheck(retiredEmployeeId, GeneralDate.today().addYears(-1 * (outputObject.getStressStatusDispNumber() +1)));
+			Map<String, List<StressCheckResults>> mapSid = stressCheckManagement.getStressChecks().stream().collect(Collectors.groupingBy(c -> c.getEmployeeID())); 
+			for(String id: retiredEmployeeId) {
+				List<StressCheckResults> personList = mapSid.get(id);
+				if(personList == null || personList.isEmpty()) {
+					stressStatusList.add(new ComprehensiveEvaluationDto(id, "", "", ""));
+				}else {
+					List<StressCheckResults> personListSort = personList.stream().sorted((x, y) -> y.getStartDate().compareTo(x.getStartDate())).collect(Collectors.toList());
+					
+					ComprehensiveEvaluationDto dto = new ComprehensiveEvaluationDto(id, personListSort.get(0).getEvaluation(), "", "");
+					if(outputObject.getStressStatusDispNumber() >= 2 && personListSort.size() >= 2) {
+						dto.setOverallResult2(personListSort.get(1).getEvaluation());
+					} 
+					if(outputObject.getStressStatusDispNumber() >= 3 && personListSort.size() >= 3) {
+						dto.setOverallResult3(personListSort.get(2).getEvaluation());
+					}
+					stressStatusList.add(dto);
+				}
+			}
+			
 		}
-		
 		return new EvaluationInfoDto(hrEvaluationList, healthStatusList, stressStatusList);
 		
 	}

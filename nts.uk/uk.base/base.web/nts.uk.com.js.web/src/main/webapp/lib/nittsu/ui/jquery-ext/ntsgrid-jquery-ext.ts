@@ -177,8 +177,16 @@ module nts.uk.ui.jqueryExtentions {
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
                     return ctl.name === column.ntsControl;
                 });
-                if (!util.isNullOrUndefined(controlDef)) columnControlTypes[column.key] = controlDef.controlType;
-                else {
+                if (!util.isNullOrUndefined(controlDef)) {
+                    columnControlTypes[column.key] = controlDef.controlType;
+                    if (controlDef.controlType === ntsControls.DATE_PICKER) {
+                        if (_.isNil(column.constraint)) {
+                            column.constraint = { pickerType: controlDef.format };
+                        } else {
+                            column.constraint.pickerType = controlDef.format;
+                        }
+                    }
+                } else {
                     columnControlTypes[column.key] = ntsControls.TEXTBOX;
                     return cellFormatter.format(column);
                 }
@@ -321,6 +329,14 @@ module nts.uk.ui.jqueryExtentions {
             
             // Document click
             $(document).on(events.Handler.CLICK, function(evt) {
+                let $target = $(evt.target); 
+                if ((!$target.is("input") || $target.closest(".nts-datepicker-container").length == 0)
+                    && (!$target.is(".mdatepicker-dropdown") && $target.closest(".mdatepicker-dropdown").length == 0)) {
+                    _.forEach(_.keys(internal._datePickerBoard), k => {
+                        utils.closeDD(internal._datePickerBoard[k]);
+                    });
+                }
+                
                 if (!utils.isIgGrid($self) || !utils.isEditMode($self)) return;
                 let $fixedBodyContainer: any = $self.igGrid("fixedBodyContainer");
                 if (($fixedBodyContainer.length > 0 && utils.outsideGrid($fixedBodyContainer, evt.target) 
@@ -1226,6 +1242,14 @@ module nts.uk.ui.jqueryExtentions {
                 if (ntsSwitchs.length > 0) {
                     ntsSwitchs.find("button").filter((i, b) => $(b).hasClass("selected")).focus();
                 }
+                let ntsDatepicker = $element.find(".nts-datepicker-container");
+                if (ntsDatepicker.length > 0) {
+                    ntsDatepicker.find("input").select();
+                }
+                let ntsInput = $element.find(".nts-editor-container");
+                if (ntsInput.length > 0) {
+                    ntsInput.find("input").select();
+                }
             }
             
             export function selectCellById($grid: JQuery, rowId: any, columnKey: string) {
@@ -2004,9 +2028,18 @@ module nts.uk.ui.jqueryExtentions {
             export let TEXT_EDITOR = 'TextEditor';
             export let FLEX_IMAGE = 'FlexImage';
             export let IMAGE = 'Image';
+            export let DATE_PICKER = 'DatePicker';
             export let HEIGHT_CONTROL = "27px";
             
             export let COMBO_CLASS = "nts-combo-container";
+            export const PICKER_HIDE_CLASS = "datepicker-hide";
+            export const PICKER_PANEL_CLASS = "datepicker-panel";
+            export const MUTED_CLASS = "muted";
+            export const PICKED_CLASS = "picked";
+            export const YM = "YYYY年MM月";
+            export const Y = "YYYY年";
+            
+            export const WEEK_DAYS = toBeResource.weekDaysShort;
 
             /**
              * Get control
@@ -2031,6 +2064,8 @@ module nts.uk.ui.jqueryExtentions {
                         return new FlexImage();
                     case IMAGE:
                         return new Image();
+                    case DATE_PICKER:
+                        return new DatePicker();
                 }
             }
             
@@ -2132,6 +2167,19 @@ module nts.uk.ui.jqueryExtentions {
                 abstract enable($container: JQuery): void;
                 // Disable control
                 abstract disable($container: JQuery): void;
+                
+                cellBelongTo($input: JQuery) {
+                    let self = this;
+                    let cell: any = {};
+                    cell.element = $input.closest("td")[0];
+                    let $gridControl = $input.closest("div[class*='nts-grid-control']");
+                    if ($gridControl.length === 0) return;
+                    let clazz = $gridControl.attr("class").split(" ")[0];
+                    let pos = clazz.split("-");
+                    cell.id = utils.parseIntIfNumber(pos.pop(), self.$containedGrid, utils.getColumnsMap(self.$containedGrid))
+                    cell.columnKey = pos.pop();
+                    return cell;
+                }
             }
     
             class CheckBox extends NtsControlBase {
@@ -2485,11 +2533,13 @@ module nts.uk.ui.jqueryExtentions {
                     let $editor = $("<span/>").addClass("nts-editor-wrapper ntsControl").css("width", "100%").append($input).appendTo($container);
                     
                     let cell;
-                    self.validate(data.controlDef, data.initValue).success(t => {
-                        $input.val(t);
-                        $input.data(internal.TXT_RAW, data.initValue);
-                    }).terminate();
+//                    self.validate(data.controlDef, data.initValue, data).success(t => {
+//                        $input.val(t);
+//                        $input.data(internal.TXT_RAW, data.initValue);
+//                    }).terminate();
                     
+                    $input.val(data.initValue);
+                    $input.data(internal.TXT_RAW, data.initValue);
                     let valueToDs = function(valueType, before, after) {
                         switch (valueType) {
                             case "Integer":
@@ -2498,38 +2548,54 @@ module nts.uk.ui.jqueryExtentions {
                                 return before;
                             case "Time":
                                 return after;
+                            default:
+                                return after;
                         }
                     };
                     
                     $input.on(events.Handler.KEY_DOWN, function(evt) {
                         // TODO: Add check if error not occurred on this cell,
                         // depends on which border to set red.
-                        if (utils.isEnterKey(evt)) {
+                        if (utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                             let value = $input.val();
-                            self.validate(data.controlDef, value).success(t => {
+                            self.validate(data.controlDef, value, data).success(t => {
                                 cell = self.cellBelongTo($input);
                                 errors.clear(self.$containedGrid, cell);
                                 let val = valueToDs(constraint.valueType, value, t);
                                 $input.data(internal.TXT_RAW, val); 
                                 data.update(val);
-                            }).fail(errId => {
+                                _(internal._datePickerBoard).keys()
+                                    .forEach(k => {
+                                        utils.closeDD(internal._datePickerBoard[k]);
+                                    });
+                            }).fail((errId, isRawMsg) => {
                                 cell = self.cellBelongTo($input);
-                                errors.set(self.$containedGrid, cell, resource.getMessage(errId));
-                            }).terminate;
+                                errors.set(self.$containedGrid, cell, isRawMsg ? errId : resource.getMessage(errId));
+                                data.update(value);
+//                                if (data.controlDef.format === "y") {
+//                                    $(internal._datePickerBoard[data.controlDef.format]).trigger("set", [ moment(), 0, 1 ]);
+//                                }
+                                _(internal._datePickerBoard).keys()
+                                    .forEach(k => {
+                                        utils.closeDD(internal._datePickerBoard[k]);
+                                    });
+                            }).terminate();
+                        } else if (evt.ctrlKey && utils.isPasteKey(evt)) {
+                            evt.stopPropagation();
                         }
                     });
                     
                     $input.on(events.Handler.KEY_UP, function(evt) {
-                        self.validate(data.controlDef, $input.val()).success(t => {
+                        self.validate(data.controlDef, $input.val(), data).success(t => {
                             cell = self.cellBelongTo($input);
                             errors.clear(self.$containedGrid, cell);
-                        }).fail(errId => {
+                        }).fail((errId, isRawMsg) => {
                             cell = self.cellBelongTo($input);
-                            errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                            errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
                         }).terminate();
                     });
                     $input.on(events.Handler.BLUR, function(evt) {
-                        self.validate(data.controlDef, $input.val()).success(t => {
+                        self.validate(data.controlDef, $input.val(), data).success(t => {
                             let value = $input.val();
                             cell = self.cellBelongTo($input);
                             errors.clear(self.$containedGrid, cell);
@@ -2537,36 +2603,66 @@ module nts.uk.ui.jqueryExtentions {
                             data.update(val);
                             $input.data(internal.TXT_RAW, val);
                             $input.val(t);
-                        }).fail(errId => {
+                        }).fail((errId, isRawMsg) => {
                             cell = self.cellBelongTo($input);
-                            errors.set(self.$containedGrid, cell, nts.uk.resource.getMessage(errId));
+                            errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                            data.update($input.val());
                         }).terminate();
+                    });
+                    
+                    $input.on(events.Handler.MOUSE_MOVE, function(evt) {
+                        evt.stopPropagation();
                     });
                     
                     $input.on(events.Handler.CLICK, function(evt) {
                         let rawValue = $input.data(internal.TXT_RAW);
                         if (!errors.any({ element: $input.closest("td")[0] }) 
                             && !util.isNullOrUndefined(rawValue)) $input.val(rawValue);
+                        
+                        if (data.controlDef.controlType === DATE_PICKER) {
+                            let board = internal._datePickerBoard[data.controlDef.format];
+                            $.data(board, internal.JQUERY_INPUT_PICKER_ATTACH, $input);
+                            
+                            let formats = utils.dateFormat(data.controlDef.format);
+                            let mDate = moment(rawValue, formats[0], true),
+                                mDisplayDate = mDate.isValid() ? mDate : moment();
+                            let $daysPick = board.querySelector("div[data-view='days picker']"),
+                                $monthsPick = board.querySelector("div[data-view='months picker']"),
+                                $yearsPick = board.querySelector("div[data-view='years picker']"),
+                                $board = $(board);
+                            if ($daysPick) {
+                                $daysPick.classList.remove(PICKER_HIDE_CLASS);
+                                $monthsPick.classList.add(PICKER_HIDE_CLASS);
+                                $yearsPick.classList.add(PICKER_HIDE_CLASS);
+                                $board.trigger("set", [ mDisplayDate ]);
+                            } else if ($monthsPick) {
+                                $monthsPick.classList.remove(PICKER_HIDE_CLASS);
+                                $yearsPick.classList.add(PICKER_HIDE_CLASS);
+                                $board.trigger("set", [ mDisplayDate, 0, 1 ]);
+                            } else {
+                                $board.trigger("set", [ mDisplayDate, 0, 2 ]);
+                            }
+                            
+                            $board.position({
+                                of: $input,
+                                my: "left top",
+                                at: "left bottom",
+                                collision: "flip flip"
+                            });
+                            
+                            _(internal._datePickerBoard).keys()
+                                .filter(k => k !== data.controlDef.format)
+                                .forEach(k => {
+                                    utils.closeDD(internal._datePickerBoard[k]);
+                                });
+                        }
                     });
                     
                     return $container;
                 }
                 
-                cellBelongTo($input: JQuery) {
-                    let self = this;
-                    let cell: any = {};
-                    cell.element = $input.closest("td")[0];
-                    let $gridControl = $input.closest("div[class*='nts-grid-control']");
-                    if ($gridControl.length === 0) return;
-                    let clazz = $gridControl.attr("class").split(" ")[0];
-                    let pos = clazz.split("-");
-                    cell.id = utils.parseIntIfNumber(pos.pop(), self.$containedGrid, utils.getColumnsMap(self.$containedGrid))
-                    cell.columnKey = pos.pop();
-                    return cell;
-                }
-                
-                validate(controlDef: any, value: any) {
-                    let constraint = controlDef.constraint;
+                validate(controlDef: any, value: any, data: any) {
+                    let self = this, constraint = controlDef.constraint;
                     if (constraint.required && (_.isEmpty(value) || _.isNull(value))) return validation.Result.invalid("MsgB_1");
                     switch (constraint.valueType) {
                         case "Integer":
@@ -2599,6 +2695,451 @@ module nts.uk.ui.jqueryExtentions {
                     let $wrapper = $container.find("." + self.containerClass());
                     $wrapper.find("input").prop("disabled", true);
                 }
+            }
+            
+            class DatePicker extends TextEditor {
+                containerClass(): string {
+                    return "nts-datepicker-container";
+                }
+                
+                draw(data: any): JQuery {
+                    let self = this;
+                    self.drawBoardIfNeeded(data);
+                    return super.draw(data);
+                }
+                
+                validate(controlDef: any, value: any, data: any) {
+                    let self = this, constraint = controlDef.constraint;
+                    if (constraint.required && (_.isEmpty(value) || _.isNull(value))) return validation.Result.invalid("MsgB_1");
+                    if (controlDef.controlType === DATE_PICKER) {
+                        let validators = self.$containedGrid.data(validation.VALIDATORS);
+                        if (_.isNil(validators)) return;
+                        let fieldValidator = validators[data.columnKey];
+                        if (_.isNil(fieldValidator)) return;
+                        let result = fieldValidator.probe(value);
+                        if (result.isValid) {
+                            return validation.Result.OK(result.parsedValue);
+                        }
+                        
+                        return validation.Result.invalid(result.errorMessage, true);
+                    }
+                }
+                
+                drawBoardIfNeeded(data: any) {
+                    let self = this, format = _.toLower(data.controlDef.format), formats = utils.dateFormat(format);
+                    let board = internal._datePickerBoard[format];
+                    if (!_.has(internal._datePickerUpdate, data.rowId)) {
+                        internal._datePickerUpdate[data.rowId] = {};
+                    }
+                    internal._datePickerUpdate[data.rowId][data.columnKey] = data.update;
+                    
+                    if (board) {
+                        if (!data.initValue || data.initValue === "") return "";
+                        let momentObj = moment(data.initValue, formats, true);
+                        return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
+                    }
+                    
+                    let _prtDiv = document.createElement("div");
+                    internal._datePickerBoard[format] = _prtDiv.cloneNode();
+                    internal._datePickerBoard[format].classList.add("mdatepicker-container");
+                    internal._datePickerBoard[format].classList.add("mdatepicker-dropdown");
+                    document.body.appendChild(internal._datePickerBoard[format]);
+                    let $yearsPick = _prtDiv.cloneNode(),
+                        $monthsPick = _prtDiv.cloneNode(),
+                        $daysPick = _prtDiv.cloneNode();
+                    $yearsPick.classList.add("datepicker-panel");
+                    $yearsPick.setAttribute("data-view", "years picker");
+                    let ul = document.createElement("ul"), li = document.createElement("li"),
+                        $yearsNav = ul.cloneNode(), $years = ul.cloneNode();
+                    $yearsPick.appendChild($yearsNav);
+                    let $yearsPrev = li.cloneNode(), $yearsCurrent = li.cloneNode(), $yearsNext = li.cloneNode(),
+                        $monthsNav, $months, $yearPrev, $yearCurrent, $yearNext;
+                    $yearsPrev.setAttribute("data-view", "years prev");
+                    $yearsPrev.innerHTML = "‹";
+                    $($yearsPrev).on(events.Handler.MOUSE_DOWN, evt => {
+                        let mDate = $.data(internal._datePickerBoard[format], "date");
+                        mDate.subtract(10, "y");
+                        $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 2 ]);
+                        evt.stopPropagation();
+                    });
+                    $yearsNav.appendChild($yearsPrev);
+                    $yearsCurrent.setAttribute("data-view", "years current");
+                    $yearsCurrent.classList.add("disabled");
+                    $yearsNav.appendChild($yearsCurrent);
+                    $yearsNext.setAttribute("data-view", "years next");
+                    $yearsNext.innerHTML = "›";
+                    $($yearsNext).on(events.Handler.MOUSE_DOWN, evt => {
+                        let mDate = $.data(internal._datePickerBoard[format], "date");
+                        mDate.add(10, "y");
+                        $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 2 ]);
+                        evt.stopPropagation();
+                    });
+                    $yearsNav.appendChild($yearsNext);
+                    $years.setAttribute("data-view", "years");
+                    $yearsPick.appendChild($years);
+                    for (let i = 0; i < 12; i++) {
+                        let $year = li.cloneNode();
+                        $year.setAttribute("data-view", "year");
+                        $($year).on(events.Handler.MOUSE_DOWN, evt => {
+                            let value = String($.data($year, "value")),
+                                $input = $.data(internal._datePickerBoard[format], internal.JQUERY_INPUT_PICKER_ATTACH);
+                            evt.stopPropagation();
+                            
+                            if (format === "y") {                       
+                                $input.val(value);
+                                $input.data(internal.TXT_RAW, value);
+                                let cell = self.cellBelongTo($input);
+                                errors.clear(self.$containedGrid, cell);
+                                self.validate(data.controlDef, value, data).success(t => {
+                                    let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                    if (_.isFunction(updateFn)) {
+                                        updateFn(value);
+                                        utils.closeDD(internal._datePickerBoard[format]);
+                                    }
+                                }).fail((errId, isRawMsg) => {
+                                    errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                    let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                    if (_.isFunction(updateFn)) {
+                                        updateFn(value);
+                                        utils.closeDD(internal._datePickerBoard[format]);
+                                    }
+                                }).terminate();
+                                return;
+                            }
+                            
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            mDate.year(value);
+                            let val = mDate.format(formats[0]);
+                            $input.val(val);
+                            $yearsPick.classList.add(PICKER_HIDE_CLASS);
+                            $monthsPick.classList.remove(PICKER_HIDE_CLASS);
+                            let cell = self.cellBelongTo($input);
+                            errors.clear(self.$containedGrid, cell);
+                            self.validate(data.controlDef, val, data).success(t => {
+                                let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                if (_.isFunction(updateFn)) {
+                                    updateFn(val);
+                                }
+                            }).fail((errId, isRawMsg) => {
+                                errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                if (_.isFunction(updateFn)) {
+                                    updateFn(val);
+                                }
+                            }).terminate();
+                            $(internal._datePickerBoard[format]).trigger("set", [ mDate, 0, 1 ]);
+                        });
+                        
+                        $years.appendChild($year);
+                        if (i == 0 || i == 11) {
+                            $year.classList.add(MUTED_CLASS);
+                        }
+                    }
+                    
+                    if (format !== "y") {
+                        $yearsPick.classList.add(PICKER_HIDE_CLASS);
+                    }
+                    internal._datePickerBoard[format].appendChild($yearsPick);
+                    
+                    if (format === "ym" || format === "ymd") {
+                        $monthsPick.classList.add(PICKER_PANEL_CLASS);
+                        $monthsPick.setAttribute("data-view", "months picker"); 
+                        $monthsNav = ul.cloneNode(); $months = ul.cloneNode();
+                        $monthsPick.appendChild($monthsNav);
+                        $monthsPick.appendChild($months);
+                        $yearPrev = li.cloneNode(); $yearCurrent = li.cloneNode(); $yearNext = li.cloneNode();
+                        $yearPrev.setAttribute("data-view", "year prev");
+                        $yearPrev.innerHTML = "‹";
+                        $($yearPrev).on(events.Handler.MOUSE_DOWN, evt => {
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            mDate.subtract(1, "y");
+                            $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 1 ]);
+                            evt.stopPropagation();
+                        });
+                        $monthsNav.appendChild($yearPrev);
+                        $yearCurrent.setAttribute("data-view", "year current");
+                        $($yearCurrent).on(events.Handler.MOUSE_DOWN, evt => {
+                            $monthsPick.classList.add(PICKER_HIDE_CLASS);
+                            $yearsPick.classList.remove(PICKER_HIDE_CLASS);
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 2 ]);
+                            evt.stopPropagation();
+                        });
+                        $monthsNav.appendChild($yearCurrent);
+                        $yearNext.setAttribute("data-view", "year next");
+                        $yearNext.innerHTML = "›";
+                        $($yearNext).on(events.Handler.MOUSE_DOWN, evt => {
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            mDate.add(1, "y");
+                            $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 1 ]);
+                            evt.stopPropagation();
+                        });
+                        $monthsNav.appendChild($yearNext);
+                        $months.setAttribute("data-view", "months");
+                        
+                        for (let i = 1; i < 13; i++) {
+                            let $month = li.cloneNode();
+                            $month.setAttribute("data-view", "month");
+                            $month.innerHTML = i + "月";
+                            $($month).on(events.Handler.MOUSE_DOWN, evt => {
+                                let value = $.data($month, "value"),
+                                    $input = $.data(internal._datePickerBoard[format], internal.JQUERY_INPUT_PICKER_ATTACH);
+                                evt.stopPropagation();
+                                let mDate = $.data(internal._datePickerBoard[format], "date");
+                                mDate.month(value - 1);
+                                
+                                if (format === "ym") {
+                                    let val = mDate.format(formats[0]); 
+                                    $input.val(val);
+                                    $input.data(internal.TXT_RAW, val);
+                                    let cell = self.cellBelongTo($input);
+                                    // Validate
+                                    errors.clear(self.$containedGrid, cell);
+                                    self.validate(data.controlDef, val, data).success(t => {
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                            utils.closeDD(internal._datePickerBoard[format]);
+                                        }
+                                    }).fail((errId, isRawMsg) => {
+                                        errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                            utils.closeDD(internal._datePickerBoard[format]);
+                                        }
+                                    }).terminate();
+                                    return;
+                                }
+                                
+                                let val = mDate.format(formats[0]);
+                                $input.val(val);
+                                let cell = self.cellBelongTo($input);
+                                // Validate
+                                errors.clear(self.$containedGrid, cell);
+                                self.validate(data.controlDef, val, data).success(t => {
+                                    let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                    if (_.isFunction(updateFn)) {
+                                        updateFn(val);
+                                    }
+                                }).fail((errId, isRawMsg) => {
+                                    errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                    let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                    if (_.isFunction(updateFn)) {
+                                        updateFn(val);
+                                    }
+                                }).terminate();
+                                $monthsPick.classList.add(PICKER_HIDE_CLASS);
+                                $daysPick.classList.remove(PICKER_HIDE_CLASS);
+                                $(internal._datePickerBoard[format]).trigger("set", [ mDate, 0 ]);
+                            });
+                            
+                            $.data($month, "value", i);
+                            $months.appendChild($month);
+                        }
+                        
+                        if (format === "ymd") {
+                            $monthsPick.classList.add(PICKER_HIDE_CLASS);
+                        }
+                        internal._datePickerBoard[format].appendChild($monthsPick);
+                    }    
+                        
+                    if (format === "ymd") {
+                        $daysPick.classList.add(PICKER_PANEL_CLASS);
+                        $daysPick.setAttribute("data-view", "days picker");
+                        internal._datePickerBoard[format].appendChild($daysPick);
+                        let $daysNav = ul.cloneNode(), $week = ul.cloneNode(), $days = ul.cloneNode();
+                        $week.setAttribute("data-view", "week");
+                        $days.setAttribute("data-view", "days");
+                        $daysPick.appendChild($daysNav);
+                        $daysPick.appendChild($week);
+                        $daysPick.appendChild($days);
+                        let $monthPrev = li.cloneNode(), $monthCurrent = li.cloneNode(), $monthNext = li.cloneNode();
+                        $monthPrev.setAttribute("data-view", "month prev");
+                        $monthPrev.innerHTML = "‹";
+                        $($monthPrev).on(events.Handler.MOUSE_DOWN, evt => {
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            if (mDate) {
+                                $(internal._datePickerBoard[format]).trigger("set", [ mDate.subtract(1, "M"), 1 ]);
+                                evt.stopPropagation();
+                            }
+                        });
+                        $monthCurrent.setAttribute("data-view", "month current");
+                        $($monthCurrent).on(events.Handler.MOUSE_DOWN, evt => {
+                            $daysPick.classList.add(PICKER_HIDE_CLASS);
+                            $monthsPick.classList.remove(PICKER_HIDE_CLASS);
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            $(internal._datePickerBoard[format]).trigger("set", [ mDate, 1, 1]);
+                            evt.stopPropagation();
+                        });
+                        $monthNext.setAttribute("data-view", "month next");
+                        $monthNext.innerHTML = "›";
+                        $($monthNext).on(events.Handler.MOUSE_DOWN, evt => {
+                            let mDate = $.data(internal._datePickerBoard[format], "date");
+                            if (mDate) {
+                                $(internal._datePickerBoard[format]).trigger("set", [ mDate.add(1, "M"), 1 ]);
+                                evt.stopPropagation();
+                            }
+                        });
+                        $daysNav.appendChild($monthPrev);
+                        $daysNav.appendChild($monthCurrent);
+                        $daysNav.appendChild($monthNext);
+                        _.forEach(WEEK_DAYS, d => {
+                            let $day = li.cloneNode();
+                            $day.innerHTML = d;
+                            $week.appendChild($day);
+                        });
+                        
+                        for (let i = 0; i < 42; i++) {
+                            let $day = li.cloneNode();
+                            $days.appendChild($day);
+                            $($day).on(events.Handler.MOUSE_DOWN, evt => {
+                                let value = $.data($day, "value"),
+                                    $input = $.data(internal._datePickerBoard[format], internal.JQUERY_INPUT_PICKER_ATTACH),
+                                    mDate = $.data(internal._datePickerBoard[format], "date"), view = $day.getAttribute("data-view");
+                                evt.stopPropagation();
+                                if (_.includes(view, "prev")) {
+                                    mDate.subtract(1, "M");
+                                    mDate.date(value);
+                                    let val = mDate.format(formats[0]);
+                                    $input.val(val);
+                                    let cell = self.cellBelongTo($input);
+                                    errors.clear(self.$containedGrid, cell);
+                                    self.validate(data.controlDef, val, data).success(t => {
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                        }
+                                    }).fail((errId, isRawMsg) => {
+                                        errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                        }
+                                    }).terminate();
+                                    $(internal._datePickerBoard[format]).trigger("set", [ mDate ]);
+                                } else if (_.includes(view, "next")) {
+                                    mDate.add(1, "M");
+                                    mDate.date(value);
+                                    let val = mDate.format(formats[0]);
+                                    $input.val(val);
+                                    let cell = self.cellBelongTo($input);
+                                    errors.clear(self.$containedGrid, cell);
+                                    self.validate(data.controlDef, val, data).success(t => {
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                        }
+                                    }).fail((errId, isRawMsg) => {
+                                        errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                        }
+                                    }).terminate();
+                                    $(internal._datePickerBoard[format]).trigger("set", [ mDate ]);
+                                } else {
+                                    mDate.date(value);
+                                    let val = mDate.format(formats[0]);
+                                    $input.val(val);
+                                    $input.data(internal.TXT_RAW, val);
+                                    let cell = self.cellBelongTo($input);
+                                    errors.clear(self.$containedGrid, cell);
+                                    self.validate(data.controlDef, val, data).success(t => {
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                            utils.closeDD(internal._datePickerBoard[format]);
+                                        }
+                                    }).fail((errId, isRawMsg) => {
+                                        errors.set(self.$containedGrid, cell, isRawMsg ? errId : nts.uk.resource.getMessage(errId));
+                                        let updateFn = (internal._datePickerUpdate[cell.id] || {})[cell.columnKey];
+                                        if (_.isFunction(updateFn)) {
+                                            updateFn(val);
+                                            utils.closeDD(internal._datePickerBoard[format]);
+                                        }
+                                    }).terminate();
+                                }
+                            });
+                        }
+                    }
+                    
+                    utils.closeDD(internal._datePickerBoard[format]);
+                    $(internal._datePickerBoard[format]).on("set", (evt, mDisplayDate, onlyDisplay, board) => {
+                        if (!onlyDisplay) $.data(internal._datePickerBoard[format], "dateSet", mDisplayDate.clone());
+                        if (board > 1) {
+                            let mDateSet = $.data(internal._datePickerBoard[format], "dateSet"),
+                                begin = mDisplayDate.year() - 5, end;
+                            _.forEach($years.querySelectorAll("li"), (li, i) => {
+                                end = begin + i;
+                                li.innerHTML = end;
+                                $.data(li, "value", end);
+                                if (mDateSet.year() === end) {
+                                    li.classList.add(PICKED_CLASS);
+                                    li.setAttribute("data-view", "year picked");
+                                } else li.classList.remove(PICKED_CLASS);
+                            });
+                            $yearsCurrent.innerHTML = begin + "年 - " + end + "年";
+                        } else if (board) {
+                            let mDateSet = $.data(internal._datePickerBoard[format], "dateSet");
+                            $yearCurrent.innerHTML = mDisplayDate.format(Y);
+                            if (!mDateSet) return;
+                            _.forEach($months.querySelectorAll("li"), li => {
+                                if (li.classList.contains(PICKED_CLASS)) {
+                                    li.classList.remove(PICKED_CLASS);
+                                    li.setAttribute("data-view", "month");
+                                }
+                            });
+                            
+                            if (mDateSet.year() === mDisplayDate.year()) {
+                                let li = $months.querySelector("li:nth-of-type(" + (mDateSet.month() + 1) + ")");
+                                if (li) {
+                                    li.classList.add(PICKED_CLASS);
+                                    li.setAttribute("data-view", "month picked");
+                                }
+                            }
+                        } else {
+                            let days = utils.daysBoard(mDisplayDate);
+                            let $dayItems = $days.querySelectorAll("li"), raise = 0;
+                            _.forEach($dayItems, ($d, i) => {
+                                if (days[i] === 1) raise++;
+                                $d.innerHTML = days[i];
+                                $.data($d, "value", days[i]);
+                                if (!raise) {
+                                    $d.classList.remove(PICKED_CLASS);
+                                    $d.classList.add(MUTED_CLASS);
+                                    $d.setAttribute("data-view", "day prev");
+                                } else if (raise > 1) {
+                                    $d.classList.remove(PICKED_CLASS);
+                                    $d.classList.add(MUTED_CLASS);
+                                    $d.setAttribute("data-view", "day next");
+                                } else if (days[i] === mDisplayDate.date()) {
+                                    $d.classList.remove(MUTED_CLASS);
+                                    if (!onlyDisplay || $.data(internal._datePickerBoard[format], "dateSet").month() === mDisplayDate.month()) {
+                                        $d.classList.add(PICKED_CLASS);
+                                    }
+                                    $d.setAttribute("data-view", "day picked");
+                                } else {
+                                    $d.classList.remove(MUTED_CLASS);
+                                    $d.classList.remove(PICKED_CLASS);
+                                    $d.setAttribute("data-view", "day");
+                                }
+                            });
+                            
+                            $monthCurrent.innerHTML = mDisplayDate.format(YM);
+                        }
+                        
+                        $.data(internal._datePickerBoard[format], "date", mDisplayDate);
+                    });
+                    
+                    if (data.initValue && data.initValue !== "") {
+                        let momentObj = moment(data.initValue, formats, true); 
+                        return momentObj.isValid() ? momentObj.format(formats[0]) : data.initValue;
+                    }
+                    
+                    return "";
+                }
+                
             }
             
             class Label extends NtsControlBase {
@@ -3248,7 +3789,9 @@ module nts.uk.ui.jqueryExtentions {
                 static BLUR: string = "blur";
                 static CLICK: string = "click";
                 static MOUSE_DOWN: string = "mousedown";
+                static MOUSE_MOVE: string = "mousemove";
                 static SCROLL: string = "scroll";
+                static PASTE: string = "paste";
                 static GRID_EDIT_CELL_STARTED: string = "iggridupdatingeditcellstarted";
                 static COLUMN_RESIZING: string = "iggridresizingcolumnresizing";
                 static RECORDS: string = "iggridvirtualrecordsrender";
@@ -3550,7 +4093,64 @@ module nts.uk.ui.jqueryExtentions {
                                 result.parsedValue = formatter.format(result.parsedValue);
                             }
                             return result;
+                        case "Date":
+                            return new DateValidator(this.name, this.primitiveValue, this.options).validate(value);
                     }
+                }
+            }
+            
+            export const MIN_DATE = moment.utc("1900/01/01", "YYYY/MM/DD", true);
+            export const MAX_DATE = moment.utc("9999/12/31", "YYYY/MM/DD", true);
+            
+            class DateValidator {
+                name: string;
+                constraint: any;
+                required: boolean;
+                msgId: string;
+                formats: any;
+                constructor(name: string, primitiveValueName: string, option?: any) {
+                    this.name = name;
+                    this.constraint = ui.validation.getConstraint(primitiveValueName);
+                    if (_.isNil(this.constraint)) {
+                        this.constraint = {};
+                        this.constraint.min = option && !_.isNil(option.min) ? option.min : MIN_DATE;
+                        this.constraint.max = option && !_.isNil(option.max) ? option.max : MAX_DATE;
+                    } else {
+                        if (this.constraint.min === "" || _.isNil(this.constraint.min)) {
+                            this.constraint.min = MIN_DATE;
+                        } 
+                        if (this.constraint.max === "" || _.isNil(this.constraint.max)) {
+                            this.constraint.max = MAX_DATE;
+                        }
+                    }
+                    
+                    this.msgId = "FND_E_DATE_" + _.toUpper(option.pickerType);
+                    this.formats = utils.dateFormat(_.toLower(option.pickerType));
+                    this.required = (option && option.required) || this.constraint.required;
+                }
+                
+                validate(date: any) {
+                    let self = this,
+                        result = new ui.validation.ValidationResult();
+                    
+                    if (_.isNil(date) || date === "" || (date instanceof moment && date._i === "")) {
+                         if (this.required) {
+                            result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ self.name ]), 'FND_E_REQ_INPUT');
+                        } else result.success("");
+                        return result;
+                    }
+                    
+                    let mDate = moment.utc(date, self.formats, true);
+                    if (!mDate.isValid() || mDate.isBefore(self.constraint.min) || mDate.isAfter(self.constraint.max)) {
+                        let min = self.constraint.min, max = self.constraint.max;
+                        if (!(self.constraint.min instanceof moment)) min = moment(min, self.formats, true);
+                        if (!(self.constraint.max instanceof moment)) max = moment(max, self.formats, true); 
+                        result.fail(nts.uk.resource.getMessage(self.msgId, [self.name, min.format(self.formats[0]), max.format(self.formats[0])]), self.msgId);
+                    } else {
+                        result.success(mDate.format(self.formats[0]));
+                    }
+                    
+                    return result;
                 }
             }
             
@@ -3625,20 +4225,22 @@ module nts.uk.ui.jqueryExtentions {
                 isValid: boolean;
                 formatted: any;
                 errorMessageId: string;
+                isRawMessage: boolean;
                 onSuccess: any = $.noop;
                 onFail: any = $.noop;
-                constructor(isValid: boolean, formatted?: any, messageId?: string) {
+                constructor(isValid: boolean, formatted?: any, messageId?: string, isRawMessage?: boolean) {
                     this.isValid = isValid;
                     this.formatted = formatted;
                     this.errorMessageId = messageId;
+                    this.isRawMessage = isRawMessage;
                 }
                 
                 static OK(formatted: any) {
                     return new Result(true, formatted);
                 }
                 
-                static invalid(msgId: string) {
-                    return new Result(false, null, msgId);
+                static invalid(msgId: string, isRawMessage: boolean) {
+                    return new Result(false, null, msgId, isRawMessage);
                 }
                 
                 success(cnt: any) {
@@ -3656,7 +4258,7 @@ module nts.uk.ui.jqueryExtentions {
                     if (self.isValid && self.onSuccess && _.isFunction(self.onSuccess)) {
                          self.onSuccess(self.formatted);
                     } else if (!self.isValid && self.onFail && _.isFunction(self.onFail)) {
-                        self.onFail(self.errorMessageId);
+                        self.onFail(self.errorMessageId, self.isRawMessage);
                     }
                 }
             }
@@ -5083,6 +5685,17 @@ module nts.uk.ui.jqueryExtentions {
                         setting.descriptor.headerCells = owner._headerCells;
                         setting.descriptor.headerParent = owner._headerParent;
                     }
+                    
+                    if (owner.dataSource._filter && owner.dataSource._filteredData 
+                        && _.size(owner.dataSource._filteredData) <= _.size(owner.dataSource._origDs)) {
+                        let pk = owner.dataSource.settings.primaryKey;
+                        let keyIdxes = {};
+                        owner.dataSource._filteredData.forEach((d, i) => {
+                            keyIdxes[d[pk]] = i;
+                        });
+                        
+                        setting.descriptor.keyIdxes = keyIdxes;
+                    }
                 });
             }
             
@@ -5106,6 +5719,8 @@ module nts.uk.ui.jqueryExtentions {
             export let TARGET_EDITS = "ntsTargetEdits";
             export let OTHER_EDITS = "ntsOtherEdits"; 
             export let CELL_FORMATTER = "ntsCellFormatter";
+            // All datepicker boards (ymd, ym, y)
+            export let DATE_PICKER_BOARDS = "ntsDatePickerBoards";
             // Full columns options
             export let GRID_OPTIONS = "ntsGridOptions";
             export let SELECTED_CELL = "ntsSelectedCell";
@@ -5118,6 +5733,10 @@ module nts.uk.ui.jqueryExtentions {
             export let LOADER = "ntsLoader";
             export let TXT_RAW = "rawText";
             export let CELL_ORIG_VAL = "_origValue";
+            
+            export let JQUERY_INPUT_PICKER_ATTACH = "ntsInputPickerAttach";
+            export let _datePickerBoard = {};
+            export let _datePickerUpdate = {}; 
             
             /**
              * Get cell by id.
@@ -5133,11 +5752,15 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(colIdx)) {
                     let colIdx = descriptor.isFixedColumn(key);
                     if (!util.isNullOrUndefined(colIdx)) {
-                        return descriptor.fixedTable.find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
+                        return (descriptor.fixedTable || fixedColumns.getFixedTable($grid)).find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
                     }
                 }
-                if (!util.isNullOrUndefined(idx) && idx >= descriptor.startRow 
-                    && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                if (_.size(descriptor.elements) > 0 && !util.isNullOrUndefined(idx) 
+                    && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                    if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
+                        return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
+                    }
+                    
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                 }
                 
@@ -5316,6 +5939,7 @@ module nts.uk.ui.jqueryExtentions {
                     case ntsControls.FLEX_IMAGE:
                     case ntsControls.IMAGE:
                     case ntsControls.TEXT_EDITOR:
+                    case ntsControls.DATE_PICKER:
                         return true;
                 }
                 return false;
@@ -5526,6 +6150,50 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     flatColumns(column.group, flatCols);
                 });
+            }
+            
+            export function dateFormat(format) {
+                let formats;
+                if (format === "y") {
+                    formats = [ "YYYY" ];
+                } else if (format === "ym") {
+                    formats = [ "YYYY/MM", "YYYYMM" ];
+                } else {
+                    formats = [ "YYYY/MM/DD", "YYYY/M/D", "YYYYMMDD" ];
+                }
+                
+                return formats;
+             }
+            
+            export function daysBoard(date) {
+                let days = []; 
+                if (date.date() > 1) {
+                    date = moment({ y: date.year(), M: date.month(), d: 1 });
+                }    
+                
+                let weekday = date.isoWeekday(), monthdays = date.daysInMonth(), prevDays,
+                    last = monthdays + weekday;
+                if (date.month() === 0) {
+                    prevDays = moment({ y: date.year() - 1, M: 11, d: 1 }).daysInMonth();
+                } else prevDays = moment({ y: date.year(), M: date.month() - 1, d: 1 }).daysInMonth();
+                
+                for (let i = weekday - 1; i >= 0; i--) {
+                    days[i] = prevDays - weekday + 1 + i;             
+                }
+                 
+                for (let i = weekday; i < last; i++) {
+                    days[i] = i - weekday + 1;
+                }    
+                 
+                for (let i = last; i < 42; i++) {
+                    days[i] = i - last + 1;
+                }
+                return days;
+            }
+            
+            export function closeDD($dd) {
+                $dd.style.top = "-99999px";
+                $dd.style.left = "-99999px";
             }
             
             export function setChildrenTabIndex($grid: JQuery, index: number) {

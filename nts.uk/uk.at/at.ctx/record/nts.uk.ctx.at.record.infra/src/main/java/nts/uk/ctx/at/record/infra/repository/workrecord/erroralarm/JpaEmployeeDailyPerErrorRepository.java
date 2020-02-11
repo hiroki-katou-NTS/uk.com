@@ -23,6 +23,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -33,7 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItem;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItemPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
@@ -311,27 +312,57 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<EmployeeDailyPerError> finds(Map<String, List<GeneralDate>> param) {
-		List<EmployeeDailyPerError> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a ");
-		query.append("WHERE a.employeeId IN :employeeId ");
-		query.append("AND a.processingDate IN :date");
-		TypedQueryWrapper<KrcdtSyainDpErList> tQuery = this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
-		
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.employeeId).contains(c.processingDate))
-					.collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString()))
-					.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream)
-					.collect(Collectors.toList()));
+
+    	List<String> lstEmp = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	
+    	String subEmp = NtsStatement.In.createParamsString(lstEmp);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+    	
+    	String GET_BY_LIST_EMP_AND_PERIOD = "SELECT a.*, b.* FROM KRCDT_SYAIN_DP_ER_LIST a"
+				+ " LEFT JOIN KRCDT_ER_ATTENDANCE_ITEM b"
+				+ " ON b.ID = a.ID "
+				+ " WHERE  a.SID IN (" + subEmp + ")"
+    	        + " AND a.PROCESSING_DATE  IN (" + subInDate + ")";
+    	
+		//fix exceeding max condition of IN statement
+		List<EmployeeDailyPerError> resultReturn = new ArrayList<>();
+		CollectionUtil.split(lstEmp, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_LIST_EMP_AND_PERIOD)) {
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 1, subList.get(i));
+				}
+				
+				for (int i = 0; i < subListDate.size(); i++) {
+					statement.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+				}
+				List<EmployeeDailyPerError> results = new NtsResultSet(statement.executeQuery()).getList(rs ->
+						new EmployeeDailyPerError(
+								rs.getString("ID"),
+								rs.getString("CID"),
+								rs.getString("SID"),
+								rs.getGeneralDate("PROCESSING_DATE"),
+								new ErrorAlarmWorkRecordCode(rs.getString("ERROR_CODE")),
+								Arrays.asList(rs.getInt("ATTENDANCE_ITEM_ID")),
+								rs.getInt("ERROR_CANCELABLE"),
+								rs.getString("ERROR_MESSAGE")));
+
+				Map<String, List<EmployeeDailyPerError>> groupResult = results.stream().collect(Collectors.groupingBy(EmployeeDailyPerError::getId));
+				groupResult.forEach((key, value) -> {
+					List<Integer> id = value.stream().flatMap(x -> x.getAttendanceItemList().stream()).collect(Collectors.toList());
+					value.get(0).setAttendanceItemList(id);
+					resultReturn.add(value.get(0));
+				});
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
-		return result;
+		return resultReturn;
 	}
 	
-	private List<EmployeeDailyPerError> group(List<KrcdtSyainDpErList> entities) {
-		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
-	}
+//	private List<EmployeeDailyPerError> group(List<KrcdtSyainDpErList> entities) {
+//		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+//	}
 	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override

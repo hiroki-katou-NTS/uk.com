@@ -3,17 +3,14 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
@@ -69,12 +66,12 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				currentPhaseUnapproved = true;
 				// ループ中の承認フェーズの承認枠をチェックする
-				Optional<ApprovalFrame> anyAppovedFrame = approvalPhaseState.getListApprovalFrame()
-						.stream().filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-				if(anyAppovedFrame.isPresent()){
-					dailyConfirmAtr = DailyConfirmAtr.ON_APPROVED;
-					break;
-				}
+//				Optional<ApprovalFrame> anyAppovedFrame = approvalPhaseState.getListApprovalFrame()
+//						.stream().filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
+//				if(anyAppovedFrame.isPresent()){
+//					dailyConfirmAtr = DailyConfirmAtr.ON_APPROVED;
+//					break;
+//				}
 				continue;
 			} 
 			if(currentPhaseUnapproved){
@@ -90,19 +87,19 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 	@Override
 	public boolean determinePhaseApproval(String rootStateID) {
 		// ドメインモデル「承認ルートインスタンス」を取得する
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
-		if(!opApprovalRootState.isPresent()){
-			throw new BusinessException("status: fail");
-		}
-		// ドメインモデル「承認フェーズインスタンス」．順序を5～1の順でループする
-		for(ApprovalPhaseState approvalPhaseState : opApprovalRootState.get().getListApprovalPhaseState()){
-			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-				.filter(frame -> !frame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny();
-			// ループ中の承認フェーズには承認を行ったか
-			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) || opApprovalFrame.isPresent()){
-				return true;
-			}
-		}
+//		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
+//		if(!opApprovalRootState.isPresent()){
+//			throw new BusinessException("status: fail");
+//		}
+//		// ドメインモデル「承認フェーズインスタンス」．順序を5～1の順でループする
+//		for(ApprovalPhaseState approvalPhaseState : opApprovalRootState.get().getListApprovalPhaseState()){
+//			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
+//				.filter(frame -> !frame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny();
+//			// ループ中の承認フェーズには承認を行ったか
+//			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) || opApprovalFrame.isPresent()){
+//				return true;
+//			}
+//		}
 		return false;
 	}
 }

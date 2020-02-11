@@ -7,7 +7,7 @@ import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.medicalhistory.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author anhdt
@@ -30,11 +30,21 @@ public class HumanResourcesEvaluationHistory extends DomainEvent
 	/**
 	 * 社員ID
 	 */
-	private String careerTypeId;
+	private String employeeId;
 
 	@Override
 	public List<DateHistoryItem> items() {
 		return careerTypeHistory;
 	}
+
+	public HumanResourcesEvaluationHistory(String companyId, List<DateHistoryItem> careerTypeHistory,
+			String employeeId) {
+		super();
+		this.companyId = companyId;
+		this.careerTypeHistory = careerTypeHistory;
+		this.employeeId = employeeId;
+	}
+	
+	
 
 }

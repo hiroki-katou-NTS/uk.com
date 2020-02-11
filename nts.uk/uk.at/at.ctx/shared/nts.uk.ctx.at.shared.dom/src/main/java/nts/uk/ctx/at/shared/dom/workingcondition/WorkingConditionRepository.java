@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkingConditionRepository.
@@ -66,6 +66,8 @@ public interface WorkingConditionRepository {
 	 * @return the by sids
 	 */
 	List<WorkingCondition> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
+	
+	List<WorkingCondition> getBySidsAndDatePeriodNew(List<String> sIds, DatePeriod datePeriod);
 	
 	List<WorkingCondition> getBySids(List<String> employeeIds,GeneralDate baseDate);
 	/**

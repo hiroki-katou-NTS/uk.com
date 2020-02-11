@@ -105,7 +105,7 @@ public class CareerPartWS {
 	}
 	
 	@POST
-	@Path("/getLatestCareerPathHist")
+	@Path("/getLatestHistId")
 	public JavaTypeResult<String> getLatestCareerPathHist(){
 		String cId = AppContexts.user().companyId();
 		return new JavaTypeResult<String> (careerPathFinder.getLatestCareerPathHist(cId));

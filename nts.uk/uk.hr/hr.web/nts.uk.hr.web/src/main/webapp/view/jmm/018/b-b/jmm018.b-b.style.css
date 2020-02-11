@@ -1,0 +1,126 @@
+@CHARSET "UTF-8";
+#tabpanel-2{
+	overflow-y: scroll;
+}
+
+.tab2 {padding: 10px;}
+
+.tab2 .linkRetire{
+	margin-left: 30px;
+}
+
+.tab2 .frameRetire{
+	margin-top: 10px;
+}
+
+.tab2 .typeRetire{
+	font-size: 18px;
+}
+
+.tab2 .eachType{
+	margin-top: 15px;
+}
+
+.tab2 .radioRetire{
+    margin-left: 30px;
+}
+
+.tab2 .ntsRadioBox{
+	margin-left: 20px;
+}
+
+.tab2 .B422_15_2{
+	display: inline-block;
+    vertical-align: bottom;
+}
+
+.tab2 .comboRetire{
+	margin-left: 90px;
+}
+
+.tab2 #inpDate{
+	width: 20px;
+}
+
+.tab2 .ui-widget-header{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 25px;
+    background: #CFF1A5;
+}
+
+.tab2 .idColumn{
+	width: 40px;
+}
+
+.tab2 .course{
+	width: 80px;
+}
+
+.tab2 .retireName{
+	width: 200px;
+}
+
+.retirementAge{
+	width: 100px;
+}
+
+.tab2 .continueCategory{
+	width: 100px;
+}
+
+.tab2 .column-row{
+	border: 1px solid #dddddd;
+    color: #333333;
+    height: 40px;
+}
+
+.tab2 #check-box{
+	margin-left: 27px;
+}
+
+.tab2 .retireCourse{
+	width: 800px;
+}
+
+.tab2 .employmenttype{
+	width: 290px;
+}
+
+.tab2 .retireCourseTxt{
+	width: 725px;
+	margin-left: 10px;
+}
+
+.tab2 .buttonDialogC{
+	margin-left: 10px;
+}
+
+.tab2 .appCon{
+	margin-left: 15px;
+}
+.tab2 .appAgeCell{
+	width: 130px;
+}
+
+.tab2 .judg{
+	width: 20px;
+}
+
+.tab2 .panel-scroll{
+	overflow-y: scroll;
+}
+
+.tab2 .isDisabled {
+  color: currentColor;
+/*   cursor: not-allowed; */
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.tab2 .retireDateEna{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.tab2 .margin-left{margin-left: 20px;}

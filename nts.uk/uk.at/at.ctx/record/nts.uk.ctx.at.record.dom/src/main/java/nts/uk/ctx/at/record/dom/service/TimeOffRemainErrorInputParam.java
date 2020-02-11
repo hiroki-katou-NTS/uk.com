@@ -11,7 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Setter
 @Getter
@@ -50,4 +50,5 @@ public class TimeOffRemainErrorInputParam {
 	 * 月別実績（Work）
 	 */
 	private Optional<AttendanceTimeOfMonthly> optMonthlyData;
+	
 }

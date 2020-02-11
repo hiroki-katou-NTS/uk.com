@@ -48,7 +48,7 @@ public class PlannedRetirementDto {
 	// 雇用名
 	private String employmentName;
 	// 年齢
-	private Integer age;
+	private Integer retirementAge;
 	// 退職日
 	private GeneralDate retirementDate;
 	// 公開日
@@ -74,7 +74,7 @@ public class PlannedRetirementDto {
 	// 保留フラグ
 	private int pendingFlag;
 	// ステータス
-	private int status;
+	private Integer status;
 	// 反映先_履歴ID
 	private String dst_HistId;
 	// 入力日
@@ -110,4 +110,6 @@ public class PlannedRetirementDto {
 	private String retirementReasonCtgCd1;
 	// 退職理由区分1_名称
 	private String retirementReasonCtgName1;
+	
+	private boolean flag;
 }

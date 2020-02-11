@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
@@ -98,7 +99,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyPerformanceReload {
@@ -190,6 +191,9 @@ public class MonthlyPerformanceReload {
 
 	@Inject
 	private CheckDailyPerError checkDailyPerError;
+	
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
 	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
@@ -351,12 +355,13 @@ public class MonthlyPerformanceReload {
 		/**
 		 * Get Data
 		 */
+		iFindDataDCRecord.clearAllStateless();
 		//[No.586]月の実績の確認状況を取得する
-		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId);
+		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId, false);
 
 		//[No.587]月の実績の承認状況を取得する
-		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth),monthlyResults);
-		
+		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth),monthlyResults, false);
+		iFindDataDCRecord.clearAllStateless();
 		List<MPDataDto> lstData = new ArrayList<>(); // List all data
 		List<MPCellStateDto> lstCellState = new ArrayList<>(); // List cell state
 		screenDto.setLstData(lstData);
@@ -798,16 +803,15 @@ public class MonthlyPerformanceReload {
 			}
 			
 			boolean checkExistRecordErrorListDate = false;
-			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
-				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
-					//対応するドメインモデル「勤務実績のエラーアラーム」を取得する
-					List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
-							cid, Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
-					if(!errorAlarmWorkRecordLst.isEmpty()) {
-						checkExistRecordErrorListDate = true;	
-						break;
-					}
-				}
+
+			List<String> listCode = listEmployeeDailyPerError.stream()
+					.filter(x -> x.getEmployeeID().equals(affWorkplaceImport.getEmployeeId()))
+					.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
+			// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository
+					.getListErAlByListCodeError(cid, listCode);
+			if (!errorAlarmWorkRecordLst.isEmpty()) {
+				checkExistRecordErrorListDate = true;
 			}
 			
 			// 月の実績の状況を取得する

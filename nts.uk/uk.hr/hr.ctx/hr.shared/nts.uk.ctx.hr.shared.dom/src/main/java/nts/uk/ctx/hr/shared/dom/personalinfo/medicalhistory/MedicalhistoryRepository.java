@@ -7,6 +7,6 @@ import nts.arc.time.GeneralDate;
 public interface MedicalhistoryRepository {
 
 	// 受診履歴の取得
-	List<MedicalhistoryItem> getListMedicalhistoryItem(List<String> listSID , GeneralDate baseDate);
+	List<MedicalhistoryItemResults> getListMedicalhistoryItem(List<String> listSID , GeneralDate baseDate);
 
 }

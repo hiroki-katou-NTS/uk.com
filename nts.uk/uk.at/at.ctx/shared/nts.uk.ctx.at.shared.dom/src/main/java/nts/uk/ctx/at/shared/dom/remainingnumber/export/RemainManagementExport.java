@@ -4,7 +4,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.export;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface RemainManagementExport {
 	/**

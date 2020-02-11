@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShareEmploymentAdapterImpl.

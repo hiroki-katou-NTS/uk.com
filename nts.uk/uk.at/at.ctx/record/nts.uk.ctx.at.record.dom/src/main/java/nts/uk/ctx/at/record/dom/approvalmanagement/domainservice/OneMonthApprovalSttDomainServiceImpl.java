@@ -57,6 +57,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Co
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ModeData;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.EmployeeGeneralInfoService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
@@ -76,7 +77,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -135,6 +136,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
 
 	public List<ApprovalEmployeeDto> buildApprovalEmployeeData(List<EmployeeDto> lstEmployee,
 			List<ApprovalStatusActualResult> lstApprovalData, List<ConfirmStatusActualResult> lstConfirmData) {
@@ -632,10 +636,12 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		// atEmployeeAdapter.getByListSID(lstEmployees);
 		String empLogin = AppContexts.user().employeeId();
 		List<String> lstEmpId = approvalRootSituationsTemp.stream().map(x -> x.getTargetID()).distinct().collect(Collectors.toList());
+		iFindDataDCRecord.clearAllStateless();
 		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(companyId,
-				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(), ModeData.APPROVAL.value);
+				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(), ModeData.APPROVAL.value,false);
 		List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(companyId,
-				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty());
+				empLogin, lstEmpId, Optional.of(datePeriod), Optional.empty(),false);
+		iFindDataDCRecord.clearAllStateless();
 		List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(listEmployeeInfo, lstApproval,
 				lstConfirm);
 		if (buildApprovalEmployeeData.isEmpty()) {

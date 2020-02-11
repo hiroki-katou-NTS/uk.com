@@ -29,6 +29,9 @@ interface IEmployee {
     department: string;
     position: string;
     employment: string;
+    showDepartment: boolean,
+    showPosition: boolean,
+    showEmployment: boolean,
 }
 
 class ScreenSetting {
@@ -51,7 +54,14 @@ class RetirementAgeSetting {
 interface IStartPageDto {
     dateDisplaySettingPeriod: IDateDisplaySettingPeriod;
     retirementCourses: Array<IRetirementCourses>;
-    referEvaluationItems: Array<any>;
+    referEvaluationItems: Array<ReferEvaluationItem>;
+}
+
+interface ReferEvaluationItem {
+    evaluationItem: number;
+    usageFlg: boolean;
+    displayNum: number;
+    passValue: string;
 }
 
 interface IDateDisplaySettingPeriod {
@@ -87,6 +97,16 @@ class ItemModel {
     }
 }
 
+class RetirementStatus {
+    code: number;
+    name: string;
+
+    constructor(code: number, name: string) {
+        this.code = code;
+        this.name = name;
+    }
+}
+
 interface IDateRange {
     startDate: string;
     endDate: string;
@@ -102,7 +122,7 @@ interface IDepartment {
 }
 
 interface IEmployment {
-    code: string;
+    id: string;
     name: string;
 }
 
@@ -116,20 +136,32 @@ class SearchFilterModel {
             return elem.name;
         }).join(', ');
     });
-    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllDepartment: KnockoutObservable<boolean> = ko.observable(true);
     employment: KnockoutObservable<Array[IEmployment]> = ko.observable([]);
     employmentDisplay: KnockoutObservable<string> = ko.computed(() => {
         return this.employment().map(function(elem){
             return elem.name;
         }).join(', ');
     })
-    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(false);
+    selectAllEmployment: KnockoutObservable<boolean> = ko.observable(true);
     confirmCheckRetirementPeriod: KnockoutObservable<boolean> = ko.observable(false);
     retirementCourses: KnockoutObservable<IRetirementCourses>;
+    retirementCoursesStandard: KnockoutObservable<IRetirementCourses>;
+    retirementCoursesEarly: KnockoutObservable<IRetirementCourses>;
     retirementAges: KnockoutObservable<Array<RetirementAgeSetting>> = ko.observable([]);
     selectedRetirementAge: KnockoutObservable<string> = ko.observable({});
     constructor() {
-
+        let self = this;
+        self.selectAllDepartment.subscribe((newVal) => {
+            if(newVal === true) {
+                self.department([]);
+            }
+        });
+        self.selectAllEmployment.subscribe((newVal) => {
+            if(newVal === true) {
+                self.employment([]);
+            }
+        });
     }
 }
 
@@ -144,19 +176,25 @@ class ISearchParams {
     allSelectEmployment: boolean;
     selectEmployment: Array<string>;
     includingReflected: boolean;
+    selectDepartmentName: string;
+    selectEmploymentName: string;
+    hidedColumns: Array<String>;
     constructor(param: SearchFilterModel) {
         this.includingReflected = param.includingReflected();
         this.retirementAgeSetting = param.retirementAgeDesignation();
         if(this.retirementAgeSetting) {
+            // console.log(param.selectedRetirementAge());
             this.retirementAge = parseInt(param.selectedRetirementAge());
         }
         this.startDate = param.retirementPeriod().startDate;
         this.endDate = param.retirementPeriod().endDate;
         this.allSelectDepartment = param.selectAllDepartment();
-        this.selectDepartment = _.map(param.department(), (d) => {return d.name;});
+        this.selectDepartment = _.map(param.department(), (d) => {return d.id;});
         this.allSelectEmployment = param.selectAllEmployment();
-        this.selectEmployment = _.map(param.employment(), (d) => {return d.name;});
+        this.selectEmployment = _.map(param.employment(), (d) => {return d.code;});
         this.confirmCheckRetirementPeriod = param.confirmCheckRetirementPeriod();
+        this.selectDepartmentName = param.departmentDisplay();
+        this.selectEmploymentName = param.employmentDisplay();
     }
 }
 
@@ -167,24 +205,37 @@ interface ISearchResult {
 }
 
 interface IEmployeeInformationImport {
+    // 社員ID
     employeeId : string;
+    // 社員コード
     employeeCode : string;
+    // ビジネスネーム
     businessName : string;
+    // ビジネスネームカナ
     businessNameKana : string;
+    // 所属職場
     workplace: WorkPlace;
+    // 所属分類
     classification: Classification;
+    // 所属部門
     department: Department;
+    // 所属職位
     position: Position;
+    // 所属雇用
     employment: Employment;
+    // 就業区分
     employmentCls: number;
+    // 個人ID
     personID: string;
+    // 社員名
     employeeName: string;
+    // 顔写真ファイル
     avatarFile: FacePhotoFile;
+    // 誕生日
     birthday: string;
+    // 年齢
     age: number;
 }
-
-
 
 class PlannedRetirementDto {
     pId : string;
@@ -267,8 +318,6 @@ interface WorkPlace {
     workplaceName: string;
 }
 
-
-
 interface Classification {
     classificationCode: string;
     classificationName: string;
@@ -281,4 +330,30 @@ interface IInterviewSummary {
 interface IInterviewRecordAvailability {
     employeeID: string;
     isPresence: boolean;
+}
+
+class RowState {
+    rowId: string;
+    disable: boolean;
+    constructor(rowId: string, disable: boolean) {
+        this.rowId = rowId;
+        this.disable = disable;
+    }
+}
+
+class CellState {
+    rowId: string;
+    columnKey: string;
+    state: Array<any>
+    constructor(rowId: string, columnKey: string, state: Array<any>) {
+        this.rowId = rowId;
+        this.columnKey = columnKey;
+        this.state = state;
+    }
+}
+
+const EvaluationItem = {
+    PERSONNEL_ASSESSMENT: 0,
+    HEALTH_CONDITION: 1,
+    STRESS_CHECK: 2
 }

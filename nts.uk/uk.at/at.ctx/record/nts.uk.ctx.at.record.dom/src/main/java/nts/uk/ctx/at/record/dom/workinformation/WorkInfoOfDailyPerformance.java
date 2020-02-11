@@ -135,4 +135,10 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	public void changeCalcState(CalculationState state) {
 		this.calculationState = state;
 	}
+	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd) {
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+	}
+	
+	
 }

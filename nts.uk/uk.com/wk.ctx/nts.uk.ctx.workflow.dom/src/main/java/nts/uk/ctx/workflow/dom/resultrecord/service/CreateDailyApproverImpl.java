@@ -14,13 +14,12 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -31,9 +30,6 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 	
 	@Inject
 	private AppRootInstanceRepository appRootInstanceRepository;
-	
-	@Inject
-	private AppRootConfirmRepository appRootConfirmRepository;
 	
 	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
@@ -61,7 +57,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 								.map(y -> new AppFrameInstance(
 										y.getFrameOrder(), 
 										y.getConfirmAtr().value==1?true:false, 
-										y.getListApproverState().stream().map(z -> z.getApproverID())
+										y.getLstApproverInfo().stream().map(z -> z.getApproverID())
 								.collect(Collectors.toList())))
 					.collect(Collectors.toList())))
 				.collect(Collectors.toList()));
@@ -207,7 +203,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 									.map(y -> new AppFrameInstance(
 											y.getFrameOrder(), 
 											y.getConfirmAtr().value==1?true:false, 
-											y.getListApproverState().stream().map(z -> z.getApproverID())
+											y.getLstApproverInfo().stream().map(z -> z.getApproverID())
 									.collect(Collectors.toList())))
 						.collect(Collectors.toList())))
 					.collect(Collectors.toList()));

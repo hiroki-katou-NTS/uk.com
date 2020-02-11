@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.Compensatory
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の代休使用時間

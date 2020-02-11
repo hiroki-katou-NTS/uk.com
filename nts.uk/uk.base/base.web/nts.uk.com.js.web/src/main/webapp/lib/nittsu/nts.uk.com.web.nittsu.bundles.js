@@ -41546,6 +41546,15 @@ var nts;
                                     setting.descriptor.headerCells = owner._headerCells;
                                     setting.descriptor.headerParent = owner._headerParent;
                                 }
+                                if (owner.dataSource._filter && owner.dataSource._filteredData
+                                    && _.size(owner.dataSource._filteredData) <= _.size(owner.dataSource._origDs)) {
+                                    var pk_3 = owner.dataSource.settings.primaryKey;
+                                    var keyIdxes_3 = {};
+                                    owner.dataSource._filteredData.forEach(function (d, i) {
+                                        keyIdxes_3[d[pk_3]] = i;
+                                    });
+                                    setting.descriptor.keyIdxes = keyIdxes_3;
+                                }
                             });
                         }
                         settings.build = build;
@@ -41597,11 +41606,14 @@ var nts;
                             if (uk.util.isNullOrUndefined(colIdx)) {
                                 var colIdx_1 = descriptor.isFixedColumn(key);
                                 if (!uk.util.isNullOrUndefined(colIdx_1)) {
-                                    return descriptor.fixedTable.find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx_1 + ")");
+                                    return (descriptor.fixedTable || fixedColumns.getFixedTable($grid)).find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx_1 + ")");
                                 }
                             }
-                            if (!uk.util.isNullOrUndefined(idx) && idx >= descriptor.startRow
-                                && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
+                            if (_.size(descriptor.elements) > 0 && !uk.util.isNullOrUndefined(idx)
+                                && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
+                                if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
+                                    return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
+                                }
                                 return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                             }
                             return $grid.igGrid("cellById", rowId, key);
@@ -42820,10 +42832,12 @@ var nts;
                             dataSource: _.cloneDeep(dataSource),
                             primaryKey: optionsValue,
                             columns: cols,
+                            autoCommit: true,
                             childDataKey: optionsChild,
                             initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                             tabIndex: -1,
                             features: features,
+                            //                autoCommit: true,
                             virtualization: virtualization,
                             virtualizationMode: virtualizationMode,
                             rowExpanded: function (evt, ui) {

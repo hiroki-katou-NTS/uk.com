@@ -19,10 +19,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button id="reset" tabindex="1" class="proceed group-button-1">
+				<button id="reset" tabindex="1" class="proceed group-button-1" data-bind="click: register, disable: plannedRetirements().length === 0 || !$root.errors.isEmpty()">
 					#{i18n.getText('JCM008_A1_1')} </button>
 				<!-- A1_2 -->
-				<button id="register" tabindex="2" class="normal group-button-1" data-bind="click: exportExcel">
+				<button id="register" tabindex="2" class="normal group-button-1" data-bind="click: exportExcel, disable: plannedRetirements().length === 0 || !$root.errors.isEmpty()">
 					#{i18n.getText('JCM008_A1_2')} </button>
 			</div>
 			<div id="contents-area">
@@ -35,7 +35,7 @@
 						<ui:include src="main-left.xhtml" />
 					</div>
 					<div id="main-center-area" class="fixed-flex-layout-right">
-						<div id="info-accordion" data-bind="ntsAccordion: { active: 0, collapsible: true}">
+						<div id="info-accordion" data-bind="ntsAccordion: { active: true, collapsible: true}">
 							<h3>#{i18n.getText('JCM008_A222_11')}</h3>
 							<table id="retirementAgeInfo"></table>
 						</div>
@@ -50,7 +50,7 @@
 					<div class="fixed-flex-layout">
 						<div id="pop-left" class="fixed-flex-layout-left mr-10">
 							<!-- A1_2 -->
-							<img id="emp-avatar" data-bind="attr:{src: employeeInfo().image}" alt=""></img>
+							<img id="emp-avatar" data-bind="attr:{src: employeeInfo().image}" alt="" onerror="javascript:this.src='images/avatar.png'"></img>
 						</div>
 						<div id="pop-right" class="fixed-flex-layout-right">
 							<!-- A1_3 -->
@@ -74,14 +74,21 @@
 					<div id="pop-bottom">
 						<!-- A1_9 -->
 						<!-- A1_10 -->
-						<p>#{i18n.getText('JAP0070_A1_9')}: <span data-bind="text: employeeInfo().department"></span>
+						<p data-bind="if:employeeInfo().showDepartment">
+							#{i18n.getText('JAP0070_A1_9')}: <span
+								data-bind="text: employeeInfo().department"></span>
 						</p>
 						<!-- A1_11 -->
 						<!-- A1_12 -->
-						<p>#{i18n.getText('JAP0070_A1_11')}: <span data-bind="text: employeeInfo().position"></span></p>
+						<p data-bind="if:employeeInfo().showPosition">
+							#{i18n.getText('JAP0070_A1_11')}: <span
+								data-bind="text: employeeInfo().position"></span>
+						</p>
 						<!-- A1_13 -->
 						<!-- A1_4 -->
-						<p>#{i18n.getText('JAP0070_A1_13')}: <span data-bind="text: employeeInfo().employment"></span>
+						<p data-bind="if:employeeInfo().showEmployment">
+							#{i18n.getText('JAP0070_A1_13')}: <span
+								data-bind="text: employeeInfo().employment"></span>
 						</p>
 					</div>
 				</div>

@@ -1,8 +1,14 @@
 .contents-area {
-	overflow-y: scroll; 
-	height: 495px;
+	overflow-y: auto; 
+	height: calc(100vh - 161px);
+	white-space: nowrap;
 }
-
+.sidebar-content {
+	overflow: hidden !important;
+}
+.sidebar-content-header {
+	min-width: 750px;
+}
 .sidebar-content-header > button {
 	padding: 0px 15px;
 }
@@ -24,15 +30,17 @@
 	width: 400px;
 	margin-left: 25px;
 	margin-top: 25px;
-	float: left;
+	display: inline-block;
 	clean: right;
+	vertical-align: top;
 }
 
 .tabpanel-1-contents-area-right {
 	width: 400px;
 	margin-top: 25px;
-	float: left;
+	display: inline-block;
 	clean: right;
+	vertical-align: top;
 }
 
 .table-basic-setting-list-td-label {
@@ -83,7 +91,4 @@
 }
 #sidebar {
 	height: 99% !important;
-}
-.sidebar-content {
-	width: 1153px;
 }

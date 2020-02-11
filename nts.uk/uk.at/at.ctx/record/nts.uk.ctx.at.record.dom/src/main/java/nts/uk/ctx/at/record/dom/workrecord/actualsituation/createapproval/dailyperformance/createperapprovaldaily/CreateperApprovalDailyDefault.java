@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyp
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppInterrupDailyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateperApprovalDailyDefault implements CreateperApprovalDailyService {
@@ -28,8 +28,8 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	@Inject
-	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 
+	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	@Inject
 	private CreateDailyApproverAdapter createDailyApproverAdapter;
 
@@ -52,6 +52,9 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 		this.parallel.forEach(employeeIDs, employeeID -> {
 			if (checkStop.get())
 				return;
+			if(employeeID ==null) {
+				return;
+			}
 			// 年月日 ←「システム日付の前日」
 			GeneralDate ymd = GeneralDate.today().addDays(-1);
 			if (createNewEmp == 1) {

@@ -75,7 +75,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerforman
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PSheet;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
@@ -603,15 +603,14 @@ public class MonthlyPerformanceDisplay {
 			
 			List<EmployeeDailyPerError> listEmployeeDailyPerError =  employeeDailyPerErrorRepo.findsWithLeftJoin(Arrays.asList(affWorkplaceImport.getEmployeeId()), workDatePeriod);
 			boolean checkExistRecordErrorListDate = false;
-			for (EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
-				// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
-				List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository
-						.getListErAlByListCodeError(cid,
-								Arrays.asList(employeeDailyPerError.getErrorAlarmWorkRecordCode().v()));
-				if (!errorAlarmWorkRecordLst.isEmpty()) {
-					checkExistRecordErrorListDate = true;
-					break;
-				}
+			
+			List<String> listCode = listEmployeeDailyPerError.stream().map(x -> x.getErrorAlarmWorkRecordCode().v())
+					.collect(Collectors.toList());
+			// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
+			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst = errorAlarmWorkRecordRepository
+					.getListErAlByListCodeError(cid, listCode);
+			if (!errorAlarmWorkRecordLst.isEmpty()) {
+				checkExistRecordErrorListDate = true;
 			}
 			
 			// 月の実績の状況を取得する

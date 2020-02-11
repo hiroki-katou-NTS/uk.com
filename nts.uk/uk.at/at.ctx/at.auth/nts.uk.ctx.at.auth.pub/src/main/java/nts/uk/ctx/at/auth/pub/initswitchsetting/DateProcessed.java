@@ -6,7 +6,7 @@ package nts.uk.ctx.at.auth.pub.initswitchsetting;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hieult

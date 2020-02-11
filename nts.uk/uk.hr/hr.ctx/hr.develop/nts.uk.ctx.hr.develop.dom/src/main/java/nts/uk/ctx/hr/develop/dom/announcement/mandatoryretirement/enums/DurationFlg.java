@@ -12,11 +12,11 @@ public enum DurationFlg {
 	
 	public int value;
 	
-	public String name;
+	public String nameId;
 
-	DurationFlg(int value, String name) {
+	DurationFlg(int value, String nameId) {
 		this.value = value;
-		this.name = name;
+		this.nameId = nameId;
 	}
 	
 }

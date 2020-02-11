@@ -6,15 +6,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.develop.dom.databeforereflecting.RetirementCategory;
+import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.RetirementInformation_NewService;
 
 @Stateless
 public class RetirementInformationRegisterCommandHandler extends CommandHandler<RetirementInformationRegisterCommand> {
@@ -25,7 +23,7 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	@Inject
-	private DataBeforeReflectingRepository repo;
+	private RetirementInformation_NewService service;
 
 	@Override
 	protected void handle(CommandHandlerContext<RetirementInformationRegisterCommand> context) {
@@ -38,25 +36,10 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	private void registerRetirementInformation(List<RetiInforRegisInfoCommand> list) {
 		// 定年退職者情報リストを個人情報反映前データリストへ変換する(Chuyển đổi RetirementInfoList thành
 		// list data trước khi phản ánh thông tin cá nhân)
-
 		List<DataBeforeReflectingPerInfo> listDomain = createRetirementInfoList(list);
-		List<DataBeforeReflectingPerInfo> addListDomain = listDomain.stream().filter(x -> x.getHistoryId() == null)
-				.collect(Collectors.toList());
 
-		List<DataBeforeReflectingPerInfo> updateListDomain = listDomain.stream().filter(x -> x.getHistoryId() != null)
-				.collect(Collectors.toList());
-		// 個人情報反映前データを変更する (Thay đổi data trước khi phản ánh thông tin cá nhân)
+		this.service.registerRetirementInformation(listDomain);
 
-		if (!addListDomain.isEmpty()) {
-			this.repo.addData(addListDomain);
-		}
-
-		if (!updateListDomain.isEmpty()) {
-			updateListDomain.forEach(x -> {
-				x.setHistoryId(IdentifierUtil.randomUniqueId());
-			});
-			this.repo.updateData(updateListDomain);
-		}
 	}
 
 	private List<DataBeforeReflectingPerInfo> createRetirementInfoList(List<RetiInforRegisInfoCommand> list) {
@@ -65,19 +48,19 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 	}
 
 	private DataBeforeReflectingPerInfo createNew(RetiInforRegisInfoCommand cmd) {
-
+		
 		String historyId = cmd.getHistoryId();
 		String contractCode = cmd.getContractCode();
 		String companyId = cmd.getCompanyId();
-		String companyCode = cmd.getCompanyCode();
+		String companyCode =cmd.getCompanyCode();
 		String pId = cmd.getPId();
 		String sId = cmd.getSId();
 		String scd = cmd.getScd();
-		Integer workId = cmd.getWorkId();
+		Integer workId =cmd.getWorkId();
 		String personName = cmd.getPersonName();
 		String workName = cmd.getWorkName();
 		int requestFlag = cmd.getNotificationCategory();
-		GeneralDate registerDate = cmd.getInputDate();
+		GeneralDate registerDate = GeneralDate.today();
 		GeneralDateTime releaseDate = GeneralDateTime
 				.fromString(cmd.getReleaseDate().toString("yyyy-MM-dd") + TIME_DAY_START, DATE_TIME_FORMAT);
 		int onHoldFlag = cmd.getPendingFlag();
@@ -86,19 +69,25 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 
 		GeneralDateTime date_01 = GeneralDateTime
 				.fromString(cmd.getRetirementDate().toString("yyyy-MM-dd") + TIME_DAY_START, DATE_TIME_FORMAT);
-		String select_code_01 = String.valueOf(cmd.getRetirementCategory());
+		String select_code_01 = String.valueOf(RetirementCategory.retirementAge.value);
 		String select_code_02 = cmd.getDesiredWorkingCourseCd();
 		String select_code_03 = cmd.getRetirementReasonCtgCd1();
 		String select_code_04 = String.valueOf(cmd.getExtendEmploymentFlg());
 
-		String select_name_01 = EnumAdaptor.valueOf(cmd.getRetirementCategory(), RetirementCategory.class).name;
+		String select_name_01 = RetirementCategory.retirementAge.name;
 		String select_name_02 = cmd.getDesiredWorkingCourseName();
 		String select_name_03 = cmd.getRetirementReasonCtgName1();
 
-		return new DataBeforeReflectingPerInfo(historyId, contractCode, companyId, companyCode, pId, sId, scd, workId,
-				personName, workName, requestFlag, registerDate, releaseDate, onHoldFlag, status, histId_Refer, date_01,
-				select_code_01, select_code_02, select_code_03, select_code_04, select_name_01, select_name_02,
-				select_name_03);
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo(historyId, contractCode, companyId,
+				companyCode, pId, sId, scd, workId, personName, workName, requestFlag, registerDate, releaseDate,
+				onHoldFlag, status, histId_Refer, date_01, select_code_01, select_code_02, select_code_03,
+				select_code_04, select_name_01, select_name_02, select_name_03);
+		
+		domain.setSelect_id_02(cmd.getDesiredWorkingCourseId());
+		domain.setSelect_id_03(cmd.getRetirementReasonCtgID1());
+		domain.setSelect_code_04(select_code_04);
+
+		return domain;
 	}
 
 }

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional;import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -100,7 +100,7 @@ public class WorkplaceConfigInfoFinder {
 		// Check if is restrictionOfReferenceRange.
 		if (object.getRestrictionOfReferenceRange()) {
 			List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
-					.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate(), true).getListWorkplaceIds();
+					.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate()).getListWorkplaceIds();
 			workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, configHisIds,
 					workplaceIdsCanReference);
 		} else {
@@ -363,7 +363,7 @@ public class WorkplaceConfigInfoFinder {
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
 
-		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType(),baseD, true);
+		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType(),baseD);
 
 		List<WorkplaceHierarchy> result = new ArrayList<>();
 

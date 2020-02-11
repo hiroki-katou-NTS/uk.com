@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 /**
  * 
  * @author Doan Duy Hung
@@ -46,34 +47,15 @@ public class UpdateOvertimeCommand {
 	 */
 	private Integer workClockTo1;
 	/**
-	 * 残業申請.勤務開始時刻2
-	 */
-	private Integer workClockFrom2;
-	/**
-	 * 残業申請.勤務終了時刻2
-	 */
-	private Integer workClockTo2;
-	/**
-	 * 休出時間
-	 * ATTENDANCE_ID = 0
-	 */
-	private List<OvertimeInputCommand> breakTimes;
-	
-	/**
 	 *  残業時間
 	 *  ATTENDANCE_ID = 1
 	 */
 	private List<OvertimeInputCommand> overtimeHours;
 	/**
 	 * 加給時間
-	 * ATTENDANCE_ID = 2
+	 * ATTENDANCE_ID = 0
 	 */
 	private List<OvertimeInputCommand> restTime;
-	/**
-	 * 加給時間
-	 * ATTENDANCE_ID = 3
-	 */
-	private List<OvertimeInputCommand> bonusTimes;
 	/**
 	 * 残業申請.残業区分
 	 */
@@ -130,4 +112,9 @@ public class UpdateOvertimeCommand {
 	
 	Integer user;
     Integer reflectPerState;
+    
+    /**
+	 * 申請共通設定
+	 */
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 }
