@@ -208,13 +208,13 @@ module nts.uk.com.view.cmm018.a.sub {
         }
         findRoot(empRType: any, appType: any): vmbase.CompanyAppRootADto{
             let self = this;
-            if(appType == 'null' && Number(empRType) == 0){//common
+            if(Number(empRType) == 0){//common
                 return _.find(self.lstData(), function(root){
-                    return root.employRootAtr == 0 && (root.appTypeValue == null || root.appTypeValue == 'null');
+                    return root.employRootAtr == 0;
                 });
             }
-            return _.find(self.lstData(), function(root){
-                return root.employRootAtr == Number(empRType) && root.appTypeValue == Number(appType);
+            return _.find(self.lstData(), function(root){//event
+                return root.employRootAtr == Number(empRType) && root.appTypeValue == appType;
             });
         }
         fillColorbackGr(lstRoot): Array<vmbase.CellState>{
