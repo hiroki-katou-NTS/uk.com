@@ -28,10 +28,11 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 public class BentoInstanceHelper {
+
 	
 	public static BentoReservation getBentoReservationEmpty() {
 		return new BentoReservation(
-				new ReservationRegisterInfo("cardNo"), 
+				Helper.Reservation.RegisterInfo.DUMMY, 
 				reservationDate(GeneralDate.today(), 1), 
 				false, 
 				Collections.emptyList());
