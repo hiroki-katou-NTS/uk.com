@@ -1050,6 +1050,13 @@ public class ProgramIdConsts {
 	public static final String JMM018A = "JMM018A";
 	public static final String JMM018C = "JMM018C";
 	
+	/** JHN001 */
+	public static final String JHN001A = "JHN001A";
+	public static final String JHN001B = "JHN001B";
+	public static final String JHN001C = "JHN001C";
+	public static final String JHN001D = "JHN001D";
+	public static final String JHN001F = "JHN001F";
+	
 	/** JHN003 */
 	public static final String JHN003A = "JHN003A";
 	
