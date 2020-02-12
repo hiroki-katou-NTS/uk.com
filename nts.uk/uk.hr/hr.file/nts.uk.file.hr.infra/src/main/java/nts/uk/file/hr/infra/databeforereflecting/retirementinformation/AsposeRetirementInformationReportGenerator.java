@@ -35,9 +35,9 @@ import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementCourseDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.ResignmentDivision;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
@@ -173,8 +173,8 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "" : "保留");
 				ws.getCells().get(rowIndex, RETIREMENT)
 						.putValue(EnumAdaptor.valueOf(entity.getExtendEmploymentFlg(), ResignmentDivision.class).name);
-				ws.getCells().get(rowIndex, STATUS)
-						.putValue(EnumAdaptor.valueOf(entity.getStatus(), Status.class).name);
+				ws.getCells().get(rowIndex, STATUS).putValue(
+						entity.getStatus() != null ? EnumAdaptor.valueOf(entity.getStatus(), Status.class).name : "");
 				ws.getCells().get(rowIndex, DESIRED_CODE).putValue(entity.getDesiredWorkingCourseCd());
 				ws.getCells().get(rowIndex, DESIRED_NAME).putValue(entity.getDesiredWorkingCourseName());
 				ws.getCells().get(rowIndex, EMPLOYEE_CD).putValue(entity.getScd());

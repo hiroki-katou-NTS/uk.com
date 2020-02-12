@@ -13,13 +13,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.DataBeforeReflectingRepository;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.OnHoldFlag;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.RequestFlag;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.Status;
 import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecData;
 import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecDataPk;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingRepository;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.OnHoldFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.Status;
 
 @Stateless
 public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository implements DataBeforeReflectingRepository {
