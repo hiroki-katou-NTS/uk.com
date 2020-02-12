@@ -98,11 +98,11 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 0"
 			+ " AND c.employmentRootAtr IN (0,2)";
-	private static final String FIND_BY_ATR_HR02 = "SELECT c FROM WwfmtWpApprovalRoot c"
+	private static final String FIND_BY_ATR_HR0 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 1"
-			+ " AND c.employmentRootAtr IN (0,2)";
+			+ " AND c.employmentRootAtr = 0";
 	private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
@@ -154,7 +154,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 						.getList(c->toDomainWpApR(c)));
 			}
 		}else{//人事
-			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR02, WwfmtWpApprovalRoot.class)
+			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR0, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.getList(c->toDomainWpApR(c)));

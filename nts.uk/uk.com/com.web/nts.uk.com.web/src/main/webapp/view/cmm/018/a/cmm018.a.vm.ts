@@ -1087,7 +1087,7 @@ module nts.uk.com.view.cmm018.a {
                                     lstPerson = self.findAppIdForPs(self.currentCode());    
                                 }
                                _.each(lstPerson.lstPersonRoot, function(item){
-                                    let empR = item.workplace.employmentRootAtr;
+                                    let empR = item.person.employmentRootAtr;
                                     let typeA = self.findType(empR, item.person.applicationType, 
                                             item.person.confirmationRootType, item.person.noticeId, item.person.busEventId);
                                     lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
@@ -1131,7 +1131,7 @@ module nts.uk.com.view.cmm018.a {
                     let obj: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstWorkplaceRoot, function(item){
-                            let empR = item.company.employmentRootAtr;
+                            let empR = item.workplace.employmentRootAtr;
                             let typeA = self.findType(empR, item.workplace.applicationType, 
                                     item.workplace.confirmationRootType, item.workplace.noticeId, item.workplace.busEventId);
                             lstApp.push(new vmbase.ApplicationType(typeA, '',empR));

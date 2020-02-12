@@ -94,10 +94,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
 			+ " AND c.sysAtr = 0"
 			+ " AND c.employmentRootAtr IN (0,2)";
-	private static final String FIND_BY_ATR_HR02 = "SELECT c FROM WwfmtComApprovalRoot c"
+	private static final String FIND_BY_ATR_HR0 = "SELECT c FROM WwfmtComApprovalRoot c"
 			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
 			+ " AND c.sysAtr = 1"
-			+ " AND c.employmentRootAtr IN (0,2)";
+			+ " AND c.employmentRootAtr = 0";
 	private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtComApprovalRoot c"
 			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
 			+ " AND c.sysAtr = 1"
@@ -148,7 +148,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 						.getList(c->toDomainComApR(c)));
 			}
 		}else{//人事
-			lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR02, WwfmtComApprovalRoot.class)
+			lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_HR0, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.getList(c->toDomainComApR(c)));
 			if(!lstNoticeID.isEmpty()){
