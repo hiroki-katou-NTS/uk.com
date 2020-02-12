@@ -41,7 +41,7 @@ public class JpaWorkplaceHistorySetMemento implements WorkplaceHistorySetMemento
 	 * 
 	 * @see
 	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento#setPeriod
-	 * (nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * (nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public void setPeriod(DatePeriod period) {
