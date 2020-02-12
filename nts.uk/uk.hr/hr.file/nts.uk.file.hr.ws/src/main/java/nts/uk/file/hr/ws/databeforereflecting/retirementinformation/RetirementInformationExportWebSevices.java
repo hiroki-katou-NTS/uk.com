@@ -7,8 +7,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationExportService;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 
 @Path("file/hr/report/retirementinformation")
 @Produces("application/json")
