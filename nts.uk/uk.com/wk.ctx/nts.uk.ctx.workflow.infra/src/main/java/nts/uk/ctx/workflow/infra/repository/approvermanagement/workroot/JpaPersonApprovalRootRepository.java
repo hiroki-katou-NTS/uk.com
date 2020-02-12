@@ -1,8 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +10,8 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -47,17 +44,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
-	 private static final String FIND_BY_BASEDATE = FIN_BY_EMP
-			   + " AND c.sysAtr = :sysAtr"
-			   + " AND c.startDate <= :baseDate"
-			   + " AND c.endDate >= :baseDate"
-			   + " AND c.employmentRootAtr = :rootAtr" 
-			   + " AND c.applicationType = :appType";
-	 private static final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
-			   + " AND c.sysAtr = :sysAtr"
-			   + " AND c.startDate <= :baseDate"
-			   + " AND c.endDate >= :baseDate"
-			   + " AND c.employmentRootAtr = 0";
 	 private static final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
@@ -182,6 +168,48 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 				+ " AND c.sysAtr = :sysAtr"
 				+ " AND c.endDate = :endDate";
+		
+		private static final String FIND_COMMON;
+		private static final String FIND_APPLICATION;
+		private static final String FIND_CONFIRMATION;
+		private static final String FIND_ANYITEM;
+		private static final String FIND_NOTICE;
+		private static final String FIND_BUS_EVENT;
+		static {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, BRANCH_ID, ANYITEM_APP_ID, ");
+			builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
+			builder.append("FROM WWFMT_PS_APPROVAL_ROOT WHERE CID = 'companyID' AND SID = 'employeeID' ");
+			builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
+			builder.append("AND EMPLOYMENT_ROOT_ATR = 'rootAtr'");
+			FIND_COMMON = builder.toString();
+			
+			builder = new StringBuilder();
+			builder.append(FIND_COMMON);
+			builder.append(" AND APP_TYPE = 'targetType'");
+			FIND_APPLICATION = builder.toString();
+			
+			builder = new StringBuilder();
+			builder.append(FIND_COMMON);
+			builder.append(" AND CONFIRMATION_ROOT_TYPE = 'targetType'");
+			FIND_CONFIRMATION = builder.toString();
+			
+			builder = new StringBuilder();
+			builder.append(FIND_COMMON);
+			builder.append(" AND ANYITEM_APP_ID = 'targetType'");
+			FIND_ANYITEM = builder.toString();
+			
+			builder = new StringBuilder();
+			builder.append(FIND_COMMON);
+			builder.append(" AND NOTICE_ID = 'targetType'");
+			FIND_NOTICE = builder.toString();
+			
+			builder = new StringBuilder();
+			builder.append(FIND_COMMON);
+			builder.append(" AND BUS_EVENT_ID = 'targetType'");
+			FIND_BUS_EVENT = builder.toString();
+		}
+		
 	/**
 	 * get all Person Approval Root
 	 * @param companyId
@@ -368,43 +396,75 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		return this.queryProxy().find(pk, WwfmtPsApprovalRoot.class).map(c->toDomainPsApR(c));
 	}
 	
-	/**
-	 * 個人別就業承認ルート」を取得する
-	 * 就業ルート区分(申請か、確認か、任意項目か)
-	 * @param cid
-	 * @param sid
-	 * @param baseDate
-	 * @param appType
-	 */
 	@Override
-	public Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType,
-			EmploymentRootAtr rootAtr, int sysAtr) {
-		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("employeeId", employeeID)
-				.setParameter("sysAtr", sysAtr)
-				.setParameter("baseDate", date)
-				.setParameter("appType", appType.value)
-				.setParameter("rootAtr", rootAtr.value)
-				.getSingle(c->toDomainPsApR(c));
+	public Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, EmploymentRootAtr rootAtr,
+			String targetType, int sysAtr) {
+		String query = "";
+		switch (rootAtr) {
+		case APPLICATION:
+			query = FIND_APPLICATION;
+			break;
+		case CONFIRMATION:
+			query = FIND_CONFIRMATION;
+			break;
+		case ANYITEM:
+			query = FIND_ANYITEM;
+			break;
+		case NOTICE:
+			query = FIND_NOTICE;
+			break;
+		case BUS_EVENT:
+			query = FIND_BUS_EVENT;
+			break;
+		default:
+			return Optional.empty();
+		}
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("sysAtr", String.valueOf(sysAtr));
+		query = query.replaceAll("date", date.toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootAtr", String.valueOf(rootAtr.value));
+		query = query.replaceAll("targetType", targetType);
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			return new NtsResultSet(pstatement.executeQuery())
+			.getSingle(x -> convertNtsResult(x));
+		} catch (Exception e) {
+			throw new RuntimeException("PersonApprovalRoot error");
+		}
 	}
 	
-	/**
-	 * 個人別就業承認ルート」を取得する
-	 * 就業ルート区分(共通)
-	 * @param cid
-	 * @param sid
-	 * @param baseDate
-	 * @param appType
-	 */
 	@Override
 	public Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate, int sysAtr) {
-		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("employeeId", employeeID)
-				.setParameter("sysAtr", sysAtr)
-				.setParameter("baseDate", baseDate)
-				.getSingle(c->toDomainPsApR(c));
+		String query = FIND_COMMON;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("sysAtr", String.valueOf(sysAtr));
+		query = query.replaceAll("date", baseDate.toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootAtr", "0");
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			return new NtsResultSet(pstatement.executeQuery())
+			.getSingle(x -> convertNtsResult(x));
+		} catch (Exception e) {
+			throw new RuntimeException("PersonApprovalRoot error");
+		}
+	}
+	
+	private PersonApprovalRoot convertNtsResult(NtsResultRecord record) {
+		return PersonApprovalRoot.createSimpleFromJavaType(
+				record.getString("CID"), 
+				record.getString("APPROVAL_ID"), 
+				record.getString("SID"), 
+				record.getString("HIST_ID"), 
+				record.getInt("APP_TYPE"), 
+				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
+				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
+				record.getString("BRANCH_ID"), 
+				record.getString("ANYITEM_APP_ID"), 
+				record.getInt("CONFIRMATION_ROOT_TYPE"), 
+				record.getInt("EMPLOYMENT_ROOT_ATR"), 
+				record.getInt("SYSTEM_ATR"), 
+				record.getString("NOTICE_ID"), 
+				record.getString("BUS_EVENT_ID"));
 	}
 	
 	
@@ -578,57 +638,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("startDate", startDate)
 				.getList(c->toDomainPsApR(c));
 	}
-	@Override
-	public List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID,
-			ConfirmationRootType confirmType, GeneralDate date) {
-		
-//		List<PersonApprovalRoot> data =  this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtPsApprovalRoot.class)
-//				.setParameter("companyId", companyID)
-//				.setParameter("employeeId", employeeID)
-//				.setParameter("baseDate", date)
-//				.setParameter("confirmationRootType", confirmType.value)
-//				.getList(c->toDomainPsApR(c));
-		
-		List<PersonApprovalRoot> data = new ArrayList<>();
-		String sql = "select * from WWFMT_PS_APPROVAL_ROOT "
-				+ " where SID = ? "
-				+ " and START_DATE <= ?"
-				+ " and END_DATE >= ?"
-				+ " and CONFIRMATION_ROOT_TYPE = ?"
-				+ " and EMPLOYMENT_ROOT_ATR = 2"
-				+ " and CID = ? ";
-		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-						
-			stmt.setString(1 , employeeID);
-
-			stmt.setDate(2, Date.valueOf(date.localDate()));
-			stmt.setDate(3, Date.valueOf(date.localDate()));
-			stmt.setInt(4, confirmType.value);
-			stmt.setString(5, companyID);
-			data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				PersonApprovalRoot ent = PersonApprovalRoot.createSimpleFromJavaType(
-						rec.getString("CID"), 
-						rec.getString("APPROVAL_ID"), 
-						rec.getString("SID"), 
-						rec.getString("HIST_ID"), 
-						rec.getInt("APP_TYPE"), 
-						rec.getGeneralDate("START_DATE").toString().replace('/', '-'), 
-						rec.getGeneralDate("END_DATE").toString().replace('/', '-'), 
-						rec.getString("BRANCH_ID"), 
-						rec.getString("ANYITEM_APP_ID"), 
-						rec.getInt("CONFIRMATION_ROOT_TYPE"), 
-						rec.getInt("EMPLOYMENT_ROOT_ATR"),
-						rec.getInt("SYSTEM_ATR"),
-						rec.getString("NOTICE_ID"),
-						rec.getString("BUS_EVENT_ID"));
-				return ent;
-			});
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return data;
-	}
+	
 	@Override
 	public Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId) {
 		List<PersonApprovalRoot> lst =  this.queryProxy().query(GET_ALL__MODE_COM, WwfmtPsApprovalRoot.class)

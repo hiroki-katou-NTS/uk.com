@@ -82,23 +82,25 @@ public interface PersonApprovalRootRepository {
 			String historyId);
 
 	/**
-	 * 個人別就業承認ルート」を取得する
-	 * @param companyID
-	 * @param employeeID
-	 * @param date
-	 * @param appType
-	 * @param rootAtr
+	 * 個人別承認ルート
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param date 基準日
+	 * @param rootAtr 承認ルート区分
+	 * @param targetType 対象申請
+	 * @param sysAtr システム区分
 	 * @return
 	 */
-	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType,
-			EmploymentRootAtr rootAtr, int sysAtr);
-	
+	Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, EmploymentRootAtr rootAtr,
+			String targetType, int sysAtr);
+
 	/**
-	 * 個人別就業承認ルート」を取得する
-	 * 就業ルート区分(共通)
-	 * @param cid
-	 * @param sid
-	 * @param baseDate
+	 * 個人別承認ルート common
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param baseDate 基準日
+	 * @param sysAtr システム区分
+	 * @return
 	 */
 	Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate, int sysAtr);
 	/**
@@ -163,19 +165,11 @@ public interface PersonApprovalRootRepository {
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate);
 	
-	/**
-	 * 
-	 * @param companyID
-	 * @param employeeID
-	 * @param confirmType
-	 * @param date
-	 * @return
-	 */
-	List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID, ConfirmationRootType confirmType, GeneralDate date);
-	
 	Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId);
 	
 	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer appType, String id);
 	//get by endDate
 	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
+	
+	
 }

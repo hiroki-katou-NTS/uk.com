@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.agent.Agent;
@@ -80,7 +81,6 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ReleasedProprietyDivision;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -213,7 +213,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class) , 
+					appTypeValue.toString(), 
 					date,
 					SystemAtr.WORK,
 					Optional.empty());
@@ -275,7 +275,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		approvalRootStateService.insertAppRootType(
 				companyID, 
 				employeeID, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+				appTypeValue.toString(), 
 				appDate, 
 				appID,
 				rootType,
@@ -965,17 +965,64 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
      * 1.社員の対象申請の承認ルートを取得する
      * @param 会社ID companyID
      * @param 社員ID employeeID
-     * @param 承認ルート区分 
+     * @param ・対象申請 targetType
      * @param 基準日 date
-     * @param ・対象申請 noticeId
-     * @param システム区分 sysAtr
+     * @param Optional<下位序列承認無＞ lowerApprove
      * @return
      */
 	@Override
-	public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, Integer rootType,
-			GeneralDate date, String appID, int sysAtr) {
-		// TODO Auto-generated method stub
-		//Fix tạm data
-		return ApprovalRootContentExport.fixData();
+	public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, String targetType, GeneralDate date, Optional<Boolean> lowerApprove) {
+		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
+				companyID, 
+				employeeID, 
+				EmploymentRootAtr.NOTICE, 
+				targetType, 
+				date,
+				SystemAtr.HUMAN_RESOURCES,
+				Optional.empty());
+		return new ApprovalRootContentExport(
+				new ApprovalRootStateExport(
+					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
+					.stream()
+					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+					.map(x -> {
+						return new ApprovalPhaseStateExport(
+								x.getPhaseOrder(),
+								EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+								EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+								x.getListApprovalFrame()
+								.stream()
+								.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+								.map(y -> {
+									return new ApprovalFrameExport(
+											y.getFrameOrder(), 
+											y.getLstApproverInfo().stream().map(z -> { 
+												String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
+												String representerID = "";
+												String representerName = "";
+												ApprovalRepresenterOutput approvalRepresenterOutput = 
+														collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
+												if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+													if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
+														representerID = approvalRepresenterOutput.getListAgent().get(0);
+														representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
+													}
+												}
+												return new ApproverStateExport(
+														z.getApproverID(), 
+														EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+														z.getAgentID(),
+														approverName, 
+														representerID, 
+														representerName,
+														z.getApprovalDate(),
+														z.getApprovalReason());
+											}).collect(Collectors.toList()), 
+											y.getConfirmAtr().value,
+											y.getAppDate());
+								}).collect(Collectors.toList()));
+					}).collect(Collectors.toList())
+				), 
+				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
 	}
 }

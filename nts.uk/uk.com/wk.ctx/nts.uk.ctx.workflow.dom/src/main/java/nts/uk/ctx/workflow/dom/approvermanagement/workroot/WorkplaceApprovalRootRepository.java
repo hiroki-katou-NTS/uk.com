@@ -43,23 +43,24 @@ public interface WorkplaceApprovalRootRepository {
 			Integer applicationType, int employmentRootAtr, String id);
 
 	/**
-	 * ドメインモデル「職場別就業承認ルート」を取得する
-	 * @param companyID
-	 * @param workplaceID
-	 * @param date
-	 * @param appType
-	 * @param rootAtr
+	 * 職場別承認ルート
+	 * @param companyID 会社ID
+	 * @param workplaceID 職場ID
+	 * @param date 基準日
+	 * @param rootAtr 就業ルート区分
+	 * @param targetType 対象申請
+	 * @param sysAtr システム区分
 	 * @return
 	 */
-	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType,
-			EmploymentRootAtr rootAtr, int sysAtr);
+	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, EmploymentRootAtr rootAtr, 
+			String targetType, int sysAtr);
 
 	/**
-	 * ドメインモデル「職場別就業承認ルート」を取得する(共通の)
-	 * @param companyID
-	 * @param workplaceID
-	 * @param date
-	 * @param appType
+	 * 職場別承認ルート common
+	 * @param companyID 会社ID
+	 * @param workplaceID 職場ID
+	 * @param date 基準日
+	 * @param sysAtr システム区分
 	 * @return
 	 */
 	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date, int sysAtr);
@@ -126,6 +127,4 @@ public interface WorkplaceApprovalRootRepository {
 	
 	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
-	
-	List<WorkplaceApprovalRoot> findEmpByConfirm(String companyID, String workplaceID, ConfirmationRootType confirmType, GeneralDate date);
 }
