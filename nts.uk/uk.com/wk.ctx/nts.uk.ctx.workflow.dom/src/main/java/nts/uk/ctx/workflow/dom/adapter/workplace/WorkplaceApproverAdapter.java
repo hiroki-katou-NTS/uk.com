@@ -24,7 +24,7 @@ public interface WorkplaceApproverAdapter {
 	
 	Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate);
 	
-	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId);
+	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId, GeneralDate baseDate);
 	
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
     

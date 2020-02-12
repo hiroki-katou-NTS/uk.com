@@ -89,8 +89,8 @@ public class DepartmentPubImpl implements DepartmentPub {
 	}
 
 	@Override
-	public Optional<DepartmentExport> getInfoDep(String companyId, String depId) {
-		return depInforRepo.getInfoDep(companyId, depId).
+	public Optional<DepartmentExport> getInfoDep(String companyId, String depId, GeneralDate baseDate) {
+		return depInforRepo.getInfoDep(companyId, depId, baseDate).
 				map(item -> DepartmentExport.builder()
 				.companyId(item.getCompanyId()).depHistoryId(item.getDepartmentHistoryId())
 				.departmentId(item.getDepartmentId()).departmentCode(item.getDepartmentCode().v())

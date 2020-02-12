@@ -62,7 +62,7 @@ public interface DepartmentPub {
      */
     public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
     
-    public Optional<DepartmentExport> getInfoDep(String companyId, String depId);
+    public Optional<DepartmentExport> getInfoDep(String companyId, String depId, GeneralDate baseDate);
     
     /**
      * 社員と基準日から所属部門履歴項目を取得する

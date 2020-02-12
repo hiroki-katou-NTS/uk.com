@@ -83,8 +83,8 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	}
 
 	@Override
-	public Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId) {
-		return depPub.getInfoDep(companyId, depId)
+	public Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId, GeneralDate baseDate) {
+		return depPub.getInfoDep(companyId, depId, baseDate)
 				.map(c -> new WkpDepInfo(c.getDepartmentId(), c.getDepartmentCode(), c.getDepartmentName()));
 	}
 	
