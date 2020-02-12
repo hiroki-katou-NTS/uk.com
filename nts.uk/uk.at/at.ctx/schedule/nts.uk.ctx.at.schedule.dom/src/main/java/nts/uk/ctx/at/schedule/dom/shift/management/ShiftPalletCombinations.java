@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * シフトパレットのシフト組み合わせ
@@ -16,7 +15,7 @@ import nts.arc.error.BusinessException;
  *
  */
 
-public class ShiftPalletCombinations extends ValueObject {
+public class ShiftPalletCombinations implements DomainValue {
 
 	/** 位置番号 */
 	@Getter

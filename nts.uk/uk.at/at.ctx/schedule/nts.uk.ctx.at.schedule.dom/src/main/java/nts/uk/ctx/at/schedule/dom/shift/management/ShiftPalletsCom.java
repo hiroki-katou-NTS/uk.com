@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  *
  */
 
-public class ShiftPalletsCom extends AggregateRoot{
+public class ShiftPalletsCom implements DomainAggregate {
 
 	/** 会社ID */
 	@Getter

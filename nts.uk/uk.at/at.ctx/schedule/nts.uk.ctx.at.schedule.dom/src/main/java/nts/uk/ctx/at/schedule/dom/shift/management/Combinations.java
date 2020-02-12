@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * シフトパレットのシフト		
@@ -11,7 +10,7 @@ import nts.arc.error.BusinessException;
  *
  */
 
-public class Combinations extends ValueObject{
+public class Combinations implements DomainValue{
 
 	/** 順番 */
 	@Getter

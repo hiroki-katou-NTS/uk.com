@@ -5,10 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * シフトパレット
@@ -17,7 +16,7 @@ import nts.arc.error.BusinessException;
  *
  */
 
-public class ShiftPallet extends ValueObject {
+public class ShiftPallet implements DomainValue {
 	@Inject
 
 	/** 表示情報 */
