@@ -13,10 +13,10 @@ public class BentoDetailsAmountTotalTest {
 		int amount1 = 20;
 		int amount2 = 10;
 		
-		BentoDetailsAmountTotal total = BentoDetailsAmountTotal.calculate(frameNo, quantity, amount1, amount2);
+		BentoDetailsAmountTotal target = BentoDetailsAmountTotal.calculate(frameNo, quantity, amount1, amount2);
 		
-		assertThat(total.getAmount1()).isEqualTo(5 * 20);
-		assertThat(total.getAmount2()).isEqualTo(5 * 10);
+		assertThat(target.getAmount1()).isEqualTo(5 * 20);
+		assertThat(target.getAmount2()).isEqualTo(5 * 10);
 	} 
 
 }
