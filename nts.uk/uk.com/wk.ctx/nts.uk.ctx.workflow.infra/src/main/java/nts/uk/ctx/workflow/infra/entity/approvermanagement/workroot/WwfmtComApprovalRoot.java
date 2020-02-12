@@ -53,7 +53,7 @@ public class WwfmtComApprovalRoot extends UkJpaEntity implements Serializable {
 	public String anyItemAppId;
 	/**届出ID*/
 	@Column(name = "NOTICE_ID")
-	public String noticeId;
+	public Integer noticeId;
 	/**各業務エベントID*/
 	@Column(name = "BUS_EVENT_ID")
 	public String busEventId;

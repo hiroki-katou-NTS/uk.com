@@ -463,7 +463,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
 				record.getInt("SYSTEM_ATR"), 
-				record.getString("NOTICE_ID"), 
+				record.getInt("NOTICE_ID"), 
 				record.getString("BUS_EVENT_ID"));
 	}
 	

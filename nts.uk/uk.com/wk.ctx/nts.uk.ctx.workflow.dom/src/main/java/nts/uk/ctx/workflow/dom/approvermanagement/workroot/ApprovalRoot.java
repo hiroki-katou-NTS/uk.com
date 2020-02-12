@@ -33,7 +33,7 @@ public class ApprovalRoot implements UnduplicatableHistory<EmploymentAppHistoryI
 	/**任意項目申請ID*/
 	private String anyItemApplicationId;
 	/**届出ID*/
-	private String noticeId;
+	private Integer noticeId;
 	/**各業務エベントID*/
 	private String busEventId;
 	

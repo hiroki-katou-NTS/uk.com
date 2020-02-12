@@ -29,7 +29,7 @@ public class PsApprovalRootDto {
 	/**就業ルート区分*/
 	private int employmentRootAtr;
 	/**届出ID*/
-	private String noticeId;
+	private Integer noticeId;
 	/**各業務エベントID*/
 	private String busEventId;
 	

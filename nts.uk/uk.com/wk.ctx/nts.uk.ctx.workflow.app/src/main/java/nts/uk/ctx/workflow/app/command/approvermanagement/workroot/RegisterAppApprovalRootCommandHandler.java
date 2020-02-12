@@ -112,7 +112,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				String type = commonRoot.getAppTypeValue();
 				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
 				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
-				String typeNt = employRootAtr == 4 ? type : null;
+				Integer typeNt = employRootAtr == 4 ? Integer.valueOf(type) : null;
 				String typeEv = employRootAtr == 5 ? type : null;
 				String approvalId = UUID.randomUUID().toString();
 				String branchId = UUID.randomUUID().toString();
@@ -197,7 +197,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					int employRootAtr = commonRoot.getEmployRootAtr();
 					Integer typeApp = employRootAtr == 1 ? Integer.valueOf(typeCom) : null;
 					Integer typeConf = employRootAtr == 2 ? Integer.valueOf(typeCom) : null;
-					String typeNt = employRootAtr == 4 ? typeCom : null;
+					Integer typeNt = employRootAtr == 4 ? Integer.valueOf(typeCom) : null;
 					String typeEv = employRootAtr == 5 ? typeCom : null;
 					
 					//root right
@@ -269,7 +269,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				int employRootAtr = commonRoot.getEmployRootAtr();
 				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
 				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
-				String typeNt = employRootAtr == 4 ? type : null;
+				Integer typeNt = employRootAtr == 4 ? Integer.valueOf(type) : null;
 				String typeEv = employRootAtr == 5 ? type : null;
 				
 				String branchId = UUID.randomUUID().toString();
@@ -351,7 +351,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					String typeV = type.getValue();
 					Integer typeApp = employRootAtr == 1 ? Integer.valueOf(typeV) : null;
 					Integer typeConf = employRootAtr == 2 ? Integer.valueOf(typeV) : null;
-					String typeNt = employRootAtr == 4 ? typeV : null;
+					Integer typeNt = employRootAtr == 4 ? Integer.valueOf(typeV) : null;
 					String typeEv = employRootAtr == 5 ? typeV : null;
 					//root right
 					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, approvalId, workplaceId,
@@ -414,7 +414,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				int employRootAtr = commonRoot.getEmployRootAtr();
 				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
 				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
-				String typeNt = employRootAtr == 4 ? type : null;
+				Integer typeNt = employRootAtr == 4 ? Integer.valueOf(type) : null;
 				String typeEv = employRootAtr == 5 ? type : null;
 				
 				String branchId = UUID.randomUUID().toString();
@@ -498,7 +498,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					String value = type.getValue();
 					Integer typeApp = employRootAtr == EmploymentRootAtr.APPLICATION.value ? Integer.valueOf(value) : null;
 					Integer typeConf = employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? Integer.valueOf(value) : null;
-					String typeNt = employRootAtr == EmploymentRootAtr.NOTICE.value ? value : null;
+					Integer typeNt = employRootAtr == EmploymentRootAtr.NOTICE.value ? Integer.valueOf(value) : null;
 					String typeEv = employRootAtr == EmploymentRootAtr.BUS_EVENT.value ? value : null;
 					//root right
 					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, approvalId, employeeId,
