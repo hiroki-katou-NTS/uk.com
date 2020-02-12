@@ -141,8 +141,8 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 	@Override
 	public Optional<DepartmentInformation> getInfoDep(String companyId, String depId, GeneralDate baseDate) {
 		String GET_INFO_BY_ID = "SELECT info FROM BsymtDepartmentInfor info"
-				+ " inner join BsymtWorkplaceConfig  conf"
-				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
+				+ " inner join BsymtDepartmentConfig  conf"
+				+ " on info.pk.departmentHistoryId = conf.pk.departmentHistoryId "
 				+ " where info.pk.companyId = :companyId"
 				+ " and info.deleteFlag = 0"
 				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
