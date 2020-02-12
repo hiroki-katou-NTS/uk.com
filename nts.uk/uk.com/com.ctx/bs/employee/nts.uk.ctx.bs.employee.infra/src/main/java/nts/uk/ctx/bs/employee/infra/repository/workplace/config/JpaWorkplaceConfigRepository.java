@@ -256,7 +256,7 @@ public class JpaWorkplaceConfigRepository extends JpaRepository
 	
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findByCompanyIdAndPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findByCompanyIdAndPeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<WorkplaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod period){
