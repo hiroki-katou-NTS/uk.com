@@ -21,7 +21,7 @@ public class ShiftMasterDisInfor {
 	 * 色
 	 */
 	@Getter
-	private ColorCode color;
+	private ColorCodeChar6 color;
 	
 	/**
 	 * 備考
@@ -29,7 +29,7 @@ public class ShiftMasterDisInfor {
 	@Getter
 	private Optional<Remarks> remarks;
 
-	public ShiftMasterDisInfor(NameShiftMater name, ColorCode color, Remarks remarks) {
+	public ShiftMasterDisInfor(NameShiftMater name, ColorCodeChar6 color, Remarks remarks) {
 		this.name = name;
 		this.color = color;
 		this.remarks = Optional.ofNullable(remarks);
