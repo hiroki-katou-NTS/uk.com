@@ -35,9 +35,9 @@ import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementCourseDto;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
 import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.ResignmentDivision;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
