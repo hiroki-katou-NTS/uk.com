@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.workflow.dom.adapter.workplace;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -24,5 +25,13 @@ public interface WorkplaceApproverAdapter {
 	Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate);
 	
 	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId);
+	
+	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
+    
+    public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
+	
+	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date);
+	
+	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
 
 }

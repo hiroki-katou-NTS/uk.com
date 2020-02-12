@@ -34,7 +34,7 @@ public class ApplicationUseAtrFinder {
 	private ApplicationSettingRepository repoAppSet;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
-	
+	//利用している申請種類を取得
 	public List<AppUseAtrDto> getAppUseAtr(String workplaceID){
 		List<AppUseAtrDto> lstResult = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();

@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
@@ -24,18 +22,20 @@ public interface CollectApprovalRootService {
 	
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
-	 * 
-	 * @param cid 会社ID
-	 * @param sid 社員ID（申請本人の社員ID）
-	 * @param employmentRootAtr 就業ルート区分
-	 * @param subjectRequest 対象申請
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param rootAtr 承認ルート区分
+	 * @param targetType 対象申請
 	 * @param standardDate 基準日
+	 * @param sysAtr システム区分
+	 * @param lowerApprove Optional<下位序列承認無＞
+	 * @return
 	 */
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(
 			String companyID, 
 			String employeeID, 
 			EmploymentRootAtr rootAtr, 
-			ApplicationType appType, 
+			String targetType, 
 			GeneralDate standardDate,
 			SystemAtr sysAtr,
 			Optional<Boolean> lowerApprove);
@@ -78,7 +78,7 @@ public interface CollectApprovalRootService {
 	 * @param jobTitleId 職位ID（承認者）
 	 * @return
 	 */
-	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId);
+	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr);
 	
 	/**
 	 * 7.承認ルートの異常チェック
@@ -100,20 +100,6 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public List<String> organizeBrowsingPhase(String companyID, String employeeID, GeneralDate date, ApprovalPhase approvalPhase);
-	
-	/**
-	 * 承認ルートを取得する（確認）
-	 * @param companyID
-	 * @param employeeID
-	 * @param confirmAtr
-	 * @param standardDate
-	 * @return
-	 */
-	public ApprovalRootContentOutput getApprovalRootConfirm(
-			String companyID, 
-			String employeeID, 
-			ConfirmationRootType confirmAtr, 
-			GeneralDate standardDate);
 	
 	/**
 	 * 2.承認ルートを整理する（二次開発）
@@ -140,7 +126,6 @@ public interface CollectApprovalRootService {
 	 * @param companyID
 	 * @param approverGroupCD
 	 * @param specWkpId
-	 * @param empWkpID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -148,7 +133,7 @@ public interface CollectApprovalRootService {
 	 * @param lowerApprove
 	 * @return
 	 */
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String empWkpID, Optional<Integer> opDispOrder,
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, Optional<Integer> opDispOrder,
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
 	
 	/**
@@ -182,7 +167,6 @@ public interface CollectApprovalRootService {
 	 * 上位職場の承認者を探す
 	 * @param companyID
 	 * @param approverGroupCD
-	 * @param empWkpID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -191,7 +175,7 @@ public interface CollectApprovalRootService {
 	 * @param approvalAtr
 	 * @return
 	 */
-	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, String empWkpID, Optional<Integer> opDispOrder, 
+	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, Optional<Integer> opDispOrder, 
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr);
 	
 	/**
@@ -200,5 +184,15 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public ErrorFlag checkApprovalRoot(LevelOutput levelOutput);
+	
+	/**
+	 * 上位職場・部門を取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param systemAtr
+	 * @return
+	 */
+	public List<String> getUpperID(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 	
 }

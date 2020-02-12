@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppType {
-	private Integer value;
+	private String value;
 	private int employRootAtr;
 }

@@ -108,15 +108,18 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<CompanyApprovalRoot> listComPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				Integer type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
+				String type = commonRoot.getAppTypeValue();
+				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
+				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
+				String typeNt = employRootAtr == 4 ? type : null;
+				String typeEv = employRootAtr == 5 ? type : null;
 				String approvalId = UUID.randomUUID().toString();
 				String branchId = UUID.randomUUID().toString();
 				//root right
 				CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
-						approvalId, historyId, type, startDate, endDateS,
-						branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
-						employRootAtr, data.getSystemAtr(), null, null);
+						approvalId, historyId, typeApp, startDate, endDateS, branchId, null,
+						typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 				//branch
 				ApprovalBranch branch = new ApprovalBranch(companyId, branchId, 1);
 				lstBranch.add(branch);
@@ -131,7 +134,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			if(data.getCheckMode() == 1){
 				// xử lí update phần riêng
 				if(!rootInsert.isEmpty()){
-					List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
+					String type = rootInsert.get(0).getAppTypeValue();
+					int empRoot = rootInsert.get(0).getEmployRootAtr();
+					Integer typeI = empRoot != 0 && empRoot != 5 ? Integer.valueOf(type) : null;
+					String typeS = empRoot == 5 ? type : null;
+					List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, typeI, empRoot, typeS);
 					if(!comOld.isEmpty()){
 						//update ls cu
 						CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
@@ -162,7 +169,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
 				if(!lstAppTypeUi.contains(type)){
-					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, type.getValue(), type.getEmployRootAtr());
+					Integer value = type.getEmployRootAtr() != 5 && type.getEmployRootAtr() != 0 ? Integer.valueOf(type.getValue()) : 0;
+					String id = type.getEmployRootAtr() == 5 ? type.getValue() : "";
+					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, value, type.getEmployRootAtr(), id);
 					if(!lstCom.isEmpty()){
 						CompanyApprovalRoot com = lstCom.get(0);
 						//==========
@@ -178,19 +187,24 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<CompanyApprovalRoot> listCom = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (AppType type : lstAppTypeUi) {
-				CompanyAppRootADto commonRoot = findRoot(root, type);
+				CompanyAppRootADto commonRoot = this.findRoot(root, type);
 				String approvalId = commonRoot.getApprovalId();
 				//root create new
 				if(StringUtil.isNullOrEmpty(commonRoot.getBranchId(), true)){
 					approvalId = UUID.randomUUID().toString();
 					String branchId = UUID.randomUUID().toString();
-					Integer typeCom = commonRoot.getAppTypeValue();
+					String typeCom = commonRoot.getAppTypeValue();
 					int employRootAtr = commonRoot.getEmployRootAtr();
+					Integer typeApp = employRootAtr == 1 ? Integer.valueOf(typeCom) : null;
+					Integer typeConf = employRootAtr == 2 ? Integer.valueOf(typeCom) : null;
+					String typeNt = employRootAtr == 4 ? typeCom : null;
+					String typeEv = employRootAtr == 5 ? typeCom : null;
+					
 					//root right
 					CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
-										approvalId, historyId, type.getValue(), startDate, endDateOld,
-										branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? typeCom : null,
-										employRootAtr, data.getSystemAtr(), null, null);
+										approvalId, historyId, typeApp, startDate, endDateOld,
+										branchId, null, typeConf,
+										employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
@@ -251,14 +265,18 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<WorkplaceApprovalRoot> listWpPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				Integer type = commonRoot.getAppTypeValue();
+				String type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
+				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
+				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
+				String typeNt = employRootAtr == 4 ? type : null;
+				String typeEv = employRootAtr == 5 ? type : null;
+				
 				String branchId = UUID.randomUUID().toString();
 				String approvalId = UUID.randomUUID().toString();
 				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
-									approvalId, workplaceId, historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
-									employRootAtr, data.getSystemAtr(), null, null);
+									approvalId, workplaceId, historyId, typeApp, startDate, endDateS,
+									branchId, null, typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 				lstBranch.add(branch);
 				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
@@ -271,7 +289,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//find history by type and 
 			if(data.getCheckMode() == 1){
-				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
+				Integer employRootAtr = rootInsert.get(0).getEmployRootAtr();
+				String type = rootInsert.get(0).getAppTypeValue();
+				Integer value = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(type) : 0;
+				String id = employRootAtr == 5 || employRootAtr == 4 ? type : "";
+				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, value, employRootAtr, id);
 				if(!psOld.isEmpty()){
 					//update ls cu
 					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(psOld.get(0), endDateNew);
@@ -301,7 +323,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
 				if(!lstAppTypeUi.contains(type)){
-					List<WorkplaceApprovalRoot> lstWp = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDateUpdate, type.getValue(), type.getEmployRootAtr());
+					Integer employRootAtr = type.getEmployRootAtr();
+					String value = type.getValue();
+					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+					String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+					List<WorkplaceApprovalRoot> lstWp = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDateUpdate, valueI, employRootAtr, id);
 					if(!lstWp.isEmpty()){
 						WorkplaceApprovalRoot wp = lstWp.get(0);
 						//==========
@@ -322,11 +348,15 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					approvalId = UUID.randomUUID().toString();
 					String branchId = UUID.randomUUID().toString();
 					int employRootAtr = commonRoot.getEmployRootAtr();
+					String typeV = type.getValue();
+					Integer typeApp = employRootAtr == 1 ? Integer.valueOf(typeV) : null;
+					Integer typeConf = employRootAtr == 2 ? Integer.valueOf(typeV) : null;
+					String typeNt = employRootAtr == 4 ? typeV : null;
+					String typeEv = employRootAtr == 5 ? typeV : null;
 					//root right
 					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, approvalId, workplaceId,
-							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
-							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
-							data.getSystemAtr(), null, null);
+							historyId, typeApp, startDate, endDateOld, branchId, null, typeConf, employRootAtr,
+							data.getSystemAtr(), typeNt, typeEv);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
@@ -380,14 +410,19 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			List<PersonApprovalRoot> listPsPre = new ArrayList<>();
 			List<ApprovalBranch> lstBranch = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : rootInsert) {
-				Integer type = commonRoot.getAppTypeValue();
+				String type = commonRoot.getAppTypeValue();
 				int employRootAtr = commonRoot.getEmployRootAtr();
+				Integer typeApp = employRootAtr == 1 ? Integer.valueOf(type) : null;
+				Integer typeConf = employRootAtr == 2 ? Integer.valueOf(type) : null;
+				String typeNt = employRootAtr == 4 ? type : null;
+				String typeEv = employRootAtr == 5 ? type : null;
+				
 				String branchId = UUID.randomUUID().toString();
 				String approvalId = UUID.randomUUID().toString();
 				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
-									approvalId, employeeId, historyId, type, startDate, endDateS,
-									branchId, null, employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type : null,
-									employRootAtr, data.getSystemAtr(), null, null);
+									approvalId, employeeId, historyId, typeApp, startDate, endDateS,
+									branchId, null, typeConf,
+									employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 				lstBranch.add(branch);
 				if(!ApprovalRoot.checkValidate(startDate.toString(), endDateS)){
@@ -400,7 +435,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//find history by type and
 			if(data.getCheckMode() == 1){
-				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
+				Integer employRootAtr = rootInsert.get(0).getEmployRootAtr();
+				String value = rootInsert.get(0).getAppTypeValue();
+				Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+				String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, valueI, employRootAtr, id);
 				if(!psOld.isEmpty()){
 					//update ls cu
 					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psOld.get(0), endDateNew);
@@ -431,7 +470,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
 				if(!lstAppTypeUi.contains(type)){
-					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDateUpdate, type.getValue(), type.getEmployRootAtr());
+					Integer employRootAtr = type.getEmployRootAtr();
+					String value = type.getValue();
+					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
+					String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDateUpdate, valueI, employRootAtr, id);
 					if(!lstPs.isEmpty()){
 						PersonApprovalRoot ps = lstPs.get(0);
 						//==========
@@ -452,11 +495,15 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					approvalId = UUID.randomUUID().toString();
 					String branchId = UUID.randomUUID().toString();
 					int employRootAtr = commonRoot.getEmployRootAtr();
+					String value = type.getValue();
+					Integer typeApp = employRootAtr == EmploymentRootAtr.APPLICATION.value ? Integer.valueOf(value) : null;
+					Integer typeConf = employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? Integer.valueOf(value) : null;
+					String typeNt = employRootAtr == EmploymentRootAtr.NOTICE.value ? value : null;
+					String typeEv = employRootAtr == EmploymentRootAtr.BUS_EVENT.value ? value : null;
 					//root right
 					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, approvalId, employeeId,
-							historyId, employRootAtr == EmploymentRootAtr.APPLICATION.value ? type.getValue() : null, startDate, endDateOld,
-							branchId, null,employRootAtr == EmploymentRootAtr.CONFIRMATION.value ? type.getValue() : null, employRootAtr,
-									data.getSystemAtr(), null, null);
+							historyId, typeApp, startDate, endDateOld,
+							branchId, null, typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 					//branch
 					ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
 					lstBranch.add(branch);
@@ -613,9 +660,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @return
 	 */
 	private CompanyAppRootADto findRoot(List<CompanyAppRootADto> root, AppType appTypeValue){
-		for (CompanyAppRootADto companyAppRootADto : root) {
-			if(companyAppRootADto.getAppTypeValue() == appTypeValue.getValue() && companyAppRootADto.getEmployRootAtr() == appTypeValue.getEmployRootAtr()){
-				return companyAppRootADto;
+		for (CompanyAppRootADto comRoot : root) {
+			if(comRoot.getEmployRootAtr() == EmploymentRootAtr.COMMON.value && comRoot.getEmployRootAtr() == appTypeValue.getEmployRootAtr()) {
+				return comRoot;
+			}
+			if(comRoot.getAppTypeValue() == appTypeValue.getValue() && comRoot.getEmployRootAtr() == appTypeValue.getEmployRootAtr()){
+				return comRoot;
 			}
 		}
 		return null;

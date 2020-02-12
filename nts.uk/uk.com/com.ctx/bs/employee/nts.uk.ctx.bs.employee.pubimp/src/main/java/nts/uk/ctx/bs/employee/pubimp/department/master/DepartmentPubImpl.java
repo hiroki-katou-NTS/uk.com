@@ -1,5 +1,8 @@
 package nts.uk.ctx.bs.employee.pubimp.department.master;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +11,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentExport;
@@ -21,6 +28,15 @@ public class DepartmentPubImpl implements DepartmentPub {
 	private DepartmentExportSerivce depExpService;
 	@Inject
 	private DepartmentInformationRepository depInforRepo;
+	
+	@Inject
+	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
+	
+	@Inject
+	private DepartmentConfigurationRepository departmentConfigurationRepository;
+	
+	@Inject
+	private DepartmentInformationRepository departmentInformationRepository;
 
 	@Override
 	public List<DepartmentInforExport> getDepartmentInforByDepIds(String companyId, List<String> listDepartmentId,
@@ -82,6 +98,38 @@ public class DepartmentPubImpl implements DepartmentPub {
 				.depGenericName(item.getDepartmentGeneric().v())
 				.outsideDepCode(item.getDepartmentExternalCode().map(ec -> ec.v())).build());
 		
+	}
+
+	@Override
+	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
+		return affDepartmentHistoryItemRepository.findByEmpDate(employeeID, date).get().getDepartmentId();
+	}
+
+	@Override
+	public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date) {
+		// ドメインモデル「部門構成」を取得する(lấy domain 「WorkplaceConfig」)
+		Optional<DepartmentConfiguration> opDepartmentConfig = departmentConfigurationRepository.findByDate(companyID, date);
+		if(!opDepartmentConfig.isPresent()) {
+			throw new RuntimeException("error department config");
+		}
+		// ドメインモデル「部門情報」を取得する
+		DepartmentInformation departmentInfor = departmentInformationRepository.getActiveDepartmentByDepIds(
+				companyID, 
+				opDepartmentConfig.get().items().get(0).identifier(), 
+				Arrays.asList(departmentID)).get(0);
+		// 取得した階層コードの上位階層コードを求める(Tìm upperHierarchyCode của HierarchyCode đã lấy)
+		List<String> hierachyCDLst = new ArrayList<>();
+		String sumCD = departmentInfor.getHierarchyCode().toString();
+		sumCD = sumCD.substring(0, sumCD.length() - 3);
+		hierachyCDLst.add(sumCD.substring(0, 3));
+		sumCD = sumCD.substring(3, sumCD.length());
+		while(sumCD.length() > 6) {
+			hierachyCDLst.add(sumCD.substring(0, 6));
+			sumCD = sumCD.substring(6, sumCD.length()); 
+		}
+		hierachyCDLst.add(sumCD);
+		Collections.reverse(hierachyCDLst);
+		return hierachyCDLst;
 	}
 
 }

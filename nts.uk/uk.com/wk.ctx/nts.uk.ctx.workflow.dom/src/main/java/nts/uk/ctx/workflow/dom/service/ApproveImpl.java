@@ -67,7 +67,7 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
+					appType.value.toString(), 
 					appDate,
 					SystemAtr.WORK,
 					Optional.empty());
@@ -236,7 +236,7 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
+					appType.value.toString(), 
 					appDate,
 					SystemAtr.WORK,
 					Optional.empty());
@@ -289,7 +289,7 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
+					appType.value.toString(), 
 					appDate,
 					SystemAtr.WORK,
 					Optional.empty());
