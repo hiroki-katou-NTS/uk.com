@@ -40,6 +40,10 @@ public class EmploymentRoleDataDto {
 	 */
 	private int futureDateRefPermit;
 	
+	/**
+	 * ロール
+	 */
+	private RoleDto role;
 	
 	public static EmploymentRoleDataDto fromDomain(EmploymentRole domain ){
 		return new EmploymentRoleDataDto(
@@ -49,8 +53,7 @@ public class EmploymentRoleDataDto {
 				domain.getBookEmployeeRef().value,
 				domain.getEmployeeRefSpecAgent().value,
 				domain.getPresentInqEmployeeRef().value,
-				domain.getFutureDateRefPermit().value
-				);
-		
+				domain.getFutureDateRefPermit().value,
+				null);
 	}
 }
