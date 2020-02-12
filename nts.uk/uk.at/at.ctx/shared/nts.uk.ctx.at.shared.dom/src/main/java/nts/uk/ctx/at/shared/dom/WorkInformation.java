@@ -1,13 +1,8 @@
 package nts.uk.ctx.at.shared.dom;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Optional;
 
-import org.assertj.core.internal.bytebuddy.asm.Advice.This;
-
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
