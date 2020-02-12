@@ -68,7 +68,7 @@ public class RegistrationPersonReportFinder {
 		List<RegistrationPersonReport> regisList = this.repo.findByJHN003(cId, sId, query.getAppDate().getStartDate(),
 				query.getAppDate().getEndDate(), query.getReportId(), query.getApprovalStatus(), query.getInputName(),
 				query.isApprovalReport()).stream()
-				.sorted(Comparator.comparing(RegistrationPersonReport::getInputDate)).collect(Collectors.toList());
+				.sorted(Comparator.comparing(RegistrationPersonReport::getAppDate)).collect(Collectors.toList());
 
 		if ((regisList.size() > 99 && query.isApprovalReport())
 				|| (regisList.size() > 999 && !query.isApprovalReport())) {
