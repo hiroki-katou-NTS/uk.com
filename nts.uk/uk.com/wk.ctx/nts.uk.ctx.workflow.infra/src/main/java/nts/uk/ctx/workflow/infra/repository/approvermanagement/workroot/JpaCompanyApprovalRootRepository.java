@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,11 +9,11 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRoot;
@@ -40,18 +41,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				   + " AND c.endDate = :endDate"
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL";
-	private static final String FIND_BY_BASEDATE = FIND_BY_CID
-				+ " AND c.sysAtr = :sysAtr"
-				+ " AND c.startDate <= :baseDate"
-				+ " AND c.endDate >= :baseDate"
-				+ " AND c.employmentRootAtr = :rootAtr" 
-				+ " AND c.applicationType = :appType";
-	private static final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
-				+ " AND c.sysAtr = :sysAtr"
-				+ " AND c.startDate <= :baseDate"
-				+ " AND c.endDate >= :baseDate"
-				+ " AND c.employmentRootAtr = 0";
-	
 	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
@@ -79,12 +68,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";
-	
-	private static final String FIND_BY_EMP_CONFIRM = FIND_BY_CID
-			 + " AND c.startDate <= :baseDate"
-			 + " AND c.endDate >= :baseDate"
-			 + " AND c.confirmationRootType = :confirmationRootType"
-			 + " AND c.employmentRootAtr = 2";
 	private static final String FIND_BY_ATR_WORK1 = "SELECT c FROM WwfmtComApprovalRoot c"
 			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
 			+ " AND c.sysAtr = 0"
@@ -124,6 +107,48 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			   + " AND c.busEventId = :busEventId"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
+	
+	private static final String FIND_COMMON;
+	private static final String FIND_APPLICATION;
+	private static final String FIND_CONFIRMATION;
+	private static final String FIND_ANYITEM;
+	private static final String FIND_NOTICE;
+	private static final String FIND_BUS_EVENT;
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT CID, APPROVAL_ID, HIST_ID, START_DATE, END_DATE, APP_TYPE, BRANCH_ID, ANYITEM_APP_ID, ");
+		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
+		builder.append("FROM WWFMT_COM_APPROVAL_ROOT WHERE CID = 'companyID' ");
+		builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
+		builder.append("AND EMPLOYMENT_ROOT_ATR = 'rootAtr'");
+		FIND_COMMON = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append(FIND_COMMON);
+		builder.append(" AND APP_TYPE = 'targetType'");
+		FIND_APPLICATION = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append(FIND_COMMON);
+		builder.append(" AND CONFIRMATION_ROOT_TYPE = 'targetType'");
+		FIND_CONFIRMATION = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append(FIND_COMMON);
+		builder.append(" AND ANYITEM_APP_ID = 'targetType'");
+		FIND_ANYITEM = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append(FIND_COMMON);
+		builder.append(" AND NOTICE_ID = 'targetType'");
+		FIND_NOTICE = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append(FIND_COMMON);
+		builder.append(" AND BUS_EVENT_ID = 'targetType'");
+		FIND_BUS_EVENT = builder.toString();
+	}
+	
 	/**
 	 * getComRootStart CMM018
 	 * @param companyId
@@ -230,40 +255,72 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.getList(c->toDomainComApR(c));
 	}
 	
-	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
-	 * @param cid
-	 * @param workplaceId
-	 * @param baseDate
-	 * @param appType
-	 * @return WorkplaceApprovalRoots
-	 */
 	@Override
-	public Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt, int sysAtr) {
-		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("sysAtr", sysAtr)
-				.setParameter("baseDate", date)
-				.setParameter("appType", appType.value)
-				.setParameter("rootAtr", rootAt.value)
-				.getSingle(c->toDomainComApR(c));
+	public Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, EmploymentRootAtr rootAtr, String targetType, int sysAtr) {
+		String query = "";
+		switch (rootAtr) {
+		case APPLICATION:
+			query = FIND_APPLICATION;
+			break;
+		case CONFIRMATION:
+			query = FIND_CONFIRMATION;
+			break;
+		case ANYITEM:
+			query = FIND_ANYITEM;
+			break;
+		case NOTICE:
+			query = FIND_NOTICE;
+			break;
+		case BUS_EVENT:
+			query = FIND_BUS_EVENT;
+			break;
+		default:
+			return Optional.empty();
+		}
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("sysAtr", String.valueOf(sysAtr));
+		query = query.replaceAll("date", date.toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootAtr", String.valueOf(rootAtr.value));
+		query = query.replaceAll("targetType", targetType);
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			Optional<CompanyApprovalRoot> op = new NtsResultSet(pstatement.executeQuery())
+			.getSingle(x -> convertNtsResult(x));
+			return op;
+		} catch (Exception e) {
+			throw new RuntimeException("CompanyApprovalRoot error");
+		}
 	}
 	
-	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する(共通の)
-	 * @param cid
-	 * @param workplaceId
-	 * @param baseDate
-	 * @param appType
-	 * @return WorkplaceApprovalRoots
-	 */
 	@Override
 	public Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date, int sysAtr) {
-		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("sysAtr", sysAtr)
-				.setParameter("baseDate", date)
-				.getSingle(c->toDomainComApR(c));
+		String query = FIND_COMMON;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("sysAtr", String.valueOf(sysAtr));
+		query = query.replaceAll("date", date.toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootAtr", "0");
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			return new NtsResultSet(pstatement.executeQuery())
+			.getSingle(x -> convertNtsResult(x));
+		} catch (Exception e) {
+			throw new RuntimeException("CompanyApprovalRoot error");
+		}
+	}
+	
+	private CompanyApprovalRoot convertNtsResult(NtsResultRecord record) {
+		return CompanyApprovalRoot.createSimpleFromJavaType(
+				record.getString("CID"), 
+				record.getString("APPROVAL_ID"), 
+				record.getString("HIST_ID"), 
+				record.getInt("APP_TYPE"), 
+				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
+				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
+				record.getString("BRANCH_ID"), 
+				record.getString("ANYITEM_APP_ID"), 
+				record.getInt("CONFIRMATION_ROOT_TYPE"), 
+				record.getInt("EMPLOYMENT_ROOT_ATR"), 
+				record.getInt("SYSTEM_ATR"), 
+				record.getInt("NOTICE_ID"), 
+				record.getString("BUS_EVENT_ID"));
 	}
 	
 	/**
@@ -461,14 +518,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("baseDate", date)
 				.setParameter("confirmationRootType", confirmRootAtr)
 				.setParameter("employmentRootAtr", employmentRootAtr)
-				.getList(c->toDomainComApR(c));
-	}
-	@Override
-	public List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date) {
-		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", companyID)
-				.setParameter("baseDate", date)
-				.setParameter("confirmationRootType", confirmType.value)
 				.getList(c->toDomainComApR(c));
 	}
 }

@@ -76,21 +76,22 @@ public interface CompanyApprovalRootRepository {
 	void deleteComApprovalRoot(String companyId, String approvalId, String historyId);
 
 	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する 
-	 * @param companyID
-	 * @param date
-	 * @param appType
-	 * @param rootAt
+	 * 会社別承認ルート
+	 * @param companyID 会社ID
+	 * @param date 基準日
+	 * @param rootAtr 就業ルート区分
+	 * @param targetType 対象申請
+	 * @param sysAtr システム区分 
 	 * @return
 	 */
-	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType,
-			EmploymentRootAtr rootAt, int sysAtr);
+	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, EmploymentRootAtr rootAtr,
+			String targetType, int sysAtr);
 
 	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する(共通）
-	 * @param companyID
-	 * @param date
-	 * @param appType
+	 * 会社別承認ルート common
+	 * @param companyID 会社ID
+	 * @param date 基準日
+	 * @param sysAtr システム区分
 	 * @return
 	 */
 	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date, int sysAtr);
@@ -122,6 +123,4 @@ public interface CompanyApprovalRootRepository {
 	
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
-	
-	List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date);
 }

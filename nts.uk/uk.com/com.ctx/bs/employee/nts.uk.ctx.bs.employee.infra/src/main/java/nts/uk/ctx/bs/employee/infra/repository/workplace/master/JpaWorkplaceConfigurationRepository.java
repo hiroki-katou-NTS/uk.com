@@ -62,8 +62,8 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	@Override
 	public Optional<WorkplaceConfiguration> findByDate(String companyID, GeneralDate date) {
 		String sql = FIND_BY_DATE;
-		sql.replaceAll("date", date.toString("yyyy-MM-dd"));
-		sql.replaceAll("companyID", companyID);
+		sql = sql.replaceAll("date", date.toString("yyyy-MM-dd"));
+		sql = sql.replaceAll("companyID", companyID);
 		try (PreparedStatement pstatement = this.connection().prepareStatement(sql)) {
 			return new NtsResultSet(pstatement.executeQuery())
 			.getSingle(x -> new WorkplaceConfiguration(
