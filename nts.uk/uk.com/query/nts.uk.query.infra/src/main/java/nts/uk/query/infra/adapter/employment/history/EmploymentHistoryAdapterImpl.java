@@ -36,7 +36,7 @@ public class EmploymentHistoryAdapterImpl extends JpaRepository implements Emplo
 	 * 
 	 * @see nts.uk.query.model.employement.history.EmploymentHistoryAdapter#
 	 * findSIdsByEmpCdsAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<String> findSIdsByEmpCdsAndPeriod(List<String> empCds, DatePeriod period) {
