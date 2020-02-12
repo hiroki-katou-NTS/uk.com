@@ -126,7 +126,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		// ドメインモデル「部門構成」を取得する(lấy domain 「WorkplaceConfig」)
 		Optional<WorkplaceConfiguration> opWorkplaceConfig = workplaceConfigurationRepository.findByDate(companyID, date);
 		if(!opWorkplaceConfig.isPresent()) {
-			throw new RuntimeException("error department config");
+			throw new RuntimeException("error workplace config");
 		}
 		// ドメインモデル「部門情報」を取得する
 		WorkplaceInformation workplaceInfor = workplaceInformationRepository.getActiveWorkplaceByWkpIds(

@@ -93,8 +93,8 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 	public Optional<AffDepartmentHistoryItem> findByEmpDate(String employeeID, GeneralDate date) {
 		List<AffDepartmentHistoryItem> result = new ArrayList<>();
 		String sql = SELECT_BY_EMP_DATE;
-		sql.replaceAll("date", date.toString("yyyy-MM-dd"));
-		sql.replaceAll("employeeID", employeeID);
+		sql = sql.replaceAll("date", date.toString("yyyy-MM-dd"));
+		sql = sql.replaceAll("employeeID", employeeID);
 		try (PreparedStatement pstatement = this.connection().prepareStatement(sql)) {
 			ResultSet rs = pstatement.executeQuery();
 			while (rs.next()) {
