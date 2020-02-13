@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShShortWorkTimeExport.

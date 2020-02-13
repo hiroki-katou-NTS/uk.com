@@ -71,7 +71,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -531,11 +531,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
 				datePeriod);
 
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriod(sIds, datePeriod);
+				.getBySidsAndDatePeriodNew(sIds, datePeriod);
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
 		List<WorkCondItemDto> listWorkCondItemDto = new ArrayList<>();

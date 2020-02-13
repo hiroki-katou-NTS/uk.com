@@ -7,7 +7,7 @@ import java.util.Map;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public abstract class FinderFacade implements ItemConst{
 

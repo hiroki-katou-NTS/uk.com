@@ -65,7 +65,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceInfoExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplacePubImp.
@@ -577,7 +577,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 *
 	 * @see
 	 * nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#GetWplByListSidAndPeriod(
-	 * java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * java.util.List, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<WorkPlaceHistExport> GetWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
@@ -795,12 +795,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
 		dateHistoryItemLst.forEach(x -> {
 			Optional<Entry<String,String>> wkpIDItem = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny();
-			if(!wkpIDItem.isPresent()){
-				for(int i = 0; i< 10; i++){
-					System.out.println("lỗi dữ liệu WorkplacePubImp line 703");
-				}
-				return;
-			}
 			String wkpID = wkpIDItem.get().getValue();
 			WkpInfoExport wkpInfoExport = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny()
 					.map(k -> new WkpInfoExport(
@@ -823,7 +817,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 *
 	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#
 	 * getLstHistByWkpsAndPeriod(java.util.List,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds,
@@ -855,7 +849,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getLstPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getLstPeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){

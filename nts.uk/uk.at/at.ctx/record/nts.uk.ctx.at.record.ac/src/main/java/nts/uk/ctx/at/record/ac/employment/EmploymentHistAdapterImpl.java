@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * アダプタ実装：所属雇用履歴を取得する

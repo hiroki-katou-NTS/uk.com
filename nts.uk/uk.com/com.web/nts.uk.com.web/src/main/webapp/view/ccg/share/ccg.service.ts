@@ -143,7 +143,7 @@ module nts.uk.com.view.ccg.share.ccg {
          * call service get employee by login
          */
         //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-        export function searchEmployeeByLogin(baseDate: Date, systemType: number): JQueryPromise<model.EmployeeSearchDto> {
+        export function searchEmployeeByLogin(baseDate: string, systemType: number): JQueryPromise<model.EmployeeSearchDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, { baseDate: baseDate, systemType: systemType} );
         }
 //        export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {

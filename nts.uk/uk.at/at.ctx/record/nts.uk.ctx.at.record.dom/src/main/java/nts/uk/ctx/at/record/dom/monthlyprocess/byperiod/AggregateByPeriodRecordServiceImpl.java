@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 任意期間集計Mgr　（アルゴリズム）

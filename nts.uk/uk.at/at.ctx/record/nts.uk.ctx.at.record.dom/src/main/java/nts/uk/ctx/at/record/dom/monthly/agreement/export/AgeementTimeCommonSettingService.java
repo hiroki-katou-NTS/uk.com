@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AgeementTimeCommonSettingService {

@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter

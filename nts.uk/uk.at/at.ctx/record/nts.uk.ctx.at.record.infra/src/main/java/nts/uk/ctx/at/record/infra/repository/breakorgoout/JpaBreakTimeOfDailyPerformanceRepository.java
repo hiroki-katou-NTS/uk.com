@@ -24,7 +24,6 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -36,7 +35,7 @@ import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -367,24 +366,69 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
-		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiBreakTimePK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiBreakTimePK.employeeId).contains(c.krcdtDaiBreakTimePK.ymd))
-					.collect(Collectors.groupingBy(c -> c.krcdtDaiBreakTimePK.employeeId + c.krcdtDaiBreakTimePK.ymd.toString()))
-					.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream).collect(Collectors.toList()));
+    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	List<BreakTimeOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(internalQueryMap(subListDate, empIds));
 		});
 		return result;
 	}
 
+    @SneakyThrows
+	private List<BreakTimeOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
+    	String subEmp = NtsStatement.In.createParamsString(subList);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+    	
+		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_TYPE, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAI_BREAK_TIME_TS  ");
+		query.append(" WHERE SID IN (" + subEmp + ")");
+		query.append(" AND YMD IN (" + subInDate + ")");
+		try (val stmt = this.connection().prepareStatement(query.toString())){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				Map<String, Object> r = new HashMap<>();
+				r.put("BREAK_TYPE", rec.getInt("BREAK_TYPE"));
+				r.put("YMD", rec.getGeneralDate("YMD"));
+				r.put("SID", rec.getString("SID"));
+				r.put("BREAK_FRAME_NO", rec.getInt("BREAK_FRAME_NO"));
+				r.put("STR_STAMP_TIME", rec.getInt("STR_STAMP_TIME"));
+				r.put("END_STAMP_TIME", rec.getInt("END_STAMP_TIME"));
+				return r;
+			}).stream().collect(Collectors.groupingBy(r -> (String) r.get("SID"), Collectors.collectingAndThen(Collectors.toList(), s -> {
+				
+				 Map<GeneralDate, Map<Integer, List<BreakTimeSheet>>> mapped = s.stream().collect(Collectors.groupingBy(c -> (GeneralDate) c.get("YMD"), 
+						 Collectors.collectingAndThen(Collectors.toList(), d -> {
+					return d.stream().collect(Collectors.groupingBy(dt -> (int) dt.get("BREAK_TYPE"), Collectors.collectingAndThen(Collectors.toList(), dt -> {
+						return dt.stream().map(sd -> {
+							return new BreakTimeSheet(new BreakFrameNo((int) sd.get("BREAK_FRAME_NO")), 
+									new TimeWithDayAttr((int) sd.get("STR_STAMP_TIME")), 
+									new TimeWithDayAttr((int) sd.get("END_STAMP_TIME")));
+						}).collect(Collectors.toList());
+					})));
+				})));
+				 
+				return mapped;
+			}))).entrySet().stream().map(r -> {
+				
+				return r.getValue().entrySet().stream().map(c -> {
+					return c.getValue().entrySet().stream().map(bt -> new BreakTimeOfDailyPerformance(r.getKey(), 
+														bt.getKey() == BreakType.REFER_WORK_TIME.value ? BreakType.REFER_WORK_TIME : BreakType.REFER_SCHEDULE, 
+														bt.getValue(), c.getKey()))
+							.collect(Collectors.toList());
+				}).flatMap(List::stream).collect(Collectors.toList());
+			}).flatMap(List::stream).collect(Collectors.toList());
+		}
+    }
 	@Override
 	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);

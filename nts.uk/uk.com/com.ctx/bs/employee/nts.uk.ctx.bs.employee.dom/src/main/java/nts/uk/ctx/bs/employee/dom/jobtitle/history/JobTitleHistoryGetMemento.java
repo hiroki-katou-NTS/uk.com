@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.history;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Interface JobTitleHistoryGetMemento.

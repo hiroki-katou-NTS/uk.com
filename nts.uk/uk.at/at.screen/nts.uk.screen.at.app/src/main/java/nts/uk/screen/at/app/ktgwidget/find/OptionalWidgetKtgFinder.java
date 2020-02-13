@@ -60,7 +60,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class OptionalWidgetKtgFinder {
@@ -203,7 +203,7 @@ public class OptionalWidgetKtgFinder {
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.NOTREFLECTED.value);
-					reflected.add(ReflectedState_New.REMAND.value);
+					//reflected.add(ReflectedState_New.REMAND.value); // redmine update tài liệu 108908
 					dto.setUnApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					//sử lý 05

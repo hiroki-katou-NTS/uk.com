@@ -29,7 +29,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SettingOfManagerFinder {

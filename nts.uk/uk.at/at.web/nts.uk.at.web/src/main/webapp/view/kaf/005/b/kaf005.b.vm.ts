@@ -102,7 +102,7 @@ module nts.uk.at.view.kaf005.b {
             overTimeShiftNightRefer: KnockoutObservable<string> = ko.observable(null);
             flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
             //　初期起動時、計算フラグ=1とする。
-            calculateFlag: KnockoutObservable<number> = ko.observable(1);
+            calculateFlag: KnockoutObservable<number> = ko.observable(0);
             version: number = 0;
             preWorkContent: common.WorkContent;
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -136,25 +136,24 @@ module nts.uk.at.view.kaf005.b {
                         self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
                         $("#fixed-overtime-hour-table").remove();
                         self.timeTableEdit(self.prePostSelected());
-                        
                         $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                        $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                         $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                         $("#fixed-table").ntsFixedTable({ height: 120 });
-                        $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
-                        $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                         $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                     } else {                       
                         if (rebind == true) {
+                            self.tmpOverTime = $("#fixed-overtime-hour-table").clone(true);
+                            for(let i = self.overtimeHours().length - 1; i > 0; i--){
+                                self.tmpOverTime.children('tbody').children('tr').eq(i).remove();
+                            }
+                            $("#fixed-overtime-hour-table").remove();
+                            self.timeTableEdit(self.prePostSelected());
+                            ko.cleanNode(document.getElementById('fixed-overtime-hour-table'));
+                            ko.applyBindings(self, document.getElementById('fixed-overtime-hour-table'));
                             $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
-                            $("#fixed-break_time-table").ntsFixedTable({ height: 96 });
-                            $("#fixed-bonus_time-table").ntsFixedTable({ height: 96 });
                             $("#fixed-table-indicate").ntsFixedTable({ height: 96 });
                             $("#fixed-table").ntsFixedTable({ height: 96 });
-                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() - 23 });
-                            $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 96 });
-                            $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');        
+                            $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');  
                         }    
                     }
                 });
@@ -163,12 +162,12 @@ module nts.uk.at.view.kaf005.b {
             timeTableEdit(value) {
                 var self = this;
                 if (value == 1) {
-                    self.tmpOverTime.children('colgroup').children()[2].width = '110px';
-                    self.tmpOverTime.children('colgroup').children()[3].width = '110px';
+                    self.tmpOverTime.children('colgroup').children().eq(2).attr('width',110);
+                    self.tmpOverTime.children('colgroup').children().eq(3).attr('width',110);
 
                 } else if (value == 0) {
-                    self.tmpOverTime.children('colgroup').children()[2].width = '0px';
-                    self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                    self.tmpOverTime.children('colgroup').children().eq(2).attr('width',0);
+                    self.tmpOverTime.children('colgroup').children().eq(3).attr('width',0);
                 }
                 $("#overtime-container").append(self.tmpOverTime.clone(true));
             }
@@ -444,7 +443,7 @@ module nts.uk.at.view.kaf005.b {
                 let color = '';
                 if(nts.uk.util.isNullOrUndefined(calcValue.applicationTime)){
                     if(self.editable()&& self.enableOvertimeInput()){
-                        color = 'none';
+                        color = 'transparent';
                     } else {
                         color = '#ebebe4';
                     }  
@@ -482,7 +481,7 @@ module nts.uk.at.view.kaf005.b {
                     return '#F69164';
                 }
                 if(self.editable()&& self.enableOvertimeInput()){
-                    return 'none';    
+                    return 'transparent';    
                 } else {
                     return '#ebebe4';
                 }
@@ -876,13 +875,13 @@ module nts.uk.at.view.kaf005.b {
                     });          
                     if(!nts.uk.util.isNullOrUndefined(calcOT)){
                         overtimeHour.applicationTime(calcOT.appTime);
-                        overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
-                        overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
+                        overtimeHour.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.preAppTime));
+                        overtimeHour.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Time_Short_HM", calcOT.actualTime));
                         if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                             if(self.editable()&& self.enableOvertimeInput()){
-                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                overtimeHour.color('none');
+                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                overtimeHour.color('transparent');
                                 return; 
                             } else {
                                 $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
@@ -908,9 +907,9 @@ module nts.uk.at.view.kaf005.b {
                     } else {
                         if(nts.uk.util.isNullOrUndefined(overtimeHour.applicationTime())){
                             if(self.editable()&& self.enableOvertimeInput()){
-                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'none');
-                                overtimeHour.color('none');
+                                $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                $('input#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', 'transparent');
+                                overtimeHour.color('transparent');
                                 return; 
                             } else {
                                 $('td#overtimeHoursCheck_'+overtimeHour.attendanceID()+'_'+overtimeHour.frameNo()).css('background', '#ebebe4');
@@ -978,17 +977,10 @@ module nts.uk.at.view.kaf005.b {
             }
             
             convertIntToTime(data : number) : string{
-                let hourMinute : string = "";
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return null;
-                }else if (data == 0) {
-                    hourMinute = "0:00";
-                }else if(data != null){
-                    let hour = Math.floor(Math.abs(data)/60);
-                    let minutes = Math.floor(Math.abs(data)%60);
-                    hourMinute =  hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                if(nts.uk.util.isNullOrEmpty(data)) {
+                    return null;    
                 }
-                return hourMinute;
+                return nts.uk.time.format.byId("Time_Short_HM", data);
             }
             
             getErrorCode(calcError, preAppError, actualError){
@@ -1031,9 +1023,9 @@ module nts.uk.at.view.kaf005.b {
                 }
                 if(self.editable()&& self.enableOvertimeInput()){
                     if(calcChange){
-                        $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                        $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'none');
-                        return 'none'; 
+                        $('td#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                        $('input#overtimeHoursCheck_'+attendanceId+'_'+frameNo).css('background', 'transparent');
+                        return 'transparent'; 
                     }
                 } else {
                     if(calcChange){

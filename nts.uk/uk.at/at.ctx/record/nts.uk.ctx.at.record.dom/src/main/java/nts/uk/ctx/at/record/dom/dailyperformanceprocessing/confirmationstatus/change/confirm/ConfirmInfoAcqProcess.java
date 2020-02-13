@@ -9,7 +9,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx 確認情報取得処理
@@ -23,12 +23,7 @@ public class ConfirmInfoAcqProcess {
 
 	public List<ConfirmInfoResult> getConfirmInfoAcp(String companyId, List<String> employeeIds,
 			Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
-		if (periodOpt.isPresent()) {
-			return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
-		} else {
-			return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
-		}
-
+		return processModeAll(companyId, employeeIds, periodOpt, yearMonthOpt);
 	}
 
 	private List<ConfirmInfoResult> processModeAll(String companyId, List<String> employeeIds,

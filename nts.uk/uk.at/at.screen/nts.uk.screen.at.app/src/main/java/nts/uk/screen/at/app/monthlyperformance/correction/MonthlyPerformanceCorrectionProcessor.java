@@ -42,6 +42,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthI
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
@@ -107,7 +108,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -181,6 +182,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	@Inject
+	private IFindDataDCRecord iFindDataDCRecord;
 
 	
 	private static final String STATE_DISABLE = "mgrid-disable";
@@ -709,12 +713,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 			throw new BusinessException("Msg_1450");
 		}
 		
+		iFindDataDCRecord.clearAllStateless();
 		//[No.586]月の実績の確認状況を取得する
-		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId);
+		Optional<StatusConfirmMonthDto> statusConfirmMonthDto = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeIds, YearMonth.of(yearMonth), closureId, false);
 
 		//[No.587]月の実績の承認状況を取得する
-		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth), monthlyResults);
-
+		Optional<ApprovalStatusMonth> approvalStatusMonth =  approvalStatusMonthly.getApprovalStatusMonthly(companyId, loginId, closureId, listEmployeeIds, YearMonth.of(yearMonth), monthlyResults, false);
+		iFindDataDCRecord.clearAllStateless();
 
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
 			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());

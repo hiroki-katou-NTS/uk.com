@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.collapsetargetperson.AlarmCheckTargetConRc;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.collapsetargetperson.ResponseImprovementService;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.subjecttoextracted.collapsetargetperson.ResponseImprovementpub;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class ResponseImprovementpubImpl implements ResponseImprovementpub {
 

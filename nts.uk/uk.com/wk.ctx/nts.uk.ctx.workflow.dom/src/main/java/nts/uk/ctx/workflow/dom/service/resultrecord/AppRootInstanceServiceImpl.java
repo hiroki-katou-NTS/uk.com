@@ -25,7 +25,6 @@ import nts.gul.collection.ListHashMap;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ResultRequest596Import;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
@@ -51,7 +50,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.dom.service.output.Request113Output;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @RequestScoped
 public class AppRootInstanceServiceImpl implements AppRootInstanceService {
@@ -690,18 +689,18 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
-		List<StatusOfEmpImport> statusOfEmpImportLst = new ArrayList<>();
-		Request113Output request113Output = null;
 		List<String> empLst = approverRouteLst.stream().map(x -> x.getAppRootInstance().getEmployeeID()).distinct().collect(Collectors.toList());
-		if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
-			/*
+		
+		/*if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
+			
 			// 社員の指定期間中の所属期間を取得する
 			statusOfEmpImportLst = employeeAdapter.getListAffComHistByListSidAndPeriod(empLst, closurePeriod);
 			// [No.113](中間データ版)承認対象者と期間から承認状況を取得する
 			request113Output = this.getAppRootStatusByEmpsPeriod(empLst, closurePeriod, rootType);
-			*/
-		}
+		}*/
+		
 		List<AppRootConfirm> appRootConfirmLst = new ArrayList<>();
+		
 		if(rootType==RecordRootType.CONFIRM_WORK_BY_DAY){
 			// 対象日の就業実績確認状態を取得する
 			appRootConfirmLst = appRootConfirmRepository.findByEmpDate(companyID, empLst, period, rootType);
@@ -787,8 +786,6 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			boolean useDayApproverConfirm, DatePeriod closurePeriod, YearMonth yearMonth, Integer closureID, ClosureDate closureDate) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
-		List<StatusOfEmpImport> statusOfEmpImportLst = new ArrayList<>();
-		Request113Output request113Output = null;
 		List<String> empLst = agentRouteLst.stream().map(x -> x.getAppRootInstance().getEmployeeID()).distinct().collect(Collectors.toList());
 		if(useDayApproverConfirm == true && rootType == RecordRootType.CONFIRM_WORK_BY_MONTH){
 			/*

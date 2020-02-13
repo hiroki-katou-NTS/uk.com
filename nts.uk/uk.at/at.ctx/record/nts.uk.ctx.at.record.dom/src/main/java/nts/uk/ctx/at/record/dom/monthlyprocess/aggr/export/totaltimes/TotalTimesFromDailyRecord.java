@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesResult;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 日別実績から回数集計結果を取得する

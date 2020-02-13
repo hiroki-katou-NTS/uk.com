@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.holidaysremaining;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ChildNursingLeaveRemainingAdapter {
 	/**

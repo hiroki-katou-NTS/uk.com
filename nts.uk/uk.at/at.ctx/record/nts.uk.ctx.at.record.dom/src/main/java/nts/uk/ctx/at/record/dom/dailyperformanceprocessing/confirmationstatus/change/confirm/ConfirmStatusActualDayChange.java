@@ -33,7 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
@@ -51,7 +51,10 @@ public class ConfirmStatusActualDayChange {
 
 	// [No.584]日の実績の確認状況を取得する（NEW）
 	public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
-			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
+			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt, boolean clearState) {
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> optIndentity = iFindDataDCRecord.findIdentityByKey(companyId);
 		if (!optIndentity.isPresent() || !optIndentity.get().isUseConfirmByYourself())
@@ -64,10 +67,20 @@ public class ConfirmStatusActualDayChange {
 		// 確認情報取得処理
 		List<ConfirmInfoResult> confirmInfoResults = confirmInfoAcqProcess.getConfirmInfoAcp(companyId, employeeIds, periodOpt,
 				yearMonthOpt);
+		if(clearState) {
+			iFindDataDCRecord.clearAllStateless();
+		}
 		if (confirmInfoResults.isEmpty())
 			return Collections.emptyList();
 		return checkProcess(companyId, empTarget, employeeIds, confirmInfoResults, optIndentity, approvalUseSettingOpt);
 	}
+
+	// [No.584]日の実績の確認状況を取得する（NEW）
+	public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
+			List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
+		return processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt, true);
+	}
+		
 
 	private List<ConfirmStatusActualResult> checkProcess(String companyId, String empTarget, List<String> employeeIds,
 			List<ConfirmInfoResult> confirmInfoResults, Optional<IdentityProcessUseSet> optIndentity,

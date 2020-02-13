@@ -88,4 +88,41 @@
 
         return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
     }
+     
+    export function applyFormat(format: string, target: string, formatter: NumberFormatter) {
+        if (formatter === undefined) formatter = getFormatter();
+        switch (format) {
+            case 'Number_Separated':
+                return formatter.numberSeparate(target);
+        }
+    }
+     
+    export class NumberFormatter {
+
+        numberSeparate(target: string) {
+            var option = {
+                groupseperator: ',',
+                grouplength: 3,
+                formatId: 'Number_Separated'  
+            }
+            if (isInteger(target, option)) {
+                    return formatNumber(target, option);
+            }
+            
+            return target;
+        }
+
+        isNumberFormat(format: string) {
+            return format === 'Number_Separated';
+        }
+    }
+
+    export function getFormatter() {
+        switch (systemLanguage) {
+            case 'ja':
+                return new NumberFormatter();
+            case 'en':
+                return null;
+        }
+    }
 }

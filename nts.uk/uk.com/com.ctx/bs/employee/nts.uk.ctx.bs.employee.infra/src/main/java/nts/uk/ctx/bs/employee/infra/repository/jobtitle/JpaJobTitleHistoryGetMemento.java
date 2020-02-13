@@ -2,7 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleHistoryGetMemento.

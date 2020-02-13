@@ -44,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister{
 	@Inject
@@ -135,7 +135,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					interimMngBreakDayOff, 
 					breakMng, 
 					dayOffMng,
-					Optional.empty());
+					Optional.empty(),
+					Optional.of(CreateAtr.APPBEFORE),
+					Optional.of(inputParam.getRegisterDate()));
 			BreakDayOffRemainMngOfInPeriod remainMng = breakDayOffMngService.getBreakDayOffMngInPeriod(mngParam);
 			if(!remainMng.getLstError().isEmpty()) {
 				outputData.setChkSubHoliday(true);
@@ -153,7 +155,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					useAbsMng,
 					interimMngAbsRec,
 					useRecMng,
-					Optional.empty());
+					Optional.empty(),
+					Optional.of(CreateAtr.APPBEFORE),
+					Optional.of(inputParam.getRegisterDate()));
 			AbsRecRemainMngOfInPeriod remainMng = absRecMngService.getAbsRecMngInPeriod(mngParam);
 			if(!remainMng.getPError().isEmpty()) {
 				outputData.setChkPause(true);

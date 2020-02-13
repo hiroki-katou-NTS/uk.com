@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 時間外超過明細

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attdstatus.AttendanceStatus;
 import nts.uk.ctx.at.shared.dom.scherec.attdstatus.GetAttendanceStatus;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：出勤状態を取得する

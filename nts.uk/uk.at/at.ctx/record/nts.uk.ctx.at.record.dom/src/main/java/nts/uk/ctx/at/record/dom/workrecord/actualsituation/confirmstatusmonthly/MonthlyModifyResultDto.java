@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Setter
 @Getter

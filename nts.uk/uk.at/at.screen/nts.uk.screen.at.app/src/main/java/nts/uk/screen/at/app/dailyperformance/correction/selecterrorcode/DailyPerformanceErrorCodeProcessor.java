@@ -66,7 +66,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.process.CheckClosingEmpl
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -193,7 +193,11 @@ public class DailyPerformanceErrorCodeProcessor {
 				showButton, dailyPerformanceDto);
 		
 		List<DailyModifyResult> results = new ArrayList<>();
-		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).getAllData();
+		Set<Pair<String, GeneralDate>> setErrorEmpDate = new HashSet<>();
+		if(displayFormat == 2) {
+			setErrorEmpDate = lstError.stream().map(x -> Pair.of(x.getEmployeeId(), x.getProcessingDate())).collect(Collectors.toSet());
+		}
+		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), setErrorEmpDate, dailyModifyQueryProcessor).getAllData();
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
@@ -273,10 +277,10 @@ public class DailyPerformanceErrorCodeProcessor {
 				.map(x -> x.getDate()).collect(Collectors.toList());
 //		String keyFind = IdentifierUtil.randomUniqueId();
 		
-		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty());
+		List<ConfirmStatusActualResult> confirmResults = confirmStatusActualDayChange.processConfirmStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), false);
 
-		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode);
-		
+		List<ApprovalStatusActualResult> approvalResults = approvalStatusActualDayChange.processApprovalStatus(companyId, sId, listEmployeeId, Optional.of(new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), Optional.empty(), mode, false);
+		iFindDataDCRecord.clearAllStateless();
 		Map<Pair<String, GeneralDate>, ConfirmStatusActualResult> mapConfirmResult = confirmResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		Map<Pair<String, GeneralDate>, ApprovalStatusActualResult> mapApprovalResults = approvalResults.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		

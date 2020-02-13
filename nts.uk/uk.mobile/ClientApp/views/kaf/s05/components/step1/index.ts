@@ -373,7 +373,7 @@ export class KafS05aStep1Component extends Vue {
             });            
         } else {
             this.$http.post('at', servicePath.getOvertimeByUI, {
-                url: this.$route.query.overworkatr,
+                url: this.$route.query.overworkatr == undefined ? 0 : this.$route.query.overworkatr,
                 appDate: self.appDate,
                 uiType: self.uiType,
                 timeStart1: self.workTimeInput.start,

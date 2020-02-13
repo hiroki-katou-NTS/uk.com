@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentMngInPeriodQuery {
 	/**

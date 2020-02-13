@@ -51,7 +51,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentSystemFinder {	
@@ -200,7 +200,7 @@ public class EmploymentSystemFinder {
 		result.setDeadLineDetails(deadLine);
 		//アルゴリズム「期間内の休出代休残数を取得する」を実行する
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, getDatePeroid(closingPeriod.start()), 
-				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
+				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 		
 		result.setBreakDay(breakDay);
@@ -345,7 +345,7 @@ public class EmploymentSystemFinder {
 																			Collections.emptyList(),
 																			Collections.emptyList(),
 																			Collections.emptyList(),
-																			Optional.empty());
+																			Optional.empty(),Optional.empty(),Optional.empty());
 		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
 		result.setAbsRecMng(absRecMng);
 		return result;

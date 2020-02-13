@@ -31,12 +31,13 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfoPk;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCompanyHistRepository {
@@ -571,17 +572,44 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod dateperiod) {
-		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
-					.setParameter("employeeIds", subList)
-					.setParameter("startDate", dateperiod.start())
-					.setParameter("endDate", dateperiod.end())
-					.getList());
-		});
-		if(listSid.isEmpty()){
+    	if(employeeIds.isEmpty()){
 			return Collections.emptyList();
 		}
+		List<String> listSid = new ArrayList<>();
+//		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+//			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
+//					.setParameter("employeeIds", subList)
+//					.setParameter("startDate", dateperiod.start())
+//					.setParameter("endDate", dateperiod.end())
+//					.getList());
+//		});
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
+			
+		
+		String sql = "SELECT DISTINCT SID FROM BSYMT_AFF_COM_HIST  " 
+				+ " WHERE SID IN ("+NtsStatement.In.createParamsString(subEmployeeIds)+") "
+				+ " AND START_DATE <= ?"
+				+ " AND END_DATE >= ?";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+
+				int i = 0;
+				for (; i < subEmployeeIds.size(); i++) {
+					stmt.setString(1 + i, subEmployeeIds.get(i));
+				}
+
+				stmt.setDate(1 + i, Date.valueOf(dateperiod.end().localDate()));
+				stmt.setDate(2 + i, Date.valueOf(dateperiod.start().localDate()));
+
+				List<String> ents = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return rec.getString("SID");
+				});
+				listSid.addAll(ents);
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
 		return listSid;
 	}
 

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 丸め前合計時間

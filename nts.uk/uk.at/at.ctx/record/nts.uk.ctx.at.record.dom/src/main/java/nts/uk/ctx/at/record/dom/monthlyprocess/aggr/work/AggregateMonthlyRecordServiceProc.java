@@ -103,7 +103,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 処理：ドメインサービス：月別実績を集計する
@@ -1418,7 +1418,7 @@ public class AggregateMonthlyRecordServiceProc {
 				this.companyId, this.employeeId, period, period.end(),
 				(interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 				this.isOverWriteRemain, useAbsMng, interimMng, useRecMng,
-				this.prevAbsRecResultOpt);
+				this.prevAbsRecResultOpt, Optional.empty(), Optional.empty());
 		val aggrResult = this.absenceRecruitMng.getAbsRecMngInPeriod(paramInput);
 		if (aggrResult != null){
 			
@@ -1481,7 +1481,7 @@ public class AggregateMonthlyRecordServiceProc {
 				this.companyId, this.employeeId, period,
 				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(),
 				this.isOverWriteRemain, interimMng, breakMng, dayOffMng,
-				this.prevBreakDayOffResultOpt);
+				this.prevBreakDayOffResultOpt, Optional.empty(), Optional.empty());
 		val aggrResult = this.breakDayoffMng.getBreakDayOffMngInPeriod(inputParam);
 		if (aggrResult != null){
 			

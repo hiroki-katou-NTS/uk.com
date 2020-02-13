@@ -54,7 +54,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
@@ -66,7 +65,7 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInf
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -753,14 +752,14 @@ public class RealityStatusService {
 		
 		// 対応するドメインモデル「社員の日別実績エラー一覧」を取得する
 		List<EmployeeDailyPerError> listEmpDailyError = this.employeeDailyPerErrorRepo
-				.findByPeriodOrderByYmd(employeeId, new DatePeriod(startDate, endDate));
-		
+				.finds(Arrays.asList(employeeId), new DatePeriod(startDate, endDate));
+		if(listEmpDailyError.isEmpty()) return listEmpErrorOutput;
 		String companyID = AppContexts.user().companyId();
+		List<String> lstErrorCode = listEmpDailyError.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).distinct().collect(Collectors.toList());
+		List<String> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.checkErrorInList(companyID, lstErrorCode);
 		// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
 		for(EmployeeDailyPerError emp : listEmpDailyError){
-			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
-					companyID, Arrays.asList(emp.getErrorAlarmWorkRecordCode().v()));
-			if(!CollectionUtil.isEmpty(errorAlarmWorkRecordLst)){
+			if(errorAlarmWorkRecordLst.contains(emp.getErrorAlarmWorkRecordCode().v())){
 				listEmpErrorOutput.add(new EmployeeErrorOuput(emp.getDate(), true));
 			}
 		}

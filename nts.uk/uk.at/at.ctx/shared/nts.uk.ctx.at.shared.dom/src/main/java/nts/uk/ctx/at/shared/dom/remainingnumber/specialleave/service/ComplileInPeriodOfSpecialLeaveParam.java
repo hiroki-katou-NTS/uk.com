@@ -9,7 +9,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @Setter
 @Getter

@@ -22,7 +22,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryReposi
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClassificationPubImp.
@@ -91,7 +91,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 	 * 
 	 * @see nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub#
 	 * findSClsHistBySid(java.lang.String, java.lang.String,
-	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	public List<SClsHistExport> findSClsHistBySid(String companyId, List<String> employeeIds,

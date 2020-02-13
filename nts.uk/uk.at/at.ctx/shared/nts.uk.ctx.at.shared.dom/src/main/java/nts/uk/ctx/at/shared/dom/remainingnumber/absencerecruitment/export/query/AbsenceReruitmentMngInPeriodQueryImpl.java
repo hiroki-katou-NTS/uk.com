@@ -41,7 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentMngInPeriodQuery{
@@ -646,6 +646,27 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			}
 		}
 		//20181003 DuDT fix bug 101491 ↑
+		if(paramInput.isOverwriteFlg()
+				&& paramInput.getCreatorAtr().isPresent()
+				&& paramInput.getProcessDate().isPresent()) {
+			List<InterimRemain> lstOfAbsremover = lstInterimMngOfAbs.stream().filter(x -> x.getCreatorAtr() == paramInput.getCreatorAtr().get()
+					&& x.getYmd().afterOrEquals(paramInput.getProcessDate().get().start())
+					&& x.getYmd().beforeOrEquals(paramInput.getProcessDate().get().end())).collect(Collectors.toList());
+			lstOfAbsremover.stream().forEach(x -> {
+				List<InterimAbsMng> lstAbs = lstAbsMng.stream().filter(a -> a.getAbsenceMngId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				lstAbsMng.removeAll(lstAbs);
+			});
+			lstInterimMngOfAbs.removeAll(lstOfAbsremover);
+			List<InterimRemain> lstOfRecRemove = lstInterimMngOfRec.stream().filter(x -> x.getCreatorAtr() == paramInput.getCreatorAtr().get()
+					&& x.getYmd().afterOrEquals(paramInput.getProcessDate().get().start())
+					&& x.getYmd().beforeOrEquals(paramInput.getProcessDate().get().end())).collect(Collectors.toList());
+			lstOfRecRemove.stream().forEach(x -> {
+				List<InterimRecMng> lstRec = lstRecMng.stream().filter(a -> a.getRecruitmentMngId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				lstRecMng.removeAll(lstRec);
+			});
+			 
+			lstInterimMngOfRec.removeAll(lstOfRecRemove);
+		}
 		List<AbsRecDetailPara> lstOutputOfAbs = this.lstOutputOfAbs(lstAbsMng, lstInterimMngOfAbs, paramInput);
 		List<AbsRecDetailPara> lstOutputOfRec = this.lstOutputOfRec(lstRecMng, lstInterimMngOfRec, paramInput);
 		lstAbsRec.addAll(lstOutputOfAbs);
@@ -773,7 +794,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList(),
-				Optional.empty());
+				Optional.empty(),Optional.empty(),Optional.empty());
 		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();
 	}
 	

@@ -8,7 +8,7 @@ import nts.uk.shr.com.history.History;
 import nts.uk.shr.com.history.HistoryItem;
 import nts.uk.shr.com.history.constraint.HistoryConstraint;
 import nts.uk.shr.com.history.constraint.MustNotDuplicate;
-import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
+import nts.arc.time.calendar.period.GeneralPeriod;
 
 /**
  * UnduplicatableHistory
