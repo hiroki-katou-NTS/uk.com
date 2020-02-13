@@ -39,7 +39,7 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 				cmd.getAppDate().getEndDate(), cmd.getReportId(), cmd.getApprovalStatus(), cmd.getInputName());
 
 		if (reportList.size() > 99) {
-			throw new BusinessException("Msgj_46");
+			throw new BusinessException("MsgJ_46");
 		}
 		reportList.forEach(x -> {
 			ApproveReportCommand approveCmd = new ApproveReportCommand(String.valueOf(x.getReportID()),

@@ -28,6 +28,10 @@ module jhn003.a.vm {
                     
                 }
             });
+            
+            self.searchInfo().approvalReport.subscribe((data) => {
+                self.approvalAllEnable(false);
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -51,7 +55,11 @@ module jhn003.a.vm {
 
             block.grayout();
 
-            service.approvalAll(command)
+            service.approvalAll(command).done(() => {
+
+                dialog.info({ messageId: "Msg_15" });
+
+            })
                 .fail((error) => {
 
                     dialog.info(error);

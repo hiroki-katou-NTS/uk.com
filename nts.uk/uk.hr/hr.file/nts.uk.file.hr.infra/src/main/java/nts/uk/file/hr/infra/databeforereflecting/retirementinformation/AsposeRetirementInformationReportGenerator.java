@@ -30,17 +30,17 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetiDateDto;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.RetirementCourseDto;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
-import nts.uk.ctx.hr.develop.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.ResignmentDivision;
-import nts.uk.ctx.hr.develop.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.develop.dom.interview.dto.InterviewRecordInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.ResignmentDivision;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.Status;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.EvaluationItem;
 import nts.uk.ctx.hr.shared.dom.referEvaluationItem.ReferEvaluationItem;
 import nts.uk.file.hr.app.databeforereflecting.retirementinformation.RetirementInformationGenerator;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.PlannedRetirementDto;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.RetiDateDto;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.RetirementCourseDto;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.SearchRetiredEmployeesQuery;
+import nts.uk.screen.hr.app.databeforereflecting.retirementinformation.find.SearchRetiredResultDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -170,18 +170,18 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 					ws.getCells().deleteRows(rowIndex, exportData.size() % 2 == 0 ? 3 : 4);
 				}
 				// content
-				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "空白" : "保留");
+				ws.getCells().get(rowIndex, RETENTION).putValue(entity.getPendingFlag() == 0 ? "" : "保留");
 				ws.getCells().get(rowIndex, RETIREMENT)
 						.putValue(EnumAdaptor.valueOf(entity.getExtendEmploymentFlg(), ResignmentDivision.class).name);
-				ws.getCells().get(rowIndex, STATUS)
-						.putValue(EnumAdaptor.valueOf(entity.getStatus(), Status.class).name);
+				ws.getCells().get(rowIndex, STATUS).putValue(
+						entity.getStatus() != null ? EnumAdaptor.valueOf(entity.getStatus(), Status.class).name : "");
 				ws.getCells().get(rowIndex, DESIRED_CODE).putValue(entity.getDesiredWorkingCourseCd());
 				ws.getCells().get(rowIndex, DESIRED_NAME).putValue(entity.getDesiredWorkingCourseName());
 				ws.getCells().get(rowIndex, EMPLOYEE_CD).putValue(entity.getScd());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME).putValue(entity.getBusinessName());
 				ws.getCells().get(rowIndex, EMPLOYEE_NAME_KANA).putValue(entity.getBusinessnameKana());
 				ws.getCells().get(rowIndex, BIRTH_DAY).putValue(convertToString(entity.getBirthday()));
-				ws.getCells().get(rowIndex, AGE).putValue(entity.getRetirementAge());
+				ws.getCells().get(rowIndex, AGE).putValue(entity.getRetirementAge() + "歳");
 				ws.getCells().get(rowIndex, DEPARTMENT_CODE).putValue(entity.getDepartmentCode());
 				ws.getCells().get(rowIndex, DEPARTMENT_NAME).putValue(entity.getDepartmentName());
 				ws.getCells().get(rowIndex, EMPLOYMENT_CODE).putValue(entity.getEmploymentCode());
@@ -394,7 +394,7 @@ public class AsposeRetirementInformationReportGenerator extends AsposeCellsRepor
 
 		ws.getCells().get(1, 3).putValue(query.getStartDate() + " ～ " + query.getEndDate());
 		ws.getCells().get(1, 5).putValue(query.isIncludingReflected() ? "※反映済みを含む" : "");
-		ws.getCells().get(2, 3).putValue(query.getRetirementAge());
+		ws.getCells().get(2, 3).putValue(query.getRetirementAge() != null ? query.getRetirementAge() + "歳" : "");
 		ws.getCells().get(3, 3).putValue(query.isAllSelectDepartment() ? "全て" : query.getSelectDepartmentName());
 		ws.getCells().get(4, 3).putValue(query.isAllSelectEmployment() ? "全て" : query.getSelectEmploymentName());
 	}
