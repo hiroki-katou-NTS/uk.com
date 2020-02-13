@@ -155,11 +155,10 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		Collections.reverse(hierachyCDLst);
 		// 求めた上位階層の職場のIDをOutputする
 		List<String> upperWkpIDLst = new ArrayList<>();
-		upperWkpIDLst.add(workplaceID);
 		for(String hierachyCD : hierachyCDLst) {
 			upperWkpIDLst.add(workplaceInforLst.stream().filter(x -> x.getHierarchyCode().v().equals(hierachyCD)).findAny().get().getWorkplaceId());
 		}
-		return hierachyCDLst;
+		return upperWkpIDLst;
 	}
 
 	@Override
