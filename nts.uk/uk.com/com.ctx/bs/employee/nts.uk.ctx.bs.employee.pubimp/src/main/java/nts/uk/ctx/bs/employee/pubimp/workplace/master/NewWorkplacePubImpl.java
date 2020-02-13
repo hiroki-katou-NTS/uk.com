@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
@@ -21,6 +22,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
@@ -117,34 +119,46 @@ public class NewWorkplacePubImpl implements WorkplacePub {
     }
 
 	@Override
-	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date) {
-		return affWkpHistItemRepo.getAffWrkplaHistItemByEmpIdAndDate(date, employeeID).get(0).getWorkplaceId();
+	public AffWorkplaceHistoryItemExport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		List<AffWorkplaceHistoryItem> itemLst = affWkpHistItemRepo.getAffWrkplaHistItemByEmpIdAndDate(date, employeeID);
+		if(CollectionUtil.isEmpty(itemLst)) {
+			return null;
+		} else {
+			return new AffWorkplaceHistoryItemExport(
+					itemLst.get(0).getHistoryId(), 
+					itemLst.get(0).getWorkplaceId(), 
+					itemLst.get(0).getNormalWorkplaceId());
+		}
 	}
 
 	@Override
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
-		// ドメインモデル「部門構成」を取得する(lấy domain 「WorkplaceConfig」)
+		// ドメインモデル「職場構成」を取得する(lấy domain 「WorkplaceConfig」)
 		Optional<WorkplaceConfiguration> opWorkplaceConfig = workplaceConfigurationRepository.findByDate(companyID, date);
 		if(!opWorkplaceConfig.isPresent()) {
 			throw new RuntimeException("error workplace config");
 		}
-		// ドメインモデル「部門情報」を取得する
-		WorkplaceInformation workplaceInfor = workplaceInformationRepository.getActiveWorkplaceByWkpIds(
+		// ドメインモデル「職場情報」を取得する
+		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.getAllActiveWorkplaceByCompany(
 				companyID, 
-				opWorkplaceConfig.get().items().get(0).identifier(), 
-				Arrays.asList(workplaceID)).get(0);
-		// 取得した階層コードの上位階層コードを求める(Tìm upperHierarchyCode của HierarchyCode đã lấy)
+				opWorkplaceConfig.get().items().get(0).identifier());
+		// 取得した「職場情報」から基準となる職場の階層コードを求める
+		WorkplaceInformation workplaceInfor = workplaceInforLst.stream().filter(x -> x.getWorkplaceId().equals(workplaceID)).findAny().get();
+		// 求めた基準となる職場の階層コードから上位階層の職場を求める
 		List<String> hierachyCDLst = new ArrayList<>();
 		String sumCD = workplaceInfor.getHierarchyCode().toString();
-		sumCD = sumCD.substring(0, sumCD.length() - 3);
-		hierachyCDLst.add(sumCD.substring(0, 3));
-		sumCD = sumCD.substring(3, sumCD.length());
-		while(sumCD.length() > 6) {
-			hierachyCDLst.add(sumCD.substring(0, 6));
-			sumCD = sumCD.substring(6, sumCD.length()); 
+		Integer index = 3;
+		while(sumCD.length() - 3 >= index) {
+			hierachyCDLst.add(sumCD.substring(0, index));
+			index+=3;
 		}
-		hierachyCDLst.add(sumCD);
 		Collections.reverse(hierachyCDLst);
+		// 求めた上位階層の職場のIDをOutputする
+		List<String> upperWkpIDLst = new ArrayList<>();
+		upperWkpIDLst.add(workplaceID);
+		for(String hierachyCD : hierachyCDLst) {
+			upperWkpIDLst.add(workplaceInforLst.stream().filter(x -> x.getHierarchyCode().v().equals(hierachyCD)).findAny().get().getWorkplaceId());
+		}
 		return hierachyCDLst;
 	}
 
