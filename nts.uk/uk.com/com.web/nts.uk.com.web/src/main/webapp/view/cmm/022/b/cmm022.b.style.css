@@ -1,0 +1,23 @@
+.panel-item{
+	margin-top: 15px;
+    margin-left: 20px;
+}
+
+.left-content{
+	width: 490px;
+    float: left;
+}
+
+.right-content{
+	width: 470px;
+    float: right;
+}
+
+.master-item{
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.up-and-down{
+	margin-left: 10px;
+}
