@@ -178,6 +178,7 @@ module nts.uk.com.view.cmm018.shr {
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
             checkMode: number;
+            sysAtr: number;
             constructor(startDate: string,
             endDate: string,
             workplaceId: string,
@@ -186,7 +187,8 @@ module nts.uk.com.view.cmm018.shr {
             editOrDelete: number,
             startDatePrevious: string,
             lstUpdate: Array<UpdateHistoryDto>,
-            checkMode: number){
+            checkMode: number,
+            sysAtr: number){
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.workplaceId = workplaceId;
@@ -196,6 +198,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.startDatePrevious = startDatePrevious;
                 this.lstUpdate = lstUpdate;
                 this.checkMode = checkMode;
+                this.sysAtr = sysAtr;
             }
         }
         //ScrenJ
@@ -218,6 +221,7 @@ module nts.uk.com.view.cmm018.shr {
             overlapFlag?: boolean;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
+            sysAtr: number;
         }
         //ScreenJ
         export class UpdateHistoryDto{
@@ -372,14 +376,14 @@ module nts.uk.com.view.cmm018.shr {
             approvalId: string;
             /**履歴ID*/
             historyId: string;
-            /**申請種類*/
-            applicationType: number;
+            /**種類*/
+            applicationType: any;
             /**就業ルート区分*/
             employmentRootAtr: number;
             branchId: string;
             lstAppPhase: Array<ApprovalPhaseDto>;
             constructor(approvalId: string, historyId: string,
-                        applicationType: number, employmentRootAtr: number, branchId: string,
+                        applicationType: any, employmentRootAtr: number, branchId: string,
                         lstAppPhase: Array<ApprovalPhaseDto>){
                 this.approvalId = approvalId;
                 this.historyId = historyId;
@@ -568,6 +572,8 @@ module nts.uk.com.view.cmm018.shr {
                 let lstB: Array<vmbase.CompanyAppRootADto> = [];//application
                 let lstC: Array<vmbase.CompanyAppRootADto> = [];//confirmation
                 let lstD: Array<vmbase.CompanyAppRootADto> = [];//anyItem
+                let lstE: Array<vmbase.CompanyAppRootADto> = [];//notice
+                let lstF: Array<vmbase.CompanyAppRootADto> = [];//event
                 _.each(lstRoot, function(obj){
                     if(obj.employRootAtr == 0){//common
                         lstA.push(obj);
@@ -581,11 +587,19 @@ module nts.uk.com.view.cmm018.shr {
                     if(obj.employRootAtr == 3){//anyItem
                         lstD.push(obj);
                     }
+                    if(obj.employRootAtr == 4){//notice
+                        lstE.push(obj);
+                    }
+                    if(obj.employRootAtr == 5){//event
+                        lstF.push(obj);
+                    }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);
                 let sortByB =  _.orderBy(lstB, ["appTypeValue"], ["asc"]);
                 let sortByC =  _.orderBy(lstC, ["appTypeValue"], ["asc"]);
                 let sortByD =  _.orderBy(lstD, ["appTypeValue"], ["asc"]);
+                let sortByE =  _.orderBy(lstE, ["appTypeValue"], ["asc"]);
+                let sortByF =  _.orderBy(lstF, ["appTypeValue"], ["asc"]);
                 //push list A (common)
                 _.each(sortByA, function(obj){
                     result.push(obj);
@@ -600,6 +614,14 @@ module nts.uk.com.view.cmm018.shr {
                 });
                 //push list D (anyItem)
                 _.each(sortByD, function(obj){
+                    result.push(obj);
+                });
+                //push list E (notice)
+                _.each(sortByE, function(obj){
+                    result.push(obj);
+                });
+                //push list F (event)
+                _.each(sortByF, function(obj){
                     result.push(obj);
                 });
                 return result;
@@ -664,7 +686,10 @@ module nts.uk.com.view.cmm018.shr {
                             } 
                             //「社員参照範囲と同じ」の場合
                             //取得した「社員参照範囲」をチェック
-                            let empRef = empRoleSet.presentInqEmployeeRef;
+                            let empRef = null;
+                            if(!_.isNull(empRoleSet.role)) {
+                                empRef = empRoleSet.role.employeeReferenceRange;     
+                            }
                             //0: 全社員 ALL_EMPLOYEE
                             //1: 部門（配下含む） DEPARTMENT_AND_CHILD
                             //2: 部門（配下含まない） DEPARTMENT_ONLY

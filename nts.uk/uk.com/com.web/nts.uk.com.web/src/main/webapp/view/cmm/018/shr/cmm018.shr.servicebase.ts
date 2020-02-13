@@ -53,6 +53,7 @@ module nts.uk.com.view.cmm018.shr {
         export function settingKaf022(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.settingKaf022);
         }
+        //ApprovalInfoWebsevice
         export function setAppUseKaf022(workplaceID): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.setAppUseKaf022, workplaceID);
         }

@@ -28,6 +28,6 @@ public class RegisterAppApprovalRootCommand {
 	private String endDate;
 	/**checkMode: まとめて登録モード(0), 申請個別登録モード(1)*/
 	private int checkMode;
-
-	
+//	private List<Integer> lstNotice;
+//	private List<String> lstEvent;
 }

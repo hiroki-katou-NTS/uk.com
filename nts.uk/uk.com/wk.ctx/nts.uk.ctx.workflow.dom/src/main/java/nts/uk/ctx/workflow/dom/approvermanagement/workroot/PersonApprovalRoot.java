@@ -38,7 +38,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String branchId,
 			String anyItemApplicationId,
 			Integer confirmationRootType,
-			int employmentRootAtr, int sysAtr, String noticeId, String busEventId){
+			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
 		employmentAppHistorys.add(employmentAppHistory);
@@ -62,7 +62,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String branchId,
 			String anyItemApplicationId,
 			Integer confirmationRootType,
-			int employmentRootAtr, int sysAtr, String noticeId, String busEventId){
+			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
 		employmentAppHistorys.add(employmentAppHistory);

@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalPhaseStateHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHrRepository;
+import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApproverInforHr;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.pub.hrapprovalstate.ApprovalStateHrPub;
@@ -69,12 +70,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	 */
 	@Override
 	public ApprovalRootStateHrExport getApprovalRootStateHr(String rootStateID) {
-		// TODO Auto-generated method stub
 		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
 		boolean errorFlg = false;
 		ApprovalStateHrImport apprState = null;
 		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
-		if(opRoot.isPresent()){
+		if(!opRoot.isPresent()){
 			//エラーフラグ　＝　True (Error flag = True)
 			errorFlg = true;
 			return new ApprovalRootStateHrExport(errorFlg, apprState);
@@ -388,23 +388,24 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	@Override
 	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr) {
 		if(apprSttHr == null) return true;
-//		try{
-//			ApprovalRootStateHr root = new ApprovalRootStateHr(apprSttHr.getRootStateID(),
-//				apprSttHr.getAppDate(), apprSttHr.getEmployeeID(),
-//				apprSttHr.getLstPhaseState().stream().map(ph -> ApprovalPhaseStateHr.convert(ph.getPhaseOrder(),
-//						ph.getApprovalAtr(), ph.getApprovalForm(), 
-//						ph.getLstApprovalFrame().stream().map(fr -> ApprovalFrameHr.convert(fr.getFrameOrder(),
-//								fr.getLstApproverID(), fr.getApprovalAtr(), fr.getConfirmAtr(), fr.getRepresenterID(),
-//								fr.getApprovalDate(), fr.getApprovalReason(), fr.getAppDate())
-//								).collect(Collectors.toList()))
-//						).collect(Collectors.toList())
-//				);
-//			repoApprStateHr.insert(root);
-//			return false;
-//		}catch(Exception ex){
-//			return true;
-//		}
-		return Boolean.FALSE;
+		try{
+			ApprovalRootStateHr root = new ApprovalRootStateHr(apprSttHr.getRootStateID(),
+				apprSttHr.getAppDate(), apprSttHr.getEmployeeID(),
+				apprSttHr.getLstPhaseState().stream().map(ph -> ApprovalPhaseStateHr.convert(ph.getPhaseOrder(),
+						ph.getApprovalAtr(), ph.getApprovalForm(), 
+						ph.getLstApprovalFrame().stream().map(fr -> ApprovalFrameHr.convert(fr.getFrameOrder(),
+								fr.getConfirmAtr(), fr.getAppDate(), fr.getLstApproverInfo().stream()
+								.map(appr -> ApproverInforHr.convert(appr.getApproverID(), appr.getApprovalAtr(),
+										appr.getAgentID(), appr.getApprovalDate(), appr.getApprovalReason()))
+								.collect(Collectors.toList()))
+								).collect(Collectors.toList()))
+						).collect(Collectors.toList())
+				);
+			repoApprStateHr.insert(root);
+			return false;
+		}catch(Exception ex){
+			return true;
+		}
 	}
 	//1.解除できるかチェックする
 	public Boolean canReleaseCheckHr(ApprovalPhaseStateHr phaseState, String employeeID) {

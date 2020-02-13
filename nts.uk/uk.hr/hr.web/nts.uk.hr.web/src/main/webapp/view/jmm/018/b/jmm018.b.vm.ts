@@ -315,13 +315,6 @@ module nts.uk.com.view.jmm018.b {
                 return dfd.promise();
             }
             
-            openCDialog(): void{
-                let self = this;
-                
-                nts.uk.ui.windows.sub.modal('/view/jmm/018/c/index.xhtml').onClosed(function(): any {
-                })
-            }
-            
         }
     }
 

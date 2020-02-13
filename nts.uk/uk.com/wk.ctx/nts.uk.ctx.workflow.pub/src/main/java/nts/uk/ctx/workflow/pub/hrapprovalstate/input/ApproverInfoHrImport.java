@@ -14,6 +14,6 @@ public class ApproverInfoHrImport {
 	private String agentID;
 	/**承認日*/
 	private GeneralDate approvalDate;
-	/**理由*/
+	/**コメント*/
 	private String approvalReason;
 }

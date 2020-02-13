@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum Status {
 	// 未登録
-	Unregistered(0,"空白"),
+	Unregistered(0,""),
 	// 登録済み/承認待ち
 	// Registered / Approval Pending
 	Registered(1,"承認待ち"),

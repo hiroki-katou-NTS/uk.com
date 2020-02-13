@@ -886,7 +886,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     employeeId: self.employeeId(),
                     check: self.tabSelectedB(),
                     mode: 1,
-                    lstUpdate: lst
+                    lstUpdate: lst,
+                    sysAtr: 0
                 }
                 setShared('CMM018J_PARAM', paramJ);
                 modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
