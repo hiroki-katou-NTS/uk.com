@@ -148,4 +148,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return hierachyCDLst;
 	}
 
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+		List<String> lstResult = new ArrayList<>();
+		lstResult.add(workplaceId);
+		lstResult.addAll(this.getUpperWorkplace(companyId, workplaceId, baseDate));
+		return lstResult;
+	}
+
 }
