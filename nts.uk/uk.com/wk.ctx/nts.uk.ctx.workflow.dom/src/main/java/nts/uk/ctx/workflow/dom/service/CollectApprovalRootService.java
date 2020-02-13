@@ -75,6 +75,7 @@ public interface CollectApprovalRootService {
 	 * @param companyID
 	 * @param approverGroupCD
 	 * @param specWkpId
+	 * @param paramID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -82,8 +83,8 @@ public interface CollectApprovalRootService {
 	 * @param lowerApprove
 	 * @return
 	 */
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, Optional<Integer> opDispOrder,
-			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID, 
+			Optional<Integer> opDispOrder, String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
 	
 	/**
 	 * 申請者より、下の職位の承認者とチェック
@@ -144,4 +145,12 @@ public interface CollectApprovalRootService {
 	 */
 	public List<String> getUpperID(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 	
+	/**
+	 * 対象者の職場ID又は部門IDを取得
+	 * @param systemAtr
+	 * @param employeeID
+	 * @param baseDate
+	 * @return
+	 */
+	public String getIDBySystemType(SystemAtr systemAtr, String employeeID, GeneralDate baseDate);
 }

@@ -90,7 +90,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	
 	@Override
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
-		return depPub.getDepartmentIDByEmpDate(employeeID, date);
+		return depPub.getDepartmentHistItemByEmpDate(employeeID, date).getDepartmentId();
 	}
 
 	@Override

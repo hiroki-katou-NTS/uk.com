@@ -70,7 +70,7 @@ public interface DepartmentPub {
      * @param date
      * @return
      */
-    public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
+    public AffDpmHistItemExport getDepartmentHistItemByEmpDate(String employeeID, GeneralDate date);
     
     /**
      * [No.570]部門の上位部門を取得する

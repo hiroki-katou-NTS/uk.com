@@ -10,12 +10,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.pub.department.master.AffDpmHistItemExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
@@ -100,8 +102,18 @@ public class DepartmentPubImpl implements DepartmentPub {
 	}
 
 	@Override
-	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
-		return affDepartmentHistoryItemRepository.findByEmpDate(employeeID, date).get().getDepartmentId();
+	public AffDpmHistItemExport getDepartmentHistItemByEmpDate(String employeeID, GeneralDate date) {
+		Optional<AffDepartmentHistoryItem> item = affDepartmentHistoryItemRepository.findByEmpDate(employeeID, date);
+		if(item.isPresent()) {
+			return null;
+		} else {
+			return new AffDpmHistItemExport(
+					item.get().getHistoryId(), 
+					item.get().getEmployeeId(), 
+					item.get().getDepartmentId(), 
+					item.get().getAffHistoryTranfsType(), 
+					item.get().getDistributionRatio().v());
+		}
 	}
 
 	@Override
