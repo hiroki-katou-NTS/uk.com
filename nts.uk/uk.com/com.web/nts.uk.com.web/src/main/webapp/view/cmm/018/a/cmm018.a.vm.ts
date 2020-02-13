@@ -1214,7 +1214,8 @@ module nts.uk.com.view.cmm018.a {
                     check: self.tabSelected(),
                     mode: self.selectedModeCode(),//まとめて設定モード(0) - 申請個別設定モード(1)
                     overlapFlag: history.overLap,
-                    lstUpdate: lst
+                    lstUpdate: lst,
+                    sysAtr: self.systemAtr()
                 }
                 setShared('CMM018J_PARAM', paramJ);
                 modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
