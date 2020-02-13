@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.pubimp.department.master;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -107,29 +106,42 @@ public class DepartmentPubImpl implements DepartmentPub {
 
 	@Override
 	public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date) {
-		// ドメインモデル「部門構成」を取得する(lấy domain 「WorkplaceConfig」)
+		// ドメインモデル「部門構成」を取得する
 		Optional<DepartmentConfiguration> opDepartmentConfig = departmentConfigurationRepository.findByDate(companyID, date);
 		if(!opDepartmentConfig.isPresent()) {
 			throw new RuntimeException("error department config");
 		}
 		// ドメインモデル「部門情報」を取得する
-		DepartmentInformation departmentInfor = departmentInformationRepository.getActiveDepartmentByDepIds(
+		List<DepartmentInformation> departmentInforLst = departmentInformationRepository.getAllActiveDepartmentByCompany(
 				companyID, 
-				opDepartmentConfig.get().items().get(0).identifier(), 
-				Arrays.asList(departmentID)).get(0);
-		// 取得した階層コードの上位階層コードを求める(Tìm upperHierarchyCode của HierarchyCode đã lấy)
+				opDepartmentConfig.get().items().get(0).identifier());
+		// 取得した「部門情報」から基準となる部門の階層コードを求める
+		DepartmentInformation departmentInfor = departmentInforLst.stream().filter(x -> x.getDepartmentId().equals(departmentID)).findAny().get();
+		// 求めた基準となる部門の階層コードから上位階層の部門を求める
 		List<String> hierachyCDLst = new ArrayList<>();
 		String sumCD = departmentInfor.getHierarchyCode().toString();
-		sumCD = sumCD.substring(0, sumCD.length() - 3);
-		hierachyCDLst.add(sumCD.substring(0, 3));
-		sumCD = sumCD.substring(3, sumCD.length());
-		while(sumCD.length() > 6) {
-			hierachyCDLst.add(sumCD.substring(0, 6));
-			sumCD = sumCD.substring(6, sumCD.length()); 
+		Integer index = 3;
+		while(sumCD.length() - 3 >= index) {
+			hierachyCDLst.add(sumCD.substring(0, index));
+			index+=3;
 		}
-		hierachyCDLst.add(sumCD);
 		Collections.reverse(hierachyCDLst);
+		// 求めた上位階層の部門のIDをOutputする
+		List<String> upperDepartmentInforIDLst = new ArrayList<>();
+		for(String hierachyCD : hierachyCDLst) {
+			upperDepartmentInforIDLst.add(departmentInforLst.stream().filter(x -> x.getHierarchyCode().v().equals(hierachyCD)).findAny().get().getDepartmentId());
+		}
 		return hierachyCDLst;
+	}
+
+	@Override
+	public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date) {
+		List<String> lstResult = new ArrayList<>();
+		// Output「上位部門一覧」の先頭にパラメータ「部門ID」を追加する
+		lstResult.add(departmentID);
+		// 部門の上位部門を取得する
+		lstResult.addAll(this.getUpperDepartment(companyID, departmentID, date));
+		return lstResult;
 	}
 
 }

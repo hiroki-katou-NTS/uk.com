@@ -73,11 +73,20 @@ public interface DepartmentPub {
     public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
     
     /**
-     * 部門の上位部門を取得する
+     * [No.570]部門の上位部門を取得する
      * @param companyID
      * @param departmentID
      * @param date
      * @return
      */
     public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
+    
+    /**
+     * [No.572]部門の上位部門を基準部門を含めて取得する
+     * @param companyID
+     * @param departmentID
+     * @param date
+     * @return
+     */
+    public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date);
 }
