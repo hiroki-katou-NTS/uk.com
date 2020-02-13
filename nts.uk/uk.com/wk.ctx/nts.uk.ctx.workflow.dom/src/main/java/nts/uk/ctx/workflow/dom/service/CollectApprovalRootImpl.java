@@ -144,11 +144,11 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		// 対象者の所属職場を含める上位職場を取得する(Get nơi làm việc cao nhất/ upper workplace bao gồm nơi làm việc của nhân viên mục tiêu)
-		List<String> wpkList = employeeAdapter.findWpkIdsBySid(companyID, employeeID, standardDate);
-		for (String wｋｐId : wpkList) {
+		// 対象者の所属職場・部門を含める上位職場・部門を取得する
+		List<String> upperIDIncludeList = this.getUpperIDIncludeSelf(companyID, employeeID, standardDate, sysAtr);
+		for (String paramID : upperIDIncludeList) {
 			// ドメインモデル「職場別承認ルート」を取得する(lấy dữ liệu domain「職場別就業承認ルート」)
-			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, wｋｐId, standardDate, rootAtr, targetType, sysAtr.value);
+			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, paramID, standardDate, rootAtr, targetType, sysAtr.value);
 			if(opWkpAppRoot.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRoot.get().getApprovalId());
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
@@ -173,7 +173,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 			// ドメインモデル「職場別承認ルート」を取得する (Get domain "Approval Route workPlace ")
-			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate, sysAtr.value);
+			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, paramID, standardDate, sysAtr.value);
 			if(opWkpAppRootsOfCom.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
@@ -625,5 +625,21 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			// 社員と基準日から所属職場履歴項目を取得する
 			return wkApproverAdapter.getDepartmentIDByEmpDate(employeeID, baseDate);
 		}
+	}
+
+	@Override
+	public List<String> getUpperIDIncludeSelf(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr) {
+		// Input．システム区分をチェック
+		if(systemAtr==SystemAtr.WORK) {
+			// 社員と基準日から所属職場履歴項目を取得する
+			String workplaceID = wkApproverAdapter.getWorkplaceIDByEmpDate(employeeID, date);
+			// [No.571]職場の上位職場を基準職場を含めて取得する
+			return wkApproverAdapter.getWorkplaceIdAndUpper(companyID, workplaceID, date);
+		} else {
+			// 社員と基準日から所属部門履歴項目を取得する
+			String departmentID = wkApproverAdapter.getDepartmentIDByEmpDate(employeeID, date);
+			// 部門の上位部門を基準部門を含めて取得する
+			return wkApproverAdapter.getDepartmentIDAndUpper(companyID, departmentID, date);
+		} 
 	}
 }

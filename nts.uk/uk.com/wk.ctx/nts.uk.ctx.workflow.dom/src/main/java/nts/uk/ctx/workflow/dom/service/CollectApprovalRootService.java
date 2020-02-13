@@ -153,4 +153,14 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public String getIDBySystemType(SystemAtr systemAtr, String employeeID, GeneralDate baseDate);
+	
+	/**
+	 * 対象者の所属職場・部門を含める上位職場・部門を取得する
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param systemAtr
+	 * @return
+	 */
+	public List<String> getUpperIDIncludeSelf(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 }

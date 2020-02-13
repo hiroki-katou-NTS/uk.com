@@ -29,9 +29,13 @@ public interface WorkplaceApproverAdapter {
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
     
     public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
+    
+    public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date);
 	
 	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date);
 	
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	
+	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate);
 
 }

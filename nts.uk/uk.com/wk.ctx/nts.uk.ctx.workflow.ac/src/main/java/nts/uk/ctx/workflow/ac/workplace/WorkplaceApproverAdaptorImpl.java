@@ -97,6 +97,11 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date) {
 		return depPub.getUpperDepartment(companyID, departmentID, date);
 	}
+	
+	@Override
+	public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date) {
+		return depPub.getDepartmentIDAndUpper(companyID, departmentID, date);
+	}
 
 	@Override
 	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date) {
@@ -106,5 +111,10 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	@Override
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
 		return wkpPub.getUpperWorkplace(companyID, workplaceID, date);
+	}
+
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate) {
+		return wkpPub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceID);
 	}
 }
