@@ -131,7 +131,7 @@ public class DepartmentPubImpl implements DepartmentPub {
 		for(String hierachyCD : hierachyCDLst) {
 			upperDepartmentInforIDLst.add(departmentInforLst.stream().filter(x -> x.getHierarchyCode().v().equals(hierachyCD)).findAny().get().getDepartmentId());
 		}
-		return hierachyCDLst;
+		return upperDepartmentInforIDLst;
 	}
 
 	@Override
