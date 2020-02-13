@@ -1,7 +1,9 @@
 package nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.WorkId;
 
 /**
  * @author thanhpv
@@ -14,7 +16,7 @@ public class MenuApprovalSettings extends AggregateRoot {
 	private String cId;
 
 	/** 業務ID */
-	private int workId;
+	private WorkId workId;
 
 	/** 個別届出種類ID */
 	private int rptLayoutId;
@@ -86,7 +88,7 @@ public class MenuApprovalSettings extends AggregateRoot {
 			String app2Devcd, String app2DevName, String app2Poscd, String app2PosName) {
 		super();
 		this.cId = cId;
-		this.workId = workId;
+		this.workId = EnumAdaptor.valueOf(workId, WorkId.class);
 		this.rptLayoutId = rptLayoutId;
 		this.programId = programId;
 		this.screenId = screenId;
