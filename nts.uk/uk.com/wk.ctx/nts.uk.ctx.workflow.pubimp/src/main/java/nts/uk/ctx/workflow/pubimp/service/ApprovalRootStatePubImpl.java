@@ -1035,7 +1035,12 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				), 
 				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
 	}
-	
+	/**
+	 * 11.　承認者の在職状態をチェック
+	 * @param export
+	 * @param date
+	 * @return
+	 */
 	private ApprovalRootContentExport checkApproverStatus(ApprovalRootContentExport export, GeneralDate date) {
 		for(ApprovalPhaseStateExport phaseStateExport : export.getApprovalRootState().getListApprovalPhaseState()) {
 			for(ApprovalFrameExport frameExport : phaseStateExport.getListApprovalFrame()) {

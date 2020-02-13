@@ -21,7 +21,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
-import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
@@ -509,8 +508,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	@Override
 	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID) {
 		List<LevelApproverInfo> result = new ArrayList<>();
-		// 承認者の在職状態と承認権限をチェック(Check trạng thái atwork và quyền approval của người approve)
-		List<ApproverInfo> approverInfoAfterLst = this.checkApproverStatusAndAuthor(approverInfoLst, baseDate, companyID);
+		// 指定社員が基準日に承認権限を持っているかチェック
+		List<ApproverInfo> approverInfoAfterLst = this.checkApproverAuthor(approverInfoLst, baseDate, companyID);
 		// 取得した承認者リストをチェック(Check ApproverList đã lấy)
 		if(CollectionUtil.isEmpty(approverInfoAfterLst)) {
 			return Collections.emptyList();
@@ -540,22 +539,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<ApproverInfo> checkApproverStatusAndAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
+	public List<ApproverInfo> checkApproverAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
 		List<ApproverInfo> removeLst = new ArrayList<>();
 		// 承認者リストをループ(Loop ApproverList)
 		for(ApproverInfo approverInfo : approverInfoLst) {
-			// 在職状態を取得(lấy trạng thái atwork)
-			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approverInfo.getSid(), baseDate).getStatusOfEmployment();
-			// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
-			if(!((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
-					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
-					(statusOfEmployment==StatusOfEmployment.HOLIDAY))){
-				// 指定社員が基準日に承認権限を持っているかチェックする(Check xem employee chỉ định có quyền approve ở thời điểm baseDate hay ko)
-				boolean canApproval = employeeAdapter.canApprovalOnBaseDate(companyID, approverInfo.getSid(), baseDate);
-				// 取得した権限状態をチェック(Check trạng thái quyền hạn đã lấy)
-				if(canApproval) {
-					continue;
-				}
+			// 指定社員が基準日に承認権限を持っているかチェックする(Check xem employee chỉ định có quyền approve ở thời điểm baseDate hay ko)
+			boolean canApproval = employeeAdapter.canApprovalOnBaseDate(companyID, approverInfo.getSid(), baseDate);
+			// 取得した権限状態をチェック(Check trạng thái quyền hạn đã lấy)
+			if(canApproval) {
+				continue;
 			}
 			// 承認者リストにループ中の承認者を除く(Xóa approver đang loop trong ApproverList)
 			removeLst.add(approverInfo);

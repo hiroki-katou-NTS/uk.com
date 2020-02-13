@@ -105,12 +105,12 @@ public interface CollectApprovalRootService {
 	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID);
 	
 	/**
-	 * 承認者の在職状態と承認権限をチェック
+	 * 指定社員が基準日に承認権限を持っているかチェック
 	 * @param approverInfoLst
 	 * @param baseDate
 	 * @return
 	 */
-	public List<ApproverInfo> checkApproverStatusAndAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
+	public List<ApproverInfo> checkApproverAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
 	
 	/**
 	 * 上位職場の承認者を探す
