@@ -80,7 +80,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 				+ " INNER JOIN JcmmtHRDevMenu menuD"
 				+ " ON menuO.jcmctMenuOperationPK.programId = menuD.programId"
 				+ " WHERE menuO.jcmctMenuOperationPK.companyId = :companyId"
-				+ " AND menuO.useApproval = 1"
+				+ " AND menuO.useApproval = 1 and menuD.availableMenu = 1"
 				+ " ORDER BY menuO.jcmctMenuOperationPK.programId ASC";
 		return this.queryProxy().query(qr, Object[].class)
 				.setParameter("companyId", companyId)
