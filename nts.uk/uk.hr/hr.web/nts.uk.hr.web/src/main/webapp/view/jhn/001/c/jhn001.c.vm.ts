@@ -127,7 +127,7 @@ module jhn001.c.viewmodel {
                 dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let reportId: String = url.split("=")[1];
+            let reportId: string = url.split("=")[1];
             // get all layout
             layouts.removeAll();
             service.getDetails({reportId: reportId, screenC: true}).done((data: any) => {
@@ -141,11 +141,11 @@ module jhn001.c.viewmodel {
                     layout.classifications.removeAll();
                 }
                 
-                setTimeout(function(){
+                //setTimeout(function(){
                     
                      $("#C222_3_1").focus();
                 
-                }, 1000);
+               // }, 1000);
                
                 
                 unblock();

@@ -12,10 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.EmployeeApproveDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
 import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItem;
@@ -31,6 +29,8 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprovalRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -59,6 +59,8 @@ public class ReportItemFinder {
 	@Inject
 	private AttachPersonReportFileFinder attachPersonReportFileFinder;
 
+	@Inject
+	private ApproveRepository approveRepository;
 	/**
 	 * 
 	 * @param reportClsId
@@ -68,8 +70,9 @@ public class ReportItemFinder {
 
 		String cid = AppContexts.user().companyId();
 		
-		List<EmployeeApproveDto> employeeApproveLst = creatEmployeeApproveLst();
 
+		ApprovalRootStateHrImport approvalStateHrImport = new ApprovalRootStateHrImport();
+		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		// ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。
@@ -80,6 +83,9 @@ public class ReportItemFinder {
 			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
+			
+			//approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
+			
 			
 		}else {
 			
@@ -127,7 +133,7 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, employeeApproveLst)
+						itemInter, documentSampleDtoLst, approvalStateHrImport)
 				: new ReportLayoutDto();
 	}
 	
@@ -533,15 +539,15 @@ public class ReportItemFinder {
 		}
 	}
 	
-	private List<EmployeeApproveDto> creatEmployeeApproveLst(){
-		List<EmployeeApproveDto> result = new ArrayList<>();
-		for(int i = 1; i <=5; i++) {
-			for(int j = 0; j < 5; j++) {
-				result.add(new EmployeeApproveDto(i, j, String.valueOf(i + j), "承認", GeneralDate.today(), "承認"));
-			}
-			
-		}
-		
-		return result;
-	}
+//	private List<EmployeeApproveDto> creatEmployeeApproveLst(){
+//		List<EmployeeApproveDto> result = new ArrayList<>();
+//		for(int i = 1; i <=5; i++) {
+//			for(int j = 0; j < 5; j++) {
+//				result.add(new EmployeeApproveDto(i, j, String.valueOf(i + j), "承認", GeneralDate.today(), "承認"));
+//			}
+//			
+//		}
+//		
+//		return result;
+//	}
 }

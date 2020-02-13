@@ -6,11 +6,11 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.approve.EmployeeApproveDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprovalRootStateHrImport;
 @Data
 public class ReportLayoutDto {
 	
@@ -34,7 +34,7 @@ public class ReportLayoutDto {
 	
 	private List<DocumentSampleDto> documentSampleDto;
 	
-	private List<EmployeeApproveDto> employeeApproveLst;
+	private ApprovalRootStateHrImport approvalStateHrImport;
 	
 	
 	public ReportLayoutDto(){
@@ -42,8 +42,6 @@ public class ReportLayoutDto {
 		this.classificationItems = new ArrayList<>();
 		
 		this.documentSampleDto = new ArrayList<>();
-		
-		this.employeeApproveLst = new ArrayList<>();
 		
 	}
 	
@@ -62,7 +60,7 @@ public class ReportLayoutDto {
 			List<LayoutReportClsDto> classificationItems,
 			
 			List<DocumentSampleDto> documentSampleDtoLst,
-			List<EmployeeApproveDto> employeeApproveLst) {
+			ApprovalRootStateHrImport approvalStateHrImport) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
@@ -74,7 +72,7 @@ public class ReportLayoutDto {
 		
 		dto.setDocumentSampleDto(documentSampleDtoLst);
 		
-		dto.setEmployeeApproveLst(employeeApproveLst);
+		dto.setApprovalStateHrImport(approvalStateHrImport);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			
