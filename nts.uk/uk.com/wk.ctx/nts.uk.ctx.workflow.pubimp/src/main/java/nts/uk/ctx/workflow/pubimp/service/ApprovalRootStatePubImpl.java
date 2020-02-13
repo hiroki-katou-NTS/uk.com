@@ -14,12 +14,17 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
@@ -130,8 +135,12 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Inject
 	private GenerateApprovalRootStateService generateApprovalRootStateService;
+	
 	@Inject
 	private ApprovalSettingRepository repoApprSet;
+	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 	
 	@Override
 	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRoots(List<String> appIDs, String companyID){ 
@@ -223,7 +232,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			);
 			approvalRootContentOutput = new ApprovalRootContentOutput(approvalRootState, ErrorFlag.NO_ERROR);
 		}
-		return new ApprovalRootContentExport(
+		ApprovalRootContentExport result = new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
 					.stream()
@@ -267,6 +276,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}).collect(Collectors.toList())
 				), 
 				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
+		return checkApproverStatus(result, date);
 	}
 	
 	@Override
@@ -1024,5 +1034,51 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}).collect(Collectors.toList())
 				), 
 				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
+	}
+	
+	private ApprovalRootContentExport checkApproverStatus(ApprovalRootContentExport export, GeneralDate date) {
+		for(ApprovalPhaseStateExport phaseStateExport : export.getApprovalRootState().getListApprovalPhaseState()) {
+			for(ApprovalFrameExport frameExport : phaseStateExport.getListApprovalFrame()) {
+				for(ApproverStateExport approverStateExport : frameExport.getListApprover()) {
+					// 在職状態を取得(lấy trạng thái atwork)
+					StatusOfEmployment statusOfApprover = employeeAdapter.getStatusOfEmployment(
+							approverStateExport.getApproverID(), date).getStatusOfEmployment();
+					// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
+					switch (statusOfApprover) {
+					case RETIREMENT:
+						approverStateExport.setApproverName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_49") + "）");
+						break;
+					case LEAVE_OF_ABSENCE:
+						approverStateExport.setApproverName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_45") + "）");
+						break;
+					case HOLIDAY:
+						approverStateExport.setApproverName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_47") + "）");
+						break;
+					default:
+						break;
+					}
+					if(Strings.isNotBlank(approverStateExport.getRepresenterID())) {
+						// 在職状態を取得(lấy trạng thái atwork)
+						StatusOfEmployment statusOfRepresenter = employeeAdapter.getStatusOfEmployment(
+								approverStateExport.getRepresenterID(), date).getStatusOfEmployment();
+						// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
+						switch (statusOfRepresenter) {
+						case RETIREMENT:
+							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_49") + "）");
+							break;
+						case LEAVE_OF_ABSENCE:
+							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_45") + "）");
+							break;
+						case HOLIDAY:
+							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_47") + "）");
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
+		}
+		return export;
 	}
 }

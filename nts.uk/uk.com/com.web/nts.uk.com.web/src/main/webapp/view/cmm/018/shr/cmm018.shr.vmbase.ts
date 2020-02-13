@@ -686,7 +686,10 @@ module nts.uk.com.view.cmm018.shr {
                             } 
                             //「社員参照範囲と同じ」の場合
                             //取得した「社員参照範囲」をチェック
-                            let empRef = empRoleSet.presentInqEmployeeRef;
+                            let empRef = null;
+                            if(!_.isNull(empRoleSet.role)) {
+                                empRef = empRoleSet.role.employeeReferenceRange;     
+                            }
                             //0: 全社員 ALL_EMPLOYEE
                             //1: 部門（配下含む） DEPARTMENT_AND_CHILD
                             //2: 部門（配下含まない） DEPARTMENT_ONLY
