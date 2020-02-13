@@ -1,20 +1,20 @@
-package nts.uk.ctx.at.schedule.dom.shift.rank;
+package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * ランクメモ
+ * ランク記号
  * 
  * @author sonnh1
  *
  */
-@StringMaxLength(200)
-public class RankMemo extends StringPrimitiveValue<RankMemo> {
+@StringMaxLength(10)
+public class RankSymbol extends StringPrimitiveValue<RankSymbol> {
 
 	private static final long serialVersionUID = 70916577866927118L;
 
-	public RankMemo(String rawValue) {
+	public RankSymbol(String rawValue) {
 		super(rawValue);
 	}
 }
