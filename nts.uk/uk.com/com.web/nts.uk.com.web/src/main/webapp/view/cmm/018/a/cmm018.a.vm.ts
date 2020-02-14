@@ -928,7 +928,8 @@ module nts.uk.com.view.cmm018.a {
                         }else{//selected item
                             self.itemOld(self.findComRoot(self.currentCode()));
                             let it = self.itemOld().lstCompanyRoot[0].company;
-                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                            appType = self.findType(it.employmentRootAtr, it.applicationType, it.confirmationRootType,
+                                it.noticeId, it.busEventId);
                             employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
@@ -946,7 +947,8 @@ module nts.uk.com.view.cmm018.a {
                         }else{
                             self.itemOld(self.findWpRoot(self.currentCode()));
                             let it = self.itemOld().lstWorkplaceRoot[0].workplace;
-                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                             appType = self.findType(it.employmentRootAtr, it.applicationType, it.confirmationRootType,
+                                it.noticeId, it.busEventId);
                             employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
@@ -964,7 +966,8 @@ module nts.uk.com.view.cmm018.a {
                         }else{
                             self.itemOld(self.findPsRoot(self.currentCode()));
                             let it = self.itemOld().lstPersonRoot[0].person;
-                            appType = it.employmentRootAtr == 2 ? it.confirmationRootType : it.applicationType;
+                             appType = self.findType(it.employmentRootAtr, it.applicationType, it.confirmationRootType,
+                                it.noticeId, it.busEventId);
                             employRootAtr  = it.employmentRootAtr;
                             lstAppType = self.findAppTypeHistory(self.tabSelected());
                         }
