@@ -2586,6 +2586,7 @@ module nts.uk.ui.jqueryExtentions {
                     });
                     
                     $input.on(events.Handler.KEY_UP, function(evt) {
+                        if (self.containerClass().contains(ntsControls.DATE_PICKER.toLowerCase())) return;
                         self.validate(data.controlDef, $input.val(), data).success(t => {
                             cell = self.cellBelongTo($input);
                             errors.clear(self.$containedGrid, cell);
@@ -2648,7 +2649,7 @@ module nts.uk.ui.jqueryExtentions {
                                 my: "left top",
                                 at: "left bottom",
                                 collision: "flip flip"
-                            });
+                            }).css("z-index", 11000);
                             
                             _(internal._datePickerBoard).keys()
                                 .filter(k => k !== data.controlDef.format)

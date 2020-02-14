@@ -180,6 +180,12 @@ public class LogOutputItemDto {
 		this.recordType = recordType;
 
 	}
+	
+	//CLI003: fix bug #108873, #108865
+	public LogOutputItemDto(String itemName) {
+		super();
+		this.itemName = itemName;
+	}
 		
 
 }
