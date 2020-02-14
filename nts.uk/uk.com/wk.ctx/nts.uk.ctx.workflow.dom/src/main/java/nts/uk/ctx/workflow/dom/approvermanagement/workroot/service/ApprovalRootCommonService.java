@@ -34,7 +34,7 @@ public class ApprovalRootCommonService {
 		if(sysAtr == SHUUGYOU){
 			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id, GeneralDate.today());
 		}else{
-			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id);
+			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id, GeneralDate.today());
 		}
 		if(!wkpDepOp.isPresent()) return new WkpDepInfo(id, "", "コード削除済");
 		return wkpDepOp.get();

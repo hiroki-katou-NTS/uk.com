@@ -10,13 +10,13 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.DelRegisPersonReportHandler;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.RemoveReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveDraftRegisPersonReportHandler;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveRegisPersonReportHandler;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.SaveReportInputContainer;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveReportCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveHandler;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.PersonalReportDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportSaveDraftDto;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("hr/notice/report/regis/person")
@@ -30,7 +30,10 @@ public class PersonalReportSaveWebService {
 	private DelRegisPersonReportHandler del;
 	
 	@Inject
-	private SaveDraftRegisPersonReportHandler save;
+	private SaveDraftRegisPersonReportHandler saveDraft;
+	
+	@Inject
+	private SaveRegisPersonReportHandler save;
 	
 	@Inject
 	private RegisterApproveHandler registerApproveHandler;
@@ -59,7 +62,7 @@ public class PersonalReportSaveWebService {
 	@POST
 	@Path("saveDraft")
 	public void saveDraft(SaveReportInputContainer inputContainer) {
-		this.save.handle(inputContainer);
+		this.saveDraft.handle(inputContainer);
 	}
 	
 	@POST

@@ -83,28 +83,38 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	}
 
 	@Override
-	public Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId) {
-		return depPub.getInfoDep(companyId, depId)
+	public Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId, GeneralDate baseDate) {
+		return depPub.getInfoDep(companyId, depId, baseDate)
 				.map(c -> new WkpDepInfo(c.getDepartmentId(), c.getDepartmentCode(), c.getDepartmentName()));
 	}
 	
 	@Override
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
-		return depPub.getDepartmentIDByEmpDate(employeeID, date);
+		return depPub.getDepartmentHistItemByEmpDate(employeeID, date).getDepartmentId();
 	}
 
 	@Override
 	public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date) {
 		return depPub.getUpperDepartment(companyID, departmentID, date);
 	}
+	
+	@Override
+	public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date) {
+		return depPub.getDepartmentIDAndUpper(companyID, departmentID, date);
+	}
 
 	@Override
 	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date) {
-		return wkpPub.getWorkplaceIDByEmpDate(employeeID, date);
+		return wkpPub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
 	}
 
 	@Override
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
 		return wkpPub.getUpperWorkplace(companyID, workplaceID, date);
+	}
+
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate) {
+		return wkpPub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceID);
 	}
 }

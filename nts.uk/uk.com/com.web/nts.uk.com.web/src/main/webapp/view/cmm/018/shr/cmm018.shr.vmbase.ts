@@ -178,6 +178,7 @@ module nts.uk.com.view.cmm018.shr {
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
             checkMode: number;
+            sysAtr: number;
             constructor(startDate: string,
             endDate: string,
             workplaceId: string,
@@ -186,7 +187,8 @@ module nts.uk.com.view.cmm018.shr {
             editOrDelete: number,
             startDatePrevious: string,
             lstUpdate: Array<UpdateHistoryDto>,
-            checkMode: number){
+            checkMode: number,
+            sysAtr: number){
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.workplaceId = workplaceId;
@@ -196,6 +198,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.startDatePrevious = startDatePrevious;
                 this.lstUpdate = lstUpdate;
                 this.checkMode = checkMode;
+                this.sysAtr = sysAtr;
             }
         }
         //ScrenJ
@@ -218,6 +221,7 @@ module nts.uk.com.view.cmm018.shr {
             overlapFlag?: boolean;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
+            sysAtr: number;
         }
         //ScreenJ
         export class UpdateHistoryDto{
@@ -682,7 +686,10 @@ module nts.uk.com.view.cmm018.shr {
                             } 
                             //「社員参照範囲と同じ」の場合
                             //取得した「社員参照範囲」をチェック
-                            let empRef = empRoleSet.presentInqEmployeeRef;
+                            let empRef = null;
+                            if(!_.isNull(empRoleSet.role)) {
+                                empRef = empRoleSet.role.employeeReferenceRange;     
+                            }
                             //0: 全社員 ALL_EMPLOYEE
                             //1: 部門（配下含む） DEPARTMENT_AND_CHILD
                             //2: 部門（配下含まない） DEPARTMENT_ONLY
