@@ -27,7 +27,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -61,7 +60,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private PersonAdapter psInfor;
 	@Inject
 	private ApprovalRootCommonService appRootCm;
-	private static final String ROOT_COMMON = "共通ルート";
+	
 	@Override
 	public MasterApproverRootOutput masterInfors(String companyID,
 			int sysAtr,
@@ -117,7 +116,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprRoot().getBranchId(), 
 					root.getApprRoot().getAnyItemApplicationId(),
 					root.getApprRoot().getConfirmationRootType() == null ? 0: root.getApprRoot().getConfirmationRootType().value,
-					root.getApprRoot().getEmploymentRootAtr() == null ? 0: root.getApprRoot().getEmploymentRootAtr().value); 
+					root.getApprRoot().getEmploymentRootAtr().value,
+					root.getApprRoot().getNoticeId(), 
+					root.getApprRoot().getBusEventId()); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -167,7 +168,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprRoot().getBranchId(), 
 					root.getApprRoot().getAnyItemApplicationId(),
 					root.getApprRoot().getConfirmationRootType()  == null ? 0:  root.getApprRoot().getConfirmationRootType().value,
-					root.getApprRoot().getEmploymentRootAtr() == null ? 0: root.getApprRoot().getEmploymentRootAtr().value);
+					root.getApprRoot().getEmploymentRootAtr().value,
+					root.getApprRoot().getNoticeId(), 
+					root.getApprRoot().getBusEventId());
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
@@ -198,23 +201,15 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	}
 	
 	private List<ApprovalForApplication> getAppInfors(ApprovalRootCommonOutput root, List<ApprovalForApplication> wpRootInfor, String companyID){
-		//ApprovalForApplication wpAppInfo = null;
-		//neu la 就業ルート区分 la 共通(common)
-		String appName = "";
-		int appType = 0;
-		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value) {
-			appName = ROOT_COMMON;
-		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
-			appType = root.getApplicationType();
-			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
-		}else if(root.getEmploymentRootAtr()== EmploymentRootAtr.CONFIRMATION.value){
-			appType = root.getConfirmationRootType();
-			appName = EnumAdaptor.valueOf(root.getConfirmationRootType(), ConfirmationRootType.class).nameId;
-		}
+		String typeV = this.convertType(root.getEmploymentRootAtr(), root.getAppType(), root.getConfType(), 
+				root.getNoticeId(), root.getEventId());
+		String appName = this.findNameRoot(root.getEmploymentRootAtr(), root.getAppType(), root.getConfType(), 
+				root.getNoticeId(), root.getEventId(), new ArrayList<>(), new ArrayList<>());
+				
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstAppInfo = getPhaseApprover(companyID, root.getApprovalId(), root.getStartDate());
-		ApprovalForApplication wpAppInfo = new ApprovalForApplication(root.getEmploymentRootAtr(), appType, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
+		ApprovalForApplication wpAppInfo = new ApprovalForApplication(root.getEmploymentRootAtr(), typeV, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		return wpRootInfor;
 	}
@@ -231,15 +226,27 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				.filter(c -> c.getEmpRootAtr() == 1).collect(Collectors.toList());
 		List<ApprovalForApplication> lstConfirm = wpRootInfor.stream()
 				.filter(c -> c.getEmpRootAtr() == 2).collect(Collectors.toList());
+		List<ApprovalForApplication> lstNotice = wpRootInfor.stream()
+				.filter(c -> c.getEmpRootAtr() == 4).collect(Collectors.toList());
+		List<ApprovalForApplication> lstEvent = wpRootInfor.stream()
+				.filter(c -> c.getEmpRootAtr() == 5).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(lstApp)) {
 			Collections.sort(lstApp, Comparator.comparing(ApprovalForApplication:: getAppType));
 		}
 		if(!CollectionUtil.isEmpty(lstConfirm)) {
 			Collections.sort(lstConfirm, Comparator.comparing(ApprovalForApplication:: getAppType));
 		}
+		if(!CollectionUtil.isEmpty(lstNotice)) {
+			Collections.sort(lstNotice, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}
+		if(!CollectionUtil.isEmpty(lstEvent)) {
+			Collections.sort(lstEvent, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}
 		lstWpRootSort.addAll(lstCommon);
 		lstWpRootSort.addAll(lstApp);
 		lstWpRootSort.addAll(lstConfirm);
+		lstWpRootSort.addAll(lstNotice);
+		lstWpRootSort.addAll(lstEvent);
 		return lstWpRootSort;
 	}
 	/**
@@ -251,11 +258,17 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 */
 	private ApprovalForApplication getApproval(CompanyApprovalRoot comRoot, String companyID) {
 		//find name
-		String nameRoot = this.findNameRoot(comRoot.getApprRoot().getEmploymentRootAtr(), comRoot.getApprRoot().getApplicationType(), comRoot.getApprRoot().getConfirmationRootType());
+		
+		int empR = comRoot.getApprRoot().getEmploymentRootAtr().value;
+		Integer appType = empR == 1 ? comRoot.getApprRoot().getApplicationType().value : null;
+		Integer confType = empR == 2 ? comRoot.getApprRoot().getConfirmationRootType().value : null;
+		String typeV = this.convertType(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
+				comRoot.getApprRoot().getBusEventId());
+		String nameRoot = this.findNameRoot(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
+				comRoot.getApprRoot().getBusEventId(), new ArrayList<>(), new ArrayList<>());
 		//khoi tao
-		ApprovalForApplication approvalForApp = new ApprovalForApplication(comRoot.getApprRoot().getEmploymentRootAtr().value, comRoot.getApprRoot().getEmploymentRootAtr().value == 0 ? null : 
-			comRoot.getApprRoot().getEmploymentRootAtr().value == 1 ? comRoot.getApprRoot().getApplicationType().value : comRoot.getApprRoot().getConfirmationRootType().value,
-					nameRoot , null, null, null);
+		ApprovalForApplication approvalForApp = new ApprovalForApplication(empR, 
+				typeV, nameRoot , null, null, null);
 		approvalForApp.setStartDate(comRoot.getApprRoot().getHistoryItems().get(0).start());
 		approvalForApp.setEndDate(comRoot.getApprRoot().getHistoryItems().get(0).end());
 		
@@ -265,17 +278,35 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		approvalForApp.setLstApproval(lstMatter);
 		return approvalForApp;
 	}
-	private String findNameRoot(EmploymentRootAtr empRootAtr, ApplicationType appType, ConfirmationRootType confirmType){
-		if(empRootAtr.equals(EmploymentRootAtr.COMMON)){
-			return "共通ルート";
-		}
-		if(empRootAtr.equals(EmploymentRootAtr.APPLICATION)){
-			return EnumAdaptor.valueOf(appType.value, ApplicationType.class).nameId;
-		}
-		if(empRootAtr.equals(EmploymentRootAtr.CONFIRMATION)){
-			return EnumAdaptor.valueOf(confirmType.value, ConfirmationRootType.class).nameId;
-		}
-		return "";
+	private String convertType(int empR, Integer appType, Integer confirm, Integer notice, String event) {
+            switch(empR){
+                case 0:
+                    return null;
+                case 1:
+                    return appType.toString();
+                case 2:
+                    return confirm.toString();
+                case 4:
+                    return notice.toString();
+                default://BUS_EVENT 5
+                    return event;
+            }
+	}
+	
+	private String findNameRoot(int empR, Integer appType, Integer confirm, Integer notice, String event, 
+			List<String> lstNoticeN, List<String> lstEventN){
+		switch(empR){
+	        case 0:
+	        	return "共通ルート";
+	        case 1:
+	        	return EnumAdaptor.valueOf(appType, ApplicationType.class).nameId;
+	        case 2:
+	        	return EnumAdaptor.valueOf(confirm, ConfirmationRootType.class).nameId;
+	        case 4:
+	            return notice.toString();
+	        default://BUS_EVENT 5
+	            return event;
+	    }
 	}
 	
 	/**

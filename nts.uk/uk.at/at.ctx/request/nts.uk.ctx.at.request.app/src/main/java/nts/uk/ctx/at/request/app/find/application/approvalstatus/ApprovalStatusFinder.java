@@ -20,6 +20,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
@@ -64,7 +65,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 /**
@@ -306,9 +306,13 @@ public class ApprovalStatusFinder {
 		
 		// [No.560]職場IDから職場の情報をすべて取得する
 		List<String> wPIDs = listWorkPlaceInfor.stream().map(WorkplaceInfor::getCode).collect(Collectors.toList());
+<<<<<<< HEAD
 				List<WorkplaceHierarchyImport> wpHis = this.configInfoAdapter.getWorkplaceInforByWkpIds(companyId, wPIDs, GeneralDate.today())
 						.stream().map(item -> new WorkplaceHierarchyImport(item.getWorkplaceId(), item.getHierarchyCode())).collect(Collectors.toList());
 		
+=======
+		List<WorkplaceHierarchyImport> wpHis = configInfoAdapter.getWorkplaceInforByWkpIds(companyId, wPIDs, GeneralDate.today());
+>>>>>>> TeamD/Release_Ver4_20200224
 		// 取得した「職場ID、職場階層コード」を階層コード順に並び替える
 		List<ApprovalSttAppOutput> result = sortList(wpHis, listAppSttApp);
 

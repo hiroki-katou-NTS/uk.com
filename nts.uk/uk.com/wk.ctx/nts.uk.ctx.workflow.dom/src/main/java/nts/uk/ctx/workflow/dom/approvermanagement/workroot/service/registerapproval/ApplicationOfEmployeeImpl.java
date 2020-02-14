@@ -69,7 +69,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprRoot().getBranchId(),
 								x.getApprRoot().getAnyItemApplicationId(),
 								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-								x.getApprRoot().getEmploymentRootAtr().value))
+								x.getApprRoot().getEmploymentRootAtr().value,
+								x.getApprRoot().getNoticeId(),
+								x.getApprRoot().getBusEventId()))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}			
@@ -115,7 +117,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprRoot().getBranchId(),
 									x.getApprRoot().getAnyItemApplicationId(),
 									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-									x.getApprRoot().getEmploymentRootAtr().value))
+									x.getApprRoot().getEmploymentRootAtr().value,
+									x.getApprRoot().getNoticeId(),
+									x.getApprRoot().getBusEventId()))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}				
@@ -156,7 +160,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprRoot().getBranchId(),
 									x.getApprRoot().getAnyItemApplicationId(),
 									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-									x.getApprRoot().getEmploymentRootAtr().value))
+									x.getApprRoot().getEmploymentRootAtr().value,
+									x.getApprRoot().getNoticeId(),
+									x.getApprRoot().getBusEventId()))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}
@@ -194,7 +200,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprRoot().getBranchId(),
 							x.getApprRoot().getAnyItemApplicationId(),
 							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-							x.getApprRoot().getEmploymentRootAtr().value))
+							x.getApprRoot().getEmploymentRootAtr().value,
+							x.getApprRoot().getNoticeId(),
+							x.getApprRoot().getBusEventId()))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -223,7 +231,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprRoot().getBranchId(),
 								x.getApprRoot().getAnyItemApplicationId(),
 								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-								x.getApprRoot().getEmploymentRootAtr().value))
+								x.getApprRoot().getEmploymentRootAtr().value,
+								x.getApprRoot().getNoticeId(),
+								x.getApprRoot().getBusEventId()))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}
@@ -248,7 +258,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprRoot().getBranchId(),
 							x.getApprRoot().getAnyItemApplicationId(),
 							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
-							x.getApprRoot().getEmploymentRootAtr().value))
+							x.getApprRoot().getEmploymentRootAtr().value,
+							x.getApprRoot().getNoticeId(),
+							x.getApprRoot().getBusEventId()))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}

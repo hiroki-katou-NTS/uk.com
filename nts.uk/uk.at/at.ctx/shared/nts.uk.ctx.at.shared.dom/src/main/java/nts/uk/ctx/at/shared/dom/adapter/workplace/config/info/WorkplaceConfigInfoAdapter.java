@@ -22,6 +22,7 @@ public interface WorkplaceConfigInfoAdapter {
 	
 	List<JobTitleExport> findAllById(String companyId,List<String> positionIds ,GeneralDate baseDate );
 	
+<<<<<<< HEAD
 	/**
 	 * [No.560]職場IDから職場の情報をすべて取得する
 	 * 
@@ -31,5 +32,8 @@ public interface WorkplaceConfigInfoAdapter {
 	 * @return
 	 */
 	List<WorkplaceInfor> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+=======
+	public List<WorkplaceHierarchyImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+>>>>>>> TeamD/Release_Ver4_20200224
 			GeneralDate baseDate);
 }
