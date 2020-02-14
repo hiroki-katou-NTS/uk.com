@@ -28,9 +28,9 @@ public interface ReflectStampDomainService {
 	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, Optional<CalAttrOfDailyPerformance> calcOfDaily,
+			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
 
 	// 2.打刻を取得して反映する 
 	// fixbug 105926
@@ -38,7 +38,7 @@ public interface ReflectStampDomainService {
 	public NewReflectStampOutput acquireReflectEmbossing(String companyID, String employeeID,
 			GeneralDate processingDate, Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, Optional<CalAttrOfDailyPerformance> calcOfDaily,
+			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily);
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
 }

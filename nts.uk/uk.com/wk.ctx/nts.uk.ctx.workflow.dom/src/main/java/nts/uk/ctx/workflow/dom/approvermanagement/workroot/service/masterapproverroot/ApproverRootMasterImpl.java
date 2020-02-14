@@ -261,7 +261,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		
 		int empR = comRoot.getApprRoot().getEmploymentRootAtr().value;
 		Integer appType = empR == 1 ? comRoot.getApprRoot().getApplicationType().value : null;
-		Integer confType = empR == 1 ? comRoot.getApprRoot().getConfirmationRootType().value : null;
+		Integer confType = empR == 2 ? comRoot.getApprRoot().getConfirmationRootType().value : null;
 		String typeV = this.convertType(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
 				comRoot.getApprRoot().getBusEventId());
 		String nameRoot = this.findNameRoot(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 

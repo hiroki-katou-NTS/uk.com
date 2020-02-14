@@ -28,8 +28,11 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClo
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.context.ContextSupport;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createrebuildflag.CreateRebuildFlag;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
@@ -100,6 +103,12 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
+    @Inject
+    private CreateRebuildFlag createRebuildFlag;
+    
+    @Inject
+    private WorkInformationRepository workRepository;
+    
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
 	@Resource
@@ -217,7 +226,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
 			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement) {
-		
+        //ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
+        Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(employeeId, day);
 		// 締めIDを取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, employmentCode);
@@ -243,7 +253,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				// アルゴリズム「実績ロックされているか判定する」を実行する
 				EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
 						employeeAndClosureDto, day);
-
+                
+				RecreateFlag recreateFlag = RecreateFlag.DO_NOT;
 				if (employeeAndClosure.getLock() == 0) {
 					ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get()
 							.getExecutionType();
@@ -255,18 +266,24 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 							// 再設定
 							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr, periodInMasterList,
-									employeeGeneralInfoImport);
+                            		employeeGeneralInfoImport,recreateFlag,optDaily);
 						} else {
+                            // 再作成フラグの作成
+                            recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+                                    reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr , reCreateWorkType, reCreateWorkPlace ,
 									employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-									mapDateHistoryItem, periodInMasterList);
+									mapDateHistoryItem, periodInMasterList, recreateFlag,optDaily);
 						}
 					} else {
+                        // 再作成フラグの作成
+                        recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+                                reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 								empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, employeeGeneralInfoImport,
 								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
-								periodInMasterList);
+								periodInMasterList ,recreateFlag,optDaily);
 					}
 				}
 			}
@@ -376,6 +393,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<ProcessState> process = new ArrayList<>();
 		
 		for(GeneralDate day: executeDate) {
+            //ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
+            Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(employeeId, day);
 			try {
 				// 締めIDを取得する
 				Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
@@ -400,7 +419,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					// アルゴリズム「実績ロックされているか判定する」を実行する
 					EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
 							employeeAndClosureDto, day);
-	
+                    RecreateFlag recreateFlag = RecreateFlag.DO_NOT;
 					if (employeeAndClosure.getLock() == 0) {
 						ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
 	
@@ -410,15 +429,21 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
 								// 再設定
 								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-										empCalAndSumExecLogID, reCreateAttr, null, null);
+										empCalAndSumExecLogID, reCreateAttr, null, null, recreateFlag, optDaily );
 							} else {
+                                // 再作成フラグの作成
+                                recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+                                        reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 								this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
 										employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
-										stampReflectionManagement);
+										stampReflectionManagement, recreateFlag, optDaily);
 							}
 						} else {
+                            // 再作成フラグの作成
+                            recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+                                    reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
-									day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement);
+									day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement, recreateFlag, optDaily);
 						}
 					}
 					

@@ -22,4 +22,7 @@ public interface WorkplaceConfigInfoAdapter {
 			List<String> workplaceIds);
 	
 	List<JobTitleExport> findAllById(String companyId,List<String> positionIds ,GeneralDate baseDate );
+	
+	public List<WorkplaceHierarchyImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate);
 }
