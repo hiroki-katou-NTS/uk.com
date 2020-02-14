@@ -491,6 +491,19 @@ public class HolidayShipmentScreenAFinder {
 		return null;
 
 	}
+	/**
+	 * 基準日別設定の取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param refDate
+	 * @param isGetSetting
+	 * @param recWkTypeCD
+	 * @param recWkTimeCD
+	 * @param absWkTypeCD
+	 * @param absWkTimeCD
+	 * @param appCommonSet
+	 * @param output
+	 */
 
 	public void setDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean isGetSetting,
 			String recWkTypeCD, String recWkTimeCD, String absWkTypeCD, String absWkTimeCD,

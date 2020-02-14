@@ -40,6 +40,7 @@ public class RoleWorkplaceIDFinder {
 	@Inject
 	private SysAuthWorkplaceAdapter sysAuthWorkplaceAdapter;
 	
+	
 	/** The workplace manager repository. */
 //	@Inject
 //	private WorkplaceManagerRepository workplaceManagerRepository;
@@ -149,6 +150,7 @@ public class RoleWorkplaceIDFinder {
 		//check ReferenceRange 
 		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 			//get list WorkplaceId by WorkplaceAdapter
+			//運用している職場の情報をすべて取得する 
 			listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, param.getBaseDate())
 					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 		} else {

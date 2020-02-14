@@ -20,6 +20,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -65,7 +66,6 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInf
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -102,7 +102,7 @@ public class RealityStatusService {
 	
 	@Inject
 	private WorkplaceConfigInfoAdapter configInfoAdapter;
-
+	
 	/**
 	 * 承認状況職場実績起動
 	 */
@@ -113,7 +113,6 @@ public class RealityStatusService {
 		List<StatusWkpActivityOutput> listStatusActivity = Collections.synchronizedList(new ArrayList<StatusWkpActivityOutput>());
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
 		UseSetingOutput useSeting = this.getUseSetting(cId);
-		
 		// 職場ID(リスト)
 		this.parallel.forEach(listWorkplaceId, wkpId -> {
 			// アルゴリズム「承認状況取得社員」を実行する

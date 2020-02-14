@@ -69,4 +69,14 @@ public interface WorkplaceAdapter {
 	 * @return
 	 */
 	public List<String> getAllChildrenOfWkpIdNEW(String companyId, GeneralDate baseDate, String parentWorkplaceId);
+	
+	/**
+	 * [No.573]職場の下位職場を基準職場を含めて取得する
+	 *
+	 * @param companyId
+	 * @param baseDate
+	 * @param workplaceId
+	 * @return
+	 */
+	public List<String> getWorkplaceIdAndChildren(String companyId, GeneralDate baseDate, String workplaceId);
 }

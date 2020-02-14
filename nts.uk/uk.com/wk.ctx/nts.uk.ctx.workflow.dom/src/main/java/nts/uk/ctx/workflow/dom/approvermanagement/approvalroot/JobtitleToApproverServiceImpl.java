@@ -62,9 +62,10 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 						.map(s -> s.needsSearch())
 							.orElse(false);
 			if (needsSearch) {
-				List<String> wkpIds = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
+				//List<String> wkpIds = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
+				List<String> wkpIds = this.employeeAdapter.getWorkplaceIdAndUpper(cid, baseDate, wkpInfor.getWkpId());
 				wkpIds.remove(0);
-
+				
 				// 上位職場が存在する(not exist wkpId 上位)
 				if (CollectionUtil.isEmpty(wkpIds)) {
 					Collections.emptyList();

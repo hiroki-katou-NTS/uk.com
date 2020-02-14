@@ -133,4 +133,9 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 		return wkpNewPub.getAllChildrenOfWorkplaceId(companyId, baseDate, parentWorkplaceId);
 	}
 
+	@Override
+	public List<String> getWorkplaceIdAndChildren(String companyId, GeneralDate baseDate, String workplaceId) {
+		return wkpNewPub.getWorkplaceIdAndChildren(companyId, baseDate, workplaceId);
+	}
+
 }
