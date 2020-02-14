@@ -142,9 +142,7 @@ module jhn001.c.viewmodel {
                 }
                 
                 //setTimeout(function(){
-                    
-                     $("#C222_3_1").focus();
-                
+                //     $("#C222_3_1").focus();
                // }, 1000);
                
                 
@@ -181,37 +179,51 @@ module jhn001.c.viewmodel {
             
             for (var i = 0; i < data.documentSampleDto.length; i++) {
                 
+                let fileData = data.documentSampleDto[i];
+
+                let urlFileSample = fileData.sampleFileId == null || fileData.sampleFileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.sampleFileId),
+                
+                 urlFile = fileData.fileId == null || fileData.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.fileId),
+                
+                 isShow = true;
+                
+                if(fileData.sampleFileName == null || fileData.sampleFileName == ''){
+                    
+                    isShow = false;    
+                    
+                }
+                
                 let obj = {
                     
-                    docName: data.documentSampleDto[i].docName,
+                    docName: fileData.docName,
                     
-                    ngoactruoc: '(',
+                    ngoactruoc: !isShow ? '' : '(',
                     
-                    sampleFileName: data.documentSampleDto[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].sampleFileName + '</a>',
-                    
-                    ngoacsau: ')',
-                    
-                    fileName: data.documentSampleDto[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].fileName + '</a>',
+                    sampleFileName: !isShow ? '' : '<a href=' + urlFileSample + ' target="_blank">' + fileData.sampleFileName + '</a>',
                    
-                    cid: data.documentSampleDto[i].cid,
-                    
-                    reportLayoutID: data.documentSampleDto[i].reportLayoutID,
+                    ngoacsau:   !isShow ? '' : ')',
                    
-                    docID: data.documentSampleDto[i].docID,
+                    fileName: fileData.fileName == null || fileData.fileName == '' ? '' : '<a style="color: blue;" href=' + urlFile + ' target="_blank">' + fileData.fileName + '</a>',
                     
-                    dispOrder: data.documentSampleDto[i].dispOrder,
+                    cid: fileData.cid,
+                    
+                    reportLayoutID: fileData.reportLayoutID,
+                    
+                    docID: fileData.docID,
                    
-                    requiredDoc: data.documentSampleDto[i].requiredDoc,
-                    
-                    docRemarks: data.documentSampleDto[i].docRemarks,
-                    
-                    sampleFileId: data.documentSampleDto[i].sampleFileId,
+                    dispOrder: fileData.dispOrder,
                    
-                    reportID: data.documentSampleDto[i].reportID,
+                    requiredDoc: fileData.requiredDoc,
+                   
+                    docRemarks: fileData.docRemarks,
                     
-                    fileId: data.documentSampleDto[i].fileId,
+                    sampleFileId: fileData.sampleFileId,
+                   
+                    reportID: fileData.reportID,
                     
-                    fileSize: data.documentSampleDto[i].fileSize
+                    fileId: fileData.fileId,
+                   
+                    fileSize: fileData.fileSize,
                 }
                 
                 lstDoc.push(obj);

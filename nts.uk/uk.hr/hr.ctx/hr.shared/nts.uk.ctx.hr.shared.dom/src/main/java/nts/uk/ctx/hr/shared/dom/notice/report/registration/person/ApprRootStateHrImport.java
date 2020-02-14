@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApprovalRootStateHrImport {
+public class ApprRootStateHrImport {
 	/**エラーフラグ*/
 	private boolean errorFlg;
 	/**人事承認状態データ*/
-	private ApprovalStateHrImport apprState;
+	private ApprStateHrImport apprState;
 }

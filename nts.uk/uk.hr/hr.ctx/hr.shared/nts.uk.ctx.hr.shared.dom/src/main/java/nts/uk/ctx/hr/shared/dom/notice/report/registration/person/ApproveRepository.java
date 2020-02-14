@@ -7,5 +7,5 @@ public interface ApproveRepository {
 	 * @param インスタンスID rootStateID
 	 * @return
 	 */
-	public ApprovalRootStateHrImport getApprovalRootStateHr(String rootStateID);
+	public ApprRootStateHrImport getApprovalRootStateHr(String rootStateID);
 }

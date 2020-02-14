@@ -7,13 +7,13 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 @Getter
 @AllArgsConstructor
-public class ApprovalStateHrImport {
-	/**インスタンスID*/
-	private String rootStateID;
+public class FrameHumanImport {
+	/**承認枠No*/
+	private int frameOrder;
+	/**確定区分*/
+	private int confirmAtr;
 	/**対象日*/
 	private GeneralDate appDate;
-	/**対象者ID*/
-	private String employeeID;
-	/**承認フェーズ*/
-	private List<PhaseStateHrImport> lstPhaseState;
+	/**承認情報*/
+	private List<ApproverInfoHumamImport> lstApproverInfo;
 }

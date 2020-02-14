@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 @Getter
 @AllArgsConstructor
-public class ApproverInfoHrImport {
+public class ApproverInfoHumamImport {
 	/**承認者*/
 	private String approverID;
 	/**承認区分*/

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 @Getter
 @AllArgsConstructor
-public class PhaseStateHrImport {
+public class PhaseSttHrImport {
 	/**承認フェーズNo*/
 	private Integer phaseOrder;
 	/**承認区分*/
@@ -14,5 +14,5 @@ public class PhaseStateHrImport {
 	/**承認形態*/
 	private int approvalForm;
 	/**承認枠*/
-	private List<FrameHrImport> lstApprovalFrame;
+	private List<FrameHumanImport> lstApprovalFrame;
 }

@@ -29,7 +29,7 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
-import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprovalRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -71,7 +71,7 @@ public class ReportItemFinder {
 		String cid = AppContexts.user().companyId();
 		
 
-		ApprovalRootStateHrImport approvalStateHrImport = new ApprovalRootStateHrImport();
+		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
@@ -84,7 +84,7 @@ public class ReportItemFinder {
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
 			
-			//approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
+			approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
 			
 			
 		}else {

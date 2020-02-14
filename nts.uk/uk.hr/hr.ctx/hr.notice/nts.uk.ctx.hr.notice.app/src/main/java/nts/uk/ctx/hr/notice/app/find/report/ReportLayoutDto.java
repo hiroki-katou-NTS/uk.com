@@ -6,11 +6,12 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
-import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprovalRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
 @Data
 public class ReportLayoutDto {
 	
@@ -34,14 +35,17 @@ public class ReportLayoutDto {
 	
 	private List<DocumentSampleDto> documentSampleDto;
 	
-	private ApprovalRootStateHrImport approvalStateHrImport;
+	private ApprRootStateHrImport approvalStateHrImport;
 	
+	private List<ApproverDto> listApprovalFrame;
 	
 	public ReportLayoutDto(){
 		
 		this.classificationItems = new ArrayList<>();
 		
 		this.documentSampleDto = new ArrayList<>();
+		
+		this.listApprovalFrame = new ArrayList<>();
 		
 	}
 	
@@ -60,7 +64,7 @@ public class ReportLayoutDto {
 			List<LayoutReportClsDto> classificationItems,
 			
 			List<DocumentSampleDto> documentSampleDtoLst,
-			ApprovalRootStateHrImport approvalStateHrImport) {
+			ApprRootStateHrImport approvalStateHrImport) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
@@ -105,4 +109,5 @@ public class ReportLayoutDto {
 		
 		return dto;
 	}
+	
 }
