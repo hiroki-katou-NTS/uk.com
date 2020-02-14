@@ -37,10 +37,27 @@ module jhn003.a.vm {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            
+            block.grayout();
+            
+            service.startPage().done((data) => {
+                
+                let reportItems = [{ code: null, name: "" }];
 
-            self.bindReportList();
+                self.searchInfo().reportItems(reportItems.concat(_.map(data, x => { return { code: x.reportClsId, name: x.reportName } })));
+                
+                self.bindReportList();
+            }).fail((error) => {
 
-            dfd.resolve();
+                    dialog.info(error);
+
+                })
+                .always(() => {
+                    dfd.resolve();
+                    block.clear();
+
+                });
+
 
             return dfd.promise();
         }
@@ -204,11 +221,11 @@ module jhn003.a.vm {
         inputName: KnockoutObservable<string> = ko.observable('');
         approvalReport: KnockoutObservable<boolean> = ko.observable(false);
         reportItems: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            { code: null, name: "" },
-            { code: "0", name: "育児休業申請届" },
-            { code: "1", name: "育児短時間勤務申請届" },
-            { code: "2", name: "介護休暇届" },
-            { code: "3", name: "介護休業申請届" }
+//            { code: null, name: "" },
+//            { code: "0", name: "育児休業申請届" },
+//            { code: "1", name: "育児短時間勤務申請届" },
+//            { code: "2", name: "介護休暇届" },
+//            { code: "3", name: "介護休業申請届" }
         ]);
         reportId: KnockoutObservable<string> = ko.observable('');
         approvalItems: KnockoutObservableArray<ItemModel> = ko.observableArray([

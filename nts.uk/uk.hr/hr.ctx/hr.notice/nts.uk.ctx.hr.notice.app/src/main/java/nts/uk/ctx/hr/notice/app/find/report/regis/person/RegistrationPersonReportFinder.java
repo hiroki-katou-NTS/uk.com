@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
+import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
+import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,6 +30,9 @@ public class RegistrationPersonReportFinder {
 	
 	@Inject
 	private PersonalReportClassificationFinder reportClsFinder;
+	
+	@Inject
+	private PersonalReportClassificationRepository PerReportClassRepo;
 	
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
 	public List<PersonalReportDto> getListReport(String sid) {
@@ -88,6 +93,21 @@ public class RegistrationPersonReportFinder {
 	RegistrationPersonReport getDomain(String cid, Integer reportLayoutID){
 		Optional<RegistrationPersonReport> result = repo.getDomain(cid, reportLayoutID);
 		return result.isPresent() ? result.get() : null;
+	}
+
+	/**
+	 * 起動処理
+	 * 
+	 * @return List<個別届出種類>
+	 */
+	public List<PersonalReportClassificationDto> startPage() {
+		// アルゴリズム [個別届出種類を取得する] を実行する
+
+		// ドメインモデル [個別届出種類] を取得する
+
+		return this.PerReportClassRepo.getAllByCid(AppContexts.user().companyId(), false).stream().map(c -> {
+			return PersonalReportClassificationDto.fromDomain(c);
+		}).collect(Collectors.toList());
 	};
 	
 	
