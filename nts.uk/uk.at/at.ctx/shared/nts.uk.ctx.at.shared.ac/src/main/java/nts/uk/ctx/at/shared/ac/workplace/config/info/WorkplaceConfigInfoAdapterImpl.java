@@ -12,12 +12,16 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkPlaceConfigInf
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
 import nts.uk.ctx.bs.employee.pub.workplace.config.info.WorkPlaceConfigInfoPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.JobTitleHistoryExport;
 
 @Stateless
 public class WorkplaceConfigInfoAdapterImpl implements WorkplaceConfigInfoAdapter {
 	@Inject
 	private WorkPlaceConfigInfoPub wpConfigInfoPub;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	@Override
 	public List<WorkPlaceConfigInfoImport> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
@@ -40,5 +44,11 @@ public class WorkplaceConfigInfoAdapterImpl implements WorkplaceConfigInfoAdapte
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<WorkplaceHierarchyImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		return workplacePub.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate).stream()
+				.map(x -> new WorkplaceHierarchyImport(x.getWorkplaceId(), x.getHierarchyCode())).collect(Collectors.toList());
+	}
 
 }
