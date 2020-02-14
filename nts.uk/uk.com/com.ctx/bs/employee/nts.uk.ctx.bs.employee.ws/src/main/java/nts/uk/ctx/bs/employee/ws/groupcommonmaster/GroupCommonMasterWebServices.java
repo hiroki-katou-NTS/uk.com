@@ -62,13 +62,13 @@ public class GroupCommonMasterWebServices extends WebService {
 	@POST
 	@Path("get-items-B-screen-start")
 	public ScreenBSelectCommonMasterDto getCommonItems(CommonItemParam param) {
-		return this.commonFinder.getScreenBStart(param.getContractCd(), param.getCommonMasterId());
+		return this.commonFinder.getScreenBStart(param.getCommonMasterId());
 	}
 	
 	@POST
 	@Path("get-items-B-screen")
 	public ScreenBSelectCommonMasterDto selectScreenBGetItem(CommonItemParam param) {
-		return this.commonFinder.selectScreenBGetItem(param.getContractCd(), param.getCommonMasterId());
+		return this.commonFinder.selectScreenBGetItem(param.getCommonMasterId());
 	}
 
 	@POST

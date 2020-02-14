@@ -83,7 +83,8 @@ public class GroupCommonMasterFinder {
 	 * @return
 	 * @author yennth
 	 */
-	public ScreenBSelectCommonMasterDto getScreenBStart(String contractCd, String commonMasterId){		
+	public ScreenBSelectCommonMasterDto getScreenBStart(String commonMasterId){
+		String contractCd = AppContexts.user().contractCode();
 		// グループ会社共通マスタ項目の取得
 		List<GroupCommonMasterItem> getCommonMasterItem = services.getGroupCommonMasterItem(contractCd, commonMasterId);
 		if(!getCommonMasterItem.isEmpty()) {
@@ -111,7 +112,8 @@ public class GroupCommonMasterFinder {
 	 * @return
 	 * @author yennth
 	 */
-	public ScreenBSelectCommonMasterDto selectScreenBGetItem(String contractCd, String commonMasterId){		
+	public ScreenBSelectCommonMasterDto selectScreenBGetItem(String commonMasterId){
+		String contractCd = AppContexts.user().contractCode();
 		// グループ会社共通マスタ項目の取得
 		List<GroupCommonMasterItem> getCommonMasterItem = services.getGroupCommonMasterItem(contractCd, commonMasterId);
 		if(!getCommonMasterItem.isEmpty()) {

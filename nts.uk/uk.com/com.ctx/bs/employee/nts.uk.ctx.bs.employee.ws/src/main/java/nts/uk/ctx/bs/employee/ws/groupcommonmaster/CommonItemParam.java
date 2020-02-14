@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommonItemParam {
 	
-	private String contractCd;
-	
 	private String commonMasterId;
 	
 }

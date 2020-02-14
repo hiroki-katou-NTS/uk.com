@@ -1,18 +1,17 @@
-module nts.uk.com.view.cmm022.b.service {
+module nts.uk.com.view.cmm022.a.service {
 
     var paths: any = {
-        getListMasterItem: "bs/employee/group_common_master/get-items-B-screen-start",
-        update: "bs/employee/group_common_master/update-items-B-screen"
+        getListMaster: "bs/employee/group_common_master/get_master",
         
         getRelateMaster: "mandatoryRetirementRegulation/getRelateMaster",
         getMandatoryRetirementRegulation: "mandatoryRetirementRegulation/get",
         add: "mandatoryRetirementRegulation/add",
-        
+        update: "mandatoryRetirementRegulation/update"
         
     }
 
-    export function getListMasterItem(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.getListMasterItem, param);
+    export function getListMaster(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getListMaster);
     }
     export function getRelateMaster(): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.getRelateMaster);
