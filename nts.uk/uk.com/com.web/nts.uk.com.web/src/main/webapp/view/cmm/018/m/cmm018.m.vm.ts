@@ -24,7 +24,7 @@ module nts.uk.com.view.cmm018.m {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                     return;    
                 }
-                let master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson());
+                let master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson(), self.sysAtr());
                 //service.searchModeEmployee(master);
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){

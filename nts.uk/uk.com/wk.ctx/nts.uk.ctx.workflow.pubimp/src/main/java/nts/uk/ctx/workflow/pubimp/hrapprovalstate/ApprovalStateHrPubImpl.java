@@ -70,12 +70,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	 */
 	@Override
 	public ApprovalRootStateHrExport getApprovalRootStateHr(String rootStateID) {
-		// TODO Auto-generated method stub
 		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
 		boolean errorFlg = false;
 		ApprovalStateHrImport apprState = null;
 		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
-		if(opRoot.isPresent()){
+		if(!opRoot.isPresent()){
 			//エラーフラグ　＝　True (Error flag = True)
 			errorFlg = true;
 			return new ApprovalRootStateHrExport(errorFlg, apprState);

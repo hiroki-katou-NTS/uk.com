@@ -24,14 +24,18 @@ public interface WorkplaceApproverAdapter {
 	
 	Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate);
 	
-	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId);
+	Optional<WkpDepInfo> findByDepIdNEW(String companyId, String depId, GeneralDate baseDate);
 	
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date);
     
     public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
+    
+    public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date);
 	
 	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date);
 	
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	
+	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate);
 
 }

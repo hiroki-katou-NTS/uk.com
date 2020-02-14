@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 
 public interface WorkplacePub {
@@ -66,23 +67,15 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
-	/**
-	 * [No.560]職場IDから職場の情報をすべて取得する_HoaTT
-	 * Doi ung su dung table cu
-	 * @param companyId
-	 * @param listWorkplaceId
-	 * @param baseDate
-	 * @return
-	 */
-//	public List<WorkplaceInforExport> getWkpInforByWkpIds_OLD(String companyId, List<String> listWkpId,	GeneralDate baseDate);
 	
 	/**
+	 * [No.650]社員が所属している職場を取得する
 	 * 社員と基準日から所属職場履歴項目を取得する
 	 * @param employeeID
 	 * @param date
 	 * @return
 	 */
-	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date);
+	public AffWorkplaceHistoryItemExport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 	
 	/**
 	 * [No.569]職場の上位職場を取得する
@@ -92,4 +85,13 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	/**
+	 * [No.571]職場の上位職場を基準職場を含めて取得する
+	 *
+	 * @param companyId
+	 * @param baseDate
+	 * @param workplaceId
+	 * @return
+	 */
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 }

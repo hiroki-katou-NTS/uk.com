@@ -75,6 +75,7 @@ public interface CollectApprovalRootService {
 	 * @param companyID
 	 * @param approverGroupCD
 	 * @param specWkpId
+	 * @param paramID
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -82,8 +83,8 @@ public interface CollectApprovalRootService {
 	 * @param lowerApprove
 	 * @return
 	 */
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, Optional<Integer> opDispOrder,
-			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
+	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID, 
+			Optional<Integer> opDispOrder, String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
 	
 	/**
 	 * 申請者より、下の職位の承認者とチェック
@@ -105,12 +106,12 @@ public interface CollectApprovalRootService {
 	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID);
 	
 	/**
-	 * 承認者の在職状態と承認権限をチェック
+	 * 指定社員が基準日に承認権限を持っているかチェック
 	 * @param approverInfoLst
 	 * @param baseDate
 	 * @return
 	 */
-	public List<ApproverInfo> checkApproverStatusAndAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
+	public List<ApproverInfo> checkApproverAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
 	
 	/**
 	 * 上位職場の承認者を探す
@@ -144,4 +145,22 @@ public interface CollectApprovalRootService {
 	 */
 	public List<String> getUpperID(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 	
+	/**
+	 * 対象者の職場ID又は部門IDを取得
+	 * @param systemAtr
+	 * @param employeeID
+	 * @param baseDate
+	 * @return
+	 */
+	public String getIDBySystemType(SystemAtr systemAtr, String employeeID, GeneralDate baseDate);
+	
+	/**
+	 * 対象者の所属職場・部門を含める上位職場・部門を取得する
+	 * @param companyID
+	 * @param employeeID
+	 * @param date
+	 * @param systemAtr
+	 * @return
+	 */
+	public List<String> getUpperIDIncludeSelf(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
 }
