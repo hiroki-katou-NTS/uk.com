@@ -16,6 +16,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
@@ -25,7 +26,11 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootContentHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.create.approval.rootstate.ICreateApprovalStateAdaptor;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -36,7 +41,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
  *
  */
 @Stateless
-public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
+public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
@@ -49,6 +54,9 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	
 	@Inject
 	private IApprovalRootStateAdaptor approvalRootStateAdaptor;
+	
+	@Inject
+	private ICreateApprovalStateAdaptor createApprovalStateAdaptor;
 	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
@@ -79,7 +87,45 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
 		
 		if (rootSateId == null) {
+			
 			rootSateId = IdentifierUtil.randomUniqueId();
+			
+			// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
+			//(Thực hiện thuật toán [[No.309] Get approval route/1. Get Approval route for employee application])
+			ApprovalRootContentHrExport export = approvalRootStateAdaptor.getApprovalRootHr(cid, sid, String.valueOf(data.reportLayoutID), GeneralDate.today(), Optional.empty());
+			
+			// アルゴリズム[[RQ637]承認ルートインスタンスを新規作成する]を実行する(Thực hiện thuật toán [[RQ637] Create new approval route instance])
+			createApprovalStateAdaptor.createApprStateHr(export, rootSateId, sid, GeneralDate.today());
+			
+			// [人事届出の登録.ルートインスタンスID]、[人事届出の承認.ルートインスタンスID]を登録する。[人事届出の承認．メール送信区分]=メールするに設定
+			//(Đăng ký [Registration of HR report. Root instance ID], [Approval of HR report. Root instance ID]. [Approval of HR report. Category gửi mail] = Setting mail)
+			/*List<ApprovalPersonReport> listDomainApproval = new ArrayList<>();
+			if (!export.getApprovalRootState().getListApprovalPhaseState().isEmpty()) {
+				List<ApprovalPhaseStateHrExport> listApprovalPhaseState = export.getApprovalRootState().getListApprovalPhaseState();
+				for (int i = 0; i < listApprovalPhaseState.size(); i++) {
+					ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i); 
+					if (!approvalPhaseStateHrExport.getListApprovalFrame().isEmpty()) {
+						List<ApprovalFrameHrExport> listApprovalFrame = approvalPhaseStateHrExport.getListApprovalFrame();
+						for (int j = 0; j < listApprovalFrame.size(); j++) {
+							ApprovalFrameHrExport approvalFrameHrExport = listApprovalFrame.get(j);
+							ApprovalPersonReport domainApproval = new ApprovalPersonReport();
+							domainApproval.setCid(cid);
+							domainApproval.setRootSatteId(rootSateId);
+							domainApproval.setReportID(reportIDNew);
+							domainApproval.setReportName(data.reportName);
+							domainApproval.setRefDate(GeneralDateTime.now());
+							domainApproval.setInputDate(GeneralDateTime.now());
+							domainApproval.setAppDate(GeneralDateTime.now());
+							domainApproval.setAprDate(approvalFrameHrExport.getListApprover().isEmpty() ? null : GeneralDateTime.legacyDateTime(approvalFrameHrExport.getListApprover().get(0).getApprovalDate().date()));;
+							domainApproval.setAprSid(approvalFrameHrExport.getListApprover().get(0).getApproverID());
+							
+						}
+					}
+				}
+			} */
+			
+			
+			
 		}
 		
 		EmployeeInfo employeeInfo = this.getPersonInfo();
