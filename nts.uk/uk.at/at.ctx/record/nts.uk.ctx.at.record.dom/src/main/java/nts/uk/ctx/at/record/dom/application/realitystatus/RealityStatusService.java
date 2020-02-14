@@ -64,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkPlaceConfigImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkplaceConfigAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -137,9 +138,16 @@ public class RealityStatusService {
 		
 		//vì sử dụng parallel (bất đồng bộ) nên phải sắp xếp sau
 		// 「職場IDから階層コードを取得する」を実行する
-		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId)
-				.collect(Collectors.toList());
-		List<WorkplaceHierarchyImport> wpHis = GetHCodeByWorkPlaceID(cId, wPIDs, GeneralDate.today());
+//		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId)
+//				.collect(Collectors.toList());
+		
+//		List<WorkplaceHierarchyImport> wpHis = GetHCodeByWorkPlaceID(cId, wPIDs, GeneralDate.today());
+		
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId).collect(Collectors.toList());
+		List<WorkplaceHierarchyImport> wpHis = this.configInfoAdapter.getWorkplaceInforByWkpIds(cId, wPIDs, GeneralDate.today())
+				.stream().map(item -> new WorkplaceHierarchyImport(item.getWorkplaceId(), item.getHierarchyCode())).collect(Collectors.toList());
+		
 		// 取得した「職場ID、職場階層コード」を階層コード順に並び替える
 		List<StatusWkpActivityOutput> result = sortList(wpHis, listStatusActivity);
 

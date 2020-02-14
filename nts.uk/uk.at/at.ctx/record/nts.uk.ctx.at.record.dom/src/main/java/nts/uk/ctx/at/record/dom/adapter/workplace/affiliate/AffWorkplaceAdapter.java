@@ -82,5 +82,6 @@ public interface AffWorkplaceAdapter {
 	 * @param date
 	 * @return
 	 */
-	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	
 }
