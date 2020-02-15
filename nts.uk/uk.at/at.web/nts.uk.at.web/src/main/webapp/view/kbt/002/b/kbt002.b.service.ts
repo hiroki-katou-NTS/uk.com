@@ -6,11 +6,16 @@ module nts.uk.at.view.kbt002.b {
             getProcExecList: 'at/function/processexec/getProcExecList',
             saveProcExec: 'at/function/processexec/saveProcExec',
             deleteProcExec: 'at/function/processexec/removeProcExec',
-            getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting'
+            getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting',
+            findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004'
         }
     
         export function findWorkplaceTree(baseDate: Date, systemType : number): JQueryPromise<any> {
-            return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate, systemType: systemType,restrictionOfReferenceRange: true });
+            return nts.uk.request.ajax('com', paths.findWkpTreeNew, { 
+                startMode: 0,
+                baseDate: baseDate, 
+                systemType: systemType,
+                restrictionOfReferenceRange: true });
         }
         
         export function getEnumDataList(): JQueryPromise<any> {
