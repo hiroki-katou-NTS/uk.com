@@ -15,6 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -239,22 +240,31 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		Boolean subExpFlag = false;
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
 			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
-				if(approverInfor.getApproverID().equals(employeeID) && approverInfor.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
+				// 指定する社員が承認者として承認を行ったかチェックするCheck xem nhan vien chi dinh la approver và da tien hanh approve chua
+				if(approverInfor.getApproverID().equals(employeeID) && approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
 					approvalFlag = true;
 					approvalAtr = approverInfor.getApprovalAtr();
 					approvableFlag = true;
 					subExpFlag = false;
+					if(approvalPhaseState.getApprovalForm()==ApprovalForm.SINGLE_APPROVED && approverInfor.getApprovalAtr()!=ApprovalBehaviorAtr.APPROVED) {
+						approvableFlag = false;
+					}
 					continue;
 				}
+				// 指定する社員が代行承認者として承認を行ったかチェックするCheck nhan vien chi dinh la approver thay the đa tien hanh apporve chua
 				List<String> listApprover = Arrays.asList(approverInfor.getApproverID());
 				if(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID)){
 					approvalFlag = true;
 					approvalAtr = approverInfor.getApprovalAtr();
 					approvableFlag = true;
+					// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する
+					// Thuc hien thuat toan (phan doan xem nhan vien chi dinh co phai la approver thay the trong list approver ma da d chi dinh hay khong)
 					subExpFlag = !this.judgmentAgentListByEmployee(companyID, employeeID, listApprover);
 					continue;
 				}
+				// 指定する社員が承認者かチェックするCheck nhan vien chi dinh phai la approver hay ko
 				if(!listApprover.contains(employeeID)){
+					// アルゴリズム「承認代行情報の取得処理」を実行するThuc hien thuat toan (xu ly lay thong tin thay the approver)
 					ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 					if(!approvalRepresenterOutput.getListAgent().contains(employeeID)){
 						continue;
@@ -266,9 +276,11 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 				subExpFlag = false;
 			}
 		};
+		// 確定枠が存在するかチェックするCheck xem confirm frame co ton tai hay khong
 		Optional<ApprovalFrame> opApprovalFrameConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameConfirm.isPresent()){
 			ApprovalFrame approvalFrameConfirm = opApprovalFrameConfirm.get();
+			// 確定枠の承認状況をチェックするCheck trang thay approve cua confirm frame
 			for(ApproverInfor approverInfor : approvalFrameConfirm.getLstApproverInfo()) {
 				if(!approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&
 						((!approverInfor.getApproverID().equals(employeeID))||
@@ -278,6 +290,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 					}
 			}
 		}
+		// 否認した承認枠が存在するかチェックする
 		Optional<ApproverInfor> opApproverInfor = Optional.empty();
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
 			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
@@ -291,6 +304,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 			}
 		}
 		if(opApproverInfor.isPresent()){
+			// 否認枠の否認を行った承認者は指定する社員かチェックする
 			ApproverInfor denyApproverInfor = opApproverInfor.get();
 			if(denyApproverInfor.getApproverID().equals(employeeID) || 
 			(Strings.isNotBlank(denyApproverInfor.getAgentID()) && denyApproverInfor.getAgentID().equals(employeeID))){
@@ -352,59 +366,86 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	@Override
 	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID,
 			ApprovalPhaseState approvalPhaseState, String employeeID, List<String> agents) {
+		// 承認者フラグ
 		Boolean approvalFlag = false;
+		// 承認区分
 		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
+		// 承認できるフラグ
 		Boolean approvableFlag = false;
+		// 代行期限切れフラグ
 		Boolean subExpFlag = false;
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-//			if(Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID) && approvalFrame.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
-//				approvalFlag = true;
-//				approvalAtr = approvalFrame.getApprovalAtr();
-//				approvableFlag = true;
-//				subExpFlag = false;
-//				continue;
-//			}
-//			List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-//			if(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID)){
-//				approvalFlag = true;
-//				approvalAtr = approvalFrame.getApprovalAtr();
-//				approvableFlag = true;
-//				subExpFlag = false;
-////				subExpFlag = !this.judgmentAgentListByEmployee(companyID, employeeID, listApprover);
-//				continue;
-//			}
-//			if(!listApprover.contains(employeeID)){
-////				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-//				if(!agents.contains(employeeID)){
-//					continue;
-//				}
-//			}
-//			approvalFlag = true;
-//			approvalAtr = approvalFrame.getApprovalAtr();
-//			approvableFlag = true;
-//			subExpFlag = false;
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				// 指定する社員が承認者として承認を行ったかチェックするCheck xem nhan vien chi dinh la approver và da tien hanh approve chua
+				if(approverInfor.getApproverID().equals(employeeID) && approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
+					approvalFlag = true;
+					approvalAtr = approverInfor.getApprovalAtr();
+					approvableFlag = true;
+					subExpFlag = false;
+					if(approvalPhaseState.getApprovalForm()==ApprovalForm.SINGLE_APPROVED && approverInfor.getApprovalAtr()!=ApprovalBehaviorAtr.APPROVED) {
+						approvableFlag = false;
+					}
+					continue;
+				}
+				// 指定する社員が代行承認者として承認を行ったかチェックするCheck nhan vien chi dinh la approver thay the đa tien hanh apporve chua
+				List<String> listApprover = Arrays.asList(approverInfor.getApproverID());
+				if(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID)){
+					approvalFlag = true;
+					approvalAtr = approverInfor.getApprovalAtr();
+					approvableFlag = true;
+					subExpFlag = false;
+					continue;
+				}
+				// 指定する社員が承認者かチェックするCheck nhan vien chi dinh phai la approver hay ko
+				if(!listApprover.contains(employeeID)){
+					// 指定する社員が代行承認者かチェックするCheck xem nhan vien chi dinh co phai la approver thay the hay khong
+					if(!agents.contains(employeeID)){
+						continue;
+					}
+				}
+				approvalFlag = true;
+				approvalAtr = approverInfor.getApprovalAtr();
+				approvableFlag = true;
+				subExpFlag = false;
+			}
 		};
-//		Optional<ApprovalFrame> opApprovalFrameConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-//		if(opApprovalFrameConfirm.isPresent()){
-//			ApprovalFrame approvalFrameConfirm = opApprovalFrameConfirm.get();
-//			if(!approvalFrameConfirm.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&
-//				(Strings.isNotBlank(approvalFrameConfirm.getApproverID()) && !approvalFrameConfirm.getApproverID().equals(employeeID))&&
-//				(Strings.isNotBlank(approvalFrameConfirm.getRepresenterID()) && !approvalFrameConfirm.getRepresenterID().equals(employeeID))){
-//				approvableFlag = false;
-//			}
-//		}
-//		Optional<ApprovalFrame> opDenyFrame = approvalPhaseState.getListApprovalFrame()
-//			.stream().filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.DENIAL))
-//			.findAny();
-//		if(opDenyFrame.isPresent()){
-//			ApprovalFrame denyFrame = opDenyFrame.get();
-//			if((Strings.isNotBlank(denyFrame.getApproverID()) && denyFrame.getApproverID().equals(employeeID)) || 
-//			(Strings.isNotBlank(denyFrame.getRepresenterID()) && denyFrame.getRepresenterID().equals(employeeID))){
-//				approvableFlag = true;
-//			} else {
-//				approvableFlag = false;
-//			}
-//		}
+		// 確定枠が存在するかチェックするCheck xem confirm frame co ton tai hay khong
+		Optional<ApprovalFrame> opApprovalFrameConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		if(opApprovalFrameConfirm.isPresent()){
+			ApprovalFrame approvalFrameConfirm = opApprovalFrameConfirm.get();
+			// 確定枠の承認状況をチェックするCheck trang thay approve cua confirm frame
+			for(ApproverInfor approverInfor : approvalFrameConfirm.getLstApproverInfo()) {
+				if(!approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&
+						((!approverInfor.getApproverID().equals(employeeID))||
+						(Strings.isNotBlank(approverInfor.getAgentID()) && !approverInfor.getAgentID().equals(employeeID)))){
+						approvableFlag = false;
+						break;
+					}
+			}
+		}
+		// 否認した承認枠が存在するかチェックする
+		Optional<ApproverInfor> opApproverInfor = Optional.empty();
+		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+				if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.DENIAL)) {
+					opApproverInfor = Optional.of(approverInfor);
+					break;
+				}
+			}
+			if(opApproverInfor.isPresent()) {
+				break;
+			}
+		}
+		// 否認枠の否認を行った承認者は指定する社員かチェックする
+		if(opApproverInfor.isPresent()){
+			ApproverInfor denyApproverInfor = opApproverInfor.get();
+			if(denyApproverInfor.getApproverID().equals(employeeID) || 
+			(Strings.isNotBlank(denyApproverInfor.getAgentID()) && denyApproverInfor.getAgentID().equals(employeeID))){
+				approvableFlag = true;
+			} else {
+				approvableFlag = false;
+			}
+		}
 		return new ApprovalStatusOutput(approvalFlag, approvalAtr, approvableFlag, subExpFlag);
 	}
 
