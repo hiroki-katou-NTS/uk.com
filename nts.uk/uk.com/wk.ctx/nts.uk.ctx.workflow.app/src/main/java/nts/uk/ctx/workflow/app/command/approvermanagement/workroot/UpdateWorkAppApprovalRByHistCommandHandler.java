@@ -216,7 +216,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			Integer employRootAtr = updateItem.getEmployRootAtr();
 			String value = updateItem.getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
-			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			String id = employRootAtr == 5 ? value : "";
 			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id);
 			//find history current
 			Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
@@ -349,7 +349,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			Integer employRootAtr = objUpdateItem.getLstUpdate().get(0).getEmployRootAtr();
 			String value = objUpdateItem.getLstUpdate().get(0).getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
-			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			String id = employRootAtr == 5 ? value : "";
 			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employRootAtr, valueI, id);
 			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
@@ -358,7 +358,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			Integer employRootAtr = updateItem.getEmployRootAtr();
 			String value = updateItem.getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
-			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+			String id = employRootAtr == 5 ? value : "";
 			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), valueI, employRootAtr, id);
 			//find history current
 			Optional<PersonApprovalRoot> psAppRootDb = repoPerson.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());

@@ -160,7 +160,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComRootStart(String companyId, int sysAtr, List<Integer> lstAppType,
-			List<String> lstNoticeID, List<String> lstEventID) {
+			List<Integer> lstNoticeID, List<String> lstEventID) {
 		List<CompanyApprovalRoot> lstCom = new ArrayList<>();
 		if(sysAtr == SystemAtr.WORK.value){//就業
 			lstCom.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtComApprovalRoot.class)

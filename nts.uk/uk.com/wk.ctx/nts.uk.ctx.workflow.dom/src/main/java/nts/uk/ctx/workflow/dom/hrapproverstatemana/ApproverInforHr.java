@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.hrapproverstatemana;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -12,6 +13,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class ApproverInforHr {
 	/**承認者*/
