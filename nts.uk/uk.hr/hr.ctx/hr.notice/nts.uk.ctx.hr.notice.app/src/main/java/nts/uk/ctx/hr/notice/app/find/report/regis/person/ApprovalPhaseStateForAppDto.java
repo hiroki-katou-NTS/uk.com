@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalBehaviorAtrHrExport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PhaseSttHrImport;
 @Setter
 @Getter
@@ -25,10 +27,17 @@ public class ApprovalPhaseStateForAppDto {
 	private List<ApprovalFrameForAppDto> listApprovalFrame;
 	
 	public static ApprovalPhaseStateForAppDto fromApprovalPhaseStateImport(PhaseSttHrImport approvalPhaseStateImport, Map<String, List<EmployeeInformationImport>> employeeInfoMaps){
+		
+		ApprovalBehaviorAtrHrExport status = EnumAdaptor.valueOf(approvalPhaseStateImport.getApprovalAtr(), ApprovalBehaviorAtrHrExport.class);
+		
 		return new ApprovalPhaseStateForAppDto(
+				
 				approvalPhaseStateImport.getPhaseOrder(), 
+				
 				approvalPhaseStateImport.getApprovalAtr(),
-				"",
+				
+				status.name(),
+				
 				approvalPhaseStateImport.getLstApprovalFrame().stream().map(x -> ApprovalFrameForAppDto.fromApprovalFrameImport(x, employeeInfoMaps)).collect(Collectors.toList()));
 	}
 }

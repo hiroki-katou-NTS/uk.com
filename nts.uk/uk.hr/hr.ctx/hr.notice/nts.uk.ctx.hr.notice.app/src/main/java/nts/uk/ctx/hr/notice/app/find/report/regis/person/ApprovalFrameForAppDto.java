@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalBehaviorAtrHrExport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.FrameHumanImport;
 
 @Value
@@ -27,11 +29,13 @@ public class ApprovalFrameForAppDto {
 				
 				approvalFrameImport.getLstApproverInfo().stream().map(x -> {
 
+					ApprovalBehaviorAtrHrExport status = EnumAdaptor.valueOf(x.getApprovalAtr(), ApprovalBehaviorAtrHrExport.class);
+					
 					ApproverStateForAppDto  appDto = new ApproverStateForAppDto(
 							
 							StringUtil.isNullOrEmpty(x.getAgentID(), true) == true ? x.getApproverID() : x.getAgentID(),
 									
-							Integer.valueOf(x.getApprovalAtr()), "approvalAtrName", "approverName",
+							Integer.valueOf(x.getApprovalAtr()), status.name(), "approverName",
 							
 							x.getApprovalDate() == null ? null : x.getApprovalDate().toString("yyyy/MM/dd"),
 									

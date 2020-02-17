@@ -566,6 +566,8 @@ public class ReportItemFinder {
 		
 		ApprStateHrImport apprState = apprRootState.getApprState();
 		
+		if(apprState == null) return new ArrayList<>();
+		
 		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
 		List<String> sids = new ArrayList<>();

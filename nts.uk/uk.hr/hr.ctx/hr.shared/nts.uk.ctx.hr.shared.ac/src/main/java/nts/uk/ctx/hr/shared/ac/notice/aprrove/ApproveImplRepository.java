@@ -31,6 +31,11 @@ public class ApproveImplRepository implements ApproveRepository {
 		ApprovalRootStateHrExport approvalStateHrExport = this.approvalStateHrPub.getApprovalRootStateHr(rootStateID);
 
 		ApprovalStateHrImport approvalStateHr = approvalStateHrExport.getApprState();
+		
+		if(approvalStateHrExport.isErrorFlg()) {
+			
+			return new ApprRootStateHrImport();
+		}
 
 		List<PhaseSttHrImport> lstPhaseStateResult = new ArrayList<>();
 

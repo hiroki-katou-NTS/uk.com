@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.shared.dom.notice.report.registration.person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,5 @@ public class ApprStateHrImport {
 	/**対象者ID*/
 	private String employeeID;
 	/**承認フェーズ*/
-	private List<PhaseSttHrImport> lstPhaseState;
+	private List<PhaseSttHrImport> lstPhaseState = new ArrayList<>();
 }
