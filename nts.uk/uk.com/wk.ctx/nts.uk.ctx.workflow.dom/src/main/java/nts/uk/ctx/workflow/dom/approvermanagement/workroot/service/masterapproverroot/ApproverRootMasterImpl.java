@@ -309,6 +309,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	    }
 	}
 	
+	/**
+	 * フェーズ承認者取得
+	 * @return
+	 */
 	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String approvalId, GeneralDate baseDate){
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者

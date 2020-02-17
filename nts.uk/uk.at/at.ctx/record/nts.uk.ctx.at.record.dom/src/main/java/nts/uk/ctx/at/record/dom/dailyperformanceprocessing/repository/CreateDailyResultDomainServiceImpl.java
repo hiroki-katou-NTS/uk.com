@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistory
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
@@ -203,8 +204,16 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 				// 会社IDと期間から期間内の職場構成期間を取得する
 				// ReqList485
-				List<DatePeriod> workPlaceHistory = this.affWorkplaceAdapter.getLstPeriod(companyId, periodTime);
-
+//				List<DatePeriod> workPlaceHistory = this.affWorkplaceAdapter.getLstPeriod(companyId, periodTime);
+				
+				//[No.647]期間に対応する職場構成を取得する
+				List<WorkPlaceConfig> workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId,periodTime);
+				List<DatePeriod> workPlaceHistory = new ArrayList<>();
+				
+				List<List<DatePeriod>> listWorkplaceHistory = workPlaceConfigLst.stream().map(c -> c.getWkpConfigHistory().stream().map(m -> m.getPeriod()).collect(Collectors.toList()))
+						.collect(Collectors.toList());
+				
+				workPlaceHistory.addAll(listWorkplaceHistory.get(0));
 				StateHolder stateHolder = new StateHolder(emloyeeIds.size());
 
 				/** 並列処理、AsyncTask */
@@ -234,7 +243,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 						// countDownLatch.countDown();
 						return;
 					}
-
 					// 日別実績の作成入社前、退職後を期間から除く
 					DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
 
@@ -293,8 +301,12 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 								if (workPlaceId != null && jobTitleId != null) {
 									// 職場IDと基準日から上位職場を取得する
 									// reqList 496
-									List<String> workPlaceIdList = this.affWorkplaceAdapter
-											.findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
+//									List<String> workPlaceIdList = this.affWorkplaceAdapter
+//											.findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
+									//[No.569]職場の上位職場を取得する
+									List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId, strDate);
+									
+									
 									// 特定日設定を取得する
 									// Reqlist 490
 									RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter

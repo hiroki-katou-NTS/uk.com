@@ -335,7 +335,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				resultApprovalFrame.addAll(approvalFrameLst);
 			});
 			return ApprovalPhaseState.createFormTypeJava(
-					levelInforLst.getLevelNo(), 
+					6 - levelInforLst.getLevelNo(), 
 					ApprovalBehaviorAtr.UNAPPROVED.value, 
 					levelInforLst.getApprovalForm(), 
 					resultApprovalFrame);

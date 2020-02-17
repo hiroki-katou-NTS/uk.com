@@ -292,7 +292,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				Integer employRootAtr = rootInsert.get(0).getEmployRootAtr();
 				String type = rootInsert.get(0).getAppTypeValue();
 				Integer value = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(type) : 0;
-				String id = employRootAtr == 5 || employRootAtr == 4 ? type : "";
+				String id = employRootAtr == 5 ? type : "";
 				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, value, employRootAtr, id);
 				if(!psOld.isEmpty()){
 					//update ls cu
@@ -438,7 +438,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				Integer employRootAtr = rootInsert.get(0).getEmployRootAtr();
 				String value = rootInsert.get(0).getAppTypeValue();
 				Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
-				String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+				String id = employRootAtr == 5 ? value : "";
 				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, valueI, employRootAtr, id);
 				if(!psOld.isEmpty()){
 					//update ls cu
@@ -473,7 +473,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					Integer employRootAtr = type.getEmployRootAtr();
 					String value = type.getValue();
 					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
-					String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
+					String id = employRootAtr == 5 ? value : "";
 					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDateUpdate, valueI, employRootAtr, id);
 					if(!lstPs.isEmpty()){
 						PersonApprovalRoot ps = lstPs.get(0);

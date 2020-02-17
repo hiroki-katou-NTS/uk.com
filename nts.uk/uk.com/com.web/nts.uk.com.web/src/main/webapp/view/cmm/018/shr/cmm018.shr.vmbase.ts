@@ -253,7 +253,7 @@ module nts.uk.com.view.cmm018.shr {
             /**申請種類*/
             lstAppType: Array<number>;
             /**届出種類ID*/
-            lstNoticeID: Array<string>;
+            lstNoticeID: Array<number>;
             /**プログラムID(インベント)*/
             lstEventID: Array<string>;
         }
@@ -425,7 +425,7 @@ module nts.uk.com.view.cmm018.shr {
             /**就業ルート区分*/
             employmentRootAtr: number;
             /**届出ID*/
-            noticeId: string;
+            noticeId: any;
             /**各業務エベントID*/
             busEventId: string;
         }
@@ -453,7 +453,7 @@ module nts.uk.com.view.cmm018.shr {
             /**就業ルート区分*/
             employmentRootAtr: number;
             /**届出ID*/
-            noticeId: string;
+            noticeId: any;
             /**各業務エベントID*/
             busEventId: string;
         }
@@ -481,7 +481,7 @@ module nts.uk.com.view.cmm018.shr {
             /**就業ルート区分*/
             employmentRootAtr: number;
             /**届出ID*/
-            noticeId: string;
+            noticeId: any;
             /**各業務エベントID*/
             busEventId: string;
         }
