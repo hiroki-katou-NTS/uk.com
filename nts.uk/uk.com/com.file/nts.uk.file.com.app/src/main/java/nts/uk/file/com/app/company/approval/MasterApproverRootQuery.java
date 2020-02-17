@@ -1,5 +1,7 @@
 package nts.uk.file.com.app.company.approval;
 
+import java.util.List;
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
@@ -11,5 +13,5 @@ public class MasterApproverRootQuery {
 	private boolean chkCompany;
 	private boolean chkWorkplace;
 	private boolean chkPerson;
-
+	private List<AppTypeDisParam> lstAppName;
 }

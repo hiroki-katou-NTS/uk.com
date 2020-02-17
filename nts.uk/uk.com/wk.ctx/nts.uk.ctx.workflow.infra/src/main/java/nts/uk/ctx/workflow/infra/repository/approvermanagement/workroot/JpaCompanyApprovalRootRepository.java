@@ -149,6 +149,26 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		FIND_BUS_EVENT = builder.toString();
 	}
 	
+	private static final String FIND_ALL_BY_BASEDATE_CM = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr = 0";
+	private static final String FIND_ALL_BY_BASEDATE_NT = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr = 4"
+			+ " AND c.noticeId IN :lstNoticeID";
+	private static final String FIND_ALL_BY_BASEDATE_EV = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.sysAtr = 1"
+			+ " AND c.employmentRootAtr = 5"
+			+ " AND c.busEventId IN :lstEventID";
 	/**
 	 * getComRootStart CMM018
 	 * @param companyId
@@ -519,5 +539,29 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("confirmationRootType", confirmRootAtr)
 				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainComApR(c));
+	}
+	@Override
+	public List<CompanyApprovalRoot> findByBaseDateJinji(String cid, GeneralDate baseDate,
+			List<Integer> lstNoticeID, List<String> lstEventID) {
+		List<CompanyApprovalRoot> lstResult = new ArrayList<>();
+		lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_CM, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", cid)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainComApR(c)));
+		if(!lstNoticeID.isEmpty()) {
+			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_NT, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", cid)
+					.setParameter("baseDate", baseDate)
+					.setParameter("lstNoticeID", lstNoticeID)
+					.getList(c->toDomainComApR(c)));
+		}
+		if(!lstEventID.isEmpty()) {
+			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_EV, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", cid)
+					.setParameter("baseDate", baseDate)
+					.setParameter("lstEventID", lstEventID)
+					.getList(c->toDomainComApR(c)));
+		}
+		return lstResult;
 	}
 }

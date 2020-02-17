@@ -171,5 +171,6 @@ public interface PersonApprovalRootRepository {
 	//get by endDate
 	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
 	
-	
+	List<PersonApprovalRoot> findByBaseDateJinji(String companyId, GeneralDate baseDate,
+			List<Integer> lstNoticeID, List<String> lstEventID);
 }

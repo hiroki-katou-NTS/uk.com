@@ -1921,7 +1921,7 @@ module nts.uk.com.view.cmm018.a {
              * open dialog M: マスタリスト
              */
             openDialogM(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
+               setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
                modal("/view/cmm/018/m/index.xhtml");
             }
             /**
