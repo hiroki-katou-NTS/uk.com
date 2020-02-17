@@ -8,8 +8,10 @@ import nts.arc.time.GeneralDate;
 public class ApproverInfoHumamImport {
 	/**承認者*/
 	private String approverID;
+	
 	/**承認区分*/
 	private int approvalAtr;
+	
 	/**代行者*/
 	private String agentID;
 	/**承認日*/

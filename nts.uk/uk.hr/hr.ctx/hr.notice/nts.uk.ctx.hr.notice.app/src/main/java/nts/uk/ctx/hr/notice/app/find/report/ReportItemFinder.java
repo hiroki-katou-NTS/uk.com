@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -29,8 +32,13 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PhaseSttHrImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -61,6 +69,10 @@ public class ReportItemFinder {
 
 	@Inject
 	private ApproveRepository approveRepository;
+	
+	@Inject
+	private EmployeeInformationAdaptor employeeInforAdapter;
+	
 	/**
 	 * 
 	 * @param reportClsId
@@ -87,7 +99,7 @@ public class ReportItemFinder {
 			approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
 			
 			
-		}else {
+		 } else {
 			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					params.getReportLayoutId());
@@ -511,7 +523,6 @@ public class ReportItemFinder {
 		
 		mapListItemClass(itemDatas, Arrays.asList(classItem));
 
-//		
 //		classItem.getItems().addAll(valueItems);
 
 	}
@@ -537,6 +548,62 @@ public class ReportItemFinder {
 			classItem.setItems(items);
 
 		}
+	}
+	
+	private List<ApprovalPhaseStateForAppDto> convertData(ApprRootStateHrImport apprRootState) {
+		
+		ApprStateHrImport apprState = apprRootState.getApprState();
+		
+		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
+		
+		List<ApprovalPhaseStateForAppDto> appDtoLst = lstPhaseState.stream().map(c ->{
+			
+			return ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c);
+			
+		}).collect(Collectors.toList());
+		
+		return appDtoLst;
+	}
+	
+	private void getEmployeeInfo(List<String> sids, List<ApproverStateForAppDto> approverLst) {
+		
+		//アルゴリズム [社員の情報を取得する] を実行する (thực hiện thuật toán [lấy thông tin employee]) --- 
+		
+		EmployeeInfoQueryImport paramApproverId = EmployeeInfoQueryImport.builder()
+				
+				.employeeIds(new ArrayList<String>(sids))
+				
+				.referenceDate(GeneralDate.today()) 
+				
+				.toGetWorkplace(false)
+				
+				.toGetDepartment(false)
+				
+				.toGetPosition(false)
+				
+				.toGetEmployment(false)
+				
+				.toGetClassification(false)
+				
+				.toGetEmploymentCls(false).build();
+		
+		Map<String, List<EmployeeInformationImport>> employeeInfoMaps = employeeInforAdapter.find(paramApproverId).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		
+		approverLst.stream().forEach(c ->{
+			
+			List<EmployeeInformationImport> employeeInfoLst = employeeInfoMaps.get(c.getApproverID());
+			
+			if(!CollectionUtil.isEmpty(employeeInfoLst)) {
+				
+				c.setApproverName(employeeInfoLst.get(0).getEmployeeName());
+				
+			}
+			
+		});
+		
+		
+		
 	}
 	
 //	private List<EmployeeApproveDto> creatEmployeeApproveLst(){

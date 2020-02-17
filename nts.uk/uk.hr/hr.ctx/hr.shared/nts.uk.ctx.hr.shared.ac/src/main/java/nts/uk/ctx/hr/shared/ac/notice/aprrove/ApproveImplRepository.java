@@ -42,18 +42,15 @@ public class ApproveImplRepository implements ApproveRepository {
 
 					List<ApproverInfoHumamImport> lstApproverInfo = f.getLstApproverInfo().stream().map(i -> {
 
-								return new ApproverInfoHumamImport(i.getApproverID(), i.getApprovalAtr(),
+								return new ApproverInfoHumamImport(i.getApproverID(), i.getApprovalAtr(), i.getAgentID(), i.getApprovalDate(), i.getApprovalReason());
 
-										i.getAgentID(), i.getApprovalDate(), i.getApprovalReason());
-
-							}).collect(Collectors.toList());
+								}).collect(Collectors.toList());
 
 					return new FrameHumanImport(f.getFrameOrder(), f.getConfirmAtr(), f.getAppDate(), lstApproverInfo);
 
 				}).collect(Collectors.toList());
 
-				return new PhaseSttHrImport(c.getPhaseOrder(), c.getApprovalAtr(), c.getApprovalForm(),
-						lstApprovalFrameResult);
+				return new PhaseSttHrImport(c.getPhaseOrder(), c.getApprovalAtr(), c.getApprovalForm(), lstApprovalFrameResult);
 
 			}).collect(Collectors.toList());
 

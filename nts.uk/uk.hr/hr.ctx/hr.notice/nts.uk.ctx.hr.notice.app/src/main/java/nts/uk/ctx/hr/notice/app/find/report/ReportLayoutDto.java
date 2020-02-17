@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverDto;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
@@ -37,7 +37,7 @@ public class ReportLayoutDto {
 	
 	private ApprRootStateHrImport approvalStateHrImport;
 	
-	private List<ApproverDto> listApprovalFrame;
+	private List<ApprovalPhaseStateForAppDto> listApprovalFrame;
 	
 	public ReportLayoutDto(){
 		
