@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -26,7 +27,7 @@ public class EmployeeUnregisterFinder {
 	
 	public MasterApproverRootOutput masterInfors(MasterApproverRootDto dto) {
 		String companyId = AppContexts.user().companyId();
-		return masterRoot.masterInfors(companyId,dto.getSysAtr(), dto.getBaseDate(), dto.isChkCompany(), dto.isChkWorkplace(), dto.isChkPerson());
+		return masterRoot.masterInfors(companyId,dto.getSysAtr(), dto.getBaseDate(), dto.isChkCompany(), dto.isChkWorkplace(), dto.isChkPerson(), new ArrayList<>());
 	}
 	
 }

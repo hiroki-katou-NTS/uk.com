@@ -27,8 +27,10 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
@@ -62,38 +64,70 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private ApprovalRootCommonService appRootCm;
 	
 	@Override
-	public MasterApproverRootOutput masterInfors(String companyID,
-			int sysAtr,
-			GeneralDate baseDate, 
-			boolean isCompany, 
-			boolean isWorkplace,
-			boolean isPerson) {
+	public MasterApproverRootOutput masterInfors(String companyID, int sysAtr, GeneralDate baseDate, 
+			boolean isCompany, boolean isWorkplace, boolean isPerson, List<AppTypeName> lstName) {
 		CompanyApprovalInfor comMasterInfor = null;		
 		MasterWkpOutput wkpRootOutput = new MasterWkpOutput(new HashMap<>(), new ArrayList<>());
 		MasterEmployeeOutput empRootOutput = new MasterEmployeeOutput(new HashMap<>(), new ArrayList<>());
+		List<Integer> lstNotice = new ArrayList<>();
+		List<String> lstEvent = new ArrayList<>();
+		if(sysAtr == SystemAtr.HUMAN_RESOURCES.value) {
+			lstNotice = this.lstNotice(lstName);
+			lstEvent = this.lstEvent(lstName);
+		}
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
 		if(isCompany) {//Lay data COMPANY
-			comMasterInfor = this.getComApprovalInfor(companyID, baseDate, sysAtr);
+			comMasterInfor = this.getComApprovalInfor(companyID, baseDate, sysAtr, lstName, lstNotice, lstEvent);
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {//Lay data WORKPLACE
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
+			List<WorkplaceApprovalRoot> lstWps = new ArrayList<>();
+			if(sysAtr == SystemAtr.WORK.value) {
+				lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
+			}else {
+				lstWps = wpRootRepository.findByBaseDateJinji(companyID, baseDate, lstNotice, lstEvent);
+			}
+			
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {				
-				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate, sysAtr);				
+				wkpRootOutput = this.getWpApproverInfor(lstWps, companyID, baseDate, sysAtr, lstName);				
 			}
 		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
 		if(isPerson) {//Lay data PERSON
 			//ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
-			List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
+			List<PersonApprovalRoot> lstPss = new ArrayList<>();
+			if(sysAtr == SystemAtr.WORK.value) {
+				lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
+			}else {
+				lstPss = psRootRepository.findByBaseDateJinji(companyID, baseDate, lstNotice, lstEvent);
+			}
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstPss)) {
-				empRootOutput = this.getPsRootInfor(lstPss, companyID);
+				empRootOutput = this.getPsRootInfor(lstPss, companyID, lstName);
 			}
 		}
 		return new MasterApproverRootOutput(comMasterInfor, wkpRootOutput, empRootOutput);
+	}
+	
+	private List<Integer> lstNotice(List<AppTypeName> lstName){
+		List<Integer> lstResult = new ArrayList<>();
+		for(AppTypeName app : lstName) {
+			if(app.getEmpRAtr() == EmploymentRootAtr.NOTICE.value) {
+				lstResult.add(Integer.valueOf(app.getValue()));
+			}
+		}
+		return lstResult;
+	}
+	private List<String> lstEvent(List<AppTypeName> lstName){
+		List<String> lstResult = new ArrayList<>();
+		for(AppTypeName app : lstName) {
+			if(app.getEmpRAtr() == EmploymentRootAtr.BUS_EVENT.value) {
+				lstResult.add(app.getValue());
+			}
+		}
+		return lstResult;
 	}
 	/**
 	 *  get all approval of employee
@@ -101,7 +135,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param companyID
 	 * @return
 	 */
-	private MasterEmployeeOutput getPsRootInfor(List<PersonApprovalRoot> lstPss, String companyID){
+	private MasterEmployeeOutput getPsRootInfor(List<PersonApprovalRoot> lstPss, String companyID, List<AppTypeName> lstName){
 		Map<String, PersonApproverOutput> mapPsRootInfor = new HashMap<>();
 		List<EmployeeApproverOutput> lstEmployeeInfo = new ArrayList<>();
 		for(PersonApprovalRoot root: lstPss) {
@@ -123,13 +157,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
 				psWootInfor = psApp.getPsRootInfo();
-				psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID);
+				psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID, lstName);
 				continue;
 			}
 			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
 			PersonImport psInfos = psInfor.getPersonInfo(root.getEmployeeId());
 			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getSID(), psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
-			psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID);
+			psWootInfor = this.getAppInfors(psRoot, psWootInfor, companyID, lstName);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
 			lstEmployeeInfo.add(empInfor);
@@ -152,7 +186,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param baseDate
 	 * @return
 	 */
-	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate, int sysAtr){
+	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID,
+			GeneralDate baseDate, int sysAtr, List<AppTypeName> lstName){
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
 		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
 		for(WorkplaceApprovalRoot root: lstWps) {//loop theo wkp
@@ -175,14 +210,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
 				wpRootInfor = wpApp.getWpRootInfor();
-				wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
+				wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID, lstName);
 				continue;
 			}
 			//Lay thong tin detail cua workplace
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場NEW」)
 			WkpDepInfo wkpInf = appRootCm.getWkpDepInfo(root.getWorkplaceId(), sysAtr);
 			WorkplaceImport wpDto = new WorkplaceImport(root.getWorkplaceId(), wkpInf.getCode(), wkpInf.getName());
-			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID);
+			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID, lstName);
 			
 			// fix data
 			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
@@ -200,11 +235,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		return new MasterWkpOutput(mapWpRootInfor, lstWpInfor);
 	}
 	
-	private List<ApprovalForApplication> getAppInfors(ApprovalRootCommonOutput root, List<ApprovalForApplication> wpRootInfor, String companyID){
+	private List<ApprovalForApplication> getAppInfors(ApprovalRootCommonOutput root,
+			List<ApprovalForApplication> wpRootInfor, String companyID, List<AppTypeName> lstName){
 		String typeV = this.convertType(root.getEmploymentRootAtr(), root.getAppType(), root.getConfType(), 
 				root.getNoticeId(), root.getEventId());
 		String appName = this.findNameRoot(root.getEmploymentRootAtr(), root.getAppType(), root.getConfType(), 
-				root.getNoticeId(), root.getEventId(), new ArrayList<>(), new ArrayList<>());
+				root.getNoticeId(), root.getEventId(), lstName);
 				
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
@@ -256,7 +292,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param companyID
 	 * @return
 	 */
-	private ApprovalForApplication getApproval(CompanyApprovalRoot comRoot, String companyID) {
+	private ApprovalForApplication getApproval(CompanyApprovalRoot comRoot, String companyID, List<AppTypeName> lstName) {
 		//find name
 		
 		int empR = comRoot.getApprRoot().getEmploymentRootAtr().value;
@@ -265,7 +301,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		String typeV = this.convertType(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
 				comRoot.getApprRoot().getBusEventId());
 		String nameRoot = this.findNameRoot(empR, appType, confType, comRoot.getApprRoot().getNoticeId(), 
-				comRoot.getApprRoot().getBusEventId(), new ArrayList<>(), new ArrayList<>());
+				comRoot.getApprRoot().getBusEventId(), lstName);
 		//khoi tao
 		ApprovalForApplication approvalForApp = new ApprovalForApplication(empR, 
 				typeV, nameRoot , null, null, null);
@@ -294,7 +330,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	}
 	
 	private String findNameRoot(int empR, Integer appType, Integer confirm, Integer notice, String event, 
-			List<String> lstNoticeN, List<String> lstEventN){
+			List<AppTypeName> lstName){
 		switch(empR){
 	        case 0:
 	        	return "共通ルート";
@@ -303,12 +339,19 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	        case 2:
 	        	return EnumAdaptor.valueOf(confirm, ConfirmationRootType.class).nameId;
 	        case 4:
-	            return notice.toString();
+	            return this.findName(notice.toString(), empR, lstName);
 	        default://BUS_EVENT 5
-	            return event;
+	            return this.findName(event, empR, lstName);
 	    }
 	}
-	
+	private String findName(String value, int empRAtr, List<AppTypeName> lstName) {
+			for(AppTypeName amp: lstName) {
+				if(amp.getEmpRAtr() == empRAtr && amp.getValue().equals(value)) {
+					return amp.getName();
+				}
+			}
+			return "コード削除済";
+	}
 	/**
 	 * フェーズ承認者取得
 	 * @return
@@ -350,10 +393,15 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param baseDate
 	 * @return
 	 */
-	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate, int sysAtr) {
-		//CompanyApprovalInfor comMasterInfor = null;
+	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate, int sysAtr,
+			List<AppTypeName> lstName, List<Integer> lstNotice, List<String> lstEvent) {
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate, sysAtr);
+		List<CompanyApprovalRoot> lstComs = new ArrayList<>();
+		if(sysAtr == SystemAtr.WORK.value) {
+			lstComs = comRootRepository.findByBaseDate(companyID, baseDate, sysAtr);
+		}else {
+			lstComs = comRootRepository.findByBaseDateJinji(companyID, baseDate, lstNotice, lstEvent);
+		}
 		//Thong tin company
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		//list root by COM
@@ -367,7 +415,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				continue;
 			}
 			//convert data
-			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID);
+			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID, lstName);
 			comApproverRoots.add(comApprover);
 		}
 		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, this.sortByAppTypeConfirm(comApproverRoots));
