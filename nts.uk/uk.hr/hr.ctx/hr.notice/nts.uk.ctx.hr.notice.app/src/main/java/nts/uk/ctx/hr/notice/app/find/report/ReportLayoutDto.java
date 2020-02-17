@@ -64,7 +64,8 @@ public class ReportLayoutDto {
 			List<LayoutReportClsDto> classificationItems,
 			
 			List<DocumentSampleDto> documentSampleDtoLst,
-			ApprRootStateHrImport approvalStateHrImport) {
+			
+			List<ApprovalPhaseStateForAppDto> listApprovalFrame) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
@@ -76,7 +77,7 @@ public class ReportLayoutDto {
 		
 		dto.setDocumentSampleDto(documentSampleDtoLst);
 		
-		dto.setApprovalStateHrImport(approvalStateHrImport);
+		dto.setListApprovalFrame(listApprovalFrame);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			

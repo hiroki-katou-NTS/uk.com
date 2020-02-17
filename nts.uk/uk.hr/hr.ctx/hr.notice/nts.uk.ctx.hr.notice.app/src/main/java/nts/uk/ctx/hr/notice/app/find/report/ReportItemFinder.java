@@ -12,8 +12,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.internal.xr.CollectionResult;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
@@ -28,6 +31,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSettingRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
@@ -85,6 +89,8 @@ public class ReportItemFinder {
 
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
+		List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
+		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		// ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。
@@ -96,8 +102,14 @@ public class ReportItemFinder {
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
 			
-			approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
-			
+			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
+				
+				approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
+				
+				appPhaseLst.addAll(convertData(approvalStateHrImport));
+				
+				
+			}
 			
 		 } else {
 			
@@ -145,7 +157,7 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, approvalStateHrImport)
+						itemInter, documentSampleDtoLst, appPhaseLst)
 				: new ReportLayoutDto();
 	}
 	
@@ -556,16 +568,22 @@ public class ReportItemFinder {
 		
 		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
-		List<ApprovalPhaseStateForAppDto> appDtoLst = lstPhaseState.stream().map(c ->{
-			
-			return ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c);
-			
-		}).collect(Collectors.toList());
+		List<String> sids = new ArrayList<>();
 		
-		return appDtoLst;
-	}
-	
-	private void getEmployeeInfo(List<String> sids, List<ApproverStateForAppDto> approverLst) {
+		lstPhaseState.stream().forEach(c ->{
+			
+			c.getLstApprovalFrame().stream().forEach(app ->{
+				
+				List<String> appIds = app.getLstApproverInfo().stream().map(id ->{
+					
+					return StringUtil.isNullOrEmpty(id.getAgentID(), true)== true? id.getApproverID(): id.getAgentID();
+				}).collect(Collectors.toList());
+				
+				sids.addAll(appIds);			
+				
+			});
+			
+		});
 		
 		//アルゴリズム [社員の情報を取得する] を実行する (thực hiện thuật toán [lấy thông tin employee]) --- 
 		
@@ -587,18 +605,30 @@ public class ReportItemFinder {
 				
 				.toGetEmploymentCls(false).build();
 		
-		Map<String, List<EmployeeInformationImport>> employeeInfoMaps = employeeInforAdapter.find(paramApproverId).stream()
+		Map<String, List<EmployeeInformationImport>> employeeInfoMaps = employeeInforAdapter.find(paramApproverId)
+				
+				.stream()
+				
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		
+		
+		List<ApprovalPhaseStateForAppDto> appDtoLst = lstPhaseState.stream().map(c ->{
+			
+			ApprovalPhaseStateForAppDto dto = ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c, employeeInfoMaps);
+			return dto;
+			
+		}).collect(Collectors.toList());
+		
+		return appDtoLst;
+	}
+	
+	private void getEmployeeInfo(List<String> sids, List<ApproverStateForAppDto> approverLst) {
+		
+
 		
 		approverLst.stream().forEach(c ->{
 			
-			List<EmployeeInformationImport> employeeInfoLst = employeeInfoMaps.get(c.getApproverID());
-			
-			if(!CollectionUtil.isEmpty(employeeInfoLst)) {
-				
-				c.setApproverName(employeeInfoLst.get(0).getEmployeeName());
-				
-			}
+
 			
 		});
 		
