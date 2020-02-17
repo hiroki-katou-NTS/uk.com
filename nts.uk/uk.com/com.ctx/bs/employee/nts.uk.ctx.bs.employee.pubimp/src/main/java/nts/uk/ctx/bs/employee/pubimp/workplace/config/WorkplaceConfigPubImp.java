@@ -31,7 +31,6 @@ public class WorkplaceConfigPubImp implements WorkPlaceConfigPub {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<WorkPlaceConfigExport> findByCompanyIdAndPeriod(String companyId, DatePeriod datePeriod) {
 		return (List<WorkPlaceConfigExport>) this.configRepo.findByCompanyIdAndPeriod(companyId, datePeriod).stream().map(x -> {		
@@ -39,7 +38,7 @@ public class WorkplaceConfigPubImp implements WorkPlaceConfigPub {
 					.map(his -> new WorkplaceConfigHistoryExport(his.identifier(), his.span()))
 					.collect(Collectors.toList());
 			return new WorkPlaceConfigExport(x.getCompanyId(), wkpConfigHistory);
-		});
+		}).collect(Collectors.toList());
 	}
 
 }
