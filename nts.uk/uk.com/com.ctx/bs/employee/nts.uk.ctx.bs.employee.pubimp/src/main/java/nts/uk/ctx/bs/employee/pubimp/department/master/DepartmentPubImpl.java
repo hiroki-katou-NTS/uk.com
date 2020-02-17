@@ -104,7 +104,7 @@ public class DepartmentPubImpl implements DepartmentPub {
 	@Override
 	public AffDpmHistItemExport getDepartmentHistItemByEmpDate(String employeeID, GeneralDate date) {
 		Optional<AffDepartmentHistoryItem> item = affDepartmentHistoryItemRepository.findByEmpDate(employeeID, date);
-		if(item.isPresent()) {
+		if(!item.isPresent()) {
 			return null;
 		} else {
 			return new AffDpmHistItemExport(
