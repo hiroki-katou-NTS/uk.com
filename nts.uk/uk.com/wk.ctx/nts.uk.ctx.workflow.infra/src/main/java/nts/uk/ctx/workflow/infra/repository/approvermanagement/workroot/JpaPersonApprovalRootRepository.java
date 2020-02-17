@@ -218,7 +218,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public List<PersonApprovalRoot> getPsRootStart(String companyId, String employeeId, int sysAtr,
-			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID) {
+			List<Integer> lstAppType, List<Integer> lstNoticeID, List<String> lstEventID) {
 		List<PersonApprovalRoot> lstPs = new ArrayList<>();
 		if(sysAtr == SystemAtr.WORK.value){//就業
 			lstPs.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtPsApprovalRoot.class)
@@ -360,7 +360,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
 					.setParameter("endDate", endDate)
-					.setParameter("noticeId", id)
+					.setParameter("noticeId", applicationType)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainPsApR(c));
 		}
@@ -553,17 +553,17 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainPsApR(c));
 		}
-		//confirm
-		if(employmentRootAtr == 2){
+		//notice
+		if(employmentRootAtr == 4){
 			return this.queryProxy().query(FIND_BY_NTR_TYPE, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
-					.setParameter("noticeId", id)
+					.setParameter("noticeId", applicationType)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainPsApR(c));
 		}
-		//confirm
-		if(employmentRootAtr == 2){
+		//event
+		if(employmentRootAtr == 5){
 			return this.queryProxy().query(FIND_BY_EVR_TYPE, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
@@ -672,7 +672,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			lst = this.queryProxy().query(GET_ALL_MODE_PRI_NT, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
-					.setParameter("noticeId", id)
+					.setParameter("noticeId", applicationType)
 					.getList(c->toDomainPsApR(c));
 		}else{//event
 			lst = this.queryProxy().query(GET_ALL_MODE_PRI_EV, WwfmtPsApprovalRoot.class)

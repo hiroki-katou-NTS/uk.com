@@ -17,7 +17,7 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> getComRootStart(String companyId, int sysAtr, List<Integer> lstAppType,
-			List<String> lstNoticeID, List<String> lstEventID);
+			List<Integer> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * get ComApprovalRoot

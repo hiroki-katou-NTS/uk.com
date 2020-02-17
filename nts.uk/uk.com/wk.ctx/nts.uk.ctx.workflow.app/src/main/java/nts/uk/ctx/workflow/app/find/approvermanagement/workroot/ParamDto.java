@@ -16,8 +16,8 @@ public class ParamDto {
 	private String employeeId;
 	/**申請種類*/
 	private List<Integer> lstAppType;
-	/**届出種類ID,プログラムID(インベント)*/
-	private List<String> lstNoticeID;
+	/**届出種類ID*/
+	private List<Integer> lstNoticeID;
 	/**プログラムID(インベント)*/
 	private List<String> lstEventID;
 }

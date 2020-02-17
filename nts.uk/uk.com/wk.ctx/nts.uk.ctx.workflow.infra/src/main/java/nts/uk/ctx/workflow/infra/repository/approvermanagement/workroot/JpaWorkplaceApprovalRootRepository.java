@@ -166,7 +166,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public List<WorkplaceApprovalRoot> getWpRootStart(String companyId, String workplaceId, int sysAtr,
-			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID) {
+			List<Integer> lstAppType, List<Integer> lstNoticeID, List<String> lstEventID) {
 		List<WorkplaceApprovalRoot> lstWp = new ArrayList<>();
 		if(sysAtr == SystemAtr.WORK.value){//就業
 			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtWpApprovalRoot.class)
@@ -246,17 +246,17 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}
-		//confirm
+		//notice
 		if(employmentRootAtr == 4){
 			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_NOTICE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
-					.setParameter("noticeId", id)
+					.setParameter("noticeId", applicationType)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}
-		//confirm
+		//event
 		if(employmentRootAtr == 5){
 			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_EVENT, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
@@ -510,7 +510,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			return this.queryProxy().query(FIND_BY_NTR_TYPE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
-					.setParameter("noticeId", id)
+					.setParameter("noticeId", applicationType)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}
@@ -519,7 +519,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			return this.queryProxy().query(FIND_BY_EVR_TYPE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
-					.setParameter("busEventId ", id)
+					.setParameter("busEventId", id)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c->toDomainWpApR(c));
 		}

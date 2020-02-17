@@ -20,7 +20,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsRootStart(String companyId, String employeeId, int sysAtr,
-			List<Integer> lstAppType, List<String> lstNoticeID, List<String> lstEventID);
+			List<Integer> lstAppType, List<Integer> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * delete Person Approval Root
