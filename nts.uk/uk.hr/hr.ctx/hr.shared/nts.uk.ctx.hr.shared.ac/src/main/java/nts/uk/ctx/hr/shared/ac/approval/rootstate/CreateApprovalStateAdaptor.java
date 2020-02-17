@@ -43,7 +43,7 @@ public class CreateApprovalStateAdaptor implements ICreateApprovalStateAdaptor{
 	private ApprovalStateHrImport convertData(ApprovalRootContentHrExport input  , String rootStateID, String employeeID, GeneralDate appDate){
 		
 		List<PhaseStateHrImport> lstPhaseState = new ArrayList<PhaseStateHrImport>();
-		List<ApprovalPhaseStateHrExport> listApprovalPhaseState = input.getApprovalRootState().getListApprovalPhaseState();
+		List<ApprovalPhaseStateHrExport> listApprovalPhaseState = input.getApprovalRootState() != null ? input.getApprovalRootState().getListApprovalPhaseState() : new ArrayList<>();
 		if (!listApprovalPhaseState.isEmpty()) {
 			for (int i = 0; i < listApprovalPhaseState.size(); i++) {
 				ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i);

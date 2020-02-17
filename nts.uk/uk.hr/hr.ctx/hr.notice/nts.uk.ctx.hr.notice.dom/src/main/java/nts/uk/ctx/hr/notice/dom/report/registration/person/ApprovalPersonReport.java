@@ -6,6 +6,7 @@ package nts.uk.ctx.hr.notice.dom.report.registration.person;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
  */
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApprovalPersonReport extends AggregateRoot{

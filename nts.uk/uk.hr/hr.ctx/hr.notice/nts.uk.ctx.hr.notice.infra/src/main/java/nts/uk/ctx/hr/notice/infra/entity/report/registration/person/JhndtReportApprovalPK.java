@@ -30,4 +30,8 @@ public class JhndtReportApprovalPK implements Serializable {
 	@NotNull
 	@Column(name = "CID")
 	public String cid; // 会社ID
+	
+	@NotNull
+	@Column(name = "APR_SID")
+	public String aprSid; //承認者社員ID
 }

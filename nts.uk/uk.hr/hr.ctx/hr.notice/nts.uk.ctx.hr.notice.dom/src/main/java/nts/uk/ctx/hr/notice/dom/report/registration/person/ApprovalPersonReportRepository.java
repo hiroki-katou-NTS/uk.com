@@ -19,7 +19,7 @@ public interface ApprovalPersonReportRepository {
 	
 	List<ApprovalPersonReport> getListDomainByReportIdAndSid(String cid, int reprtId, String approverId);
 	
-	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid);
+	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid, String aprSid);
 	
 	void add(ApprovalPersonReport domain);
 	
@@ -29,7 +29,7 @@ public interface ApprovalPersonReportRepository {
 	
 	void update(ApprovalPersonReport domain);
 	
-	void delete(int reportID, int phaseNum, int aprNum, String cid);
+	void delete(int reportID, int phaseNum, int aprNum, String cid, String aprSid);
 	
 	void deleteByReportId(int reportID, String cid);
 	

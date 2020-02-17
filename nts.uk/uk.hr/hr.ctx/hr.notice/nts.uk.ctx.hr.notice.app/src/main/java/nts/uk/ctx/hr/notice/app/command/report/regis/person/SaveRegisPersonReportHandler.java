@@ -17,11 +17,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.EmailTransmissionClass;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
@@ -29,6 +33,7 @@ import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootContentHrExport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApproverStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
 import nts.uk.ctx.hr.shared.dom.create.approval.rootstate.ICreateApprovalStateAdaptor;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
@@ -48,6 +53,9 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	
 	@Inject
 	private ReportItemRepository reportItemRepo;
+	
+	@Inject
+	private ApprovalPersonReportRepository approvalPersonReportRepo;
 	
 	@Inject
 	private EmployeeInformationAdaptor empInfoAdaptor;
@@ -99,8 +107,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			
 			// [人事届出の登録.ルートインスタンスID]、[人事届出の承認.ルートインスタンスID]を登録する。[人事届出の承認．メール送信区分]=メールするに設定
 			//(Đăng ký [Registration of HR report. Root instance ID], [Approval of HR report. Root instance ID]. [Approval of HR report. Category gửi mail] = Setting mail)
-			/*List<ApprovalPersonReport> listDomainApproval = new ArrayList<>();
-			if (!export.getApprovalRootState().getListApprovalPhaseState().isEmpty()) {
+			List<ApprovalPersonReport> listDomainApproval = new ArrayList<>();
+			if (export.getApprovalRootState() != null && !export.getApprovalRootState().getListApprovalPhaseState().isEmpty()) {
 				List<ApprovalPhaseStateHrExport> listApprovalPhaseState = export.getApprovalRootState().getListApprovalPhaseState();
 				for (int i = 0; i < listApprovalPhaseState.size(); i++) {
 					ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i); 
@@ -108,23 +116,46 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 						List<ApprovalFrameHrExport> listApprovalFrame = approvalPhaseStateHrExport.getListApprovalFrame();
 						for (int j = 0; j < listApprovalFrame.size(); j++) {
 							ApprovalFrameHrExport approvalFrameHrExport = listApprovalFrame.get(j);
-							ApprovalPersonReport domainApproval = new ApprovalPersonReport();
-							domainApproval.setCid(cid);
-							domainApproval.setRootSatteId(rootSateId);
-							domainApproval.setReportID(reportIDNew);
-							domainApproval.setReportName(data.reportName);
-							domainApproval.setRefDate(GeneralDateTime.now());
-							domainApproval.setInputDate(GeneralDateTime.now());
-							domainApproval.setAppDate(GeneralDateTime.now());
-							domainApproval.setAprDate(approvalFrameHrExport.getListApprover().isEmpty() ? null : GeneralDateTime.legacyDateTime(approvalFrameHrExport.getListApprover().get(0).getApprovalDate().date()));;
-							domainApproval.setAprSid(approvalFrameHrExport.getListApprover().get(0).getApproverID());
-							
+							if (!approvalFrameHrExport.getListApprover().isEmpty()) {
+								List<ApproverStateHrExport> listApprover = approvalFrameHrExport.getListApprover();
+								for (int k = 0; k < listApprover.size(); k++) {
+									ApproverStateHrExport approverStateHrExport = listApprover.get(k);
+									ApprovalPersonReport domain = ApprovalPersonReport.builder()
+											.cid(cid)
+											.rootSatteId(rootSateId)
+											.reportID(reportIDNew)
+											.reportName(data.reportName)
+											.refDate(GeneralDateTime.now())
+											.inputDate(GeneralDateTime.now())
+											.appDate(GeneralDateTime.now())
+											.aprDate(GeneralDateTime.now())
+											.aprSid(approverStateHrExport.getApproverID())
+											.aprBussinessName(approverStateHrExport.getApproverName())
+											.emailAddress(null)
+											.phaseNum(approvalPhaseStateHrExport.getPhaseOrder())
+											.aprStatus(ApprovalStatus.Not_Acknowledged)
+											.aprNum(approvalFrameHrExport.getFrameOrder())
+											.arpAgency(true)
+											.comment(null)
+											.aprActivity(ApprovalActivity.Activity)
+											.emailTransmissionClass(EmailTransmissionClass.DoNotSend)
+											.appSid(sid)
+											.inputSid(sid)
+											.reportLayoutID(data.reportLayoutID)
+											.sendBackSID(Optional.empty())
+											.sendBackClass(Optional.empty())
+											.build();
+									listDomainApproval.add(domain);
+								}
+							}
 						}
 					}
 				}
-			} */
-			
-			
+			}
+
+			if (!listDomainApproval.isEmpty()) {
+				approvalPersonReportRepo.addAll(listDomainApproval);
+			}
 			
 		}
 		

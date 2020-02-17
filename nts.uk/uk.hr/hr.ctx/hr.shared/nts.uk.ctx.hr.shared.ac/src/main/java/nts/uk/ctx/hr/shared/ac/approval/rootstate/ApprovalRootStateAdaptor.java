@@ -17,6 +17,7 @@ import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFormHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootContentHrExport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApproverStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ErrorFlagHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
@@ -44,14 +45,15 @@ public class ApprovalRootStateAdaptor implements IApprovalRootStateAdaptor {
 		ApprovalRootContentExport export = approvalRootStatePub.getApprovalRootHr(companyID, employeeID, targetType,
 				date, lowerApprove);
 		
-		ApprovalRootContentHrExport result = new ApprovalRootContentHrExport();
-		convertData(export, result);
-		return result;
+		ApprovalRootContentHrExport output = new ApprovalRootContentHrExport();
+		convertData(export, output);
+		return output;
 	}
 	
 	private void convertData(ApprovalRootContentExport input, ApprovalRootContentHrExport output){
 		
 		output.setErrorFlag(EnumAdaptor.valueOf(input.getErrorFlag().value, ErrorFlagHrExport.class));
+		output.setApprovalRootState(null);
 		
 		ApprovalRootStateExport approvalRootStateInput = input.getApprovalRootState();
 		List<ApprovalPhaseStateExport> listApprovalPhaseStateInput = approvalRootStateInput.getListApprovalPhaseState();
@@ -101,11 +103,14 @@ public class ApprovalRootStateAdaptor implements IApprovalRootStateAdaptor {
 					}
 				}
 				
-				
 				approvalPhaseStateOutput.setListApprovalFrame(listApprovalFrameOutPut);
 				listApprovalPhaseStateOutput.add(approvalPhaseStateOutput);
 			}
 		}
+		
+		ApprovalRootStateHrExport approvalRootStateHrExport = new ApprovalRootStateHrExport(listApprovalPhaseStateOutput);
+		output.setApprovalRootState(approvalRootStateHrExport);
+		
 	}
 
 }

@@ -27,11 +27,4 @@ public class ApprovalFrameHrExport {
 	
 	private GeneralDate appDate;
 	
-	public static ApprovalFrameHrExport fixData(Integer order) {
-		List<ApproverStateHrExport> listApprover = new ArrayList<>();
-		listApprover.add(ApproverStateHrExport.fixData(order));
-		int confirmAtr = 0;
-		GeneralDate appDate = GeneralDate.today();
-		return new ApprovalFrameHrExport(order, listApprover, confirmAtr, appDate);
-	}
 }

@@ -35,7 +35,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	
 	private JhndtReportApproval toEntity(ApprovalPersonReport  domain) {
 		JhndtReportApproval entity = new JhndtReportApproval();
-		JhndtReportApprovalPK pk   = new JhndtReportApprovalPK(domain.getReportID(), domain.getPhaseNum(), domain.getAprNum(), domain.getCid());
+		JhndtReportApprovalPK pk   = new JhndtReportApprovalPK(domain.getReportID(), domain.getPhaseNum(), domain.getAprNum(), domain.getCid(), domain.getAprSid());
 		entity.pk  = pk;
 		entity.rootSatteId = domain.getRootSatteId();
 		entity.reportName  = domain.getReportName();
@@ -43,10 +43,9 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 		entity.inputDate  = domain.getInputDate();
 		entity.appDate  = domain.getAppDate();
 		entity.aprDate  = domain.getAprDate();
-		entity.aprSid  = domain.getAprSid();
 		entity.aprBussinessName  = domain.getAprBussinessName();
 		entity.emailAddress  = domain.getEmailAddress();
-		entity.aprStatusName  = domain.getAprStatus() == null ? null : domain.getAprStatus().value;
+		entity.aprStatus  = domain.getAprStatus() == null ? 1 : domain.getAprStatus().value;
 		entity.arpAgency  = domain.isArpAgency();
 		entity.comment  = domain.getComment() == null ? null : domain.getComment().toString();
 		entity.aprActivity  = domain.getAprActivity() ==  null ? null : domain.getAprActivity().value;
@@ -79,15 +78,15 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void delete(int reportID, int phaseNum, int aprNum, String cid) {
-		if (checkExit(reportID, phaseNum, aprNum, cid)) {
-			this.commandProxy().remove(JhndtReportApproval.class, new JhndtReportApprovalPK(reportID, phaseNum, aprNum, cid));
+	public void delete(int reportID, int phaseNum, int aprNum, String cid, String aprSid) {
+		if (checkExit(reportID, phaseNum, aprNum, cid, aprSid)) {
+			this.commandProxy().remove(JhndtReportApproval.class, new JhndtReportApprovalPK(reportID, phaseNum, aprNum, cid, aprSid));
 		}
 	}
 
 	@Override
-	public boolean checkExit(int reportID, int phaseNum, int aprNum, String cid) {
-		Optional<JhndtReportApproval> entityOpt = this.queryProxy().find(new JhndtReportApprovalPK(reportID, phaseNum, aprNum, cid), JhndtReportApproval.class);
+	public boolean checkExit(int reportID, int phaseNum, int aprNum, String cid, String aprSid) {
+		Optional<JhndtReportApproval> entityOpt = this.queryProxy().find(new JhndtReportApprovalPK(reportID, phaseNum, aprNum, cid, aprSid), JhndtReportApproval.class);
 		if (entityOpt.isPresent()) {
 			return true;
 		} else {
@@ -169,7 +168,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 		String sendBackSID    = domains.get(0).getSendBackSID().isPresent()  ? domains.get(0).getSendBackSID().get() : null;
 		entities.forEach(e -> {
 			e.aprDate = GeneralDateTime.now();
-			e.aprStatusName = ApprovalStatus.Send_Back.value;
+			e.aprStatus = ApprovalStatus.Send_Back.value;
 			e.aprActivity = ApprovalActivity.Activity.value;
 			e.comment = comment;
 			e.sendBackClass = sendBackClass;

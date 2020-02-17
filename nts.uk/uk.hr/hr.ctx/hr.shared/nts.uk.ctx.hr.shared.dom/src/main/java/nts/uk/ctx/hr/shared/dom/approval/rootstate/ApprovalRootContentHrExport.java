@@ -19,9 +19,4 @@ public class ApprovalRootContentHrExport {
 	
 	private ErrorFlagHrExport errorFlag;
 	
-	public static ApprovalRootContentHrExport fixData() {
-		ApprovalRootStateHrExport approvalRootState = ApprovalRootStateHrExport.fixData();
-		ErrorFlagHrExport errorFlag = ErrorFlagHrExport.NO_ERROR;
-		return new ApprovalRootContentHrExport(approvalRootState, errorFlag);
-	}
 }
