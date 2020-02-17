@@ -7,6 +7,7 @@ module jhn001.f.vm {
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
     import permision = service.getCurrentEmpPermision;
+    import info = nts.uk.ui.dialog.info;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -32,10 +33,11 @@ module jhn001.f.vm {
 
         items: KnockoutObservableArray<GridItem> = ko.observableArray([]);
         
-        comboColumns = [{ prop: 'name', length: 12 }];
-        dataShare: any;
-        reportIdNew = '';
-        totalFileSize = 0;
+        comboColumns    = [{ prop: 'name', length: 12 }];
+        reportId        = null;
+        layoutReportId  = null;
+        dataShare       = null;
+        totalFileSize   = 0;
 
 
         constructor() {
@@ -67,9 +69,11 @@ module jhn001.f.vm {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            let listItem = [];
-            let dataShare = getShared('JHN001F_PARAMS') || null;
+            let listItem   = [];
+            let dataShare  = getShared('JHN001F_PARAMS');
             self.dataShare = dataShare;
+            self.reportId  = dataShare.reportId;
+            self.layoutReportId  = dataShare.layoutReportId;
             let param = { reportId: dataShare.reportId, layoutReportId: dataShare.layoutReportId };
 
             block();
@@ -135,18 +139,44 @@ module jhn001.f.vm {
                 delFlg: 0, //削除済     0:未削除、1:削除済 int 
                 sampleFileID: row[0].sampleFileId, //サンプルファイルID String
                 sampleFileName: row[0].sampleFileName,
-                reportID: self.dataShare.reportId, //届出ID int
-                layoutReportId: self.dataShare.layoutReportId,
+                reportID: self.reportId, //届出ID int
+                layoutReportId: self.layoutReportId,
                 dataLayout: self.dataShare.command
             }
 
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();
-            service.addDocument(objAdd).done((data) => {
-                __viewContext['viewModel'].start().done(() => {
+            service.addDocument(objAdd).done((reportId) => {
+                console.log('reportId '  + reportId);
+                self.reportId = reportId;
+                __viewContext['viewModel'].getDataAfterPushOrRemoveFile(reportId).done(() => {
                     unblock();
                     dfd.resolve();
                 });
+            });
+            return dfd.promise();
+        }
+        
+        getDataAfterPushOrRemoveFile(reportId) {
+            let self = this,
+                dfd = $.Deferred();
+            let listItem = [];
+            let param = { reportId: reportId, layoutReportId: self.dataShare.layoutReportId };
+
+            block();
+            service.getData(param).done((datafile: Array<IReportFileManagement>) => {
+                var totalSize = 0;
+                _.forEach(datafile, function(item) {
+                    totalSize = totalSize + item.fileSize;
+                    item.urlFile = item.fileId == null || item.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(item.fileId);
+                    listItem.push(new GridItem(item));
+                });
+                self.items(listItem);
+                let sum = (totalSize / 1024).toFixed(2);
+                self.totalFileSize = totalSize;
+                self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
+                unblock();
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -180,8 +210,12 @@ module jhn001.f.vm {
                             fileId: row[0].fileId
                         };
                         service.deleteDocument(command).done(() => {
-                            self.restart();
-                            unblock();
+                            info({ messageId: "Msgj_40" }).then(function() {
+                                __viewContext['viewModel'].getDataAfterPushOrRemoveFile(self.reportId).done(() => {
+                                    unblock();
+                                    dfd.resolve();
+                                });
+                            });
                         }).fail((mes) => {
                             unblock();
                         });
@@ -204,6 +238,8 @@ module jhn001.f.vm {
         }
 
         close() {
+            let self = this;
+            setShared("JHN001F_DATA", self.reportId);
             close();
         }
     }

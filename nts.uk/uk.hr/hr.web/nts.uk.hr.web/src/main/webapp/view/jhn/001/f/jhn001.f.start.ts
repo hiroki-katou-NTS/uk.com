@@ -50,9 +50,10 @@ ko.components.register('file-control', {
                     virtualizationMode: 'continuous',
                     columns: [
                         { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
+                        { headerText: '',   key: 'urlFile', dataType: 'string', width: '50px', hidden: true },
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_1'), key: 'docName', dataType: 'string', width: '300px' },
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_2'), key: 'fileName', dataType: 'string', width: '330px', template: '<a href="${urlFile}" target="_blank" data-download="true" data-id="${id}" style="color: blue;" >${fileName}</a>'},
-                        { headerText: nts.uk.resource.getText('JHN001_F2_3_3'), key: 'urlFile', dataType: 'string', width: '100px', template: '<div data-upload="true" data-id="${id}" ></div>' },
+                        { headerText: nts.uk.resource.getText('JHN001_F2_3_3'), key: 'open', dataType: 'string', width: '100px', template: '<div data-upload="true" data-id="${id}" ></div>' },
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_4'), key: 'delete', dataType: 'string', width: '120px', template: '<button data-delete="true" data-id="${id}"  style="width: 70px ; margin-left: 12px;" >削除</button>' }
 
                     ],
@@ -83,8 +84,8 @@ ko.components.register('file-control', {
                             ko.applyBindings({
                                 id,
                                 uploadFinished(file) {
-                                   items.push(file);
-                                   console.log(file); 
+                                    items.push(file);
+                                    console.log(file);
                                     __viewContext['viewModel'].pushData(file, id);
                                 }
                             }, element);

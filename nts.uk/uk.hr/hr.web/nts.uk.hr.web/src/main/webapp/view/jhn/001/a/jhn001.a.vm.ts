@@ -496,7 +496,8 @@ module jhn001.a.viewmodel {
             setShared("JHN001F_PARAMS", param);
 
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
-                self.getListDocument(param);
+                let reportId = getShared('JHN001F_DATA');
+                self.start(reportId, false);
             });
         }
 
