@@ -34,8 +34,12 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                     let param = {
                         commonMasterId: code,
                     }
+                    
                     service.getListMasterItem(param).done((data: any) => {
-                        self.listItems(data.listCommonMasterItem);                           
+                        let listTemp = data.listCommonMasterItem;
+                        listTemp = _.sortBy(listTemp, [function(o) { return o.displayNumber; }]);
+                        self.listItems(listTemp);
+                        self.selected(self.listItems()[0].commonMasterItemId); 
                     });
                 });
             }
@@ -74,20 +78,21 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             
             register(){
                 let self = this;
+                for(let i = 0; i<self.listItems().length; i++){
+                    self.listItems()[i].displayNumber = i+1;
+                }
                 let param = {
                     commonMasterId: self.masterSelected(),
                     listMasterItem: self.listItems(),
                 }
-                service.add(param).done(function(data: any) {
+                service.update(param).done(function(data: any) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(err) {
                     error({ messageId: err.messageId });
                 }).always(function() {
                     block.clear();
                 });
-                
-                nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
-                });
+
             }
             
             // close dialog
