@@ -146,7 +146,8 @@ module jhn001.a.viewmodel {
                 }
             }
         }
-
+        
+        // param = { layoutReportId , reportId }
         getListDocument(param): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -483,8 +484,6 @@ module jhn001.a.viewmodel {
                 missingDocName: self.missingDocName
             };
 
-            // trigger change of all control in layout
-            //lv.checkError(controls);
             nts.uk.ui.errors.clearAll();
 
             let param = {
@@ -497,7 +496,13 @@ module jhn001.a.viewmodel {
 
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
                 let reportId = getShared('JHN001F_DATA');
-                self.start(reportId, false);
+                let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; })
+                if (objReport && self.reportClsId() == objReport.id) {
+                    let param = { layoutReportId: self.reportClsId(), reportId: reportId };
+                    self.getListDocument(param);
+                } else {
+                    self.start(reportId, false);
+                }
             });
         }
 

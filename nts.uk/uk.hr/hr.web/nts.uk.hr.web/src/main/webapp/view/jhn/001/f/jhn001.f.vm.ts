@@ -78,6 +78,7 @@ module jhn001.f.vm {
 
             block();
             service.getData(param).done((datafile: Array<IReportFileManagement>) => {
+                console.log('get Data Start done');
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.fileSize;
@@ -90,6 +91,10 @@ module jhn001.f.vm {
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
                 unblock();
                 dfd.resolve();
+            }).fail((mes) => {
+                console.log('get Data Start fail');
+                dfd.reject();
+                unblock();
             });
             return dfd.promise();
         }
@@ -108,7 +113,7 @@ module jhn001.f.vm {
             }
 
             if(row[0].fileId){
-                console.log("đã có file rồi.");
+                console.log("đã có file rồi.Không upload được nữa");
                 return;
             }
 
@@ -147,12 +152,17 @@ module jhn001.f.vm {
             // save file to domain AttachmentPersonReportFile
             var dfd = $.Deferred();
             service.addDocument(objAdd).done((reportId) => {
-                console.log('reportId '  + reportId);
+                console.log('reportId: '  + reportId);
+                console.log('Add file Done');
                 self.reportId = reportId;
                 __viewContext['viewModel'].getDataAfterPushOrRemoveFile(reportId).done(() => {
                     unblock();
                     dfd.resolve();
                 });
+            }).fail((mes) => {
+                console.log('Add file fail');
+                dfd.reject();
+                unblock();
             });
             return dfd.promise();
         }
@@ -165,6 +175,7 @@ module jhn001.f.vm {
 
             block();
             service.getData(param).done((datafile: Array<IReportFileManagement>) => {
+                console.log('get Data After Push Or Remove File Done');
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.fileSize;
@@ -177,6 +188,10 @@ module jhn001.f.vm {
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
                 unblock();
                 dfd.resolve();
+            }).fail((mes) => {
+                console.log('get Data After Push Or Remove File fail');
+                dfd.reject();
+                unblock();
             });
             return dfd.promise();
         }
@@ -190,7 +205,8 @@ module jhn001.f.vm {
 
 
         deleteItem(id) {
-            let self = this;
+            let self = this,
+                dfd = $.Deferred();
             // check xem đã có file hay chưa, có rồi thì không có upload nua.
             let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
             if (_.size(row) == 0) {
@@ -212,15 +228,17 @@ module jhn001.f.vm {
                         service.deleteDocument(command).done(() => {
                             info({ messageId: "Msgj_40" }).then(function() {
                                 __viewContext['viewModel'].getDataAfterPushOrRemoveFile(self.reportId).done(() => {
+                                    console.log('Xoa file done');
                                     unblock();
                                     dfd.resolve();
                                 });
                             });
                         }).fail((mes) => {
+                            console.log('Xoa file fail');
+                            dfd.reject();
                             unblock();
                         });
-                    })
-                    .fail(function(res) {
+                    }).fail(function(res) {
                         console.log(res);
                     });
 
@@ -228,6 +246,7 @@ module jhn001.f.vm {
             }).ifNo(() => {
                 unblock();
             });
+            return dfd.promise();
         }
 
         restart() {
