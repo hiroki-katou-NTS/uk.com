@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -40,46 +42,46 @@ public class MenuApprovalSettings extends AggregateRoot {
 	private boolean availableAprWork2;
 
 	/** 承認者1社員ID */
-	private String apr1Sid;
+	private Optional<String> apr1Sid;
 
 	/** 承認者1社員CD */
-	private String apr1Scd;
+	private Optional<String> apr1Scd;
 
 	/** 承認者1社員名 */
-	private String apr1BusinessName;
+	private Optional<String> apr1BusinessName;
 
 	/** 承認者1部門CD */
-	private String app1Devcd;
+	private Optional<String> app1Devcd;
 
 	/** 承認者1部門名 */
-	private String app1DevName;
+	private Optional<String> app1DevName;
 
 	/** 承認者1職位CD */
-	private String app1Poscd;
+	private Optional<String> app1Poscd;
 
 	/** 承認者1職位名 */
-	private String app1PosName;
+	private Optional<String> app1PosName;
 
 	/** 承認者2社員ID */
-	private String apr2Sid;
+	private Optional<String> apr2Sid;
 
 	/** 承認者2社員CD */
-	private String apr2Scd;
+	private Optional<String> apr2Scd;
 
 	/** 承認者2社員名 */
-	private String apr2BusinessName;
+	private Optional<String> apr2BusinessName;
 
 	/** 承認者2部門CD */
-	private String app2Devcd;
+	private Optional<String> app2Devcd;
 
 	/** 承認者2部門名 */
-	private String app2DevName;
+	private Optional<String> app2DevName;
 
 	/** 承認者2職位CD */
-	private String app2Poscd;
+	private Optional<String> app2Poscd;
 
 	/** 承認者2職位名 */
-	private String app2PosName;
+	private Optional<String> app2PosName;
 
 	public MenuApprovalSettings(String cId, int workId, int rptLayoutId, String programId, String screenId,
 			boolean useApproval, boolean availableAprRoot, boolean availableAprWork1, boolean availableAprWork2,
@@ -96,20 +98,20 @@ public class MenuApprovalSettings extends AggregateRoot {
 		this.availableAprRoot = availableAprRoot;
 		this.availableAprWork1 = availableAprWork1;
 		this.availableAprWork2 = availableAprWork2;
-		this.apr1Sid = apr1Sid;
-		this.apr1Scd = apr1Scd;
-		this.apr1BusinessName = apr1BusinessName;
-		this.app1Devcd = app1Devcd;
-		this.app1DevName = app1DevName;
-		this.app1Poscd = app1Poscd;
-		this.app1PosName = app1PosName;
-		this.apr2Sid = apr2Sid;
-		this.apr2Scd = apr2Scd;
-		this.apr2BusinessName = apr2BusinessName;
-		this.app2Devcd = app2Devcd;
-		this.app2DevName = app2DevName;
-		this.app2Poscd = app2Poscd;
-		this.app2PosName = app2PosName;
+		this.apr1Sid = Optional.ofNullable(apr1Sid);
+		this.apr1Scd = Optional.ofNullable(apr1Scd);
+		this.apr1BusinessName = Optional.ofNullable(apr1BusinessName);
+		this.app1Devcd = Optional.ofNullable(app1Devcd);
+		this.app1DevName = Optional.ofNullable(app1DevName);
+		this.app1Poscd = Optional.ofNullable(app1Poscd);
+		this.app1PosName = Optional.ofNullable(app1PosName);
+		this.apr2Sid = Optional.ofNullable(apr2Sid);
+		this.apr2Scd = Optional.ofNullable(apr2Scd);
+		this.apr2BusinessName = Optional.ofNullable(apr2BusinessName);
+		this.app2Devcd = Optional.ofNullable(app2Devcd);
+		this.app2DevName = Optional.ofNullable(app2DevName);
+		this.app2Poscd = Optional.ofNullable(app2Poscd);
+		this.app2PosName = Optional.ofNullable(app2PosName);
 	}
 
 }

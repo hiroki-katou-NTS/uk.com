@@ -2,36 +2,24 @@ package nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettings;
 
 @AllArgsConstructor
 @Getter
 public class BusinessApprovalSettingsDto {
 
-	private String cID;
+	private MenuApprovalSettings menuApprovalSettings;
 	
-	private String RptLayoutID;
+	private String rptLayoutCD;
 	
-	private String RptLayoutCD;
+	private String rptLayoutName;
 	
-	private String RptLayoutName;
+	private String displayName;
 	
-	private String ProgramID;
+	private String screenID;
 	
-	private String DisplayName;
+	private Boolean useApproval;
 	
-	private String ScreenID;
+	private String noRankOrder;
 	
-	private String UseApproval;
-	
-	private String AvailableAprRoot;
-	
-	private String NoRankOrder;
-	
-	private String AvailableAprWork1;
-	
-	private String AvailableAprWork2;
-	
-	private String Apr1BusinessName;
-	
-	private String Apr2BusinessName;
 }

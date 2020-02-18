@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class JcmmtMenuApr extends UkJpaEntity {
 	
 	@EmbeddedId
-    public JcmmtMenuAprPk pkJcmmtMenuApr;  //
+    public JcmmtMenuAprPk pkJcmmtMenuApr; 
 	
 	@Column(name = "RPT_LAYOUT_ID")
 	public Integer rptLayoutId;
@@ -115,7 +115,7 @@ public class JcmmtMenuApr extends UkJpaEntity {
 	
 	public static JcmmtMenuApr toEntity(MenuApprovalSettings domain) {
 		return new JcmmtMenuApr( 
-				new JcmmtMenuAprPk(domain.getCId(), domain.getWorkId()),
+				new JcmmtMenuAprPk(domain.getCId(), domain.getWorkId().value),
 				domain.getRptLayoutId(), 
 				domain.getProgramId(), 
 				domain.getScreenId(), 
@@ -123,20 +123,20 @@ public class JcmmtMenuApr extends UkJpaEntity {
 				domain.isAvailableAprRoot()? 1: 0, 
 				domain.isAvailableAprWork1()? 1: 0, 
 				domain.isAvailableAprWork2()? 1:0, 
-				domain.getApr1Sid(), 
-				domain.getApr1Scd(), 
-				domain.getApr1BusinessName(), 
-				domain.getApp1Devcd(), 
-				domain.getApp1DevName(), 
-				domain.getApp1Poscd(), 
-				domain.getApp1PosName(), 
-				domain.getApr2Sid(), 
-				domain.getApr2Scd(), 
-				domain.getApr2BusinessName(), 
-				domain.getApp2Devcd(), 
-				domain.getApp2DevName(), 
-				domain.getApp2Poscd(), 
-				domain.getApp2PosName()
+				domain.getApr1Sid().orElse(null), 
+				domain.getApr1Scd().orElse(null), 
+				domain.getApr1BusinessName().orElse(null), 
+				domain.getApp1Devcd().orElse(null), 
+				domain.getApp1DevName().orElse(null), 
+				domain.getApp1Poscd().orElse(null), 
+				domain.getApp1PosName().orElse(null), 
+				domain.getApr2Sid().orElse(null), 
+				domain.getApr2Scd().orElse(null), 
+				domain.getApr2BusinessName().orElse(null), 
+				domain.getApp2Devcd().orElse(null), 
+				domain.getApp2DevName().orElse(null), 
+				domain.getApp2Poscd().orElse(null), 
+				domain.getApp2PosName().orElse(null)
 			);
 	}
 }
