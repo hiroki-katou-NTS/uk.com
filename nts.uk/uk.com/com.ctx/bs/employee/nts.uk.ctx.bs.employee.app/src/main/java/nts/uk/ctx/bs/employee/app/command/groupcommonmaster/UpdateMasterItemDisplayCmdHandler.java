@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterDomainService;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,8 +31,8 @@ public class UpdateMasterItemDisplayCmdHandler extends CommandHandler<UpdateMast
 					command.getListMasterItem().stream()
 												.map(x -> GroupCommonMasterItem.creatFromJavaType(x.getCommonMasterItemId(), x.getCommonMasterItemCode(), 
 																									x.getCommonMasterItemName(), x.getDisplayNumber(), 
-																									GeneralDate.fromString(x.getUsageStartDate(), "yyyy/MM/dd"),
-																									GeneralDate.fromString(x.getUsageEndDate(), "yyyy/MM/dd")))
+																									x.getUsageStartDate(),
+																									x.getUsageEndDate()))
 												.collect(Collectors.toList()));			
 		}
 
