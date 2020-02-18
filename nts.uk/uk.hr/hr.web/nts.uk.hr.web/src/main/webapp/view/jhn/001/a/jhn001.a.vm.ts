@@ -102,6 +102,11 @@ module jhn001.a.viewmodel {
 
                             // set list file document
                             self.setListDocument(data.documentSampleDto);
+                            
+                            // set table nguoi app
+                            layout.approvalRootState(data.approvalRootState);
+                            layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
+                            
 
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
@@ -208,13 +213,57 @@ module jhn001.a.viewmodel {
             self.layout().listDocument(lstDoc);
         }
 
-        getMissingDocName() {
+        getFrameIndex(loopPhase, loopFrame, loopApprover) {
             let self = this;
-            var lstDoc = self.layout().listDocument();
-            let missingDocName = '';
+            if (_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+            }
+            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);
+        }
 
-
-
+        frameCount(listFrame) {
+            let self = this;
+            if (_.size(listFrame) > 1) {
+                return _.size(listFrame);
+            }
+            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).value()[0];
+        }
+        
+        approverCount(listApprover) {
+            let self = this;
+            return _.chain(listApprover).countBy().values().value()[0];     
+        }        
+        
+        getApproverAtr(approver) {
+            if (approver.approvalAtrName() != '未承認') {
+                if (approver.representerName().length > 0) {
+                    if (approver.representerMail().length > 0) {
+                        return approver.representerName() + '(@)';
+                    } else {
+                        return approver.representerName();
+                    }
+                } else {
+                    if (approver.approverMail().length > 0) {
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
+                    }
+                }
+            } else {
+                var s = '';
+               
+                if (approver.approverMail().length > 0) {
+                    s = s + '(@)';
+                }
+                if (approver.representerName().length > 0) {
+                    if (approver.representerMail().length > 0) {
+                        s = s + '(' + approver.representerName() + '(@))';
+                    } else {
+                        s = s + '(' + approver.representerName() + ')';
+                    }
+                }
+                return s;
+            }
         }
 
         getListReportSaveDraft(): JQueryPromise<any> {
@@ -561,12 +610,13 @@ module jhn001.a.viewmodel {
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
 
-        approvalRootState: any = ko.observableArray([]);
         listDocument: any = ko.observableArray([]);
+        
+        approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
+        listApprovalFrame: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
-
         }
 
         clickSampleFileName() {
