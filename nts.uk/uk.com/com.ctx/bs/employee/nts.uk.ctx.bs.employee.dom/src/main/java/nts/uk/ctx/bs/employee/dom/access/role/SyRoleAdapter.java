@@ -31,15 +31,4 @@ public interface SyRoleAdapter {
 	 */
 	WorkplaceIDImport findListWkpId(Integer systemType);
 	
-	
-	/**
-	 * [No.560]職場IDから職場の情報をすべて取得する
-	 * 
-	 * @param companyId
-	 * @param listWorkplaceId
-	 * @param baseDate
-	 * @return
-	 */
-	public List<WorkplaceInfo> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
-			GeneralDate baseDate);
 }

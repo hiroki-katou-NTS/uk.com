@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.info;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryReposit
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,6 +45,9 @@ public class Kcp010Finder {
 	private AffWorkplaceHistoryItemRepository workplaceHistoryItemRepository;
 	
 	@Inject
+	private WorkplaceInformationRepository workplaceInforRepo;
+	
+	@Inject
 	private WorkplaceExportService workplaceExportService;
 
 	/**
@@ -52,20 +58,32 @@ public class Kcp010Finder {
 	public Optional<Kcp010WorkplaceSearchData> searchByWorkplaceCode(String workplaceCode, GeneralDate baseDate) {
 		
 		// find workplace info
-		List<WorkplaceInfo> listWkpInfo = 
-				wkpInfoRepo.findByWkpCd(AppContexts.user().companyId(), workplaceCode, baseDate);
+//		List<WorkplaceInfo> listWkpInfo = 
+//				wkpInfoRepo.findByWkpCd(AppContexts.user().companyId(), workplaceCode, baseDate);
 		
+		// [No.575]職場コードから職場IDを取得する
+		Optional<String> workplaceId = workplaceInforRepo.getWkpNewByCdDate(AppContexts.user().companyId(), workplaceCode, baseDate)
+				.map(c -> c.getWorkplaceId());
+	
+		if (!workplaceId.isPresent()) {
+			throw new BusinessException("Msg_7");
+		}
 		
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<String> workplaceIds = new ArrayList<>();
+		workplaceIds.add(workplaceId.get());
+		List<WorkplaceInforParam> listWkpInfo = workplaceExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), workplaceIds, baseDate);
+
 		// check null or empty
 		if (CollectionUtil.isEmpty(listWkpInfo)) {
 			throw new BusinessException("Msg_7");
 		}
-		WorkplaceInfo wkpInfo = listWkpInfo.get(0);
+		WorkplaceInforParam wkpInfo = listWkpInfo.get(0);
 		
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
 				.workplaceId(wkpInfo.getWorkplaceId())
-				.code(wkpInfo.getWorkplaceCode().v())
-				.name(wkpInfo.getWkpDisplayName().v())
+				.code(wkpInfo.getWorkplaceCode())
+				.name(wkpInfo.getDisplayName())
 				.build());
 	}
 	
