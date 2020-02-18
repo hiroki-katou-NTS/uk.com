@@ -139,6 +139,7 @@ div.drag-panel{
 
 #label-1 {
 	float: left;
+	margin-left: 14.5px;
 }
 
 #table-1 {
@@ -151,5 +152,9 @@ div.drag-panel{
     font-size: 1rem;
     background-color: #F7EFD4;
     color: #C12017;
+}
+
+#reportName {
+	margin-left: -5px;
 }
 

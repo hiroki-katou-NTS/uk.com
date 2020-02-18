@@ -36,8 +36,8 @@ module jhn001.a.viewmodel {
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
+            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 200, hidden: false },
+            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 140, hidden: false, formatter: _.escape }
         ]);
 
         constructor(reportId) {
@@ -86,7 +86,7 @@ module jhn001.a.viewmodel {
 
                     service.getReportDetails(query).done((data: any) => {
                         if (data) {
-
+                            debugger;
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
 
@@ -99,6 +99,9 @@ module jhn001.a.viewmodel {
 
                             // set message header A222_1_1
                             layout.message(text('JHN001_A222_1_1') + ' : ' + data.message);
+                            
+                            // set reportName
+                            layout.reportNameLabel(data.reportName);
 
                             // set list file document
                             self.setListDocument(data.documentSampleDto);
@@ -609,6 +612,7 @@ module jhn001.a.viewmodel {
 
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
+        reportNameLabel: KnockoutObservable<string> = ko.observable('');
 
         listDocument: any = ko.observableArray([]);
         
