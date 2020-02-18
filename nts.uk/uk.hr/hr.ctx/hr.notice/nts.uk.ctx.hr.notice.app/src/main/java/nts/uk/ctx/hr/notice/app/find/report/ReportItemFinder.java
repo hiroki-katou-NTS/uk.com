@@ -623,30 +623,4 @@ public class ReportItemFinder {
 		
 		return appDtoLst;
 	}
-	
-	private void getEmployeeInfo(List<String> sids, List<ApproverStateForAppDto> approverLst) {
-		
-
-		
-		approverLst.stream().forEach(c ->{
-			
-
-			
-		});
-		
-		
-		
-	}
-	
-//	private List<EmployeeApproveDto> creatEmployeeApproveLst(){
-//		List<EmployeeApproveDto> result = new ArrayList<>();
-//		for(int i = 1; i <=5; i++) {
-//			for(int j = 0; j < 5; j++) {
-//				result.add(new EmployeeApproveDto(i, j, String.valueOf(i + j), "承認", GeneralDate.today(), "承認"));
-//			}
-//			
-//		}
-//		
-//		return result;
-//	}
 }
