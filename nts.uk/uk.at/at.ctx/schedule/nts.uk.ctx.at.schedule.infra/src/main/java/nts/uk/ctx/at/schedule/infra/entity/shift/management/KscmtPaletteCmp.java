@@ -50,7 +50,7 @@ public class KscmtPaletteCmp extends UkJpaEntity{
 	@Column(name = "NOTE")
 	public String note;
 	
-	@OneToMany(targetEntity = KscmtPaletteCmpCombi.class, mappedBy = "page", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KscmtPaletteCmpCombi.class, mappedBy = "kscmtPaletteCmp", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KSCMT_PALETTE_CMP_COMBI")
 	public List<KscmtPaletteCmpCombi> cmpCombis;
 	

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 
@@ -132,6 +133,12 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ShiftPalletsOrg findByTargetAndPge(TargetOrgIdenInfor targetOrgIdenInfor, int page) {
 		// TODO Auto-generated method stub
 		return null;
 	}

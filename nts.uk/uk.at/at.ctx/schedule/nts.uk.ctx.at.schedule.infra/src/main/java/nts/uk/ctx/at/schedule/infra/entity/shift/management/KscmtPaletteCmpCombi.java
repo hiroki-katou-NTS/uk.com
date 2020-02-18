@@ -49,7 +49,7 @@ public class KscmtPaletteCmpCombi extends UkJpaEntity{
     })
 	public KscmtPaletteCmp kscmtPaletteCmp;
 	
-	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "position", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "kscmtPaletteCmpCombi", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KSCMT_PALETTE_CMP_COMBI_DTL")
 	public List<KscmtPaletteCmpCombiDtl> cmpCombiDtls;
 	

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 組織別シフトパレット
@@ -15,7 +16,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 
 	/** 対象組織 */
 	@Getter
-	private final ShiftTargeOrg targeOrg;
+	private final TargetOrgIdenInfor targeOrg;
 
 	/** ページ */
 	@Getter
@@ -25,7 +26,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 	@Getter
 	private ShiftPallet shiftPallet;
 
-	public ShiftPalletsOrg(ShiftTargeOrg targeOrg, int page, ShiftPallet shiftPallet) {
+	public ShiftPalletsOrg(TargetOrgIdenInfor targeOrg, int page, ShiftPallet shiftPallet) {
 
 		// inv-1 1 <= @ページ <= 10
 		if (!(1 <= page && page <= 10)) {
@@ -61,7 +62,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 	}
 
-	public ShiftPalletsOrg creAndCancelShiftPallet(ShiftTargeOrg targeOrg) {
+	public ShiftPalletsOrg creAndCancelShiftPallet(TargetOrgIdenInfor targeOrg) {
 		// 自分から、パラメータでもらう組織用の<組織別シフトパレット>を作って返す。
 		return new ShiftPalletsOrg(targeOrg, page, shiftPallet);
 	}
