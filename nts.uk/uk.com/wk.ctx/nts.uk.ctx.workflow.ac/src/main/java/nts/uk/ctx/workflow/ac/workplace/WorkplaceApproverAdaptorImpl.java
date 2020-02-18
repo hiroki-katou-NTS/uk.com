@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceApproverAdaptorImpl.
@@ -67,7 +68,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	// RequestList #30
 	@Override
 	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
-		Optional<SWkpHistExport> dataOptional = wpPub.findBySidNew(employeeId, baseDate);
+		Optional<SWkpHistExport> dataOptional = wpPub.findBySidNew(AppContexts.user().companyId(), employeeId, baseDate);
 		if(!dataOptional.isPresent()) {
 			return new WorkplaceImport("", "", "コード削除済");
 		}

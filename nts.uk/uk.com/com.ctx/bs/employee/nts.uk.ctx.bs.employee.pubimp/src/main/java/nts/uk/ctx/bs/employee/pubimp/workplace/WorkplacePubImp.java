@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -983,7 +984,10 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	}
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<SWkpHistExport> findBySidNew(String employeeId, GeneralDate baseDate) {
+	public Optional<SWkpHistExport> findBySidNew(String companyId, String employeeId, GeneralDate baseDate) {
+		if(Strings.isBlank(companyId)) {
+			companyId = AppContexts.user().companyId();
+		}
 		// get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(employeeId,
 				baseDate);
@@ -997,7 +1001,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			return Optional.empty();
 
 		// Get workplace info.
-		Optional<WorkplaceInformation> opWkpNew = repoWkpNew.getWkpNewByIdDate(AppContexts.user().companyId(), affWrkPlcItem.get().getWorkplaceId(),
+		Optional<WorkplaceInformation> opWkpNew = repoWkpNew.getWkpNewByIdDate(companyId, affWrkPlcItem.get().getWorkplaceId(),
 				baseDate);
 
 		// Check exist
