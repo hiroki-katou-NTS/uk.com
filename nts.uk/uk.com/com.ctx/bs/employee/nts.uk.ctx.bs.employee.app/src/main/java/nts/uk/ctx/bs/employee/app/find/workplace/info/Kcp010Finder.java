@@ -20,6 +20,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryReposit
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -39,6 +40,9 @@ public class Kcp010Finder {
 	/**AffWorkplaceHistoryItemRepository*/
 	@Inject
 	private AffWorkplaceHistoryItemRepository workplaceHistoryItemRepository;
+	
+	@Inject
+	private WorkplaceExportService workplaceExportService;
 
 	/**
 	 * Find wkp info by workplaceCode
@@ -50,7 +54,8 @@ public class Kcp010Finder {
 		// find workplace info
 		List<WorkplaceInfo> listWkpInfo = 
 				wkpInfoRepo.findByWkpCd(AppContexts.user().companyId(), workplaceCode, baseDate);
-
+		
+		
 		// check null or empty
 		if (CollectionUtil.isEmpty(listWkpInfo)) {
 			throw new BusinessException("Msg_7");
