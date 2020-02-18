@@ -6,17 +6,16 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class FullJoinWwfmtApprovalPhase {
-	public String companyId;
+	public String approvalId;
+	public int phaseOrder;
 	public String branchId;
-	public String approvalPhaseId;
 	public int approvalForm;
 	public int browsingPhase;
-	public int phaseDispOrder;
-	public String approverId;
-	public String jobId;
+	public int phaseAtr;
+	public String jobGCD;
 	public String employeeId;
-	public int approverDispOrder;
+	public int approverOrder;
 	public int approvalAtr;
 	public int confirmPerson;
-	
+	public String specWkpID;
 }

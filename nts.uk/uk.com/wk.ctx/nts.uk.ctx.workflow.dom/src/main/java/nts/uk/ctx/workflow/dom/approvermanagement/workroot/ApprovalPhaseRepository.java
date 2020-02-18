@@ -8,25 +8,25 @@ public interface ApprovalPhaseRepository {
 	/**
 	 * get All Approval Phase by Code
 	 * @param companyId
-	 * @param branchId
+	 * @param approvalId
 	 * @return
 	 */
-	List<ApprovalPhase> getAllApprovalPhasebyCode(String companyId, String branchId);
+	List<ApprovalPhase> getAllApprovalPhasebyCode(String approvalId);
 	/**
 	 * get Approval Phase by Code
 	 * @param companyId
-	 * @param branchId
-	 * @param approvalPhaseId
+	 * @param approvalId
+	 * @param phaseOrder
 	 * @return
 	 */
-	Optional<ApprovalPhase> getApprovalPhase(String companyId, String branchId, String approvalPhaseId);
+	Optional<ApprovalPhase> getApprovalPhase(String approvalId, int phaseOrder);
 	/**
 	 * get All Approval Phase by Code include approvers
 	 * @param companyId
-	 * @param branchId
+	 * @param approvalId
 	 * @return
 	 */
-	List<ApprovalPhase> getAllIncludeApprovers(String companyId, String branchId);
+	List<ApprovalPhase> getAllIncludeApprovers(String approvalId);
 	
 	/**
 	 * add All Approval Phase
@@ -44,24 +44,23 @@ public interface ApprovalPhaseRepository {
 	 */
 	void updateApprovalPhase(ApprovalPhase appPhase);
 	/**
-	 * delete All Approval Phase By Branch Id
+	 * delete All Approval Phase By approvalId
 	 * @param companyId
-	 * @param branchId
+	 * @param approvalId
 	 */
-	void deleteAllAppPhaseByBranchId(String companyId, String branchId);
+	void deleteAllAppPhaseByApprovalId(String approvalId);
 	/**
-	 * delete Approval Phase By ApprovalPhaseId
+	 * delete Approval Phase By phaseOrder
 	 * @param companyId
-	 * @param branchId
-	 * @param approvalPhaseId
+	 * @param approvalId
+	 * @param phaseOrder
 	 */
-	void deleteAppPhaseByAppPhId(String companyId, String branchId, String approvalPhaseId);
+	void deleteAppPhaseByAppPhId(String approvalId, int phaseOrder);
 	/**
-	 * Get approval first phase by branchId
+	 * Get approval first phase by approvalId
 	 * @param companyId
-	 * @param branchId
-	 * @param displayOrder
+	 * @param approvalId
 	 * @return
 	 */
-	Optional<ApprovalPhase> getApprovalFirstPhase(String companyId, String branchId);
+	Optional<ApprovalPhase> getApprovalFirstPhase(String approvalId);
 }

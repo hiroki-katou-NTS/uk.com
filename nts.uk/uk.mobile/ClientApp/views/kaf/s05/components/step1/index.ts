@@ -194,12 +194,6 @@ export class KafS05aStep1Component extends Vue {
             return;
         }
 
-        if (!self.displayCaculationTime) {
-            this.$emit('toStep2', this.kafs05ModelStep1);
-
-            return;
-        }
-
         this.$mask('show', { message: true });
         let param: any = {
             overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
@@ -213,7 +207,12 @@ export class KafS05aStep1Component extends Vue {
             startTime: _.isNil(self.workTimeInput.start) ? null : self.workTimeInput.start,
             endTime: _.isNil(self.workTimeInput.end) ? null : self.workTimeInput.end,
             displayCaculationTime: self.displayCaculationTime,
-            isFromStepOne: true
+            isFromStepOne: true,
+            opAppBefore: self.opAppBefore,
+            beforeAppStatus: self.beforeAppStatus,
+            actualStatus: self.actualStatus,
+            actualLst: self.actualLst,
+            overtimeSettingDataDto: self.overtimeSettingDataDto
         };
 
         let overtimeHoursResult: Array<any>;
@@ -222,10 +221,7 @@ export class KafS05aStep1Component extends Vue {
         this.$http.post('at', servicePath.getCalculationResultMob, param).then((result: { data: any }) => {
             _.remove(self.overtimeHours);
             _.remove(self.bonusTimes);
-            self.beforeAppStatus = result.data.preActualColorResult.beforeAppStatus;
-            self.actualStatus = result.data.preActualColorResult.actualStatus;
-            self.preExcessDisplaySetting = result.data.preExcessDisplaySetting;
-            overtimeHoursResult = result.data.preActualColorResult.resultLst;
+            overtimeHoursResult = result.data.resultLst;
             if (overtimeHoursResult != null) {
                 for (let i = 0; i < overtimeHoursResult.length; i++) {
                     //残業時間
@@ -377,7 +373,7 @@ export class KafS05aStep1Component extends Vue {
             });            
         } else {
             this.$http.post('at', servicePath.getOvertimeByUI, {
-                url: this.$route.query.overworkatr,
+                url: this.$route.query.overworkatr == undefined ? 0 : this.$route.query.overworkatr,
                 appDate: self.appDate,
                 uiType: self.uiType,
                 timeStart1: self.workTimeInput.start,
@@ -424,37 +420,6 @@ export class KafS05aStep1Component extends Vue {
                 this.checkAppDate(0, this.$dt(value), false, self.employeeID, self.overtimeAtr);
                 self.resetTimeRange++;
                 this.$mask('hide');
-            }).catch((res: any) => {
-                this.$mask('hide');
-                this.$modal.error({ messageId: res.messageId });
-            });
-        });
-        this.$watch('kafs05ModelStep1.prePostSelected', function (value: number) {
-            let self = this.kafs05ModelStep1;
-            this.$mask('show', { message: true });
-            if (value == 1) {
-                // edit ui
-            } else if (value == 0) {
-
-            }
-            if (!_.isNil(self.appDate)) {
-
-            }
-            this.$http.post('at', servicePath.checkConvertPrePost, {
-                prePostAtr: value,
-                appDate: _.isNil(self.appDate) ? null : this.$dt(self.appDate),
-                siftCD: self.siftCD,
-                overtimeHours: _.map(self.overtimeHours, (item) => this.initCalculateData(item)),
-                workTypeCode: self.workTypeCd,
-                startTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.start),
-                endTimeRests: _.isEmpty(self.restTime) ? [] : _.map(self.restTime, (x) => x.restTimeInput.end),
-                startTime: _.isEmpty(self.workTimeInput.start) ? null : self.workTimeInput.start,
-                endTime: _.isEmpty(self.workTimeInput.end) ? null : self.workTimeInput.end
-            }).then((result: { data: any }) => {
-                self.displayDivergenceReasonForm = result.data.displayDivergenceReasonForm;
-                self.displayDivergenceReasonInput = result.data.displayDivergenceReasonInput;
-                this.$mask('hide');
-
             }).catch((res: any) => {
                 this.$mask('hide');
                 this.$modal.error({ messageId: res.messageId });
@@ -959,6 +924,11 @@ export class KafS05aStep1Component extends Vue {
         }
         self.performanceExcessAtr = data.performanceExcessAtr;
         self.overtimeSettingDataDto = data.overtimeSettingDataDto;
+        self.opAppBefore = data.opAppBefore;
+        self.beforeAppStatus = data.beforeAppStatus;
+        self.actualStatus = data.actualStatus;
+        self.actualLst = data.actualLst;
+        self.preExcessDisplaySetting = data.overtimeSettingDataDto.overtimeRestAppCommonSet.preExcessDisplaySetting;
     }
 
     public changeAppDateData(data: any) {
@@ -1061,6 +1031,12 @@ export class KafS05aStep1Component extends Vue {
                 }
             }
         }
+
+        self.opAppBefore = data.opAppBefore;
+        self.beforeAppStatus = data.beforeAppStatus;
+        self.actualStatus = data.actualStatus;
+        self.actualLst = data.actualLst;
+
         // 休憩時間
         this.setTimeZones(data.timezones);
         if (!_.isNil(data.worktimeStart) && !_.isNil(data.worktimeEnd)) {

@@ -19,11 +19,13 @@ module nts.uk.com.view.cmm018.m {
             chkCompany: boolean;
             chkWorkplace: boolean;
             chkPerson: boolean;
-            constructor(baseDate: Date, chkCompany: boolean, chkWorkplace: boolean, chkPerson: boolean) {
+            sysAtr: number;
+            constructor(baseDate: Date, chkCompany: boolean, chkWorkplace: boolean, chkPerson: boolean, sysAtr: number) {
                 this.baseDate = baseDate;
                 this.chkCompany = chkCompany;
                 this.chkWorkplace = chkWorkplace;
                 this.chkPerson = chkPerson;
+                this.sysAtr = sysAtr;
             }
         }
     }

@@ -24,7 +24,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -592,33 +591,71 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @SneakyThrows
 	@Override
 	public List<TimeLeavingOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder(
-				"SELECT a, c from KrcdtDaiLeavingWork a LEFT JOIN a.timeLeavingWorks c ");
-		query.append(" WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
-		query.append(" AND a.krcdtDaiLeavingWorkPK.ymd IN :date");
-		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream().filter(c -> {
-						KrcdtDaiLeavingWork af = (KrcdtDaiLeavingWork) c[0];
-						return p.get(af.krcdtDaiLeavingWorkPK.employeeId).contains(af.krcdtDaiLeavingWorkPK.ymd);
-					}).collect(Collectors.toList()));
+    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
+    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+    	List<TimeLeavingOfDailyPerformance> result = new ArrayList<>();
+
+		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(findListEmpSid(empIds, subListDate));
 		});
-		return toDomainFromJoin(result);
+		return result;
 	}
 
-	private List<TimeLeavingOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
-		return result.stream()
-				.collect(Collectors.groupingBy(c1 -> c1[0],
-						Collectors.collectingAndThen(Collectors.toList(),
-								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtTimeLeavingWork) c[1])
-										.collect(Collectors.toList()))))
-				.entrySet().stream()
-				.map(e -> KrcdtDaiLeavingWork.toDomain((KrcdtDaiLeavingWork) e.getKey(), e.getValue()))
-				.collect(Collectors.toList());
+    @SneakyThrows
+    private List<TimeLeavingOfDailyPerformance> findListEmpSid(List<String> subList, List<GeneralDate> subListDate) {
+    	String subEmp = NtsStatement.In.createParamsString(subList);
+    	String subInDate = NtsStatement.In.createParamsString(subListDate);
+
+		Map<String, Map<GeneralDate, List<TimeLeavingWork>>> scheTimes = new HashMap<>(); 
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_TIME_LEAVING_WORK WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")" + "AND TIME_LEAVING_TYPE = 0 ")){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			
+			new NtsResultSet(stmt.executeQuery()).getList(c -> {
+				String sid = c.getString("SID");
+				GeneralDate ymd = c.getGeneralDate("YMD");
+				if(!scheTimes.containsKey(sid)){
+					scheTimes.put(sid, new HashMap<>());
+				}
+				if(!scheTimes.get(sid).containsKey(ymd)) {
+					scheTimes.get(sid).put(ymd, new ArrayList<>());
+				}
+				getCurrent(scheTimes, sid, ymd).add(toDomain(c));
+				return null;
+			});
+		};
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAI_LEAVING_WORK  WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")")){
+			for (int i = 0; i < subList.size(); i++) {
+				stmt.setString(i + 1, subList.get(i));
+			}
+			
+			for (int i = 0; i < subListDate.size(); i++) {
+				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
+			}
+			return new NtsResultSet(stmt.executeQuery()).getList(c -> {
+				String sid = c.getString("SID");
+				GeneralDate ymd = c.getGeneralDate("YMD");
+				return new TimeLeavingOfDailyPerformance(sid, new WorkTimes(c.getInt("WORK_TIMES")), getCurrent(scheTimes, sid, ymd), ymd);
+			});
+		}
 	}
+    
+//	private List<TimeLeavingOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
+//		return result.stream()
+//				.collect(Collectors.groupingBy(c1 -> c1[0],
+//						Collectors.collectingAndThen(Collectors.toList(),
+//								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtTimeLeavingWork) c[1])
+//										.collect(Collectors.toList()))))
+//				.entrySet().stream()
+//				.map(e -> KrcdtDaiLeavingWork.toDomain((KrcdtDaiLeavingWork) e.getKey(), e.getValue()))
+//				.collect(Collectors.toList());
+//	}
 }

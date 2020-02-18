@@ -22,6 +22,9 @@ module nts.uk.ui.gridlist {
             addressCode2: string;
             address1: string;
             address2: string;
+            fullDate: string;
+            yearMonth: string;
+            year: string;
             comboCode1: number;
             combo: string;
             header0: string;
@@ -43,6 +46,9 @@ module nts.uk.ui.gridlist {
                 this.addressCode2 = "002";
                 this.address1 = "HN";
                 this.address2 = "愛知県日本";
+                this.fullDate = index % 3 == 0 ? "2018/09/13" : null;
+                this.yearMonth = index % 3 == 0 ? null : "2016/06";
+                this.year = index % 2 == 0 ? null : "2014";
                 this.comboCode1 = index % 3 + 1;
                 this.combo = String(index % 3 + 1);
                 this.header0 = "Out";
@@ -180,6 +186,7 @@ module nts.uk.ui.gridlist {
                             userId: "4",
                             getUserId: function(k) { return String(k); },
                             errorColumns: [ "ruleCode" ],
+                            showErrorsOnPage: true,
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -217,6 +224,24 @@ module nts.uk.ui.gridlist {
                                                 }},
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}
                                            ]
+                                },
+                                { headerText: 'Full date', key: 'fullDate', dataType: 'string', width: '100px', ntsControl: 'DatePicker',
+                                    constraint: { 
+                                        cDisplayType: "Date",
+                                        required: true 
+                                    } 
+                                },
+                                { headerText: 'Year month', key: 'yearMonth', dataType: 'string', width: '70px', ntsControl: 'DatePickerYM',
+                                    constraint: { 
+                                        cDisplayType: "Date",
+                                        required: true 
+                                    }
+                                },
+                                { headerText: 'Year', key: 'year', dataType: 'string', width: '40px', ntsControl: 'DatePickerY',
+                                    constraint: { 
+                                        cDisplayType: "Date",
+                                        required: true 
+                                    }
                                 },
                                 { headerText: 'Combo1',
                                     group: [
@@ -297,6 +322,9 @@ module nts.uk.ui.gridlist {
                                             { columnKey: 'flag', allowSummaries: false },
                                             { columnKey: 'addressCode1', allowSummaries: false },
                                             { columnKey: 'addressCode2', allowSummaries: false },
+                                            { columnKey: 'fullDate', allowSummaries: false },
+                                            { columnKey: 'yearMonth', allowSummaries: false },
+                                            { columnKey: 'year', allowSummaries: false },
                                             { columnKey: 'address1', allowSummaries: false },
                                             { columnKey: 'address2', allowSummaries: false },
                                             { columnKey: 'time', allowSummaries: true, 
@@ -397,15 +425,15 @@ module nts.uk.ui.gridlist {
                                             { name: "Sheet", 
                                               initialDisplay: "sheet1",
                                               sheets: [ 
-                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1" , "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
+                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
                                                         { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             },
-                                            {
-                                                name: "LoadOnDemand",
-                                                allKeysPath: "/sample/lazyload/keys",
-                                                pageRecordsPath: "/sample/lazyload/data",
-                                            }
+//                                            {
+//                                                name: "LoadOnDemand",
+//                                                allKeysPath: "/sample/lazyload/keys",
+//                                                pageRecordsPath: "/sample/lazyload/data",
+//                                            }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'Combobox', width: '70px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
@@ -417,7 +445,10 @@ module nts.uk.ui.gridlist {
                                             { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
                                             { name: 'FlexImage', source: 'ui-icon ui-icon-info', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
                                             { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
-                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }]
+                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
+                                            { name: 'DatePicker', controlType: 'DatePicker', format: 'ymd', constraint: { required: true } },
+                                            { name: 'DatePickerYM', controlType: 'DatePicker', format: "ym", constraint: { required: true } },
+                                            { name: 'DatePickerY', controlType: 'DatePicker', format: "y", constraint: { required: true } }]
 //                                            { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } }]
                             });
         $("#run").on("click", function() {
@@ -487,16 +518,16 @@ module nts.uk.ui.gridlist {
         }
         
         // Grid cell errors
-//        let dialogOptions: any = {
-//            forGrid: true,
-//            headers: [
-//                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
-//                ]
-//        };
-//        this.bind(model, dialogOptions);
-        this.bind(model);
+        let dialogOptions: any = {
+            forGrid: true,
+            headers: [
+                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+                ]
+        };
+        this.bind(model, dialogOptions);
+//        this.bind(model);
     });
 }

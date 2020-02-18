@@ -46,7 +46,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("     temp.RAISING_CALC_ATR, ");
         sql.append("     temp.SPECIFIC_RAISING_CALC_ATR, ");
         sql.append("     temp.DIVERGENCE, ");
-        sql.append("     CASE WHEN temp.ROW_NUMBER = 1 THEN temp.WKPCD ELSE '-' END, ");
+        sql.append("     CASE WHEN temp.ROW_NUMBER = 1 THEN temp.WKP_CD ELSE '-' END, ");
         sql.append("     CASE WHEN temp.ROW_NUMBER = 1 THEN temp.WKP_NAME ELSE '-' END, ");
         sql.append("     temp.JOB_CD, ");
         sql.append("     temp.JOB_NAME ");
@@ -77,23 +77,17 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("         wj.RAISING_CALC_ATR, ");
         sql.append("         wj.SPECIFIC_RAISING_CALC_ATR, ");
         sql.append("         wj.DIVERGENCE, ");
-        sql.append("         wj.WKPCD, ");
+        sql.append("         wj.WKP_CD, ");
         sql.append("         w.WKP_NAME, ");
         sql.append("         wj.JOB_CD, ");
         sql.append("         jn.JOB_NAME,");
-        sql.append("         HIERARCHY_CD,");
+        sql.append("         w.HIERARCHY_CD,");
         sql.append("         WPKID");
-        sql.append("       FROM  (SELECT HIST_ID, WKPID, CID ");
-        sql.append("          FROM BSYMT_WORKPLACE_HIST ");
-        sql.append("          WHERE END_DATE >= ?baseDate  AND CID = ?cid)  h ");
-        sql.append("       INNER JOIN (SELECT HIST_ID, CID, WKPID, WKP_NAME ");
-        sql.append("             FROM BSYMT_WORKPLACE_INFO ");
-        sql.append("             ) w ");
-        sql.append("       ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID ");
-        sql.append("       INNER JOIN BSYMT_WKP_CONFIG wc ");
-        sql.append("            ON wc.CID = h.CID AND wc.END_DATE = ?baseDate");
-        sql.append("       INNER JOIN BSYMT_WKP_CONFIG_INFO wci ");
-        sql.append("       ON wci.WKPID = w.WKPID AND wci.CID = wc.CID AND wci.HIST_ID = wc.HIST_ID");
+        sql.append("       FROM  (SELECT WKP_HIST_ID, CID, WKP_ID, WKP_NAME, HIERARCHY_CD ");
+        sql.append("          FROM BSYMT_WKP_INFO ");
+        sql.append("          ) w ");
+        sql.append("       INNER JOIN BSYMT_WKP_CONFIG_2 wc ");
+        sql.append("            ON wc.CID = w.CID AND wc.END_DATE = ?baseDate");
         sql.append("  RIGHT JOIN (SELECT  j.LEGAL_OT_TIME_ATR, ");
         sql.append("            j.LEGAL_OT_TIME_LIMIT, ");
         sql.append("            j.LEGAL_MID_OT_TIME_ATR, ");
@@ -120,7 +114,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("            j.WPKID, ");
         sql.append("            j.CID, ");
         sql.append("            jf.JOB_ID, ");
-        sql.append("            wf.WKPCD, ");
+        sql.append("            wf.WKP_CD, ");
         sql.append("            jf.JOB_CD ");
         sql.append("         FROM (SELECT DISTINCT JOB_ID, JOB_CD, CID ");
         sql.append("            FROM BSYMT_JOB_INFO ");
@@ -129,12 +123,12 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("               FROM KSHMT_AUTO_WKP_JOB_CAL");
         sql.append("               WHERE CID = ?cid) j ");
         sql.append("               ON j.CID = jf.CID AND j.JOBID = jf.JOB_ID ");
-        sql.append("         LEFT JOIN (SELECT DISTINCT WKPCD , WKPID, CID ");
-        sql.append("               FROM BSYMT_WORKPLACE_INFO ");
+        sql.append("         LEFT JOIN (SELECT DISTINCT WKP_CD , WKP_ID, CID ");
+        sql.append("               FROM BSYMT_WKP_INFO ");
         sql.append("               WHERE CID = ?cid)  wf ");
-        sql.append("         ON j.WPKID = wf.WKPID AND j.CID = wf.CID  ");
+        sql.append("         ON j.WPKID = wf.WKP_ID AND j.CID = wf.CID  ");
         sql.append("         ) wj ");
-        sql.append("    ON  wj.WPKID = w.WKPID AND wj.CID = w.CID ");
+        sql.append("    ON  wj.WPKID = w.WKP_ID AND wj.CID = w.CID ");
         sql.append("  LEFT JOIN (SELECT jh.JOB_ID , jh.HIST_ID, ji.JOB_NAME, jh.CID ");
         sql.append("       FROM (SELECT JOB_ID, HIST_ID, CID ");
         sql.append("          FROM BSYMT_JOB_HIST ");
@@ -149,6 +143,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object[]> getWkpJobSettingToExport(String cid, String baseDate) {
 		List<Object[]> resultQuery = null;

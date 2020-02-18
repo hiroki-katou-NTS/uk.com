@@ -67,12 +67,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	private ErrorAlarmCondition errorAlarmCondition;
 
 	/* Constructor */
-	private ErrorAlarmWorkRecord() {
+	public ErrorAlarmWorkRecord() {
 		super();
 	}
 
 	/* Constructor */
-	private ErrorAlarmWorkRecord(String companyId, ErrorAlarmWorkRecordCode code, ErrorAlarmWorkRecordName name,
+	public ErrorAlarmWorkRecord(String companyId, ErrorAlarmWorkRecordCode code, ErrorAlarmWorkRecordName name,
 			boolean fixedAtr, boolean useAtr, NotUseAtr remarkCancelErrorInput, int remarkColumnNo,
 			ErrorAlarmClassification typeAtr, ErrorAlarmMessage message, boolean cancelableAtr,
 			Integer errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {

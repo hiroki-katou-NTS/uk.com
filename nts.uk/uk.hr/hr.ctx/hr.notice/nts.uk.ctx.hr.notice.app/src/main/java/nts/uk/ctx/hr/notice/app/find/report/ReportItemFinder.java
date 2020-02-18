@@ -12,8 +12,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.internal.xr.CollectionResult;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -26,11 +31,18 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSettingRepository;
-import nts.uk.ctx.hr.notice.dom.report.valueImported.DateRangeItemImport;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.PerInfoItemDefImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PhaseSttHrImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -59,6 +71,12 @@ public class ReportItemFinder {
 	@Inject
 	private AttachPersonReportFileFinder attachPersonReportFileFinder;
 
+	@Inject
+	private ApproveRepository approveRepository;
+	
+	@Inject
+	private EmployeeInformationAdaptor employeeInforAdapter;
+	
 	/**
 	 * 
 	 * @param reportClsId
@@ -67,7 +85,12 @@ public class ReportItemFinder {
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
+		
 
+		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
+		
+		List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
+		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
 		// ドメインモデル「個別届出種類」、「個別届出の登録項目」をすべて取得する 。ドメイン「[個人情報項目定義]」を取得する。
@@ -79,11 +102,19 @@ public class ReportItemFinder {
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
 			
-		}else {
+			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
+				
+				approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
+				
+				appPhaseLst.addAll(convertData(approvalStateHrImport));
+				
+				
+			}
+			
+		 } else {
 			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					params.getReportLayoutId());
-			
 			
 		}
 		 
@@ -99,7 +130,7 @@ public class ReportItemFinder {
 		//添付ファイル一覧を表示する(アルゴリズム[添付ファイル一覧を表示する]を実行する)
 		List<DocumentSampleDto> documentSampleDtoLst = this.attachPersonReportFileFinder.findAll(reportLayoutId, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
 
-		List<LayoutReportClsDto> items = mapItemCls(params.getReportId(), listItemCls);
+		List<LayoutReportClsDto> items = mapItemCls(params, listItemCls);
 
 		List<LayoutReportClsDto> itemInter = new ArrayList<>();
 
@@ -123,14 +154,15 @@ public class ReportItemFinder {
 
 			}
 		}
+		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst)
+						itemInter, documentSampleDtoLst, appPhaseLst)
 				: new ReportLayoutDto();
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
-		if(params.getReportId() == null) {
+		if(reportClsOpt.isPresent()) {
 			return reportClsOpt.get().getPReportClsId();
 		}
 		
@@ -145,7 +177,7 @@ public class ReportItemFinder {
 	 * @param listItemCls
 	 * @return
 	 */
-	private List<LayoutReportClsDto> mapItemCls(String reportId, List<RegisterPersonalReportItem> listItemCls) {
+	private List<LayoutReportClsDto> mapItemCls(ReportParams params, List<RegisterPersonalReportItem> listItemCls) {
 		List<LayoutReportClsDto> result = new ArrayList<>();
 
 		String cid = AppContexts.user().companyId();
@@ -281,9 +313,9 @@ public class ReportItemFinder {
 
 		Map<String, List<ReportItem>> reportItems  = new HashMap<>();
 		
-		if(reportId != null) {
+		if(params.getReportId() != null) {
 			
-			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, Integer.valueOf(reportId)).stream()
+			reportItems.putAll(this.reportItemRepo.getDetailReport(cid, Integer.valueOf(params.getReportId())).stream()
 					.collect(Collectors.groupingBy(c -> c.getCtgCode())));
 		}
 
@@ -321,13 +353,13 @@ public class ReportItemFinder {
 				case 6:
 
 					// get data
-					getDataforSingleItem(sid, ctg, GeneralDate.today(), itemDatas, classItemList);
+					getDataforSingleItem(params, sid, ctg, itemDatas, classItemList);
 
 					break;
 
 				case 2:
 
-					getDataforListItem(sid, ctg, GeneralDate.today(), classItemList.get(0), itemDatas);
+					getDataforListItem(params, sid, ctg, classItemList.get(0), itemDatas);
 
 					break;
 
@@ -344,7 +376,7 @@ public class ReportItemFinder {
 	private void mapListItemClass(List<ReportItem> itemDatas, List<LayoutReportClsDto> classItemList) {
 
 		if (!CollectionUtil.isEmpty(itemDatas)) {
-
+			
 			classItemList.stream().forEach(c -> {
 
 				if (!CollectionUtil.isEmpty(c.getItems())) {
@@ -384,17 +416,6 @@ public class ReportItemFinder {
 
 		}
 
-	}
-
-	private void matchOptionalItemData(String recordId, List<LayoutReportClsDto> classItemList,
-			List<ReportItem> dataItems) {
-		
-		for (LayoutReportClsDto classItem : classItemList) {
-			
-			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
-			
-		}
-		
 	}
 
 	public void matchDataToValueItems(String recordId, List<LayoutHumanInfoValueDto> valueItems,
@@ -438,129 +459,50 @@ public class ReportItemFinder {
 	 * @param employeeId
 	 * @param query
 	 */
-	private void getDataforSingleItem(String employeeId, PerInfoCtgShowImport perInfoCategory, GeneralDate standardDate,
+	private void getDataforSingleItem(ReportParams params,String employeeId, PerInfoCtgShowImport perInfoCategory,
 			List<ReportItem> itemDatas, List<LayoutReportClsDto> classItemList) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
-
-		GeneralDate comboBoxStandardDate = GeneralDate.today();
 		
-		switch (perInfoCategory.getCategoryType()) {
-		
-		case 1:
+		if(params.isScreenC()) {
 			
-			getSingleOptionData(perInfoCategory, comboBoxStandardDate, classItemList, itemDatas);
-			
-			break;
-			
-		case 3:
-			
-		case 4:
-			
-		case 5:
-			
-		case 6:
-			
-			getPersDataHistoryType(perInfoCategory, comboBoxStandardDate, classItemList, itemDatas);
-			
-			break;
-			
-		default:
-			
-			break;
-			
+			classItemList.stream().forEach(c ->{
+				
+				c.getItems().forEach(i ->{
+					
+					i.setActionRole(ActionRole.VIEW_ONLY);
+					
+				});
+				
+			});
 		}
-
-		// For each classification item to get combo box list
-		// layoutControlComboBox.getComboBoxListForSelectionItems(employeeId,
-		// perInfoCategory, classItemList, comboBoxStandardDate);
-
-		// set default value
-		// initDefaultValue.setDefaultValue(classItemList);
+		
+		getSingleOptionData(perInfoCategory, classItemList, itemDatas);
 
 	}
 
-	private void getSingleOptionData(PerInfoCtgShowImport perInfoCategory, GeneralDate comboBoxStandardDate,
+	private void getSingleOptionData(PerInfoCtgShowImport perInfoCategory, 
 			List<LayoutReportClsDto> classItemList, List<ReportItem> itemDatas) {
 		
 		if (itemDatas != null) {
-
+			
 			mapListItemClass(itemDatas, classItemList);
-
-			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 			
-			for (String itemCode : standardDateItemCodes) {
-
-				Optional<ReportItem> itemDataOpt = itemDatas.stream().filter(c -> c.getItemCd().equals(itemCode))
-						.findFirst();
-
-				if (itemDataOpt.isPresent()) {
-
-					comboBoxStandardDate = itemDataOpt.get().getDateVal();
-
-					break;
-				}
-			}
 		}
 
 	}
-
-	/**
-	 * @param perInfoCategoryId
-	 * @param authClassItem
-	 * @param personId
-	 * @param stardardDate
-	 *            Target: get data with history case. Person case
-	 */
-	private void getPersDataHistoryType(PerInfoCtgShowImport perInfoCategory, GeneralDate stardardDate,
-			List<LayoutReportClsDto> classItemList, List<ReportItem> itemDatas) {
-		
-		DateRangeItemImport dateRangeItem = this.humanItemPub.getDateRangeItemByCtgId(perInfoCategory.getId());
-		
-		String startDateId = dateRangeItem.getStartDateItemId();
-		
-		String endDateId = dateRangeItem.getEndDateItemId();
-		
-		if (CollectionUtil.isEmpty(itemDatas))
-			return;
-		
-		ReportItem reportItem = itemDatas.get(0);
-		
-		String recordId = String.valueOf(reportItem.getReportID());
-		
-		Optional<ReportItem> startDateOpt = itemDatas.stream().filter(c -> c.getItemId().equals(startDateId))
-				.findFirst();
-		
-		Optional<ReportItem> endDateOpt = itemDatas.stream().filter(c -> c.getItemId().equals(endDateId)).findFirst();
-
-		if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-			
-			if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getDateVal())
-					&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getDateVal())) {
-				
-				matchOptionalItemData(recordId, classItemList, itemDatas);
-				
-			}
-		}
-	}
-
-	private void getDataforListItem(String employeeId, PerInfoCtgShowImport perInfoCategory, GeneralDate standardDate,
+	
+	private void getDataforListItem(ReportParams param, String employeeId, PerInfoCtgShowImport perInfoCategory,
 			LayoutReportClsDto classItem, List<ReportItem> itemDatas) {
 
 		classItem.setItems(new ArrayList<>());
 
 		// get option category data
-		getMultiOptionData(employeeId, perInfoCategory, classItem, itemDatas);
+		getMultiOptionData(param, employeeId, perInfoCategory, classItem, itemDatas);
 
 		classItem.setListItemDf(null);
 
 		classItem.setCategoryCode(perInfoCategory.getCategoryCode());
-
-		// special process with category CS00069 item IS00779. change string length
-		// stampCardLength.updateLength(perInfoCategory, Arrays.asList(classItem));
-		// layoutControlComboBox.getComboBoxListForSelectionItems(employeeId,
-		// perInfoCategory, Arrays.asList(classItem),
-		// GeneralDate.today());
 
 	}
 
@@ -571,22 +513,29 @@ public class ReportItemFinder {
 				.collect(Collectors.toList());
 	}
 
-	private void getMultiOptionData(String employeeId, PerInfoCtgShowImport perInfoCategory,
+	private void getMultiOptionData(ReportParams params, String employeeId, PerInfoCtgShowImport perInfoCategory,
 			LayoutReportClsDto classItem, List<ReportItem> itemDatas) {
 
-		if (CollectionUtil.isEmpty(itemDatas)) {
-
-			classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
-
-			return;
-		}
+		classItem.getItems().addAll(convertDefItem(perInfoCategory, classItem.getListItemDf()));
+		
+		if (CollectionUtil.isEmpty(itemDatas)) return;
 
 		// create new line data
 		List<LayoutHumanInfoValueDto> valueItems = convertDefItem(perInfoCategory, classItem.getListItemDf());
 
+		if(params.isScreenC()) {
+			
+			classItem.getItems().forEach(c ->{
+				
+				c.setActionRole(ActionRole.VIEW_ONLY);
+				
+			});
+			
+		}
+		
 		mapListItemClass(itemDatas, Arrays.asList(classItem));
 
-		classItem.getItems().addAll(valueItems);
+//		classItem.getItems().addAll(valueItems);
 
 	}
 
@@ -612,4 +561,92 @@ public class ReportItemFinder {
 
 		}
 	}
+	
+	private List<ApprovalPhaseStateForAppDto> convertData(ApprRootStateHrImport apprRootState) {
+		
+		ApprStateHrImport apprState = apprRootState.getApprState();
+		
+		if(apprState == null) return new ArrayList<>();
+		
+		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
+		
+		List<String> sids = new ArrayList<>();
+		
+		lstPhaseState.stream().forEach(c ->{
+			
+			c.getLstApprovalFrame().stream().forEach(app ->{
+				
+				List<String> appIds = app.getLstApproverInfo().stream().map(id ->{
+					
+					return StringUtil.isNullOrEmpty(id.getAgentID(), true)== true? id.getApproverID(): id.getAgentID();
+				}).collect(Collectors.toList());
+				
+				sids.addAll(appIds);			
+				
+			});
+			
+		});
+		
+		//アルゴリズム [社員の情報を取得する] を実行する (thực hiện thuật toán [lấy thông tin employee]) --- 
+		
+		EmployeeInfoQueryImport paramApproverId = EmployeeInfoQueryImport.builder()
+				
+				.employeeIds(new ArrayList<String>(sids))
+				
+				.referenceDate(GeneralDate.today()) 
+				
+				.toGetWorkplace(false)
+				
+				.toGetDepartment(false)
+				
+				.toGetPosition(false)
+				
+				.toGetEmployment(false)
+				
+				.toGetClassification(false)
+				
+				.toGetEmploymentCls(false).build();
+		
+		Map<String, List<EmployeeInformationImport>> employeeInfoMaps = employeeInforAdapter.find(paramApproverId)
+				
+				.stream()
+				
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		
+		
+		List<ApprovalPhaseStateForAppDto> appDtoLst = lstPhaseState.stream().map(c ->{
+			
+			ApprovalPhaseStateForAppDto dto = ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c, employeeInfoMaps);
+			return dto;
+			
+		}).collect(Collectors.toList());
+		
+		return appDtoLst;
+	}
+	
+	private void getEmployeeInfo(List<String> sids, List<ApproverStateForAppDto> approverLst) {
+		
+
+		
+		approverLst.stream().forEach(c ->{
+			
+
+			
+		});
+		
+		
+		
+	}
+	
+//	private List<EmployeeApproveDto> creatEmployeeApproveLst(){
+//		List<EmployeeApproveDto> result = new ArrayList<>();
+//		for(int i = 1; i <=5; i++) {
+//			for(int j = 0; j < 5; j++) {
+//				result.add(new EmployeeApproveDto(i, j, String.valueOf(i + j), "承認", GeneralDate.today(), "承認"));
+//			}
+//			
+//		}
+//		
+//		return result;
+//	}
 }

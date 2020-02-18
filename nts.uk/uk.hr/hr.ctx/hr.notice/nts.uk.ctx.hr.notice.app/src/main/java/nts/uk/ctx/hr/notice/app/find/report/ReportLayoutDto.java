@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.DocumentSampleDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportStartSetting;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
 @Data
 public class ReportLayoutDto {
 	
@@ -33,11 +35,17 @@ public class ReportLayoutDto {
 	
 	private List<DocumentSampleDto> documentSampleDto;
 	
+	private ApprRootStateHrImport approvalStateHrImport;
+	
+	private List<ApprovalPhaseStateForAppDto> listApprovalFrame;
+	
 	public ReportLayoutDto(){
 		
 		this.classificationItems = new ArrayList<>();
 		
 		this.documentSampleDto = new ArrayList<>();
+		
+		this.listApprovalFrame = new ArrayList<>();
 		
 	}
 	
@@ -55,19 +63,21 @@ public class ReportLayoutDto {
 			
 			List<LayoutReportClsDto> classificationItems,
 			
-			List<DocumentSampleDto> documentSampleDtoLst) {
+			List<DocumentSampleDto> documentSampleDtoLst,
+			
+			List<ApprovalPhaseStateForAppDto> listApprovalFrame) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
 		dto.setCompanyId(domain.getCompanyId());
-		
-		dto.setReportId(domain.getPReportClsId());
 		
 		dto.setReportName(domain.getPReportName().v());
 		
 		dto.setClassificationItems(classificationItems);
 		
 		dto.setDocumentSampleDto(documentSampleDtoLst);
+		
+		dto.setListApprovalFrame(listApprovalFrame);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			
@@ -78,6 +88,8 @@ public class ReportLayoutDto {
 		}
 		
 		if(registrationPersonReport.isPresent()) {
+			
+			dto.setReportId(registrationPersonReport.get().getReportID());
 			
 			//差し戻しコメントがある
 			if(!StringUtil.isNullOrEmpty(registrationPersonReport.get().getSendBackComment(),true)) {
@@ -98,4 +110,5 @@ public class ReportLayoutDto {
 		
 		return dto;
 	}
+	
 }

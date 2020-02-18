@@ -21,36 +21,62 @@ module jhn001.a.viewmodel {
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout()); 
-        reportClsId : KnockoutObservable<string> = ko.observable('');
-        
-        enaGoBack : KnockoutObservable<boolean> = ko.observable(false);
-        enaSave : KnockoutObservable<boolean> = ko.observable(true);
-        enaSaveDraft : KnockoutObservable<boolean> = ko.observable(true);
-        enaAttachedFile : KnockoutObservable<boolean> = ko.observable(true);
-        enaRemove : KnockoutObservable<boolean> = ko.observable(true);
-        
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout());
+        reportClsId: KnockoutObservable<string> = ko.observable('');
+
+        enaGoBack: KnockoutObservable<boolean> = ko.observable(false);
+        enaSave: KnockoutObservable<boolean> = ko.observable(true);
+        enaSaveDraft: KnockoutObservable<boolean> = ko.observable(true);
+        enaAttachedFile: KnockoutObservable<boolean> = ko.observable(true);
+        enaRemove: KnockoutObservable<boolean> = ko.observable(true);
+
         listItemDf = [];
-        
+        missingDocName = '';
+        reportIdFromJhn003 = null;
+
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
             { headerText: text('JHN001_A221_4_1'), key: 'reportCode', width: 80, hidden: false },
             { headerText: text('JHN001_A221_4_2'), key: 'reportName', width: 260, hidden: false, formatter: _.escape }
         ]);
-        
-        constructor() {
+
+        constructor(reportId) {
             let self = this,
                 layout = self.layout(),
                 layouts = self.layouts;
+            
+//            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+//                Page.NORMAL);
+
+            if (reportId) {
+                self.reportIdFromJhn003 = reportId;
+            }
 
             self.reportClsId.subscribe(id => {
                 self.listItemDf = [];
                 if (id) {
+
+                    nts.uk.ui.errors.clearAll();
+
                     block();
                     let objReport = _.find(self.layouts(), function(o) { return o.id == id; })
 
                     if (objReport == undefined || objReport == null) {
                         return;
+                    }
+
+                    // A1.3
+                    if (objReport.regStatus != null && objReport.regStatus == 2) {
+                        self.enaSaveDraft(false);
+                    } else {
+                        self.enaSaveDraft(true);
+                    }
+
+                    // A1.6
+                    if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
+                        self.enaRemove(false);
+                    } else {
+                        self.enaRemove(true);
                     }
 
                     let query = {
@@ -63,8 +89,8 @@ module jhn001.a.viewmodel {
 
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
-                            
-                            if( data.classificationItems.length > 0 ){
+
+                            if (data.classificationItems.length > 0) {
                                 self.setListItemDf(data.classificationItems);
                             }
 
@@ -92,16 +118,15 @@ module jhn001.a.viewmodel {
                     });
                 }
             });
-            
-            let reportLayoutId = null ;
-            self.start(reportLayoutId);
+
+            self.start(self.reportIdFromJhn003, true);
         }
-        
+
         setListItemDf(clsItems: any) {
             let self = this,
                 itemDfs = [];
             for (let i = 0; i < clsItems.length; i++) {
-                if (clsItems[i].items != undefined || clsItems[i].layoutItemType != "SeparatorLine"){
+                if (clsItems[i].items != undefined || clsItems[i].layoutItemType != "SeparatorLine") {
                     for (let j = 0; j < clsItems[i].items.length; j++) {
                         let item = clsItems[i].items[j];
                         let obj = {
@@ -121,7 +146,7 @@ module jhn001.a.viewmodel {
                 }
             }
         }
-        
+
         getListDocument(param): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -141,39 +166,89 @@ module jhn001.a.viewmodel {
         setListDocument(listdatafile: any) {
             let self = this;
             var lstDoc = [];
+            var missingDocName = '';
             for (var i = 0; i < listdatafile.length; i++) {
+                let fileData = listdatafile[i];
+                if (fileData.fileName == null) {
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
+                }
+
+                let urlFileSample = fileData.sampleFileId == null || fileData.sampleFileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.sampleFileId);
+                let urlFile = fileData.fileId == null || fileData.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.fileId);
+                let isShow = true;
+                if(fileData.sampleFileName == null || fileData.sampleFileName == ''){
+                    isShow = false;    
+                }
                 let obj = {
-                    docName: listdatafile[i].docName,
-                    ngoactruoc: '(',
-                    sampleFileName: listdatafile[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].sampleFileName + '</a>',
-                    ngoacsau: ')',
-                    fileName: listdatafile[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + listdatafile[i].fileName + '" target="_blank">' + listdatafile[i].fileName + '</a>',
-                    cid: listdatafile[i].cid,
-                    reportLayoutID: listdatafile[i].reportLayoutID,
-                    docID: listdatafile[i].docID,
-                    dispOrder: listdatafile[i].dispOrder,
-                    requiredDoc: listdatafile[i].requiredDoc,
-                    docRemarks: listdatafile[i].docRemarks,
-                    sampleFileId: listdatafile[i].sampleFileId,
-                    reportID: listdatafile[i].reportID,
-                    fileId: listdatafile[i].fileId,
-                    fileSize: listdatafile[i].fileSize
+                    docName: fileData.docName,
+                    ngoactruoc: !isShow ? '' : '(',
+                    sampleFileName: !isShow ? '' : '<a href=' + urlFileSample + ' target="_blank">' + fileData.sampleFileName + '</a>',
+                    ngoacsau:   !isShow ? '' : ')',
+                    fileName: fileData.fileName == null || fileData.fileName == '' ? '' : '<a style="color: blue;" href=' + urlFile + ' target="_blank">' + fileData.fileName + '</a>',
+                    cid: fileData.cid,
+                    reportLayoutID: fileData.reportLayoutID,
+                    docID: fileData.docID,
+                    dispOrder: fileData.dispOrder,
+                    requiredDoc: fileData.requiredDoc,
+                    docRemarks: fileData.docRemarks,
+                    sampleFileId: fileData.sampleFileId,
+                    reportID: fileData.reportID,
+                    fileId: fileData.fileId,
+                    fileSize: fileData.fileSize,
+                    
                 }
                 lstDoc.push(obj);
             }
+            if (missingDocName != '') {
+                self.missingDocName =  missingDocName.substring(0, missingDocName.length - 1);
+            } else {
+                self.missingDocName = '';
+            }
             self.layout().listDocument(lstDoc);
         }
-        
+
+        getMissingDocName() {
+            let self = this;
+            var lstDoc = self.layout().listDocument();
+            let missingDocName = '';
+
+
+
+        }
+
         getListReportSaveDraft(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             var dfdGetData = service.getListReportSaveDraft();
-
             block();
             $.when(dfdGetData).done((listReportDarft: any) => {
+                nts.uk.ui.errors.clearAll();
                 if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
-                        dataShare = getShared('CPS001B_PARAMS');
+                        dataShare = getShared('JHN001B_PARAMS');
+                        if (dataShare.isClose == true) {
+                            // get lại list report, đề phòng trường hợp bên dialogB thực hiện thoa tác xóa report rồi.
+                            let reportClsIdCurrent = self.reportClsId();
+                            let objReport = _.find(self.layouts(), function(o) { return o.id == reportClsIdCurrent; })
+                            if (objReport) {
+                                self.start(objReport.reportId, false);
+                            } else {
+                                self.reportClsId(null);
+                                self.start(null, false);
+                            } 
+                            nts.uk.ui.errors.clearAll();  
+                        } else if (dataShare.isContinue = true) {
+                            if (dataShare.reportId != null) {
+                                let reportId = dataShare.reportId;
+                                let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; })
+                                if (objReport) {
+                                    self.start(reportId, false);
+                                } else {
+                                    self.reportClsId(null);
+                                    self.start(null, false);
+                                }
+                            }
+                        }
                     });
                 }
                 unblock();
@@ -181,92 +256,121 @@ module jhn001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
-        
-        newMode(){
-            let self = this;
-        }
 
-        start(reportLayoutId?: string): JQueryPromise<any> {
+        start(reportId , opendialogB): JQueryPromise<any> {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
                 dfd = $.Deferred();
             // get all layout
             layouts.removeAll();
-            service.getAll(false).done((data: Array<any>) => {
+            service.getListReport(false).done((data: Array<any>) => {
                 if (data && data.length) {
                     let _data: Array<ILayout> = _.map(data, x => {
                         return {
-                            id          : x.clsDto.reportClsId,
-                            reportCode  : x.clsDto.reportCode,
-                            reportName  : x.clsDto.reportName,
-                            reportClsId : x.clsDto.reportClsId,
+                            id: x.clsDto.reportClsId,
+                            reportCode: x.clsDto.reportCode,
+                            reportName: x.clsDto.reportName,
+                            reportClsId: x.clsDto.reportClsId,
                             displayOrder: x.clsDto.displayOrder,
-                            remark      : x.clsDto.remark,
-                            memo        : x.clsDto.remark,
-                            message     : x.clsDto.message,
-                            reportId    : x.reportID,
-                            sendBackComment : x.sendBackComment,
-                            workId : null
+                            remark: x.clsDto.remark,
+                            memo: x.clsDto.remark,
+                            message: x.clsDto.message,
+                            reportId: x.reportID,
+                            sendBackComment: x.sendBackComment,
+                            rootSateId: x.rootSateId,
+                            reportType: x.clsDto.reportType,
+                            regStatus: x.regStatus, // Save_Draft(1) , Registration(2)
+                            aprStatus: x.aprStatus, // Not_Started(0)
+                            workId: null
+
                         }
                     });
-                    _.each(_.orderBy(_data, ['displayOrder'], ['asc']), d => layouts.push(d));
+                    _.each(_data, d => layouts.push(d));
                     if (_data) {
-                        self.reportClsId(reportLayoutId == null ? _data[0].reportClsId : reportLayoutId);
+                        if (reportId == undefined || reportId == null) {
+                            if (self.reportClsId() == "" || self.reportClsId() == null ) {
+                                self.reportClsId(_data[0].reportClsId);
+                            } else {
+                                let reportClsId = self.reportClsId();
+                                self.reportClsId(null);
+                                self.reportClsId(reportClsId);
+                            }
+
+                        } else {
+                            let objReport = _.find(_data, function(o) { return o.reportId == reportId; })
+
+                            if (objReport == undefined || objReport == null) {
+                                self.reportClsId(_data[0].reportClsId);
+                            }
+
+                            self.reportClsId(objReport.reportClsId);
+                        }
                     }
                 } else {
-                    self.createNewLayout();
+                    self.newMode();
+                    unblock();
                 }
                 
-                self.getListReportSaveDraft().done(() => {});
-                
+                if(opendialogB == true){
+                    self.getListReportSaveDraft().done(() => {});    
+                }
+
                 dfd.resolve();
             });
             return dfd.promise();
         }
-        
-        createNewLayout() {
+
+        newMode() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
+
+            self.layout().listItemCls.removeAll();
+            self.layout().sendBackComment('');
+            self.layout().message('');
+            self.layout().listDocument([]);
+
         }
-        
+
         save() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
                 controls = self.layout().listItemCls();
-            
+
             // refresh data from layout
             self.layout().outData.refresh();
             let inputs = self.layout().outData();
-            
-            let reportLayoutId = self.reportClsId();
-            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
-                return;
 
+            let reportLayoutId = self.reportClsId();
+            if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                return;
+            
             let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
 
             if (objReport == undefined || objReport == null) {
                 return;
             }
-            
-            let command = { 
-                inputs : inputs ,
+
+            let command = {
+                inputs: inputs,
                 listItemDf: self.listItemDf,
-                reportID : objReport.reportId ,
-                reportLayoutID : reportLayoutId ,
-                reportCode : objReport.reportCode ,
-                reportName : objReport.reportName ,
-                reportType : objReport.reportType ,
-                sendBackComment : objReport.sendBackComment ,
-                workId : objReport.workId == null ? 0 : objReport.workId,
+                reportID: objReport.reportId,
+                reportLayoutID: reportLayoutId,
+                reportCode: objReport.reportCode,
+                reportName: objReport.reportName,
+                reportType: objReport.reportType,
+                sendBackComment: objReport.sendBackComment,
+                workId: objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft: 0,
+                missingDocName: self.missingDocName
             };
 
-             // trigger change of all control in layout
+            // trigger change of all control in layout
             lv.checkError(controls);
-            
+
             setTimeout(() => {
                 if (hasError()) {
                     $('#func-notifier-errors').trigger('click');
@@ -277,7 +381,8 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.start(reportLayoutId);
+                        self.enaRemove(true);
+                        self.start(null, false);
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -285,19 +390,19 @@ module jhn001.a.viewmodel {
             }, 50);
 
         }
-        
+
         saveDraft() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
                 controls = self.layout().listItemCls();
-            
+
             // refresh data from layout
             self.layout().outData.refresh();
             let inputs = self.layout().outData();
-            
+
             let reportLayoutId = self.reportClsId();
-            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+            if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
                 return;
 
             let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
@@ -305,22 +410,25 @@ module jhn001.a.viewmodel {
             if (objReport == undefined || objReport == null) {
                 return;
             }
-            
-            let command = { 
-                inputs : inputs ,
+
+            let command = {
+                inputs: inputs,
                 listItemDf: self.listItemDf,
-                reportID : objReport.reportId ,
-                reportLayoutID : reportLayoutId ,
-                reportCode : objReport.reportCode ,
-                reportName : objReport.reportName ,
-                reportType : objReport.reportType ,
-                sendBackComment : objReport.sendBackComment ,
-                workId : objReport.workId == null ? 0 : objReport.workId,
+                reportID: objReport.reportId,
+                reportLayoutID: reportLayoutId,
+                reportCode: objReport.reportCode,
+                reportName: objReport.reportName,
+                reportType: objReport.reportType,
+                sendBackComment: objReport.sendBackComment,
+                workId: objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft: 1,
+                missingDocName: self.missingDocName
             };
 
-             // trigger change of all control in layout
+            // trigger change of all control in layout
             lv.checkError(controls);
-            
+
             setTimeout(() => {
                 if (hasError()) {
                     $('#func-notifier-errors').trigger('click');
@@ -331,21 +439,27 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.start(reportLayoutId);
+                        self.enaRemove(true);
+                        self.start(null, false);
                     });
                 }).fail((mes: any) => {
                     unblock();
                 });
             }, 50);
-
         }
-        
+
         attachedFile() {
             let self = this,
                 layout = self.layout,
-                layouts = self.layouts;
+                layouts = self.layouts,
+                controls = self.layout().listItemCls();
+
+            // refresh data from layout
+            self.layout().outData.refresh();
+            let inputs = self.layout().outData();
+
             let reportLayoutId = self.reportClsId();
-            if( reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+            if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
                 return;
 
             let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
@@ -353,31 +467,80 @@ module jhn001.a.viewmodel {
             if (objReport == undefined || objReport == null) {
                 return;
             }
-            
-            let param = {
-                reportId: string = objReport.reportId,
-                layoutReportId: number = reportLayoutId
+
+            let command = {
+                inputs: inputs,
+                listItemDf: self.listItemDf,
+                reportID: objReport.reportId,
+                reportLayoutID: reportLayoutId,
+                reportCode: objReport.reportCode,
+                reportName: objReport.reportName,
+                reportType: objReport.reportType,
+                sendBackComment: objReport.sendBackComment,
+                workId: objReport.workId == null ? 0 : objReport.workId,
+                rootSateId: objReport.rootSateId,
+                isSaveDraft: 1,
+                missingDocName: self.missingDocName
             };
-            
-            setShared("JHN001F_PARAMS", param );
-            
+
+            // trigger change of all control in layout
+            //lv.checkError(controls);
+            nts.uk.ui.errors.clearAll();
+
+            let param = {
+                reportId: number = objReport.reportId,
+                layoutReportId: number = reportLayoutId,
+                command: command
+            };
+
+            setShared("JHN001F_PARAMS", param);
+
             subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
-                console.log('test open dialog f');
-                // get lại list file document
-                self.getListDocument(param).done(() => {
-                    unblock();
-                });
+                let reportId = getShared('JHN001F_DATA');
+                self.start(reportId, false);
             });
-            
-            
         }
-        
+
         remove() {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
-            
-            
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
+                let reportLayoutId = self.reportClsId();
+                if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
+                    return;
+
+                let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
+
+                if (objReport == undefined || objReport == null) {
+                    return;
+                }
+
+                let objRemove = {
+                    reportId: string = objReport.reportId
+                };
+
+                service.removeData(objRemove).done(() => {
+                    info({ messageId: "Msg_40" }).then(function() {
+                        self.reportClsId(null);
+                        self.start(null , false);
+                    });
+                }).fail((mes: any) => {
+                    unblock();
+                });
+            }).ifNo(() => { });
+        }
+
+        public backTopScreenTopReport(): void {
+            let self = this;
+            window.history.back();
+            //nts.uk.request.jump("hr", "/view/jhn/003/a/index.xhtml");
         }
     }
 
@@ -389,18 +552,18 @@ module jhn001.a.viewmodel {
         listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
         // standardDate of layout
         standardDate: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD"));
-        
+
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
-        
-        approvalRootState : any = ko.observableArray([]);
-        listDocument : any = ko.observableArray([]);
-        
+
+        approvalRootState: any = ko.observableArray([]);
+        listDocument: any = ko.observableArray([]);
+
         constructor() {
             let self = this;
 
-            }
-        
+        }
+
         clickSampleFileName() {
             let rowData: any = this;
             if (rowData.sampleFileId) {
@@ -414,18 +577,13 @@ module jhn001.a.viewmodel {
             let rowData: any = this;
             if (rowData.fileId) {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
-                    
-//                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.originalName).done(function(res) {
-//                        console.log(res);
-//                    }).fail(function(error) {
-//                       console.log(error);
-//                    });
                     nts.uk.request.specials.donwloadFile(rowData.fileId);
                 });
             }
         }
     }
     
+
     interface IItemDf {
         categoryId: string;
         categoryCode: string;
@@ -433,18 +591,24 @@ module jhn001.a.viewmodel {
         ctgType: number;
         layoutItemType: number;
         layoutDisOrder: number;
-        dispOrder : number;
+        dispOrder: number;
         itemDefId: string;
-        itemCode : string;
+        itemCode: string;
         itemName: string;
     }
-    
+
     interface ICategory {
         id: string;
         categoryCode?: string;
         categoryName?: string;
         categoryType?: IT_CAT_TYPE;
-    }                       
+    }
+    
+    export enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
+    }
 
     export enum TABS {
         LAYOUT = <any>"layout",
@@ -553,5 +717,5 @@ module jhn001.a.viewmodel {
         status: string;
     }
 
-   
+
 }

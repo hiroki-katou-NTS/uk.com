@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -51,11 +52,20 @@ public class DailyModifyQueryProcessor {
 //				.collect(Collectors.toList());
 	}
 	
-	public Pair<List<DailyModifyResult>, List<DailyRecordDto>>  initScreen(DailyMultiQuery query) {
+	public Pair<List<DailyModifyResult>, List<DailyRecordDto>>  initScreen(DailyMultiQuery query, Set<Pair<String, GeneralDate>> setErrorEmpDate) {
 		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty() || query.getPeriod() == null){
 			return Pair.of(Collections.emptyList(), Collections.emptyList());
 		}
-		List<DailyRecordDto> dtoOlds = this.fullFinder.find(query.getEmployeeIds(), query.getPeriod());
+		List<DailyRecordDto> dtoOlds = new ArrayList<>();
+		if(!setErrorEmpDate.isEmpty()) {
+			Map<String, List<GeneralDate>> param = setErrorEmpDate.stream()
+					.collect(Collectors.groupingBy(x -> x.getKey(), Collectors.collectingAndThen(Collectors.toList(),
+							list -> list.stream().map(y -> y.getRight()).distinct().collect(Collectors.toList()))));
+			dtoOlds = this.fullFinder.find(param);
+			dtoOlds = dtoOlds.stream().filter(x -> setErrorEmpDate.contains(Pair.of(x.getEmployeeId(), x.getDate()))).collect(Collectors.toList());
+		}else {
+			dtoOlds = this.fullFinder.find(query.getEmployeeIds(), query.getPeriod());
+		}
 		val resultValues = AttendanceItemUtil.toItemValues(dtoOlds)
 		.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
 					.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())

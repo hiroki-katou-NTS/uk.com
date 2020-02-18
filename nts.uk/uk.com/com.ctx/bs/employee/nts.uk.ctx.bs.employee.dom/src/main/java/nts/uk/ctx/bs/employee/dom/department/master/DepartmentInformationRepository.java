@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.employee.dom.department.master;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author HungTT
@@ -34,4 +36,5 @@ public interface DepartmentInformationRepository {
 	
 	public void deleteDepartmentInfor(String companyId, String depHistId, String depId);
 
+	public Optional<DepartmentInformation> getInfoDep(String companyId, String depId, GeneralDate baseDate);
 }

@@ -55,6 +55,6 @@ public class SaveReportInputContainer {
 	 String sendBackSID;//差し戻し先社員ID
 	 String sendBackComment;//差し戻しコメント
 	 boolean delFlg;//削除済
-	
+	 int isSaveDraft;
 	
 }

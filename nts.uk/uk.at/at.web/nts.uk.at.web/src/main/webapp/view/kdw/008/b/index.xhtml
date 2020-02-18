@@ -56,7 +56,7 @@
 							<div data-bind="if: !isMobile">
 								<div id="tab-panel"
 									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-									<div class="tab-content-1" style="height: 450px; width: 830px">
+									<div class="tab-content-1" style="height: 386px; width: 830px">
 										<div>
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div id="A_SEL_002"
@@ -82,7 +82,7 @@
 										<div style="margin-top: 10px" id="swap-list2"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 371,
+											height: 314,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns1,
@@ -105,12 +105,12 @@
 													swapTarget: 'right'}">
 										</div>
 									</div>
-									<div class="tab-content-2" style="height: 390px; width: 830px">
+									<div class="tab-content-2" style="height: 386px; width: 830px">
 										<div id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
 										<div style="margin-top: 10px" id="swap-list"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 400,
+											height: 362,
 											dataSource: monthlyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns2,
@@ -134,7 +134,7 @@
 										</div>
 									</div>
 									<!-- tab3 -->
-									<div class="tab-content-3" style="height: 475px; width: 830px">
+									<div class="tab-content-3" style="height: 386px; width: 830px">
 										<div>
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div id="A_SEL_002"
@@ -156,11 +156,11 @@
 												data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
 										</div>
 										<!-- <div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div> -->
-										<div style="margin-top: 10px; margin-left: 435px">#{i18n.getText('KDW008_29')}</div>
+										<div style="margin-top: 10px; margin-left: 435px; margin-bottom:-10px !important">#{i18n.getText('KDW008_29')}</div>
 										<div style="margin-top: 10px" id="swap-list3"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 406,
+											height: 330,
 											dataSource: monthlyCorrectedDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns3,
@@ -190,10 +190,10 @@
 									data-bind="ntsTabPanel: { dataSource: mobileTabs, active: selectedMobileTab}">
 									<div class="tab-content-1" style="height: 385px; width: 830px;margin-top: -15px;">
 										
-										<div style="margin-top: 10px" id="swap-list2"
+										<div style="margin-top: 10px" id="swap-list21"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 380,
+											height: 350,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns1,
@@ -211,7 +211,7 @@
 											data-bind="ntsUpDown: {
 													targetSource: businessTypeFormatDailyValue,
 													primaryKey: 'attendanceItemId',
-													comId: '#swap-list2',
+													comId: '#swap-list21',
 													type: 'swap',
 													swapTarget: 'right'}">
 										</div>

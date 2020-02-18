@@ -28,18 +28,24 @@ public class WpApprovalRootDto {
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
 	private int employmentRootAtr;
+	/**届出ID*/
+	private Integer noticeId;
+	/**各業務エベントID*/
+	private String busEventId;
 	
 	public static WpApprovalRootDto fromDomain(WorkplaceApprovalRoot domain){
 		return new WpApprovalRootDto(domain.getCompanyId(),
 					domain.getApprovalId(),
 					domain.getWorkplaceId(),
-					domain.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-					domain.getApplicationType() == null ? null : domain.getApplicationType().value,
-					domain.getEmploymentAppHistoryItems().get(0).start().toString("yyyy/MM/dd"),
-					domain.getEmploymentAppHistoryItems().get(0).end().toString("yyyy/MM/dd"),
-					domain.getBranchId(),
-					domain.getAnyItemApplicationId(),
-					domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value,
-					domain.getEmploymentRootAtr().value);
+					domain.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+					domain.getApprRoot().getApplicationType() == null ? null : domain.getApprRoot().getApplicationType().value,
+					domain.getApprRoot().getHistoryItems().get(0).start().toString("yyyy/MM/dd"),
+					domain.getApprRoot().getHistoryItems().get(0).end().toString("yyyy/MM/dd"),
+					domain.getApprRoot().getBranchId(),
+					domain.getApprRoot().getAnyItemApplicationId(),
+					domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value,
+					domain.getApprRoot().getEmploymentRootAtr().value,
+					domain.getApprRoot().getNoticeId(),
+					domain.getApprRoot().getBusEventId());
 	}
 }

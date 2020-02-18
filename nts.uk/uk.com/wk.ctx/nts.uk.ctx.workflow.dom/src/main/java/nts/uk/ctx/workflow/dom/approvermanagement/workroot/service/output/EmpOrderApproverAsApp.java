@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class EmpOrderApproverAsApp {
-	int disOrder;
+	int approverOrder;
 	String employeeName;
 	boolean confirmPerson;
 }

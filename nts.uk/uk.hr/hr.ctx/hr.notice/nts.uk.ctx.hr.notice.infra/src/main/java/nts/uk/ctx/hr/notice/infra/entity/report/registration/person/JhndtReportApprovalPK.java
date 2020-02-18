@@ -21,9 +21,8 @@ public class JhndtReportApprovalPK implements Serializable {
 	public int reportID; // 届出ID
 	
 	@NotNull
-	@Column(name = "PHASE_NUM")
-	public int phaseNum; // フェーズ通番
-
+	@Column(name = "LEVEL_NUM")
+	public int levelNum; // レベル通番
 	@NotNull
 	@Column(name = "APR_NUM")
 	public int aprNum;//承認者通番
@@ -31,4 +30,8 @@ public class JhndtReportApprovalPK implements Serializable {
 	@NotNull
 	@Column(name = "CID")
 	public String cid; // 会社ID
+	
+	@NotNull
+	@Column(name = "APR_SID")
+	public String aprSid; //承認者社員ID
 }

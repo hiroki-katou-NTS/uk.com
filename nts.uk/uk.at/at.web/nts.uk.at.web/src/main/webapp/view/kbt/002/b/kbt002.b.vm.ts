@@ -519,10 +519,10 @@ module nts.uk.at.view.kbt002.b {
                 let self = this;
                 let res = [];
                 _.forEach(dataList, function(item) {
-                    if (item.childs && item.childs.length > 0) {
-                        res = res.concat(self.convertTreeToArray(item.childs));
+                    if (item.children && item.children.length > 0) {
+                        res = res.concat(self.convertTreeToArray(item.children));
                     }
-                    res.push({ workplaceId: item.workplaceId, hierarchyCode: item.code, name: item.name });
+                    res.push({ workplaceId: item.id, hierarchyCode: item.code, name: item.name });
                 })
                 return res;
             }

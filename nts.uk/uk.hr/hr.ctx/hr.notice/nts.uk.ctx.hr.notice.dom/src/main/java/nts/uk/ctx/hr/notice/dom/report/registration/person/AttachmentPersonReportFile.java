@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.notice.dom.report.registration.person;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -10,6 +11,7 @@ import nts.arc.time.GeneralDateTime;
  * Domain : 人事届出ファイルの添付
  */
 @Getter
+@Builder
 @NoArgsConstructor
 public class AttachmentPersonReportFile extends AggregateRoot{
 	

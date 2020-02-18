@@ -15,8 +15,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
  * The Class ScWorkplaceAdapterImpl.
@@ -28,6 +31,9 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 	/** The workplace pub. */
 	@Inject
 	private SyWorkplacePub workplacePub;
+	
+	@Inject
+	private WorkplacePub wrkPlacePub;
 
 	/*
 	 * 
@@ -72,6 +78,17 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 		return this.workplacePub.findWpkIdsBySid(companyId, employeeId, date);
 	}
 	
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+
+		return this.wrkPlacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	@Override
+	public AffWorkplaceHistoryItem getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		AffWorkplaceHistoryItemExport affWorkplace = this.wrkPlacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		return new AffWorkplaceHistoryItem(affWorkplace.getHistoryId(), affWorkplace.getWorkplaceId(), affWorkplace.getNormalWorkplaceId());
+	}
 	
 
 }

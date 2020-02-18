@@ -75,7 +75,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 * lang.Integer)
 	 */
 	@Override
-	// ロールIDから参�可能な職場リストを取得す�
+	// ロールIDから参照可能な職場リストを取得する
 	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType, baseDate);

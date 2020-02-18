@@ -373,6 +373,65 @@
 									</tr>
 								</tbody>
 							</table>
+							<!-- A18 -->
+							<table class="viewmodel-a" id="fixed-table-a18">
+								<colgroup>
+									<col width="250px" />
+									<col width="600px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<!-- A18 承認者の登録設定 -->
+										<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_657')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<!-- A18_1 -->
+										<td class="color-header">#{i18n.getText('KAF022_658')}</td>
+										<td>
+											<div class="a17"  tabindex="26"
+												data-bind="ntsRadioBoxGroup: {
+													name:'#[KAF022_35]',
+													options: itemA18,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: companyUnit}">
+											</div>
+										</td>
+									</tr>
+
+									<tr>
+										<!-- A18_2 -->
+										<td class="color-header">#{i18n.getText('KAF022_659')}</td>
+										<td>
+											<div class="a17" tabindex="27"
+												data-bind="ntsRadioBoxGroup: {
+													name:'#[KAF022_35]',
+													options: itemA18,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: workplaceUnit}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<!-- A18_3 -->
+										<td class="color-header">#{i18n.getText('KAF022_660')}</td>
+										<td>
+											<div class="a17" tabindex="28"
+												data-bind="ntsRadioBoxGroup: {
+													name:'#[KAF022_35]',
+													options: itemA18,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: employeeUnit}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br/>
 							<!-- A6 -->
 							<table class="viewmodel-a" id="fixed-table-a6">
 								<colgroup>
@@ -988,7 +1047,7 @@
 								</tbody>
 							</table>
 							<!-- A15 -->
-							<table class="viewmodel-a" id="fixed-table-a15">
+<!-- 							<table class="viewmodel-a" id="fixed-table-a15">
 								<colgroup>
 									<col width="300px" />
 									<col width="500px" />
@@ -1017,7 +1076,7 @@
 										</td>
 									</tr>
 								</tbody>
-							</table>
+							</table> -->
 							<!-- A16 -->
 							<table class="viewmodel-a" id="fixed-table-a16">
 								<colgroup>

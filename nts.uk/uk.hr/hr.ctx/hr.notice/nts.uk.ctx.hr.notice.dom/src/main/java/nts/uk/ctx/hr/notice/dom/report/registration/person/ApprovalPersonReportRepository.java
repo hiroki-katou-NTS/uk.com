@@ -13,13 +13,13 @@ import nts.arc.time.GeneralDateTime;
  */
 public interface ApprovalPersonReportRepository {
 
-	List<ApprovalPersonReport> getListDomainByReportId(String cid, String reprtId);
+	List<ApprovalPersonReport> getListDomainByReportId(String cid, int reprtId);
 	
-	List<ApprovalPersonReport> getListDomainByReportId(String reprtId);
+	List<ApprovalPersonReport> getListDomainByReportId(int reprtId);
 	
-	List<ApprovalPersonReport> getListDomainByReportIdAndSid(String reprtId, String approverId);
+	List<ApprovalPersonReport> getListDomainByReportIdAndSid(String cid, int reprtId, String approverId);
 	
-	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid);
+	boolean checkExit(int reportID, int phaseNum, int aprNum, String cid, String aprSid);
 	
 	void add(ApprovalPersonReport domain);
 	
@@ -29,10 +29,13 @@ public interface ApprovalPersonReportRepository {
 	
 	void update(ApprovalPersonReport domain);
 	
-	void delete(int reportID, int phaseNum, int aprNum, String cid);
+	void delete(int reportID, int phaseNum, int aprNum, String cid, String aprSid);
 	
 	void deleteByReportId(int reportID, String cid);
+	
+	void updateSendBack(List<ApprovalPersonReport> domains, int reprtId, String sid);
 
 	List<ApprovalPersonReport> getByJHN003(String cId, String sId, GeneralDateTime startDate, GeneralDateTime endDate,
 			Integer reportId, Integer approvalStatus, String inputName);
+
 }

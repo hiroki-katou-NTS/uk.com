@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.pub.service.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,25 +15,19 @@ import nts.arc.time.GeneralDate;
 @Value
 public class ApprovalFrameExport {
 	
-	private Integer phaseOrder;
-	
 	private Integer frameOrder;
-	
-	private ApprovalBehaviorAtrExport approvalAtr;
 	
 	private List<ApproverStateExport> listApprover;
 	
-	private String approverID;
-	
-	private String approverName;
-	
-	private String representerID;
-	
-	private String representerName;
-	
-	private String approvalReason;
-	
 	private int confirmAtr;
 	
-	private GeneralDate approvalDate;
+	private GeneralDate appDate;
+	
+	public static ApprovalFrameExport fixData(Integer order) {
+		List<ApproverStateExport> listApprover = new ArrayList<>();
+		listApprover.add(ApproverStateExport.fixData(order));
+		int confirmAtr = 0;
+		GeneralDate appDate = GeneralDate.today();
+		return new ApprovalFrameExport(order, listApprover, confirmAtr, appDate);
+	}
 }

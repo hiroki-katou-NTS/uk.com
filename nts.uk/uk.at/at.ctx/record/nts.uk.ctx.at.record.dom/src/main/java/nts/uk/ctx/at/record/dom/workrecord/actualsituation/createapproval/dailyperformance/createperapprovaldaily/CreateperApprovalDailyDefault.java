@@ -28,8 +28,8 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	@Inject
-	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 
+	private AppDataInfoDailyRepository appDataInfoDailyRepo;
 	@Inject
 	private CreateDailyApproverAdapter createDailyApproverAdapter;
 
@@ -52,6 +52,9 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 		this.parallel.forEach(employeeIDs, employeeID -> {
 			if (checkStop.get())
 				return;
+			if(employeeID ==null) {
+				return;
+			}
 			// 年月日 ←「システム日付の前日」
 			GeneralDate ymd = GeneralDate.today().addDays(-1);
 			if (createNewEmp == 1) {

@@ -361,19 +361,19 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         }
         
         setScreenSize() {
-        	if (window.innerHeight < 525) {
+        	if (window.innerHeight < 447) {
         		return;
         	}
-        	$('.mgrid-fixed').height(window.innerHeight - 449);
-        	$('.mgrid-free').height(window.innerHeight - 449);
-        	$('.grid-container').height(window.innerHeight - 310);
-        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 443 + 'px' });
-        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 443 + 'px' });
-        	$('.mgrid-paging').css({ top: window.innerHeight - 396 + 'px' });
-        	$('.mgrid-sheet').css({ top: window.innerHeight - 350 + 'px' });
-        	$('.mgrid-free').width(window.innerWidth - 620);
-        	$('.mgrid-free.mgrid-header').width(window.innerWidth - 637);
-        	$('.mgrid-free-summaries').width(window.innerWidth - 637);
+        	$('.mgrid-fixed').height(window.innerHeight - 364);
+        	$('.mgrid-free').height(window.innerHeight - 364);
+        	$('.grid-container').height(window.innerHeight - 240);
+        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 376 + 'px' });
+        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 376 + 'px' });
+        	$('.mgrid-paging').css({ top: window.innerHeight - 330 + 'px' });
+        	$('.mgrid-sheet').css({ top: window.innerHeight - 285 + 'px' });
+        	$('.mgrid-free').width(window.innerWidth - 627);
+        	$('.mgrid-free.mgrid-header').width(window.innerWidth - 644);
+        	$('.mgrid-free-summaries').width(window.innerWidth - 644);
         	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
         	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
         }
@@ -1030,8 +1030,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
-                height: '650px',
-                headerHeight: '50px',
+                height: '612px',
+                headerHeight: '32px',
                 dataSource: dataSource,
                 dataSourceAdapter: function(ds) {
                     return ds;

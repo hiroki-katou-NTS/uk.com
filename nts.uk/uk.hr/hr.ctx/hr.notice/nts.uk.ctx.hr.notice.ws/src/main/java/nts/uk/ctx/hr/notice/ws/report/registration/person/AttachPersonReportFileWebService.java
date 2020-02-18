@@ -43,8 +43,8 @@ public class AttachPersonReportFileWebService {
 	
 	@POST
 	@Path("add")
-	public void addDoc(AddDocumentReportCommand command) {
-		this.add.handle(command);
+	public String addDoc(AddDocumentReportCommand command) {
+		return this.add.handle(command);
 	}
 	
 	@POST

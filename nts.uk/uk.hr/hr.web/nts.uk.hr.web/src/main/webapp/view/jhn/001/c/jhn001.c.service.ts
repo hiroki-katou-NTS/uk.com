@@ -7,7 +7,7 @@ module jhn001.c.service {
         getAll: "hr/notice/report/findAll/{0}",
         getDetails: "hr/notice/report/item/findOne",
         remove:"hr/notice/report/delete/{0}",
-        saveData: "hr/notice/report/save",
+        saveData: "hr/notice/report/regis/person/saveScreenC",
         layout: {
             getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
             getDetails: "ctx/pereg/person/maintenance/findLayoutData",

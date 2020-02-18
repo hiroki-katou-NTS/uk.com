@@ -15,4 +15,9 @@ public class ApprovalRootContentExport {
 	
 	private ErrorFlagExport errorFlag;
 	
+	public static ApprovalRootContentExport fixData() {
+		ApprovalRootStateExport approvalRootState = ApprovalRootStateExport.fixData();
+		ErrorFlagExport errorFlag = ErrorFlagExport.NO_ERROR;
+		return new ApprovalRootContentExport(approvalRootState, errorFlag);
+	}
 }

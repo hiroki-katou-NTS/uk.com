@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -53,4 +54,7 @@ public interface AffDepartmentHistoryRepository {
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	List<Object[]> getAffDeptHistByEmpIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+
 }

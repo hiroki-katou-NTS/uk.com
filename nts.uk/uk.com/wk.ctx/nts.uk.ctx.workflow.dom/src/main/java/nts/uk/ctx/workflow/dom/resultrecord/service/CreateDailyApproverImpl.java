@@ -7,20 +7,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -33,20 +32,20 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 	private AppRootInstanceRepository appRootInstanceRepository;
 	
 	@Inject
-	private AppRootConfirmRepository appRootConfirmRepository;
-	
-	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
 
 	@Override
 	public AppRootInstanceContent createDailyApprover(String employeeID, RecordRootType rootType, GeneralDate recordDate, GeneralDate closureStartDate) {
 		String companyID = AppContexts.user().companyId();
 		// 承認ルートを取得する（確認）
-		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootConfirm(
+		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
 																companyID, 
 																employeeID, 
-																EnumAdaptor.valueOf(rootType.value-1, ConfirmationRootType.class), 
-																recordDate);
+																EmploymentRootAtr.CONFIRMATION, 
+																Integer.valueOf(rootType.value-1).toString(), 
+																recordDate, 
+																SystemAtr.WORK, 
+																Optional.empty());
 		AppRootInstance appRootInstance = new AppRootInstance(
 				approvalRootContentOutput.getApprovalRootState().getRootStateID(), 
 				companyID, 
@@ -61,7 +60,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 								.map(y -> new AppFrameInstance(
 										y.getFrameOrder(), 
 										y.getConfirmAtr().value==1?true:false, 
-										y.getListApproverState().stream().map(z -> z.getApproverID())
+										y.getLstApproverInfo().stream().map(z -> z.getApproverID())
 								.collect(Collectors.toList())))
 					.collect(Collectors.toList())))
 				.collect(Collectors.toList()));
@@ -188,11 +187,14 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 		do {
 			AppRootInstance compareAppIns = appRootInstance;
 			// 承認ルートを取得する（確認）
-			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootConfirm(
+			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
 					companyID, 
 					employeeID, 
-					EnumAdaptor.valueOf(rootType.value-1, ConfirmationRootType.class), 
-					loopDate);
+					EmploymentRootAtr.CONFIRMATION, 
+					Integer.valueOf(rootType.value-1).toString(), 
+					loopDate, 
+					SystemAtr.WORK, 
+					Optional.empty());
 			AppRootInstance appRootInsRs = new AppRootInstance(
 					approvalRootContentOutput.getApprovalRootState().getRootStateID(), 
 					companyID, 
@@ -207,7 +209,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 									.map(y -> new AppFrameInstance(
 											y.getFrameOrder(), 
 											y.getConfirmAtr().value==1?true:false, 
-											y.getListApproverState().stream().map(z -> z.getApproverID())
+											y.getLstApproverInfo().stream().map(z -> z.getApproverID())
 									.collect(Collectors.toList())))
 						.collect(Collectors.toList())))
 					.collect(Collectors.toList()));

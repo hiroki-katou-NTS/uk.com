@@ -12,6 +12,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.DataSo
 public interface EmployeeRegisterApprovalRoot {
 	/**
 	 * 01.申請者としての承認ルートを取得する
+	 * Hoatt customize
 	 * @param companyID 会社ID 
 	 * @param baseDate 基準日
 	 * @param lstEmpIds 選択する対象社員リスト
@@ -19,5 +20,5 @@ public interface EmployeeRegisterApprovalRoot {
 	 * @param lstApps 選択する申請対象
 	 * @return
 	 */
-	DataSourceApproverList lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, List<AppTypes> lstApps);
+	DataSourceApproverList lstEmps(String companyID, int sysAtr, GeneralDate baseDate,  List<String> lstEmpIds, List<AppTypes> lstApps);
 }

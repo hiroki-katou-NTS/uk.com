@@ -23,7 +23,6 @@ module nts.uk.com.view.ccg.share.ccg {
             searchByCode: "query/employee/find/code",
             searchByEntryDate: "query/employee/find/entrydate",
             searchByRetirementDate: "query/employee/find/retirementdate",
-            getCanManageWpkForLoginUser: "at/auth/workplace/manager/find/loginnedUser",
         };
 
         /**
@@ -31,10 +30,6 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function findRegulationInfoEmployee(query: model.EmployeeQueryParam): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.findRegulationInfoEmployee, query);
-        }
-         
-        export function getCanManageWpkForLoginUser(): JQueryPromise<Array<any>> {
-            return nts.uk.request.ajax('com', servicePath.getCanManageWpkForLoginUser);
         }
 
         export function searchByCode(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
@@ -142,9 +137,11 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * call service get employee by login
          */
+        
         export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, query);
         }
+
 
 
         /**

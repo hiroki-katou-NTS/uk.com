@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -222,7 +226,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	/**
 	 * To entity.
 	 *
-	 * @param workplaceInfo the workplace info
+	 * @param workplaceInfo
+	 *            the workplace info
 	 * @return the bsymt workplace info
 	 */
 	private BsymtWorkplaceInfo toEntity(WorkplaceInfo workplaceInfo) {
@@ -255,17 +260,6 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
-	
-//	@Override
-//	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate) {
-//
-//		List<BsymtWorkplaceInfo> resultList = this.queryProxy()
-//				.query(FIND_WKP_DETAIL_HIERARCHY_ORDER, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
-//				.setParameter("baseDate", baseDate).getList();
-//
-//		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
-//				.collect(Collectors.toList());
-//	}
 
 	/*
 	 * (non-Javadoc)
@@ -323,6 +317,57 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		if (CollectionUtil.isEmpty(wkpIds)) {
 			return new ArrayList<>();
 		}
+
+		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			String subLstWkpId = NtsStatement.In.createParamsString(subList);
+			String sql = "SELECT CID, WKPID, HIST_ID, WKPCD, WKP_NAME, WKP_GENERIC_NAME, WKP_DISPLAY_NAME, WKP_OUTSIDE_CODE "
+					+ "FROM BSYMT_WORKPLACE_INFO " + "WHERE WKPID IN (" + subLstWkpId + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(i + 1, subList.get(i));
+				}
+
+				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
+					BsymtWorkplaceInfo info = new BsymtWorkplaceInfo();
+					info.setBsymtWorkplaceInfoPK(new BsymtWorkplaceInfoPK(rs.getString("CID"), rs.getString("WKPID"),
+							rs.getString("HIST_ID")));
+					info.setWkpcd(rs.getString("WKPCD"));
+					info.setWkpDisplayName(rs.getString("WKP_DISPLAY_NAME"));
+					info.setWkpGenericName(rs.getString("WKP_GENERIC_NAME"));
+					info.setWkpName(rs.getString("WKP_NAME"));
+					info.setWkpOutsideCode(rs.getString("WKP_OUTSIDE_CODE"));
+					return info;
+				}));
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		});
+
+		// check empty
+		if (resultList.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
+	 * findByBaseDateWkpIds(java.lang.String, nts.arc.time.GeneralDate,
+	 * java.util.List)
+	 */
+	@Override
+	public List<WorkplaceInfo> findByBaseDateWkpIds(String companyId, GeneralDate baseDate, List<String> wkpIds) {
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -340,57 +385,12 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(
 					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
-
-			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-			resultList.addAll(em.createQuery(cq).getResultList());
-		});
-
-		// check empty
-		if (CollectionUtil.isEmpty(resultList)) {
-			return new ArrayList<>();
-		}
-
-		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
-				.collect(Collectors.toList());
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
-	 * findByBaseDateWkpIds(java.lang.String, nts.arc.time.GeneralDate,
-	 * java.util.List)
-	 */
-	@Override
-	public List<WorkplaceInfo> findByBaseDateWkpIds(String companyId, GeneralDate baseDate,
-			List<String> wkpIds) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder
-				.createQuery(BsymtWorkplaceInfo.class);
-		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
-
-		// select root
-		cq.select(root);
-
-		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
-
-		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			// add where
-			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-					.get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
 			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD),
-					baseDate));
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
 			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD),
-					baseDate));
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
@@ -401,13 +401,15 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			return Collections.emptyList();
 		}
 
-		return resultList.stream()
-				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByHistory(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
+	 * findByHistory(java.util.List)
 	 */
 	@Override
 	public List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId) {
@@ -425,18 +427,17 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		cq.select(root);
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
-		
+
 		CollectionUtil.split(historyList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			
-			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-							.get(BsymtWorkplaceInfoPK_.cid), companyId));
-			
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId)
-					.in(subList));
-			
+
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
+
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
+					.get(BsymtWorkplaceInfoPK_.historyId).in(subList));
+
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
@@ -457,14 +458,12 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 * findByWkpIdsAndHistIds(java.lang.String, java.util.List, java.util.List)
 	 */
 	@Override
-	public List<WorkplaceInfo> findByWkpIdsAndHistIds(String companyId, List<String> wkpIds,
-			List<String> histIds) {
+	public List<WorkplaceInfo> findByWkpIdsAndHistIds(String companyId, List<String> wkpIds, List<String> histIds) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder
-				.createQuery(BsymtWorkplaceInfo.class);
+		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
 		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
 
 		// select root
@@ -476,9 +475,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subHistList) -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
-				lstpredicateWhere.add(
-						criteriaBuilder.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-								.get(BsymtWorkplaceInfoPK_.cid), companyId));
+				lstpredicateWhere.add(criteriaBuilder.equal(
+						root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
 				lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
 						.get(BsymtWorkplaceInfoPK_.wkpid).in(subWkpList));
 				lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
@@ -490,13 +488,15 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			});
 		});
 
-		return resultList.stream()
-				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByHistory(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
+	 * findByHistory(java.util.List)
 	 */
 	@Override
 	public List<WorkplaceInfo> findByHistory(List<String> historyList) {
@@ -514,14 +514,14 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		cq.select(root);
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
-		
+
 		CollectionUtil.split(historyList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId)
-					.in(subList));
-			
+
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
+					.get(BsymtWorkplaceInfoPK_.historyId).in(subList));
+
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
@@ -543,44 +543,39 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<GeneralDate, List<WorkplaceInfo>> findByWkpIds(String companyId,
-			List<String> wpkIds, List<GeneralDate> baseDates) {
+	public Map<GeneralDate, List<WorkplaceInfo>> findByWkpIds(String companyId, List<String> wpkIds,
+			List<GeneralDate> baseDates) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<?> cq = criteriaBuilder.createQuery();
 		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
-		Join<BsymtWorkplaceInfo, BsymtWorkplaceHist> joinHistRoot = root
-				.join(BsymtWorkplaceInfo_.bsymtWorkplaceHist, JoinType.LEFT);
+		Join<BsymtWorkplaceInfo, BsymtWorkplaceHist> joinHistRoot = root.join(BsymtWorkplaceInfo_.bsymtWorkplaceHist,
+				JoinType.LEFT);
 
 		// Build query
 		cq.multiselect(root, joinHistRoot);
 
 		List<Object[]> result = new ArrayList<>();
-				
+
 		CollectionUtil.split(wpkIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> listPredicate = new ArrayList<>();
-			listPredicate
-					.add(criteriaBuilder.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-							.get(BsymtWorkplaceInfoPK_.cid), companyId));
-			listPredicate.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-					.get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
+			listPredicate.add(criteriaBuilder.equal(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
+			listPredicate.add(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
 
 			List<Predicate> listPredicateBaseDate = new ArrayList<>();
 			baseDates.forEach(baseDate -> {
-				listPredicateBaseDate.add(criteriaBuilder.and(
-						criteriaBuilder
-								.lessThanOrEqualTo(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist)
-										.get(BsymtWorkplaceHist_.strD), baseDate),
+				listPredicateBaseDate.add(criteriaBuilder.and(criteriaBuilder.lessThanOrEqualTo(
+						root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate),
 						criteriaBuilder.greaterThanOrEqualTo(
-								root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist)
-										.get(BsymtWorkplaceHist_.endD),
+								root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD),
 								baseDate)));
 			});
 
-			listPredicate
-					.add(criteriaBuilder.or(listPredicateBaseDate.toArray(new Predicate[] {})));
+			listPredicate.add(criteriaBuilder.or(listPredicateBaseDate.toArray(new Predicate[] {})));
 
 			cq.where(listPredicate.toArray(new Predicate[] {}));
 
@@ -592,11 +587,9 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		baseDates.forEach(baseDate -> {
 			mapItem.putAll(result.stream().collect(Collectors.groupingBy(item -> {
 				BsymtWorkplaceHist workplaceHist = (BsymtWorkplaceHist) item[1];
-				return (new DatePeriod(workplaceHist.getStrD(), workplaceHist.getEndD()))
-						.contains(baseDate) ? baseDate : null;
-			}, Collectors.mapping(
-					x -> new WorkplaceInfo(
-							new JpaWorkplaceInfoGetMemento((BsymtWorkplaceInfo) x[0])),
+				return (new DatePeriod(workplaceHist.getStrD(), workplaceHist.getEndD())).contains(baseDate) ? baseDate
+						: null;
+			}, Collectors.mapping(x -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento((BsymtWorkplaceInfo) x[0])),
 					Collectors.toList()))));
 		});
 

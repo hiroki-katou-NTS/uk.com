@@ -75,36 +75,33 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
 	 * 
-	 * @param cid
-	 *            会社ID
-	 * @param sid
-	 *            社員ID（申請本人の社員ID）
-	 * @param employmentRootAtr
-	 *            就業ルート区分
-	 * @param subjectRequest
-	 *            対象申請
-	 * @param baseDate
-	 *            基準日
+	 * @param cid 会社ID
+	 * @param sid 社員ID（申請本人の社員ID）
+	 * @param employmentRootAtr 就業ルート区分
+	 * @param subjectRequest 対象申請
+	 * @param baseDate 基準日
+	 * @param システム区分　sysAtr
+	 * update code do update domain (hoatt)
 	 */
 	@Override
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
-			int appType, GeneralDate baseDate) {
+			int appType, GeneralDate baseDate, int sysAtr) {
 		EmploymentRootAtr rootAtr = EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class);
 		ApplicationType applicationType = EnumAdaptor.valueOf(appType, ApplicationType.class);
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
-		Optional<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate,
-				applicationType, rootAtr);
+		Optional<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate, rootAtr,
+				applicationType.toString(), sysAtr);
 		if (!perAppRoots.isPresent()) {
 			// get 個人別就業承認ルート from workflow by other conditions
 			Optional<PersonApprovalRoot> perAppRootsOfCommon = this.perApprovalRootRepository.findByBaseDateOfCommon(cid,
-					sid, baseDate);
+					sid, baseDate, sysAtr);
 			if (!perAppRootsOfCommon.isPresent()) {
 				// 所属職場を含む上位職場を取得
 				List<String> wpkList = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				for (String wkpId : wpkList) {
 					Optional<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wkpId,
-							baseDate, applicationType, rootAtr);
+							baseDate, rootAtr, applicationType.toString(), sysAtr);
 					if (wkpAppRoots.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(wkpAppRoots.get()).stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
@@ -114,7 +111,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					}
 
 					Optional<WorkplaceApprovalRoot> wkpAppRootsOfCom = this.wkpApprovalRootRepository
-							.findByBaseDateOfCommon(cid, wkpId, baseDate);
+							.findByBaseDateOfCommon(cid, wkpId, baseDate, sysAtr);
 					if (wkpAppRootsOfCom.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(wkpAppRootsOfCom.get()).stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))
@@ -125,11 +122,11 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				}
 
 				// ドメインモデル「会社別就業承認ルート」を取得する
-				Optional<CompanyApprovalRoot> comAppRoots = this.comApprovalRootRepository.findByBaseDate(cid, baseDate,
-						applicationType, rootAtr);
+				Optional<CompanyApprovalRoot> comAppRoots = this.comApprovalRootRepository.findByBaseDate(cid, baseDate, rootAtr,
+						applicationType.toString(), sysAtr);
 				if (!comAppRoots.isPresent()) {
 					Optional<CompanyApprovalRoot> companyAppRootsOfCom = this.comApprovalRootRepository
-							.findByBaseDateOfCommon(cid, baseDate);
+							.findByBaseDateOfCommon(cid, baseDate, sysAtr);
 					if (companyAppRootsOfCom.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(companyAppRootsOfCom.get()).stream().map(x -> ApprovalRootOutput.convertFromCompanyData(x))
@@ -172,7 +169,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,
 			List<ApprovalRootOutput> appDatas) {
 		appDatas.stream().forEach(x -> {
-			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(cid, x.getBranchId())
+			List<ApprovalPhase> appPhase = this.approvalPhaseRepository.getAllIncludeApprovers(x.getApprovalId())
 					.stream().filter(f -> f.getBrowsingPhase() == 0).collect(Collectors.toList());
 			x.setBeforePhases(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
@@ -206,14 +203,15 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			}
 
 			List<ApproverInfo> approversResult = new ArrayList<>();
+			ApprovalAtr appAtr = phase.getApprovalAtr();
 			approvers.stream().forEach(x -> {
 				// 個人の場合
-				if (x.getApprovalAtr() == ApprovalAtr.PERSON) {
+				if (appAtr.equals(ApprovalAtr.PERSON)) {
 					approversResult.add(ApproverInfo.create(x, employeeAdapter.getEmployeeName(x.getEmployeeId())));
 				} else {
 					// 職位の場合
 					List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid, baseDate,
-							x.getJobTitleId());
+							x.getJobGCD());
 					approversResult.addAll(approversOfJob);
 				}
 			});
@@ -266,7 +264,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				.collect(Collectors.groupingBy(x -> x.getSid()));
 		for (Map.Entry<String, List<ApproverInfo>> info : approversBySid.entrySet()) {
 			List<ApproverInfo> values = info.getValue();
-			values.sort((a, b) -> Integer.compare(a.getOrderNumber(), b.getOrderNumber()));
+			values.sort((a, b) -> Integer.compare(a.getApproverOrder(), b.getApproverOrder()));
 			Optional<ApproverInfo> value = values.stream().filter(x -> x.getIsConfirmPerson()).findFirst();
 			if (value.isPresent()) {
 				result.add(value.get());

@@ -25,6 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -128,9 +129,39 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		}
 		List<BsymtAffClassHistory> entities = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
-			entities.addAll(this.queryProxy()
-					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", subEmployeeIds)
-					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList());
+			String sql = "select * from BSYMT_AFF_CLASS_HISTORY h"
+					+ " inner join BSYMT_AFF_CLASS_HIS_ITEM i"
+					+ " on h.HIST_ID = i.HIST_ID"
+					+ " where h.SID in (" + NtsStatement.In.createParamsString(subEmployeeIds) + ")"
+					+ " and h.START_DATE <= ?"
+					+ " and h.END_DATE >= ?";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+							
+				int i = 0;
+				for (; i < subEmployeeIds.size(); i++) {
+					stmt.setString(1 + i, subEmployeeIds.get(i));
+				}
+
+				stmt.setDate(1 + i, Date.valueOf(period.end().localDate()));
+				stmt.setDate(2 + i, Date.valueOf(period.start().localDate()));
+				
+				List<BsymtAffClassHistory> ents = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHistory ent = new BsymtAffClassHistory();
+					ent.historyId = rec.getString("HIST_ID");
+					ent.cid = rec.getString("CID");
+					ent.sid = rec.getString("SID");
+					ent.startDate = rec.getGeneralDate("START_DATE");
+					ent.endDate = rec.getGeneralDate("END_DATE");
+					return ent;
+				});
+				entities.addAll(ents);
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+//			entities2.addAll(this.queryProxy()
+//					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", subEmployeeIds)
+//					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList());
 		});
 		entities.sort((o1, o2) -> {
 			int tmp = o1.sid.compareTo(o2.sid);

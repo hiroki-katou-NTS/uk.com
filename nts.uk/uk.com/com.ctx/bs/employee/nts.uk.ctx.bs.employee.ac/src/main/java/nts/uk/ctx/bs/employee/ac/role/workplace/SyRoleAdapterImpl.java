@@ -24,11 +24,7 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 	private RoleExportRepo roleExportRepo;
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.dom.access.role.workplace.SyRoleWorkplaceAdapter#
-	 * findListWkpIdByRoleId(java.lang.Integer)
+	 * ロールIDから参照可能な職場リストを取得する
 	 */
 	@Override
 	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate) {

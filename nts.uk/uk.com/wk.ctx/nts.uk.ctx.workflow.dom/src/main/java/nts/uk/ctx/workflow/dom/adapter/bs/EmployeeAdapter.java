@@ -94,4 +94,14 @@ public interface EmployeeAdapter {
 	public List<StatusOfEmpImport> getListAffComHistByListSidAndPeriod(List<String> sids, DatePeriod datePeriod);
 	
 	public List<ResultRequest596Import> getEmpDeletedLstBySids(List<String> sids);
+	
+	/**
+	 * [No.571]職場の上位職場を基準職場を含めて取得する
+	 *
+	 * @param companyId
+	 * @param baseDate
+	 * @param workplaceId
+	 * @return
+	 */
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 }

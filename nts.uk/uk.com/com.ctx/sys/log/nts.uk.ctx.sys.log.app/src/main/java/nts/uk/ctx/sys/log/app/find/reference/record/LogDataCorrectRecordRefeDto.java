@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
@@ -77,17 +76,9 @@ public class LogDataCorrectRecordRefeDto {
 	}
 	
 	private static String getCorrectionAttr(int attr) {
+		//Fixed bug 修正ログレスポンス対策 #108388
 		CorrectionAttr correctionAttr = CorrectionAttr.of(attr);
-		switch (correctionAttr) {
-		case EDIT:
-			return TextResource.localize("Enum_CorrectionAttr_EDIT");
-		case CALCULATE:
-			return TextResource.localize("Enum_CorrectionAttr_CALCULATE");
-		case REFLECT:
-			return TextResource.localize("Enum_CorrectionAttr_REFLECT");
-		default:
-			return "";
-		}
+		return correctionAttr.localize();
 	}
 	
 }
