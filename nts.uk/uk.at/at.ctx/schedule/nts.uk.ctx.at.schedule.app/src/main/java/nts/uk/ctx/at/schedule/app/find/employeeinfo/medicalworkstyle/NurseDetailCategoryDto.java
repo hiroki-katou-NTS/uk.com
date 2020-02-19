@@ -4,6 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author ThanhNX
+ *
+ */
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)

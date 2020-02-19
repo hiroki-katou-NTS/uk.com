@@ -10,6 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author ThanhNX
+ * 
+ */
 @Getter
 @Setter
 @Embeddable
@@ -25,6 +29,9 @@ public class KscmtNurseLicensePK implements Serializable {
 	@Column(name = "CID")
 	private String companyId;
 
+	/**
+	 * 看護区分コード									
+	 */
 	@Column(name = "CD")
 	private String code;
 }
