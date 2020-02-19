@@ -738,20 +738,19 @@ module nts.uk.com.view.cmm018.shr {
             }
             
             static resizeColumn(root, tabSelected, mode) {
-                let helpButtonSelect = null;
-                if(tabSelected == vmbase.RootType.COMPANY){
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[0];
-                }else if(tabSelected == vmbase.RootType.WORKPLACE){
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[1];
-                }else{//PERSON
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[2];
-                }
-                if(!_.isUndefined(helpButtonSelect)) {
-                    let helpButton = helpButtonSelect.getBoundingClientRect();
-                    $('#help-content').css('top', helpButton.top + 'px');
-                    $('#help-content').css('left', (helpButton.left + 45) + 'px');    
-                }
+                let helpButtonSelect = undefined;
+                let listButtonHelp = document.getElementsByClassName('help-button-custom');
+                _.forEach(document.getElementsByClassName('help-button-custom'), item => {
+                    if(item.getBoundingClientRect().top > 0) {
+                        helpButtonSelect = item;                    
+                    }
+                });
                 document.onclick = function(e){
+                    if(!_.isUndefined(helpButtonSelect)) {
+                        let helpButton = helpButtonSelect.getBoundingClientRect();
+                        $('#help-content').css('top', (helpButton.top + window.pageYOffset) + 'px');
+                        $('#help-content').css('left', (helpButton.left + window.pageXOffset + 45) + 'px');    
+                    }
                     if(!e.target.classList.contains('help-button-custom')){
                         $('#help-content').css('display', 'none');
                     } else {
