@@ -131,7 +131,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 let employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
-                    workplaceName: employeeSearch.workplaceName,
+                    affiliationName: employeeSearch.affiliationName,
                     isAlreadySetting: false
                 };
                 employeeSearchs.push(employee);
@@ -406,7 +406,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     export interface UnitModel {
         code: string;
         name?: string;
-        workplaceName?: string;
+        affiliationName?: string;
         isAlreadySetting?: boolean;
     }
 
