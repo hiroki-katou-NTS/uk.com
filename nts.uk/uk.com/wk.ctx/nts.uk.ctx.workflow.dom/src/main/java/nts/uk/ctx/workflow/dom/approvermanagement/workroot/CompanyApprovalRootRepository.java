@@ -123,4 +123,5 @@ public interface CompanyApprovalRootRepository {
 	
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
+	List<CompanyApprovalRoot> findByBaseDateJinji(String cid, GeneralDate baseDate, List<Integer> lstNoticeID, List<String> lstEventID);
 }

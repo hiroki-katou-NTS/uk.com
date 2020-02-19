@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.notice.app.find.report;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +13,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.internal.xr.CollectionResult;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalFrameForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -107,7 +106,6 @@ public class ReportItemFinder {
 				approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
 				
 				appPhaseLst.addAll(convertData(approvalStateHrImport));
-				
 				
 			}
 			
@@ -617,9 +615,12 @@ public class ReportItemFinder {
 		List<ApprovalPhaseStateForAppDto> appDtoLst = lstPhaseState.stream().map(c ->{
 			
 			ApprovalPhaseStateForAppDto dto = ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c, employeeInfoMaps);
+			
 			return dto;
 			
 		}).collect(Collectors.toList());
+		
+		appDtoLst.sort(Comparator.comparing(ApprovalPhaseStateForAppDto::getPhaseOrder));
 		
 		return appDtoLst;
 	}
