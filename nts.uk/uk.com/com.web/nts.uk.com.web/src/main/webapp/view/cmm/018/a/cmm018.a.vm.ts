@@ -209,11 +209,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }
                     __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
                 });
                 //---subscribe tab selected---
                 self.tabSelected.subscribe(function(codeChanged) {
@@ -676,11 +672,7 @@ module nts.uk.com.view.cmm018.a {
                         self.enableDelete(false);
                         self.nameCompany(data != null ? data.companyName : '');
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -722,11 +714,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                     }
                      __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     self.dataI(null);
                     block.clear();
                     dfd.resolve();
@@ -772,11 +760,7 @@ module nts.uk.com.view.cmm018.a {
                         self.lstWorkplace([]);
                         self.enableDelete(false);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -818,11 +802,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.dataI(null);
                     __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     block.clear();
                     dfd.resolve();
                 });
@@ -860,11 +840,7 @@ module nts.uk.com.view.cmm018.a {
                         self.enableDelete(false);
                         self.lstPerson([]);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -904,11 +880,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.dataI(null);
                     __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     block.clear();
                     dfd.resolve();
                 });
@@ -1065,11 +1037,7 @@ module nts.uk.com.view.cmm018.a {
                         //TH: list right
                         self.cpA(self.createNew(data.lstAppType,data.overLap));
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     }else{
                         //TH: list left
                         if(checkReload){
@@ -1170,11 +1138,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.listHistory.valueHasMutated()
                     __viewContext.viewModel.viewmodelSubA.reloadGridN( self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     self.currentCode(-1);
                     block.clear();
                 });
@@ -1405,22 +1369,14 @@ module nts.uk.com.view.cmm018.a {
                     if(modeA == vmbase.MODE.SHINSEI){
                         __viewContext.viewModel.viewmodelSubB.comRoot(a);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN([a], tabSel, vmbase.MODE.SHINSEI);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn([a], tabSel, vmbase.MODE.SHINSEI);
                     }else{
                         let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
                         dataOld.push(a);
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
-                        try {
-                            self.resizeColumn();    
-                        } catch(error) {
-                            
-                        }
+                        vmbase.ProcessHandler.resizeColumn(self.cpA(), tabSel, vmbase.MODE.MATOME);
                     }
                 }); 
             }
@@ -1460,19 +1416,11 @@ module nts.uk.com.view.cmm018.a {
                     let a = lstRootNew[0];
                      __viewContext.viewModel.viewmodelSubB.comRoot(a);
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([a], tabSel, vmbase.MODE.SHINSEI);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn([a], tabSel, vmbase.MODE.SHINSEI);
                 }else{
                     self.cpA(lstSort);
                     __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
-                    try {
-                        self.resizeColumn();    
-                    } catch(error) {
-                        
-                    }
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), tabSel, vmbase.MODE.MATOME);
                 }
            }
             findApprovalA(value: string): vmbase.CompanyAppRootADto {
@@ -1921,7 +1869,7 @@ module nts.uk.com.view.cmm018.a {
              * open dialog M: マスタリスト
              */
             openDialogM(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
+               setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
                modal("/view/cmm/018/m/index.xhtml");
             }
             /**
@@ -1957,58 +1905,6 @@ module nts.uk.com.view.cmm018.a {
                         return event;
                 }
             }
-            
-            resizeColumn() {
-                let self = this;
-                self.resizeColumnIndex(1);  
-                self.resizeColumnIndex(2);  
-                self.resizeColumnIndex(3);  
-                self.resizeColumnIndex(4);  
-                self.resizeColumnIndex(5);    
-            }
-            
-            resizeColumnIndex(index) {
-                let self = this;
-                let widthPhase = 100;
-                let mode = vmbase.MODE.MATOME;
-                let gridName = '#grid_matome';
-                if(self.tabSelected() == vmbase.RootType.COMPANY){
-                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matome' : '#grid_matomeB';
-                }else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
-                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
-                }else{//PERSON
-                    gridName = self.tabSelected() == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
-                }
-                if(_.isEmpty(self.cpA())) {
-                    $(gridName).igGridResizing("resize", index, widthPhase);   
-                    return;          
-                }
-                let listApprover = _.map(self.cpA(), x => x['appPhase'+index].approver);
-                _.forEach(listApprover, listByType => {
-                    _.forEach(listByType, approver => {
-                        let approverLength = this.cal(approver.name);
-                        if(approverLength > widthPhase) {
-                            widthPhase = approverLength;        
-                        }      
-                    });        
-                });
-                $(gridName).igGridResizing("resize", index, widthPhase); 
-            }
-            
-            cal(inputText) {
-                let font = "14px DroidSansMono, Meiryo"; 
-                let canvas = document.createElement("canvas"); 
-                let context = canvas.getContext("2d"); 
-                context.font = font; 
-                let width = context.measureText(inputText).width; 
-                let textPixel = Math.ceil(width); 
-                let halfPixel = nts.uk.text.countHalf(inputText)* 8
-                console.log(inputText);
-                console.log(textPixel);
-                console.log(halfPixel);
-                console.log((textPixel + halfPixel)/2);
-                return (textPixel + halfPixel)/2 + 5; 
-            }  
         }
     }
 }

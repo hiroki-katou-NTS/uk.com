@@ -736,6 +736,83 @@ module nts.uk.com.view.cmm018.shr {
                     }
                 return setUnit
             }
+            
+            static resizeColumn(root, tabSelected, mode) {
+                let helpButtonSelect = null;
+                if(tabSelected == vmbase.RootType.COMPANY){
+                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[0];
+                }else if(tabSelected == vmbase.RootType.WORKPLACE){
+                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[1];
+                }else{//PERSON
+                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[2];
+                }
+                if(!_.isUndefined(helpButtonSelect)) {
+                    let helpButton = helpButtonSelect.getBoundingClientRect();
+                    $('#help-content').css('top', helpButton.top + 'px');
+                    $('#help-content').css('left', (helpButton.left + 45) + 'px');    
+                }
+                document.onclick = function(e){
+                    if(!e.target.classList.contains('help-button-custom')){
+                        $('#help-content').css('display', 'none');
+                    } else {
+                        if($('#help-content').css('display')=='none') {
+                            $('#help-content').css('display', '');     
+                        } else {
+                            $('#help-content').css('display', 'none');    
+                        }
+                    }
+                };
+                try {
+                    ProcessHandler.resizeColumnIndex(1, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(2, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(3, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(4, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(5, root, tabSelected, mode);    
+                } catch(error) {
+                    
+                }
+            }
+            
+            static resizeColumnIndex(index, root, tabSelected, mode) {
+                let widthPhase = 100;
+                let gridName = '#grid_matome';
+                if(tabSelected == vmbase.RootType.COMPANY){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matome' : '#grid_matomeB';
+                }else if(tabSelected == vmbase.RootType.WORKPLACE){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
+                }else{//PERSON
+                    gridName = tabSelected == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                }
+                if(_.isEmpty(root)) {
+                    $(gridName).igGridResizing("resize", index, widthPhase);   
+                    return;          
+                }
+                let listApprover = _.map(root, x => x['appPhase'+index].approver);
+                _.forEach(listApprover, listByType => {
+                    _.forEach(listByType, approver => {
+                        let approverLength = ProcessHandler.cal(approver.name);
+                        if(approverLength > widthPhase) {
+                            widthPhase = approverLength;        
+                        }      
+                    });        
+                });
+                $(gridName).igGridResizing("resize", index, widthPhase); 
+            }
+            
+            static cal(inputText) {
+                let font = "14px DroidSansMono, Meiryo"; 
+                let canvas = document.createElement("canvas"); 
+                let context = canvas.getContext("2d"); 
+                // context.font = font; 
+                let width = context.measureText(inputText).width; 
+                let textPixel = Math.ceil(width); 
+                let halfPixel = nts.uk.text.countHalf(inputText)* 8
+                // console.log(inputText);
+                // console.log(textPixel);
+                // console.log(halfPixel);
+                // console.log((textPixel + halfPixel)/2);
+                return (textPixel + halfPixel)/2 + 5; 
+            } 
         }
         
         export class ApproverDtoK{

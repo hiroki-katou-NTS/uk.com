@@ -35,6 +35,59 @@ module jhn001.c.viewmodel {
                 Page.NORMAL);
         }
         
+        getFrameIndex(loopPhase, loopFrame, loopApprover) {
+            let self = this;
+            if (_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+            }
+            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);
+        }
+        
+        frameCount(listFrame) {
+            let self = this;
+            if (_.size(listFrame) > 1) {
+                return _.size(listFrame);
+            }
+            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).value()[0];
+        }
+        
+        approverCount(listApprover) {
+            let self = this;
+            return _.chain(listApprover).countBy().values().value()[0];     
+        }        
+        
+        getApproverAtr(approver) {
+            if (approver.approvalAtrName() != '未承認') {
+                if (approver.representerName().length > 0) {
+                    if (approver.representerMail().length > 0) {
+                        return approver.representerName() + '(@)';
+                    } else {
+                        return approver.representerName();
+                    }
+                } else {
+                    if (approver.approverMail().length > 0) {
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
+                    }
+                }
+            } else {
+                var s = '';
+               
+                if (approver.approverMail().length > 0) {
+                    s = s + '(@)';
+                }
+                if (approver.representerName().length > 0) {
+                    if (approver.representerMail().length > 0) {
+                        s = s + '(' + approver.representerName() + '(@))';
+                    } else {
+                        s = s + '(' + approver.representerName() + ')';
+                    }
+                }
+                return s;
+            }
+        }
+        
         /*　承認ボタン*/
         approve():void {
             let self = this,
@@ -175,6 +228,8 @@ module jhn001.c.viewmodel {
             
             layout.classifications(data.classificationItems || []);
             
+            layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
+            
             var lstDoc = [];
             
             for (var i = 0; i < data.documentSampleDto.length; i++) {
@@ -264,6 +319,7 @@ module jhn001.c.viewmodel {
         outData?: Array<any>;
         approvalRootState?: Array<any>;
         listDocument?: Array<any>;
+        listApprovalFrame?: Array<any>;
     }
 
     class Layout {
@@ -280,7 +336,7 @@ module jhn001.c.viewmodel {
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
         approvalRootState : KnockoutObservableArray<any> = ko.observableArray([]);
         listDocument : KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
 //            self.reportId(param.reportId);

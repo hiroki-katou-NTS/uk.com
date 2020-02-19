@@ -30,8 +30,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.query.pub.employee.SearchEmployeePub;
@@ -63,12 +63,10 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
 
-	/** The workplace info repo. */
-	@Inject
-	private WorkplaceInfoRepository workplaceInfoRepo;
-	
 	@Inject
 	private SearchEmployeePub searchEmployeePub;
+	@Inject
+	private WorkplaceInformationRepository repoWkpNew;
 
 	
 	/*
@@ -114,11 +112,11 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 		// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する
 		PersonalBasicInfo perInfo = this.getPersonalInfo(lstEmpId.get(0));
 		// アルゴリズム「社員所属職場履歴を取得」を実行する - RQ30
-		Optional<WorkplaceInfo> wkpInfo = this.getWplBelongEmployee(perInfo.getEmployeeId(), baseDate);
+		Optional<WorkplaceInformation> wkpInfo = this.getWplBelongEmployee(perInfo.getEmployeeId(), baseDate);
 		return EmployeeSearchData.builder().companyId(cid).employeeId(perInfo.getEmployeeId())
 				.employeeCode(dto.getEmployeeCode()).personalId(perInfo.getPid())
 				.businessName(perInfo.getBusinessName()).deptDisplayName("")
-				.wkpDisplayName(wkpInfo.isPresent() ? wkpInfo.get().getWkpDisplayName().v() : "").build();
+				.wkpDisplayName(wkpInfo.isPresent() ? wkpInfo.get().getWorkplaceDisplayName().v() : "").build();
 	}
 
 	/**
@@ -210,7 +208,7 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	 */
 	// No.30
 	// アルゴリズム「社員所属職場履歴を取得」を実行する
-	private Optional<WorkplaceInfo> getWplBelongEmployee(String sid, GeneralDate baseDate) {
+	private Optional<WorkplaceInformation> getWplBelongEmployee(String sid, GeneralDate baseDate) {
 		// get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(sid, baseDate);
 		if (!affWrkPlc.isPresent())
@@ -223,16 +221,16 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 			return Optional.empty();
 
 		// Get workplace info.
-		Optional<WorkplaceInfo> optWorkplaceInfo = workplaceInfoRepo.findByWkpId(affWrkPlcItem.get().getWorkplaceId(),
+		Optional<WorkplaceInformation> opWkpNew = repoWkpNew.getWkpNewByIdDate(AppContexts.user().companyId(), affWrkPlcItem.get().getWorkplaceId(),
 				baseDate);
 
 		// Check exist
-		if (!optWorkplaceInfo.isPresent()) {
+		if (!opWkpNew.isPresent()) {
 			return Optional.empty();
 		}
 
 		// Return workplace id
-		return optWorkplaceInfo;
+		return opWkpNew;
 	}
 
 	//Comment vì commit của Hoàng Sơn trước đó đã xóa các hàm này (95fc895bbef87cbdcf25708125f0d986f66d9ec6)

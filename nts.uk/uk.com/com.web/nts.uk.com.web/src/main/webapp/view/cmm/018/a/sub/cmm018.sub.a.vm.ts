@@ -35,7 +35,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let colorBackGr: any = self.fillColorbackGr(lstRoot);
                 let heightG = __viewContext.viewModel.viewmodelA.systemAtr() == 1 ? 430 : 530;
                 if(mode == vmbase.MODE.SHINSEI){
-                    heightG = 200;
+                    heightG = 181;
                 }
               $(gridName).ntsGrid({
                 width: 950,
@@ -256,8 +256,7 @@ module nts.uk.com.view.cmm018.a.sub {
             appNameHtml(appName: string, empRType: number){
                 if(empRType != 0) return appName;
                 return appName + '<div style="display: inline-block;">'
-                    + '<button data-bind="ntsHelpButton: ' + "{image: '../images/CMM018_001.png', position: 'right top',enable: true}" 
-                    + '" >?</button></div>';
+                    + '<button class="help-button-custom">?</button></div>';
             }
             deleteRowSub(empRType: any, appType: any){
                 let self = this;

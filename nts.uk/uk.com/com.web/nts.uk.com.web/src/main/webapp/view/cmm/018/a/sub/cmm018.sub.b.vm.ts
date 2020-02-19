@@ -137,6 +137,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                     self.comRoot.valueHasMutated();
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                    vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
             }
             /**
@@ -173,6 +174,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                          __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                        vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -196,6 +198,7 @@ module nts.uk.com.view.cmm018.a.sub {
                        self.singleSelectedCode(a.company.approvalId);
                    }
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                    vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                     self.dataIB(null);
                     block.clear();
                     dfd.resolve();
@@ -241,6 +244,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                        vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -266,6 +270,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.singleSelectedCode(a.workplace.approvalId);
                     }
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                    vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                     self.dataIB(null);
                     block.clear();
                     dfd.resolve();
@@ -308,6 +313,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                         __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                        vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -333,6 +339,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.singleSelectedCode(a.person.approvalId);
                     }
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                    vmbase.ProcessHandler.resizeColumn([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                     self.dataIB(null);
                     block.clear();
                     dfd.resolve();
@@ -999,6 +1006,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
                 let a = new vmbase.CompanyAppRootADto(false, 1, 0, '', '', '','', b, b, b, b, b);
                 __viewContext.viewModel.viewmodelSubA.reloadGridN([a], self.tabSelectedB(), vmbase.MODE.SHINSEI);
+                vmbase.ProcessHandler.resizeColumn([a], self.tabSelectedB(), vmbase.MODE.SHINSEI);
             }
             /**
              * display item right TH 1,2,appName

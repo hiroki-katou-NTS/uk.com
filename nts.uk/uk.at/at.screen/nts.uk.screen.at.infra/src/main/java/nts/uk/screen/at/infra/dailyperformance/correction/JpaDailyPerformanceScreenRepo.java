@@ -83,7 +83,6 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMng
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;

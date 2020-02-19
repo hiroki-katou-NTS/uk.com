@@ -94,4 +94,12 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
+	/**
+	 * [No.575]職場コードから職場IDを取得する
+	 * @param 会社ID companyId
+	 * @param 職場コード wkpCd
+	 * @param 基準日 baseDate
+	 * @return
+	 */
+	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
 }
