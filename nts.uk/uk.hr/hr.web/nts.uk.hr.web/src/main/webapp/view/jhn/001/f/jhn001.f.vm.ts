@@ -38,6 +38,7 @@ module jhn001.f.vm {
         layoutReportId  = null;
         dataShare       = null;
         totalFileSize   = 0;
+        missingDocName  = '';
 
 
         constructor() {
@@ -100,7 +101,8 @@ module jhn001.f.vm {
         }
 
         pushData(fileInfo, id) {
-            let self = this;
+            let self = this,
+                listItem = self.items();
             
             if (fileInfo.id == '' || fileInfo.id == null || fileInfo.id == undefined) {
                 return;
@@ -130,7 +132,15 @@ module jhn001.f.vm {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msgj_28', messageParams: [maxSize] });
                 return;
             }
-
+            
+            let missingDocName= '';
+            for (var i = 0; i < listItem.length; i++) {
+                let fileData = listItem[i];
+                if (fileData.fileId == null && id != fileData.id) {
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
+                }
+            }
+            
             let objAdd = {
                 docID: row[0].docID, //書類ID int
                 docName: row[0].docName, //書類名 String
@@ -146,6 +156,7 @@ module jhn001.f.vm {
                 sampleFileName: row[0].sampleFileName,
                 reportID: self.reportId, //届出ID int
                 layoutReportId: self.layoutReportId,
+                missingDocName : missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1),
                 dataLayout: self.dataShare.command
             }
 
@@ -206,6 +217,7 @@ module jhn001.f.vm {
 
         deleteItem(id) {
             let self = this,
+                listItem = self.items(),
                 dfd = $.Deferred();
             // check xem đã có file hay chưa, có rồi thì không có upload nua.
             let row: IReportFileManagement = _.filter(self.items(), function(o) { return o.id == id; });
@@ -216,6 +228,14 @@ module jhn001.f.vm {
             if(row[0].fileId == null || row[0].fileId == '')
                 return;
             
+            let missingDocName = '';
+            for (var i = 0; i < listItem.length; i++) {
+                let fileData = listItem[i];
+                if (fileData.fileId == null || id != fileData.id) {
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
+                }
+            }
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + row[0].fileId)
                     .done(function(res) {
@@ -223,8 +243,12 @@ module jhn001.f.vm {
                         block();
                         let command = {
                             cid: '',
-                            fileId: row[0].fileId
+                            fileId: row[0].fileId,
+                            reportId: self.reportId,
+                            layoutReportId: self.layoutReportId,
+                            missingDocName: missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1)
                         };
+                        
                         service.deleteDocument(command).done(() => {
                             info({ messageId: "Msgj_40" }).then(function() {
                                 __viewContext['viewModel'].getDataAfterPushOrRemoveFile(self.reportId).done(() => {

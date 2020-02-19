@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 1000,
-					height : 700
+					height : 450
 				};
 			</script>
 			<com:ValidatorScript>
@@ -37,12 +37,12 @@
 														visibleItemsCount: 5,
 														value: selectedReturn ,
 														optionsText: 'infoToDisplay',
-														width: 582,
+														width: 772,
 														enable: true,
 														columns: [  { prop: 'infoToDisplay', length: 8 }]}">
 					</div>
 				</div>
-				<div>
+				<div style="margin-top: 15px;">
 					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_4')}</div>
 					<div tabindex="2" style="margin-left: 26px" class="combobox-return"
 						data-bind="ntsComboBox: {
@@ -51,7 +51,7 @@
 														visibleItemsCount: 5,
 														value: selectedSendBackCls ,
 														optionsText: 'name',
-														width: 582,
+														width: 772,
 														enable: true,
 														columns: [ { prop: 'name', length: 8 }]}">
 					</div>
@@ -59,7 +59,7 @@
 
 				
 
-				<div class="line-height flex">
+				<div class="line-height flex" style="margin-top: 35px;">
 					<div>
 						<div data-bind="ntsFormLabel: { required: false , constraint: ''}">#{i18n.getText('JHN001_D2_3')}</div>
 					</div>

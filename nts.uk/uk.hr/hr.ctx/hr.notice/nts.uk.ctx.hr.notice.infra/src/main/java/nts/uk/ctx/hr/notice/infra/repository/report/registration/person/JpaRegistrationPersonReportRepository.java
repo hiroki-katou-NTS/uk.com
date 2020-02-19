@@ -204,4 +204,16 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}
 
+	@Override
+	public void updateMissingDocName(String cid, int reportID,  String missingDocName) {
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportID).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			entity.missingDocName = missingDocName;
+			this.commandProxy().update(entity);
+		}
+	}
+
 }

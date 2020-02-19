@@ -86,7 +86,6 @@ module jhn001.a.viewmodel {
 
                     service.getReportDetails(query).done((data: any) => {
                         if (data) {
-                            debugger;
                             lv.removeDoubleLine(data.classificationItems);
                             self.layout().listItemCls(data.classificationItems || []);
 
@@ -208,11 +207,9 @@ module jhn001.a.viewmodel {
                 }
                 lstDoc.push(obj);
             }
-            if (missingDocName != '') {
-                self.missingDocName =  missingDocName.substring(0, missingDocName.length - 1);
-            } else {
-                self.missingDocName = '';
-            }
+            
+            self.missingDocName = missingDocName != '' ? missingDocName.substring(0, missingDocName.length - 1) : '';
+
             self.layout().listDocument(lstDoc);
         }
 
@@ -238,34 +235,10 @@ module jhn001.a.viewmodel {
         }        
         
         getApproverAtr(approver) {
-            if (approver.approvalAtrName() != '未承認') {
-                if (approver.representerName().length > 0) {
-                    if (approver.representerMail().length > 0) {
-                        return approver.representerName() + '(@)';
-                    } else {
-                        return approver.representerName();
-                    }
-                } else {
-                    if (approver.approverMail().length > 0) {
-                        return approver.approverName() + '(@)';
-                    } else {
-                        return approver.approverName();
-                    }
-                }
+           if (approver.approverMail().length > 0) {
+                return approver.approverName() + '(@)';
             } else {
-                var s = '';
-               
-                if (approver.approverMail().length > 0) {
-                    s = s + '(@)';
-                }
-                if (approver.representerName().length > 0) {
-                    if (approver.representerMail().length > 0) {
-                        s = s + '(' + approver.representerName() + '(@))';
-                    } else {
-                        s = s + '(' + approver.representerName() + ')';
-                    }
-                }
-                return s;
+                return approver.approverName();
             }
         }
 
@@ -282,12 +255,7 @@ module jhn001.a.viewmodel {
                         if (dataShare.hasRemove == true) {
                             // get lai danh sach report
                             let reportId = dataShare.reportId;
-                            let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
-                            if (objReport) {
-
-                            }
                             self.start(reportId, false);
-
                         } else {
                             // khong phai get lai danh sach report , truong hop close thi khong lam gi ca.
                             if (dataShare.isContinue == true) {
@@ -551,7 +519,10 @@ module jhn001.a.viewmodel {
                     let param = { layoutReportId: self.reportClsId(), reportId: reportId };
                     self.getListDocument(param);
                 } else {
-                    self.start(reportId, false);
+                    self.start(reportId, false).done(() => {
+                        let param = { layoutReportId: self.reportClsId(), reportId: reportId };
+                        self.getListDocument(param);
+                    });
                 }
             });
         }

@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 1000,
-					height : 700
+					height : 600
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -24,7 +24,7 @@
 			<div id="functions-area">
 				<button  id="closebtn" tabindex = "3" type="button" data-bind="click: close">#{i18n.getText('CPS001_51')}</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="margin-left : 25px" >
 				<div class = "title" >#{i18n.getText('JHN001_F2_1')}</div>
 				
 				<file-control params="{ items: items }">vvv</file-control>
