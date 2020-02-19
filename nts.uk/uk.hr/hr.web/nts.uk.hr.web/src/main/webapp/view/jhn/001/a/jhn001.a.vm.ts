@@ -278,27 +278,25 @@ module jhn001.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
-                        dataShare = getShared('JHN001B_PARAMS');
-                        if (dataShare.isClose == true) {
-                            // get lại list report, đề phòng trường hợp bên dialogB thực hiện thoa tác xóa report rồi.
-                            let reportClsIdCurrent = self.reportClsId();
-                            let objReport = _.find(self.layouts(), function(o) { return o.id == reportClsIdCurrent; })
+                        let dataShare = getShared('JHN001B_PARAMS');
+                        if (dataShare.hasRemove == true) {
+                            // get lai danh sach report
+                            let reportId = dataShare.reportId;
+                            let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
                             if (objReport) {
-                                self.start(objReport.reportId, false);
-                            } else {
-                                self.reportClsId(null);
-                                self.start(null, false);
-                            } 
-                            nts.uk.ui.errors.clearAll();  
-                        } else if (dataShare.isContinue = true) {
-                            if (dataShare.reportId != null) {
+
+                            }
+                            self.start(reportId, false);
+
+                        } else {
+                            // khong phai get lai danh sach report , truong hop close thi khong lam gi ca.
+                            if (dataShare.isContinue == true) {
                                 let reportId = dataShare.reportId;
-                                let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; })
+                                let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
                                 if (objReport) {
-                                    self.start(reportId, false);
+                                    self.reportClsId(objReport.id);
                                 } else {
-                                    self.reportClsId(null);
-                                    self.start(null, false);
+                                    self.start(reportId, false);
                                 }
                             }
                         }
