@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
+
 public class BentoDetailsAmountTotalTest {
 
 	@Test
@@ -17,6 +19,12 @@ public class BentoDetailsAmountTotalTest {
 		
 		assertThat(target.getAmount1()).isEqualTo(5 * 20);
 		assertThat(target.getAmount2()).isEqualTo(5 * 10);
-	} 
+	}
+	
+	@Test
+	public void getters() {
+		BentoDetailsAmountTotal target = BentoDetailsAmountTotal.calculate(1, 1, 1, 1);
+		NtsAssert.invokeGetters(target);
+	}
 
 }

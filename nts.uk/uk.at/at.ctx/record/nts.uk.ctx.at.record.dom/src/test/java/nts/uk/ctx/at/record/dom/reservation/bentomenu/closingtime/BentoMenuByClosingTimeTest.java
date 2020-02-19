@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 
 public class BentoMenuByClosingTimeTest {
@@ -84,4 +85,9 @@ public class BentoMenuByClosingTimeTest {
 		assertThat(target.isReservationTime2Atr()).isFalse();
 	}
 	
+	@Test
+	public void getters() {
+		BentoMenuByClosingTime target = Helper.Menu.DUMMY.getByClosingTime();
+		NtsAssert.invokeGetters(target);
+	}
 }
