@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode;
@@ -281,32 +282,25 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 			}
 			BsymtGpMasterCategory categories = mapCategory(item);
 			this.commandProxy().update(categories);
-			
-			// update common master item
-			if(!item.getCommonMasterItems().isEmpty()) {
-				List<BsymtGpMasterItem> listItem = mapItemList(item);
-				this.commandProxy().updateAll(listItem);
-			}
 		}
 	}
 
 	@Override
 	public void addCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains) {
+		List<BsymtGpMasterItem> listMasterItem = new ArrayList<>();
 		// add items
-		List<BsymtGpMasterItem> items = domains.stream().map(x -> mapItem(contractCd, commonMasterId, x)).collect(Collectors.toList());
-		this.commandProxy().insertAll(items);
-		
-		// add not use
-		List<GroupCommonMasterItem> listNotUse = new ArrayList<>();
 		for(GroupCommonMasterItem item: domains) {
-			if(!item.getNotUseCompanyList().isEmpty()) {
-				listNotUse.add(item);
+			if(item.getCommonMasterItemId() == null) {
+				BsymtGpMasterItem entity = mapItem(contractCd, commonMasterId, new GroupCommonMasterItem(IdentifierUtil.randomUniqueId(), item.getCommonMasterItemCode(), item.getCommonMasterItemName(), item.getDisplayNumber(), item.getUsageStartDate(), item.getUsageEndDate()));
+				listMasterItem.add(entity);
+			}else {
+				BsymtGpMasterItem entity = mapItem(contractCd, commonMasterId, item);
+				listMasterItem.add(entity);
 			}
 		}
-		List<BsymtGpMasterNotUse> listAddNotUse = mapNotUseList(listNotUse);
-		if(!listAddNotUse.isEmpty()) {
-			this.commandProxy().insertAll(listAddNotUse);
-		}		
+		
+		this.commandProxy().insertAll(listMasterItem);
+				
 	}
 
 	@Override
