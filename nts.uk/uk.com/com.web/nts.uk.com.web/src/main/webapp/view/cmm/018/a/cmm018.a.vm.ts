@@ -1862,7 +1862,7 @@ module nts.uk.com.view.cmm018.a {
              * open dialog L: 未登録社員リスト
              */
             openDialogL(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
+                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
                modal("/view/cmm/018/l/index.xhtml");   
             }
             /**
