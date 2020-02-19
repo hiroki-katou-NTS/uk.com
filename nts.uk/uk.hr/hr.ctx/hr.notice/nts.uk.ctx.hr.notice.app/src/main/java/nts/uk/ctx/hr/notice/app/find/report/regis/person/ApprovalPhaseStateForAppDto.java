@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.notice.app.find.report.regis.person;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +31,14 @@ public class ApprovalPhaseStateForAppDto {
 		
 		ApprovalBehaviorAtrHrExport status = EnumAdaptor.valueOf(approvalPhaseStateImport.getApprovalAtr(), ApprovalBehaviorAtrHrExport.class);
 		
+		List<ApprovalFrameForAppDto> framAppLst = approvalPhaseStateImport.getLstApprovalFrame()
+
+				.stream().map(x -> ApprovalFrameForAppDto.fromApprovalFrameImport(x, employeeInfoMaps))
+
+				.collect(Collectors.toList());
+		
+		framAppLst.sort(Comparator.comparing(ApprovalFrameForAppDto::getFrameOrder));
+		
 		return new ApprovalPhaseStateForAppDto(
 				
 				approvalPhaseStateImport.getPhaseOrder(), 
@@ -38,6 +47,7 @@ public class ApprovalPhaseStateForAppDto {
 				
 				status.name(),
 				
-				approvalPhaseStateImport.getLstApprovalFrame().stream().map(x -> ApprovalFrameForAppDto.fromApprovalFrameImport(x, employeeInfoMaps)).collect(Collectors.toList()));
+				framAppLst
+				);
 	}
 }
