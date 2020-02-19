@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +14,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeLanguageDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.FixedWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixedWorkSettingDto;
@@ -31,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.language.WorkTimeLanguageRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
@@ -85,7 +89,10 @@ public class WorkTimeSettingInfoFinder {
 
 	@Inject
 	private ManageEntryExitRepository manageEntryExitRepository;
-	
+
+	@Inject
+	private WorkTimeLanguageRepository workTimeLanguageRepository;
+
 	/**
 	 * Find.
 	 *
@@ -117,8 +124,8 @@ public class WorkTimeSettingInfoFinder {
 			ManageEntryExit manageEntryExit = this.manageEntryExitRepository.findByID(companyId).get();
 
 			workTimeSetting.saveToMemento(workTimeSettingDto);
-			if (displayMode != null) { 
-				displayMode.saveToMemento(displayModeDto); 
+			if (displayMode != null) {
+				displayMode.saveToMemento(displayModeDto);
 			}
 			predetemineTimeSetting.saveToMemento(predetemineTimeSettingDto);
 			manageEntryExit.saveToMemento(manageEntryExitDto);
@@ -151,15 +158,16 @@ public class WorkTimeSettingInfoFinder {
 			} else// case FLEX_WORK
 			{
 				FlexWorkSetting flexWorkSetting = this.flexWorkSettingRepository.find(companyId, workTimeCode).get();
-				//sort element by time
+				// sort element by time
 				flexWorkSetting.getOffdayWorkTime().sortWorkTimeOfOffDay();
-				
+
 				flexWorkSetting.saveToMemento(flexWorkSettingDto);
 			}
 		}
 
 		return new WorkTimeSettingInfoDto(predetemineTimeSettingDto, workTimeSettingDto, displayModeDto,
-				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto, manageEntryExitDto);
+				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto,
+				manageEntryExitDto);
 	}
 
 	/**
@@ -187,7 +195,7 @@ public class WorkTimeSettingInfoFinder {
 							workTimeCode);
 
 					breakTimeDto = this.fixedFinder.getBreakTimeDtos(opFixedWorkSetting);
-					//TODO: @Tran Huyen Trang tu xu
+					// TODO: @Tran Huyen Trang tu xu
 					// break;
 					// case DIFFTIME_WORK:
 					// Optional<DiffTimeWorkSetting> diffTimeWorkSetting =
@@ -214,5 +222,14 @@ public class WorkTimeSettingInfoFinder {
 			}
 		}
 		return breakTimeDto;
+	}
+
+	public List<WorkTimeLanguageDto> findWTLanguageByCidAndLangId(String langId) {
+		String companyId = AppContexts.user().companyId();
+		List<WorkTimeLanguageDto> results = this.workTimeLanguageRepository.findByCIdAndLangId(companyId, langId)
+				.stream().map(x -> new WorkTimeLanguageDto(x.getWorkTimeCode().v(), x.getLangId(), x.getName().v(),
+						x.getAbbreviationName().v()))
+				.collect(Collectors.toList());
+		return results;
 	}
 }

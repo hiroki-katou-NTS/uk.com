@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationS
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 /**
  * 
@@ -97,5 +99,11 @@ public class PersonCostCalculationWebService extends WebService{
 	@Path("attendancePremiumName")
 	public List<AttendanceNamePriniumDto> findAttendanceName(List<Integer> dailyAttendanceItemIds){
 		return this.personCostCalculationSettingFinder.atNames(dailyAttendanceItemIds);
+	}
+	
+	@POST
+	@Path("getByCIdAndLangId/{langId}")
+	public List<PremiumItemDto> findWorkTypeLanguage(@PathParam("langId") String langId) {
+		return this.personCostCalculationSettingFinder.findWorkTypeLanguage(langId);
 	}
 }
