@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -15,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterDomainServi
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterCommand> {
 
 	@Inject

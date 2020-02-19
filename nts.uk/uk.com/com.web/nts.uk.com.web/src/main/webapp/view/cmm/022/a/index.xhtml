@@ -25,9 +25,58 @@
 
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				
+				<div class="column-1 ">
+					<div id="common-master_arena"
+						class="bg-green caret-right caret-background">
+						<i class="icon icon-searchbox"></i>
+						<div class="div_line">
+							<div style="width: 320px"
+								data-bind="ntsSearchBox: { searchMode: 'highlight', targetKey: 'commonMasterId', comId: 'master-list', 
+							items: listMaster , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
+						</div>
 
-				
+						<div class="div_line">
+							<table id="master-list"
+								data-bind="ntsGridList: {
+                                height: 250 ,
+								dataSource: commonMasters ,
+								primaryKey: 'commonMasterId' ,
+								columns: [
+							                { headerText: 'コード', key: 'commonMasterId', width: 100, hidden: true },
+							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
+							            ] ,
+								multiple: false ,
+								value: commonMasterId ,
+								rows: 10
+							}"></table>
+						</div>
+					</div>
+				</div>
+				<div class="column-2">
+					<div class="div_line">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A222_1')}</div>
+						<label data-bind="text:selectedCommonMaster().commonMasterName"></label>
+					</div>
+					<div class="div_line">#{i18n.getText('CMM022_A222_3')}</div>
+					<div class="div_line">
+						<table id="master-list"
+							data-bind="ntsGridList: {
+                                height: 250 ,
+								dataSource: commonItems ,
+								primaryKey: 'commonMasterId' ,
+								columns: [
+							                { headerText: 'コード', key: 'commonMasterId', width: 100, hidden: true },
+							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
+							            ] ,
+								multiple: false ,
+								value: commonMasterId ,
+								rows: 15
+							}"></table>
+					</div>
+
+
+				</div>
+				<div class="column-3"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

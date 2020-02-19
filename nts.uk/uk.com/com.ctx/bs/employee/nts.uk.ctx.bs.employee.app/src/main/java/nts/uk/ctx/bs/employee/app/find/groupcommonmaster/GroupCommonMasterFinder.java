@@ -167,6 +167,15 @@ public class GroupCommonMasterFinder {
 		
 		return groupMasterDtos;
 	}
+	
+	public List<GroupCommonItemDto> getMasterItems(String commonMasterId) {
+		// 画面情報を取得する(Get thông tin màn hình)
+		String contractCode = AppContexts.user().contractCode();
+		// アルゴリズム [グループ会社共通マスタ項目の取得] を実行する
+		return this.services.getGroupCommonMasterItem(contractCode, commonMasterId).stream()
+				.map(x -> new GroupCommonItemDto(x)).sorted(Comparator.comparing(GroupCommonItemDto::getDisplayNumber))
+				.collect(Collectors.toList());
+	}
 
 	private void addFixedItems(String contractCode) {
 		// アルゴリズム [グループ会社共通マスタの追加] を実行する
