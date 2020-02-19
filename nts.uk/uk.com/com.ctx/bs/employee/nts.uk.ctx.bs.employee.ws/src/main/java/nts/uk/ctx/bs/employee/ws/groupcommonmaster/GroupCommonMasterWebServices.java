@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveCommonMasterCmdHandler;
 import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveGroupCommonMasterCommand;
 import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.SaveGroupCommonMasterCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.groupcommonmaster.UpdateCommonMasterCmdHandler;
@@ -40,6 +41,9 @@ public class GroupCommonMasterWebServices extends WebService {
 	
 	@Inject
 	private UpdateCommonMasterCmdHandler updateCommon;
+	
+	@Inject
+	private SaveCommonMasterCmdHandler saveCommon;
 	
 	@POST
 	@Path("get_master")
@@ -81,5 +85,17 @@ public class GroupCommonMasterWebServices extends WebService {
 	@Path("update-common-C-screen")
 	public void updateCommonMaster(UpdateCommonMasterCommand command) {
 		this.updateCommon.handle(command);
+	}
+	
+	@POST
+	@Path("start-page-a")
+	public List<GroupCommonMasterDto> startPageA(StartPageAParamDto param) {
+		return this.commonFinder.startPageA(param.getConfirmed());
+	}
+	
+	@POST
+	@Path("save_items")
+	public void saveItems(UpdateMasterItemDisplayCommand command) {
+		this.saveCommon.handle(command);
 	}
 }
