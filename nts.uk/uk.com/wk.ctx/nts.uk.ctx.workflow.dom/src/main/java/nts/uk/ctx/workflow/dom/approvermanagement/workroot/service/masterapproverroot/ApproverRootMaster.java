@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 
@@ -14,5 +16,5 @@ public interface ApproverRootMaster {
 	 * @return 
 	 */
 	public MasterApproverRootOutput masterInfors(String companyID, int sysAtr, GeneralDate baseDate, 
-			boolean isCompany, boolean isWorkplace, boolean isPerson);
+			boolean isCompany, boolean isWorkplace, boolean isPerson, List<AppTypeName> lstName);
 }

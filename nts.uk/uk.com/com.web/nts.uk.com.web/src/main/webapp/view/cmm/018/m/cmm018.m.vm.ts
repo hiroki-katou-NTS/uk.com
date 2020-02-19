@@ -6,9 +6,12 @@ module nts.uk.com.view.cmm018.m {
             isPerson: KnockoutObservable<boolean> = ko.observable(true);            
             date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
             sysAtr: KnockoutObservable<number> = ko.observable(0);
+            lstAppName: Array<any>;
             constructor() {
                 let self = this; 
-                self.sysAtr(nts.uk.ui.windows.getShared('CMM018_SysAtr').sysAtr || 0);
+                let param = nts.uk.ui.windows.getShared('CMM018_SysAtr');
+                self.sysAtr(param.sysAtr || 0);
+                self.lstAppName = param.lstName || [];
             }
             //閉じるボタン
             closeDialog(){
@@ -24,7 +27,8 @@ module nts.uk.com.view.cmm018.m {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                     return;    
                 }
-                let master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson(), self.sysAtr());
+                let master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), 
+                        self.isWorkplace(), self.isPerson(), self.sysAtr(), self.lstAppName);
                 //service.searchModeEmployee(master);
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){

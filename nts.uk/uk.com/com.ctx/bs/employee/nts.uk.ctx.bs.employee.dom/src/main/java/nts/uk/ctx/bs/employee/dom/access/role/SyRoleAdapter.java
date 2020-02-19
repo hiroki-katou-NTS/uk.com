@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.access.role;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 
 /**
  * The Interface SyRoleWorkplaceAdapter.
@@ -27,4 +30,5 @@ public interface SyRoleAdapter {
 	 * @return the list
 	 */
 	WorkplaceIDImport findListWkpId(Integer systemType);
+	
 }

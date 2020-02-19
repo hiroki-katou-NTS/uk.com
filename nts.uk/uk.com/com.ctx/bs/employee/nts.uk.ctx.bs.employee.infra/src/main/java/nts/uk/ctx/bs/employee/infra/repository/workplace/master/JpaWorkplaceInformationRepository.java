@@ -154,4 +154,22 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		if(lst.isEmpty()) return Optional.empty();
 		return Optional.of(lst.get(0));
 	}
+	
+	@Override
+	public Optional<WorkplaceInformation> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate){
+		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
+				+ " inner join BsymtWorkplaceConfig  conf"
+				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
+				+ " where info.pk.companyId = :companyId"
+				+ " and info.deleteFlag = 0"
+				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
+				+ " and info.workplaceCode = :wkpCd";
+		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWorkplaceInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.setParameter("wkpCd", wkpCd)
+				.getList(i -> i.toDomain());
+		if(lst.isEmpty()) return Optional.empty();
+		return Optional.of(lst.get(0));
+	}
 }

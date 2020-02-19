@@ -127,4 +127,7 @@ public interface WorkplaceApprovalRootRepository {
 	
 	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
+	
+	List<WorkplaceApprovalRoot> findByBaseDateJinji(String companyId, GeneralDate baseDate,
+			List<Integer> lstNoticeID, List<String> lstEventID);
 }
