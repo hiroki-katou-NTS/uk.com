@@ -48,6 +48,9 @@ public class PersonalReportClassification  extends AggregateRoot {
 	private boolean formReport;
 	//代行届出可
 	private boolean agentReportIsCan;
+	//下位序列承認無 - them vao ngay 2020.02.18
+	private boolean noRankOrder;
+	
 	
 	public static PersonalReportClassification createFromJavaType(String cid, int pReportClsId,
 			String pReportCode, String pReportName, String pReportNameReadWay,
@@ -63,6 +66,6 @@ public class PersonalReportClassification  extends AggregateRoot {
 				new String_Any_20(remark),
 				new String_Any_20(memo),
 				new String_Any_20(message),
-				formReport, agentReportIsCan);
+				formReport, agentReportIsCan, false);
 	}
 }

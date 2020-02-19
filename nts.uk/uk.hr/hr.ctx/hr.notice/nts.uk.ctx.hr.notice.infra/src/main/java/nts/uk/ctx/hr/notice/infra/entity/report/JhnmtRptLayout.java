@@ -56,6 +56,8 @@ public class JhnmtRptLayout extends UkJpaEntity implements Serializable {
 	@Column(name = "RPT_AGENT")
 	public Boolean rptAgent;
 	
+	@Column(name = "NO_RANK_ORDER")
+	public Boolean noRankOrder;
 	@Override
 	protected Object getKey() {
 		return this.jhnmtRptLayoutPk;
