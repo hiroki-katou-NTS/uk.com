@@ -14,8 +14,6 @@ public class MenuApprovalSettingsDto {
 
 	private Integer workId;
 
-	private Integer rptLayoutId;
-
 	private String programId;
 
 	private String screenId;
@@ -27,6 +25,8 @@ public class MenuApprovalSettingsDto {
 	private Boolean availableAprWork1;
 
 	private Boolean availableAprWork2;
+	
+	private Integer rptLayoutId;
 
 	private String apr1Sid;
 
@@ -59,7 +59,7 @@ public class MenuApprovalSettingsDto {
 	public MenuApprovalSettingsDto(MenuApprovalSettings domain) {
 		super();
 		this.cId = domain.getCId();
-		this.workId = domain.getWorkId().value;
+		this.workId = domain.getWorkId();
 		this.rptLayoutId = domain.getRptLayoutId();
 		this.programId = domain.getProgramId();
 		this.screenId = domain.getScreenId();
@@ -86,14 +86,14 @@ public class MenuApprovalSettingsDto {
 	public MenuApprovalSettings toDomain() {
 		return new MenuApprovalSettings(
 				this.cId, 
-				this.workId, 
-				this.rptLayoutId, 
+				this.workId,  
 				this.programId, 
 				this.screenId, 
 				this.useApproval, 
 				this.availableAprRoot, 
 				this.availableAprWork1, 
 				this.availableAprWork2, 
+				this.rptLayoutId,
 				this.apr1Sid, 
 				this.apr1Scd, 
 				this.apr1BusinessName, 

@@ -24,4 +24,10 @@ public class JcmmtMenuAprPk implements Serializable{
 	@Column(name = "WORK_ID")
 	public Integer workId;
 	
+	@Column(name = "PROGRAM_ID")
+	public String programId;
+
+	@Column(name = "SCREEN_ID")
+	public String screenId;
+	
 }

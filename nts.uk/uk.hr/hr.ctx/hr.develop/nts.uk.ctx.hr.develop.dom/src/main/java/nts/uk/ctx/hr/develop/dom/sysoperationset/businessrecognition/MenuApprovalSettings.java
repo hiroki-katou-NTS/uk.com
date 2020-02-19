@@ -3,9 +3,7 @@ package nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.WorkId;
 
 /**
  * @author thanhpv
@@ -18,10 +16,7 @@ public class MenuApprovalSettings extends AggregateRoot {
 	private String cId;
 
 	/** 業務ID */
-	private WorkId workId;
-
-	/** 個別届出種類ID */
-	private int rptLayoutId;
+	private int workId;
 
 	/** プログラムID */
 	private String programId;
@@ -40,6 +35,9 @@ public class MenuApprovalSettings extends AggregateRoot {
 
 	/** 業務承認2使用 */
 	private boolean availableAprWork2;
+
+	/** 個別届出種類ID */
+	private Integer rptLayoutId;
 
 	/** 承認者1社員ID */
 	private Optional<String> apr1Sid;
@@ -83,21 +81,21 @@ public class MenuApprovalSettings extends AggregateRoot {
 	/** 承認者2職位名 */
 	private Optional<String> app2PosName;
 
-	public MenuApprovalSettings(String cId, int workId, int rptLayoutId, String programId, String screenId,
-			boolean useApproval, boolean availableAprRoot, boolean availableAprWork1, boolean availableAprWork2,
+	public MenuApprovalSettings(String cId, int workId, String programId, String screenId, boolean useApproval,
+			boolean availableAprRoot, boolean availableAprWork1, boolean availableAprWork2, Integer rptLayoutId,
 			String apr1Sid, String apr1Scd, String apr1BusinessName, String app1Devcd, String app1DevName,
 			String app1Poscd, String app1PosName, String apr2Sid, String apr2Scd, String apr2BusinessName,
 			String app2Devcd, String app2DevName, String app2Poscd, String app2PosName) {
 		super();
 		this.cId = cId;
-		this.workId = EnumAdaptor.valueOf(workId, WorkId.class);
-		this.rptLayoutId = rptLayoutId;
+		this.workId = workId;
 		this.programId = programId;
 		this.screenId = screenId;
 		this.useApproval = useApproval;
 		this.availableAprRoot = availableAprRoot;
 		this.availableAprWork1 = availableAprWork1;
 		this.availableAprWork2 = availableAprWork2;
+		this.rptLayoutId = rptLayoutId;
 		this.apr1Sid = Optional.ofNullable(apr1Sid);
 		this.apr1Scd = Optional.ofNullable(apr1Scd);
 		this.apr1BusinessName = Optional.ofNullable(apr1BusinessName);

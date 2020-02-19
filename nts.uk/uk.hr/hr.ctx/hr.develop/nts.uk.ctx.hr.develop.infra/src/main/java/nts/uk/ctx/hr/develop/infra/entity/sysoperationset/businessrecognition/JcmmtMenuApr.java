@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -12,20 +13,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="JCMMT_MENU_APR")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class JcmmtMenuApr extends UkJpaEntity {
 	
 	@EmbeddedId
     public JcmmtMenuAprPk pkJcmmtMenuApr; 
 	
-	@Column(name = "RPT_LAYOUT_ID")
-	public Integer rptLayoutId;
-
-	@Column(name = "PROGRAM_ID")
-	public String programId;
-
-	@Column(name = "SCREEN_ID")
-	public String screenId;
-
 	@Column(name = "USE_APPROVAL")
 	public Integer useApproval;
 
@@ -37,6 +30,9 @@ public class JcmmtMenuApr extends UkJpaEntity {
 
 	@Column(name = "AVAILABLE_APR_WORK2")
 	public Integer availableAprWork2;
+	
+	@Column(name = "RPT_LAYOUT_ID")
+	public Integer rptLayoutId;
 
 	@Column(name = "APR1_SID")
 	public String apr1Sid;
@@ -89,13 +85,13 @@ public class JcmmtMenuApr extends UkJpaEntity {
 		return new MenuApprovalSettings(
 				this.pkJcmmtMenuApr.cId, 
 				this.pkJcmmtMenuApr.workId, 
-				this.rptLayoutId, 
-				this.programId, 
-				this.screenId, 
+				this.pkJcmmtMenuApr.programId, 
+				this.pkJcmmtMenuApr.screenId, 
 				this.useApproval == 1, 
 				this.availableAprRoot == 1, 
 				this.availableAprWork1 == 1, 
-				this.availableAprWork2 == 1, 
+				this.availableAprWork2 == 1,
+				this.rptLayoutId, 
 				this.apr1Sid, 
 				this.apr1Scd, 
 				this.apr1BusinessName, 
@@ -115,14 +111,12 @@ public class JcmmtMenuApr extends UkJpaEntity {
 	
 	public static JcmmtMenuApr toEntity(MenuApprovalSettings domain) {
 		return new JcmmtMenuApr( 
-				new JcmmtMenuAprPk(domain.getCId(), domain.getWorkId().value),
-				domain.getRptLayoutId(), 
-				domain.getProgramId(), 
-				domain.getScreenId(), 
+				new JcmmtMenuAprPk(domain.getCId(), domain.getWorkId(), domain.getProgramId(), domain.getScreenId()),
 				domain.isUseApproval()? 1: 0, 
 				domain.isAvailableAprRoot()? 1: 0, 
 				domain.isAvailableAprWork1()? 1: 0, 
 				domain.isAvailableAprWork2()? 1:0, 
+				domain.getRptLayoutId(), 
 				domain.getApr1Sid().orElse(null), 
 				domain.getApr1Scd().orElse(null), 
 				domain.getApr1BusinessName().orElse(null), 
