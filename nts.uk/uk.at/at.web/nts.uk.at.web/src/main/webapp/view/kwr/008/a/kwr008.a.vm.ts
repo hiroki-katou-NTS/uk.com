@@ -460,7 +460,7 @@ module nts.uk.at.view.kwr008.a {
                         employeeId: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        affiliationName: employeeSearch.affiliationName
                     };
                     employeeSearchs.push(employee);
                 }
@@ -537,7 +537,7 @@ module nts.uk.at.view.kwr008.a {
             employeeId: string;
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
 
