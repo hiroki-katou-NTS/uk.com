@@ -3653,7 +3653,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             id: data.employeeId,
                             code: data.employeeCode,
                             businessName: data.employeeName,
-                            workplaceName: data.workplaceName,
+                            workplaceName: data.affiliationName,
                             workplaceId: data.workplaceId,
                             depName: '',
                             isLoginUser: false
