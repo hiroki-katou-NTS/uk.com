@@ -53,7 +53,7 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 		List<ApproverRemandImport> lstRemand = apprRootStt.getListApproverRemand(appID);
 		
 		List<RemandInfoKDL034> lstApprover  = new ArrayList<>();
-		int phaseLogin = 6;
+		int phaseLogin = 0;
 		for (ApproverRemandImport remand : lstRemand) {
 			String sID = remand.getSID();
 			phaseLogin = sID.equals(sidLogin) ? remand.getPhaseOrder() : phaseLogin;
