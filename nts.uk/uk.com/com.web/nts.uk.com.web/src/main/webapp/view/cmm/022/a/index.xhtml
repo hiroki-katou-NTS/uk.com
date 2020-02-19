@@ -32,7 +32,7 @@
 						<div class="div_line">
 							<div style="width: 320px"
 								data-bind="ntsSearchBox: { searchMode: 'highlight', targetKey: 'commonMasterId', comId: 'master-list', 
-							items: listMaster , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
+							items: commonMasters , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
 						</div>
 
 						<div class="div_line">
@@ -62,21 +62,35 @@
 						<table id="master-list"
 							data-bind="ntsGridList: {
                                 height: 250 ,
-								dataSource: commonItems ,
-								primaryKey: 'commonMasterId' ,
+								dataSource: commonMasterItems ,
+								primaryKey: 'commonMasterItemId' ,
 								columns: [
-							                { headerText: 'コード', key: 'commonMasterId', width: 100, hidden: true },
-							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
+							                { headerText: 'コード', key: 'commonMasterItemId', width: 100, hidden: true },
+							                { headerText: '#{i18n.getText('CMM022_A222_7')}', key: 'commonMasterItemCode', width: 150 }, 
+							                { headerText: '#{i18n.getText('CMM022_A222_8')}', key: 'commonMasterItemName', width: 200 }, 
 							            ] ,
 								multiple: false ,
-								value: commonMasterId ,
+								value: commonMasterItemId ,
 								rows: 15
 							}"></table>
 					</div>
 
 
 				</div>
-				<div class="column-3"></div>
+				<div class="column-3">
+					<div class="div_line">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A223_1')}</div>
+					</div>
+					<div class="div_line">
+						<input
+							data-bind="ntsTextEditor: {
+											value: selectedCommonMasterItem().commonMasterItemName ,required: true}" />
+					</div>
+					<div class="div_line">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A222_4')}</div>
+					</div>
+					<div class="div_line"></div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
