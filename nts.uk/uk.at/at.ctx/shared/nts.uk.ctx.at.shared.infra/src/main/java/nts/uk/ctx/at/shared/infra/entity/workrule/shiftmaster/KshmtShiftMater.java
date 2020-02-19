@@ -7,11 +7,11 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.NameShiftMater;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMater;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -53,14 +53,14 @@ public class KshmtShiftMater extends UkJpaEntity {
 		this.workTimeCd = workTimeCd;
 	}
 
-	public ShiftMater toDomain() {
-		return new ShiftMater(kshmtShiftMaterPK.companyId, new ShiftMaterCode(kshmtShiftMaterPK.shiftMaterCode),
-				new ShiftMasterDisInfor(new NameShiftMater(this.name), new ColorCodeChar6(this.color),
+	public ShiftMaster toDomain() {
+		return new ShiftMaster(kshmtShiftMaterPK.companyId, new ShiftMasterCode(kshmtShiftMaterPK.shiftMaterCode),
+				new ShiftMasterDisInfor(new ShiftMasterName(this.name), new ColorCodeChar6(this.color),
 						this.remarks == null ? null : new Remarks(this.remarks)),
 				this.workTypeCd, this.workTimeCd);
 	}
 
-	public static KshmtShiftMater toEntity(ShiftMater domain) {
+	public static KshmtShiftMater toEntity(ShiftMaster domain) {
 		return new KshmtShiftMater(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMaterCode().v()),
 				domain.getDisplayInfor().getName().v(), domain.getDisplayInfor().getColor().v(),
 				domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v()

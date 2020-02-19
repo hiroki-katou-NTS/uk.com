@@ -16,12 +16,12 @@ public class UpdateShiftMasterService {
 			String shiftMaterCode, ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
 		String companyId = AppContexts.user().companyId();
 		// 1:get(会社ID, コード):Optional<シフトマスタ>
-		Optional<ShiftMater> shiftMaterOpt = require.getByShiftMaterCd(companyId, shiftMaterCode);
+		Optional<ShiftMaster> shiftMaterOpt = require.getByShiftMaterCd(companyId, shiftMaterCode);
 		// 2: 変更する(シフトマスタの表示情報, 勤務情報)
 		shiftMaterOpt.get().change(displayInfor, workInformation);
 		// エラーチェックする
 		shiftMaterOpt.get().checkError(requireWorkInfo);
-		Optional<ShiftMater> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(companyId,
+		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(companyId,
 				workInformation.getSiftCode().v(),
 				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v());
 		if (shiftMaterByWorkTypeAndWorkTime.isPresent()
@@ -36,10 +36,10 @@ public class UpdateShiftMasterService {
 
 	public static interface Require {
 
-		void update(ShiftMater shiftMater);
+		void update(ShiftMaster shiftMater);
 
-		public Optional<ShiftMater> getByShiftMaterCd(String companyId, String shiftMaterCode);
+		public Optional<ShiftMaster> getByShiftMaterCd(String companyId, String shiftMaterCode);
 
-		public Optional<ShiftMater> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd);
+		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd);
 	}
 }

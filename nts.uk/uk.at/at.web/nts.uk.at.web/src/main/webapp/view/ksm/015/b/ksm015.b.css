@@ -1,30 +1,15 @@
-#contents-area{
-    padding: 10px 10px 10px 30px !important;
-}
-.registration-panel, .setting-panel{
-   width: 200px;
-   float: left;
-   margin-left: 10px;
-   height: 150px;
-}
-.caret-panel{
+#left-content{ float: left; }
+#registration-form {
     float: left;
-    margin-left: 5px;
-    color: #E0F59E;
+    width: 700px;
 }
-.caret-panel .caret-right{
-    font-size: 4rem;
-}
-.panel-footer {
-    position: absolute;
-    bottom: 16px;
-}
-.panel-footer button {
-    width: 150px;
-}
-.panel-content {
-    font-size: 2em;
-}
-.panel-footer .caret-inline {
-
+.control-group { margin-bottom: 20px; }
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.control-group .form-label {width: 130px;}
+.b73-desc{
+    width: 300px;
+    display: inline-block;
+    margin-left: 20px;
 }

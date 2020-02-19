@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm015.a.service {
+module nts.uk.at.view.ksm015.c.service {
     /**
      *  Service paths
      */

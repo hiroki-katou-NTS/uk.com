@@ -1,11 +1,14 @@
-module nts.uk.at.view.ksm015.a.service {
+module nts.uk.at.view.ksm015.b.service {
     /**
      *  Service paths
      */
     var paths: any = {
-
+        startPage: 'ctx/at/shared/workrule/shiftmaster/startPage'
     }
-    
+    export function startPage(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startPage);
+    }
+
     /**
     * saveAsExcel
     **/

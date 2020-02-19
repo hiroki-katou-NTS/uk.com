@@ -1,6 +1,4 @@
-#contents-area{
-    padding: 10px 10px 10px 30px !important;
-}
+
 .registration-panel, .setting-panel{
    width: 200px;
    float: left;
@@ -22,9 +20,6 @@
 .panel-footer button {
     width: 150px;
 }
-.panel-content {
+.label-custom {
     font-size: 2em;
-}
-.panel-footer .caret-inline {
-
 }

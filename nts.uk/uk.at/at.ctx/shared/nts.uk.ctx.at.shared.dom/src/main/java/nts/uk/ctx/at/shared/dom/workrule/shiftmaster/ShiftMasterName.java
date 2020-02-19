@@ -12,14 +12,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(4)
-public class NameShiftMater extends StringPrimitiveValue<NameShiftMater>{
+public class ShiftMasterName extends StringPrimitiveValue<ShiftMasterName>{
 	
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @param rawValue
 	 */
-	public NameShiftMater(String rawValue) {
+	public ShiftMasterName(String rawValue) {
 		super(rawValue);
 	}
 
