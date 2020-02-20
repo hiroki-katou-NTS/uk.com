@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.era.name.EraName
-				nts.uk.ctx.at.shared.dom.era.name.SymbolName
+				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
+				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
 			</com:ValidatorScript>
 			<com:stylefile path="cmm022.a.style.css" />
 			<com:scriptfile path="cmm022.a.start.js" />
@@ -20,8 +20,20 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" data-bind="click: newItem">B</button>
-				<button tabindex="1" data-bind="click: dialogC">C</button>
+				<button tabindex="1"
+					data-bind="click: newItem,enable:commonMasters().length">#{i18n.getText('CMM022_A1_1')}</button>
+				<!-- A1_1 -->
+				<button tabindex="1" class="proceed"
+					data-bind="click: saveData,enable:commonMasters().length">#{i18n.getText('CMM022_A1_2')}</button>
+				<!-- A1_1 -->
+				<button tabindex="1"
+					data-bind="click: openDialogB,enable:commonMasters().length">#{i18n.getText('CMM022_A1_3')}</button>
+				<!-- A1_1 -->
+				<button tabindex="1"
+					data-bind="click: openDialogC,enable:commonMasters().length">#{i18n.getText('CMM022_A1_4')}</button>
+				<!-- A1_1 -->
+				<button tabindex="1"
+					data-bind="click: exportExcel,enable:commonMasters().length">#{i18n.getText('CMM022_A1_5')}</button>
 
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -31,7 +43,7 @@
 						<i class="icon icon-searchbox"></i>
 						<div class="div_line">
 							<div style="width: 320px"
-								data-bind="ntsSearchBox: { searchMode: 'highlight', targetKey: 'commonMasterId', comId: 'master-list', 
+								data-bind="ntsSearchBox: { searchMode: 'filter', targetKey: 'commonMasterId', comId: 'master-list', 
 							items: commonMasters , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
 						</div>
 
@@ -42,7 +54,7 @@
 								dataSource: commonMasters ,
 								primaryKey: 'commonMasterId' ,
 								columns: [
-							                { headerText: 'コード', key: 'commonMasterId', width: 100, hidden: true },
+							                { headerText: '', key: 'commonMasterId', width: 100, hidden: true },
 							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
 							            ] ,
 								multiple: false ,
@@ -59,7 +71,7 @@
 					</div>
 					<div class="div_line">#{i18n.getText('CMM022_A222_3')}</div>
 					<div class="div_line">
-						<table id="master-list"
+						<table id="master-item-list"
 							data-bind="ntsGridList: {
                                 height: 250 ,
 								dataSource: commonMasterItems ,
@@ -84,12 +96,33 @@
 					<div class="div_line">
 						<input
 							data-bind="ntsTextEditor: {
-											value: selectedCommonMasterItem().commonMasterItemName ,required: true}" />
+											value: selectedCommonMasterItem().commonMasterItemCode ,
+											required: true,
+											name:['CMM022_A222_2'],
+											constraint:'CategoryCode',
+											option:{ width:'20px'},
+											enable:commonMasters().length
+											}" />
+						<input
+							data-bind="ntsTextEditor: {
+											value: selectedCommonMasterItem().commonMasterItemName ,
+											name:['CMM022_A222_3'],
+											required: true,
+											constraint:'CategoryName',
+											option:{ width: '150px' },
+											enable:commonMasters().length
+											}" />
 					</div>
 					<div class="div_line">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A222_4')}</div>
 					</div>
-					<div class="div_line"></div>
+					<div class="div_line">
+						<div
+							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:['CMM022_A222_5'] , enable:commonMasters().length }"></div>
+						#{i18n.getText('CMM022_A222_6')}
+						<div
+							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:['CMM022_A222_7'], enable:commonMasters().length }"></div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

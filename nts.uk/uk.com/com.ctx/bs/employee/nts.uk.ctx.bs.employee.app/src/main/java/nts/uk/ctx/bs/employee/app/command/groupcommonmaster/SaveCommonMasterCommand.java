@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 public class SaveCommonMasterCommand {
 	// 画面モード
-	private boolean isNewMode;
+	private boolean newMode;
 
 	private String commonMasterId;
 
-	private List<UpdateMasterItemCommand> listMasterItem;
+	private List<UpdateMasterItemCommand> commonMasterItems;
 
-	private UpdateMasterItemCommand saveItem;
+	private UpdateMasterItemCommand selectedCommonMasterItem;
 }

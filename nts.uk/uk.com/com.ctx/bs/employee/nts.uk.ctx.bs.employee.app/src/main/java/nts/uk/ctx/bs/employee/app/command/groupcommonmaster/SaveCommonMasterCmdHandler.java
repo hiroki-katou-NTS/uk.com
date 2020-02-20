@@ -27,7 +27,7 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 		// 画面情報を取得する(Get thông tin màn hình)
 
 		SaveCommonMasterCommand cmd = context.getCommand();
-		UpdateMasterItemCommand updateItem = cmd.getSaveItem();
+		UpdateMasterItemCommand updateItem = cmd.getSelectedCommonMasterItem();
 
 		String contractCd = AppContexts.user().contractCode();
 
@@ -40,7 +40,7 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 		//・ List <Add common master item>. Display order = MAX (List <common master item>. displayNumber) ++ 1
 		int displayNumber = updateItem.getDisplayNumber() != null ? updateItem.getDisplayNumber()
 				: (Collections
-						.max(cmd.getListMasterItem(), Comparator.comparing(UpdateMasterItemCommand::getDisplayNumber))
+						.max(cmd.getCommonMasterItems(), Comparator.comparing(UpdateMasterItemCommand::getDisplayNumber))
 						.getDisplayNumber() + 1);
 
 		// vì add và update đều tạo domain nên viết chung cho gọn
