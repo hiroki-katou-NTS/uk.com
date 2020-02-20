@@ -92,6 +92,8 @@ module nts.uk.com.view.cmm022.a {
             }
 
             dialogC() {
+                let self = this;
+                setShared('listMasterToC', self.commonMasters());
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                 });
             }
