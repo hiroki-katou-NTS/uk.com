@@ -22,7 +22,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button  class="proceed" data-bind= "click: newItem">#{i18n.getText('CMM022_C1_1')}</button>
+				<button  class="proceed" data-bind= "click: register">#{i18n.getText('CMM022_C1_1')}</button>
 				<button data-bind= "click: closeDialog">#{i18n.getText('CMM022_C1_2')}</button>
 
 			</div>
@@ -33,26 +33,26 @@
 						<div class="panel-item"
 							data-bind="ntsPanel:{width: '410px', height: '430px', direction: 'right', showIcon: true, visible: true}">
 							<div style="width: 350px"
-								data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'code', comId: 'multi-list', 
-							items: items, selected: 'id', selectedKey: 'code', fields: ['name', 'code']}" />
+								data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'commonMasterCode', comId: 'multi-list', 
+							items: listMaster, selected: 'commonMasterId', selectedKey: 'commonMasterCode', fields: ['commonMasterName', 'commonMasterCode']}" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 								height: 390,
-								options: items,
-								optionsValue: 'code',
+								options: listMaster,
+								optionsValue: 'commonMasterId',
 								columns: columns,
 								multiple: false,
-								value: itemSelected
+								value: masterSelected
 							}"></table>
 						</div>
 					</div>
 					
-					<div class = "right-content" data-bind="with: itemSelected">
-						<div id="labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_C222_1')}</div>
+					<div class = "right-content">
+						<div id="labelRequired" data-bind="ntsFormLabel: {required: true, constraint: 'CommonMasterItemCode'}">#{i18n.getText('CMM022_C222_1')}</div>
 						<div style = "display: inline-block;">
 							<input data-bind="ntsTextEditor: {
 													name: '#[CMM020_C222_2]',
-													value: $parent.code,
+													value: commonMasterCode,
 													constraint: 'CommonMasterItemCode',
 													required: true,
 													enable: true,
@@ -62,7 +62,7 @@
 							<input
 								data-bind="ntsTextEditor: {
 													name: '#[CMM020_C222_3]',
-													value: $parent.name,
+													value: commonMasterName,
 													constraint: 'CommonMasterItemName',
 													required: true,
 													enable: true,

@@ -104,14 +104,19 @@ module nts.uk.com.view.cmm022.a {
 
                     self.commonMasters(data);
 
-                }).fail(function(res) {
+
+                }).fail(function(res) {
 
                     block.clear();
                     alert(res);
 
                 }).always(() => {
-                    nts.uk.ui.errors.clearAll();                    block.clear();                    dfd.resolve();
-                });
+
+                    nts.uk.ui.errors.clearAll();
+                    block.clear();
+                    dfd.resolve();
+
+                });
 
                 return dfd.promise();
             }
@@ -179,6 +184,8 @@ module nts.uk.com.view.cmm022.a {
             }
 
             public openDialogC() {
+                let self = this;
+                setShared('listMasterToC', self.commonMasters());
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                 });
             }
