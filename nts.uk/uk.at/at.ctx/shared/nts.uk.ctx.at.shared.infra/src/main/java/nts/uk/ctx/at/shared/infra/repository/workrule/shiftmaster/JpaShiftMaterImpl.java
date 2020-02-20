@@ -3,21 +3,20 @@ package nts.uk.ctx.at.shared.infra.repository.workrule.shiftmaster;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMater;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaterRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMater;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaShiftMaterImpl extends JpaRepository implements ShiftMaterRepository {
+public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepository {
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 	
 	private static final String SELECT_BY_CID = SELECT_ALL+ " WHERE c.kshmtShiftMaterPK.companyId = :companyId";
@@ -33,15 +32,15 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMaterReposi
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :listShiftMaterCode";
 	
 	@Override
-	public List<ShiftMater> getAllByCid(String companyId) {
-		List<ShiftMater> datas = this.queryProxy().query(SELECT_BY_CID,KshmtShiftMater.class)
+	public List<ShiftMaster> getAllByCid(String companyId) {
+		List<ShiftMaster> datas = this.queryProxy().query(SELECT_BY_CID,KshmtShiftMater.class)
 				.setParameter("companyId", companyId).getList(c->c.toDomain());
 		return datas;
 	}
 
 	@Override
-	public Optional<ShiftMater> getByShiftMaterCd(String companyId, String shiftMaterCode) {
-		Optional<ShiftMater> data = this.queryProxy().query(SELECT_BY_CD_AND_CID,KshmtShiftMater.class)
+	public Optional<ShiftMaster> getByShiftMaterCd(String companyId, String shiftMaterCode) {
+		Optional<ShiftMaster> data = this.queryProxy().query(SELECT_BY_CD_AND_CID,KshmtShiftMater.class)
 				.setParameter("companyId", companyId)
 				.setParameter("shiftMaterCode", shiftMaterCode)
 				.getSingle(c->c.toDomain());
@@ -49,8 +48,8 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMaterReposi
 	}
 
 	@Override
-	public Optional<ShiftMater> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd) {
-		Optional<ShiftMater> data = this.queryProxy().query(SELECT_BY_WORKTYPE_AND_WORKTIME,KshmtShiftMater.class)
+	public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd) {
+		Optional<ShiftMaster> data = this.queryProxy().query(SELECT_BY_WORKTYPE_AND_WORKTIME,KshmtShiftMater.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workTypeCd", workTypeCd)
 				.setParameter("workTimeCd", workTimeCd)
@@ -64,12 +63,12 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMaterReposi
 	}
 
 	@Override
-	public void insert(ShiftMater shiftMater) {
+	public void insert(ShiftMaster shiftMater) {
 		this.commandProxy().insert(KshmtShiftMater.toEntity(shiftMater));
 	}
 
 	@Override
-	public void update(ShiftMater shiftMater) {
+	public void update(ShiftMaster shiftMater) {
 		KshmtShiftMater oldData = this.queryProxy().query(SELECT_BY_CD_AND_CID,KshmtShiftMater.class)
 				.setParameter("companyId", shiftMater.getCompanyId())
 				.setParameter("shiftMaterCode", shiftMater.getShiftMaterCode())
@@ -90,11 +89,11 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMaterReposi
 	}
 
 	@Override
-	public List<ShiftMater> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
+	public List<ShiftMaster> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
 		if(listShiftMaterCode.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<ShiftMater> datas = this.queryProxy().query(SELECT_BY_LIST_CD_AND_CID,KshmtShiftMater.class)
+		List<ShiftMaster> datas = this.queryProxy().query(SELECT_BY_LIST_CD_AND_CID,KshmtShiftMater.class)
 				.setParameter("companyId", companyId)
 				.setParameter("listShiftMaterCode", listShiftMaterCode)
 				.getList(c->c.toDomain());

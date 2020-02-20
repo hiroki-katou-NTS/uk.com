@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 public class GetUsableShiftMasterService {
 
-	public static List<ShiftMater> getUsableShiftMaster(Require require, String companyId,
+	public static List<ShiftMaster> getUsableShiftMaster(Require require, String companyId,
 			TargetOrgIdenInfor targetOrg) {
 
 		// 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 )
-		Optional<ShiftMaterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
+		Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
 		// 2: *getAll(会社ID)
 		if (!shiftMaterOrgOpt.isPresent()) {
 			return require.getAllByCid(companyId);
@@ -28,10 +28,10 @@ public class GetUsableShiftMasterService {
 
 	public static interface Require {
 
-		Optional<ShiftMaterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
+		Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
 
-		List<ShiftMater> getAllByCid(String companyId);
+		List<ShiftMaster> getAllByCid(String companyId);
 
-		List<ShiftMater> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
+		List<ShiftMaster> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
 	}
 }
