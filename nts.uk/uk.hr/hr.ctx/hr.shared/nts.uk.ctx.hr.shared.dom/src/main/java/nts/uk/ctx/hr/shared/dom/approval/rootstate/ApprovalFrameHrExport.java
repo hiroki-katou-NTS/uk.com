@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.approval.rootstate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;

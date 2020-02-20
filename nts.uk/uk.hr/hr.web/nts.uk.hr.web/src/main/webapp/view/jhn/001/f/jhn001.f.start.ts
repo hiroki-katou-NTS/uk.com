@@ -42,7 +42,7 @@ ko.components.register('file-control', {
                 }
 
                 $grid.ntsGrid({
-                    width: '850px',
+                    width: '920px',
                     height: '400px',
                     dataSource: items,
                     primaryKey: 'id',
@@ -52,7 +52,7 @@ ko.components.register('file-control', {
                         { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
                         { headerText: '',   key: 'urlFile', dataType: 'string', width: '50px', hidden: true },
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_1'), key: 'docName', dataType: 'string', width: '300px' },
-                        { headerText: nts.uk.resource.getText('JHN001_F2_3_2'), key: 'fileName', dataType: 'string', width: '330px', template: '<a href="${urlFile}" target="_blank" data-download="true" data-id="${id}" style="color: blue;" >${fileName}</a>'},
+                        { headerText: nts.uk.resource.getText('JHN001_F2_3_2'), key: 'fileName', dataType: 'string', width: '400px', template: '<a href="${urlFile}" target="_blank" data-download="true" data-id="${id}" style="color: blue;" >${fileName}</a>'},
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_3'), key: 'open', dataType: 'string', width: '100px', template: '<div data-upload="true" data-id="${id}" ></div>' },
                         { headerText: nts.uk.resource.getText('JHN001_F2_3_4'), key: 'delete', dataType: 'string', width: '120px', template: '<button data-delete="true" data-id="${id}"  style="width: 70px ; margin-left: 12px;" >削除</button>' }
 
@@ -92,7 +92,7 @@ ko.components.register('file-control', {
                             
                         });
                     
-                        $('#grid2 [data-upload="true"] button').html(nts.uk.resource.getText('JHN001_F2_3_8'));
+                        $('#grid2 [data-upload="true"] button').html(nts.uk.resource.getText('JHN001_F2_3_7'));
                         
                         $('#grid2 [data-delete="true"]').on('click', (evt) => {
                             const button = evt.target;

@@ -57,34 +57,10 @@ module jhn001.c.viewmodel {
         }        
         
         getApproverAtr(approver) {
-            if (approver.approvalAtrName() != '未承認') {
-                if (approver.representerName().length > 0) {
-                    if (approver.representerMail().length > 0) {
-                        return approver.representerName() + '(@)';
-                    } else {
-                        return approver.representerName();
-                    }
-                } else {
-                    if (approver.approverMail().length > 0) {
-                        return approver.approverName() + '(@)';
-                    } else {
-                        return approver.approverName();
-                    }
-                }
+            if (approver.approverMail().length > 0) {
+                return approver.approverName() + '(@)';
             } else {
-                var s = '';
-               
-                if (approver.approverMail().length > 0) {
-                    s = s + '(@)';
-                }
-                if (approver.representerName().length > 0) {
-                    if (approver.representerMail().length > 0) {
-                        s = s + '(' + approver.representerName() + '(@))';
-                    } else {
-                        s = s + '(' + approver.representerName() + ')';
-                    }
-                }
-                return s;
+                return approver.approverName();
             }
         }
         

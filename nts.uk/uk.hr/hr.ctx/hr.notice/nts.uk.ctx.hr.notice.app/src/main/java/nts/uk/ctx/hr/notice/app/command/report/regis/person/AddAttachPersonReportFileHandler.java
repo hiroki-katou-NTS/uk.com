@@ -62,7 +62,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			
 			repoReportFile.add(domain);
 			
-			saveDraft(command.dataLayout, reportIdNew);
+			saveDraft(command.dataLayout, reportIdNew, command.missingDocName);
 			
 			return reportIdNew.toString();
 		} else {
@@ -73,11 +73,18 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			
 			repoReportFile.add(domain);
 			
+			updateMissingDocName(command);
+			
 			return command.reportID;
 		}
 	}
 	
-	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew) {
+	private void updateMissingDocName(AddDocumentReportCommand command) {
+		String cid = AppContexts.user().companyId();
+		this.repoPersonReport.updateMissingDocName(cid, Integer.valueOf(command.getReportID()), command.getMissingDocName());
+	}
+
+	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName) {
 		String sid = AppContexts.user().employeeId();
 		String pid = AppContexts.user().personId();
 		String scd = AppContexts.user().employeeCode();
@@ -95,7 +102,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 				.regStatus(RegistrationStatus.Save_Draft)
 				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
-				.missingDocName(data.missingDocName)
+				.missingDocName(missingDocName)
 				.inputPid(pid)
 				.inputSid(sid)
 				.inputScd(scd)

@@ -17,17 +17,19 @@ module jhn001.b.vm {
 
         listReportDraft: KnockoutObservableArray<IReportDraft> = ko.observableArray([]);
         reportId : KnockoutObservable<string> = ko.observable('');
+        hasRemove = false;
         
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_B2_3_1'), key: 'draftSaveDate', width: 160,  hidden: false },
+            { headerText: text('JHN001_B2_3_1'), key: 'draftSaveDate', width: 120,  hidden: false },
             { headerText: text('JHN001_B2_3_2'), key: 'reportName', width: 260, hidden: false },
-            { headerText: text('JHN001_B2_3_3'), key: 'missingDocName', width: 260, hidden: false }
+            { headerText: text('JHN001_B2_3_3'), key: 'missingDocName', width: 390, hidden: false }
         ]);
 
         constructor() {
             let self = this,
                 listReportDraft = self.listReportDraft;
+            self.hasRemove = false;
             self.getListReportSaveDraft().done(() => { 
                 console.log('get list done');
             });
@@ -85,7 +87,7 @@ module jhn001.b.vm {
                 reportId = null;
             }
             
-            setShared('JHN001B_PARAMS', { reportId : reportId , isClose : false , isContinue : true});
+            setShared('JHN001B_PARAMS', { reportId : reportId , isClose : false , isContinue : true, hasRemove : self.hasRemove});
             close();
         }
         
@@ -109,6 +111,7 @@ module jhn001.b.vm {
 
                 service.removeData(objRemove).done(() => {
                     info({ messageId: "Msg_40" }).then(function() {
+                        self.hasRemove = true;
                         self.start();
                     });
                 }).fail((mes: any) => {
@@ -117,9 +120,10 @@ module jhn001.b.vm {
             }).ifNo(() => { });
         }
 
-        close() {
-
-            setShared('JHN001B_PARAMS', { reportId: null , isClose : true , isContinue : false});
+        closeDialog() {
+            let self = this;
+            let reportId = self.reportId();
+            setShared('JHN001B_PARAMS', { reportId: reportId , isClose : true , isContinue : false, hasRemove : self.hasRemove });
             close();
         }
     }
