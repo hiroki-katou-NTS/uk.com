@@ -23,15 +23,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
-	private static final String getListReportBySId = "select c FROM  JhndtReportRegis c "
+	private static final String getListReportByCId = "select c FROM  JhndtReportRegis c "
 			+ "Where c.pk.cid = :cid "
-			+ "and c.inputSid = :sid "
 			+ "ORDER BY c.reportName ASC";
 	
 	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c "
 			+ " Where c.pk.cid = :cid "
-			+ " and c.inputSid = :sid and c.appSid = :sid "
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
+	
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
 	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
@@ -59,19 +58,16 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<RegistrationPersonReport> getListBySIds(String sid) {
-		String cid =  AppContexts.user().companyId();
-		return this.queryProxy().query(getListReportBySId, JhndtReportRegis.class)
-				.setParameter("cid", cid)
-				.setParameter("sid", sid).getList(c -> toDomain(c));
+	public List<RegistrationPersonReport> getListByCid(String cid) {
+		return this.queryProxy().query(getListReportByCId, JhndtReportRegis.class)
+				.setParameter("cid", cid).getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<RegistrationPersonReport> getListReportSaveDraft(String sid) {
 		String cid =  AppContexts.user().companyId();
 		return this.queryProxy().query(getListReportSaveDraft, JhndtReportRegis.class)
-				.setParameter("cid", cid)
-				.setParameter("sid", sid).getList(c -> toDomain(c));
+				.setParameter("cid", cid).getList(c -> toDomain(c));
 	}
 
 	@Override

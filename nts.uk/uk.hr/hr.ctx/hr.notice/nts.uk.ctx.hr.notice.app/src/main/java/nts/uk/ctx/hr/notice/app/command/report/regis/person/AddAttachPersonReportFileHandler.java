@@ -67,13 +67,12 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			return reportIdNew.toString();
 		} else {
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, Integer.valueOf(command.reportID),
-					command.docID, command.docName, command.fileId, command.fileName.length() > 49 ? command.fileName.substring(0, 48) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName.length() > 50 ? command.fileName.substring(0, 49) : command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
 			repoReportFile.add(domain);
-			
-			
+			                           
 			return command.reportID;
 		}
 	}

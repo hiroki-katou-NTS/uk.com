@@ -30,12 +30,12 @@ public class RegistrationPersonReportFinder {
 	private PersonalReportClassificationFinder reportClsFinder;
 	
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
-	public List<PersonalReportDto> getListReport(String sid) {
+	public List<PersonalReportDto> getListReport(String cid) {
 
 		List<PersonalReportDto> result = new ArrayList<PersonalReportDto>();
 
 		// danh sách report
-		List<RegistrationPersonReport> listReport = repo.getListBySIds(sid);
+		List<RegistrationPersonReport> listReport = repo.getListByCid(cid);
 
 		// danh sách report bên màn hình JHN011.
 		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(false);
