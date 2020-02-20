@@ -37,5 +37,9 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let self = this;
 			self.registrationForm().newMode(true);
 		}
+
+		public register () {
+			
+		}
 	}
 }

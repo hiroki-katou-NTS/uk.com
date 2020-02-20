@@ -17,6 +17,8 @@ public class ShiftMasterDto {
 	private String shiftMaterCode;
 	private String color;
 	private String remark;
+	private String workTypeCd;
+	private String workTypeName;
 	
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();

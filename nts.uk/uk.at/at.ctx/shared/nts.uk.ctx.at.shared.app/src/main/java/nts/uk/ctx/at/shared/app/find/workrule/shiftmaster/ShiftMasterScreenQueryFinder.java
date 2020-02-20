@@ -38,13 +38,13 @@ public class ShiftMasterScreenQueryFinder {
 				.map(s -> new ShiftMasterDto(s)).collect(Collectors.toList());
 		startPage.setShiftMasters(shiftMasters);
 
-		List<WorkTypeDto> workTypes = workTypeRepo.findByCompanyId(companyId).stream()
-				.map(w -> new WorkTypeDto(w)).collect(Collectors.toList());
-		startPage.setWorkTypes(workTypes);
-		
-		List<WorkTimeSettingDto> workTimeSettings = workTimeSetRepo.findByCId(companyId).stream()
-				.map(w -> new WorkTimeSettingDto(w)).collect(Collectors.toList());
-		startPage.setWorkTimeSettings(workTimeSettings);
+//		List<WorkTypeDto> workTypes = workTypeRepo.findByCompanyId(companyId).stream()
+//				.map(w -> new WorkTypeDto(w)).collect(Collectors.toList());
+//		startPage.setWorkTypes(workTypes);
+//		
+//		List<WorkTimeSettingDto> workTimeSettings = workTimeSetRepo.findByCId(companyId).stream()
+//				.map(w -> new WorkTimeSettingDto(w)).collect(Collectors.toList());
+//		startPage.setWorkTimeSettings(workTimeSettings);
 		
 		return startPage;
 
