@@ -23,6 +23,5 @@ public class AddDocumentReportCommand {
 	 String sampleFileName;
 	 String reportID; //届出ID
 	 String layoutReportId;
-	 String missingDocName;
 	 SaveReportInputContainer dataLayout;
 }

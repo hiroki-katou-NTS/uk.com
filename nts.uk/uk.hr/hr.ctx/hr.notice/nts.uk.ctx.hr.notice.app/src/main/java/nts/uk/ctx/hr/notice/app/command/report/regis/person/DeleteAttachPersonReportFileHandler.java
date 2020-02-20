@@ -9,8 +9,6 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -22,19 +20,10 @@ public class DeleteAttachPersonReportFileHandler extends CommandHandler<DeleteDo
 	@Inject
 	private AttachPersonReportFileRepository repo;
 	
-	@Inject
-	private RegistrationPersonReportRepository repoPersonReport;
-	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteDocumentReportCommand> context) {
 		DeleteDocumentReportCommand command = context.getCommand();
 		repo.delete(command.fileId, command.cid);
-		
-		updateMissingDocName(AppContexts.user().companyId(),Integer.valueOf(command.getReportId()), command.getMissingDocName());
-	}
-	
-	private void updateMissingDocName(String cid, int reportId, String missingDocName) {
-		this.repoPersonReport.updateMissingDocName(cid, reportId, missingDocName);
 	}
 
 }
