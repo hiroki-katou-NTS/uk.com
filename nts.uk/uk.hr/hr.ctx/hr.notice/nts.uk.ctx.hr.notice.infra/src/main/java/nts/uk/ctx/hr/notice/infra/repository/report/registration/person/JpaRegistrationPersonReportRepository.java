@@ -129,6 +129,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		entity.regStatus = domain.getRegStatus().value;
 		entity.draftSaveDate =domain.getDraftSaveDate();
 		entity.missingDocName = domain.getMissingDocName();
+		entity.rootSateId  = domain.getRootSateId();
 		entity.inputPid = domain.getInputPid();
 		entity.inputSid = domain.getInputSid();
 		entity.inputScd = domain.getInputScd();
