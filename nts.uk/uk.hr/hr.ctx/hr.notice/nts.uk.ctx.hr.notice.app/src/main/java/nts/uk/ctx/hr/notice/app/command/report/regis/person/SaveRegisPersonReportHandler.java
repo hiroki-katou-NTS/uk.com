@@ -277,6 +277,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
+		domainReport.setRootSateId(domainReport.getRootSateId() == null ? IdentifierUtil.randomUniqueId() : domainReport.getRootSateId());
 		
 		domainReport.setInputPid(employeeInfo.inputPid);
 		domainReport.setInputSid(employeeInfo.inputSid);

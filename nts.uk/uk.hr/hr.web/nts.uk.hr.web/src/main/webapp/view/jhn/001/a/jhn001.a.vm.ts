@@ -202,9 +202,9 @@ module jhn001.a.viewmodel {
                     sampleFileId: fileData.sampleFileId,
                     reportID: fileData.reportID,
                     fileId: fileData.fileId,
-                    fileSize: fileData.fileSize,
-                    
+                    fileSize: fileData.fileSize
                 }
+                
                 lstDoc.push(obj);
             }
             
