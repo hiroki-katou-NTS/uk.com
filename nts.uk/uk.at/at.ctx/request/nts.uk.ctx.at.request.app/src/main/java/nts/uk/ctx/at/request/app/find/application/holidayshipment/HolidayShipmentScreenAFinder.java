@@ -358,9 +358,12 @@ public class HolidayShipmentScreenAFinder {
 
 	public static GeneralDate DetRefDate(GeneralDate recDate, GeneralDate absDate) {
 		boolean isBothDateNotNull = absDate != null && recDate != null;
+		//// INPUT.振出日＝設定なし かつ INPUT.振休日＝設定なし
 		GeneralDate resultDate = null;
+		// 日付の組み合わせをチェックする
 
 		if (isBothDateNotNull) {
+			// INPUT.振出日＝設定あり または INPUT.振休日＝設定あり
 			boolean isRecDateAfterAbsDate = recDate.after(absDate);
 			if (isRecDateAfterAbsDate) {
 				resultDate = absDate;
@@ -368,10 +371,13 @@ public class HolidayShipmentScreenAFinder {
 				resultDate = recDate;
 			}
 		} else {
+
 			if (recDate != null) {
+				// INPUT.振出日＝設定なし
 				resultDate = recDate;
 			}
 			if (absDate != null) {
+				// INPUT.振休日＝設定なし
 				resultDate = absDate;
 			}
 		}
@@ -491,6 +497,19 @@ public class HolidayShipmentScreenAFinder {
 		return null;
 
 	}
+	/**
+	 * 基準日別設定の取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param refDate
+	 * @param isGetSetting
+	 * @param recWkTypeCD
+	 * @param recWkTimeCD
+	 * @param absWkTypeCD
+	 * @param absWkTimeCD
+	 * @param appCommonSet
+	 * @param output
+	 */
 
 	public void setDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean isGetSetting,
 			String recWkTypeCD, String recWkTimeCD, String absWkTypeCD, String absWkTimeCD,
@@ -498,6 +517,9 @@ public class HolidayShipmentScreenAFinder {
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> empImpOpt = wkPlaceAdapter.getEmpHistBySid(companyID, employeeID, refDate);
 		// アルゴリズム「所属職場を含む上位職場を取得」を実行する
+		
+		// [No.571]職場の上位職場を基準職場を含めて取得する
+		// List<String> workpaceIds = empAdaptor.getWorkplaceIdAndUpper(companyID, refDate, workplaceId);
 
 		if (empImpOpt.isPresent()) {
 

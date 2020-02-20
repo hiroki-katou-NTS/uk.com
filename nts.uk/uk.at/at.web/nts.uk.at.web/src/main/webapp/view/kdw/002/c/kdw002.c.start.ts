@@ -20,4 +20,4 @@ $(() =>{
        $('#grid_footer_container').height(window.innerHeight - 280); 
        $('#contents-area').height(window.innerHeight - 150);
     }).trigger('resize');     
-}
+});

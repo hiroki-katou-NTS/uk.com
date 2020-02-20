@@ -38,4 +38,8 @@ public class ApplicationSettingCommand {
 	public Integer achievementConfirmedAtr;
 	public int classScheAchi;
 	public int reflecTimeofSche; 
+	//hoatt doi ung ver53
+	public int companyUnit;
+	public int workplaceUnit;
+	public int employeeUnit;
 }

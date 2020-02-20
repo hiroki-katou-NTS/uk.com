@@ -23,14 +23,18 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaRegistrationPersonReportRepository extends JpaRepository implements RegistrationPersonReportRepository {
 
-	private static final String getListBySId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.inputSid = :sid  ORDER BY c.reportName ASC";
-	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
-	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid "
+	private static final String getListReportBySId = "select c FROM  JhndtReportRegis c "
+			+ "Where c.pk.cid = :cid "
+			+ "and c.inputSid = :sid "
+			+ "ORDER BY c.reportName ASC";
+	
+	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c "
+			+ " Where c.pk.cid = :cid "
 			+ " and c.inputSid = :sid and c.appSid = :sid "
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
-	
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
+	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
 	
 
 	private static final String SEL = "select r FROM  JhndtReportRegis r";
@@ -57,7 +61,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	@Override
 	public List<RegistrationPersonReport> getListBySIds(String sid) {
 		String cid =  AppContexts.user().companyId();
-		return this.queryProxy().query(getListBySId, JhndtReportRegis.class)
+		return this.queryProxy().query(getListReportBySId, JhndtReportRegis.class)
 				.setParameter("cid", cid)
 				.setParameter("sid", sid).getList(c -> toDomain(c));
 	}
@@ -111,7 +115,39 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 	@Override
 	public void update(RegistrationPersonReport domain) {
-		this.commandProxy().update(toEntity(domain));
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", domain.getCid())
+				.setParameter("reportId", domain.getReportID()).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			updateEntity(entity, domain);
+			this.commandProxy().update(entity);
+		}
+	}
+
+	private void updateEntity(JhndtReportRegis entity, RegistrationPersonReport domain) {
+		entity.regStatus = domain.getRegStatus().value;
+		entity.draftSaveDate =domain.getDraftSaveDate();
+		entity.missingDocName = domain.getMissingDocName();
+		entity.inputPid = domain.getInputPid();
+		entity.inputSid = domain.getInputSid();
+		entity.inputScd = domain.getInputScd();
+		entity.inputBussinessName = domain.getInputBussinessName();
+		entity.inputDate = domain.getInputDate();
+		entity.appPid = domain.getAppPid();
+		entity.appSid = domain.getAppSid();
+		entity.appScd = domain.getAppScd();
+		entity.appBussinessName = domain.getAppBussinessName();
+		entity.appDate = domain.getAppDate();
+		entity.appDevId =domain.getAppDevId();
+		entity.appDevCd = domain.getAppDevCd();
+		entity.appDevName = domain.getAppDevName();
+		entity.appPosId = domain.getAppPosId();
+		entity.appPosCd = domain.getAppPosCd();
+		entity.appPosName = domain.getAppPosName();
+		entity.reportType  = domain.getReportType().value;
+		entity.sendBackSID  = domain.getSendBackSID();
+		entity.sendBackComment = domain.getSendBackComment();
 	}
 
 	@Override
@@ -125,7 +161,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				.setParameter("reportId", reportId).getSingle();
 		JhndtReportRegis entity = entityOpt.get();
 		entity.setDelFlg(1);
-		entity.setDraftSaveDate(GeneralDateTime.now());
+		//entity.setDraftSaveDate(GeneralDateTime.now());
 		this.commandProxy().update(entity);
 	}
 
@@ -166,6 +202,18 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void updateMissingDocName(String cid, int reportID,  String missingDocName) {
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportID).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			entity.missingDocName = missingDocName;
+			this.commandProxy().update(entity);
+		}
 	}
 
 }

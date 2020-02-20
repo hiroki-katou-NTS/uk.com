@@ -42,17 +42,14 @@ public class JhndtReportApproval extends UkJpaEntity implements Serializable {
 	@Column(name = "APR_DATE")
 	public GeneralDateTime aprDate; //承認日
 	
-	@Column(name = "APR_SID")
-	public String aprSid; //承認者社員ID
-	
 	@Column(name = "APR_BUSINESS_NAME")
 	public String aprBussinessName; //承認者社員名
 	
 	@Column(name = "EMAIL_ADDRESS")
 	public String emailAddress; //メールアドレス
 	
-	@Column(name = "APR_STATUS_NAME")
-	public int aprStatusName; //承認状況.
+	@Column(name = "APR_STATUS")
+	public int aprStatus; //承認状況.
 	
 	@Column(name = "APR_AGENCY")
 	public boolean arpAgency;//代行承認
@@ -96,11 +93,11 @@ public class JhndtReportApproval extends UkJpaEntity implements Serializable {
 				this.inputDate ,
 				this.appDate ,
 				this.aprDate ,
-				this.aprSid ,
+				this.pk.aprSid ,
 				this.aprBussinessName ,
 				this.emailAddress ,
-				this.pk.phaseNum ,
-				this.aprStatusName ,
+				this.pk.levelNum ,
+				this.aprStatus ,
 				this.pk.aprNum ,
 				this.arpAgency ,
 				this.comment ,

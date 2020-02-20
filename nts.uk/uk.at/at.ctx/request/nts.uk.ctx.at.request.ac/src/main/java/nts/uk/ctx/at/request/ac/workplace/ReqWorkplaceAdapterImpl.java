@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
@@ -22,7 +23,8 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -44,14 +46,17 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Inject
 	private SyWorkplacePub wpkPub;
-
+	
+	@Inject
+	private WorkplacePub wkpPubNew;
+	
 	/**
 	 * アルゴリズム「社員から職場を取得する」を実行する
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
-		Optional<SWkpHistExport> wkpExport = wkpPub.findBySid(sID, date);
+		Optional<SWkpHistExport> wkpExport = wkpPub.findBySidNew(AppContexts.user().companyId(), sID, date);
 		if (wkpExport.isPresent()) {
 			return toImport(wkpExport.get());
 		}
@@ -114,5 +119,4 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
 		return wpkPub.findParentWpkIdsByWkpIdDesc(companyId, workplaceId, date);
 	}
-
 }

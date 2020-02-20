@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.master;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author HungTT
@@ -16,5 +18,7 @@ public interface WorkplaceConfigurationRepository {
 	public void updateWorkplaceConfig(WorkplaceConfiguration workplaceConfig); 
 	
 	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId);
+	
+	public Optional<WorkplaceConfiguration> findByDate(String companyID, GeneralDate date);
 
 }

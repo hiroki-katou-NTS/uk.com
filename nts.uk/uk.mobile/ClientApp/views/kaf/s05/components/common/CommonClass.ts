@@ -206,4 +206,6 @@ export interface Kafs05Model {
     performanceExcessAtr: number;
     preExcessDisplaySetting?: number;
     overtimeSettingDataDto: any;
+    opAppBefore: any;
+    actualLst: any;
 }

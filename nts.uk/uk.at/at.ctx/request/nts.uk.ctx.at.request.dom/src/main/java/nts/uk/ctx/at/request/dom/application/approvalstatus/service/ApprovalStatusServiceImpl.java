@@ -69,6 +69,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
@@ -632,9 +633,23 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// クラス：承認枠
 			for (ApprovalFrameImport_New appFrame : listAppFrame) {
 				// 承認済、否認の場合
-				if (appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-						|| appFrame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
+				Optional<ApproverStateImport_New> opDenyApproverState = appFrame.getListApprover().stream()
+						.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL).findAny();
+				if(opDenyApproverState.isPresent()) {
 					continue;
+				}
+				if(appPhase.getApprovalForm()==ApprovalFormImport.SINGLE_APPROVED) {
+					Optional<ApproverStateImport_New> opApproveApproverState = appFrame.getListApprover().stream()
+							.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+					if(opApproveApproverState.isPresent()) {
+						continue;
+					}
+				} else {
+					Optional<ApproverStateImport_New> opNotApproveApproverState = appFrame.getListApprover().stream()
+							.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+					if(!opNotApproveApproverState.isPresent()) {
+						continue;
+					}
 				}
 				// 未承認、差し戻しの場合
 				// アルゴリズム「承認状況未承認メール未承認者取得」を実行する

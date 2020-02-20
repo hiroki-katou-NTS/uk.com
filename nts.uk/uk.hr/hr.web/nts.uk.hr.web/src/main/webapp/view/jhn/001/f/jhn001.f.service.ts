@@ -3,21 +3,21 @@ module jhn001.f.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'hr/notice/report/regis/person/document/findAll',
-        'addDocument': 'hr/notice/report/regis/person/document/add',
-        'deleteDocument': 'hr/notice/report/regis/person/document/delete'
+        getData:          'hr/notice/report/regis/person/document/findAll',
+        addDocument:      'hr/notice/report/regis/person/document/add',
+        deleteDocument:   'hr/notice/report/regis/person/document/delete'
     };
 
     export function getData(param: any) {
-        return ajax('hr' , paths.getData, param);
+        return ajax('hr', paths.getData, param);
     }
 
     export function addDocument(command: any) {
-          return ajax('hr' , paths.addDocument, command);
+        return ajax('hr', paths.addDocument, command);
     }
 
     export function deleteDocument(command: any) {
-       return ajax('hr' , paths.deleteDocument, command);
+        return ajax('hr', paths.deleteDocument, command);
     }
 
 }

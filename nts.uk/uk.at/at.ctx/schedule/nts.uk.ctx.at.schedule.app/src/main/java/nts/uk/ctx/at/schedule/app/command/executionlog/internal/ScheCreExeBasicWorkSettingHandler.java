@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistItemImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistoryImported;
@@ -173,7 +174,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command,
 			Map<String, List<ExClassificationHistItemImported>> mapClassificationHist,
 			Map<String, List<ExWorkplaceHistItemImported>> mapWorkplaceHist) {
-
+		
 		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 			// EA No1683
@@ -185,8 +186,11 @@ public class ScheCreExeBasicWorkSettingHandler {
 						.findFirst();
 				if (optWorkplaceHistItem.isPresent()) {
 					// find by level work place
-					List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
-
+				//	List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
+					
+					//[No.571]職場の上位職場を基準職場を含めて取得する
+					List<String> workplaceIds = this.scWorkplaceAdapter.getWorkplaceIdAndUpper(command.getBaseGetter().getCompanyId(), command.getBaseGetter().getToDate(), optWorkplaceHistItem.get().getWorkplaceId());
+					
 					BasicWorkSettingByWorkplaceGetterCommand commandGetter = command.toBasicWorkplace();
 					commandGetter.setWorkplaceIds(workplaceIds);
 					// return basic work setting
@@ -232,9 +236,9 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param employeeId
 	 * @return
 	 */
-	private List<String> findWpkIdsBySid(ScheduleErrorLogGeterCommand command, String employeeId) {
-		return this.scWorkplaceAdapter.findWpkIdsBySid(command.getCompanyId(), employeeId, command.getToDate());
-	}
+//	private List<String> findWpkIdsBySid(ScheduleErrorLogGeterCommand command, String employeeId) {
+//		return this.scWorkplaceAdapter.findWpkIdsBySid(command.getCompanyId(), employeeId, command.getToDate());
+//	}
 
 	/**
 	 * Gets the basic work setting.
@@ -336,8 +340,15 @@ public class ScheCreExeBasicWorkSettingHandler {
 					// List<String> workplaceIds =
 					// this.findLevelWorkplace(command.getBaseGetter(),
 					// workplaceDto.getWorkplaceCode()); FIXBUG #87217
-					List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
-
+					// List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
+					
+					// [No.650]社員が所属している職場を取得する
+					AffWorkplaceHistoryItem affWorkplaceHistoryItem = this.scWorkplaceAdapter.getAffWkpHistItemByEmpDate(command.getEmployeeId(), command.getBaseGetter().getToDate());
+					
+					//[No.571]職場の上位職場を基準職場を含めて取得する
+					List<String> workplaceIds = this.scWorkplaceAdapter.getWorkplaceIdAndUpper(command.getBaseGetter().getCompanyId(), command.getBaseGetter().getToDate(), affWorkplaceHistoryItem.getWorkplaceId());
+					
+					
 					// setup command getter work place
 
 					WorkdayAttrByWorkplaceGeterCommand commandGetter = command.toCommandWorkplace();

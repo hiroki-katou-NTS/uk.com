@@ -28,4 +28,9 @@ public class TmpAnnualHolidayMng extends AggregateRoot{
 	 * 使用日数
 	 */
 	private UseDay useDays;
+	public TmpAnnualHolidayMng(String annualId) {
+		super();
+		this.annualId = annualId;
+	}
+	
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,11 +11,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeSprPubAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -60,10 +58,14 @@ public class CreateErrorInfo {
 					wpkIds.add(wpkId);
 				}
 				//RQ324	
-				List<WorkplaceIdName> listWorkplaceIdName =  workplaceAdapter.findWkpByWkpId(companyId,baseDate,wpkIds);
+				// List<WorkplaceIdName> listWorkplaceIdName =  workplaceAdapter.findWkpByWkpId(companyId,baseDate,wpkIds);
+				
+				//[No.560]職場IDから職場の情報をすべて取得する
+				List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyId, wpkIds,baseDate);
+				
 				List<String> errorAdm = new ArrayList<>(); 
 				mapWorkplaceAndListSid.forEach((key, value) -> {
-					Optional<WorkplaceIdName> workplaceIdName = listWorkplaceIdName.stream().filter(c->c.getWorkplaceId().equals(key)).findFirst();
+					Optional<WorkPlaceInforExport> workplaceIdName = wkpExportList.stream().filter(c->c.getWorkplaceId().equals(key)).findFirst();
 					String wkpName = "";
 					if(workplaceIdName.isPresent()) {
 						wkpName = workplaceIdName.get().getWorkplaceName();
@@ -85,9 +87,13 @@ public class CreateErrorInfo {
 		if(!listWkp.isEmpty()) {
 			//INPUT.管理者未設定職場リスト.件数＞0件
 			errorWkp = TextResource.localize("Msg_1514")+"<br/>";
+			
+			//[No.560]職場IDから職場の情報をすべて取得する
+			List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyId, listWkp,
+					baseDate);
 			//RQ324
-			List<WorkplaceIdName> listWorkplaceIdName =  workplaceAdapter.findWkpByWkpId(companyId,baseDate,listWkp);
-			for (WorkplaceIdName workplaceIdName : listWorkplaceIdName) {
+//			List<WorkplaceIdName> listWorkplaceIdName =  workplaceAdapter.findWkpByWkpId(companyId,baseDate,listWkp);
+			for (WorkPlaceInforExport workplaceIdName : wkpExportList) {
 				if (!StringUtils.isEmpty(workplaceIdName.getWorkplaceName())) {
 					errorWkp += TextResource.localize("KAL010_303",workplaceIdName.getWorkplaceName())+"<br/>";
 				}   

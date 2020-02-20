@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -23,12 +24,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,15 +46,6 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;
-	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
-	
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
-	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateOvertimeCommand> context) {
@@ -67,9 +56,10 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-				companyId, 
-				ApplicationType.OVER_TIME_APPLICATION.value).get();
+		OvertimeSettingData overtimeSettingData = command.getOvertimeSettingDataDto().toDomain();
+		
+		AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
+				.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -82,9 +72,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 			}
 			displayReason += command.getApplicationReason();
 		}
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(companyId);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		ApplicationSetting applicationSetting = overtimeSettingData.appCommonSettingOutput.applicationSetting;
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
 			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
 			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
@@ -100,9 +88,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		
 		Integer prePostAtr = command.getPrePostAtr();
 		
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(
-				companyId, 
-				ApplicationType.OVER_TIME_APPLICATION.value).get();
+		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
 		boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
 		boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
 		if(displayDivergenceReasonCombox){
@@ -123,15 +109,12 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
-		Integer workClockFrom2 = command.getWorkClockFrom2() == null ? null : command.getWorkClockFrom2().intValue();
-		Integer workClockTo2 = command.getWorkClockTo2() == null ? null : command.getWorkClockTo2().intValue();
 
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
 				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyId, appID));
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
-				workClockTo2, divergenceReason,
-				command.getFlexExessTime(), command.getOverTimeShiftNight(),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
+				divergenceReason, command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID), 
 				appOvertimeDetailOtp);
 

@@ -24,6 +24,7 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
@@ -66,6 +67,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	
 	@Inject
 	private SyCompanyPub syCompanyPub;
+	
+	@Inject
+	private WorkplacePub wkplacePub;
 
 	/*
 	 * (non-Javadoc)
@@ -217,6 +221,11 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public List<ResultRequest596Import> getEmpDeletedLstBySids(List<String> sids) {
 		return employeePub.getEmpDeletedLstBySids(sids).stream()
 				.map(x -> new ResultRequest596Import(x.getSid(), x.getEmployeeCode(), x.getEmployeeName())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+		return this.wkplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
 	}
 	
 	

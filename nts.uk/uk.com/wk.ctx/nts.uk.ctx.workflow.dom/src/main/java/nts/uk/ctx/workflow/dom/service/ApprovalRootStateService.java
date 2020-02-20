@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 
 /**
@@ -13,7 +12,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
  */
 public interface ApprovalRootStateService {
 	
-	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, 
+	public void insertAppRootType(String companyID, String employeeID, String targetType, 
 			GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate);
 	
 	public void delete(String rootStateID, Integer rootType); 

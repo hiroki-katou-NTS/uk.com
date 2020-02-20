@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Data
@@ -17,6 +18,7 @@ public class RecordWorkParam {
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
 	private boolean restTimeDisFlg;
+	private OvertimeSettingDataDto overtimeSettingDataDto;
 	
 	public List<Integer> getStartTimeRests() {
 		List<Integer> result=  new ArrayList<Integer>();

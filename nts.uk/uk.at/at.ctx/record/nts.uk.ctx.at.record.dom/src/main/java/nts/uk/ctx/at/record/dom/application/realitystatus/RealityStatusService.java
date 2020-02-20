@@ -20,6 +20,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -54,7 +55,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
@@ -64,9 +64,9 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkPlaceConfigImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkplaceConfigAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -103,7 +103,7 @@ public class RealityStatusService {
 	
 	@Inject
 	private WorkplaceConfigInfoAdapter configInfoAdapter;
-
+	
 	/**
 	 * 承認状況職場実績起動
 	 */
@@ -114,7 +114,6 @@ public class RealityStatusService {
 		List<StatusWkpActivityOutput> listStatusActivity = Collections.synchronizedList(new ArrayList<StatusWkpActivityOutput>());
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
 		UseSetingOutput useSeting = this.getUseSetting(cId);
-		
 		// 職場ID(リスト)
 		this.parallel.forEach(listWorkplaceId, wkpId -> {
 			// アルゴリズム「承認状況取得社員」を実行する
@@ -139,9 +138,16 @@ public class RealityStatusService {
 		
 		//vì sử dụng parallel (bất đồng bộ) nên phải sắp xếp sau
 		// 「職場IDから階層コードを取得する」を実行する
-		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId)
-				.collect(Collectors.toList());
-		List<WorkplaceHierarchyImport> wpHis = GetHCodeByWorkPlaceID(cId, wPIDs, GeneralDate.today());
+//		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId)
+//				.collect(Collectors.toList());
+		
+//		List<WorkplaceHierarchyImport> wpHis = GetHCodeByWorkPlaceID(cId, wPIDs, GeneralDate.today());
+		
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<String> wPIDs = listStatusActivity.stream().map(StatusWkpActivityOutput::getWkpId).collect(Collectors.toList());
+		List<WorkplaceHierarchyImport> wpHis = this.configInfoAdapter.getWorkplaceInforByWkpIds(cId, wPIDs, GeneralDate.today())
+				.stream().map(item -> new WorkplaceHierarchyImport(item.getWorkplaceId(), item.getHierarchyCode())).collect(Collectors.toList());
+		
 		// 取得した「職場ID、職場階層コード」を階層コード順に並び替える
 		List<StatusWkpActivityOutput> result = sortList(wpHis, listStatusActivity);
 
@@ -753,14 +759,14 @@ public class RealityStatusService {
 		
 		// 対応するドメインモデル「社員の日別実績エラー一覧」を取得する
 		List<EmployeeDailyPerError> listEmpDailyError = this.employeeDailyPerErrorRepo
-				.findByPeriodOrderByYmd(employeeId, new DatePeriod(startDate, endDate));
-		
+				.finds(Arrays.asList(employeeId), new DatePeriod(startDate, endDate));
+		if(listEmpDailyError.isEmpty()) return listEmpErrorOutput;
 		String companyID = AppContexts.user().companyId();
+		List<String> lstErrorCode = listEmpDailyError.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).distinct().collect(Collectors.toList());
+		List<String> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.checkErrorInList(companyID, lstErrorCode);
 		// 対応するドメインモデル「勤務実績のエラーアラーム」を取得する
 		for(EmployeeDailyPerError emp : listEmpDailyError){
-			List<ErrorAlarmWorkRecord> errorAlarmWorkRecordLst =  errorAlarmWorkRecordRepository.getListErAlByListCodeError(
-					companyID, Arrays.asList(emp.getErrorAlarmWorkRecordCode().v()));
-			if(!CollectionUtil.isEmpty(errorAlarmWorkRecordLst)){
+			if(errorAlarmWorkRecordLst.contains(emp.getErrorAlarmWorkRecordCode().v())){
 				listEmpErrorOutput.add(new EmployeeErrorOuput(emp.getDate(), true));
 			}
 		}

@@ -8,9 +8,12 @@ module nts.uk.com.view.cmm018.a.start {
             transferData = __viewContext.transferred.value;
         }
         __viewContext.viewModel = {
-            viewmodelA: new cmm018.a.viewmodelA.ScreenModel(transferData),
-            viewmodelB: new cmm018.a.viewmodelB.ScreenModel()
+            viewmodelA: new cmm018.a.viewmodelA.ScreenModel(),
+            viewmodelSubB: new cmm018.a.sub.viewmodelSubB.ScreenModel(),
+            viewmodelSubA: new cmm018.a.sub.viewmodelSubA.ScreenModel()
         };
-             __viewContext.bind(__viewContext.viewModel);
+        __viewContext.viewModel.viewmodelA.preStart(transferData).done(() => {
+            __viewContext.bind(__viewContext.viewModel);
+        });
     });
 }

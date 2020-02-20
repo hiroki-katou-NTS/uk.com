@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 isMultipleUse: true,
                 isMultiSelect: self.isMultiSelect(),
                 treeType: 1,
-                selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                selectedId: self.multiSelectedWorkplaceId,
                 baseDate: self.baseDate,
                 selectType: 1,
                 isShowSelectButton: true,
@@ -143,7 +143,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
             nts.uk.ui.block.invisible();
-            service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
+            service.getAll(lstWkp.map((wkp) => { return wkp.id; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
                 self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true }; }));
                 dfd.resolve();
             });
@@ -153,9 +153,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         flattenWkpTree(wkpTree) {
             return wkpTree.reduce((wkp, x) => {
                 wkp = wkp.concat(x);
-                if (x.childs && x.childs.length > 0) {
-                    wkp = wkp.concat(this.flattenWkpTree(x.childs));
-                    x.childs = [];
+                if (x.children && x.children.length > 0) {
+                    wkp = wkp.concat(this.flattenWkpTree(x.children));
+                    x.children = [];
                 }
                 return wkp;
             }, []);
@@ -170,8 +170,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             var self = this;
             let listWorkplace = [];
             _.forEach(self.multiSelectedWorkplaceId(), function(item) {
-                let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
-                listWorkplace.push({hierarchyCode: data.hierarchyCode, code: data.workplaceId, name: data.nodeText });
+                let data = _.find(lstWkp, (wkp) => { return wkp.id == item });
+                listWorkplace.push({hierarchyCode: data.hierarchyCode, code: data.id, name: data.nodeText });
             })
             let lstWorkplaces = _.sortBy(listWorkplace, o => o.hierarchyCode, 'asc')
             let params = {

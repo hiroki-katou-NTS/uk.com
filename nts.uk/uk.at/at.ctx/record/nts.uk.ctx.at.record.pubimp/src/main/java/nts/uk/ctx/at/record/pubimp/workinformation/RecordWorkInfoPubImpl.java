@@ -141,6 +141,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 																			getCalcTime(c.getTransferTime())))
 																.collect(Collectors.toList()));
 			});
+			record.setMidnightTime(totalWT.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getCalcTime().v());
 		});
 		
 		return record;

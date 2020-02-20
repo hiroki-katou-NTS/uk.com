@@ -47,7 +47,7 @@ export class KafS05aComponent extends Vue {
             restTimeDisFlg: false, typicalReasonDisplayFlg: false, displayAppReasonContentFlg: false, displayDivergenceReasonForm: false, displayDivergenceReasonInput: false,
             workTypeChangeFlg: false, overtimeWork: [], indicationOvertimeFlg: true, calculateFlag: 0, uiType: 0, preWorkContent: null, targetDate: null, editable: true,
             enableOvertimeInput: false, isSpr: false, resultCaculationTimeFlg: false, workTimeInput: { start: null, end: null }, appID: this.params.appID, version: 0, reflectPerState: 0, user: 0, 
-            beforeAppStatus: false, actualStatus: null, performanceExcessAtr: null, preExcessDisplaySetting: 0, overtimeSettingDataDto: null
+            beforeAppStatus: false, actualStatus: null, performanceExcessAtr: null, preExcessDisplaySetting: 0, overtimeSettingDataDto: null, opAppBefore: null, actualLst: null
         };
         if (this.$route.query.overworkatr == '0') {
             this.pgName = 'kafS05a0';

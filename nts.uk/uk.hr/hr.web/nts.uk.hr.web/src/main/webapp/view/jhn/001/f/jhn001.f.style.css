@@ -15,7 +15,7 @@
 
 .nts-fileupload-container .browser-button {
 	float: left;
-	margin-right: 5px;
+	margin-left: 12px;
 	width: 70px;
 }
 
@@ -33,4 +33,10 @@ span.filenamelabel.hyperlink {
 
 #delete-button {
 	margin-left: 10px;
+}
+
+.hyperlink {
+    color: #0066CC;
+    text-decoration: underline;
+    cursor: pointer;
 }

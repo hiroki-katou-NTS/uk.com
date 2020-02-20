@@ -34,4 +34,23 @@ public interface LoginRecordRepository {
 	 * @return the list
 	 */
 	List<LoginRecord> logRecordInfor(List<String> operationIds);
+	
+	/**
+	 * CLI003F - EA修正履歴No3675
+	 * @param operationIds
+	 * @return
+	 */
+	List<LoginRecord> logRecordInforScreenF(List<String> operationIds);
+
+	/**
+	 * CLI003: fix bug #108979 OFFSET " + offset + " ROWSFETCH FIRST " + limit + "
+	 * ROWS ONLY OFFSET " + offset + " ROWS" FETCH FIRST " + limit + " ROWS ONLY
+	 * this.getEntity().createQuery(sql).setFirstResult(offset) setMaxResults(limit)
+	 *
+	 * @param operationId
+	 *            the operation id
+	 * @return the list
+	 */
+	List<LoginRecord> logRecordInforRefactors(List<String> operationIds, int offset, int limit);
+
 }

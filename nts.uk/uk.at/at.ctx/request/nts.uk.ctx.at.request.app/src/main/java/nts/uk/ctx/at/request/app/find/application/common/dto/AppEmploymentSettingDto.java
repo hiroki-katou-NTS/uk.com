@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 
 @Data
@@ -54,5 +57,21 @@ public class AppEmploymentSettingDto {
 					.map(item -> AppEmployWorkTypeDto.fromDomain(item))
 					.collect(Collectors.toList())
 				);
+	}
+	
+	public AppEmploymentSetting toDomain() {
+		return new AppEmploymentSetting(
+				companyID, 
+				employmentCode, 
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				holidayOrPauseType, 
+				holidayTypeUseFlg, 
+				displayFlag, 
+				lstWorkType.stream().map(x -> AppEmployWorkType.createSimpleFromJavaType(
+						x.getCompanyID(), 
+						x.getEmploymentCode(), 
+						x.getAppType(), 
+						x.getHolidayOrPauseType(), 
+						x.getWorkTypeCode())).collect(Collectors.toList()));
 	}
 }

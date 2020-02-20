@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pub.department.master;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -60,4 +61,32 @@ public interface DepartmentPub {
      * @return
      */
     public List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
+    
+    public Optional<DepartmentExport> getInfoDep(String companyId, String depId, GeneralDate baseDate);
+    
+    /**
+     * 社員と基準日から所属部門履歴項目を取得する
+     * @param employeeID
+     * @param date
+     * @return
+     */
+    public AffDpmHistItemExport getDepartmentHistItemByEmpDate(String employeeID, GeneralDate date);
+    
+    /**
+     * [No.570]部門の上位部門を取得する
+     * @param companyID
+     * @param departmentID
+     * @param date
+     * @return
+     */
+    public List<String> getUpperDepartment(String companyID, String departmentID, GeneralDate date);
+    
+    /**
+     * [No.572]部門の上位部門を基準部門を含めて取得する
+     * @param companyID
+     * @param departmentID
+     * @param date
+     * @return
+     */
+    public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date);
 }

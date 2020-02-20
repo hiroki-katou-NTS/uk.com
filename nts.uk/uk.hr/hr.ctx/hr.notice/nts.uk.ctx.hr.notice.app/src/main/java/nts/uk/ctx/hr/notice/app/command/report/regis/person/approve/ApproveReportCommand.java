@@ -9,6 +9,5 @@ public class ApproveReportCommand {
 	private String reportId;
 	private String rootInstanceId;
 	private String approveComment;
-	private ActionApprove actionApprove;
-	//private 
+	private int actionApprove;
 }

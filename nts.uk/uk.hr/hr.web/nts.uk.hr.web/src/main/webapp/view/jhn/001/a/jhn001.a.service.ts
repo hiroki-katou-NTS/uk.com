@@ -3,23 +3,23 @@ module jhn001.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAll: "hr/notice/person/report/findAll",
-        getReportDetails: "hr/notice/report/item/findOne",
-        remove:"hr/notice/report/regis/person/remove/{0}",
-        saveDraftData: "hr/notice/report/regis/person/saveDraft",
-        saveData: "hr/notice/report/regis/person/save",       
-        getListDoc: 'hr/notice/report/regis/person/document/findAll',
-        getListReportSaveDraft: 'hr/notice/report/regis/person/getAll',
+        getListReport:          'hr/notice/report/regis/person/getAll',
+        getListReportSaveDraft: 'hr/notice/report/regis/person/getAll-SaveDraft',
+        getReportDetails:       'hr/notice/report/item/findOne',
+        remove:                 'hr/notice/report/regis/person/remove',
+        saveDraftData:          'hr/notice/report/regis/person/saveDraft',
+        saveData:               'hr/notice/report/regis/person/save',       
+        getListDoc:             'hr/notice/report/regis/person/document/findAll',
         layout: {
-            getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
-            getDetails: "ctx/pereg/person/maintenance/findLayoutData",
-            'register': 'facade/pereg/register'
+            getAll:     'ctx/pereg/person/maintenance/findSimple/{0}',
+            getDetails: 'ctx/pereg/person/maintenance/findLayoutData',
+            register:   'facade/pereg/register'
         }
     };
     
-
-    export function getAll() {
-        return ajax(format(paths.getAll));
+    // chỉ bao gồm những report chưa xóa.
+    export function getListReport() {
+        return ajax(format(paths.getListReport));
     }
     
     export function getListReportSaveDraft() {
@@ -30,8 +30,8 @@ module jhn001.a.service {
         return ajax(paths.getReportDetails, obj);
     }
     
-    export function removeData(reportClsId) {
-        return ajax(format(paths.remove, reportClsId));
+    export function removeData(objRemove) {
+        return ajax('hr' , paths.remove, objRemove);
     }
    
     export function getListDoc(param: any) {

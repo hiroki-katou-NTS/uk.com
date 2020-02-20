@@ -3,19 +3,18 @@ package nts.uk.ctx.workflow.dom.approverstatemanagement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 /**
  * 承認枠
- * @author Doan Duy Hung
+ * @author hoatt
  *
  */
 @AllArgsConstructor
@@ -24,68 +23,47 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 @Getter
 @Builder
 public class ApprovalFrame extends DomainObject {
-	
-	private String rootStateID;
-	
-	private Integer phaseOrder;
-	
-	private Integer frameOrder;
-	
-	@Setter
-	private ApprovalBehaviorAtr approvalAtr;
-	
+	/**承認枠No*/
+	private int frameOrder;
+	/**確定区分*/
 	private ConfirmPerson confirmAtr;
+	/**対象日*/
+	private GeneralDate appDate;
+	/**承認者情報*/
 	@Setter
-	private List<ApproverState> listApproverState;
+	private List<ApproverInfor> lstApproverInfo;
 	
-	@Setter
-	private String approverID;
-	
-	@Setter
-	private String representerID;
-	
-	@Setter
-	private GeneralDate approvalDate;
-	
-	@Setter
-	private String approvalReason;
-	
-	public static ApprovalFrame firstCreate(String rootStateID, Integer phaseOrder, Integer frameOrder, ConfirmPerson confirmPerson, List<ApproverState> listApproverState){
+	public static ApprovalFrame firstCreate(String rootStateID, Integer phaseOrder, Integer frameOrder,
+			ConfirmPerson confirmPerson, GeneralDate appDate, List<ApproverInfor> listApproverInfor){
 		return ApprovalFrame.builder()
-				.rootStateID(rootStateID)
-				.phaseOrder(phaseOrder)
 				.frameOrder(frameOrder)
-				.approvalAtr(ApprovalBehaviorAtr.UNAPPROVED)
 				.confirmAtr(confirmPerson)
-				.listApproverState(listApproverState)
+				.appDate(appDate)
+				.lstApproverInfo(listApproverInfor)
 				.build();
 	}
 	
-	public static ApprovalFrame createFromFirst(String companyID, GeneralDate date, String rootStateID, ApprovalFrame approvalFrame){
-		if(Strings.isBlank(approvalFrame.getRootStateID())){
+	public static ApprovalFrame createFromFirst(GeneralDate date, ApprovalFrame approvalFrame){
 			return ApprovalFrame.builder()
-					.rootStateID(rootStateID)
-					.phaseOrder(approvalFrame.getPhaseOrder())
 					.frameOrder(approvalFrame.getFrameOrder())
-					.approvalAtr(approvalFrame.getApprovalAtr())
 					.confirmAtr(approvalFrame.getConfirmAtr())
-					.listApproverState(approvalFrame.getListApproverState().stream()
-							.map(x -> ApproverState.createFromFirst(companyID, date, rootStateID, x)).collect(Collectors.toList()))
-					.approverID(approvalFrame.getApproverID())
-					.representerID(approvalFrame.getRepresenterID())
-					.approvalDate(approvalFrame.getApprovalDate())
-					.approvalReason(approvalFrame.getApprovalReason())
+					.appDate(date)
+					.lstApproverInfo(approvalFrame.getLstApproverInfo().stream()
+							.map(x -> ApproverInfor.createFromFirst(x)).collect(Collectors.toList()))
 					.build();
-		}
-		return approvalFrame;
 	}
 	
 	public boolean isApprover(String employeeId) {
-		return listApproverState.stream()
+		return lstApproverInfo.stream()
 				.anyMatch(a -> a.getApproverID().equals(employeeId));
 	}
 	
-	public boolean isRepresenter(String employeeId) {
-		return representerID != null && representerID.equals(employeeId);
+//	public boolean isRepresenter(String employeeId) {
+//		return representerID != null && representerID.equals(employeeId);
+//	}
+	public static ApprovalFrame convert(int frameOrder, int confirmAtr, GeneralDate appDate, List<ApproverInfor> lstApproverInfo){
+		return new  ApprovalFrame (frameOrder,
+				EnumAdaptor.valueOf(confirmAtr, ConfirmPerson.class),
+				 appDate, lstApproverInfo);
 	}
 }

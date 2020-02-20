@@ -497,7 +497,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 								.replaceAll("\n", "\r\n").replaceAll("\"", "\u00A0").replaceAll("'", "''") + "\"" : "");
 
 					}
-						i++;
+					i++;
 				}
 				csv.writeALine(rowCsv);
 			});
