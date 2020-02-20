@@ -21,7 +21,7 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 			+ "sm.displayName, " 
 			+ "sm.screenID, "
 			+ "mo.useApproval, " 
-			+ "sm.screenID " 
+			+ "mo.noRankOrder " 
 
 			+ "FROM JcmmtMenuApr ma JOIN CcgstStandardMenu sm "
 			+ "ON ma.pkJcmmtMenuApr.programId = sm.programId "
@@ -52,7 +52,7 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 				object[3] == null ? "" : (String) object[3],
 				object[4] == null ? "" : (String) object[4], 
 				object[5] == null ? false : (int) object[5] == 1,
-				object[6] == null ? "" : (String) object[6]);
+				object[6] == null ? null : (int) object[6] == 1);
 				
 	}
 

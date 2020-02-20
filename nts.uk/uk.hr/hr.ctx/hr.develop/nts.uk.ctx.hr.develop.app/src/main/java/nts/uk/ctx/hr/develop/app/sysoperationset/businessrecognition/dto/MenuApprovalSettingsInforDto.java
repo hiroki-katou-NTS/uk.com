@@ -22,7 +22,7 @@ public class MenuApprovalSettingsInforDto {
 	
 	private Boolean useApproval;
 	
-	private String noRankOrder;
+	private Boolean noRankOrder;
 
 	public MenuApprovalSettingsInforDto(BusinessApprovalSettingsDto domain) {
 		super();

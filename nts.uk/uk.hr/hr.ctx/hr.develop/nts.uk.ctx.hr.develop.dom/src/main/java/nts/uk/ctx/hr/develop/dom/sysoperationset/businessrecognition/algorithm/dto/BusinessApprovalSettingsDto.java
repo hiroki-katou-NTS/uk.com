@@ -20,6 +20,6 @@ public class BusinessApprovalSettingsDto {
 	
 	private Boolean useApproval;
 	
-	private String noRankOrder;
+	private Boolean noRankOrder;
 	
 }
