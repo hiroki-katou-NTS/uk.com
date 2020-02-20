@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettings;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
@@ -85,7 +86,7 @@ public class MenuApprovalSettingsDto {
 	
 	public MenuApprovalSettings toDomain() {
 		return new MenuApprovalSettings(
-				this.cId, 
+				AppContexts.user().companyId(), 
 				this.workId,  
 				this.programId, 
 				this.screenId, 
