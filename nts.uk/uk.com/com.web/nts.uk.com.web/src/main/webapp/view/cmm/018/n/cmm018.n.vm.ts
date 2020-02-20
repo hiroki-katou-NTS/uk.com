@@ -13,10 +13,16 @@ export module viewmodel {
         // Options
         baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
-
+        sysAtr: number;
+        lstAppName : Array<any> = [];
         constructor() {
             var self = this;
-
+            let param = nts.uk.ui.windows.getShared('CMM018_SysAtr');
+            self.sysAtr = param.sysAtr || 0;
+            _.each(param.lstName, function(app){
+                self.lstAppName.push({code: app.value, name: app.localizedName, empRoot: app.employRootAtr});
+            });
+            
             //Init right table.
             self.applicationType = ko.observableArray([]);
 
@@ -29,7 +35,13 @@ export module viewmodel {
             //Init selectedEmployee
             self.selectedEmployee = ko.observableArray([]);
             self.baseDate = ko.observable(moment(new Date()).toDate());
-            self.start();
+            if(self.sysAtr == 0){
+                self.start();
+            }else{
+                self.applicationType.push( new ItemModel(99,  "共通ルート", 0));
+                self.applicationType(self.lstAppName);
+                self.loadGrid();
+            }
         }
 
         loadGrid() {
@@ -128,13 +140,9 @@ export module viewmodel {
                 let empRoot1 = a.empRoot;
                 let code1 = empRoot1 == 2 ? (a.code - 20) : a.code;
                 lstApp.push({code: code1,
-                             empRoot: empRoot1});
+                             empRoot: empRoot1,
+                             name: name});
             });
-//            let lst1 = [];
-//            _.each(self.selectedEmployee(), function(emp){
-//                lst1.push(emp.employeeId);
-//            });
-            
             
             //xuat file
             let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp);

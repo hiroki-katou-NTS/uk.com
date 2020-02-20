@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappr
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,7 +27,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
 	private ApprovalPhaseRepository phaseRespoitory;
 	/**
-	 * get root by application/confirm
+	 * 02.社員の対象申請の承認ルートを取得する
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> appOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
@@ -76,11 +77,16 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				return rootOutputs;
 			}			
 		}
+		List<String> lstWkpId = new ArrayList<>();
+		//[No.650]社員が所属している職場を取得する
+		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
+		//[No.571]職場の上位職場を基準職場を含めて取得する
+		if(wkpid.isPresent()) {
+			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
+		}
 		
-		//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
-		List<String> findWpkIdsBySid = empAdapter.findWpkIdsBySid(companyID, sId, baseDate);
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: findWpkIdsBySid) {
+		for(String wpId: lstWkpId) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
@@ -168,10 +174,10 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				}
 			}
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	/**
-	 * get root by common
+	 * 03.社員の共通の承認ルートを取得する
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> commonOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
@@ -206,10 +212,15 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
-		//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
-		List<String> findWpkIdsBySid = empAdapter.findWpkIdsBySid(companyID, sId, baseDate);
+		List<String> lstWkpId = new ArrayList<>();
+		//[No.650]社員が所属している職場を取得する
+		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
+		//[No.571]職場の上位職場を基準職場を含めて取得する
+		if(wkpid.isPresent()) {
+			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
+		}
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: findWpkIdsBySid) {
+		for(String wpId: lstWkpId) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(共通)
 			List<WorkplaceApprovalRoot> lstWpCommonRoots = lstWorkpalceRootInfor
 					.stream()

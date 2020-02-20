@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -93,8 +94,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 							baseDate);
 					
 				}
-//				this.getApprovalRoot(app);
-				this.getData(sysAtr, appOfEmployee.get(0), companyID, empId, baseDate, appOutput, app);
+				Optional<ApprovalRootCommonOutput> appE = appOfEmployee.isEmpty() ? Optional.empty() : Optional.of(appOfEmployee.get(0));
+				this.getData(sysAtr, appE, companyID, empId, baseDate, appOutput, app);
 			}
 		}
 		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
@@ -106,14 +107,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		return new DataSourceApproverList(appOutput, lstWpInfor);
 	}
 
-	
-	
-//	private ApprovalRoot getApprovalRoot(AppTypes app) {
-//		return null;
-//	}
-	
 	//check cho 1 don
-	private Map<String, WpApproverAsAppOutput> getData(int sysAtr, ApprovalRootCommonOutput approvalRoot,
+	private Map<String, WpApproverAsAppOutput> getData(int sysAtr, Optional<ApprovalRootCommonOutput> approvalRootOp,
 			String companyID, String empId, GeneralDate baseDate, Map<String, WpApproverAsAppOutput> appOutput,
 			AppTypes apptype) {
 		// list phase cua employee
@@ -123,8 +118,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		Map<String, EmpApproverAsApp> mapEmpRootInfo = new HashMap<>();
 		ErrorFlag err = null;
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
-		if (approvalRoot != null) {
-			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRoot.getApprovalId());
+		if (approvalRootOp.isPresent()) {
+			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
 			LevelOutput p = collectApprRootService.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
 			err = EnumAdaptor.valueOf(p.getErrorFlag(), ErrorFlag.class);
 

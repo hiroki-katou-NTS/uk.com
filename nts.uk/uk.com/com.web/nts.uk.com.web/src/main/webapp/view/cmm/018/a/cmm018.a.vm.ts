@@ -1876,7 +1876,7 @@ module nts.uk.com.view.cmm018.a {
              * open dialog N: 承認者一覧
              */
             openDialogN(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr()});
+                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
                modal("/view/cmm/018/n/index.xhtml");
             }
             checkColor(lstAppPhase: Array<vmbase.ApprovalPhaseDto>, int: number): boolean{
