@@ -10,4 +10,5 @@ public class DeleteDocumentReportCommand {
 	 String cid; 
 	 String fileId; 	
 	 String reportId; //届出ID
+	 String missingDocName;
 }

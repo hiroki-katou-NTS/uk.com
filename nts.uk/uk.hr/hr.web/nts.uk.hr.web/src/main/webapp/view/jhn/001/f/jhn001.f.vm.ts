@@ -133,6 +133,14 @@ module jhn001.f.vm {
                 return;
             }
             
+            let missingDocName = '';
+            for (var i = 0; i < listItem.length; i++) {
+                let fileData = listItem[i];
+                if (fileData.fileId == null && id != fileData.id) {
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
+                }
+            }
+            
             let objAdd = {
                 docID: row[0].docID, //書類ID int
                 docName: row[0].docName, //書類名 String
@@ -148,6 +156,7 @@ module jhn001.f.vm {
                 sampleFileName: row[0].sampleFileName,
                 reportID: self.reportId, //届出ID int
                 layoutReportId: self.layoutReportId,
+                missingDocName : missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1),
                 dataLayout: self.dataShare.command
             }
 
@@ -219,6 +228,14 @@ module jhn001.f.vm {
             if(row[0].fileId == null || row[0].fileId == '')
                 return;
             
+            let missingDocName = '';
+            for (var i = 0; i < listItem.length; i++) {
+                let fileData = listItem[i];
+                if (fileData.fileId == null || id != fileData.id) {
+                    missingDocName = missingDocName + fileData.docName + text('JHN001_B2_3_7_1');
+                }
+            }
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + row[0].fileId)
                     .done(function(res) {
@@ -228,7 +245,8 @@ module jhn001.f.vm {
                             cid: '',
                             fileId: row[0].fileId,
                             reportId: self.reportId,
-                            layoutReportId: self.layoutReportId
+                            layoutReportId: self.layoutReportId,
+                            missingDocName: missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1)
                         };
                         
                         service.deleteDocument(command).done(() => {
