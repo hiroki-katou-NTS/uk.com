@@ -32,7 +32,7 @@ public class InsertRankServiceTest {
 	}
 	
 	@Test
-	public void testInsert_InsertRankPriority() {
+	public void testInsert() {
 		String companyId = "0001";
 		RankCode rankCd = new RankCode("001");
 		RankSymbol rankSymbol = new RankSymbol("A");
@@ -48,41 +48,7 @@ public class InsertRankServiceTest {
 		InsertRankService.insert(require, companyId, rankCd, rankSymbol).run();
 		
 		new Verifications() {{
-			require.insertRank((Rank) any);
-			times = 1;
-			
-			require.insertRankPriority((RankPriority) any);
-			times = 1;
-			
-			require.updateRankPriority((RankPriority) any);
-			times = 0;
-		}};
-	}
-	
-	@Test
-	public void testInsert_UpdateRankPriority() {
-		String companyId = "0001";
-		RankCode rankCd = new RankCode("099");
-		RankSymbol rankSymbol = new RankSymbol("A");
-		
-		new Expectations() {{
-			require.checkRankExist(companyId, rankCd);
-			result = RankPriorityHelper.checkExist(false);
-			
-			require.getRankPriority(companyId);
-			result = RankPriorityHelper.getRankPriorityBasic();
-		}};
-		
-		InsertRankService.insert(require, companyId, rankCd, rankSymbol).run();
-		
-		new Verifications() {{
-			require.insertRank((Rank) any);
-			times = 1;
-			
-			require.insertRankPriority((RankPriority) any);
-			times = 0;
-			
-			require.updateRankPriority((RankPriority) any);
+			require.insertRank((Rank) any, (RankPriority) any);
 			times = 1;
 		}};
 	}
