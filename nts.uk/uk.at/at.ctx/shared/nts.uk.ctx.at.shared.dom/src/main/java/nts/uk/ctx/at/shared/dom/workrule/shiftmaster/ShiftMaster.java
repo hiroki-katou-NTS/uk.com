@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
  * @author tutk
  *
  */
-public class ShiftMater extends WorkInformation implements DomainAggregate {
+public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	/**
 	 * 会社ID
 	 */
@@ -23,7 +23,7 @@ public class ShiftMater extends WorkInformation implements DomainAggregate {
 	 * コード
 	 */
 	@Getter
-	private final ShiftMaterCode shiftMaterCode;
+	private final ShiftMasterCode shiftMaterCode;
 
 	/**
 	 * 表示情報
@@ -39,7 +39,7 @@ public class ShiftMater extends WorkInformation implements DomainAggregate {
 	 * @param displayInfor
 	 */
 
-	public ShiftMater(String companyId, ShiftMaterCode shiftMaterCode, ShiftMasterDisInfor displayInfor,
+	public ShiftMaster(String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor,
 			String workTypeCode, String workTimeCode) {
 		super(workTimeCode, workTypeCode);
 		this.companyId = companyId;

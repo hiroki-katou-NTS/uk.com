@@ -9,11 +9,11 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(3)
 @ZeroPaddedCode
-public class ShiftMaterCode extends CodePrimitiveValue<ShiftMaterCode> {
+public class ShiftMasterCode extends CodePrimitiveValue<ShiftMasterCode> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public ShiftMaterCode(String rawValue) {
+	public ShiftMasterCode(String rawValue) {
 		super(rawValue);
 	}
 

@@ -1,0 +1,15 @@
+#left-content{ float: left; }
+#registration-form {
+    float: left;
+    width: 700px;
+}
+.control-group { margin-bottom: 20px; }
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.control-group .form-label {width: 130px;}
+.b73-desc{
+    width: 300px;
+    display: inline-block;
+    margin-left: 20px;
+}

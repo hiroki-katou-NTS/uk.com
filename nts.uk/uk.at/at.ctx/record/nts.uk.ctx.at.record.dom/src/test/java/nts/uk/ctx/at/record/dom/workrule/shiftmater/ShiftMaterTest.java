@@ -10,10 +10,10 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.workrule.ShiftMaterInstanceHelper;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.NameShiftMater;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMater;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 
 public class ShiftMaterTest {
 	@Injectable
@@ -21,7 +21,7 @@ public class ShiftMaterTest {
 
 	@Test
 	public void checkError() {
-		ShiftMater shiftMater = ShiftMaterInstanceHelper.getShiftMaterEmpty();
+		ShiftMaster shiftMater = ShiftMaterInstanceHelper.getShiftMaterEmpty();
 		BusinessExceptionAssert.id("Msg_1608", ()->shiftMater.checkError(requireWorkInfo));
 		BusinessExceptionAssert.id("Msg_1609", ()->shiftMater.checkError(requireWorkInfo));
 		BusinessExceptionAssert.id("Msg_435", ()->shiftMater.checkError(requireWorkInfo));
@@ -30,9 +30,9 @@ public class ShiftMaterTest {
 	
 	@Test
 	public void change() {
-		ShiftMater shiftMater = ShiftMaterInstanceHelper.getShiftMaterEmpty();
+		ShiftMaster shiftMater = ShiftMaterInstanceHelper.getShiftMaterEmpty();
 		WorkInformation workInfor = new WorkInformation(null, "workTypeCode");
-		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new NameShiftMater("name"), 
+		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName("name"), 
 				new ColorCodeChar6("color"), null);	
 		assertThatThrownBy(() -> 
 			shiftMater.change(displayInfor, workInfor)
@@ -41,7 +41,7 @@ public class ShiftMaterTest {
 
 	@Test
 	public void validate() {
-		NameShiftMater name = new NameShiftMater("name");
+		ShiftMasterName name = new ShiftMasterName("name");
 		ColorCodeChar6 color = new ColorCodeChar6("color");
 		Remarks remarks = null;
 		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(name, color, remarks);	

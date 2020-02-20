@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author tutk
  *
  */
-public class ShiftMaterOrganization implements DomainAggregate {
+public class ShiftMasterOrganization implements DomainAggregate {
 	/**
 	 * 会社ID
 	 */
@@ -33,7 +33,7 @@ public class ShiftMaterOrganization implements DomainAggregate {
 	private List<String> listShiftMaterCode = new ArrayList<>();
 
 	
-	public ShiftMaterOrganization(String companyId, TargetOrgIdenInfor targetOrg, List<String> listShiftMaterCode) {
+	public ShiftMasterOrganization(String companyId, TargetOrgIdenInfor targetOrg, List<String> listShiftMaterCode) {
 		//inv-1	@シフトマスタリスト.size > 0	
 		if(listShiftMaterCode.isEmpty()) {
 			throw new RuntimeException("シフトマスタリスト.size > 0");
@@ -70,8 +70,8 @@ public class ShiftMaterOrganization implements DomainAggregate {
 	 * 複写する
 	 * @param targetOrg
 	 */
-	public ShiftMaterOrganization copy(TargetOrgIdenInfor targetOrg ) {
-		return new ShiftMaterOrganization(this.companyId, targetOrg, this.listShiftMaterCode);
+	public ShiftMasterOrganization copy(TargetOrgIdenInfor targetOrg ) {
+		return new ShiftMasterOrganization(this.companyId, targetOrg, this.listShiftMaterCode);
 	}
 	
 		
