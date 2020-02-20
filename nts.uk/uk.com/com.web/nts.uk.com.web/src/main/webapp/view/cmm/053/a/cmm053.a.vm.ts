@@ -440,7 +440,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             let self = this;
             self.employeeInputList([]);
             _.each(dataList, function(item) {
-                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.affiliationName, ""));
             });
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length == 0) {

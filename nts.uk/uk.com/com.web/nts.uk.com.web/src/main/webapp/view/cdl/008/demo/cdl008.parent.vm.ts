@@ -74,8 +74,10 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 isShowBaseDate: self.isShowBaseDate(),
                 startMode: self.selectedStartMode()
             }, true);
-
-            nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+            
+            let dialogWindow = nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml');
+            dialogWindow.setSize(400, 500);
+            dialogWindow.onClosed(function(): any {
                 // Check is cancel.
                 if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                     return;
