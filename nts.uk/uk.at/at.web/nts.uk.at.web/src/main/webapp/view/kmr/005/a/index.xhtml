@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.reservation.BentoExportTitle
+			</com:ValidatorScript>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:stylefile path="kmr005.a.main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="kmr005.a.service.js" />
+			<com:scriptfile path="kmr005.a.vm.js" />
+			<com:scriptfile path="kmr005.a.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="click: exportFile, enable: $root.errors.isEmpty">#{i18n.getText('KMR005_2')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="ccgcomponent"></div>
+				<div class="screenDisplay valign-top control-group">
+					<div class="panel panel-frame">
+						<div id="employeeSearch"></div>
+					</div>
+					<div class="panel panel-frame">
+						<div class="table valign-center control-group">
+							<div class="cell">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR005_3')}</div>
+							</div>
+							<div class="cell">
+								<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+												name: '#{i18n.getText('KMR005_3')}',
+												required: true, 
+												enable: true, 
+												showNextPrevious: true, 
+												value: dateValue,
+												maxRange: 'oneMonth' }"/>
+							</div>
+								
+						</div>
+						<div class="table valign-center control-group">
+							<div class="cell">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR005_4')}</div>
+							</div>
+							<div class="cell">
+								<input id="exportTitle" data-bind="ntsTextEditor: {
+												name: '#{i18n.getText('KMR005_4')}',
+												value: title,
+												required: true,
+												constraint: 'BentoExportTitle' }" />
+							</div>
+	
+						</div>
+						<div class="table valign-center control-group">
+							<div class="cell">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR005_5')}</div>
+							</div>
+							<div class="cell">
+								<div class="cf" data-bind="ntsSwitchButton: {
+												name: '#{i18n.getText('KMR005_5')}',
+												options: ko.observableArray([
+							                		{ code: 1, name: '#{i18n.getText('KMR005_6')}' },
+							                		{ code: 0, name: '#{i18n.getText('KMR005_7')}' }
+							                	]),
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedOrdered,
+												required: true }"></div>	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

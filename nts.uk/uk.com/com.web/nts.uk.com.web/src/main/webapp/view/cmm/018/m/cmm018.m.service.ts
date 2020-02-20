@@ -19,25 +19,19 @@ module nts.uk.com.view.cmm018.m {
             chkCompany: boolean;
             chkWorkplace: boolean;
             chkPerson: boolean;
-            constructor(baseDate: Date, chkCompany: boolean, chkWorkplace: boolean, chkPerson: boolean) {
+            sysAtr: number;
+            lstAppName: Array<any>;
+            constructor(baseDate: Date, chkCompany: boolean, chkWorkplace: boolean, chkPerson: boolean,
+                sysAtr: number, lstAppName: Array<any>) {
                 this.baseDate = baseDate;
                 this.chkCompany = chkCompany;
                 this.chkWorkplace = chkWorkplace;
                 this.chkPerson = chkPerson;
+                this.sysAtr = sysAtr;
+                this.lstAppName = lstAppName;
             }
         }
     }
 
 
-}
-
-
-function BreadCrumb(str: string) {
-    let items = str.split(','),
-        html: string = '';
-    for (let i in items) {
-        html += "<span>" + items[i] + "</span>";
-    }
-    
-    return html;
 }

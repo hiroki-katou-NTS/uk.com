@@ -40,16 +40,13 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName, wi.bsymtWorkplaceInfoPK.wkpid"
+	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.workplaceCode, wi.workplaceGeneric, wi.workplaceName, wi.pk.workplaceId"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId AND awh.cid =:cid"
-			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid AND wh.bsymtWorkplaceHistPK.cid =:cid"
-			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId AND wi.bsymtWorkplaceInfoPK.cid =:cid"
+			+ " LEFT JOIN BsymtWorkplaceInfor wi ON awhi.workPlaceId = wi.pk.workplaceId AND wi.pk.companyId =:cid"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
-			+ " AND awh.endDate >= :refDate"
-			+ " AND wh.strD <= :refDate"
-			+ " AND wh.endD >= :refDate";
+			+ " AND awh.endDate >= :refDate";
 	
 	// 社員の所属部門を取得する
 	private static final String DEPARTMENT_QUERY = 

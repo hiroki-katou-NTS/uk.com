@@ -14,6 +14,9 @@ public class PersonalReportDto{
 	
 	 Integer reportID;
 	 String sendBackComment;
+	 String rootSateId;
+	 Integer regStatus; 
+	 Integer aprStatus;
 	 PersonalReportClassificationDto clsDto;
 
 }

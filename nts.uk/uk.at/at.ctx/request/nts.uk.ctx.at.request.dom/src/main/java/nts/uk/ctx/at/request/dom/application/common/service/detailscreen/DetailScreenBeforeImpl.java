@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenAppData;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenApprovalData;
 import nts.uk.shr.com.context.AppContexts;
@@ -52,17 +52,18 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 		ApprovalBehaviorAtrImport_New loginApprovalAtr = null;
 		List<ApprovalPhaseStateImport_New> approvalPhaseStateLst = approvalRootStateAdapter.getApprovalDetail(appID);
 		// 承認フェーズListを5～1の逆順でループする
-		approvalPhaseStateLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
+		approvalPhaseStateLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder));
 		for(ApprovalPhaseStateImport_New approvalPhase : approvalPhaseStateLst){
 			boolean find = false;
 			for(ApprovalFrameImport_New approvalFrame : approvalPhase.getListApprovalFrame()){
-				List<String> approverList = approvalFrame.getListApprover().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				// ループ中の承認枠．承認者＝ログイン社員の場合
-				if(approverList.contains(loginEmpID)){
-					authorComment = approvalFrame.getApprovalReason();
-					loginApprovalAtr = approvalFrame.getApprovalAtr();
-					find = true;
-					break;
+				for(ApproverStateImport_New approverState : approvalFrame.getListApprover()) {
+					// ループ中の承認枠．承認者＝ログイン社員の場合
+					if(approverState.getApproverID().equals(loginEmpID)) {
+						authorComment = approverState.getApprovalReason();
+						loginApprovalAtr = approverState.getApprovalAtr();
+						find = true;
+						break;
+					}
 				}
 			}
 			if(find){

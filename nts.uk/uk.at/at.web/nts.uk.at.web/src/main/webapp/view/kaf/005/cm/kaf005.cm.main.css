@@ -78,11 +78,10 @@ div.form-label.broken {
     margin-top: 10px;
 }
 .panel.panel-gray-bg {
-	margin-left: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 15px;
 	min-height: 300px;
-	width: 250px;
-	margin-top: 20px;
+	width: 253px;
+	margin-top: 5px;
 }
 
 .left-contents {
@@ -173,4 +172,7 @@ div.form-label.broken {
 	height: 20px;	
 	text-align: center;
 	border: 1px solid #CCC;
+}
+#overtime-container .nts-fixed-body-container.ui-iggrid {
+	overflow: hidden;		
 }

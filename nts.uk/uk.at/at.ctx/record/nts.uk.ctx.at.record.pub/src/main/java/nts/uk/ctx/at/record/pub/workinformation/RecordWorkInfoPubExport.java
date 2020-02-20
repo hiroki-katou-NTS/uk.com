@@ -69,6 +69,7 @@ public class RecordWorkInfoPubExport {
 	
 	/** 計算就業外深夜 */
 	/** 休出深夜 */
+	private Integer midnightTime;
 	
 	public RecordWorkInfoPubExport(String workTypeCode, String workTimeCode, Integer attendanceStampTimeFirst,
 			Integer leaveStampTimeFirst, Integer attendanceStampTimeSecond, Integer leaveStampTimeSecond, Integer time1, Integer time2,

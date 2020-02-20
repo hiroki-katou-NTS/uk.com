@@ -9,4 +9,6 @@ import lombok.Data;
 public class DeleteDocumentReportCommand {
 	 String cid; 
 	 String fileId; 	
+	 String missingDocName;
+	 String reportId; //届出ID
 }

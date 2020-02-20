@@ -49,7 +49,7 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 				headCaculation,
 				holiday,
 				transfer,
-				0,
+				recordWorkInfo.getMidnightTime(),
 				0);
 	}
 	private List<OvertimeInputCaculation> converTimeCaculation(List<CommonTimeSheet> lstTime, int attendanceType){

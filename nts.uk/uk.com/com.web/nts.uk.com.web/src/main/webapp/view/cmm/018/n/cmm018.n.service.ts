@@ -2,7 +2,6 @@ module nts.uk.com.view.cmm018.n {
     export module service {
         let servicePath = {
             getRightList: 'workflow/approvermanagement/workroot/find/applicationType',
-            getInforRoot: "workflow/approvermanagement/workroot/getEmployeeRegisterApprovalRoot",
             saveAsExcel: "approval/report/employee",
             getConfirm: 'workflow/approvermanagement/workroot/find/confirmRootType'
         };

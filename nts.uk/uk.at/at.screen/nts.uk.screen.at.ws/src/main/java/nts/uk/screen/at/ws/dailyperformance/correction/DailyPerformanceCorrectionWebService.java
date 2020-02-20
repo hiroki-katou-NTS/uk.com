@@ -183,6 +183,8 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("resultReturn", null);
 		session.setAttribute("approvalConfirm", dtoResult.getApprovalConfirmCache());
 		dtoResult.setApprovalConfirmCache(null);
+		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
+		dtoResult.setMapCellState(null);
 		removeSession();
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
@@ -202,6 +204,8 @@ public class DailyPerformanceCorrectionWebService {
 		session.setAttribute("resultReturn", null);
 		session.setAttribute("approvalConfirm", results.getApprovalConfirmCache());
 		results.setApprovalConfirmCache(null);
+		results.setLstCellState(results.getMapCellState().values().stream().collect(Collectors.toList()));
+		results.setMapCellState(null);
 		removeSession();
 		results.setDomainOld(Collections.emptyList());
 		return results;
@@ -363,6 +367,8 @@ public class DailyPerformanceCorrectionWebService {
 		result.setApprovalConfirmCache(null);
 		result.setDomainOld(Collections.emptyList());
 		session.setAttribute("domainEdits", null);
+		result.setLstCellState(result.getMapCellState().values().stream().collect(Collectors.toList()));
+		result.setMapCellState(null);
 		return result;
 	}
 
@@ -495,7 +501,10 @@ public class DailyPerformanceCorrectionWebService {
 		param.setClosureId(closureId);
 		DPCorrectionStateParam stateParam = (DPCorrectionStateParam)session.getAttribute("dpStateParam");
 		param.setStateParam(stateParam);
-		return dpDisplayLockProcessor.processDisplayLock(param);
+		DailyPerformanceCorrectionDto dtoResult = dpDisplayLockProcessor.processDisplayLock(param);
+		dtoResult.setLstCellState(dtoResult.getMapCellState().values().stream().collect(Collectors.toList()));
+		dtoResult.setMapCellState(null);
+		return dtoResult;
 	}
 
 	@POST

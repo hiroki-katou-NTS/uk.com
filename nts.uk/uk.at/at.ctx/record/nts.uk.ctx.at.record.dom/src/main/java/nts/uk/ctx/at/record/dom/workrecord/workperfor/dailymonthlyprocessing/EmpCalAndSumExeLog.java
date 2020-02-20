@@ -107,4 +107,11 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 				caseSpecExeContentID, EnumAdaptor.valueOf(executionClassification,CalAndAggClassification.class));
 	}
 
+	public EmpCalAndSumExeLog(String empCalAndSumExecLogID, Integer executionStatus) {
+		super();
+		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
+		this.executionStatus = Optional.ofNullable(executionStatus==null?null:EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class));
+	}
+	
+
 }

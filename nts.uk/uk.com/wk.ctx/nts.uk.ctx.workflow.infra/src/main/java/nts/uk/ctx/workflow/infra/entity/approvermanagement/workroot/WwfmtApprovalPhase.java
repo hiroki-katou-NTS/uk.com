@@ -27,16 +27,18 @@ public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
 	/**主キー*/
 	@EmbeddedId
 	public WwfmtApprovalPhasePK wwfmtApprovalPhasePK;
-	
+	/**分岐ID*/
+	@Column(name = "BRANCH_ID")
+	public String branchId;
 	/**承認形態*/
 	@Column(name = "APPROVAL_FORM")
 	public int approvalForm;
 	/**閲覧フェーズ*/
 	@Column(name = "BROWSING_PHASE")
 	public int browsingPhase;
-	/**順序*/
-	@Column(name = "DISPORDER")
-	public int displayOrder;
+	/**区分*/
+	@Column(name = "APPROVAL_ATR")
+	public int approvalAtr;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="wwfmtApprovalPhase", orphanRemoval = true)
 	public List<WwfmtAppover> wwfmtAppovers;

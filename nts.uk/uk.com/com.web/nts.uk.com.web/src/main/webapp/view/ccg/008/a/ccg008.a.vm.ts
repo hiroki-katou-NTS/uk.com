@@ -91,7 +91,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                         self.topPageCode(code);
                         character.restore('cache').done((obj)=>{
                             if(obj){
-                                setTimeout(function() { 
                                     if(obj.currentOrNextMonth){
                                         self.selectedSwitch(obj.currentOrNextMonth);
                                     }else{
@@ -99,7 +98,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                     }
                                     self.closureSelected(obj.closureId)
                                     nts.uk.ui.windows.setShared('cache', obj);
-                                }, 2000);
                             }else{
                                 self.closureSelected(1);
                                 self.selectedSwitch(null);
@@ -111,7 +109,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                  // get combobox and switch button
                 character.restore('cache').done((obj)=>{
                     if(obj){
-                        setTimeout(function() { 
                             if(obj.currentOrNextMonth){
                                 self.selectedSwitch(obj.currentOrNextMonth);
                             }else{
@@ -119,7 +116,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                             }
                             self.closureSelected(obj.closureId)
                             nts.uk.ui.windows.setShared('cache', obj);
-                        }, 2000);
                     }else{
                         self.closureSelected(1);
                         self.selectedSwitch(null);

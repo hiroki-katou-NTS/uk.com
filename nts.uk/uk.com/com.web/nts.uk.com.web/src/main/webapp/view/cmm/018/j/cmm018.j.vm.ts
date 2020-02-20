@@ -14,12 +14,12 @@ module nts.uk.com.view.cmm018.j {
             selectedId: KnockoutObservable<number> = ko.observable(1);
             beginStartDate: KnockoutObservable<string>;
             constructor() {
-                var self = this; 
+                let self = this; 
                 self.itemList =  ko.observableArray([
                                     { code: 0, name: nts.uk.resource.getText("CMM018_54") },
                                     { code: 1, name: nts.uk.resource.getText("CMM018_55") }
                                 ]);
-                var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM');
+                let data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM');
                 self.dataSource = data;
                 self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
                 self.item(self.dataSource.name);
@@ -41,7 +41,9 @@ module nts.uk.com.view.cmm018.j {
                 block.invisible();
                 var self = this;
                 //data
-                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate,self.dataSource.mode);
+                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31', self.dataSource.workplaceId,
+                                self.dataSource.employeeId, self.dataSource.check, self.selectedId(),
+                                self.dataSource.startDate, self.dataSource.lstUpdate, self.dataSource.mode, self.dataSource.sysAtr);
                 if(self.isUpdate()) {//TH: edit
 //                //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 //                    if(self.newStartDate() < self.beginStartDate()){

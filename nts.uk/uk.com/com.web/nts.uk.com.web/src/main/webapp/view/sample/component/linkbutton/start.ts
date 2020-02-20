@@ -7,9 +7,10 @@ __viewContext.ready(function () {
             self.linkText = ko.observable("振込元銀行の登録へ");
         }
         
-        doSomething(s: string) {
+        doSomething() {
             var self = this;
-            self.linkText(self.linkText() + s);
+//            self.linkText(self.linkText() + 'H');
+            alert('click');
         }
     }
     

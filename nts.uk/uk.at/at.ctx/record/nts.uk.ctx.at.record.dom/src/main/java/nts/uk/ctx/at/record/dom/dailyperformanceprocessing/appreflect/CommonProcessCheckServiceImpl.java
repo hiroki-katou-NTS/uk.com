@@ -253,7 +253,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		for (int i = 0 ; i < 10 ; i ++ ) {
 			int num_1 = (i * 6) + 157;
 			int num_2 = num_1 + 2;
-			int count = i;
+			int count = i + 1;
 			
 			List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
 					.filter(x -> x.getAttendanceItemId() == num_1 || x.getAttendanceItemId() == num_2)
@@ -262,7 +262,12 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 					&& lstEditCheck.get(0).getEditStateSetting() == EditStateSetting.REFLECT_APPLICATION) {
 				lstEditCheck.clear();
 				integrationOfDaily.getBreakTime().stream().forEach(x -> {
-					x.getBreakTimeSheets().remove(count);
+					List<BreakTimeSheet> b = new ArrayList<>(x.getBreakTimeSheets());
+					b.stream().forEach(a -> {
+						if(a.getBreakFrameNo().v() == count) {
+							x.getBreakTimeSheets().remove(a);
+						}
+					});
 				});
 			}
 			if (lstEditCheck.isEmpty()) {

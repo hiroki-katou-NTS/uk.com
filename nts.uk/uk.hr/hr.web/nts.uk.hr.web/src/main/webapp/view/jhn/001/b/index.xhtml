@@ -33,7 +33,7 @@
 					<div class="row1"
 						data-bind="ntsFormLabel: {required: true , enable: true}">#{i18n.getText('JHN001_B2_2')}</div>
 					<div>
-						<div >
+						<div tabindex="1">
 							<table id="B221_4"
 								data-bind="ntsGridList: {
 									options: listReportDraft,
@@ -50,9 +50,9 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed " data-bind="click: continueProcess">#{i18n.getText('JHN001_B1_1')}</button>
-				<button data-bind="click: close">#{i18n.getText('JHN001_B1_2')}</button>
-				<button class="danger" data-bind="click: deleteSaveDraft">#{i18n.getText('JHN001_B1_3')}</button>
+				<button tabindex="2" class="proceed large" data-bind="click: continueProcess">#{i18n.getText('JHN001_B1_1')}</button>
+				<button tabindex="3" class="large" data-bind="click: closeDialog">#{i18n.getText('JHN001_B1_2')}</button>
+				<button tabindex="4" class="danger large" data-bind="click: deleteSaveDraft">#{i18n.getText('JHN001_B1_3')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

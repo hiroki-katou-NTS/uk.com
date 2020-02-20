@@ -28,6 +28,35 @@ public interface DataCorrectionLogRepository {
 	
 	List<DataCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId, DatePeriod period, TargetDataType targetDataType);
 	
+	/**
+	 * CLI003: fix bug #108872
+	 * EA修正履歴No3675
+	 * @param operationIds
+	 * @param listEmployeeId
+	 * @param period
+	 * @param targetDataType
+	 * @return
+	 */
+	List<DataCorrectionLog> findByTargetAndDateScreenF(List<String> operationIds, List<String> listEmployeeId, DatePeriod period, TargetDataType targetDataType);
+	
 	List<DataCorrectionLog> findByTargetAndDate(List<String> operationIds, List<String> listEmployeeId, DatePeriod period, TargetDataType targetDataType);
+	
+	/**
+	 * CLI003: fix bug #108979 OFFSET " + offset + " ROWSFETCH FIRST " + limit + " ROWS ONLY
+	 * OFFSET " + offset + " ROWS"
+	 * FETCH FIRST " + limit + " ROWS ONLY
+	 * this.getEntity().createQuery(sql).setFirstResult(offset)
+	 * setMaxResults(limit)
+	 * @param operationIds
+	 * @param listEmployeeId
+	 * @param period
+	 * @param targetDataType
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
+	List<DataCorrectionLog> findByTargetAndDateRefactors(List<String> operationIds, List<String> listEmployeeId,
+			DatePeriod period, TargetDataType targetDataType,
+			int offset, int limit);
 	
 }

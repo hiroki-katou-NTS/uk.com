@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MenuOperationRepository {
@@ -23,4 +24,10 @@ public interface MenuOperationRepository {
 	 * @author yennth
 	 */
 	void update(MenuOperation menuOperation);
+	/**
+	 * 承認機能を使用するイベント種類を取得
+	 * @param companyId
+	 * @return
+	 */
+	List<MenuInfoEx> findByApprUse(String companyId);
 }

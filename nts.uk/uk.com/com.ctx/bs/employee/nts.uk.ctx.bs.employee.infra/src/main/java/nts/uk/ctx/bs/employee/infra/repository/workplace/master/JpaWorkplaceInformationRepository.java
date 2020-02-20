@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
@@ -136,5 +137,39 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId) {
 		this.commandProxy().remove(BsymtWorkplaceInfor.class, new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId));
 	}
-
+	@Override
+	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate){
+		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
+				+ " inner join BsymtWorkplaceConfig  conf"
+				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
+				+ " where info.pk.companyId = :companyId"
+				+ " and info.deleteFlag = 0"
+				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
+				+ " and info.pk.workplaceId = :wkpId";
+		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWorkplaceInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.setParameter("wkpId", wkpId)
+				.getList(i -> i.toDomain());
+		if(lst.isEmpty()) return Optional.empty();
+		return Optional.of(lst.get(0));
+	}
+	
+	@Override
+	public Optional<WorkplaceInformation> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate){
+		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
+				+ " inner join BsymtWorkplaceConfig  conf"
+				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
+				+ " where info.pk.companyId = :companyId"
+				+ " and info.deleteFlag = 0"
+				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
+				+ " and info.workplaceCode = :wkpCd";
+		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWorkplaceInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.setParameter("wkpCd", wkpCd)
+				.getList(i -> i.toDomain());
+		if(lst.isEmpty()) return Optional.empty();
+		return Optional.of(lst.get(0));
+	}
 }

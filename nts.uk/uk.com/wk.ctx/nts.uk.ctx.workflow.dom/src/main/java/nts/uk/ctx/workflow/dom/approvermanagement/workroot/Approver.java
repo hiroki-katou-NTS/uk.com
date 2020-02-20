@@ -14,49 +14,29 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @AllArgsConstructor
 public class Approver extends DomainObject{
-	/**会社ID*/
-	private String companyId;
-	/**分岐ID*/
-	private String branchId;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
-	/**承認者ID*/
-	private String approverId;
-	/**職位ID*/
-	private String jobTitleId;
+	/**承認者順序*/
+	private int approverOrder;
+	/**承認者Gコード*/
+	private String jobGCD;
 	/**社員ID*/
 	private String employeeId;
-	/**順序*/
-	private int orderNumber;
-	/**承認者指定区分*/
-	private ApprovalAtr approvalAtr;
 	/**確定者*/
 	private ConfirmPerson confirmPerson;
+	/**特定職場ID*/
+	private String specWkpId;
 	
-	public static Approver createSimpleFromJavaType(String companyId, 
-			String branchId,
-			String approvalPhaseId,
-			String approverId,
-			String jobTitleId,
+	public static Approver createSimpleFromJavaType(
+			int approverOrder,
+			String jobGCD,
 			String employeeId,
-			int orderNumber,
-			int approvalAtr,
-			int confirmPerson){
-		return new Approver(companyId,
-				branchId,
-				approvalPhaseId,
-				approverId,
-				jobTitleId,
+			int confirmPerson,
+			String specWkpId){
+		return new Approver(
+				approverOrder,
+				jobGCD,
 				employeeId,
-				orderNumber,
-				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
-				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class));
-	}
-	public void updateApprovalPhaseId(String approvalPhaseId){
-		this.approvalPhaseId = approvalPhaseId;
-	}
-	public void updateApproverId(String approverId){
-		this.approverId = approverId;
+				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class),
+				specWkpId);
 	}
 	
 	public boolean isConfirmer() {

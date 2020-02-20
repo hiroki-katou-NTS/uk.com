@@ -30,35 +30,123 @@ module jhn001.c.viewmodel {
                 layouts = self.layouts;
             
             self.start();
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'C' }] },
+                Page.NORMAL);
+        }
+        
+        getFrameIndex(loopPhase, loopFrame, loopApprover) {
+            let self = this;
+            if (_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+            }
+            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);
+        }
+        
+        frameCount(listFrame) {
+            let self = this;
+            if (_.size(listFrame) > 1) {
+                return _.size(listFrame);
+            }
+            return _.chain(listFrame).map(o => self.approverCount(o.listApprover())).value()[0];
+        }
+        
+        approverCount(listApprover) {
+            let self = this;
+            return _.chain(listApprover).countBy().values().value()[0];     
+        }        
+        
+        getApproverAtr(approver) {
+            if (approver.approverMail().length > 0) {
+                return approver.approverName() + '(@)';
+            } else {
+                return approver.approverName();
+            }
         }
         
         /*　承認ボタン*/
         approve():void {
-            let self = this;    
-        
-        
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.APPROVE};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });
         
         }
         
         /* 否認ボタン*/
         deny(): void{
-            let self = this;    
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.DENY};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
         }
         
         /* 差し戻し*/
         sendBack(): void{
-            let self = this;
+            let self = this,
+            layout = self.layout();
+            setShared('JHN001D_PARAMS', {reportId: layout.reportId()});
+            invisible();
+            modal('/view/jhn/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                unblock();
+            });
         }
         
         /*　解除*/
         cancel(): void{
-            let self = this;
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.CANCEL};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
         
         }
         
         /* 登録*/
         register(): void{
-            let self = this;    
+            let self = this,
+            layout = self.layout(),
+            cmd: any = {reportId: layout.reportId(),
+             approveComment: layout.approveComment(),
+             actionApprove: ACTION_PROVE.REGISTER};  
+            invisible();
+            service.saveData(cmd).done(function(data) {
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+
+                });
+                unblock();
+            }).fail(function(res: any) {
+                unblock();
+            });    
+             
         }
         
         start(code?: string): JQueryPromise<any> {
@@ -68,10 +156,10 @@ module jhn001.c.viewmodel {
                 dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let reportId: String = url.split("=")[1];
+            let reportId: string = url.split("=")[1];
             // get all layout
             layouts.removeAll();
-            service.getDetails({reportId: reportId, reportLayoutId: 1}).done((data: any) => {
+            service.getDetails({reportId: reportId, screenC: true}).done((data: any) => {
                 if (data) {
                     lv.removeDoubleLine(data.classificationItems);
                     self.getDetailReport(layout, data);
@@ -80,8 +168,14 @@ module jhn001.c.viewmodel {
                     });
                 } else {
                     layout.classifications.removeAll();
-                    unblock();
                 }
+                
+                //setTimeout(function(){
+                //     $("#C222_3_1").focus();
+               // }, 1000);
+               
+                
+                unblock();
             });
             return dfd.promise();
         }
@@ -110,41 +204,57 @@ module jhn001.c.viewmodel {
             
             layout.classifications(data.classificationItems || []);
             
+            layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
+            
             var lstDoc = [];
             
             for (var i = 0; i < data.documentSampleDto.length; i++) {
                 
+                let fileData = data.documentSampleDto[i];
+
+                let urlFileSample = fileData.sampleFileId == null || fileData.sampleFileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.sampleFileId),
+                
+                 urlFile = fileData.fileId == null || fileData.fileId == '' ? '#' : nts.uk.request.file.liveViewUrl(fileData.fileId),
+                
+                 isShow = true;
+                
+                if(fileData.sampleFileName == null || fileData.sampleFileName == ''){
+                    
+                    isShow = false;    
+                    
+                }
+                
                 let obj = {
                     
-                    docName: data.documentSampleDto[i].docName,
+                    docName: fileData.docName,
                     
-                    ngoactruoc: '(',
+                    ngoactruoc: !isShow ? '' : '(',
                     
-                    sampleFileName: data.documentSampleDto[i].sampleFileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].sampleFileName + '</a>',
-                    
-                    ngoacsau: ')',
-                    
-                    fileName: data.documentSampleDto[i].fileName == null ? '' : '<a href="/shr/infra/file/storage/infor/' + data.documentSampleDto[i].fileName + '" target="_blank">' + data.documentSampleDto[i].fileName + '</a>',
+                    sampleFileName: !isShow ? '' : '<a href=' + urlFileSample + ' target="_blank">' + fileData.sampleFileName + '</a>',
                    
-                    cid: data.documentSampleDto[i].cid,
-                    
-                    reportLayoutID: data.documentSampleDto[i].reportLayoutID,
+                    ngoacsau:   !isShow ? '' : ')',
                    
-                    docID: data.documentSampleDto[i].docID,
+                    fileName: fileData.fileName == null || fileData.fileName == '' ? '' : '<a style="color: blue;" href=' + urlFile + ' target="_blank">' + fileData.fileName + '</a>',
                     
-                    dispOrder: data.documentSampleDto[i].dispOrder,
+                    cid: fileData.cid,
+                    
+                    reportLayoutID: fileData.reportLayoutID,
+                    
+                    docID: fileData.docID,
                    
-                    requiredDoc: data.documentSampleDto[i].requiredDoc,
-                    
-                    docRemarks: data.documentSampleDto[i].docRemarks,
-                    
-                    sampleFileId: data.documentSampleDto[i].sampleFileId,
+                    dispOrder: fileData.dispOrder,
                    
-                    reportID: data.documentSampleDto[i].reportID,
+                    requiredDoc: fileData.requiredDoc,
+                   
+                    docRemarks: fileData.docRemarks,
                     
-                    fileId: data.documentSampleDto[i].fileId,
+                    sampleFileId: fileData.sampleFileId,
+                   
+                    reportID: fileData.reportID,
                     
-                    fileSize: data.documentSampleDto[i].fileSize
+                    fileId: fileData.fileId,
+                   
+                    fileSize: fileData.fileSize,
                 }
                 
                 lstDoc.push(obj);
@@ -185,6 +295,7 @@ module jhn001.c.viewmodel {
         outData?: Array<any>;
         approvalRootState?: Array<any>;
         listDocument?: Array<any>;
+        listApprovalFrame?: Array<any>;
     }
 
     class Layout {
@@ -201,7 +312,7 @@ module jhn001.c.viewmodel {
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
         approvalRootState : KnockoutObservableArray<any> = ko.observableArray([]);
         listDocument : KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
 //            self.reportId(param.reportId);
@@ -230,6 +341,12 @@ module jhn001.c.viewmodel {
             let rowData: any = this;
             if (rowData.fileId) {
                 nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.fileId).done(function(res) {
+
+                    //                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowData.originalName).done(function(res) {
+                    //                        console.log(res);
+                    //                    }).fail(function(error) {
+                    //                       console.log(error);
+                    //                    });
                     nts.uk.request.specials.donwloadFile(rowData.fileId);
                 });
             }
@@ -324,5 +441,20 @@ module jhn001.c.viewmodel {
         COPY = 2,
         OVERRIDE = 3,
         REMOVE = 4
+    }
+    
+    enum ACTION_PROVE {
+        APPROVE = 0,
+        DENY = 1,
+        BACK = 2,
+        CANCEL = 3,
+        REGISTER = 4
+    }
+    
+        
+    enum Page {
+        NORMAL = 0,
+        SIDEBAR = 1,
+        FREE_LAYOUT = 2
     }
 }

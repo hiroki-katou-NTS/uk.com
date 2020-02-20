@@ -1616,6 +1616,9 @@ public class ProgramsManager {
 
     public static final Program CMM013F = new Program(WebAppId.COM, ProgramIdConsts.CMM013F, "CMM013_58",
             "/view/cmm/013/f/index.xhtml");
+    
+    public static final Program CMM013H = new Program(WebAppId.COM, ProgramIdConsts.CMM013H, "CMM013_69",
+            "/view/cmm/013/h/index.xhtml");
 
     public static final Program CDL004 = new Program(WebAppId.COM, ProgramIdConsts.CDL004, "CDL004_1",
             "/view/cdl/004/a/index.xhtml");
@@ -2433,6 +2436,20 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 	
 	public static final Program JMM018C = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_C",
 			"/view/jmm/018/c/index.xhtml");
+	
+	/**
+	 * JHN001
+	 */
+	public static final Program JHN001A = new Program(WebAppId.HR, ProgramIdConsts.JHN001A, "JHN001_A",
+			"/view/jhn/001/a/index.xhtml");
+	public static final Program JHN001B = new Program(WebAppId.HR, ProgramIdConsts.JHN001B, "JHN001_B",
+			"/view/jhn/001/b/index.xhtml");
+	public static final Program JHN001C = new Program(WebAppId.HR, ProgramIdConsts.JHN001C, "JHN001_C",
+			"/view/jhn/001/c/index.xhtml");
+	public static final Program JHN001D = new Program(WebAppId.HR, ProgramIdConsts.JHN001D, "JHN001_D",
+			"/view/jhn/001/d/index.xhtml");
+	public static final Program JHN001F = new Program(WebAppId.HR, ProgramIdConsts.JHN001F, "JHN001_F",
+			"/view/jhn/001/f/index.xhtml");
 	
 	/**
 	 * JHN003

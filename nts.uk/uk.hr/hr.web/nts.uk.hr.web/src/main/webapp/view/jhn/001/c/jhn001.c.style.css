@@ -34,11 +34,12 @@
 }
 
 #C222 {
-	width: 1280px;
+	width: 1000px;
 	float: left;
 	position: relative;
     border-radius: 10px;
     box-sizing: border-box;
+    border: 1px solid #ccc;
 }
 
 .input_002 {
@@ -55,8 +56,9 @@
 }
 
 #C222_1, #C222_2{
-	width: 780px;
-	height: 80px;
+	width: 945px;
+	height: 45px;
+	margin-bottom: 20px;
 }
 
 .label.warning {
@@ -67,10 +69,19 @@
 }
 
 #C222_3_1{
-	width: 560px; 
-	height: 80px;
+	width: 565px; 
+	height: 43px;
 }
 
+#C222_3, #C222_4{
+	width: 209px; 
+	margin-left: 6px !important;
+	margin-bottom: 20px;
+}
+
+#C222_4_1{
+	width: 100px !important; 
+}
 
 #table-phase, #table-phase td, #table-phase th {
 	border: 1px solid black;
@@ -84,6 +95,7 @@
 
 #label-1 {
 	float: left;
+	width: 209px;
 }
 
 #table-1 {
@@ -92,7 +104,7 @@
 }
 
 .layout-control .drag-panel{
-	width: 730px !important;
 	height: 345px !important;
+	padding: 2px !important;
 }
 

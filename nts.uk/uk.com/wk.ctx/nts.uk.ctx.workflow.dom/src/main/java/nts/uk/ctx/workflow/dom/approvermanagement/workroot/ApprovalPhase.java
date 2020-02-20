@@ -16,41 +16,37 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @AllArgsConstructor
 public class ApprovalPhase extends AggregateRoot{
-	/**会社ID*/
-	private String companyId;
+	/**承認ID*/
+	private String approvalId;
+	/**順序*/
+	private int phaseOrder;
 	/**分岐ID*/
 	private String branchId;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
 	/**承認形態*/
 	private ApprovalForm approvalForm;
 	/**閲覧フェーズ*/
 	private int browsingPhase;
-	/**順序*/
-	private int orderNumber;
-	
+	/**承認者指定区分*/
+	private ApprovalAtr approvalAtr;
 	/**承認者*/
 	private List<Approver>  approvers;
 	
-	public static ApprovalPhase createSimpleFromJavaType(String companyId,
+	public static ApprovalPhase createSimpleFromJavaType(
+			String approvalId,
+			int phaseOrder,
 			String branchId,
-			String approvalPhaseId,
 			int approvalForm,
 			int browsingPhase,
-			int orderNumber,
+			int approvalAtr,
 			List<Approver>  approvers){
-		return new ApprovalPhase(companyId,
+		return new ApprovalPhase(
+				approvalId,
+				phaseOrder,
 				branchId,
-				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber, approvers);
-	}
-	public void updateBranchId(String branchId){
-		this.branchId = branchId;
-	}
-	public void updateAppPhaseId(String approvalPhaseId){
-		this.approvalPhaseId = approvalPhaseId;
+				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
+				approvers);
 	}
 	
 	public void addApproverList(List<Approver> approvers) {

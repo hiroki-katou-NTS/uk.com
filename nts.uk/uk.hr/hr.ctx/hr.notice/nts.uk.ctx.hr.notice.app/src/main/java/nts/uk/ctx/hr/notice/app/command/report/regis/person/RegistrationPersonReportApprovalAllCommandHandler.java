@@ -10,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ActionApprove;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.ApproveReportCommand;
-import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveCommentHandler;
+import nts.uk.ctx.hr.notice.app.command.report.regis.person.approve.RegisterApproveHandler;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +24,7 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 	private ApprovalPersonReportRepository repo;
 
 	@Inject
-	private RegisterApproveCommentHandler approve;
+	private RegisterApproveHandler approve;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegistrationPersonReportApprovalAllCommand> context) {
@@ -43,10 +43,10 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 		}
 		reportList.forEach(x -> {
 			ApproveReportCommand approveCmd = new ApproveReportCommand(String.valueOf(x.getReportID()),
-					x.getRootSatteId(), TextResource.localize("A1_1_1"), ActionApprove.APPROVE);
+					x.getRootSatteId(), TextResource.localize("A1_1_1"), ActionApprove.APPROVE.value);
 
 			// アルゴリズム[承認処理]を実行する
-			this.approve.approveReport(approveCmd);
+			this.approve.approveReport(cId, approveCmd);
 
 		});
 

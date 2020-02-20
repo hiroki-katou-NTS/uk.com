@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.RegistrationPersonReportApprovalAllCommand;
 import nts.uk.ctx.hr.notice.app.command.report.regis.person.RegistrationPersonReportApprovalAllCommandHandler;
+import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.PersonReportQuery;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.RegistrationPersonReportFinder;
@@ -33,6 +34,12 @@ public class RegistrationPersonReportWebServices {
 	@Path("approval-all")
 	public void approvalAll(RegistrationPersonReportApprovalAllCommand command) {
 		this.handler.handle(command);
+	}
+
+	@POST
+	@Path("start-page")
+	public List<PersonalReportClassificationDto> startPage() {
+		return this.finder.startPage();
 	}
 
 }

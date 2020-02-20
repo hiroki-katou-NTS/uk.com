@@ -8,8 +8,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappro
 
 @Data
 public class EmployeeApproverRootQuery {
+	private int sysAtr;
+	
 	private GeneralDate baseDate;
+	
 	private List<EmployeeQuery> lstEmpIds;
-	//list AppType print
+	
 	private List<AppTypes> lstApps;
 }

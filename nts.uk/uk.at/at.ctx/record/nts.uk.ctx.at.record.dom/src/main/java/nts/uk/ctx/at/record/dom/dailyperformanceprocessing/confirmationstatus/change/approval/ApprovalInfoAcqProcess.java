@@ -21,11 +21,7 @@ public class ApprovalInfoAcqProcess {
 	
 	public List<ConfirmInfoResult> getApprovalInfoAcp(String companyId, String empTarget, List<String> employeeIds,
 			Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
-		if (periodOpt.isPresent()) {
-			return processModeAll(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt);
-		} else {
-			return processModeAll(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt);
-		}
+		return processModeAll(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt);
 
 	}
 

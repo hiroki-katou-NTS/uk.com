@@ -3,19 +3,19 @@ module jhn001.b.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-         getListReportSaveDraft: 'hr/notice/report/regis/person/getAll',
-         deleteReport: 'hr/notice/report/regis/person/remove/{0}',
+        getListReportSaveDraft: 'hr/notice/report/regis/person/getAll-SaveDraft',
+        remove:                 'hr/notice/report/regis/person/remove',
     };
 
 
     export function getListReportSaveDraft() {
         return ajax('hr', paths.getListReportSaveDraft);
     }
-    
-    export function deleteReport(reportId : any) {
-        return ajax('hr', paths.deleteReport, reportId);
+
+    export function removeData(objRemove) {
+        return ajax('hr' , paths.remove, objRemove);
     }
-    
-    
-    
+
+
+
 }

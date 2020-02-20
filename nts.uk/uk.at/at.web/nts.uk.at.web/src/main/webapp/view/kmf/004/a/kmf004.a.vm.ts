@@ -23,6 +23,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         grantDateOptions: KnockoutObservableArray<any>;
         selectedGrantDate: any;
         methods: KnockoutObservableArray<any>;
+        methods1: KnockoutObservable<any>;
+        methods2: KnockoutObservable<any>;
         selectedMethod: KnockoutObservable<number>;
         allowDisappear: KnockoutObservable<boolean>;
         years: KnockoutObservable<number>;
@@ -146,6 +148,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 new BoxModel(0, nts.uk.resource.getText('KMF004_19')),
                 new BoxModel(1, nts.uk.resource.getText('KMF004_20'))
             ]);
+            self.methods1 = ko.observable(new BoxModel(0, nts.uk.resource.getText('KMF004_19')));
+            self.methods2 = ko.observable(new BoxModel(1, nts.uk.resource.getText('KMF004_20')));
 
             self.selectedMethod = ko.observable(0);
 

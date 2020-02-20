@@ -453,6 +453,16 @@ module nts.uk.at.view.kaf010.b {
                 if(item.frameNo==12){
                     frameName = nts.uk.resource.getText("KAF005_65");     
                 }
+                let color = '';
+                if(nts.uk.util.isNullOrUndefined(calcValue.applicationTime)){
+                    if(self.editable()&& self.enableOvertimeInput()){
+                        color = 'none';
+                    } else {
+                        color = '#ebebe4';
+                    }  
+                } else {
+                    color = self.getColorInit(item.attendanceID, item.frameNo, calcValue.errorCode, calcValue.preAppExceedState, calcValue.actualExceedState);            
+                }
                 return new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
@@ -466,7 +476,7 @@ module nts.uk.at.view.kaf010.b {
                         nts.uk.util.isNullOrUndefined(calcValue.caculationTime) ? null : self.convertIntToTime(parseInt(calcValue.caculationTime)),
                         "",
                         "", 
-                        self.getColorInit(item.attendanceID, item.frameNo, calcValue.errorCode, calcValue.preAppExceedState, calcValue.actualExceedState));        
+                        color);        
             }
             
             getColorInit(attendanceId, frameNo,errorCode, beforeAppStatus, actualStatus){
@@ -872,6 +882,19 @@ module nts.uk.at.view.kaf010.b {
                         breakTime.applicationTime(calcOT.appTime);
                         breakTime.preAppTime(nts.uk.util.isNullOrUndefined(calcOT.preAppTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.preAppTime));
                         breakTime.caculationTime(nts.uk.util.isNullOrUndefined(calcOT.actualTime) ? null : nts.uk.time.format.byId("Clock_Short_HM", calcOT.actualTime));
+                        if(nts.uk.util.isNullOrUndefined(breakTime.applicationTime())){
+                            if(self.editable()&& self.enableOvertimeInput()){
+                                $('td#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', 'none');
+                                $('input#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', 'none');
+                                breakTime.color('none');
+                                return; 
+                            } else {
+                                $('td#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', '#ebebe4');
+                                $('input#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', '#ebebe4');
+                                breakTime.color('#ebebe4');
+                                return; 
+                            }  
+                        }
                         let oldValue = _.find(self.breakTimesOld, item => {
                             return item.attendanceID == 2 &&
                                 item.frameNo == breakTime.frameNo();    
@@ -886,6 +909,24 @@ module nts.uk.at.view.kaf010.b {
                         if(!nts.uk.util.isNullOrUndefined(newColor)){
                             breakTime.color(newColor);
                         }
+                    } else {
+                        if(nts.uk.util.isNullOrUndefined(breakTime.applicationTime())){
+                            if(self.editable()&& self.enableOvertimeInput()){
+                                $('td#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', 'none');
+                                $('input#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', 'none');
+                                breakTime.color('none');
+                                return; 
+                            } else {
+                                $('td#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', '#ebebe4');
+                                $('input#overtimeHoursCheck_'+breakTime.attendanceID()+'_'+breakTime.frameNo()).css('background', '#ebebe4');
+                                breakTime.color('#ebebe4');
+                                return; 
+                            }  
+                        }
+                        let newColor = self.changeColor(1, breakTime.frameNo(), self.getErrorCode(0, 0, 0), beforeAppStatus, actualStatus, false);
+                        if(!nts.uk.util.isNullOrUndefined(newColor)){
+                            breakTime.color(newColor);
+                        }        
                     }
                 });   
             }

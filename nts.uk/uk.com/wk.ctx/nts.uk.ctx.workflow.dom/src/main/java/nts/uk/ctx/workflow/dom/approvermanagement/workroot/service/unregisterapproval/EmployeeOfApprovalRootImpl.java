@@ -34,16 +34,16 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
 		List<PersonApprovalRoot> personRootAll = lstPersonRootInfor.stream()
 				.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
-				.filter(x -> x.getApplicationType() == appType)
+				.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+						|| x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
+						|| x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
+				.filter(x -> x.getApprRoot().getApplicationType() == appType)
 				.collect(Collectors.toList());
 		//co truong hop co root nhung khong co phase
 		List<ApprovalPhase> approvalPhases = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(personRootAll)) {
 			personRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -55,11 +55,11 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 			//check ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ) ※・就業ルート区分(共通)			
 			List<PersonApprovalRoot> psRootCommonAtr = lstPersonRootInfor.stream()
 					.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
-					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
+					.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(psRootCommonAtr)) {
 				psRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});
@@ -77,14 +77,14 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 						List<WorkplaceApprovalRoot> wpRootAllAtr = lstWorkpalceRootInfor
 								.stream()
 								.filter(x -> x.getWorkplaceId().contains(WpId))
-								.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
-										||x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
-										|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
-								.filter(x -> x.getApplicationType() == appType)
+								.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+										||x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
+										|| x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
+								.filter(x -> x.getApprRoot().getApplicationType() == appType)
 								.collect(Collectors.toList());
 						if(!CollectionUtil.isEmpty(wpRootAllAtr)) {
 							wpRootAllAtr.stream().forEach(x -> {
-								approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+								approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 								.forEach(y -> {
 									approvalPhases.add(y);
 								});
@@ -97,7 +97,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 							List<WorkplaceApprovalRoot> wpRootAppAtr = lstWorkpalceRootInfor
 									.stream()
 									.filter(x -> x.getWorkplaceId().contains(WpId))
-									.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
+									.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 									.collect(Collectors.toList());
 							//データが１件以上取得した場合(data >= 1)
 							if(!CollectionUtil.isEmpty(wpRootAppAtr)) {
@@ -126,14 +126,14 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		//データが０件(data = 0)
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
 		List<CompanyApprovalRoot> companyRootAll = lstCompanyRootInfor.stream()
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION 
-						|| x.getEmploymentRootAtr() ==EmploymentRootAtr.ANYITEM)
-				.filter(x -> x.getApplicationType() == appType)
+				.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+						|| x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION 
+						|| x.getApprRoot().getEmploymentRootAtr() ==EmploymentRootAtr.ANYITEM)
+				.filter(x -> x.getApprRoot().getApplicationType() == appType)
 				.collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(companyRootAll)) {
 			companyRootAll.stream().forEach(x -> {
-				approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+				approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 				.forEach(y -> {
 					approvalPhases.add(y);
 				});
@@ -144,11 +144,11 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				||CollectionUtil.isEmpty(approvalPhases)) {
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」)  ※・就業ルート区分(共通)
 			List<CompanyApprovalRoot> companyRootCommonAtr = lstCompanyRootInfor.stream()
-					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
+					.filter(x -> x.getApprRoot().getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(companyRootCommonAtr)) {
 				companyRootCommonAtr.stream().forEach(x -> {
-					approvalPhase.getAllApprovalPhasebyCode(companyId, x.getBranchId()).stream()
+					approvalPhase.getAllApprovalPhasebyCode(x.getApprovalId()).stream()
 					.forEach(y -> {
 						approvalPhases.add(y);
 					});

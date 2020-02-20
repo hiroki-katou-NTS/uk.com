@@ -46,7 +46,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 	private ApprovalPhaseRepository repoAppPhase;
 
 	@Override
-	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
+	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr) {
 		List<EmployeeImport> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
 		// 承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
@@ -55,13 +55,13 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 			return lstUnRegister;
 		}
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDate(companyId, baseDate);
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDate(companyId, baseDate, sysAtr);
 		List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
-				.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
+				.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 				.collect(Collectors.toList());
 		if (!CollectionUtil.isEmpty(comInfoCommon)) {
 			for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
-				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
+				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyApprovalRoot.getApprovalId());
 				if(!lstAppPhase.isEmpty()){
 					return lstUnRegister;
 				}
@@ -71,9 +71,9 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 		// 就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là
 		// common)
 		// ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-		List<WorkplaceApprovalRoot> wpInfoByCid = wpRootRepository.findAllByBaseDate(companyId, baseDate);
+		List<WorkplaceApprovalRoot> wpInfoByCid = wpRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr);
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
+		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate, sysAtr);
 
 		for (EmployeeImport empImport : lstEmps) {
 			List<String> appTypes = new ArrayList<>();

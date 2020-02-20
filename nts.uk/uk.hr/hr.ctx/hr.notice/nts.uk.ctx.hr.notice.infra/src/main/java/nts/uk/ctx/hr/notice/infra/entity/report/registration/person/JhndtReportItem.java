@@ -31,7 +31,7 @@ public class JhndtReportItem extends UkJpaEntity implements Serializable {
 	@Column(name = "RPT_LAYOUT_ID")
 	public int reportLayoutID; // 個別届出種類ID
 	
-	@Column(name = "RPT_LAYOUT_NAME")
+	@Column(name = "RPT_NAME")
 	public String reportName; // 項目区分
 	
 	@Column(name = "LAYOUT_ITEM_TYPE")

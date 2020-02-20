@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
@@ -23,6 +24,9 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusFor
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -39,6 +43,12 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	
 	@Inject
 	private ReportItemRepository reportItemRepo;
+	
+	@Inject
+	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private IApprovalRootStateAdaptor approvalRootStateAdaptor;
 	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
@@ -62,54 +72,60 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		}
 	}
 	
-	private void insertData(SaveReportInputContainer data) {
+	public void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = IdentifierUtil.randomUniqueId();
-		Integer reportIDMax = repo.getMaxReportId(sid, cid);
+		String rootSateId = data.rootSateId;
+		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
+		
+		if (rootSateId == null) {
+			rootSateId = IdentifierUtil.randomUniqueId();
+		}
+		
+		EmployeeInfo employeeInfo = this.getPersonInfo();
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
-				.rootSateId(rootSateId)
+				.rootSateId(data.isSaveDraft == 1 ? null : rootSateId)
 				.workId(data.workId)
-				.reportID(reportIDMax + 1)
+				.reportID(reportIDNew)
 				.reportLayoutID(data.reportLayoutID)
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
-				.reportDetail("") // chưa đặt hàng lần này
-				.regStatus(RegistrationStatus.Save_Draft)
+				.reportDetail(null) // chưa đặt hàng lần này
+				.regStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration)
 				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
-				.inputPid("")
-				.inputSid(sid)
-				.inputScd("")
-				.inputBussinessName("")
+				.inputPid(employeeInfo.inputPid)
+				.inputSid(employeeInfo.inputSid)
+				.inputScd(employeeInfo.inputScd)
+				.inputBussinessName(employeeInfo.inputBussinessName)
 				.inputDate(GeneralDateTime.now())
-				.appPid("")
-				.appSid(sid)
-				.appScd("")
-				.appBussinessName("")
+				.appPid(employeeInfo.appliPerId)
+				.appSid(employeeInfo.appliPerSid)
+				.appScd(employeeInfo.appliPerScd)
+				.appBussinessName(employeeInfo.appliPerBussinessName)
 				.appDate(GeneralDateTime.now())
-				.appDevId(sid)
-				.appDevCd("")
-				.appDevName("")
-				.appPosId("")
-				.appPosCd("")
-				.appPosName("")
-				.reportType(ReportType.EMPLOYEE_REGISTRATION) // tam thoi
+				.appDevId(employeeInfo.appDevId)
+				.appDevCd(employeeInfo.appDevCd)
+				.appDevName(employeeInfo.appDevName)
+				.appPosId(employeeInfo.appPosId)
+				.appPosCd(employeeInfo.appPosCd)
+				.appPosName(employeeInfo.appPosName)
+				.reportType(EnumAdaptor.valueOf(data.reportType, ReportType.class))
 				.sendBackSID(data.sendBackSID)
 				.sendBackComment(data.sendBackComment)
 				.delFlg(false)
 				.build();
 		
-		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDMax);
+		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
 	}
 	
-	private List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
+	public List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
 
 		List<ReportItem> listReportItem = new ArrayList<ReportItem>();
 		List<ItemDfCommand> listItemDf = data.listItemDf;
@@ -119,7 +135,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
-			for (int j = 0; j < items.size(); j++) { // COM1_000000000000000_CS00001_IS00001
+			for (int j = 0; j < items.size(); j++) { 
 				ItemValue itemValue = items.get(j);
 				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
 				
@@ -138,7 +154,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 					break;
 				}
 				
-				ReportItem reportItem = ReportItem.builder().cid(cid).workId(0).reportID(reportId + 1)
+				ReportItem reportItem = ReportItem.builder().cid(cid).workId(0).reportID(reportId)
 						.reportLayoutID(data.reportLayoutID).reportName(data.reportName)
 						.layoutItemType(EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class))
 						.categoryId(itemDfCommand.categoryId).ctgCode(itemDfCommand.categoryCode)
@@ -166,39 +182,50 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	}
 	
 
-	private void updateData(SaveReportInputContainer data) {
+	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
-		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
 		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
 		if (!domainReportOpt.isPresent()) {
 			return;
 		}
 		
+		EmployeeInfo employeeInfo = this.getPersonInfo();
+		
 		RegistrationPersonReport domainReport = domainReportOpt.get();
+		domainReport.setCid(cid);
 		domainReport.setReportLayoutID(data.reportLayoutID);
 		domainReport.setReportCode(data.reportCode);
 		domainReport.setReportName(data.reportName);
+		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
-		domainReport.setInputPid("");
-		domainReport.setInputSid(sid);
-		domainReport.setInputScd("");
-		domainReport.setInputBussinessName("");
+		
+		domainReport.setInputPid(employeeInfo.inputPid);
+		domainReport.setInputSid(employeeInfo.inputSid);
+		domainReport.setInputScd(employeeInfo.inputScd);
+		domainReport.setInputBussinessName(employeeInfo.inputBussinessName);
 		domainReport.setInputDate(GeneralDateTime.now());
-		domainReport.setAppSid(sid);
-		domainReport.setAppScd("");
-		domainReport.setAppPid("");
-		domainReport.setAppBussinessName("");
+		
+		domainReport.setAppSid(employeeInfo.appliPerSid);
+		domainReport.setAppScd(employeeInfo.appliPerScd);
+		domainReport.setAppPid(employeeInfo.appliPerId);
+		domainReport.setAppBussinessName(employeeInfo.appliPerBussinessName);
 		domainReport.setAppDate(GeneralDateTime.now());
-		domainReport.setAppDevId(sid);
-		domainReport.setAppDevCd("");
-		domainReport.setAppDevName("");
-		domainReport.setAppPosId(sid);
-		domainReport.setAppPosCd("");
-		domainReport.setAppPosName("");
+		
+		domainReport.setAppDevId(employeeInfo.appDevId);
+		domainReport.setAppDevCd(employeeInfo.appDevCd);
+		domainReport.setAppDevName(employeeInfo.appDevName);
+		
+		domainReport.setAppPosId(employeeInfo.appPosId);
+		domainReport.setAppPosCd(employeeInfo.appPosCd);
+		domainReport.setAppPosName(employeeInfo.appPosName);
+		
+		domainReport.setReportType(EnumAdaptor.valueOf(data.reportType, ReportType.class));
 		domainReport.setSendBackSID(data.sendBackSID);
 		domainReport.setSendBackComment(data.sendBackComment);
+		
+		domainReport.setDelFlg(false);
 		
 		// remove list reportItem
 		reportItemRepo.deleteByReportId(cid, reportId);
@@ -207,6 +234,13 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
-		
+	}
+	
+	private EmployeeInfo getPersonInfo(){
+		String sid = AppContexts.user().employeeId();
+		String cid = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		EmployeeInfo empInfo = empInfoAdaptor.getInfoEmp(sid, cid, baseDate);
+		return empInfo;
 	}
 }

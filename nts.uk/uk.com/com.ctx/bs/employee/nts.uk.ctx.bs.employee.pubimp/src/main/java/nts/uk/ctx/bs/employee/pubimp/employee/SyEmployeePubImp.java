@@ -25,6 +25,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -60,6 +61,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.PersonInfoJhn001Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest596Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
@@ -68,6 +70,9 @@ import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
@@ -134,6 +139,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	
 	@Inject
 	private EmploymentStatusPub employmentStatusPub;
+	
+	@Inject
+	private IPersonInfoPub personInfoPub;
+	
+	@Inject
+	private AffDepartmentHistoryRepository affDepartmentRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1054,5 +1065,25 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Map<String, String> empMaps = this.empDataMngRepo
 				.getAllSidAndScdBySids(sids.stream().distinct().collect(Collectors.toList()));
 		return empMaps;
+	}
+
+	@Override
+	public PersonInfoJhn001Export getEmployeeInfo(String sid) {
+		PersonInfoExport rersonInfoExport = personInfoPub.getPersonInfo(sid);
+		if (rersonInfoExport == null) {
+			return null;
+		}
+		
+		PersonInfoJhn001Export result = PersonInfoJhn001Export.builder()
+				.pid(rersonInfoExport.getPid())
+				.businessName(rersonInfoExport.getBusinessName())
+				.entryDate(rersonInfoExport.getEntryDate())
+				.gender(rersonInfoExport.getGender())
+				.birthDay(rersonInfoExport.getBirthDay())
+				.employeeId(rersonInfoExport.getEmployeeId())
+				.employeeCode(rersonInfoExport.getEmployeeCode())
+				.retiredDate(rersonInfoExport.getRetiredDate())
+				.build();
+		return result;
 	}
 }

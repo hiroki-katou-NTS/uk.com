@@ -16,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 
 /**
  * 
@@ -30,6 +31,8 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 
 	@Inject
 	private WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
+	@Inject 
+	private WorkplaceInfoRepository repoWkpInfo;
 
 	@Override
 	public List<WkpInfoDto> getAllWkpConfig(String companyId, List<String> listWkpId, GeneralDate baseDate) {
@@ -121,5 +124,34 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 				.collect(Collectors.toList());
 
 		return newResults;
+	}
+	
+	@Override
+	public List<WkpDto> getWkpConfigRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate) {
+		List<WkpDto> results = new ArrayList<>();
+		// ドメインモデル「職場構成」を取得する
+		Optional<WorkplaceConfig> optWorkplaceConfig = this.workplaceConfigRepository.findByBaseDate(companyId,
+				baseDate);
+		if (!optWorkplaceConfig.isPresent()) {
+			return results;
+		}
+		List<WkpDto> lstWkpInfoDto = repoWkpInfo.findByBaseDateWkpIds(companyId, baseDate, listWkpId).stream()
+				.map(c -> new WkpDto(c.getWorkplaceId(), c.getWorkplaceName().v())).collect(Collectors.toList());
+		results.addAll(lstWkpInfoDto);
+		if (listWkpId.size() != lstWkpInfoDto.size()) {
+			for(String id: listWkpId){
+				if(!this.checkExist(lstWkpInfoDto, id)){
+					results.add(new WkpDto(id, "コード削除済" ));
+				}
+			}
+		}
+		return results;
+	}
+
+	private boolean checkExist(List<WkpDto> lstWkpInfoDto, String id){
+		for(WkpDto wp : lstWkpInfoDto){
+			if(wp.getWorkplaceId().equals(id)) return true;
+		}
+		return false;
 	}
 }
