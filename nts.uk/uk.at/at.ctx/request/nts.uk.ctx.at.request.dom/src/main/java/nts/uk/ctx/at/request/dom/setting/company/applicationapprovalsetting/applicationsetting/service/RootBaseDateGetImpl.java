@@ -33,7 +33,7 @@ public class RootBaseDateGetImpl implements RootBaseDateGet {
 			ApplicationType appType, GeneralDate appDate, String appID, Boolean isCreate) {
 		GeneralDate baseDate = null;
 		ApprovalRootContentImport_New approvalRootContentImport = null;
-		if(Strings.isNotBlank(appID)) {
+		if(Strings.isNotBlank(appID)&&(isCreate==null || !isCreate)) {
 			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}

@@ -319,6 +319,13 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
 			List<LevelApproverList> filterLevelApproverList = levelInforOutput.getApproverLst()
 					.stream().filter(x -> x.getApproverInfoLst().size() > 0).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(filterLevelApproverList)) {
+				return ApprovalPhaseState.createFormTypeJava(
+						6 - levelInforOutput.getLevelNo(), 
+						ApprovalBehaviorAtr.UNAPPROVED.value, 
+						levelInforOutput.getApprovalForm(), 
+						resultApprovalFrame);
+			}
 			if(filterLevelApproverList.size() > 1) {
 				filterLevelApproverList.forEach(levelApproverList -> {
 					List<ApprovalFrame> approvalFrameLst = levelApproverList.getApproverInfoLst()
