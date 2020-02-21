@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 340,
+					height : 400
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksm010.b.main.css" />
+			<com:scriptfile path="ksm010.b.start.js" />
+			<com:scriptfile path="ksm010.b.vm.js" />
+			<com:scriptfile path="ksm010.b.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div tabindex="-1" id="functions-area-bottom">
+				<button tabindex="3" class="x-large proceed"
+					data-bind="click: decision">#{i18n.getText('KSM010_9')}</button>
+				<button tabindex="4" data-bind="click: cancel">#{i18n.getText('KSM010_10')}</button>
+			</div>
+			<div id="contents-area">
+				<table id="multi-list"
+					data-bind="ntsGridList: {
+					name: '#[KSM010_5]',
+						width: 250,
+						height: 266,
+						options: rankItems,
+						optionsValue: 'rankCd',
+						columns: rankItemColumns,
+						multiple: true,
+						value: selectedCodes
+					}">
+				</table>
+				<div id="swap-up-down" tabindex="1"
+					data-bind="ntsUpDown: {
+							targetSource: rankItems,
+							primaryKey: 'rankCd',
+							comId: '#multi-list',
+							type: 'grid',
+							enable: true
+						}"
+					class="swap-contents"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
