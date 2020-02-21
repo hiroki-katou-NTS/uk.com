@@ -10,7 +10,7 @@ import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 @Getter
 @AllArgsConstructor
 public class AppTypes {
-	private Integer code;
+	private String code;
 	private String id;
 	private int empRoot;
 	@Setter

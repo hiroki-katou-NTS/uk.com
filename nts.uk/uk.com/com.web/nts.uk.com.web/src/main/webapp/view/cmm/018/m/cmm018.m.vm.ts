@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm018.m {
             lstAppName: Array<any>;
             constructor() {
                 let self = this; 
-                let param = nts.uk.ui.windows.getShared('CMM018_SysAtr');
+                let param = nts.uk.ui.windows.getShared('CMM018M_PARAM');
                 self.sysAtr(param.sysAtr || 0);
                 self.lstAppName = param.lstName || [];
             }

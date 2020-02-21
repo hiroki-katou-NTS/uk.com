@@ -7,7 +7,7 @@ module nts.uk.com.view.cmm018.l {
             constructor() {
                 let self = this;
                 self.date =ko.observable(moment(new Date()).toDate());
-                let param = nts.uk.ui.windows.getShared('CMM018_SysAtr');
+                let param = nts.uk.ui.windows.getShared('CMM018L_PARAM');
                 self.sysAtr = param.sysAtr || 0;
                 _.each(param.lstName, function(app){
                     self.lstAppName.push({value: app.value, name: app.localizedName, empRAtr: app.employRootAtr});

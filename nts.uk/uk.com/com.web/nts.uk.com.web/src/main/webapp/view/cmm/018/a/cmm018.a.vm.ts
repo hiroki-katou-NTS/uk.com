@@ -1862,22 +1862,22 @@ module nts.uk.com.view.cmm018.a {
              * open dialog L: 未登録社員リスト
              */
             openDialogL(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
-               modal("/view/cmm/018/l/index.xhtml");   
+                setShared('CMM018L_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
+                modal("/view/cmm/018/l/index.xhtml");   
             }
             /**
              * open dialog M: マスタリスト
              */
             openDialogM(){
-               setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
-               modal("/view/cmm/018/m/index.xhtml");
+                setShared('CMM018M_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
+                modal("/view/cmm/018/m/index.xhtml");
             }
             /**
              * open dialog N: 承認者一覧
              */
             openDialogN(){
-                setShared('CMM018_SysAtr',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
-               modal("/view/cmm/018/n/index.xhtml");
+                setShared('CMM018N_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
+                modal("/view/cmm/018/n/index.xhtml");
             }
             checkColor(lstAppPhase: Array<vmbase.ApprovalPhaseDto>, int: number): boolean{
                 let check = false;

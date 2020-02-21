@@ -186,7 +186,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		return lstResult;
 	}
 	/**
-	 * ソート順： 申請種類（昇順）、確認ルート種類（昇順）
+	 * ソート順： 
+	 * 就業：　共通、申請種類（昇順）、確認ルート種類（昇順）
+	 * 人事：　共通、届出、各業務エベント
 	 * @param wpRootInfor
 	 * @return
 	 */
@@ -198,15 +200,27 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				.filter(c -> c.getEmpRoot() == 1).collect(Collectors.toList());
 		List<AppTypes> lstConfirm = lstAppType.stream()
 				.filter(c -> c.getEmpRoot() == 2).collect(Collectors.toList());
+		List<AppTypes> lstNotice = lstAppType.stream()
+				.filter(c -> c.getEmpRoot() == 4).collect(Collectors.toList());
+		List<AppTypes> lstEvent = lstAppType.stream()
+				.filter(c -> c.getEmpRoot() == 5).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(lstApp)) {
 			Collections.sort(lstApp, Comparator.comparing(AppTypes:: getCode));
 		}
 		if(!CollectionUtil.isEmpty(lstConfirm)) {
 			Collections.sort(lstConfirm, Comparator.comparing(AppTypes:: getCode));
 		}
+		if(!CollectionUtil.isEmpty(lstNotice)) {
+			Collections.sort(lstNotice, Comparator.comparing(AppTypes:: getCode));
+		}
+		if(!CollectionUtil.isEmpty(lstEvent)) {
+			Collections.sort(lstEvent, Comparator.comparing(AppTypes:: getCode));
+		}
 		lstSort.addAll(lstCommon);
 		lstSort.addAll(lstApp);
 		lstSort.addAll(lstConfirm);
+		lstSort.addAll(lstNotice);
+		lstSort.addAll(lstEvent);
 		return lstSort;
 	}
 }

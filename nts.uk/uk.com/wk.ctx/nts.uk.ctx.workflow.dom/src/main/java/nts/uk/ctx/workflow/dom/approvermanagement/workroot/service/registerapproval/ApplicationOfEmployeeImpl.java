@@ -11,11 +11,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -38,7 +37,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType))
+						&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType))
 				.collect(Collectors.toList());
 		if(lstPsRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 			lstPsRoots = lstPersonRootInfor
@@ -91,7 +90,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
-							&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType)))
+							&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType)))
 					.collect(Collectors.toList());
 			if(lstWpRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstWpRoots = lstWorkpalceRootInfor
@@ -135,7 +134,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」): 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<CompanyApprovalRoot> lstRoots = lstCompanyRootInfor.stream()
 					.filter(x -> x.getCompanyId().equals(companyID)
-								&& this.checkByType(x.getApprRoot().getConfirmationRootType(), x.getApprRoot().getEmploymentRootAtr(), x.getApprRoot().getApplicationType(), appType))
+								&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType))
 					.collect(Collectors.toList());
 			if(lstRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstRoots = lstCompanyRootInfor
@@ -200,12 +199,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getEmployeeId(), 
 							"",
 							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
-							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							null, 
 							x.getApprRoot().getHistoryItems().get(0).start(),
 							x.getApprRoot().getHistoryItems().get(0).end(),
 							x.getApprRoot().getBranchId(),
 							x.getApprRoot().getAnyItemApplicationId(),
-							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							null,
 							x.getApprRoot().getEmploymentRootAtr().value,
 							x.getApprRoot().getNoticeId(),
 							x.getApprRoot().getBusEventId()))
@@ -286,19 +285,35 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	 * @param appTypes
 	 * @return
 	 */
-	private boolean checkByType(ConfirmationRootType confirmType, EmploymentRootAtr empRootAtr,
-			ApplicationType appType, AppTypes appTypes){
-		if(appTypes.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
-			if(appTypes.getEmpRoot() == empRootAtr.value && appTypes.getCode().equals(confirmType.value)){
-				return true;
-			}
-		}else{
-			if(appTypes.getEmpRoot() == empRootAtr.value && appTypes.getCode().equals(appType.value)){
+	private boolean checkByType(Integer typeV, String typeS, int empR, AppTypes appTypes){
+		if(empR == 0) {
+			if(appTypes.getEmpRoot() == 0) return true;
+		}else if(empR == 5) {
+			if(appTypes.getEmpRoot() == 5 && appTypes.getCode().equals(typeS)) return true;
+		}else {
+			if(appTypes.getEmpRoot() == empR && Integer.valueOf(appTypes.getCode()).equals(typeV)){
 				return true;
 			}
 		}
-		
 		return false;
 	}
 
+	private String typeS(ApprovalRoot apprRoot) {
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT)) {
+			return apprRoot.getBusEventId();
+		}
+		return null;
+	}
+	private Integer typeV(ApprovalRoot apprRoot) {
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION)) {
+			return apprRoot.getApplicationType().value;
+		}
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION)) {
+			return apprRoot.getConfirmationRootType().value;
+		}
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE)) {
+			return apprRoot.getNoticeId();
+		}
+		return null;
+	}
 }
