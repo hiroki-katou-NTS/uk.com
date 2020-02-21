@@ -26,7 +26,7 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 	private static final String getListApproval = "select c FROM  JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 	private static final String deleteListApprovalByReportId = "delete FROM JhndtReportApproval c Where c.pk.cid = :cid and c.pk.reportID = :reportId";
 	private static final String SEL_BY_REPORT_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.reportID = :reportId";
-	private static final String SEL_BY_REPORT_ID_AND_APPROVER_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.cid = :cid AND c.pk.reportID = :reportId AND c.aprSid = :sid";
+	private static final String SEL_BY_REPORT_ID_AND_APPROVER_ID = "SELECT c FROM  JhndtReportApproval c WHERE c.pk.cid = :cid AND c.pk.reportID = :reportId AND c.pk.aprSid = :sid";
 	private static final String SEL = "select r FROM  JhndtReportApproval r";
 
 	private ApprovalPersonReport toDomain(JhndtReportApproval entity) {
