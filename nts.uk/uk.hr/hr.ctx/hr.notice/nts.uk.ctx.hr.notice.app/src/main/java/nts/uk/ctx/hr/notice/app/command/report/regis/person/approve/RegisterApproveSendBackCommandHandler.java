@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.SendBackClass;
@@ -30,7 +31,10 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 
 	@Inject
 	private ApprovalPersonReportRepository repoApproval;
+	
+	@Inject RegistrationPersonReportRepository registrationPersonReportRepo;
 
+	// アルゴリズム「差し戻し処理」を実行する(Thực hiện thuật toán"Xử lý return" )
 	@Override
 	protected void handle(CommandHandlerContext<ApproveReportSendBackCommand> context) {
 		ApproveReportSendBackCommand command = context.getCommand();
@@ -50,10 +54,13 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 			dm.setSendBackSID(Optional.of(command.sendBackSID));
 		}) ;
 		
+		// ドメイン「人事届出の承認」の各種属性を登録する(Đăng ký các thuộc tính khác nhau của domain "Approval of HR report")
 		repoApproval.updateSendBack(listDomain, reprtId,  sid  );
 		
-		// 承認ルートインスタンスを更新する(Update approval route instance)
+		// ドメイン「人事届出の登録」 を更新する
+		registrationPersonReportRepo.updateAfterSendBack(cid, reprtId, command.sendBackSID, command.comment);
 		
+		// アルゴリズム[届出分析データのカウント処理]を実行する (Thực hiện thuật toán [Xử lý count dữ liệu phân tích report])
 	}
 
 }

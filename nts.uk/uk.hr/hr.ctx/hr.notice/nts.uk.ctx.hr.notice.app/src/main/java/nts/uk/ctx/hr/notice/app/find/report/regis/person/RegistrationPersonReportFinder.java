@@ -2,7 +2,9 @@ package nts.uk.ctx.hr.notice.app.find.report.regis.person;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,8 +12,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachmentPersonReportFile;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,6 +33,9 @@ public class RegistrationPersonReportFinder {
 	
 	@Inject
 	private PersonalReportClassificationFinder reportClsFinder;
+	
+	@Inject
+	private AttachPersonReportFileRepository attachFileRepo;
 	
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
 	public List<PersonalReportDto> getListReport(String cid) {
@@ -91,13 +99,15 @@ public class RegistrationPersonReportFinder {
 	}
 	
 	
-	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft(String sid) {
-		List<RegistrationPersonReport> listDomain = repo.getListReportSaveDraft(sid);
+	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft(String cid) {
+		List<RegistrationPersonReport> listDomain = repo.getListReportSaveDraft(cid);
 		if (listDomain.isEmpty()) {
 			return new ArrayList<>();
 		}
+		
 		List<RegistrationPersonReportSaveDraftDto> result = new ArrayList<>();
 		result = listDomain.stream().map(dm -> {
+			
 			RegistrationPersonReportSaveDraftDto dto = new RegistrationPersonReportSaveDraftDto();
 			dto.setReportID(dm.getReportID());
 			dto.setReportCode(dm.getReportCode());

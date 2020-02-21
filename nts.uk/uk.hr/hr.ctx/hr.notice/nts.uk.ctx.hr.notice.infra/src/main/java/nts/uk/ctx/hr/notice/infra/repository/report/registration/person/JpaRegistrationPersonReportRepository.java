@@ -64,8 +64,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<RegistrationPersonReport> getListReportSaveDraft(String sid) {
-		String cid =  AppContexts.user().companyId();
+	public List<RegistrationPersonReport> getListReportSaveDraft(String cid) {
 		return this.queryProxy().query(getListReportSaveDraft, JhndtReportRegis.class)
 				.setParameter("cid", cid).getList(c -> toDomain(c));
 	}
@@ -212,5 +211,21 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			this.commandProxy().update(entity);
 		}
 	}
+
+	@Override
+	public void updateAfterSendBack(String cid, Integer reportId, String sendBackSid, String comment) {
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportId).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			entity.sendBackSID = sendBackSid;
+			entity.sendBackComment = comment;
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	
+	
 
 }

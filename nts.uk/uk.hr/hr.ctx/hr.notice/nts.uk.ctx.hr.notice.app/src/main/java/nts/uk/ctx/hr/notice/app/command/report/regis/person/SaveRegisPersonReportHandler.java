@@ -144,7 +144,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 											.phaseNum(approvalPhaseStateHrExport.getPhaseOrder())
 											.aprStatus(ApprovalStatus.Not_Acknowledged)
 											.aprNum(approvalFrameHrExport.getFrameOrder())
-											.arpAgency(true)
+											.arpAgency(approverStateHrExport.getRepresenterID() == null || approverStateHrExport.getRepresenterID() == "" ? false : true)
 											.comment(null)
 											.aprActivity(ApprovalActivity.Activity)
 											.emailTransmissionClass(EmailTransmissionClass.DoNotSend)
