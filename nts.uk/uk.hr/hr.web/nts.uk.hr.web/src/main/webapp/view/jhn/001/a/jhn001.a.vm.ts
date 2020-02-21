@@ -45,8 +45,11 @@ module jhn001.a.viewmodel {
                 layout = self.layout(),
                 layouts = self.layouts;
             
-//            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
-//                Page.NORMAL);
+              $('#menu-header').addClass("notranslate");
+
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+                Page.NORMAL);
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
@@ -202,9 +205,9 @@ module jhn001.a.viewmodel {
                     sampleFileId: fileData.sampleFileId,
                     reportID: fileData.reportID,
                     fileId: fileData.fileId,
-                    fileSize: fileData.fileSize,
-                    
+                    fileSize: fileData.fileSize
                 }
+                
                 lstDoc.push(obj);
             }
             

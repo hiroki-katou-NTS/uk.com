@@ -4,6 +4,7 @@
 package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.EmailTransmission
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
@@ -66,6 +68,13 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	@Inject
 	private ICreateApprovalStateAdaptor createApprovalStateAdaptor;
 	
+	@Inject
+	private HumanItemPub humanItemPub;
+	
+	public static final List<String> listItemEndDateOfCtgHistoryContinueandNoDuplicate = Arrays.asList("IS00021", "IS00088", "IS00103", "IS00027", "IS00067", "IS00072", "IS00078", "IS00083", "IS00120", "IS00256", "IS00782");
+	
+	public static final List<String> listItemStartDateOfCtgHistoryNoDuplicate = Arrays.asList("IS00020", "IS00087", "IS00102");
+
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
 
@@ -78,7 +87,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		ValidateDataCategoryHistory.validate(command);
+		//ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -252,12 +261,91 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 					break;
 				}
 
+				if (listItemStartDateOfCtgHistoryNoDuplicate.contains(itemDfCommand.itemCode)) {
+					if (itemValue.value() == null) {
+						reportItem.setDateVal(GeneralDate.min());
+					}
+				}
+				
 				listReportItem.add(reportItem);
+				
+				if (listItemEndDateOfCtgHistoryContinueandNoDuplicate.contains(itemDfCommand.itemCode)) {
+					ItemEndDate itemCodeEndDDate = returnItemCodeEndDate(itemDfCommand.categoryId, itemDfCommand.itemCode);
+
+					ReportItem reportItemEndDate = ReportItem.builder().cid(cid).workId(0).reportID(reportId)
+							.reportLayoutID(data.reportLayoutID).reportName(data.reportName)
+							.layoutItemType(EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class))
+							.categoryId(itemDfCommand.categoryId).ctgCode(itemDfCommand.categoryCode)
+							.ctgName(itemDfCommand.categoryName).fixedAtr(true).itemId(itemCodeEndDDate.itemDfId)
+							.itemCd(itemCodeEndDDate.itemCode).itemName(itemCodeEndDDate.itemName)
+							.dateVal(GeneralDate.max()).saveDataAtr(itemValue.saveDataType().value)
+							.dspOrder(itemDfCommand.dispOrder + 1).layoutDisOrder(itemDfCommand.layoutDisOrder + 1)
+							.contractCode(contractCode).reflectID(0).build();
+					
+					Optional<ReportItem> it = listReportItem.stream().filter(item -> item.getItemCd().equals(itemCodeEndDDate.itemCode)).findFirst();
+					if (it.isPresent()) {
+						listReportItem.remove(it.get());
+					}
+					
+					listReportItem.add(reportItemEndDate);
+				}
 			}
 		}
 		return listReportItem;
 	}
 	
+	
+	// "IS00021", "IS00088", "IS00103", "IS00027", "IS00067", "IS00072",
+	// "IS00078", "IS00083", "IS00120", "IS00256", "IS00782");
+	private ItemEndDate returnItemCodeEndDate(String categoryId, String itemCodeEndDate) {
+		
+		if (itemCodeEndDate.equals("IS00021")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00021" );
+			return new ItemEndDate("IS00021", "退職年月日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00088")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00088" );
+			return new ItemEndDate("IS00088", "休職休業終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00103")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00103" );
+			return new ItemEndDate("IS00103", "短時間終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00027")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00027" );
+			return new ItemEndDate("IS00027", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00067")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00067" );
+			return new ItemEndDate("IS00067", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00072")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00072" );
+			return new ItemEndDate("IS00072", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00078")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00078" );
+			return new ItemEndDate("IS00078", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00083")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00083" );
+			return new ItemEndDate("IS00083", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00120")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00120" );
+			return new ItemEndDate("IS00120", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00256")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00256" );
+			return new ItemEndDate("IS00256", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00782")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00782" );
+			return new ItemEndDate("IS00782", "終了日", itemDfId);
+		}
+
+		return null;
+	}
 
 	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
@@ -277,6 +365,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
+		domainReport.setRootSateId(domainReport.getRootSateId() == null ? IdentifierUtil.randomUniqueId() : domainReport.getRootSateId());
 		
 		domainReport.setInputPid(employeeInfo.inputPid);
 		domainReport.setInputSid(employeeInfo.inputSid);

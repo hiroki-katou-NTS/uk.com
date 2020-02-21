@@ -41,8 +41,8 @@ public class PersonalReportSaveWebService {
 	@POST
 	@Path("getAll")
 	public List<PersonalReportDto> findAll() {
-		String sid = AppContexts.user().employeeId();
-		List<PersonalReportDto> listReport = this.finder.getListReport(sid);
+		String cid = AppContexts.user().companyId();
+		List<PersonalReportDto> listReport = this.finder.getListReport(cid);
 		return listReport;
 	}
 	
