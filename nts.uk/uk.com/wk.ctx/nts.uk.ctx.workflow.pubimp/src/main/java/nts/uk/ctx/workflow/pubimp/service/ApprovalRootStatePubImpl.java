@@ -276,6 +276,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}).collect(Collectors.toList())
 				), 
 				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
+		if(date==null) {
+			return checkApproverStatus(result, approvalRootContentOutput.approvalRootState.getApprovalRecordDate());
+		}
 		return checkApproverStatus(result, date);
 	}
 	
