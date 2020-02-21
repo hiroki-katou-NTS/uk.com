@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm022.a {
     import block = nts.uk.ui.block;
     import alert = nts.uk.ui.dialog.alert;
     import info = nts.uk.ui.dialog.info;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     export module viewmodel {
         export class ScreenModel {
@@ -96,19 +97,44 @@ module nts.uk.com.view.cmm022.a {
 
                 let self = this, dfd = $.Deferred(),
 
-                    param = { confirmed: false };
+                    param = { confirmed: null };
 
                 block.grayout();
 
-                service.startPage(param).done((data: Array<ICommonMaster>) => {
+                service.startPage(param)
+                .done((data: Array<ICommonMaster>) => {
 
                     self.commonMasters(data);
 
 
                 }).fail(function(res) {
 
+
+                    if (res.messageId == "Msg_1589") {
+
+                        confirm({ messageId: res.messageId }).ifYes(() => {
+                            
+                            param.confirmed = true;
+                            block.grayout();
+                            
+                            service.startPage(param).done((data: Array<ICommonMaster>) => {
+
+                                self.commonMasters(data);
+
+                            }).always(() => {
+                                
+                                block.clear();
+
+                            });
+                        }).ifNo(() => {
+                            alert("Msg_1590");
+                        });
+                    } else {
+                        alert(res.messageId);
+                    }
+
                     block.clear();
-                    alert(res);
+
 
                 }).always(() => {
 

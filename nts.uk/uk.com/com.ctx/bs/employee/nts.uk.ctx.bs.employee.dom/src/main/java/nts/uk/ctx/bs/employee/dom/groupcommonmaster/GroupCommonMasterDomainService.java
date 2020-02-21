@@ -30,7 +30,7 @@ public class GroupCommonMasterDomainService {
 
 		// ドメインモデル [グループ会社共通マスタ] を取得する
 
-		List<GroupCommonMaster> ListMaster = this.groupMasterRepo.getByContractCode(contractCode);
+		List<GroupCommonMaster> ListMaster = this.groupMasterRepo.getCommonMaster(contractCode);
 
 		if (!CollectionUtil.isEmpty(ListMaster)) {
 			return ListMaster.stream().sorted(Comparator.comparing(GroupCommonMaster::getCommonMasterCode))
