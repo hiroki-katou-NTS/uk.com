@@ -16,13 +16,45 @@ module nts.uk.com.view.cmm018.a.sub {
             }
             reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE){
                 let self = this;
+                let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
+                let width = 950;
                 let gridName = '#grid_matome';
                 if(rootType == vmbase.RootType.COMPANY){
-                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matome' : '#grid_matomeB';
+                    if(mode == vmbase.MODE.MATOME) {
+                        gridName = '#grid_matome';        
+                        if(systemAtr == 0) {
+                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;    
+                        } 
+                    } else {
+                        gridName = '#grid_matomeB';   
+                        if(systemAtr == 0) {
+                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                        }      
+                    }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
-                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
+                    if(mode == vmbase.MODE.MATOME) {
+                        gridName = '#grid_matomeC';    
+                        if(systemAtr == 0) {
+                            width = screen.width - 430 > 950 ? 950 : screen.width - 430;    
+                        }      
+                    } else {
+                        gridName = '#grid_matomeD'; 
+                        if(systemAtr == 0) {
+                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                        }        
+                    }
                 }else{//PERSON
-                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                    if(mode == vmbase.MODE.MATOME) {
+                        gridName = '#grid_matomeE';   
+                        if(systemAtr == 0) {
+                            width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
+                        }      
+                    } else {
+                        gridName = '#grid_matomeF';     
+                        if(systemAtr == 0) {
+                            width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
+                        }    
+                    }
                 }
                 if($(gridName + '_container').length > 0){
                     $(gridName).ntsGrid("destroy");
@@ -33,12 +65,12 @@ module nts.uk.com.view.cmm018.a.sub {
                     self.items.push(self.convertlistRoot(root));
                 });
                 let colorBackGr: any = self.fillColorbackGr(lstRoot);
-                let heightG = __viewContext.viewModel.viewmodelA.systemAtr() == 1 ? 430 : 530;
+                let heightG = systemAtr == 1 ? 430 : 530;
                 if(mode == vmbase.MODE.SHINSEI){
                     heightG = 181;
                 }
               $(gridName).ntsGrid({
-                width: 950,
+                width: width,
                 height: heightG,
                 dataSource: self.items(),
                 primaryKey: 'typeRoot',
