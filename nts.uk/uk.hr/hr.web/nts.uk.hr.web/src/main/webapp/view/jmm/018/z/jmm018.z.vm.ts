@@ -90,10 +90,12 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         
         selectApprover1(): void {
             let self = this;
+            console.log(self);
         }
         
         selectApprover2(): void {
             let self = this;
+            console.log(self);
         }
     }
     
