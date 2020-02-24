@@ -415,6 +415,8 @@ module nts.uk.com.view.cmm018.a {
                     }
                 });
                 self.sidebar();
+                let wkp = self.systemAtr() == 0 ? true : false;
+                let dep = self.systemAtr() == 1 ? true : false;
                 //_____CCG001________
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
@@ -422,7 +424,7 @@ module nts.uk.com.view.cmm018.a {
                 self.ccgcomponent = {
                
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: 2, // システム区分
+                systemType: self.systemAtr() == 0 ? 2 : 4, // システム区分
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: true, // 基準日利用
@@ -443,12 +445,15 @@ module nts.uk.com.view.cmm018.a {
                 /** Quick search tab options */
                 showAllReferableEmployee: true, // 参照可能な社員すべて
                 showOnlyMe: false, // 自分だけ
-                showSameWorkplace: true, // 同じ職場の社員
-                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+                showSameWorkplace: wkp, // 同じ職場の社員
+                showSameWorkplaceAndChild: wkp, // 同じ職場とその配下の社員
+                showSameDepartment: dep, //同じ部門の社員
+                showSameDepartmentAndChild: dep, // 同じ部門とその配下の社員
 
                 /** Advanced search properties */
                 showEmployment: false, // 雇用条件
-                showWorkplace: true, // 職場条件
+                showWorkplace: wkp, // 職場条件
+                showDepartment: dep,
                 showClassification: false, // 分類条件
                 showJobTitle: false, // 職位条件
                 showWorktype: false, // 勤種条件

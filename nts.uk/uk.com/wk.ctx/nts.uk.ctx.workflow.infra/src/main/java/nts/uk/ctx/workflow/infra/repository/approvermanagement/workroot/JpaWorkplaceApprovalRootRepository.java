@@ -36,10 +36,10 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.endDate = :endDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType";
-	private static final String SELECT_WPAPR_BY_EDATE_APP_NULL = FIND_BY_WKPID
+	private static final String SELECT_WPAPR_BY_EDATE_CM_SYS = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate"
-			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL";
+			   + " AND c.employmentRootAtr = 0"
+			   + " AND c.sysAtr = :sysAtr";
 	private static final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate" 
 			   + " AND c.confirmationRootType = :confirmationRootType"
@@ -52,16 +52,17 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType"
 			+ " ORDER BY c.startDate DESC";
-	private static final String SELECT_WPAPR_BY_APP_NULL = FIND_BY_WKPID
-			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL"
+	private static final String SELECT_WPAPR_BY_COMMON_SYS = FIND_BY_WKPID
+			   + " AND c.employmentRootAtr = 0"
+			   + " AND c.sysAtr = :sysAtr"
 			   + " ORDER BY c.startDate DESC";
 	private static final String FIND_BY_CFR_TYPE = FIND_BY_WKPID
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
 	private static final String FIND_WP_APP_LAST = FIND_BY_WKPID
-			+ " AND c.endDate = :endDate";
+			+ " AND c.endDate = :endDate"
+			+ " AND c.sysAtr = :sysAtr";
 	private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
@@ -245,15 +246,15 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType,
-			int employmentRootAtr, String id) {
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, 
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_APP_NULL, WwfmtWpApprovalRoot.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CM_SYS, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainWpApR(c));
 		}
 		//confirm
@@ -507,13 +508,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType,
-			int employmentRootAtr, String id) {
+			int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_WPAPR_BY_APP_NULL, WwfmtWpApprovalRoot.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_COMMON_SYS, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainWpApR(c));
 		}
 		//confirm
@@ -553,12 +554,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	}
 
 	@Override
-	public List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId, GeneralDate endDate) {
+	public List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId, GeneralDate endDate, int sysAtr) {
 		
 		return this.queryProxy().query(FIND_WP_APP_LAST, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c -> toDomainWpApR(c));
 	}
 

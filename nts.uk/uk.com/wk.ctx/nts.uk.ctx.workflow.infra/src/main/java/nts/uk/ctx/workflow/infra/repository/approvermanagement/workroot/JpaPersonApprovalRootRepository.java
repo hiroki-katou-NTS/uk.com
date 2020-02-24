@@ -36,10 +36,10 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.endDate = :endDate" 
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType";
-	 private static final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
+	 private static final String SELECT_PS_APR_BY_ENDATE_CM_SYS = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
-			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL";
+			   + " AND c.employmentRootAtr = 0"
+			   + " AND c.sysAtr = :sysAtr";
 	 private static final String SELECT_PS_APR_BY_ENDATE_CONFIRM = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
@@ -52,16 +52,17 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType"
 			   + " ORDER BY c.startDate DESC";
-	 private static final String SELECT_PSAPR_BY_APP_NULL = FIN_BY_EMP 
-			   + " AND c.employmentRootAtr = :employmentRootAtr"
-			   + " AND c.applicationType IS NULL"
+	 private static final String SELECT_PSAPR_BY_CM_SYS = FIN_BY_EMP 
+			   + " AND c.employmentRootAtr = 0"
+			   + " AND c.sysAtr = :sysAtr"
 			   + " ORDER BY c.startDate DESC";
 	 private static final String FIND_BY_CFR_TYPE = FIN_BY_EMP 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
 	 private static final String FIND_PS_APP_LASTEST = FIN_BY_EMP
-			 + " AND c.endDate = :endDate";
+			 + " AND c.endDate = :endDate"
+			 + " AND c.sysAtr = :sysAtr";
 	 private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
@@ -73,8 +74,11 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				+ " AND c.employmentRootAtr = :employmentRootAtr";
 	 private static final String FIND_COMMON_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.employmentRootAtr = 0 "
-			 + " AND c.applicationType IS NULL"
-			 + " AND c.startDate = (SELECT MAX(c1.startDate) FROM WwfmtPsApprovalRoot c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 0 AND c1.applicationType IS NULL)";
+			 + " AND c.sysAtr = :sysAtr"
+			 + " AND c.startDate = "
+			 + "(SELECT MAX(c1.startDate) FROM WwfmtPsApprovalRoot c1 WHERE c1.wwfmtPsApprovalRootPK.companyId = :companyId"
+			 + " AND c1.wwfmtPsApprovalRootPK.employeeId = :employeeId AND c1.employmentRootAtr = 0"
+			 + " AND c1.sysAtr = :sysAtr)";
 	 private static final String FIND_MONTHLY_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.employmentRootAtr = 2"
 			 + " AND c.confirmationRootType = 1"
@@ -83,7 +87,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			 + " AND ((c.employmentRootAtr = 0 AND (c.applicationType IS NULL)) OR (c.employmentRootAtr = 2 AND c.confirmationRootType = 1))"
 			 + " ORDER BY c.startDate DESC";
 	 private static final String SELECT_PS_APR_BY_STARTDATE = FIN_BY_EMP
-			 + " AND c.startDate = :startDate";
+			 + " AND c.startDate = :startDate"
+			 + " AND c.sysAtr = :sysAtr";
 	 private static final String GET_ALL__MODE_COM = "SELECT c FROM WwfmtPsApprovalRoot c"
 			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
@@ -92,6 +97,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			 + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
 			 + " AND c.employmentRootAtr = 0"
+			 + " AND c.sysAtr = :sysAtr"
 			 + " ORDER BY c.startDate DESC";
 	 private static final String GET_ALL_MODE_PRI_AP = "SELECT c FROM WwfmtPsApprovalRoot c"
 			 + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
@@ -356,14 +362,14 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate, 
-			Integer applicationType, int employmentRootAtr, String id) {
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE_APP_NULL, WwfmtPsApprovalRoot.class)
+			return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE_CM_SYS, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
 					.setParameter("endDate", endDate)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainPsApR(c));
 		}
 		if(employmentRootAtr == 2){//confirm
@@ -555,13 +561,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId,
-			Integer applicationType, int employmentRootAtr, String id) {
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_PSAPR_BY_APP_NULL, WwfmtPsApprovalRoot.class)
+			return this.queryProxy().query(SELECT_PSAPR_BY_CM_SYS, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainPsApR(c));
 		}
 		//confirm
@@ -600,12 +606,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.getList(c->toDomainPsApR(c));
 	}
 	@Override
-	public List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId, GeneralDate endDate) {
+	public List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId, GeneralDate endDate, int sysAtr) {
 		
 		return this.queryProxy().query(FIND_PS_APP_LASTEST,WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c -> toDomainPsApR(c));
 	}
 	@Override
@@ -627,10 +634,11 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId){
+	public Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId, int sysAtr){
 		return this.queryProxy().query(FIND_COMMON_PS_APP_LASTEST, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
+				.setParameter("sysAtr", sysAtr)
 				.getSingle(c->toDomainPsApR(c));
 	}
 	
@@ -651,11 +659,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate){
+	public List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId,
+			GeneralDate startDate, int sysAtr){
 		return this.queryProxy().query(SELECT_PS_APR_BY_STARTDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", startDate)
+				.setParameter("sysAtr", sysAtr)
 				.getList(c->toDomainPsApR(c));
 	}
 	
@@ -669,12 +679,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	}
 	@Override
 	public Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr,
-			Integer applicationType, String id) {
+			Integer applicationType, String id, int sysAtr) {
 		List<PersonApprovalRoot> lst = new ArrayList<>();
 		if(employmentRootAtr == EmploymentRootAtr.COMMON.value){//common
 			lst = this.queryProxy().query(GET_ALL_MODE_PRI_CM, WwfmtPsApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employeeId", employeeId)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainPsApR(c));
 		}else if(employmentRootAtr == EmploymentRootAtr.APPLICATION.value){//application
 			lst = this.queryProxy().query(GET_ALL_MODE_PRI_AP, WwfmtPsApprovalRoot.class)
