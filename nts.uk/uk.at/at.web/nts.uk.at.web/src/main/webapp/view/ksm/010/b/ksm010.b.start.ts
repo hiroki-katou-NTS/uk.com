@@ -5,5 +5,5 @@ module nts.uk.at.view.ksm010.b {
             __viewContext.bind(screenModel);
         });
 
-    }); 
+    });
 }
