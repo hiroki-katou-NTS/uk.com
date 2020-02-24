@@ -16,7 +16,8 @@ import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCo
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015bStartPageDto;
-import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterScreenQueryFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 /**
@@ -31,7 +32,10 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 public class ShiftMasterWs {
 	
 	@Inject
-	private ShiftMasterScreenQueryFinder finder;
+	private ShiftMasterFinder finder;
+	
+	@Inject
+	private ShiftMasterOrgFinder orgFinder;
 	
 	@Inject
 	private RegisterShiftMasterCommandHandler registerCmd;
@@ -49,6 +53,12 @@ public class ShiftMasterWs {
 	@Path("getlist")
 	public List<ShiftMasterDto> getlist(){
 		return this.finder.getShiftMasters();
+	}
+	
+	@POST
+	@Path("getlistByWorkPlace")
+	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
+		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
 	}
 	
 	@POST

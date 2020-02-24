@@ -36,13 +36,15 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepos
 	private static final String SELECT_BY_WORKTYPE_AND_WORKTIME = SELECT_BY_CID + " AND c.workTypeCd = :workTypeCd"
 			+ " AND c.workTimeCd = :workTimeCd";
 
-	private static final String SELECT_BY_LIST_CD_AND_CID = SELECT_BY_CID
+	private static final String SELECT_BY_LIST_CD_AND_CID = SELECT_ALL_DTO
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :listShiftMaterCode";
 
 	@Override
-	public List<ShiftMaster> getAllByCid(String companyId) {
-		List<ShiftMaster> datas = this.queryProxy().query(SELECT_BY_CID, KshmtShiftMater.class)
-				.setParameter("companyId", companyId).getList(c -> c.toDomain());
+	public List<ShiftMasterDto> getAllByCid(String companyId) {
+		List<ShiftMasterDto> datas = this.queryProxy()
+				.query(SELECT_ALL_DTO, ShiftMasterDto.class)
+				.setParameter("companyId", companyId)
+				.getList();
 		return datas;
 	}
 
@@ -50,7 +52,8 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepos
 	public List<ShiftMasterDto> getAllDtoByCid(String companyId) {
 		List<ShiftMasterDto> datas = this.queryProxy()
 				.query(SELECT_ALL_DTO, ShiftMasterDto.class)
-				.setParameter("companyId", companyId).getList();
+				.setParameter("companyId", companyId)
+				.getList();
 		return datas;
 	}
 
@@ -102,13 +105,14 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepos
 	}
 
 	@Override
-	public List<ShiftMaster> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
+	public List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
 		if (listShiftMaterCode.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<ShiftMaster> datas = this.queryProxy().query(SELECT_BY_LIST_CD_AND_CID, KshmtShiftMater.class)
-				.setParameter("companyId", companyId).setParameter("listShiftMaterCode", listShiftMaterCode)
-				.getList(c -> c.toDomain());
+		List<ShiftMasterDto> datas = this.queryProxy().query(SELECT_BY_LIST_CD_AND_CID, ShiftMasterDto.class)
+				.setParameter("companyId", companyId)
+				.setParameter("listShiftMaterCode", listShiftMaterCode)
+				.getList();
 		return datas;
 	}
 

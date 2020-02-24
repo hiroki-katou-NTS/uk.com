@@ -32,6 +32,5 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			shiftMasterRepo.insert(cmd.toDomain());
 
 		}
-
 	}
 }

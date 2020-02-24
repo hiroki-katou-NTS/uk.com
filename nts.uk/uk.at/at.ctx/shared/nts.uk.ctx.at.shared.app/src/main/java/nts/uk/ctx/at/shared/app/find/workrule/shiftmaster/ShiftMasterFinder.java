@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetUsableShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,10 +17,13 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ShiftMasterScreenQueryFinder {
+public class ShiftMasterFinder {
 
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	
+	@Inject 
+	private GetUsableShiftMasterService getShiftMasterSv;
 
 	// シフトマスタの一覧を取得する
 	public Ksm015bStartPageDto startBScreen() {
@@ -34,6 +38,13 @@ public class ShiftMasterScreenQueryFinder {
 	}
 	
 	public List<ShiftMasterDto> getShiftMasters() {
+		String companyId = AppContexts.user().companyId();
+		List<ShiftMasterDto> shiftMasters = shiftMasterRepo.getAllDtoByCid(companyId);
+		return shiftMasters;
+
+	}
+	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
+	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String workplaceId) {
 		String companyId = AppContexts.user().companyId();
 		List<ShiftMasterDto> shiftMasters = shiftMasterRepo.getAllDtoByCid(companyId);
 		return shiftMasters;
