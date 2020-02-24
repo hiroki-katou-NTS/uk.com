@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.ja.service {
+module nts.uk.at.view.ksu001.jb.service {
     var paths: any = {
         registerWorkPairPattern: "at/schedule/shift/team/workpairpattern/register",
         deleteWorkPairPattern: "at/schedule/shift/team/workpairpattern/delete",

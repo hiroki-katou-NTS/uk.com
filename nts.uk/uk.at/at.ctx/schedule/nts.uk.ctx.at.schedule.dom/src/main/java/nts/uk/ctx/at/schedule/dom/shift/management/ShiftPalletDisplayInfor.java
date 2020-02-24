@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
 import lombok.Getter;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 	シフトパレットの表示情報
