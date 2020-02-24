@@ -39,7 +39,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
@@ -179,9 +178,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 		this.deleteByManager.handle(command);
 	}
 	@POST
-	@Path("find-wpInfo-login")
-	public WorkplaceImport getWpInfoLogin(){
-		return comFinder.getWpInfoLogin();
+	@Path("find/wkpDepInfo-login")
+	public WkpDepInfo getWpInfoLogin(int sysAtr){
+		return appRootCm.getWkpDepInfoLogin(sysAtr);
 	}
 	
 	@POST

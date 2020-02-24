@@ -521,9 +521,9 @@ module nts.uk.com.view.cmm018.a {
                                     if(self.employeeInputList().length == 0){
                                         servicebase.getInfoEmLogin().done(function(employeeInfo){
                                             //can lay thong tin work place name
-                                            servicebase.getWpName().done(function(wpName){
+                                            servicebase.getWpDepName(self.systemAtr()).done(function(wpDepName){
                                                 self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
+                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpDepName.name, wpDepName.name));
                                             });
                                             
                                         });
@@ -724,9 +724,9 @@ module nts.uk.com.view.cmm018.a {
                         }else{
                             servicebase.getInfoEmLogin().done(function(employeeInfo){
                                 //can lay thong tin work place name
-                                servicebase.getWpName().done(function(wpName){
+                                servicebase.getWpDepName(self.systemAtr()).done(function(wpDepName){
                                     self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                    employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
+                                    employeeInfo.employeeCode, employeeInfo.employeeName, wpDepName.name, wpDepName.name));
                                     self.tabSelected(vmbase.RootType.PERSON);
                                     self.sidebar();
                                 });
@@ -751,9 +751,9 @@ module nts.uk.com.view.cmm018.a {
                         if(self.visibleTabPs()){
                             servicebase.getInfoEmLogin().done(function(employeeInfo){
                                 //can lay thong tin work place name
-                                servicebase.getWpName().done(function(wpName){
+                                servicebase.getWpDepName(self.systemAtr()).done(function(wpDepName){
                                     self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                    employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
+                                    employeeInfo.employeeCode, employeeInfo.employeeName, wpDepName.name, wpDepName.name));
                                 });
                             });    
                         }
