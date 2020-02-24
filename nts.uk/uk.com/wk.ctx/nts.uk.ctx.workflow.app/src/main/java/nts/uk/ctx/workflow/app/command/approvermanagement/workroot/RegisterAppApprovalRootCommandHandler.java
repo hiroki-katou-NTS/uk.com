@@ -687,7 +687,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	}
 	private boolean checkContain(List<AppType> lstType, AppType type) {
 		if(type.getEmployRootAtr() == 0) {
-			type.setValue("null");
+			for(AppType appType : lstType) {
+				if(appType.getEmployRootAtr() == 0) {
+					return true;
+				}
+			}
+			return false;
 		}
 		return lstType.contains(type);
 	}
