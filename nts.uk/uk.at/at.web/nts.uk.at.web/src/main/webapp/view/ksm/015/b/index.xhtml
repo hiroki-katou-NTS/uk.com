@@ -31,29 +31,29 @@
 				<!-- B1 -->
 				<button class="proceed" tabindex="2" data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
 				<!-- B2 -->
-				<button class="danger" tabindex="3">#{i18n.getText('KSM015_9')}</button>
+				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster">#{i18n.getText('KSM015_9')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
 					data-bind="ntsPanel:{width: '410px', height: '480px', direction: 'right', showIcon: false, visible: true}">
 					<div style="width: 380px" tabindex="5" data-bind="ntsSearchBox: {searchMode: 
-						'filter',targetKey: 'code', 
+						'filter',targetKey: 'shiftMaterCode', 
 						comId: 'gridlist-tbl', 
-						items: shiftRegistrationList, 
-						selected: currentShiftRegistration, 
-						selectedKey: 'code', 
-						fields: ['name', 'code'], 
+						items: shiftMasters, 
+						selected: selectedShiftMaster, 
+						selectedKey: 'shiftMaterCode', 
+						fields: ['shiftMasterName', 'shiftMaterCode'], 
 						mode: 'igGrid'}"></div>
 
 					<div id="gridlist-div">
 						<table id="gridlist-tbl" data-bind="ntsGridList: {
 								width: 380,
 								height: 370,
-								options: shiftRegistrationList,
-								optionsValue: 'code',
+								options: shiftMasters,
+								optionsValue: 'shiftMaterCode',
 								columns: ko.observableArray(searchOptions.gridColums),
 								multiple: false,
-								value: currentShiftRegistration,
+								value: selectedShiftMaster,
 								mode: 'filter'
 							}"></table>
 					</div>
