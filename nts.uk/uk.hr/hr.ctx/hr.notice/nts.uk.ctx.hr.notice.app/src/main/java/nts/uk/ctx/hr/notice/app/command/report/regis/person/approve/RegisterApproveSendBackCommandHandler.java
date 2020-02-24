@@ -32,7 +32,12 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 	@Inject
 	private ApprovalPersonReportRepository repoApproval;
 	
-	@Inject RegistrationPersonReportRepository registrationPersonReportRepo;
+	@Inject 
+	private RegistrationPersonReportRepository registrationPersonReportRepo;
+	
+	@Inject
+	private RegisterApproveHandler registerApproveHandler;
+	
 
 	// アルゴリズム「差し戻し処理」を実行する(Thực hiện thuật toán"Xử lý return" )
 	@Override
@@ -61,6 +66,10 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		registrationPersonReportRepo.updateAfterSendBack(cid, reprtId, command.sendBackSID, command.comment);
 		
 		// アルゴリズム[届出分析データのカウント処理]を実行する (Thực hiện thuật toán [Xử lý count dữ liệu phân tích report])
+		String[] monthSplit = java.time.YearMonth.now().toString().split("-");
+
+		int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
+		registerApproveHandler.countData(cid, yearMonth, command.reportLayoutId, 2, 2);
 	}
 
 }

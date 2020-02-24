@@ -27,9 +27,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			+ "Where c.pk.cid = :cid "
 			+ "ORDER BY c.reportName ASC";
 	
-	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c "
+	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c " 
 			+ " Where c.pk.cid = :cid "
-			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
+			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.draftSaveDate ASC ";
 	
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";

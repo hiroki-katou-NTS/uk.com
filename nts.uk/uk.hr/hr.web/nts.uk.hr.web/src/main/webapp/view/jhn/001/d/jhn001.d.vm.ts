@@ -110,7 +110,7 @@ module jhn001.d.viewmodel {
                 };
 
                 service.saveData(command).done(() => {
-                    info({ messageId: "Msg_15" }).then(function() {
+                    info({ messageId: "Msgj_10" }).then(function() {
                         unblock();
                         close();
                     });
