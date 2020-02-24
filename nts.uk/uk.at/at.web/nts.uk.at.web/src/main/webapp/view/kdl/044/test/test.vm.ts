@@ -21,6 +21,7 @@ module test.viewmodel {
         listFilter: KnockoutObservableArray<Shifuto> = ko.observableArray( [] );
         selectedFilterCodes: KnockoutObservableArray<String> = ko.observableArray( [] );
         filterColumns: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             let self = this;
@@ -53,6 +54,12 @@ module test.viewmodel {
                 new BoxModel( 2, '職場グループ' )
             ] );
             self.selectedMode = ko.observable( 1 );
+            self.selectedMode.subscribe(( value ) => {
+                if ( value == 1 )
+                    self.isMultiSelect( true );
+                else
+                    self.isMultiSelect( false );
+            } );
             self.selectedPer = ko.observable( 1 );
             self.selectedFilter = ko.observable( 0 );
             self.enable = ko.observable( true );
@@ -94,15 +101,20 @@ module test.viewmodel {
                 permission: self.selectedPer() == 1 ? true : false,
                 filter: self.selectedFilter(),
                 filterIDs: self.selectedFilterCodes(),
-                shifutoCodes: self.selectedCodes()
+                shifutoCodes: self.isMultiSelect() ? self.selectedCodes() : self.selectedCode()
             }
             setShared( 'kdl044Data', dataSetShare );
             nts.uk.ui.windows.sub.modal( "/view/kdl/044/a/index.xhtml", { dialogClass: "no-close" } )
                 .onClosed(() => {
-                    let isCancel = getShared( 'kdl044_IsCancel' ) != null? getShared( 'kdl044_IsCancel' ): true;
+                    let isCancel = getShared( 'kdl044_IsCancel' ) != null ? getShared( 'kdl044_IsCancel' ) : true;
                     if ( !isCancel ) {
                         let returnedData = getShared( 'kdl044ShifutoCodes' );
-                        self.selectedCodes( returnedData );
+                        if ( self.isMultiSelect() ) {
+                            self.selectedCodes( [] );
+                            self.selectedCodes( returnedData );
+                        } else {
+                            self.selectedCode(returnedData);
+                        }
                     }
                     nts.uk.ui.block.clear();
                 } );
