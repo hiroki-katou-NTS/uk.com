@@ -1,0 +1,27 @@
+body {
+	overflow-x: hidden;
+}
+#functions-area-bottom > button {
+	margin-right: 10px;
+}
+
+#contents-area{
+	overflow: hidden !important;
+}
+
+#multi-list {
+	width: auto;
+}
+
+#content {
+	margin-left: 20px;
+	padding-top: 10px;
+}
+
+.nts-searchbbox-wrapper input.ntsSearchBox {
+	width: 438px !important;
+}
+
+#multi-list_headers_v {
+	width: auto !important;
+}

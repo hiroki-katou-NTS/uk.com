@@ -90,8 +90,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' }
-//            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' },
+            //{ code: 3, name: '記号' } de bat man Ja
+             { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
