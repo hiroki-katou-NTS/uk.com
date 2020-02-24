@@ -28,11 +28,11 @@ public class KscmtRank extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KscmtRankPk kscmtRankPk;
 
-	@Column(name = "RANK_MEMO")
-	public String rankMemo;
+	@Column(name = "SYNAME")
+	public String rankSymbol;
 
-	@Column(name = "DISPORDER")
-	public int displayOrder;
+	@Column(name = "PRIORITY")
+	public int priority;
 
 	@Override
 	protected Object getKey() {
