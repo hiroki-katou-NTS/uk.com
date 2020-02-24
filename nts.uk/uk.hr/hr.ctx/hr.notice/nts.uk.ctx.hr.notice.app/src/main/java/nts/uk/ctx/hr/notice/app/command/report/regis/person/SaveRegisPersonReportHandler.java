@@ -84,6 +84,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	public static final String MAX_DATE = "9999/12/31";
 	public static final String MIN_DATE = "1900/01/01";
 
+	// アルゴリズム「届出情報を登録」を実行する (Thực hiện thuật toán "Đăng ký thông tin report")
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
@@ -101,10 +102,12 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
 		String rootSateId = data.rootSateId;
+		
+		// 届出IDを採番する(Đánh số report ID)
 		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
 		
 		if (rootSateId == null) {
-			
+			// アルゴリズム[GUIDを生成する]を実行する (Thực hiện thuật toán "Tạo GUID")
 			rootSateId = IdentifierUtil.randomUniqueId();
 			
 			// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
@@ -168,6 +171,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			
 		}
 		
+		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
+		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
@@ -207,8 +212,15 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
+		// 社員情報全般と届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    // アルゴリズム「[RQ631]申請書の承認者と状況を取得する」を実行する 
+	    // Thực hiện thuật toán"[RQ631]Lấy trạng thái và người phê duyệt Application form)
+	    
+	    // chưa làm chức năng gửi mail => chưa cần gọi [RQ631]
 	}
 	
 	public List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
@@ -355,6 +367,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			return;
 		}
 		
+		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
+		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		
 		RegistrationPersonReport domainReport = domainReportOpt.get();
@@ -398,8 +412,12 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportId);
 		
+		// 社員情報全般と届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    
 	}
 	
 	private EmployeeInfo getPersonInfo(){

@@ -33,6 +33,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
  * @author laitv
+ * 下書き保存する (Lưu bản nháp)
  *
  */
 @Stateless
@@ -58,7 +59,9 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	
 	public static final String MAX_DATE = "9999/12/31";
 	public static final String MIN_DATE = "1900/01/01";
-
+	
+	
+	// アルゴリズム「届出情報を下書き保存」を実行する (Thực hiên thuật toán "Lưu bản nháp thông tin report")
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
@@ -79,6 +82,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
 		
 		if (rootSateId == null) {
+			// 届出IDを採番する(Đánh số report ID)
 			rootSateId = IdentifierUtil.randomUniqueId();
 		}
 		
@@ -121,6 +125,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
+		// 届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		//(Đăng ký nội dung đã nhập ở panel report với key là reportID vào 「人事届出の登録」、「届出の項目」)
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
 	}
@@ -232,6 +238,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportId);
 		
+		// 届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		//(Đăng ký nội dung đã nhập ở panel report với key là reportID vào 「人事届出の登録」、「届出の項目」)
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
 	}

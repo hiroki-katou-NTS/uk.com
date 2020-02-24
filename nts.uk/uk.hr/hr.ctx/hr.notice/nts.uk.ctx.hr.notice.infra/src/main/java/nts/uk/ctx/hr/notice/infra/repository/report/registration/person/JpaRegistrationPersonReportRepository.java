@@ -156,8 +156,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				.setParameter("cid", cid)
 				.setParameter("reportId", reportId).getSingle();
 		JhndtReportRegis entity = entityOpt.get();
+		// 届出IDをキーとしたドメイン「人事届出の登録.削除済」=trueに設定する 
+		// (Cài Đặt tên miền "Đăng ký HR report. Đã xóa" = true với ID report làm khóa)
 		entity.setDelFlg(1);
-		//entity.setDraftSaveDate(GeneralDateTime.now());
 		this.commandProxy().update(entity);
 	}
 

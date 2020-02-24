@@ -81,9 +81,10 @@ module jhn001.b.vm {
             let reportId = self.reportId();
             let listReportDraft = self.listReportDraft();
 
-            if (reportId == null || reportId == '' || reportId == undefined)
+            if (reportId == null || reportId == '' || reportId == undefined){
                 alertError({ messageId: "Msgj_24" });
                 return;
+            }
             
             if(listReportDraft.length == 0){
                 reportId = null;

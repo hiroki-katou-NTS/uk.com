@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
@@ -65,11 +66,17 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		// ドメイン「人事届出の登録」 を更新する
 		registrationPersonReportRepo.updateAfterSendBack(cid, reprtId, command.sendBackSID, command.comment);
 		
-		// アルゴリズム[届出分析データのカウント処理]を実行する (Thực hiện thuật toán [Xử lý count dữ liệu phân tích report])
-		String[] monthSplit = java.time.YearMonth.now().toString().split("-");
+		Optional<RegistrationPersonReport> regisPersonReportOpt =  this.registrationPersonReportRepo.getDomainByReportId( cid, reprtId );
+		
+		if (regisPersonReportOpt.isPresent()) {
+			
+			// アルゴリズム[届出分析データのカウント処理]を実行する (Thực hiện thuật toán [Xử lý count dữ liệu phân tích report])
+			String[] monthSplit = java.time.YearMonth.now().toString().split("-");
 
-		int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
-		registerApproveHandler.countData(cid, yearMonth, command.reportLayoutId, 2, 2);
+			int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
+			registerApproveHandler.countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 2, 2);
+		}
+		
 	}
 
 }

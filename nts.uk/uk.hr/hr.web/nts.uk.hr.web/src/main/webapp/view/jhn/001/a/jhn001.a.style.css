@@ -63,7 +63,7 @@ button.search-btn {
 	margin-top: 14px;
 	float: left;
 	/* min-height: 600px; */
-	width: 43.8%;
+	width: 873px;
 	position: relative;
 	box-sizing: border-box;
     border: 1px solid #ccc;
@@ -160,5 +160,9 @@ div.drag-panel{
 
 #reportName {
 	margin-left: -5px;
+}
+
+.layout-control .drag-panel {
+    width: 852px !important;
 }
 
