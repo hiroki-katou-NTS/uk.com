@@ -44,12 +44,12 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 	@Override
 	protected void handle(CommandHandlerContext<ApproveReportSendBackCommand> context) {
 		ApproveReportSendBackCommand command = context.getCommand();
-		String sid = AppContexts.user().employeeId();
+		String approverEmpID = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
 		Integer reprtId = command.getReportID();
 		
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する(Lấy thông tin của domain 「人事届出の承認/phê duyệt HR report」với key là Approver employee ID, report ID)
-		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(cid, reprtId, sid);
+		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(cid, reprtId, approverEmpID);
 
 		listDomain.forEach(dm -> {
 			dm.setAprDate(GeneralDateTime.now());
@@ -61,7 +61,7 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		}) ;
 		
 		// ドメイン「人事届出の承認」の各種属性を登録する(Đăng ký các thuộc tính khác nhau của domain "Approval of HR report")
-		repoApproval.updateSendBack(listDomain, reprtId,  sid  );
+		repoApproval.updateSendBack(listDomain, reprtId,  approverEmpID  );
 		
 		// ドメイン「人事届出の登録」 を更新する
 		registrationPersonReportRepo.updateAfterSendBack(cid, reprtId, command.sendBackSID, command.comment);
@@ -74,7 +74,7 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 			String[] monthSplit = java.time.YearMonth.now().toString().split("-");
 
 			int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
-			registerApproveHandler.countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 2, 2);
+			//registerApproveHandler.countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 2, 2);
 		}
 		
 	}

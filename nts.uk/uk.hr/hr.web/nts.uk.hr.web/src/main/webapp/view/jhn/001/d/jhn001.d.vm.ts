@@ -91,11 +91,14 @@ module jhn001.d.viewmodel {
             }
 
             nts.uk.ui.dialog.confirm({ messageId: "Msgj_8" }).ifYes(() => {
-                block();
                 let selectedReturn = self.selectedReturn();
                 let selectedSendBackCls = self.selectedSendBackCls();
                 let  obj = _.find(self.listReturn(), function(o) { return o.id == selectedReturn; })
 
+                if(selectedReturn == null || obj == undefined || selectedSendBackCls == 2){
+                    return;    
+                }
+                
                 let command = {
                     reportID: obj.reportID,
                     phaseNum: selectedReturn == 1 ? 0 : obj.phaseNum,
@@ -108,7 +111,8 @@ module jhn001.d.viewmodel {
                     sendBackSID: selectedReturn == 1 ? obj.appSid : obj.aprSid,
                     selectedReturn : selectedReturn
                 };
-
+                
+                block();
                 service.saveData(command).done(() => {
                     info({ messageId: "Msgj_10" }).then(function() {
                         unblock();

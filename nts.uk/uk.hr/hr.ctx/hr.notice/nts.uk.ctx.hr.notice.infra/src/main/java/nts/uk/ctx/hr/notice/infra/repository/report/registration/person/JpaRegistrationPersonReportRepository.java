@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -222,6 +223,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			JhndtReportRegis entity = entityOpt.get();
 			entity.sendBackSID = sendBackSid;
 			entity.sendBackComment = comment;
+			entity.aprStatus = ApprovalStatusForRegis.Send_Back.value;
 			this.commandProxy().update(entity);
 		}
 	}
