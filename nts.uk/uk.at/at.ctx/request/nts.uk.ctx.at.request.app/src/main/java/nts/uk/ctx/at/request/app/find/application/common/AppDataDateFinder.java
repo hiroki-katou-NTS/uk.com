@@ -75,7 +75,7 @@ public class AppDataDateFinder {
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID, int overtimeAtr){
 		String companyID = AppContexts.user().companyId();
-		if(employeeID == null){
+		if(Strings.isEmpty(employeeID)){
 			 employeeID = AppContexts.user().employeeId();
 		}
 		String authorCmt = Strings.EMPTY;
