@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * ランクを削除する
+ * ランクマスタを削除する
  * 
  * @author sonnh1
  *
@@ -25,7 +25,8 @@ public class DeleteRankCommandHandler extends CommandHandler<RankCommand> {
 	protected void handle(CommandHandlerContext<RankCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RankCommand command = context.getCommand();
-		
+		//1:  delete(会社ID,ランクコード)
+		//1.1 delete
 		this.rankRepo.delete(companyId, new RankCode(command.getRankCd()));
 	}
 }

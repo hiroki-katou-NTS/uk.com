@@ -10,10 +10,19 @@ import lombok.Value;
 @Value
 public class RankCommand {
 	
+	/**
+	 * ランクコード
+	 */
 	private String rankCd;
 	
+	/**
+	 * ランク記号
+	 */
 	private String rankSymbol;
 	
+	/**
+	 * 優先順
+	 */
 	private int priority;
 
 }
