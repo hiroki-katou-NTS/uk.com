@@ -104,6 +104,10 @@ module nts.uk.com.view.cmm018.a {
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor() {
                 let self = this;
+                //get param url
+                let url = $(location).attr('search');
+                let urlParam: number = url.split("=")[1];
+                self.systemAtr(urlParam || 0);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
                     
@@ -415,6 +419,11 @@ module nts.uk.com.view.cmm018.a {
                     }
                 });
                 self.sidebar();
+                self.ccg001Init();
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            }
+            ccg001Init(){
+                let self = this;
                 let wkp = self.systemAtr() == 0 ? true : false;
                 let dep = self.systemAtr() == 1 ? true : false;
                 //_____CCG001________
@@ -424,7 +433,7 @@ module nts.uk.com.view.cmm018.a {
                 self.ccgcomponent = {
                
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: self.systemAtr() == 0 ? 2 : 4, // システム区分
+                systemType: 2, // システム区分
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: true, // 基準日利用
@@ -468,11 +477,6 @@ module nts.uk.com.view.cmm018.a {
                      __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(data.listEmployee);
                  }
                 } 
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-                // Init Fixed Table
-                $("#fixed-table").ntsFixedTable({ height: 550, width: 910 });
-                $("#fixed-tableWp").ntsFixedTable({ height: 550, width: 910 });
-                $("#fixed-tablePs").ntsFixedTable({ height: 530, width: 910 });
             }
             sidebar(){
                 let self = this;
@@ -616,10 +620,6 @@ module nts.uk.com.view.cmm018.a {
             preStart(transferData): JQueryPromise<any>{
                 let self = this;
                 let dfd = $.Deferred();
-                //get param url
-                let url = $(location).attr('search');
-                let urlParam: number = url.split("=")[1];
-                self.systemAtr(urlParam || 0);
                 if(self.systemAtr() == 1){
                     self.rowHist(5);
                 }
