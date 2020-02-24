@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 860, height: 450 };</script>
+			<script>var dialogSize = { width: 940, height:450 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
@@ -30,8 +30,9 @@
 			</div>
 			<div id="contents-area">
 				<div id="h-50" data-bind="visible: isVisibleWkpName">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_926')}</div>
-					<span data-bind="text: workplaceName"></span> <br />
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_926')}</div>
+					<span id = "workplaceCode" data-bind="text: workplaceCode"></span>
+					<span id = "workplaceName" data-bind="text: workplaceName"></span> <br />
 					<hr />
 				</div>
 				<div id="group-link-button-ja"
@@ -59,9 +60,9 @@
 					<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KSU001_906')}</div>
 					<input id="note" data-bind="ntsTextEditor: {value: note, constraint: 'Memo', name: '#[KSU001_906]'}" />
 				</div>
-				<div>
+				<div class="mt-10">
 					<div class = "form-label" style = "display: inline-block;"
-						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">HEHE</div>
+						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_113')}</div>
 					<!--<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>-->	
 					<div id="popup-area" class="popup-area popup-panel">
 						<span>#{i18n.getText('KSU001_1701')}</span>

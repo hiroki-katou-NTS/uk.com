@@ -16,12 +16,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
-        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
-        arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
-        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
+        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJC').text || null);
+        arrTooltip: any[] = getShared('dataForJC').tooltip ? getShared('dataForJC').tooltip.match(/[^[\]]+(?=])/g) : [];
+        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJC').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
-        listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
+        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJC').textDecision);
+        listCheckNeededOfWorkTime: any[] = getShared('dataForJC').listCheckNeededOfWorkTime;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         nashi: string = getText("KSU001_98");
            
