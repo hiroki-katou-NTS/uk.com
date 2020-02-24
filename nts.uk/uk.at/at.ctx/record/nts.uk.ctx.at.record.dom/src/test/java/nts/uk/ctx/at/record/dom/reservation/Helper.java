@@ -28,7 +28,7 @@ public class Helper {
 	
 	public static class Reservation {
 		
-		public static class RegisterInfo {
+		public static class RegInfo {
 			public static ReservationRegisterInfo DUMMY = new ReservationRegisterInfo("cardNo");
 		}
 		
@@ -43,7 +43,7 @@ public class Helper {
 		
 		public static BentoReservation create(ReservationDate reservationDate, BentoReservationDetail detail) {
 			return new BentoReservation(
-					RegisterInfo.DUMMY,
+					RegInfo.DUMMY,
 					reservationDate,
 					false,
 					Arrays.asList(detail));
@@ -61,6 +61,10 @@ public class Helper {
 			}
 			
 		}
+	}
+	
+	public static BentoReservationCount count(int value) {
+		return new BentoReservationCount(value);
 	}
 	
 	public static class ClosingTime {

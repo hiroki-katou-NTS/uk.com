@@ -2,10 +2,9 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import static nts.arc.time.GeneralDate.today;
 import static nts.arc.time.GeneralDateTime.now;
-import static nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper.bento;
 import static nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame.FRAME1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import nts.arc.testing.exception.BusinessExceptionAssert;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
@@ -30,16 +29,15 @@ public class BentoMenuTest {
 
 	
 	private static final Map<Integer, BentoReservationCount> DUMMY_DETAILS =
-			Collections.singletonMap(1, new BentoReservationCount(1));
+			Collections.singletonMap(1, Helper.count(1));
 	
 	@Test
 	public void invariant_empty() {
 		
-		assertThatThrownBy(() -> {
-			
+		NtsAssert.systemError(() -> {
 			new BentoMenu("dummy", Collections.emptyList(), null);
-			
-		}).isInstanceOf(RuntimeException.class);
+		});
+		
 	}
 	
 	@Test
@@ -47,14 +45,12 @@ public class BentoMenuTest {
 		
 		List<Bento> bentoList41 = new ArrayList<>();
 		for(int i = 0; i < 41; i++) {
-			bentoList41.add(bento(i, 1, 1));
+			bentoList41.add(Helper.Menu.Item.bentoAmount(i, 1, 1));
 		}
 		
-		assertThatThrownBy(() -> {
-			
+		NtsAssert.systemError(() -> {
 			new BentoMenu("dummy", bentoList41, null);
-			
-		}).isInstanceOf(RuntimeException.class);
+		});
 	}
 	
 	@Test
@@ -63,9 +59,9 @@ public class BentoMenuTest {
 		BentoMenu target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
 		
-		BusinessExceptionAssert.id("Msg_1584", () -> {
+		NtsAssert.businessException("Msg_1584", () -> {
 			target.reserve(
-					Helper.Reservation.RegisterInfo.DUMMY,
+					Helper.Reservation.RegInfo.DUMMY,
 					pastDay,
 					now(), // dummy
 					DUMMY_DETAILS);
@@ -84,25 +80,25 @@ public class BentoMenuTest {
 				5, // invalid frame
 				new BentoReservationCount(1));
 		
-		assertThatThrownBy(() -> {
+		NtsAssert.systemError(() -> {
 			target.reserve(
-					Helper.Reservation.RegisterInfo.DUMMY,
-					Helper.Reservation.Date.DUMMY,
+					Helper.Reservation.RegInfo.DUMMY,
+					Helper.Reservation.Date.of(today()),
 					now(), // dummy
 					details);
-		}).isInstanceOf(RuntimeException.class);
+		});
 	}
 	
 	@Test
 	public void reserve_success() {
 		
 		Map<Integer, BentoReservationCount> details = new HashMap<>();
-		details.put(1, new BentoReservationCount(10));
-		details.put(2, new BentoReservationCount(20));
+		details.put(1, Helper.count(10));
+		details.put(2, Helper.count(20));
 
-		ReservationRegisterInfo registerInfor = Helper.Reservation.RegisterInfo.DUMMY;
+		ReservationRegisterInfo registerInfor = Helper.Reservation.RegInfo.DUMMY;
 		ReservationDate reservationDate = Helper.Reservation.Date.of(today());
-		GeneralDateTime reservedAt = now();
+		GeneralDateTime now = now();
 		
 		BentoMenu target = new BentoMenu(
 				"historyID",
@@ -114,28 +110,20 @@ public class BentoMenuTest {
 		BentoReservation result = target.reserve(
 				registerInfor,
 				reservationDate,
-				reservedAt,
+				now,
 				details);
 		
 		assertThat(result.getRegisterInfor()).isEqualTo(registerInfor);
-		
 		assertThat(result.getReservationDate()).isEqualTo(reservationDate);
-
 		assertThat(result.getBentoReservationDetails())
-			.extracting(d -> d.getFrameNo())
-			.containsExactly(1, 2);
-		
-		assertThat(result.getBentoReservationDetails())
-			.extracting(d -> d.getDateTime())
-			.containsExactly(reservedAt, reservedAt);
-		
-		assertThat(result.getBentoReservationDetails())
-			.extracting(d -> d.getBentoCount().v())
-			.containsExactly(10, 20);
-	
-		assertThat(result.getBentoReservationDetails())
-			.extracting(d -> d.isAutoReservation())
-			.containsExactly(false, false);
+			.extracting(
+					d -> d.getFrameNo(),
+					d -> d.getDateTime(),
+					d -> d.getBentoCount().v(),
+					d -> d.isAutoReservation())
+			.containsExactly(
+					tuple(1, now, 10, false),
+					tuple(2, now, 20, false));
 
 	}
 	
@@ -145,7 +133,7 @@ public class BentoMenuTest {
 		BentoMenu target = Helper.Menu.DUMMY;
 		ReservationDate pastDay = Helper.Reservation.Date.of(today().addDays(-1));
 		
-		BusinessExceptionAssert.id("Msg_1584", () -> {
+		NtsAssert.businessException("Msg_1584", () -> {
 			target.receptionCheck(now(), pastDay);
 		});
 	}
@@ -162,8 +150,7 @@ public class BentoMenuTest {
 				Arrays.asList(Helper.Menu.Item.DUMMY),
 				closingTime);
 		
-		BusinessExceptionAssert.id("Msg_1585", () -> {
-			
+		NtsAssert.businessException("Msg_1585", () -> {
 			target.receptionCheck(
 					now(),
 					new ReservationDate(today(), FRAME1));
@@ -200,5 +187,16 @@ public class BentoMenuTest {
 		
 		// no error
 		target.receptionCheck(now(), futureDay);
+	}
+	
+	@Test
+	public void getters() {
+		
+		BentoMenu target = new BentoMenu(
+				"historyID",
+				Arrays.asList(Helper.Menu.Item.DUMMY),
+				Helper.ClosingTime.UNLIMITED);
+		
+		NtsAssert.invokeGetters(target);
 	}
 }
