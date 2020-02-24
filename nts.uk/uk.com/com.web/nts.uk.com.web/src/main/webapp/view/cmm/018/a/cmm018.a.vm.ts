@@ -230,7 +230,7 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1){
+                                   if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
                                    }
@@ -263,7 +263,7 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1){
+                                   if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
                                    }
@@ -297,7 +297,7 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1){
+                                   if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
                                    }
@@ -385,7 +385,7 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1){
+                               if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
                                }
@@ -576,7 +576,7 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1){
+                               if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
                                }
@@ -652,7 +652,7 @@ module nts.uk.com.view.cmm018.a {
                         servicebase.getNameAppType().done(function(lstName){
                             self.lstNameS = lstName;
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1){
+                               if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(lstName, item.appType).localizedName,1));
                                }
