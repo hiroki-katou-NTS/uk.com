@@ -2205,6 +2205,10 @@ public class ProgramsManager {
 	public static final Program KDL034 = new Program(WebAppId.AT, ProgramIdConsts.KDL034, "KDL034_1",
 			"/view/kdl/034/a/index.xhtml");
 
+	// KDL044
+	public static final Program KDL044A = new Program(WebAppId.AT, ProgramIdConsts.KDL044A, "KDL044_12",
+			"/view/kdl/044/a/index.xhtml");
+
 	/** CCG009 */
 	public static final Program CCG009A = new Program(WebAppId.COM, ProgramIdConsts.CCG009A, "CCG009_1",
 			"/view/ccg/009/index.xhtml");

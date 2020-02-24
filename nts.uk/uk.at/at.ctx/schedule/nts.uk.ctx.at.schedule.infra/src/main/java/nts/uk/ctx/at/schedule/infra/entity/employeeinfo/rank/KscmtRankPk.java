@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.rank;
+package nts.uk.ctx.at.schedule.infra.entity.employeeinfo.rank;
 
 import java.io.Serializable;
 

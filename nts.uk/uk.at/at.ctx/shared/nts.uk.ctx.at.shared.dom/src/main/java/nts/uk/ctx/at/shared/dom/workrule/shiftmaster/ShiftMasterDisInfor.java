@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 
 /**
  * シフトマスタの表示情報
@@ -15,7 +14,7 @@ public class ShiftMasterDisInfor {
 	 * 名称
 	 */
 	@Getter
-	private NameShiftMater name;
+	private ShiftMasterName name;
 	
 	/**
 	 * 色
@@ -29,7 +28,7 @@ public class ShiftMasterDisInfor {
 	@Getter
 	private Optional<Remarks> remarks;
 
-	public ShiftMasterDisInfor(NameShiftMater name, ColorCodeChar6 color, Remarks remarks) {
+	public ShiftMasterDisInfor(ShiftMasterName name, ColorCodeChar6 color, Remarks remarks) {
 		this.name = name;
 		this.color = color;
 		this.remarks = Optional.ofNullable(remarks);
