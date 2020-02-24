@@ -36,7 +36,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
 	
 
-	private static final String SEL = "select r FROM  JhndtReportRegis r";
+	private static final String SEL = "select DISTINCT r FROM  JhndtReportRegis r";
 
 	private RegistrationPersonReport toDomain(JhndtReportRegis entity) {
 		return entity.toDomain();
@@ -170,7 +170,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		String query = SEL;
 
 		if (approvalReport) {
-			query += " INNER JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
+			query += " LEFT JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
 		}
 
 		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
@@ -187,7 +187,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		}
 		
 		if (approvalReport) {
-			query += " AND a.aprSid = '%s'";
+			query += " AND a.pk.aprSid = '%s'";
 			query = String.format(query, sId);
 		} else {
 			if (!StringUtil.isNullOrEmpty(inputName, false)) {
