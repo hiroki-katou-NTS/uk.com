@@ -183,11 +183,11 @@ export class CmmS45DComponent extends Vue {
         let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, 
             (phase: Phase) => phase.approvalAtrValue == 0 || phase.approvalAtrValue == 4);
         if (unapprovePhaseLst.length > 0) {
-            return _.sortBy(unapprovePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
+            return _.sortBy(unapprovePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
         }
         let approvePhaseLst: Array<Phase> = _.filter(self.phaseLst, (phase: Phase) => phase.approvalAtrValue == 1);
         if (approvePhaseLst.length > 0) {
-            return _.sortBy(approvePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
+            return _.sortBy(approvePhaseLst, 'phaseOrder')[0].phaseOrder - 1;
         }
 
         return 0;

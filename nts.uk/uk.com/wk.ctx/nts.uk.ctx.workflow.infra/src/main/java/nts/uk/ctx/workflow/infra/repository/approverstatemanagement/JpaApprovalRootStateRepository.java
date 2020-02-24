@@ -912,36 +912,49 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		String loginSID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
 		List<String> data = new ArrayList<>();
+//		String SELECT = "SELECT SYONIN.ROOT_STATE_ID FROM ( "
+//				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
+//				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
+//				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
+//				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
+//				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "
+//				+ "AND APS.APPROVAL_RECORD_DATE <= ? " + "UNION ALL "
+//				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
+//				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN WWFDT_APPROVAL_FRAME AF "
+//				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
+//				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "INNER JOIN CMMMT_AGENT AG "
+//				+ "ON APS.APPROVER_CHILD_ID = AG.SID " + "WHERE APS.CID = ? " + "AND AF.APP_FRAME_ATR = '0' "
+//				+ "AND APS.APPROVAL_RECORD_DATE >= ? " + "AND APS.APPROVAL_RECORD_DATE <= ? "
+//				+ "AND AG.START_DATE <= ? " + "AND AG.END_DATE >= ? " + "AND AG.AGENT_APP_TYPE1 = '0' "
+//				+ "AND AG.AGENT_SID1 = ? ) " + "AS SYONIN " + "INNER JOIN ( "
+//				+ "SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
+//				+ "FROM WWFDT_APPROVAL_PHASE_ST AP " + "WHERE AP.APP_PHASE_ATR IN ('0','3') "
+//				+ "GROUP BY AP.ROOT_STATE_ID )" + "AS NOWFAS " + "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+//				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER ";
 		String SELECT = "SELECT SYONIN.ROOT_STATE_ID FROM ( "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
-				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "
-				+ "AND APS.APPROVAL_RECORD_DATE <= ? " + "UNION ALL "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN WWFDT_APPROVAL_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "INNER JOIN CMMMT_AGENT AG "
-				+ "ON APS.APPROVER_CHILD_ID = AG.SID " + "WHERE APS.CID = ? " + "AND AF.APP_FRAME_ATR = '0' "
-				+ "AND APS.APPROVAL_RECORD_DATE >= ? " + "AND APS.APPROVAL_RECORD_DATE <= ? "
-				+ "AND AG.START_DATE <= ? " + "AND AG.END_DATE >= ? " + "AND AG.AGENT_APP_TYPE1 = '0' "
-				+ "AND AG.AGENT_SID1 = ? ) " + "AS SYONIN " + "INNER JOIN ( "
-				+ "SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
-				+ "FROM WWFDT_APPROVAL_PHASE_ST AP " + "WHERE AP.APP_PHASE_ATR IN ('0','3') "
-				+ "GROUP BY AP.ROOT_STATE_ID )" + "AS NOWFAS " + "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
-				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER ";
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS WHERE APS.APPROVER_ID = ? "
+				+ "AND APS.APPROVAL_ATR = '0' AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? UNION ALL "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS INNER JOIN CMMMT_AGENT AG "
+				+ "ON APS.APPROVER_ID = AG.SID WHERE APS.APPROVAL_ATR = '0' "
+				+ "AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? "
+				+ "AND AG.START_DATE <= ? AND AG.END_DATE >= ? AND AG.AGENT_APP_TYPE1 = '0' "
+				+ "AND AG.AGENT_SID1 = ? ) AS SYONIN "
+				+ "INNER JOIN ( SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
+				+ "FROM WWFDT_APPROVAL_PHASE_ST AP WHERE AP.APP_PHASE_ATR IN ('0','3') "
+				+ "GROUP BY AP.ROOT_STATE_ID ) AS NOWFAS "
+				+ "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER";
 		try (PreparedStatement stmt = this.connection().prepareStatement(SELECT)) {
-			stmt.setString(1, companyID);
-			stmt.setString(2, loginSID);
-			stmt.setDate(3, Date.valueOf(startDate.localDate()));
-			stmt.setDate(4, Date.valueOf(endDate.localDate()));
-			stmt.setString(5, companyID);
-			stmt.setDate(6, Date.valueOf(startDate.localDate()));
-			stmt.setDate(7, Date.valueOf(endDate.localDate()));
-			stmt.setDate(8, Date.valueOf(baseDate.localDate()));
-			stmt.setDate(9, Date.valueOf(baseDate.localDate()));
-			stmt.setString(10, loginSID);
+			stmt.setString(1, loginSID);
+			stmt.setDate(2, Date.valueOf(startDate.localDate()));
+			stmt.setDate(3, Date.valueOf(endDate.localDate()));
+			stmt.setDate(4, Date.valueOf(startDate.localDate()));
+			stmt.setDate(5, Date.valueOf(endDate.localDate()));
+			stmt.setDate(6, Date.valueOf(baseDate.localDate()));
+			stmt.setDate(7, Date.valueOf(baseDate.localDate()));
+			stmt.setString(8, loginSID);
 			ResultSet result = stmt.executeQuery();
 			while (result.next()) {
 				// result.getString(SELECT);
