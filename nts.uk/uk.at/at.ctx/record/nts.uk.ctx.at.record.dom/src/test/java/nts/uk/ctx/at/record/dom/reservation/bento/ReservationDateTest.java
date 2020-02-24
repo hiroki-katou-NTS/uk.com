@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 
@@ -30,6 +31,14 @@ public class ReservationDateTest {
 		
 		ReservationDate tomorrow = date(GeneralDate.today().addDays(1));
 		assertThat(tomorrow.isToday()).isFalse();
+	}
+	
+	@Test
+	public void getters() {
+		
+		ReservationDate target = date(GeneralDate.today());
+		NtsAssert.invokeGetters(target);
+		
 	}
 
 	private static ReservationDate date(GeneralDate date) {

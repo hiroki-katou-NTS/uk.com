@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
@@ -8,7 +7,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import nts.arc.testing.exception.BusinessExceptionAssert;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 
@@ -17,14 +16,14 @@ public class BentoReservationTest {
 	@Test
 	public void reserve_inv1_emptyList() {
 		
-		assertThatThrownBy(() -> {
+		NtsAssert.systemError(() -> {
 			
 			BentoReservation.reserve(
-					Helper.Reservation.RegisterInfo.DUMMY, 
+					Helper.Reservation.RegInfo.DUMMY, 
 					Helper.Reservation.Date.DUMMY, 
 					Collections.emptyList());
 			
-		}).isInstanceOf(RuntimeException.class);
+		});
 	}
 	
 	@Test
@@ -59,7 +58,17 @@ public class BentoReservationTest {
 				true, // ordered!!
 				Helper.Reservation.Detail.DUMMY_LIST);
 		
-		BusinessExceptionAssert.id("Msg_1586", () -> target.checkCancelPossible());
+		NtsAssert.businessException("Msg_1586", () -> {
+			target.checkCancelPossible();
+		});
+	}
+	
+	@Test
+	public void getters() {
+
+		BentoReservation target = new BentoReservation(
+				null, null, true, Helper.Reservation.Detail.DUMMY_LIST);
+		NtsAssert.invokeGetters(target);
 	}
 
 }
