@@ -2,9 +2,7 @@ package nts.uk.ctx.hr.notice.app.find.report.regis.person;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,11 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
-import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachmentPersonReportFile;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.shr.com.context.AppContexts;
