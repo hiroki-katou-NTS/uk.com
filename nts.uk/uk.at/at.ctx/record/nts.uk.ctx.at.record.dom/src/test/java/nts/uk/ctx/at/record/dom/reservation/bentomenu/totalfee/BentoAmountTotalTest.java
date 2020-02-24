@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee;
 
-import static nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper.bento;
-import static nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper.menu;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +8,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.reservation.Helper;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 public class BentoAmountTotalTest {
@@ -31,9 +30,12 @@ public class BentoAmountTotalTest {
 	@Test
 	public void calculateTotalAmount() {
 
-	 	BentoMenu bentoMenu = menu(
-	 			bento(1, 20, 10),  // frameNo, amount1, amount2
-	 			bento(2, 100, 30));
+	 	BentoMenu bentoMenu = new BentoMenu(
+	 			"historyID",
+	 			Arrays.asList(
+	 					Helper.Menu.Item.bentoAmount(1, 20, 10),  // frameNo, amount1, amount2
+	 					Helper.Menu.Item.bentoAmount(2, 100, 30)),
+	 			Helper.ClosingTime.UNLIMITED);
 	 	
 		Map<Integer, Integer> bentoDetails = new HashMap<>();
 		bentoDetails.put(1, 5);  // frameNo, quantity
@@ -48,17 +50,27 @@ public class BentoAmountTotalTest {
 	public void calculateTotalAmount_invalidFrame() {
 
 		// only frame 1
-	 	BentoMenu bentoMenu = menu(bento(1, 20, 10));
+	 	BentoMenu bentoMenu = new BentoMenu(
+	 			"historyID",
+	 			Arrays.asList(Helper.Menu.Item.bentoAmount(1, 20, 10)),
+	 			Helper.ClosingTime.UNLIMITED);
 	 	
 		Map<Integer, Integer> bentoDetails = new HashMap<>();
 		bentoDetails.put(1, 5);
 		bentoDetails.put(2, 3);  // frame 2 is invalid
 	 	
-	 	assertThatThrownBy(() -> {
+		NtsAssert.systemError(() -> {
 	 		
 			bentoMenu.calculateTotalAmount(bentoDetails);
 			
-	 	}).isInstanceOf(RuntimeException.class);
+	 	});
 	}
 
+	@Test
+	public void getters() {
+		BentoAmountTotal target = BentoAmountTotal.createNew(
+				Arrays.asList(new BentoDetailsAmountTotal(1, 40, 10)));
+		
+		NtsAssert.invokeGetters(target);
+	}
 }
