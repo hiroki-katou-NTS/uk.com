@@ -168,7 +168,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer value = type.getEmployRootAtr() != 5 && type.getEmployRootAtr() != 0 ? Integer.valueOf(type.getValue()) : 0;
 					String id = type.getEmployRootAtr() == 5 ? type.getValue() : "";
 					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, value, type.getEmployRootAtr(), id);
@@ -322,7 +322,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer employRootAtr = type.getEmployRootAtr();
 					String value = type.getValue();
 					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
@@ -469,7 +469,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer employRootAtr = type.getEmployRootAtr();
 					String value = type.getValue();
 					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
@@ -684,5 +684,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			//delete All Approval Phase By approvalId
 			repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 		}
+	}
+	private boolean checkContain(List<AppType> lstType, AppType type) {
+		if(type.getEmployRootAtr() == 0) {
+			type.setValue("null");
+		}
+		return lstType.contains(type);
 	}
 }
