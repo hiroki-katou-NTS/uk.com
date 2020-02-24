@@ -12,5 +12,8 @@ import lombok.Data;
 @Data
 public class ListRankCodeCommand {
 
+	/**
+	 * List  ランクコード
+	 */
 	public List<String> listRankCode;
 }

@@ -14,6 +14,7 @@ import nts.arc.task.tran.AtomTask;
  */
 public class InsertRankService {
 
+	//[1] ランクを新規登録する
 	public static AtomTask insert(Require require, String companyId, RankCode rankCd, RankSymbol rankSymbol) {
 
 		if (require.checkRankExist(companyId, rankCd)) {

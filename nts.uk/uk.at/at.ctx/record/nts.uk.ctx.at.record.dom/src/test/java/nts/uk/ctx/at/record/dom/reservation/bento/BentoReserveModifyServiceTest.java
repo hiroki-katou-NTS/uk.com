@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.reservation.bento;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static nts.arc.time.GeneralDate.today;
+import static nts.arc.time.GeneralDateTime.now;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -9,181 +11,151 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.testing.exception.BusinessExceptionAssert;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService.Require;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.reservation.Helper;
+import nts.uk.ctx.at.record.dom.reservation.Helper.ClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveModifyService;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 @RunWith(JMockit.class)
 public class BentoReserveModifyServiceTest {
 
 	@Injectable
-	private Require require;
+	private BentoReserveModifyService.Require require;
 	
 	@Test
-	public void reserve_fail_pastDay() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.getYesterday();
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
+	public void reserve_fail_canNotCancel() {
 		
-		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
-			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
-		}};
-		
-		BusinessExceptionAssert.id("Msg_1584", () -> BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run());
-	}
-	
-	@Test
-	public void reserve_fail_toDay() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.getToday();
-		GeneralDateTime dateTime = BentoInstanceHelper.getStartToday().addHours(12);
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
+		val dummyDetails = Collections.singletonMap(1, Helper.count(1));
 	
 		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
+			require.getBefore(
+					Helper.Reservation.RegInfo.DUMMY,
+					Helper.Reservation.Date.DUMMY);
+			result = Optional.of(new BentoReservation(
+					null,
+					null,
+					true, // ordered!!
+					Helper.Reservation.Detail.DUMMY_LIST));
 		}};
 		
-		BusinessExceptionAssert.id("Msg_1585", () -> BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run());
-	}
-	
-	@Test
-	public void reserve_fail_ordered() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate(GeneralDate.today(), 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 1));
-	
-		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
+		NtsAssert.businessException("Msg_1586", () -> {
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBeforeOrdered(registerInfor, reservationDate);
-		}};
-		
-		BusinessExceptionAssert.id("Msg_1586", () -> BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run());
-	}
-	
-	@Test
-	public void reserve_fail_invalidFrame() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2020/01/01", 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(5, 1));
-	
-		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
+			AtomTask persist = BentoReserveModifyService.reserve(
+					require,
+					Helper.Reservation.RegInfo.DUMMY,
+					Helper.Reservation.Date.DUMMY,
+					now(),
+					dummyDetails);
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
-		}};
-		
-		assertThatThrownBy(() -> 
-			BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run()
-		).as("invalid Frame").isInstanceOf(RuntimeException.class);
+			persist.run();
+			
+		});
 	}
 	
 	@Test
 	public void reserve_success_not_Delete() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2021/01/01", 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 5));
+		
+		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+
+		BentoMenu menu = new BentoMenu(
+				"historyId",
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
+				ClosingTime.UNLIMITED);
+		
+		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(10));
 		
 		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
+			require.getBentoMenu(todayReserve);
+			result = menu;
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = Optional.empty();
+			require.getBefore(dummyRegInfo, todayReserve);
 		}};
 		
-		BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run();
-		
-		new Verifications() {{
-			require.reserve((BentoReservation) any);
-			times = 1;
-		}};
+		NtsAssert.atomTask(
+				() -> BentoReserveModifyService.reserve(
+						require,
+						dummyRegInfo,
+						todayReserve,
+						now(),
+						details),
+				any -> require.reserve(any.get()));
 	}
+	
 	
 	@Test
 	public void reserve_success_not_Update() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2021/01/01", 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = Collections.emptyMap();
+
+		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+
+		// oldReservation should be deleted
+		BentoReservation oldReservation = BentoReservation.reserve(
+				dummyRegInfo,
+				todayReserve,
+				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
+			require.getBentoMenu(todayReserve);
+			result = Helper.Menu.DUMMY;
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
+			require.getBefore(dummyRegInfo, todayReserve);
+			result = Optional.of(oldReservation);
 		}};
 		
-		BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails).run();
-		
-		new Verifications() {{
-			require.delete((BentoReservation) any);
-			times = 1;
-		}};
+		NtsAssert.atomTask(
+				() -> BentoReserveModifyService.reserve(
+						require,
+						dummyRegInfo,
+						todayReserve,
+						now(),
+						Collections.emptyMap()),
+				any -> require.delete(any.get()));
 	}
+
 	
 	@Test
 	public void reserve_success_Update() {
-		ReservationRegisterInfo registerInfor = new ReservationRegisterInfo("cardNo");
-		ReservationDate reservationDate = BentoInstanceHelper.reservationDate("2021/01/01", 1);
-		GeneralDateTime dateTime = GeneralDateTime.now();
-		Map<Integer, BentoReservationCount> bentoDetails = BentoInstanceHelper.bentoDetails(Collections.singletonMap(1, 5));
+
+		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
+		
+		BentoMenu menu = new BentoMenu(
+				"historyId",
+				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
+				ClosingTime.UNLIMITED);
+		
+		Map<Integer, BentoReservationCount> bentoDetails = Collections.singletonMap(1, Helper.count(5));
+
+		// oldReservation should be deleted
+		BentoReservation oldReservation = BentoReservation.reserve(
+				dummyRegInfo,
+				todayReserve,
+				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		new Expectations() {{
-			require.getBentoMenu(reservationDate);
-			result = BentoInstanceHelper.getBentoMenu();
+			require.getBentoMenu(todayReserve);
+			result = menu;
 			
-			require.getBefore(registerInfor, reservationDate);
-			result = BentoInstanceHelper.getBefore(registerInfor, reservationDate);
+			require.getBefore(dummyRegInfo, todayReserve);
+			result = Optional.of(oldReservation);
 		}};
 		
-		AtomTask task = BentoReserveModifyService.reserve(require, registerInfor, reservationDate, dateTime, bentoDetails);
-		
-		new Verifications() {{
-			require.delete((BentoReservation) any);
-			times = 0;
-		}};
-		
-		new Verifications() {{
-			require.reserve((BentoReservation) any);
-			times = 0;
-		}};
-		
-		task.run();
-		
-		new Verifications() {{
-			require.delete((BentoReservation) any);
-			times = 1;
-		}};
-		
-		new Verifications() {{
-			require.reserve((BentoReservation) any);
-			times = 1;
-		}};
+		NtsAssert.atomTask(
+				() -> BentoReserveModifyService.reserve(
+						require,
+						dummyRegInfo,
+						todayReserve,
+						now(),
+						bentoDetails),
+				any -> require.delete(any.get()),
+				any -> require.reserve(any.get()));
 	}
-
 }

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 
 public class BentoReservationClosingTimeTest {
@@ -47,4 +48,9 @@ public class BentoReservationClosingTimeTest {
 		
 	}
 
+	@Test
+	public void getters() {
+		BentoReservationClosingTime target = Helper.ClosingTime.UNLIMITED;
+		NtsAssert.invokeGetters(target);
+	}
 }
