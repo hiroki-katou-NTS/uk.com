@@ -39,7 +39,9 @@ export module viewmodel {
                 self.start();
             }else{
                 self.lstAppDis.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
-                self.lstAppDis(self.lstAppName);
+                _.each(self.lstAppName, app => {
+                    self.lstAppDis.push({id: app.id, code: app.code, name: app.name, empRoot: app.empRoot});
+                });
                 self.loadGrid();
             }
         }
