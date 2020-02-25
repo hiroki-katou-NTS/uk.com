@@ -780,7 +780,7 @@ module nts.uk.com.view.cmm018.shr {
                 }else if(tabSelected == vmbase.RootType.WORKPLACE){
                     gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
                 }else{//PERSON
-                    gridName = tabSelected == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
                 }
                 if(_.isEmpty(root)) {
                     $(gridName).igGridResizing("resize", index, widthPhase);   
@@ -794,15 +794,6 @@ module nts.uk.com.view.cmm018.shr {
                         widthPhase = compareWidth;        
                     } 
                 }
-//                let listApprover = _.map(root, x => x['appPhase'+index].approver);
-//                _.forEach(listApprover, listByType => {
-//                    _.forEach(listByType, approver => {
-//                        let approverLength = ProcessHandler.cal(approver.name);
-//                        if(approverLength > widthPhase) {
-//                            widthPhase = approverLength;        
-//                        }      
-//                    });        
-//                });
                 $(gridName).igGridResizing("resize", index, Math.ceil(widthPhase) + 12); 
             }
             
