@@ -10,8 +10,12 @@ import java.util.List;
  * @author sonnh1
  *
  */
-public class RankPriorityHelper {
-
+public class RankHelper {
+	
+	public static class Priority{
+		public static final List<RankCode> DUMMY = new ArrayList<RankCode>(Arrays.asList(new RankCode("001"), new RankCode("002"), new RankCode("003")));
+	}
+	
 	public static RankPriority getRankPriorityBasic() {
 		List<RankCode> listRankCd = new ArrayList<>();
 		listRankCd.add(new RankCode("001"));
