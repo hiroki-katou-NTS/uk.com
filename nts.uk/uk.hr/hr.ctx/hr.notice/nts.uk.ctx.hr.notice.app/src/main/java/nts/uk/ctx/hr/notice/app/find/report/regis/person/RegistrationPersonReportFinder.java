@@ -137,6 +137,8 @@ public class RegistrationPersonReportFinder {
 	 */
 	public List<PersonalReportClassificationDto> startPage() {
 		// アルゴリズム [個別届出種類を取得する] を実行する
+		// do trong thuật toán "個別届出種類を取得する" chỉ có 1 xử lý "個別届出種類" nên viết nó
+		// ra ngoài luôn chứ không tạo function riêng cho "個別届出種類を取得する"
 
 		// ドメインモデル [個別届出種類] を取得する
 
