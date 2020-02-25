@@ -54,19 +54,19 @@ module nts.uk.at.view.kdl044.a {
                 let paras: any;
                 switch ( data.filter ) {
                     case 0: {
-                        paras = null; 
+                        paras = {targetUnit: null, workplaceIds: null, workplaceGroupID: null}; 
                         break;
                     }
                     case 1: {
-                        paras = {filter: 1, workplaceIds: data.filterIDs, workplaceGroupID: null}; 
+                        paras = {targetUnit: 0, workplaceIds: data.filterIDs, workplaceGroupID: null}; 
                         break;
                     }
                     case 2: {
-                        paras = {filter: 2, workplaceIds: null, workplaceGroupID: data.filterIDs}; 
+                        paras = {targetUnit: 1, workplaceIds: null, workplaceGroupID: data.filterIDs}; 
                         break;
                     }
                 }
-                service.startUp( paras ).done( function( result ) {
+                service.getShiftMaster( paras ).done( function( result ) {
 
                     //TO DO(chua viet) : get isUse
                     /**ドメインモデル「複数回勤務管理」により制御
@@ -75,21 +75,13 @@ module nts.uk.at.view.kdl044.a {
                      */
                     let isUse = true;
                     self.createHeader( isUse );
-                    for ( let i = 13; i >= 0; i-- ) {
-                        shifutos.push( new Shifuto(
-                            i.toString(),
-                            i.toString(),
-                            i.toString(),
-                            i.toString(),
-                            i.toString(),
-                            i.toString(),
-                            i.toString()
-                        ) );
-                    }
-                    self.listShifuto( _.sortBy(shifutos, [function(o) { return new Number(o.code); }]) );
+                    self.listShifuto(result);
+                    self.listShifuto( _.sortBy(result, [function(o) { return new Number(o.code); }]) );
                     if ( data.shifutoCodes != null ) {
                         self.selectedCodes( data.shifutoCodes );
                     }
+                    
+                    
                     dfd.resolve();
                 } ).fail( function( res: any ) {
                     alertError( { messageId: "" } );
@@ -102,22 +94,22 @@ module nts.uk.at.view.kdl044.a {
             createHeader( isUse: boolean ) {
                 if ( !isUse ) {
                     self.columns = ko.observableArray( [
-                        { headerText: getText( 'KDL044_2' ), key: "code", dataType: "string", width: 50 },
-                        { headerText: getText( 'KDL044_3' ), key: "name", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_4' ), key: "workType", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_5' ), key: "workTime", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_6' ), key: "time1", dataType: "string", width: 200 },
+                        { headerText: getText( 'KDL044_2' ), key: "shiftMasterCode", dataType: "string", width: 50 },
+                        { headerText: getText( 'KDL044_3' ), key: "shiftMasterName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_4' ), key: "workTypeName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_5' ), key: "workTimeName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_6' ), key: "workTime1", dataType: "string", width: 200 },
                         { headerText: getText( 'KDL044_8' ), key: "remark", dataType: "string", width: 300 }
                     ] );
                 }
                 else {
                     self.columns = ko.observableArray( [
-                        { headerText: getText( 'KDL044_2' ), key: "code", dataType: "string", width: 50 },
-                        { headerText: getText( 'KDL044_3' ), key: "name", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_4' ), key: "workType", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_5' ), key: "workTime", dataType: "string", width: 100 },
-                        { headerText: getText( 'KDL044_6' ), key: "time1", dataType: "string", width: 150 },
-                        { headerText: getText( 'KDL044_7' ), key: "time2", dataType: "string", width: 150 },
+                        { headerText: getText( 'KDL044_2' ), key: "shiftMasterCode", dataType: "string", width: 50 },
+                        { headerText: getText( 'KDL044_3' ), key: "shiftMasterName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_4' ), key: "workTypeName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_5' ), key: "workTimeName", dataType: "string", width: 100 },
+                        { headerText: getText( 'KDL044_6' ), key: "workTime1", dataType: "string", width: 150 },
+                        { headerText: getText( 'KDL044_7' ), key: "workTime2", dataType: "string", width: 150 },
                         { headerText: getText( 'KDL044_8' ), key: "remark", dataType: "string", width: 200 }
                     ] );
                 }
@@ -136,7 +128,10 @@ module nts.uk.at.view.kdl044.a {
                     block.clear();
                     return;
                 }
-                setShared( 'kdl044ShifutoCodes', self.selectedCodes() );
+                let selectedCodes = self.selectedCodes();
+                setShared( 'kdl044ShifutoCodes', self.selectedCodes());
+                let kdl044ShifutoData = _.filter(self.listShifuto(), (val) => {return self.selectedCodes().indexOf(val.shiftMasterCode ) !== -1});
+                setShared( 'kdl044ShifutoData', kdl044ShifutoData);
                 setShared( 'kdl044_IsCancel', false );
                 block.clear();
                 nts.uk.ui.windows.close();
@@ -149,12 +144,12 @@ module nts.uk.at.view.kdl044.a {
         }
 
         class Shifuto {
-            code: string;
-            name: string;
-            workType: string;
-            workTime: string;
-            time1: string;
-            time2: string;
+            shiftMasterCode: string;
+            shiftMasterName: string;
+            workTypeName: string;
+            workTimeName: string;
+            workTime1: string;
+            workTime2: string;
             remark: string;
             constructor( code: string,
                 name: string,
@@ -164,12 +159,12 @@ module nts.uk.at.view.kdl044.a {
                 time2: string,
                 remark: string ) {
                 let self = this;
-                self.code = code;
-                self.name = name;
-                self.workType = workType;
-                self.workTime = workTime;
-                self.time1 = time1;
-                self.time2 = time2;
+                self.shiftMasterCode = code;
+                self.shiftMasterName = name;
+                self.workTypeName = workType;
+                self.workTimeName = workTime;
+                self.workTime1 = time1;
+                self.workTime2 = time2;
                 self.remark = remark;
             }
         }

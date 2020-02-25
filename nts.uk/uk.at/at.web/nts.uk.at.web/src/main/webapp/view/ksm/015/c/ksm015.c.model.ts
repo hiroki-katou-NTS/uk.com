@@ -1,11 +1,11 @@
 interface ShiftMaster {
-    code: string;
-    name: string;
-    typeOfWork: string;
-    workingHours: string;
-    timeZone1: string;
-    timeZone2: string;
-    remarks: string;
+    shiftMasterCode: string;
+    shiftMasterName: string;
+    workTypeName: string;
+    workTimeName: string;
+    workTime1: string;
+    workTime2: string;
+    remark: string;
 }
 const TargetUnit = {
     WORKPLACE: 0,
@@ -17,7 +17,7 @@ class Ksm015Data {
 
     constructor() {
         this.shiftGridColumns = [
-            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMaterCode', width: 100,  },
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 100,  },
             { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 150,}, 
             { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 150 }, 
             { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 150},

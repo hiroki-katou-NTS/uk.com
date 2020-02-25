@@ -28,7 +28,7 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit "
 			+ " AND c.kshmtShiftMaterOrgPK.targetId = :targetId";
 	private static final String DELETE_BY_CID_AND_TARGET = "DELETE from KshmtShiftMaterOrg c "
-			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :workplaceId"
+			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :companyId"
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit"
 			+ " AND c.kshmtShiftMaterOrgPK.targetId = :targetId";
 

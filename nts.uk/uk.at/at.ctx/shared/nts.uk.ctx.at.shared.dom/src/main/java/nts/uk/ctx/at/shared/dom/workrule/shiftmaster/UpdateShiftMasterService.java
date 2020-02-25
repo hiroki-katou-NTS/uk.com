@@ -25,7 +25,7 @@ public class UpdateShiftMasterService {
 				workInformation.getSiftCode().v(),
 				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v());
 		if (shiftMaterByWorkTypeAndWorkTime.isPresent()
-				&& !shiftMaterByWorkTypeAndWorkTime.get().getShiftMaterCode().v().equals(shiftMaterCode)) {
+				&& !shiftMaterByWorkTypeAndWorkTime.get().getShiftMasterCode().v().equals(shiftMaterCode)) {
 			throw new BusinessException("Msg_1610");
 		}
 		// 3:persist

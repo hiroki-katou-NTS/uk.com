@@ -24,14 +24,14 @@
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM015_23',["#Com_Workplace"])}</div>
             </div>
             <div class="valign-center control-group">
-                <button>#{i18n.getText('KSM015_30')}</button>
-                <button>#{i18n.getText('KSM015_31')}</button>
+                <button data-bind="click: openDialogKDL044">#{i18n.getText('KSM015_30')}</button>
+                <button data-bind="click: clearShiftMaster">#{i18n.getText('KSM015_31')}</button>
             </div>
             <span data-bind="text: selectedShiftMaster"></span>
             <table id="shift-list" data-bind="ntsGridList: {
                 height: 350,
                 options: shiftItems,
-                optionsValue: 'shiftMaterCode',
+                optionsValue: 'shiftMasterCode',
                 columns: shiftColumns,
                 multiple: true,
                 value: selectedShiftMaster

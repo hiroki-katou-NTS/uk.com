@@ -23,7 +23,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 * コード
 	 */
 	@Getter
-	private final ShiftMasterCode shiftMaterCode;
+	private final ShiftMasterCode shiftMasterCode;
 
 	/**
 	 * 表示情報
@@ -43,7 +43,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 			String workTypeCode, String workTimeCode) {
 		super(workTimeCode, workTypeCode);
 		this.companyId = companyId;
-		this.shiftMaterCode = shiftMaterCode;
+		this.shiftMasterCode = shiftMaterCode;
 		this.displayInfor = displayInfor;
 
 	}
