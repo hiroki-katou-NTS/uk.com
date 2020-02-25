@@ -27,8 +27,10 @@ public class UpdateRankCommandHandler extends CommandHandler<RankCommand> {
 	protected void handle(CommandHandlerContext<RankCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RankCommand rankCommand = context.getCommand();
+		//1: get(ログイン会社ID, コード)
 		Rank rank = this.rankRepo.getRank(companyId, new RankCode(rankCommand.getRankCd()));
-
+        //2: set(記号)
+		//3: persist()
 		this.rankRepo.updateRank(new Rank(companyId, rank.getRankCode(), new RankSymbol(rankCommand.getRankSymbol())));
 	}
 }
