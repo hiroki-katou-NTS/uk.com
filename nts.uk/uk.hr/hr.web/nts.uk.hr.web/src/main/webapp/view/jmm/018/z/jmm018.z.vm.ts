@@ -91,6 +91,16 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         selectApprover1(): void {
             let self = this;
             console.log(self);
+            let param = {
+                listInfor: self
+            }
+            setShared('shareToJMM018Y', param);
+            modal('/view/jmm/018/y/index.xhtml').onClosed(function(): any {
+                let param = getShared('shareToJMM018B');
+                if(param != undefined){
+                    item.setEnableRetirePlanCourse(param, self);
+                }
+            })
         }
         
         selectApprover2(): void {
