@@ -66,7 +66,6 @@ module nts.uk.com.view.cmm022.a {
                     }
                     let selectedItem = _.filter(self.commonMasterItems(), ['commonMasterItemId', id])[0];
                     self.selectedCommonMasterItem().updateData(selectedItem ? selectedItem : self.defaultItem);
-
                     if (id) {
                         self.newMode(false);
                     }
@@ -199,7 +198,13 @@ module nts.uk.com.view.cmm022.a {
             }
             
             public exportExcel() {
-                return;
+                let self = this;
+
+                block.grayout();
+
+                service.outPutFileExcel().done(() => {
+                    block.clear();
+                })
             }
 
             public openDialogB() {
@@ -259,8 +264,8 @@ module nts.uk.com.view.cmm022.a {
         commonMasterItemCode: KnockoutObservable<String> = ko.observable();
         commonMasterItemName: KnockoutObservable<String> = ko.observable();
         displayNumber: KnockoutObservable<number> = ko.observable();
-        usageStartDate: KnockoutObservable<String> = ko.observable("");
-        usageEndDate: KnockoutObservable<String> = ko.observable("");
+        usageStartDate: KnockoutObservable<String> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+        usageEndDate: KnockoutObservable<String> = ko.observable("9999/12/31");
 
         constructor(data: IMasterItem) {
             let self = this;
@@ -282,6 +287,7 @@ module nts.uk.com.view.cmm022.a {
             self.displayNumber(data.displayNumber);
             self.usageStartDate(data.usageStartDate);
             self.usageEndDate(data.usageEndDate);
+            nts.uk.ui.errors.clearAll();
         }
     }
 }
