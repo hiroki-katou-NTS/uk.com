@@ -17,13 +17,13 @@ public class ShiftPalletDisplayInfor{
 	
 	/** 使用区分 */
 	@Getter
-	private boolean shiftPalletAtr;
+	private NotUseAtr shiftPalletAtr;
 	
 	/** 備考 */
 	@Getter
 	private ShiftRemarks remarks;
 
-	public ShiftPalletDisplayInfor(ShiftPalletName shiftPalletName, boolean shiftPalletAtr, ShiftRemarks remarks) {
+	public ShiftPalletDisplayInfor(ShiftPalletName shiftPalletName, NotUseAtr shiftPalletAtr, ShiftRemarks remarks) {
 		this.shiftPalletName = shiftPalletName;
 		this.shiftPalletAtr = shiftPalletAtr;
 		this.remarks = remarks;
