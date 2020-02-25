@@ -122,7 +122,7 @@ module jhn001.f.vm {
             // check file size.
             var maxSize = 10;
             if (maxSize && fileInfo.originalSize > (maxSize * 1048576)) {
-                nts.uk.ui.dialog.alertError({ messageId: 'MsgJ_28', messageParams: [maxSize] });
+                nts.uk.ui.dialog.alertError({ messageId: 'MsgJ_70', messageParams: [maxSize] });
                 return;
             }
 
