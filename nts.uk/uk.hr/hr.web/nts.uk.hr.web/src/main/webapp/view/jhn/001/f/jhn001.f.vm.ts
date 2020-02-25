@@ -250,7 +250,7 @@ module jhn001.f.vm {
                         };
                         
                         service.deleteDocument(command).done(() => {
-                            info({ messageId: "Msgj_40" }).then(function() {
+                            info({ messageId: "MsgJ_40" }).then(function() {
                                 __viewContext['viewModel'].getDataAfterPushOrRemoveFile(self.reportId).done(() => {
                                     console.log('Xoa file done');
                                     unblock();
