@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
-import java.util.Optional;
-
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -20,19 +18,20 @@ public class InsertRankServiceTest {
 	private Require require;
 
 	@Test
-	public void testInsert_Msg_3() {
+	public void insert_fail_exist() {
 
 		new Expectations() {
 			{
 				require.checkRankExist(
 						"000000000000-0001", // dummy
 						new RankCode("001"));// dummy
-				result = RankHelper.checkExist(true);
+				result = true;
 			}
 		};
 
 		NtsAssert.businessException("Msg_3",
-				() -> InsertRankService.insert(require, // dummy
+				() -> InsertRankService.insert(
+						require, // dummy
 						"000000000000-0001", // dummy
 						new RankCode("001"), // dummy
 						new RankSymbol("A")));// dummy
@@ -43,17 +42,18 @@ public class InsertRankServiceTest {
 
 		new Expectations() {
 			{
-				require.checkRankExist("000000000000-0001", // dummy
+				require.checkRankExist(
+						"000000000000-0001", // dummy
 						new RankCode("001")); // dummy
-				result = RankHelper.checkExist(false);
+				result = false; 
 
 				require.getRankPriority("000000000000-0001"); // dummy
-				result = Optional.empty();
 			}
 		};
 
 		NtsAssert.atomTask(
-				() -> InsertRankService.insert(require, // dummy
+				() -> InsertRankService.insert(
+						require, // dummy
 						"000000000000-0001", // dummy
 						new RankCode("001"), // dummy
 						new RankSymbol("A")), // dummy

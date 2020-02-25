@@ -12,7 +12,7 @@ import nts.arc.testing.assertion.NtsAssert;
 public class RankPriorityTest {
 
 	@Test
-	public void testRankPriority_Msg_1622() {
+	public void create_rankPriority_empty() {
 
 		NtsAssert.businessException("Msg_1622", () -> {
 			new RankPriority(
@@ -22,29 +22,33 @@ public class RankPriorityTest {
 	}
 
 	@Test
-	public void testRankPriority_Msg_1621() {
+	public void create_rankPriority_dupicate() {
 
 		NtsAssert.businessException("Msg_1621", () -> {
 			new RankPriority(
 					"000000000000-0001", // dummy
-					Arrays.asList(new RankCode("001"), new RankCode("001"), new RankCode("002")));
+					Arrays.asList(
+							new RankCode("001"), 
+							new RankCode("001")));
 		});
 	}
 
 	@Test
-	public void testRankPriority_success() {
+	public void create_rankPriority_success() {
 
-		new RankPriority(
-				"000000000000-0001", // dummy
-				RankHelper.Priority.DUMMY);
+		new RankPriority("000000000000-0001", // dummy
+				new ArrayList<RankCode>(Arrays.asList(
+						new RankCode("001"), 
+						new RankCode("002"), 
+						new RankCode("003"))));
 	}
 
 	@Test
-	public void testInsert_Msg_1621() {
+	public void insert_fail_duplicate() {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				RankHelper.Priority.DUMMY);
+				Arrays.asList(new RankCode("001")));
 
 		NtsAssert.businessException("Msg_1621", () -> {
 			target.insert(new RankCode("001"));
@@ -52,7 +56,7 @@ public class RankPriorityTest {
 	}
 	
 	@Test
-	public void testInsert_success() {
+	public void insert_success() {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
@@ -60,15 +64,16 @@ public class RankPriorityTest {
 
 		target.insert(new RankCode("004"));
 	}
-
+	
+	/**
+	 * Can't create RankPriority(cid = '001', listRankCd = EMPTY_LIST)
+	 * So need delete 2 times to Msg_1622 appear
+	 */
 	@Test
-	public void testDelete_Msg_1622() {
-		List<RankCode> lstRankCode = new ArrayList<>();
-		lstRankCode.add(new RankCode("001"));
-
+	public void delete_fail_empty() {
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				lstRankCode);
+				new ArrayList<RankCode>(Arrays.asList(new RankCode("001"))));
 		
 		target.delete(new RankCode("001"));
 
@@ -78,7 +83,7 @@ public class RankPriorityTest {
 	}
 
 	@Test
-	public void testDelete_success() {
+	public void delete_success() {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
@@ -88,12 +93,15 @@ public class RankPriorityTest {
 	}
 
 	@Test
-	public void testUpdate_Msg_1621() {
+	public void update_fail_duplicate() {
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
 				RankHelper.Priority.DUMMY);
 
-		List<RankCode> listRankCdNew = Arrays.asList(new RankCode("011"), new RankCode("011"), new RankCode("013"));
+		List<RankCode> listRankCdNew = Arrays.asList(
+				new RankCode("011"), 
+				new RankCode("011"),
+				new RankCode("013")); // dummy
 
 		NtsAssert.businessException("Msg_1621", () -> {
 			target.update(listRankCdNew);
@@ -101,8 +109,9 @@ public class RankPriorityTest {
 	}
 
 	@Test
-	public void testUpdate_Msg_1622() {
-		RankPriority target = new RankPriority("000000000000-0001", // dummy
+	public void update_fail_empty() {
+		RankPriority target = new RankPriority(
+				"000000000000-0001", // dummy
 				RankHelper.Priority.DUMMY);
 
 		List<RankCode> listRankCdEmpty = Collections.emptyList();
@@ -113,12 +122,16 @@ public class RankPriorityTest {
 	}
 
 	@Test
-	public void testUpdate_success() {
+	public void update_success() {
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
 				RankHelper.Priority.DUMMY);
 
-		List<RankCode> listRankCdNew = Arrays.asList(new RankCode("011"), new RankCode("012"), new RankCode("013"));
+		List<RankCode> listRankCdNew = Arrays.asList(
+				new RankCode("011"), 
+				new RankCode("012"), 
+				new RankCode("013"));
+		
 		target.update(listRankCdNew);
 	}
 
