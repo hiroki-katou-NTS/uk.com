@@ -1390,6 +1390,10 @@ module nts.uk.com.view.cmm018.a {
                 setShared('CMM018J_PARAM', paramJ);
                 modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
                     block.clear();
+                    let cancel = getShared('CMM018J_OUTPUT');
+                    if(cancel != undefined && cancel.cancel){
+                        return;
+                    }
                     //load data
                     if(self.tabSelected() == vmbase.RootType.COMPANY){//company
                         self.getDataCompany(1)

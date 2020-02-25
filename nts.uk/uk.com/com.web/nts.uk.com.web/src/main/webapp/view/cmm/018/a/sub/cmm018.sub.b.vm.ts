@@ -896,6 +896,10 @@ module nts.uk.com.view.cmm018.a.sub {
                 setShared('CMM018J_PARAM', paramJ);
                 modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
                     block.clear();
+                    let cancel = getShared('CMM018J_OUTPUT');
+                    if(cancel != undefined && cancel.cancel){
+                        return;
+                    }
                     if(self.tabSelectedB()==0){
                         self.getDataCompanyPr().done(function(){
                             let codeSelected = self.findRootByEndDate(self.ENDDATE_LATEST, appType,employRootAtr, vmbase.RootType.COMPANY);

@@ -99,9 +99,6 @@ module nts.uk.com.view.cmm018.j {
                                  $("#startDateInput").focus();
                                 block.clear();
                             });
-//                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-//                               block.clear();
-//                            });
                         });
                     }).ifNo(function(){
                         block.clear();        
@@ -113,6 +110,7 @@ module nts.uk.com.view.cmm018.j {
              */
             closeDialog(): void {
                 $("#startDateInput").ntsError('clear');
+                nts.uk.ui.windows.setShared('CMM018J_OUTPUT', {cancel: true});
                 close();   
             }
         }
