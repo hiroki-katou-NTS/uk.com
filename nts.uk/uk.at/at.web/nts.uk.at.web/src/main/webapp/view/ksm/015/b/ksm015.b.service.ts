@@ -3,10 +3,25 @@ module nts.uk.at.view.ksm015.b.service {
      *  Service paths
      */
     var paths: any = {
-        startPage: 'ctx/at/shared/workrule/shiftmaster/startPage'
+        startPage: 'ctx/at/shared/workrule/shiftmaster/startPage',
+        registerShiftMaster: 'ctx/at/shared/workrule/shiftmaster/register',
+        getShiftMaster: 'ctx/at/shared/workrule/shiftmaster/getlist',
+        deleteShiftMaster: 'ctx/at/shared/workrule/shiftmaster/delete'
     }
     export function startPage(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.startPage);
+    }
+
+    export function register(data): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.registerShiftMaster, data);
+    }
+
+    export function deleteShiftMaster(data): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.deleteShiftMaster, data);
+    }
+
+    export function getlist(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getShiftMaster);
     }
 
     /**

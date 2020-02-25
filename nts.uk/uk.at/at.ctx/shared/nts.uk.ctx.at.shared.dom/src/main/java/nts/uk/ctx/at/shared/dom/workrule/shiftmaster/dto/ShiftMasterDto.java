@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
+package nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,11 @@ public class ShiftMasterDto {
 	private String remark;
 	private String workTypeCd;
 	private String workTypeName;
-	
+	private String workTimeCd;
+	private String workTimeName;
+	private String workTime1;
+	private String workTime2;
+
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();
 		this.shiftMaterCode = domain.getShiftMaterCode().v();
@@ -28,4 +32,17 @@ public class ShiftMasterDto {
 		this.color = info.getColor().v();
 		this.remark = info.getRemarks().isPresent() ? info.getRemarks().get().v() : null;
 	}
+
+	public ShiftMasterDto (String companyId, String shiftMasterName, String shiftMaterCode, String color, String remark, String workTypeCd, String workTypeName, String workTimeCd, String workTimeName) {
+		this.companyId = companyId;
+		this.shiftMasterName = shiftMasterName;
+		this.shiftMaterCode = shiftMaterCode;
+		this.color = color;
+		this.remark = remark;
+		this.workTypeCd = workTimeCd;
+		this.workTypeName = workTypeName;
+		this.workTimeCd = workTimeCd;
+		this.workTimeName = workTimeName;
+	}
+	
 }

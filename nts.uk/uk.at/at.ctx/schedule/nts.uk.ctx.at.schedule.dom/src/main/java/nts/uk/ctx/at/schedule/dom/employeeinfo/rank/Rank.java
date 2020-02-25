@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -22,6 +23,7 @@ public class Rank implements DomainAggregate {
 	/**
 	 * 記号
 	 */
+	@Setter
 	private RankSymbol rankSymbol;
 
 	public Rank(String companyId, RankCode rankCode, RankSymbol rankSymbol) {
