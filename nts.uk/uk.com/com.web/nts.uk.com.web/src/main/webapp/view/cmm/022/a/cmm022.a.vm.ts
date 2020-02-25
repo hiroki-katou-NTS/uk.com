@@ -10,10 +10,11 @@ module nts.uk.com.view.cmm022.a {
         export class ScreenModel {
             commonMasters: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
             commonMasterId: KnockoutObservable<String> = ko.observable();
-            selectedCommonMaster: KnockoutObservable<ICommonMaster> = ko.observable();
+            selectedCommonMaster: KnockoutObservable<ICommonMaster> = ko.observable(new CommonMaster());
+            
             commonMasterItems: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
             commonMasterItemId: KnockoutObservable<String> = ko.observable();
-
+            selectedCommonMasterItem: KnockoutObservable<MasterItem> = ko.observable(new MasterItem(this.defaultItem));
             defaultItem = {
                 commonMasterItemId: null,
                 commonMasterItemCode: "",
@@ -22,7 +23,7 @@ module nts.uk.com.view.cmm022.a {
                 usageStartDate: moment(new Date()).format("YYYY/MM/DD"),
                 usageEndDate: "9999/12/31"
             }
-            selectedCommonMasterItem: KnockoutObservable<MasterItem> = ko.observable(new MasterItem(this.defaultItem));
+            
             newMode: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {

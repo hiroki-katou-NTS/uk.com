@@ -157,7 +157,9 @@ public class GroupCommonMasterFinder {
 				if (isConfirmed) {
 					//はい/Yes
 					// アルゴリズム [グループ会社共通マスタの追加] を実行する
-					addFixedItems(contractCode);
+					List<GroupCommonMaster> newListMaster = addFixedItems(contractCode);
+					groupMasterDtos = newListMaster.stream().map(x -> new GroupCommonMasterDto(x))
+							.collect(Collectors.toList());
 				} else {
 					//いいえ / No
 					throw new BusinessException("Msg_1590");
@@ -177,7 +179,7 @@ public class GroupCommonMasterFinder {
 				.collect(Collectors.toList());
 	}
 
-	private void addFixedItems(String contractCode) {
+	private List<GroupCommonMaster> addFixedItems(String contractCode) {
 		// アルゴリズム [グループ会社共通マスタの追加] を実行する
 		List<GroupCommonMaster> newListMaster = new ArrayList<GroupCommonMaster>();
 
@@ -194,6 +196,8 @@ public class GroupCommonMasterFinder {
 				new CommonMasterName("職位グループ"), "職位マスタ"));
 
 		this.services.addGroupCommonMaster(contractCode, newListMaster);
+		
+		return newListMaster;
 	}
 	
 }
