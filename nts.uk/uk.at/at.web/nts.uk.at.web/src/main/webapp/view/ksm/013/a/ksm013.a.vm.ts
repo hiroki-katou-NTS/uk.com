@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm013.a {
                     { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 100 },
                     { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 200 }
                 ]);
-                self.nurseClModel = new NurseClassificationModel("", "", null, false);
+                self.nurseClModel = new NurseClassificationModel("", "", 0, false);
                 self.isEditting = ko.observable(false);
                 self.selectedCode = ko.observable('');
                 self.selectedCode.subscribe(function(codeChanged: string) {
@@ -68,6 +68,7 @@ module nts.uk.at.view.ksm013.a {
             public newCreate() {
                 let self = this;
                 self.isEditting(false);
+                self.selectedCode("");
                 $('[tabindex= 5]').focus();
                 self.clearErrorAll();
                 self.nurseClModel.resetModel();
@@ -202,7 +203,7 @@ module nts.uk.at.view.ksm013.a {
                 let self = this;
                 self.nurseClassificationCode("");
                 self.nurseClassificationName("");
-                self.license(null);
+                self.license(0);
                 self.officeWorker(false);
 
             }
