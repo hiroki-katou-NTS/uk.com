@@ -154,7 +154,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete( )== EDIT){
 					for(CompanyApprovalRoot appRoot : lstComByApp){
 						//history previous 
-						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(appRoot, EndDateDelete);
+						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(appRoot, endDateUpdate);
 						//update history previous
 						repoCom.updateComApprovalRoot(comAppRootUpdate);
 					}
