@@ -54,13 +54,13 @@ class Ksm015Data {
         ];
 
         this.shiftGridColumns = [
-            { headerText: getText('KSM015_13'), key: 'code', width: 100,  },
-            { headerText: getText('KSM015_14'), key: 'name', width: 150,}, 
-            { headerText: getText('KSM015_15'), key: 'typeOfWork', width: 150 }, 
-            { headerText: getText('KSM015_16'), key: 'workingHours', width: 150},
-            { headerText: getText('KSM015_32'), key: 'timeZone1', width: 150 },
-            { headerText: getText('KSM015_33'), key: 'timeZone2', width: 150 },
-            { headerText: getText('KSM015_20'), key: 'remarks', width: 150 },
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'code', width: 100,  },
+            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'name', width: 150,}, 
+            { headerText: nts.uk.resource.getText('KSM015_15'), key: 'typeOfWork', width: 150 }, 
+            { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workingHours', width: 150},
+            { headerText: nts.uk.resource.getText('KSM015_32'), key: 'timeZone1', width: 150 },
+            { headerText: nts.uk.resource.getText('KSM015_33'), key: 'timeZone2', width: 150 },
+            { headerText: nts.uk.resource.getText('KSM015_20'), key: 'remarks', width: 150 },
         ];
     }
 }

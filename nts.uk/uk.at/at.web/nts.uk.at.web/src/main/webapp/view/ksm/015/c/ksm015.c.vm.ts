@@ -15,8 +15,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
 				isShowAlreadySet: true,
-				isMultipleUse: false,
-				isMultiSelect: true,
+				isMultipleUse: true,
+				isMultiSelect: false,
 				treeType: 1,
 				selectedWorkplaceId: self.multiSelectedWorkplaceId,
 				baseDate: self.baseDate,

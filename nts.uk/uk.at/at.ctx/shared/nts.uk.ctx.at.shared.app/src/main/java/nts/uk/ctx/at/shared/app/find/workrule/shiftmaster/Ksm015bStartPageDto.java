@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 /**
  * @author anhdt

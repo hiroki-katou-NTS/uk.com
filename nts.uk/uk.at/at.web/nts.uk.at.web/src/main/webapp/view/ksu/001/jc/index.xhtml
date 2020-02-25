@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 670 };</script>
+			<script>var dialogSize = { width: 1000, height: 680 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.shr.com.time.TimeWithDayAttr
@@ -21,6 +21,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
+					<div class = "label"><span >#{i18n.getText('KSU001_114')}</span> </div>
 					<div id="pairPatternName" class="mw-90"
 						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
 					<input id="textName"
@@ -28,7 +29,7 @@
 				</div>
 
 				<div id="set-work-type">
-					<div class="mw-90" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_909')}</div>
+					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_909')}</div>
 					<div id="combo-box1"
 						data-bind="ntsComboBox: {
 								options: listWorkType,
@@ -48,7 +49,7 @@
 
 				<div id="set-work-time">
 					<div>
-						<div class="mw-90" data-bind="ntsFormLabel: {enable: isEnableButton }">#{i18n.getText('KSU001_911')}</div>
+						<div class="mw-90" data-bind="ntsFormLabel: {required: true,enable: isEnableButton }">#{i18n.getText('KSU001_911')}</div>
 			 			<input id="time-edit1"
 							data-bind="ntsTimeWithDayEditor: {
 							name: '#{i18n.getText('KSU001_73')}',

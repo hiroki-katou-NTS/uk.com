@@ -53,6 +53,7 @@
 					</div>
 				</div>
 				<div style=" margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">シフト選択</div>
+				<div data-bind="visible:isMultiSelect">
 				<table id="multi-list" tabindex="0"
 					data-bind="ntsGridList: {	
 								name: '#[KDL044_11]',  
@@ -60,11 +61,26 @@
 								options: listShifuto,
 								optionsValue: 'code',
 								columns: columns,
-								multiple: isMultiSelect(),								
+								multiple: true,								
 								value: selectedCodes,
 								rows: 10
 						}">
 				</table>
+				</div>
+				<div data-bind="visible:!isMultiSelect()">
+				<table id="multi-list" tabindex="0"
+					data-bind="ntsGridList: {	
+								name: '#[KDL044_11]',  
+								height: 450,
+								options: listShifuto,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,								
+								value: selectedCode,
+								rows: 10
+						}">
+				</table>
+				</div>
 				<div style="margin-top: 10px; margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">絞り込み対象</div>
 				<table id="multi-list" tabindex="0"
 					data-bind="ntsGridList: {	
