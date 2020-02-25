@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * 会社別シフトパレット
@@ -15,7 +14,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 
 	/** 会社ID */
 	@Getter
-	private final CompanyId companyId;
+	private final String companyId;
 	
 	/** ページ */
 	@Getter
@@ -26,7 +25,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 	private ShiftPallet shiftPallet;
 
 	// 	説明：新しい＜会社別シフトパレット＞を作る。
-	public ShiftPalletsCom(CompanyId companyId, int page, ShiftPallet shiftPallet) {
+	public ShiftPalletsCom(String companyId, int page, ShiftPallet shiftPallet) {
 		// case inv-1: Msg_1615	
 		if(!(1 <= page && page <= 10)){
 			throw new BusinessException("Msg_1615");

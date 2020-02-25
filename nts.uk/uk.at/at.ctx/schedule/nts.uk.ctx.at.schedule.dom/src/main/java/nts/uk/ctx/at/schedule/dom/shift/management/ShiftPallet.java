@@ -17,7 +17,6 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  */
 
 public class ShiftPallet implements DomainValue {
-	@Inject
 
 	/** 表示情報 */
 	@Getter
