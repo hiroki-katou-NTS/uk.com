@@ -200,7 +200,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 tooltip: self.tooltip(),
                 data: data ? data.data : null,
                 textDecision: nts.uk.resource.getText("KSU001_923"),
-                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime
+                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime,
+                selectedTab: getShared("dataForJB").selectedTab,
+                workplaceId: getShared('dataForJB').workplaceId
             });
             
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jc/index.xhtml").onClosed(() => {

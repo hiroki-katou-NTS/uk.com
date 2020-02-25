@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.jb.viewmodel {
+module nts.uk.at.view.ksu001.jc.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
@@ -16,6 +16,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
+        selectedTab : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().selectedTab;
+        workplaceId : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().workplaceId;
         textName: KnockoutObservable<string> = ko.observable(getShared('dataForJC').text || null);
         arrTooltip: any[] = getShared('dataForJC').tooltip ? getShared('dataForJC').tooltip.match(/[^[\]]+(?=])/g) : [];
         source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJC').data || []);
@@ -182,9 +184,37 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+        /**
+         *  query
+         * 
+         */
+    
 
+        initShiftWork() {
+            let self = this;
+
+            let taisho = {
+                targetUnit: 1,
+                workplaceId: '',
+                workplaceGroupId: ''
+            }
+            if (self.selectedTab == 'company') {
+                taisho = null;
+            }
+            if (self.selectedTab == 'workplace') {
+                taisho.workplaceId = self.workplaceId;
+            }
+            
+            
+            service.getShiftMasterWorkInfo(taisho).done(() => {
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
+            });
+        }
+        
         search(): void {
             let self = this;
+            
             let listWorkTimeSearch: any[] = [];
             let arrTmp: any[] = [];
             self.isEnableClearSearchButton(true);
