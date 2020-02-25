@@ -75,7 +75,6 @@ public class CommonApprovalRootFinder {
 	
 	private static final int COMPANY = 0;
 	private static final int WORKPLACE = 1;
-//	private static final int SHUUGYOU = 0;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * まとめて登録モード

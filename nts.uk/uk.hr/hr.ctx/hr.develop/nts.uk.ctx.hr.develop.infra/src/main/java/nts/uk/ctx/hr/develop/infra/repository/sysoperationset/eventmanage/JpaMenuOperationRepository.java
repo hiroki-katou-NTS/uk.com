@@ -83,7 +83,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 	public List<MenuInfoEx> findByApprUse(String companyId) {
 		String qr = "select menuO.PROGRAM_ID, PROGRAM_NAME, USE_APPROVAL from JCMST_MENU_OPERATION menuO inner join" + 
 				"	( select PROGRAM_ID, PROGRAM_NAME from JCMMT_HRDEV_MENU where AVAILABLE_APPROVAL = 1 and AVAILABLE = 1 and EVENT_ID in " + 
-				"		(select EVENT_ID from JCMST_EVENT_OPERATION WHERE CID = '000000000000-0106' and USE_EVENT = 1)" + 
+				"		(select EVENT_ID from JCMST_EVENT_OPERATION WHERE CID = 'companyId' and USE_EVENT = 1)" + 
 				"	) op" + 
 				"	on menuO.PROGRAM_ID = op.PROGRAM_ID" + 
 				"	where  CID = 'companyId' and USE_APPROVAL = 1  ";
