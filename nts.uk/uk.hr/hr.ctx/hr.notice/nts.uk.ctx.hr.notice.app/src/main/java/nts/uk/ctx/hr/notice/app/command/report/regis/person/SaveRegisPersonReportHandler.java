@@ -4,6 +4,7 @@
 package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.EmailTransmission
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
@@ -66,6 +68,13 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	@Inject
 	private ICreateApprovalStateAdaptor createApprovalStateAdaptor;
 	
+	@Inject
+	private HumanItemPub humanItemPub;
+	
+	public static final List<String> listItemEndDateOfCtgHistoryContinueandNoDuplicate = Arrays.asList("IS00021", "IS00088", "IS00103", "IS00027", "IS00067", "IS00072", "IS00078", "IS00083", "IS00120", "IS00256", "IS00782");
+	
+	public static final List<String> listItemStartDateOfCtgHistoryNoDuplicate = Arrays.asList("IS00020", "IS00087", "IS00102");
+
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
 
@@ -75,10 +84,11 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	public static final String MAX_DATE = "9999/12/31";
 	public static final String MIN_DATE = "1900/01/01";
 
+	// アルゴリズム「届出情報を登録」を実行する (Thực hiện thuật toán "Đăng ký thông tin report")
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		ValidateDataCategoryHistory.validate(command);
+		//ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -92,10 +102,12 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
 		String rootSateId = data.rootSateId;
+		
+		// 届出IDを採番する(Đánh số report ID)
 		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
 		
 		if (rootSateId == null) {
-			
+			// アルゴリズム[GUIDを生成する]を実行する (Thực hiện thuật toán "Tạo GUID")
 			rootSateId = IdentifierUtil.randomUniqueId();
 			
 			// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
@@ -135,7 +147,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 											.phaseNum(approvalPhaseStateHrExport.getPhaseOrder())
 											.aprStatus(ApprovalStatus.Not_Acknowledged)
 											.aprNum(approvalFrameHrExport.getFrameOrder())
-											.arpAgency(true)
+											.arpAgency(approverStateHrExport.getRepresenterID() == null || approverStateHrExport.getRepresenterID() == "" ? false : true)
 											.comment(null)
 											.aprActivity(ApprovalActivity.Activity)
 											.emailTransmissionClass(EmailTransmissionClass.DoNotSend)
@@ -159,6 +171,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			
 		}
 		
+		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
+		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
@@ -198,8 +212,15 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
+		// 社員情報全般と届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    // アルゴリズム「[RQ631]申請書の承認者と状況を取得する」を実行する 
+	    // Thực hiện thuật toán"[RQ631]Lấy trạng thái và người phê duyệt Application form)
+	    
+	    // chưa làm chức năng gửi mail => chưa cần gọi [RQ631]
 	}
 	
 	public List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
@@ -252,12 +273,91 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 					break;
 				}
 
+				if (listItemStartDateOfCtgHistoryNoDuplicate.contains(itemDfCommand.itemCode)) {
+					if (itemValue.value() == null) {
+						reportItem.setDateVal(GeneralDate.min());
+					}
+				}
+				
 				listReportItem.add(reportItem);
+				
+				if (listItemEndDateOfCtgHistoryContinueandNoDuplicate.contains(itemDfCommand.itemCode)) {
+					ItemEndDate itemCodeEndDDate = returnItemCodeEndDate(itemDfCommand.categoryId, itemDfCommand.itemCode);
+
+					ReportItem reportItemEndDate = ReportItem.builder().cid(cid).workId(0).reportID(reportId)
+							.reportLayoutID(data.reportLayoutID).reportName(data.reportName)
+							.layoutItemType(EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class))
+							.categoryId(itemDfCommand.categoryId).ctgCode(itemDfCommand.categoryCode)
+							.ctgName(itemDfCommand.categoryName).fixedAtr(true).itemId(itemCodeEndDDate.itemDfId)
+							.itemCd(itemCodeEndDDate.itemCode).itemName(itemCodeEndDDate.itemName)
+							.dateVal(GeneralDate.max()).saveDataAtr(itemValue.saveDataType().value)
+							.dspOrder(itemDfCommand.dispOrder + 1).layoutDisOrder(itemDfCommand.layoutDisOrder + 1)
+							.contractCode(contractCode).reflectID(0).build();
+					
+					Optional<ReportItem> it = listReportItem.stream().filter(item -> item.getItemCd().equals(itemCodeEndDDate.itemCode)).findFirst();
+					if (it.isPresent()) {
+						listReportItem.remove(it.get());
+					}
+					
+					listReportItem.add(reportItemEndDate);
+				}
 			}
 		}
 		return listReportItem;
 	}
 	
+	
+	// "IS00021", "IS00088", "IS00103", "IS00027", "IS00067", "IS00072",
+	// "IS00078", "IS00083", "IS00120", "IS00256", "IS00782");
+	private ItemEndDate returnItemCodeEndDate(String categoryId, String itemCodeEndDate) {
+		
+		if (itemCodeEndDate.equals("IS00021")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00021" );
+			return new ItemEndDate("IS00021", "退職年月日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00088")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00088" );
+			return new ItemEndDate("IS00088", "休職休業終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00103")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00103" );
+			return new ItemEndDate("IS00103", "短時間終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00027")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00027" );
+			return new ItemEndDate("IS00027", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00067")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00067" );
+			return new ItemEndDate("IS00067", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00072")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00072" );
+			return new ItemEndDate("IS00072", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00078")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00078" );
+			return new ItemEndDate("IS00078", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00083")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00083" );
+			return new ItemEndDate("IS00083", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00120")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00120" );
+			return new ItemEndDate("IS00120", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00256")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00256" );
+			return new ItemEndDate("IS00256", "終了日", itemDfId);
+		}
+		if (itemCodeEndDate.equals("IS00782")) {
+			String itemDfId = humanItemPub.getItemDfId(categoryId, "IS00782" );
+			return new ItemEndDate("IS00782", "終了日", itemDfId);
+		}
+
+		return null;
+	}
 
 	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
@@ -267,6 +367,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			return;
 		}
 		
+		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
+		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		
 		RegistrationPersonReport domainReport = domainReportOpt.get();
@@ -277,6 +379,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
+		domainReport.setRootSateId(domainReport.getRootSateId() == null ? IdentifierUtil.randomUniqueId() : domainReport.getRootSateId());
 		
 		domainReport.setInputPid(employeeInfo.inputPid);
 		domainReport.setInputSid(employeeInfo.inputSid);
@@ -309,8 +412,12 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportId);
 		
+		// 社員情報全般と届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    
 	}
 	
 	private EmployeeInfo getPersonInfo(){

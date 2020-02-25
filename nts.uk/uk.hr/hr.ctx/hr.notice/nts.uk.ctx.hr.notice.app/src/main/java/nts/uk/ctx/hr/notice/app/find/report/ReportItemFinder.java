@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalFrameForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
@@ -77,7 +76,7 @@ public class ReportItemFinder {
 	private EmployeeInformationAdaptor employeeInforAdapter;
 	
 	/**
-	 * 
+	 * アルゴリズム「届出一覧選択処理」を実行する (Thực hiện thuật toán "Xử lý select report list")
 	 * @param reportClsId
 	 * @return
 	 */
@@ -103,9 +102,7 @@ public class ReportItemFinder {
 			
 			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
 				
-				approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
-				
-				appPhaseLst.addAll(convertData(approvalStateHrImport));
+				getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst);
 				
 			}
 			
@@ -157,6 +154,16 @@ public class ReportItemFinder {
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
 						itemInter, documentSampleDtoLst, appPhaseLst)
 				: new ReportLayoutDto();
+	}
+	
+	/*
+	 * 承認情報の取得
+	 */
+	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
+		
+		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		
+		appPhaseLst.addAll(convertData(approvalStateHrImport));
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
@@ -577,6 +584,7 @@ public class ReportItemFinder {
 				List<String> appIds = app.getLstApproverInfo().stream().map(id ->{
 					
 					return StringUtil.isNullOrEmpty(id.getAgentID(), true)== true? id.getApproverID(): id.getAgentID();
+					
 				}).collect(Collectors.toList());
 				
 				sids.addAll(appIds);			

@@ -190,5 +190,11 @@ public class HumanItemPubImp implements HumanItemPub{
 		return new DateRangeItemImport(dateRange.getPersonInfoCtgId(), dateRange.getStartDateItemId(),
 				dateRange.getEndDateItemId(), dateRange.getStartDateItemId());
 	}
+
+	@Override
+	public String getItemDfId(String ctgId, String itemCd) {
+		String itemDfID = itemPub.getItemDfId(ctgId, itemCd);
+		return itemDfID;
+	}
 	
 }

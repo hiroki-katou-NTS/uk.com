@@ -25,6 +25,9 @@ public class JpaAttachPersonReportFileRepository extends JpaRepository  implemen
 
 	private static final String getListByReportId = "select c FROM  JhndtReportAtcFile c Where c.pk.cid = :cid and c.reportID = :reportId ";
 	
+	private static final String getListByCid = "select c FROM  JhndtReportAtcFile c Where c.pk.cid = :cid ";
+	
+	
 	private static final String getListByReportId2 = "select e "
 			+ " FROM JhndtReportAtcFile e "
 			+ " Where e.pk.cid = :cid and  e.reportID = :reportId and e.delFlg = 0";
@@ -50,6 +53,12 @@ public class JpaAttachPersonReportFileRepository extends JpaRepository  implemen
 				.setParameter("cid", cid)
 				.setParameter("reportId", reportId).getList(c -> toDomain(c));
 	}
+	
+	@Override
+	public List<AttachmentPersonReportFile> getListAttachFileByCid(String cid) {
+		return this.queryProxy().query(getListByCid, JhndtReportAtcFile.class)
+				.setParameter("cid", cid).getList(c -> toDomain(c));
+	}
 
 	@Override
 	public void add(AttachmentPersonReportFile domain) {
@@ -63,11 +72,11 @@ public class JpaAttachPersonReportFileRepository extends JpaRepository  implemen
 		if (entityOpt.isPresent()) {
 			JhndtReportAtcFile entity = entityOpt.get();
 			entity.setDelFlg(1);
+			entity.setFileName(null);
 			this.commandProxy().update(entity);
 		}else{
 			System.out.println("file not exit");
 		}
-		
 	}
 	
 	@Override
@@ -119,4 +128,5 @@ public class JpaAttachPersonReportFileRepository extends JpaRepository  implemen
 		
 		return result;
 	}
+
 }
