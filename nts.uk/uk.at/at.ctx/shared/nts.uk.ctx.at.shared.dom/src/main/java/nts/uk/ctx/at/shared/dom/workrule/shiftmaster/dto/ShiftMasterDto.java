@@ -21,6 +21,8 @@ public class ShiftMasterDto {
 	private String workTypeName;
 	private String workTimeCd;
 	private String workTimeName;
+	private String workTime1;
+	private String workTime2;
 
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();

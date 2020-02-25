@@ -15,6 +15,8 @@ import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCo
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015bStartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
@@ -43,10 +45,13 @@ public class ShiftMasterWs {
 	@Inject
 	private DeleteShiftMasterCommandHandler deleteCmd;
 	
+	@Inject
+	private RegisterShiftMasterOrgCommandHandler registerOrgCmd;
+	
 	@POST
 	@Path("startPage")
 	public Ksm015bStartPageDto findAll(){
-		return this.finder.startBScreen();
+		return this.finder.startScreen();
 	}
 	
 	@POST
@@ -59,6 +64,12 @@ public class ShiftMasterWs {
 	@Path("getlistByWorkPlace")
 	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
 		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
+	}
+	
+	@POST
+	@Path("register/shiftmaster/org")
+	public void registerShiftMasterOrg(RegisterShiftMasterOrgCommand dto){
+		this.registerOrgCmd.handle(dto);;
 	}
 	
 	@POST

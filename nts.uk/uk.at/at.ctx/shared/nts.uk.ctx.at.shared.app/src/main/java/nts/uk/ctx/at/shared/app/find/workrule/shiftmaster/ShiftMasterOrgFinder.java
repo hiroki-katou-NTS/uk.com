@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,8 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetUsableShiftMasterService;
@@ -37,6 +40,9 @@ public class ShiftMasterOrgFinder {
 	
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	
+	@Inject
+	private WorkTimeSettingFinder workTimeFinder;
 
 	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
@@ -51,6 +57,21 @@ public class ShiftMasterOrgFinder {
 		if(CollectionUtil.isEmpty(shiftMasters)) {
 			return Collections.emptyList();
 		}
+		
+		List<String> workTimeCodes = shiftMasters.stream().map(s -> s.getWorkTimeCd()).collect(Collectors.toList());
+		
+		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
+		
+		shiftMasters.forEach(shiftMaster -> {
+			Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
+			
+			if(oWorkTime.isPresent()) {
+				WorkTimeDto worktime = oWorkTime.get();
+				shiftMaster.setWorkTime1(worktime.workTime1);
+				shiftMaster.setWorkTime2(worktime.workTime2);
+			}
+			
+		});
 		
 		return shiftMasters;
 

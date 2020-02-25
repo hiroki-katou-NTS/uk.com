@@ -34,28 +34,24 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 
 	@Override
 	public boolean exists(String companyId, TargetOrgIdenInfor info) {
-		// return this.getByWorkTypeAndWorkTime(companyId, workTypeCd,
-		// workTimeCd).isPresent();
-		return true;
+		Optional<ShiftMasterOrganization> exist = getByTargetOrg(companyId, info);
+		return exist.isPresent();
 	}
 
 	@Override
-	public void insert(ShiftMasterOrganization shiftMater) {
-		this.commandProxy().insert(KshmtShiftMaterOrg.toEntity(shiftMater));
+	public void insert(ShiftMasterOrganization shiftMaterOrg) {
+		List<String> shiftMasterCodes = shiftMaterOrg.getListShiftMaterCode();
+		
+		shiftMasterCodes.forEach(code -> {
+			this.commandProxy().insert(KshmtShiftMaterOrg.toEntity(shiftMaterOrg, code));
+		});
+		
 	}
 
 	@Override
 	public void update(ShiftMasterOrganization shiftMater) {
-		KshmtShiftMaterOrg oldData = KshmtShiftMaterOrg.toEntity(shiftMater);
-		this.queryProxy().find(oldData.kshmtShiftMaterOrgPK, KshmtShiftMaterOrg.class);
-
-		// KshmtShiftMater newData = KshmtShiftMater.toEntity(shiftMater);
-		// oldData.name = newData.name;
-		// oldData.color = newData.color;
-		// oldData.remarks = newData.remarks;
-		// oldData.workTypeCd = newData.workTypeCd;
-		// oldData.workTimeCd = newData.workTimeCd;
-		this.commandProxy().update(oldData);
+		delete(shiftMater.getCompanyId(), shiftMater.getTargetOrg());
+		insert(shiftMater);
 	}
 
 	@Override

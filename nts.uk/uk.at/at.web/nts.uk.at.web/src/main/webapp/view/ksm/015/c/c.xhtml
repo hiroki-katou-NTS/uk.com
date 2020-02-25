@@ -6,7 +6,7 @@
         <a class="goback"
             data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
         <!-- C1 -->
-        <button tabindex="1" class="proceed">#{i18n.getText('KSM015_8')}</button>
+        <button tabindex="1" class="proceed" data-bind="click: registerOrd">#{i18n.getText('KSM015_8')}</button>
         <!-- C2 -->
         <button class="danger" tabindex="3">#{i18n.getText('KSM015_9')}</button>
         <!-- C3 -->
@@ -27,13 +27,14 @@
                 <button>#{i18n.getText('KSM015_30')}</button>
                 <button>#{i18n.getText('KSM015_31')}</button>
             </div>
+            <span data-bind="text: selectedShiftMaster"></span>
             <table id="shift-list" data-bind="ntsGridList: {
                 height: 350,
                 options: shiftItems,
-                optionsValue: 'code',
-                columns: shiftGridColumns,
+                optionsValue: 'shiftMaterCode',
+                columns: shiftColumns,
                 multiple: true,
-                value: shiftGridColumns
+                value: selectedShiftMaster
             }"></table>
         </div>
     </div>

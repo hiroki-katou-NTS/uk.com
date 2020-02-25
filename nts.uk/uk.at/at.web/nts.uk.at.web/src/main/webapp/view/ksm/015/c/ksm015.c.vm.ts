@@ -1,26 +1,39 @@
 module nts.uk.at.view.ksm015.c.viewmodel {
 	export class ScreenModel {
 
-		multiSelectedWorkplaceId: KnockoutObservable<string>;
+		selectedWorkplaceId: KnockoutObservable<string>;
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 		treeGrid: TreeComponentOption;
-		shiftColumn: Array<any>;
+		shiftColumns: Array<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
-		shiftGridColumns: KnockoutObservableArray<any>;
+		selectedShiftMaster: KnockoutObservableArray<any>;
 		constructor() {
 			let self = this;
 			self.baseDate = ko.observable(new Date());
-			self.multiSelectedWorkplaceId = ko.observableArray([]);
+			self.selectedWorkplaceId = ko.observableArray("");
+			self.selectedWorkplaceId.subscribe((val) => {
+				if (val) {
+					let param = {
+						workplaceId: val,
+						targetUnit: TargetUnit.WORKPLACE
+					}
+					service.getShiftMasterByWorkplace(param)
+						.done((data) => {
+							self.shiftItems(data);
+							self.selectedShiftMaster([]);
+						});
+				}
+			});
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
 				isShowAlreadySet: true,
 				isMultipleUse: true,
 				isMultiSelect: false,
 				treeType: 1,
-				selectedWorkplaceId: self.multiSelectedWorkplaceId,
+				selectedWorkplaceId: self.selectedWorkplaceId,
 				baseDate: self.baseDate,
-				selectType: 1,
+				selectType: 3,
 				isShowSelectButton: true,
 				isDialog: false,
 				alreadySettingList: self.alreadySettingList,
@@ -31,8 +44,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			};
 
 			let ksm015Data = new Ksm015Data();
-			self.shiftItems = ko.observableArray(ksm015Data.mockShift);
-			self.shiftGridColumns = ko.observableArray(ksm015Data.shiftGridColumns);
+			self.shiftItems = ko.observableArray([]);
+			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
+			self.selectedShiftMaster = ko.observableArray([]);
 			$('#tree-grid').ntsTreeComponent(self.treeGrid);
 		}
 
@@ -42,6 +56,24 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let dfd = $.Deferred();
 			dfd.resolve(1);
 			return dfd.promise();
+		}
+
+		public registerOrd() {
+			let self = this;
+			let param = {
+				targetUnit: TargetUnit.WORKPLACE,
+				workplaceId: self.selectedWorkplaceId,
+				shiftMasterCodes: self.selectedShiftMaster()
+			};
+			nts.uk.ui.block.grayout();
+			service.registerOrg(param)
+				.done(() => {
+					self.selectedWorkplaceId.valueHasMutated();
+				}).fail(function (error) {
+					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+				}).always(function () {
+					nts.uk.ui.block.clear();
+				});
 		}
 	}
 }

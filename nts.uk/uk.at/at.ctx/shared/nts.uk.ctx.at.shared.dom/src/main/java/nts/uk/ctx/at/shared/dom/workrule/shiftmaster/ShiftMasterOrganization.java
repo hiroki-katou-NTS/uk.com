@@ -63,7 +63,11 @@ public class ShiftMasterOrganization implements DomainAggregate {
 		if(listCode.size() != listShiftMaterCode.size()) {
 			throw new RuntimeException("シフトマスタリスト.size > 0");
 		}
-		this.listShiftMaterCode = listShiftMaterCode;
+		
+		List<String> current = new ArrayList<>(this.listShiftMaterCode);
+		current.addAll(listShiftMaterCode);
+		
+		this.listShiftMaterCode = listShiftMaterCode.stream().distinct().collect(Collectors.toList());
 	}
 	
 	/**
