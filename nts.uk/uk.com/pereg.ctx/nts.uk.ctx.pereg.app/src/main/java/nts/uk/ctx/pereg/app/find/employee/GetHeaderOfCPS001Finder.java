@@ -30,7 +30,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
@@ -68,8 +68,11 @@ public class GetHeaderOfCPS001Finder {
 	@Inject
 	private PersonInfoItemAuthRepository perItemAuthRepo;
 
+//	@Inject
+//	private SyWorkplacePub wkpPublish;
+	
 	@Inject
-	private SyWorkplacePub wkpPublish;
+	private WorkplacePub workplacePub;
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		GeneralDate date = GeneralDate.today();
@@ -116,7 +119,7 @@ public class GetHeaderOfCPS001Finder {
 					}
 				}
 			} else {
-				Optional<SWkpHistExport> wkp = wkpPublish.findBySid(sid, date);
+				Optional<SWkpHistExport> wkp = workplacePub.findBySid(sid, date);
 
 				wkp.ifPresent(wk -> {
 					_emp.setDepartmentCode(wk.getWorkplaceCode());

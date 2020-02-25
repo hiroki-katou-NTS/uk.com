@@ -68,10 +68,9 @@ import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.service.DtoForRQ617;
 import nts.uk.ctx.bs.person.dom.person.info.service.PersonService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -108,8 +107,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWkpItemRepo;
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	@Inject
 	private EmploymentHistoryItemRepository emptHistItem;
@@ -128,9 +130,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 //	@Inject
 //	private AffJobTitleHistoryRepository affJobRep;
-
-	@Inject
-	private PersonService personService;
 	
 	@Inject
 	private EmploymentStatusPub employmentStatusPub;
@@ -366,8 +365,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		// Get List WkpId ( Get From RequestList #154(ANH THANH NWS))
-		List<String> lstWkpId = syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(
-				AppContexts.user().companyId(), affWkpItem.getWorkplaceId(), baseDate);
+		List<String> lstWkpId = workplacePub.getWorkplaceIdAndChildren(
+				AppContexts.user().companyId(), baseDate, affWkpItem.getWorkplaceId());
 
 		if (lstWkpId.isEmpty()) {
 			return null;

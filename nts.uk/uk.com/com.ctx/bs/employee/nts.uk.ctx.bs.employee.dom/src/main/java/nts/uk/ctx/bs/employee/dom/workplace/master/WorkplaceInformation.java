@@ -1,12 +1,24 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
 
 /**
  * 
@@ -99,6 +111,22 @@ public class WorkplaceInformation extends AggregateRoot {
 			throw new BusinessException("Msg_368");
 		} else if (this.hierarchyCode.v().length() > 30)
 			throw new BusinessException("Msg_369");
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkplaceInfoSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setHistoryId(this.workplaceHistoryId);
+		memento.setWorkplaceId(this.workplaceId);
+		memento.setWorkplaceCode(new WkpCode(this.workplaceCode.v()));
+		memento.setWorkplaceName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName(this.workplaceName.v()));
+		memento.setWkpGenericName(new WorkplaceGenericName(this.workplaceGeneric.v()));
+		memento.setWkpDisplayName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName(this.workplaceDisplayName.v()));
+		memento.setOutsideWkpCode(new OutsideWorkplaceCode(this.workplaceExternalCode.get().v()));
 	}
 	
 }

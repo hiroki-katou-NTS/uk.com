@@ -29,7 +29,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
  * The Class EmployeeAdaptorImpl.
@@ -43,16 +43,20 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	private SyEmploymentPub employmentPub;
 
 	/** The workplace pub. */
-	@Inject
-	private SyWorkplacePub workplacePub;
+//	@Inject
+//	private SyWorkplacePub workplacePub;
 	
 	@Inject
 	private IPersonInfoPub personPub;
+	
 	@Inject
 	private SyEmployeePub syEmployeePub;
 	
 	@Inject
 	private PersonEmpBasicInfoPub perEmpBasicInfoPub;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 	
 	/*
 	 * (non-Javadoc)
@@ -209,5 +213,10 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 				.collect(Collectors.toList());
 		
 		return data;
+	}
+
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+		return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
 	}
 }

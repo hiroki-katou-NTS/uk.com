@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireListWorkplaceByEmpIDService;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
@@ -54,8 +54,11 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	@Inject
 	private WorkplaceManagerRepository workplaceManagerRepository;
 	
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	/*
 	 * (non-Javadoc)
@@ -115,7 +118,8 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 		List<WorkplaceManager> listWorkplaceManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, GeneralDate.today());
 		for (WorkplaceManager workplaceManager : listWorkplaceManager) {
 			if(!subListWorkPlace.contains(workplaceManager.getWorkplaceId())){
-				subListWorkPlace.addAll(syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyID, workplaceManager.getWorkplaceId(), GeneralDate.today()));
+				// [No.567]職場の下位職場を取得する
+				subListWorkPlace.addAll(workplacePub.getAllChildrenOfWorkplaceId(companyID, GeneralDate.today(), workplaceManager.getWorkplaceId()));
 			}
 		}
 		return subListWorkPlace.stream().distinct().collect(Collectors.toList());
