@@ -79,7 +79,9 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
@@ -1246,8 +1248,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	//// Bug #97415 - EA2161、2162
 	@Override
 	public int detailSet(String companyId, String wkpId, Integer appType, GeneralDate date) {
-		// ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting
-		// by workplace)
+		// ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
 		if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)) {
@@ -1255,7 +1256,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// 取得できなかった場合
 		// <Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
+		List<String> lstWpkIDPr = wkpAdapter.getUpperWorkplaceRQ569(companyId, wkpId, date);
 		if (lstWpkIDPr.size() > 1) {
 			for (int i = 1; i < lstWpkIDPr.size(); i++) {
 				// ドメイン「職場別申請承認設定」を取得する
@@ -2078,5 +2079,31 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				return app.getWkT();
 		}
 		return new WkTypeWkTime(null, null);
+	}
+	
+	@Override
+	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date) {
+		// ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
+		if(Strings.isNotBlank(wkpId)) {
+			Optional<RequestOfEachWorkplace> wpkSet = Optional.empty();
+			wpkSet = repoRequestWkp.getRequestByWorkplace(companyId, wkpId);
+			if (wpkSet.isPresent()) return wpkSet.get().getListApprovalFunctionSetting();
+			
+			// 取得できなかった場合
+			//職場の上位職場を取得する - ※RequestList569
+			List<String> lstWpkIDPr = wkpAdapter.getUpperWorkplaceRQ569(companyId, wkpId, date);
+			if (lstWpkIDPr.size() > 1) {
+				for (int i = 1; i < lstWpkIDPr.size(); i++) {
+					// ドメイン「職場別申請承認設定」を取得する
+					wpkSet = repoRequestWkp.getRequestByWorkplace(companyId, lstWpkIDPr.get(i));
+					if (wpkSet.isPresent()) return wpkSet.get().getListApprovalFunctionSetting();
+				}
+			}
+		}
+		
+		// ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+		Optional<RequestOfEachCompany> comSet = Optional.empty();
+		comSet = repoRequestCompany.getRequestByCompany(companyId);
+		return comSet.isPresent() ? comSet.get().getListApprovalFunctionSetting() : new ArrayList<>();
 	}
 }

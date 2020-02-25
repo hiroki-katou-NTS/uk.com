@@ -29,7 +29,6 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
@@ -44,11 +43,12 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	private SyEmploymentPub employmentPub;
 
 	/** The workplace pub. */
-	@Inject
-	private SyWorkplacePub workplacePub;
+//	@Inject
+//	private SyWorkplacePub workplacePub;
 	
 	@Inject
 	private IPersonInfoPub personPub;
+	
 	@Inject
 	private SyEmployeePub syEmployeePub;
 	
@@ -56,7 +56,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	private PersonEmpBasicInfoPub perEmpBasicInfoPub;
 	
 	@Inject
-	private WorkplacePub wrkPub;
+	private WorkplacePub workplacePub;
 	
 	/*
 	 * (non-Javadoc)
@@ -84,7 +84,10 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 */
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate baseDate) {
-		return this.workplacePub.findWpkIdsBySid(companyId, sid, baseDate);
+		// 社員と基準日から所属職場履歴項目を取得する
+		String workplaceID = workplacePub.getAffWkpHistItemByEmpDate(sid, baseDate).getWorkplaceId();
+		// [No.571]職場の上位職場を基準職場を含めて取得する
+		return workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceID);
 	}
 
 	/**
@@ -217,6 +220,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 
 	@Override
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
-		return this.wrkPub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+		return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+
 	}
 }

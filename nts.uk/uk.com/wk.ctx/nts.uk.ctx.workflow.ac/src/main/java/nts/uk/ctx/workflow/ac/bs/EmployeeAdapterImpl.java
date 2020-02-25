@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -23,7 +24,6 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -49,8 +49,8 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	private SyEmployeePub employeePub;
 
 	/** The workplace pub. */
-	@Inject
-	private SyWorkplacePub workplacePub;
+//	@Inject
+//	private SyWorkplacePub workplacePub;
 
 	@Inject
 	private PersonAdapter psInfor;
@@ -130,7 +130,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date) {		
-		return workplacePub.findWpkIdsBySid(companyId, employeeId, date);
+		return wkplacePub.findWpkIdsBySid(companyId, employeeId, date);
 	}
 
 	@Override
@@ -226,6 +226,13 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Override
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
 		return this.wkplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	@Override
+	public Optional<String> getWkpBySidDate(String employeeID, GeneralDate date) {
+		val wkp = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		if(wkp == null) return Optional.empty();
+		return Optional.of(wkp.getWorkplaceId());
 	}
 	
 	

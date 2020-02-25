@@ -3,7 +3,8 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -32,6 +33,10 @@ public class RootBaseDateGetImpl implements RootBaseDateGet {
 			ApplicationType appType, GeneralDate appDate, String appID, Boolean isCreate) {
 		GeneralDate baseDate = null;
 		ApprovalRootContentImport_New approvalRootContentImport = null;
+		if(Strings.isNotBlank(appID)&&(isCreate==null || !isCreate)) {
+			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
+			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする
 		// 承認ルートの基準日
 		RecordDate baseDateFlg = RecordDate.SYSTEM_DATE;

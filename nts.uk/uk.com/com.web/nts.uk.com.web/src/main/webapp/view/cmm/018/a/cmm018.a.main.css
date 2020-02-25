@@ -1,9 +1,9 @@
 .contents-area {
-	width: 1370px;
+	
 }
 
 .contents-area-tabpanel-3 {
-	width: 1345px;
+	
 }
 
 .dateControlBtn {
@@ -174,4 +174,94 @@ table#grid_matome_headers_fixed thead tr th{
 }
 .sidebar-content {
     overflow: unset !important;
+}
+
+#grid_matomeB_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeB tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeB_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeB tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeB_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeC_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeC tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeC_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeC tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeC_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeD_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeD tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeD_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeD tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeD_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeE_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeE tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeE_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeE tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeE_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeF_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeF tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeF_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeF tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeF_headers_fixed thead tr th{
+	text-align: center;
 }

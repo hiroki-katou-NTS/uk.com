@@ -47,4 +47,24 @@ public class ApprovalRootCommonService {
 		if(lstJG.isEmpty()) return new JobGInfor(jobGCD, "コード削除済");
 		return lstJG.get(0);
 	}
+	/**
+	 * get workplace/deparment login
+	 * @param sysAtr
+	 * @return
+	 */
+	public WkpDepInfo getWkpDepInfoLogin(int sysAtr){
+		String companyId = AppContexts.user().companyId();
+		Optional<WkpDepInfo> wkpDepOp = Optional.empty();
+		String employeeID = AppContexts.user().employeeId();
+		String id = "";
+		if(sysAtr == SHUUGYOU){
+			id = adapterWp.getWorkplaceIDByEmpDate(employeeID, GeneralDate.today());
+			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id, GeneralDate.today());
+		}else{
+			id = adapterWp.getDepartmentIDByEmpDate(employeeID, GeneralDate.today());
+			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id, GeneralDate.today());
+		}
+		if(!wkpDepOp.isPresent()) return new WkpDepInfo(id, "", "コード削除済");
+		return wkpDepOp.get();
+	}
 }

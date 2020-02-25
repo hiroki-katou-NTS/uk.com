@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
  * 
@@ -20,13 +20,16 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 @Stateless
 public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	@Override
-	public Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
+	public Map<String, Pair<String, String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates) {
-		return this.syWorkplacePub.getWorkplaceMapCodeBaseDateName(companyId, wpkCodes, baseDates);
+		return this.workplacePub.getWorkplaceMapCodeBaseDateName(companyId, wpkCodes, baseDates);
 	}
 
 

@@ -67,7 +67,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate,
-			Integer applicationType, int employmentRootAtr, String id);
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr);
 
 	/**
 	 * get PsApprovalRoot
@@ -119,7 +119,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByType(String companyId, String employeeId, Integer applicationType,
-			int employmentRootAtr, String id);
+			int employmentRootAtr, String id, int sysAtr);
 	/**
 	 * getPsAppRootLastest
 	 * @param companyId
@@ -127,7 +127,7 @@ public interface PersonApprovalRootRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId,GeneralDate endDate);
+	List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId, GeneralDate endDate, int sysAtr);
 	
 	List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
@@ -138,7 +138,7 @@ public interface PersonApprovalRootRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId);
+	Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId, int sysAtr);
 
 	/**
 	 * getNewestMonthlyPsAppRoot
@@ -163,11 +163,12 @@ public interface PersonApprovalRootRepository {
 	 * @param startDate
 	 * @return
 	 */
-	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate);
+	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate, int sysAtr);
 	
 	Optional<PersonApprovalRoot> getHistLastestCom(String companyId, String employeeId);
 	
-	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr, Integer appType, String id);
+	Optional<PersonApprovalRoot> getHistLastestPri(String companyId, String employeeId, int employmentRootAtr,
+			Integer appType, String id, int sysAtr);
 	//get by endDate
 	List<PersonApprovalRoot> getByEndDate(String companyId, String employeeId, int sysAtr, GeneralDate endDate);
 	

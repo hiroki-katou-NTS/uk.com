@@ -597,8 +597,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString = new StringBuilder();
 		builderString.append(" SELECT bwi.pk.workplaceId, bwi.workplaceDisplayName");
 		builderString.append(" FROM BsymtWorkplaceInfor bwi ");
+		builderString.append(
+				" JOIN BsymtWorkplaceConfig bwc ON bwi.pk.workplaceHistoryId = bwc.pk.workplaceHistoryId");
+		builderString.append(" AND bwi.pk.companyId = bwc.pk.companyId");
 		builderString.append(" WHERE bwi.pk.companyId = :companyId");
 		builderString.append(" AND bwi.pk.workplaceId IN :wkpids");
+		builderString.append(" AND bwc.startDate <= :baseDate");
+		builderString.append(" AND bwc.endDate >= :baseDate");
 		SELECT_BY_LISTSID_NAME = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -1677,7 +1682,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		CollectionUtil.split(resultList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			wplName.putAll(this.queryProxy().query(SELECT_BY_LISTSID_NAME, Object[].class)
 					.setParameter("companyId", companyId)
-					.setParameter("wkpids", subList.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
+					.setParameter("wkpids", subList.stream()
+					.map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
+					.setParameter("baseDate", date)	
 					.getList().stream()
 					.collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1]))));
 		});

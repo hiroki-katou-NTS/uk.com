@@ -88,7 +88,7 @@ public class SettingOfManagerFinder {
 		boolean displayDailyApprover = false;
 
 		// ドメインモデル「個人別就業承認ルート」を取得する
-		Optional<PersonApprovalRoot> commonPsApp = this.personAppRootRepo.getNewestCommonPsAppRoot(companyId, employeeId);
+		Optional<PersonApprovalRoot> commonPsApp = this.personAppRootRepo.getNewestCommonPsAppRoot(companyId, employeeId, 0);
 		Optional<PersonApprovalRoot> monthlyPsApp = this.personAppRootRepo.getNewestMonthlyPsAppRoot(companyId, employeeId);
 
 		if (commonPsApp.isPresent()) {

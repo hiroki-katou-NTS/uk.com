@@ -359,11 +359,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         dfd.resolve();
                     }
                 }).fail(function(result) {
-                    dialog.alertError(result.errorMessage);
+                    dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });;
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError(result.errorMessage);
+                dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });;
                 dfd.reject();
             });
 

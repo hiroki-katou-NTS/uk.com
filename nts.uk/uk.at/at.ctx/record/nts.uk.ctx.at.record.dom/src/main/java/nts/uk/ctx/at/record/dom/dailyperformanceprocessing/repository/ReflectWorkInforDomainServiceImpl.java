@@ -2033,7 +2033,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
 					affiliationInforOfDailyPerfor.getWplID(), day);
 
 			// 加給設定を取得する

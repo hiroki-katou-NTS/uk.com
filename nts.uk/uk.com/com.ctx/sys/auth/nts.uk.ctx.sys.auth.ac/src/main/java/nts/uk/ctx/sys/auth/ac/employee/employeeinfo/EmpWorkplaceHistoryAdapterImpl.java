@@ -8,15 +8,18 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpWorkplaceHistoryAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpWorkplaceHistoryImport;
-import nts.uk.shr.com.context.AppContexts;
+
 @Stateless
 public class EmpWorkplaceHistoryAdapterImpl implements EmpWorkplaceHistoryAdapter {
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 	
 	private EmpWorkplaceHistoryImport toImport(SWkpHistExport ex){
 		return new EmpWorkplaceHistoryImport ( 
@@ -31,13 +34,14 @@ public class EmpWorkplaceHistoryAdapterImpl implements EmpWorkplaceHistoryAdapte
 	
 	public Optional<EmpWorkplaceHistoryImport> findBySid(String employeeID, GeneralDate baseDate) {
 		//Lay request 30 NEW
-		return syWorkplacePub.findBySidNew(AppContexts.user().companyId(), employeeID, baseDate).map(c -> toImport(c));
+		return workplacePub.findBySid(employeeID, baseDate).map(c -> toImport(c));
+
 	}
 
 
 	@Override
 	public List<String> getListWorkPlaceIDByDate(GeneralDate date) {
-		 List<String> data = syWorkplacePub.findListWorkplaceIdByBaseDate(date);
+		 List<String> data = workplacePub.getListWorkplaceIdByBaseDate(date);
 		return data;
 	}
 }

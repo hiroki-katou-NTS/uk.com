@@ -61,7 +61,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	public void insertHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate, String departmentApproverId,
 			String dailyApproverId, boolean dailyDisplay) {
 		String endDate = "9999-12-31";
-		List<PersonApprovalRoot> psOlds = this.repoPerson.getPsAppRootLastest(companyId, employeeId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+		List<PersonApprovalRoot> psOlds = this.repoPerson.getPsAppRootLastest(companyId, employeeId,
+				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0);
 
 		// 追加する履歴を最新の履歴の開始年月日と比較する
 		if (!psOlds.isEmpty() && startDate.beforeOrEquals(psOlds.get(0).getApprRoot().getHistoryItems().get(0).start())) {
@@ -69,7 +70,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			throw new BusinessException("Msg_153");
 		}
 
-		List<PersonApprovalRoot> listPsPre = this.repoPerson.getPsApprovalRootBySdate(companyId, employeeId, startDate);
+		List<PersonApprovalRoot> listPsPre = this.repoPerson.getPsApprovalRootBySdate(companyId, employeeId, startDate, 0);
 		List<ApprovalPhase> listApprovalPhase = new ArrayList<>();
 		if (!listPsPre.isEmpty()) {
 			for (PersonApprovalRoot psApp : listPsPre) {
@@ -85,7 +86,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 				}
 			}
 			// ドメインモデル「個人別就業承認ルート」．「承認フェーズ」．「順序」を追加する
-			Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId);
+			Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId, 0);
 			Optional<PersonApprovalRoot> monthlyPs = this.repoPerson.getNewestMonthlyPsAppRoot(companyId, employeeId);
 			if (existApprovalPhase1.isEmpty()) {
 				if (commonPs.isPresent()) {

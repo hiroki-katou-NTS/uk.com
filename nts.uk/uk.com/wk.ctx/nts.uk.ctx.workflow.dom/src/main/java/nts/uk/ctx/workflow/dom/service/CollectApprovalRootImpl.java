@@ -315,29 +315,55 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	private ApprovalRootState createFromApprovalPhaseListConfirm(String companyID, GeneralDate date,
 			LevelOutput levelOutput) {
-		List<ApprovalPhaseState> listApprovalPhaseState = levelOutput.getLevelInforLst().stream().map(levelInforLst -> {
+		List<ApprovalPhaseState> listApprovalPhaseState = levelOutput.getLevelInforLst().stream().map(levelInforOutput -> {
 			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
-			levelInforLst.getApproverLst().forEach(levelApproverList -> {
-				List<ApprovalFrame> approvalFrameLst = levelApproverList.getApproverInfoLst()
-					.stream().map(approverInfo -> {
-						ApproverInfor approverInfor = new ApproverInfor(
-							approverInfo.getApproverID(), 
+			List<LevelApproverList> filterLevelApproverList = levelInforOutput.getApproverLst()
+					.stream().filter(x -> x.getApproverInfoLst().size() > 0).collect(Collectors.toList());
+			if(CollectionUtil.isEmpty(filterLevelApproverList)) {
+				return ApprovalPhaseState.createFormTypeJava(
+						6 - levelInforOutput.getLevelNo(), 
+						ApprovalBehaviorAtr.UNAPPROVED.value, 
+						levelInforOutput.getApprovalForm(), 
+						resultApprovalFrame);
+			}
+			if(filterLevelApproverList.size() > 1) {
+				filterLevelApproverList.forEach(levelApproverList -> {
+					List<ApprovalFrame> approvalFrameLst = levelApproverList.getApproverInfoLst()
+						.stream().map(approverInfo -> {
+							ApproverInfor approverInfor = new ApproverInfor(
+								approverInfo.getApproverID(), 
+								ApprovalBehaviorAtr.UNAPPROVED, 
+								"", 
+								null, 
+								"");
+							return ApprovalFrame.convert(
+									levelApproverList.getOrder(), 
+									levelApproverList.isComfirmAtr() ? 1 : 0, 
+									date, 
+									Arrays.asList(approverInfor));
+						}).collect(Collectors.toList());
+					resultApprovalFrame.addAll(approvalFrameLst);
+				});
+			} else {
+				List<LevelApproverInfo> levelApproverInfoLst = filterLevelApproverList.get(0).getApproverInfoLst();
+				for(int i = 0; i < levelApproverInfoLst.size(); i++) {
+					ApproverInfor approverInfor = new ApproverInfor(
+							levelApproverInfoLst.get(i).getApproverID(), 
 							ApprovalBehaviorAtr.UNAPPROVED, 
 							"", 
 							null, 
 							"");
-						return ApprovalFrame.convert(
-								levelApproverList.getOrder(), 
-								levelApproverList.isComfirmAtr() ? 1 : 0, 
+					resultApprovalFrame.add(ApprovalFrame.convert(
+								i + 1, 
+								filterLevelApproverList.get(0).isComfirmAtr() ? 1 : 0, 
 								date, 
-								Arrays.asList(approverInfor));
-					}).collect(Collectors.toList());
-				resultApprovalFrame.addAll(approvalFrameLst);
-			});
+								Arrays.asList(approverInfor)));
+				}
+			}
 			return ApprovalPhaseState.createFormTypeJava(
-					6 - levelInforLst.getLevelNo(), 
+					6 - levelInforOutput.getLevelNo(), 
 					ApprovalBehaviorAtr.UNAPPROVED.value, 
-					levelInforLst.getApprovalForm(), 
+					levelInforOutput.getApprovalForm(), 
 					resultApprovalFrame);
 		}).collect(Collectors.toList());	
 		return ApprovalRootState.builder()

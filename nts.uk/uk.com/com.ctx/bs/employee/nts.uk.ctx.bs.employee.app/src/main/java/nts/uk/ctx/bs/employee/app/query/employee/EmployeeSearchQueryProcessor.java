@@ -35,10 +35,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -53,10 +52,10 @@ public class EmployeeSearchQueryProcessor {
 
 	/** The workplace repository. */
 	@Inject
-	private WorkplaceConfigInfoRepository workplaceConfigInfoRepo;
-
+	private WorkplaceInformationRepository workplaceConfigInfoRepo;
+	
 	@Inject
-	private WorkplaceInfoRepository workplaceInfoRepo;
+	private WorkplaceExportService wkpExpService;
 
 	/** The job title repository. */
 	@Inject
@@ -125,7 +124,7 @@ public class EmployeeSearchQueryProcessor {
 		}
 
 		// get all work place of company
-		List<WorkplaceInfo> workplaces = this.workplaceInfoRepo.findAll(companyId, baseDate);
+		List<WorkplaceInfo> workplaces = this.workplaceConfigInfoRepo.findAll(companyId, baseDate);
 
 		// to map work place
 		Map<String, WorkplaceInfo> workplaceMap = workplaces.stream()
@@ -203,7 +202,7 @@ public class EmployeeSearchQueryProcessor {
 				.findByEmployees(employeeIds, baseDate);
 
 		// get all work place of company
-		List<WorkplaceInfo> workplaces = this.workplaceInfoRepo.findAll(companyId, baseDate);
+		List<WorkplaceInfo> workplaces = this.workplaceConfigInfoRepo.findAll(companyId, baseDate);
 
 		// to map work place
 		Map<String, WorkplaceInfo> workplaceMap = workplaces.stream()
@@ -453,10 +452,8 @@ public class EmployeeSearchQueryProcessor {
 				.getWorkplaceId();
 
 		// get data child
-		List<WorkplaceHierarchy> workPlaceHierarchies = this.workplaceConfigInfoRepo
-				.findAllByParentWkpId(companyId, baseDate, wplId).get().getLstWkpHierarchy();
-		List<String> wplIds = workPlaceHierarchies.stream().map(wp -> wp.getWorkplaceId())
-				.collect(Collectors.toList());
+		List<String> wplIds = this.wkpExpService
+				.getAllChildWorkplaceId(companyId, baseDate, wplId);
 		List<AffWorkplaceHistoryItem> itemList = this.affWorkplaceHistoryItemRepository
 				.findeByWplIDs(wplIds);
 
@@ -548,7 +545,7 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get map work place
-		Map<String, WorkplaceInfo> mapWorkplace = this.workplaceInfoRepo
+		Map<String, WorkplaceInfo> mapWorkplace = this.workplaceConfigInfoRepo
 				.findAll(companyId, query.getBaseDate()).stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getWorkplaceId();

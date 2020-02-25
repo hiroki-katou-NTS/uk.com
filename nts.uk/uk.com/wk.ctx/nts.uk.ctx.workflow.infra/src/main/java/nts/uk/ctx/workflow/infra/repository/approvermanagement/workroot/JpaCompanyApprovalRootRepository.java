@@ -37,10 +37,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"; 
-	private static final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
+	private static final String SELECT_COM_APR_BY_SYS = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
-				   + " AND c.employmentRootAtr = :employmentRootAtr"
-				   + " AND c.applicationType IS NULL";
+				   + " AND c.employmentRootAtr = 0"
+				   + " AND c.sysAtr = :sysAtr";
 	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
@@ -53,11 +53,12 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
-	private static final String SELECT_COM_APR_APP_NULL = FIND_BY_CID 
-				   + " AND c.employmentRootAtr = :employmentRootAtr"
-				   + " AND c.applicationType IS NULL"
+	private static final String SELECT_COM_APR_SYS = FIND_BY_CID 
+				   + " AND c.employmentRootAtr = 0"
+				   + " AND c.sysAtr = :sysAtr"
 				   + " ORDER BY c.startDate DESC";
 	private static final String FIND_LAST_BY_END_DATE = FIND_BY_CID 
+					 +" AND c.sysAtr = :sysAtr"
 					 +" AND c.endDate = :endDate";
 	private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 				+ " AND c.startDate <= :baseDate"
@@ -230,13 +231,14 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr, String id) {
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType,
+			int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_COM_APR_BY_DATE_APP_NULL, WwfmtComApprovalRoot.class)
+			return this.queryProxy().query(SELECT_COM_APR_BY_SYS, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("endDate", endDate)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainComApR(c));
 		}
 		//confirm
@@ -477,12 +479,12 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType,
-			int employmentRootAtr, String id) {
+			int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_COM_APR_APP_NULL, WwfmtComApprovalRoot.class)
+			return this.queryProxy().query(SELECT_COM_APR_SYS, WwfmtComApprovalRoot.class)
 					.setParameter("companyId", companyId)
-					.setParameter("employmentRootAtr", employmentRootAtr)
+					.setParameter("sysAtr", sysAtr)
 					.getList(c->toDomainComApR(c));
 		}
 		//confirm
@@ -517,9 +519,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.getList(c->toDomainComApR(c));
 	}
 	@Override
-	public List<CompanyApprovalRoot> getComAppRootLast(String companyID, GeneralDate endDate) {
+	public List<CompanyApprovalRoot> getComAppRootLast(String companyID, GeneralDate endDate, int sysAtr) {
 		return this.queryProxy().query(FIND_LAST_BY_END_DATE,WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyID)
+				.setParameter("sysAtr", sysAtr)
 				.setParameter("endDate", endDate)
 				.getList(c ->toDomainComApR(c));
 	}

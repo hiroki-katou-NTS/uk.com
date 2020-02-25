@@ -13,13 +13,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceApproverAdaptorImpl.
@@ -28,8 +26,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 	/** The wp pub. */
-	@Inject
-	private SyWorkplacePub wpPub;
+//	@Inject
+//	private SyWorkplacePub wpPub;
 	@Inject
 	private DepartmentPub depPub;
 	
@@ -45,8 +43,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	 */
 	@Override
 	public Optional<WorkplaceImport> findByWkpId(String workplaceId, GeneralDate baseDate) {
-		Optional<WkpCdNameExport> optWkpCdNameExport = this.wpPub.findByWkpId(workplaceId,
-				baseDate);
+		Optional<WkpCdNameExport> optWkpCdNameExport = this.wkpPub.findByWkpId(workplaceId);
 
 		// Check exist
 		if (!optWkpCdNameExport.isPresent()) {
@@ -68,7 +65,9 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	// RequestList #30
 	@Override
 	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
-		Optional<SWkpHistExport> dataOptional = wpPub.findBySidNew(AppContexts.user().companyId(), employeeId, baseDate);
+
+		Optional<SWkpHistExport> dataOptional = wkpPub.findBySid(employeeId, baseDate);
+
 		if(!dataOptional.isPresent()) {
 			return new WorkplaceImport("", "", "コード削除済");
 		}
@@ -79,7 +78,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 	@Override
 	public Optional<WkpDepInfo> findByWkpIdNEW(String companyId, String wkpId, GeneralDate baseDate) {
-		return wpPub.findByWkpIdNEW(companyId, wkpId, baseDate)
+		return wkpPub.findByWkpIdNew(companyId, wkpId, baseDate)
 				.map(c -> new WkpDepInfo(c.getWorkplaceId(), c.getWorkplaceCode(), c.getWorkplaceName()));
 	}
 
