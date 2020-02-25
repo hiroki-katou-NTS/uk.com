@@ -272,12 +272,6 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 		return dateList;
 	}
-	
-	@Override
-	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate) {
-		return workplaceInformationRepository.getWkpNewByCdDate(companyId, wkpCd, baseDate)
-				.map(c -> c.getWorkplaceId());
-	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
