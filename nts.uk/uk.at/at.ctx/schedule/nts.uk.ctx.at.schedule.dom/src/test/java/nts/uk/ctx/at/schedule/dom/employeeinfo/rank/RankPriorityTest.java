@@ -8,7 +8,11 @@ import java.util.List;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class RankPriorityTest {
 
 	@Test
