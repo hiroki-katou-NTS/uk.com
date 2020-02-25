@@ -14,6 +14,7 @@ import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
 import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItemRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,8 +34,12 @@ public class RegistrationPersonReportFinder {
 	
 	@Inject
 	private PersonalReportClassificationRepository PerReportClassRepo;
+
+	@Inject
+	private AttachPersonReportFileRepository attachFileRepo;
 	
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
+	// アルゴリズム「起動処理」を実行する (Thực hiện thuật toán 「Xử lý khởi động」)
 	public List<PersonalReportDto> getListReport(String cid) {
 
 		List<PersonalReportDto> result = new ArrayList<PersonalReportDto>();
@@ -43,6 +48,7 @@ public class RegistrationPersonReportFinder {
 		List<RegistrationPersonReport> listReport = repo.getListByCid(cid);
 
 		// danh sách report bên màn hình JHN011.
+		
 		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(false);
 
 		
@@ -96,13 +102,17 @@ public class RegistrationPersonReportFinder {
 	}
 	
 	
-	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft(String sid) {
-		List<RegistrationPersonReport> listDomain = repo.getListReportSaveDraft(sid);
+	// 下書き保存の届出がある場合にアルゴリズム「起動処理」を実行する
+	// (Thực hiện thuật toán "Xử lýkhởi động" khi có report lưu bản nháp)
+	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft(String cid) {
+		List<RegistrationPersonReport> listDomain = repo.getListReportSaveDraft(cid);
 		if (listDomain.isEmpty()) {
 			return new ArrayList<>();
 		}
+		
 		List<RegistrationPersonReportSaveDraftDto> result = new ArrayList<>();
 		result = listDomain.stream().map(dm -> {
+			
 			RegistrationPersonReportSaveDraftDto dto = new RegistrationPersonReportSaveDraftDto();
 			dto.setReportID(dm.getReportID());
 			dto.setReportCode(dm.getReportCode());

@@ -76,7 +76,7 @@ public class ReportItemFinder {
 	private EmployeeInformationAdaptor employeeInforAdapter;
 	
 	/**
-	 * 
+	 * アルゴリズム「届出一覧選択処理」を実行する (Thực hiện thuật toán "Xử lý select report list")
 	 * @param reportClsId
 	 * @return
 	 */

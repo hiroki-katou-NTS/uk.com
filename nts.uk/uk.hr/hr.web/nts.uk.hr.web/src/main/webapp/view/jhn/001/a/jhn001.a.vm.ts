@@ -97,7 +97,8 @@ module jhn001.a.viewmodel {
                             }
 
                             // set sendBackComment header A222_2_1
-                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment);
+                            let sendBackCommentVar =  objReport.sendBackComment == null ? '' : objReport.sendBackComment;
+                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + sendBackCommentVar);
 
                             // set message header A222_1_1
                             layout.message(text('JHN001_A222_1_1') + ' : ' + data.message);

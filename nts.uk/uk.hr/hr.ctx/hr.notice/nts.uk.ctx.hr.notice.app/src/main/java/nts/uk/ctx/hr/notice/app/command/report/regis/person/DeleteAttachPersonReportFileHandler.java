@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
- *
+ * アルゴリズム「アップロードファイル削除処理」を実行する(Thực hiện thuật toán ""Xử lý delete Upload file "")
  */
 @Stateless
 public class DeleteAttachPersonReportFileHandler extends CommandHandler<DeleteDocumentReportCommand>{

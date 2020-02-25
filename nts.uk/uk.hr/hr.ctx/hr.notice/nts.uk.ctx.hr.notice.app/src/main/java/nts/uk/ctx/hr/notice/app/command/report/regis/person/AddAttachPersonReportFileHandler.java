@@ -30,7 +30,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
  * @author laitv
- *
+ * アルゴリズム「添付ファイル登録処理」を実行する(Thực hiện thuật toán "Xử lý đăng ký file đính kèm")
  */
 @Stateless
 public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<AddDocumentReportCommand, String> {
