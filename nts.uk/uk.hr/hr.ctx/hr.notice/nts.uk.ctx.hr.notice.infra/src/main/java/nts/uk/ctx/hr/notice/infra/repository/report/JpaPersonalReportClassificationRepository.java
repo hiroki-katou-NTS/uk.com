@@ -80,7 +80,8 @@ public class JpaPersonalReportClassificationRepository extends JpaRepository imp
 				domain.getRemark() == null? null: domain.getRemark().v(),
 				domain.getMemo() == null? null: domain.getMemo().v(),
 				domain.getMessage() == null?  null: domain.getMessage().v(),
-				domain.isFormReport(), domain.isAgentReportIsCan());
+				domain.isFormReport(), domain.isAgentReportIsCan(),
+				domain.isNoRankOrder());
 	}
 
 	@Override

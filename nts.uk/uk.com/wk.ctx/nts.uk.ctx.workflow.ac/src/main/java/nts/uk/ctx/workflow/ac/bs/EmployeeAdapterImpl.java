@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -225,6 +226,13 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Override
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
 		return this.wkplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	@Override
+	public Optional<String> getWkpBySidDate(String employeeID, GeneralDate date) {
+		val wkp = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		if(wkp == null) return Optional.empty();
+		return Optional.of(wkp.getWorkplaceId());
 	}
 	
 	

@@ -75,7 +75,6 @@ public class CommonApprovalRootFinder {
 	
 	private static final int COMPANY = 0;
 	private static final int WORKPLACE = 1;
-//	private static final int SHUUGYOU = 0;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * まとめて登録モード
@@ -290,15 +289,20 @@ public class CommonApprovalRootFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
-		String workplaceId = param.getWorkplaceId();
-		if(workplaceId == ""){
-			WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
-			if(workplace != null){
-				workplaceId = workplace.getWkpId();
+		String wkpDepId = param.getWorkplaceId();
+		if(Strings.isBlank(wkpDepId)){
+			if(param.getSystemAtr() == 0) {
+				wkpDepId = adapterWp.getWorkplaceIDByEmpDate(AppContexts.user().employeeId(), baseDate);
+			}else {
+				wkpDepId = adapterWp.getDepartmentIDByEmpDate(AppContexts.user().employeeId(), baseDate);
 			}
+			
+		}
+		if(Strings.isBlank(wkpDepId)) {//TH data setting chua co
+			return new CommonApprovalRootDto(companyName, wkpDepId,"", null, lstWpRoot, null);
 		}
 		//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-		List<WpApprovalRootDto> lstWp = this.repoWorkplace.getWpRootStart(companyId, workplaceId, param.getSystemAtr(),
+		List<WpApprovalRootDto> lstWp = this.repoWorkplace.getWpRootStart(companyId, wkpDepId, param.getSystemAtr(),
 				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
 				.stream()
 				.map(c->WpApprovalRootDto.fromDomain(c))
@@ -309,7 +313,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstWpRoot.add(new WorkPlaceAppRootDto(rootWkp, lstPhaseDto));
 		}
-		return new CommonApprovalRootDto(companyName, workplaceId,"", null, lstWpRoot, null);
+		return new CommonApprovalRootDto(companyName, wkpDepId,"", null, lstWpRoot, null);
 	}
 	/**
 	 * get Data Person Approval Root

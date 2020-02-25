@@ -84,7 +84,10 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 */
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate baseDate) {
-		return this.workplacePub.findWpkIdsBySid(companyId, sid, baseDate);
+		// 社員と基準日から所属職場履歴項目を取得する
+		String workplaceID = workplacePub.getAffWkpHistItemByEmpDate(sid, baseDate).getWorkplaceId();
+		// [No.571]職場の上位職場を基準職場を含めて取得する
+		return workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceID);
 	}
 
 	/**
@@ -218,5 +221,6 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	@Override
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
 		return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+
 	}
 }

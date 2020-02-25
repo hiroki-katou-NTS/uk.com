@@ -72,7 +72,7 @@ module kcp010.viewmodel {
                     self.selectedOrdinalNumber = ko.computed(function() {
                         self.wkpList(_.sortBy(self.wkpList(), [function(o) { return o.hierarchyCode; }]));
                         var currentItem = self.wkpList().filter((item) => {
-                            return item.workplaceId == self.selectedItem();
+                            return item.id == self.selectedItem();
                         })[0];
                         return self.wkpList().indexOf(currentItem) + 1;
                     });
@@ -137,7 +137,7 @@ module kcp010.viewmodel {
                 if (workplace && workplace != null) {
                     self.selectedItem(workplace.workplaceId);
                 } else {
-                    self.selectedItem(self.wkpList()[0].workplaceId);
+                    self.selectedItem(self.wkpList()[0].id);
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
@@ -194,10 +194,10 @@ module kcp010.viewmodel {
             let self = this;
             if (id) {
                 var currentItem = self.wkpList().filter((item) => {
-                    return item.workplaceId == id;
+                    return item.id == id;
                 })[0];
                 if (currentItem) {
-                    self.workplaceId(currentItem.workplaceId);
+                    self.workplaceId(currentItem.id);
                     self.workplaceCode(currentItem.code);
                     self.workplaceName(currentItem.name);
                     self.keySearch(currentItem.code);
@@ -225,17 +225,17 @@ module kcp010.viewmodel {
 
                 if (existItem) {
                     // Set Selected Item
-                    self.selectedItem(existItem.workplaceId);
-                    self.workplaceId(existItem.workplaceId);
+                    self.selectedItem(existItem.id);
+                    self.workplaceId(existItem.id);
                     self.workplaceCode(existItem.code);
                     self.workplaceName(existItem.name);
                 } else {
                     let newWkpList: Array<WorkplaceModel> = [];
-                    newWkpList.push({ workplaceId: workplace.workplaceId, code: workplace.code, name: workplace.name });
+                    newWkpList.push({ workplaceId: workplace.id, code: workplace.code, name: workplace.name });
                     self.wkpList(newWkpList);
                     // Set Selected Item
-                    self.selectedItem(workplace.workplaceId);
-                    self.workplaceId(workplace.workplaceId);
+                    self.selectedItem(workplace.id);
+                    self.workplaceId(workplace.id);
                     self.workplaceCode(workplace.code);
                     self.workplaceName(workplace.name);
                 }
@@ -250,9 +250,9 @@ module kcp010.viewmodel {
             var self = this;
             try {
                 var currentItem = self.wkpList().filter((item) => {
-                    return item.workplaceId == self.selectedItem();
+                    return item.id == self.selectedItem();
                 })[0];
-                var nextId = self.wkpList()[self.wkpList().indexOf(currentItem) - 1].workplaceId;
+                var nextId = self.wkpList()[self.wkpList().indexOf(currentItem) - 1].id;
                 self.selectedItem(nextId);
             } catch (e) {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
@@ -264,9 +264,9 @@ module kcp010.viewmodel {
             var self = this;
             try {
                 var currentItem = self.wkpList().filter((item) => {
-                    return item.workplaceId == self.selectedItem();
+                    return item.id == self.selectedItem();
                 })[0];
-                var prevId = self.wkpList()[self.wkpList().indexOf(currentItem) + 1].workplaceId;
+                var prevId = self.wkpList()[self.wkpList().indexOf(currentItem) + 1].id;
                 self.selectedItem(prevId);
             } catch (e) {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
@@ -280,8 +280,8 @@ module kcp010.viewmodel {
             let self = this;
             let res = [];
             _.forEach(dataList, function(item) {
-                if (item.childs && item.childs.length > 0) {
-                    res = res.concat(self.convertTreeToArray(item.childs));
+                if (item.children && item.children.length > 0) {
+                    res = res.concat(self.convertTreeToArray(item.children));
                 }
                 res.push(item);
             })
@@ -312,13 +312,19 @@ module kcp010.viewmodel {
      */
     export module service {
         var paths: any = {
-            findWorkplaceTree: "bs/employee/workplace/config/info/findAllForKcp",
+            findWorkplaceTree: "bs/employee/wkpdep/get-wkpdepinfo-kcp004",
             searchWorkplace: 'screen/com/kcp010/search/',
             getWorkplaceBySid: 'screen/com/kcp010/getLoginWkp',
         }
 
         export function findWorkplaceTree(baseDate: Date): JQueryPromise<Array<model.WorkplaceSearchData>> {
-            return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate });
+            return nts.uk.request.ajax('com', paths.findWorkplaceTree, 
+                { 
+                    startMode: 0,
+                    baseDate: baseDate,
+                    systemType: 2,
+                    restrictionOfReferenceRange: true 
+                });
         }
         
         export function searchWorkplace(input :any): JQueryPromise<model.WorkplaceSearchData> {

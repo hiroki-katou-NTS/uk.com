@@ -69,6 +69,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
@@ -637,7 +638,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				if(opDenyApproverState.isPresent()) {
 					continue;
 				}
-				if(true) {
+				if(appPhase.getApprovalForm()==ApprovalFormImport.SINGLE_APPROVED) {
 					Optional<ApproverStateImport_New> opApproveApproverState = appFrame.getListApprover().stream()
 							.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED).findAny();
 					if(opApproveApproverState.isPresent()) {

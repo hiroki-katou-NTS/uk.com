@@ -784,4 +784,10 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				.wkpName(optWorkplaceInfo.getWorkplaceName().v()).build());
 	}
 
+	@Override
+	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate) {
+		return workplaceInformationRepository.getWkpNewByCdDate(companyId, wkpCd, baseDate)
+				.map(c -> c.getWorkplaceId());
+	}
+
 }

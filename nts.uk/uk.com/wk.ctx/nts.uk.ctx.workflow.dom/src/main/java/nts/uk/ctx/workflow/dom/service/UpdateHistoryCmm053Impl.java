@@ -48,7 +48,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	public void updateHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate,
 			String departmentApproverId, String dailyApproverId, boolean dailyDisplay) {
 		String endDate    = "9999-12-31";
-		Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId);
+		Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId, 0);
 		Optional<PersonApprovalRoot> monthlyPs = this.repoPerson.getNewestMonthlyPsAppRoot(companyId, employeeId);
 
 		if (commonPs.isPresent() && monthlyPs.isPresent()) {

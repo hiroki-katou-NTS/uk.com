@@ -53,6 +53,7 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
 		Optional<SWkpHistExport> wkpExport = wkpPubNew.findBySid(sID, date);
+
 		if (wkpExport.isPresent()) {
 			return toImport(wkpExport.get());
 		}
@@ -114,5 +115,10 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@Override
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
 		return wkpPubNew.getWorkplaceIdAndChildren(companyId, date, workplaceId);
+	}
+
+	@Override
+	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date) {
+		return wkpPubNew.getUpperWorkplace(companyId, workplaceId, date);
 	}
 }

@@ -35,6 +35,7 @@ public class EmpWorkplaceHistoryAdapterImpl implements EmpWorkplaceHistoryAdapte
 	public Optional<EmpWorkplaceHistoryImport> findBySid(String employeeID, GeneralDate baseDate) {
 		//Lay request 30 NEW
 		return workplacePub.findBySid(employeeID, baseDate).map(c -> toImport(c));
+
 	}
 
 

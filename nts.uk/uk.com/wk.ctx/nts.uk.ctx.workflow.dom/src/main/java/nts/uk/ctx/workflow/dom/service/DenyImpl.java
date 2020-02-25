@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -135,10 +136,14 @@ public class DenyImpl implements DenyService {
 		if(order > 5){
 			return canDenyFlag;
 		}
-		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
+		List<ApprovalPhaseState> lowerPhaseLst = approvalRootState.getListApprovalPhaseState()
 				.stream().filter(x -> x.getPhaseOrder()>=order)
 				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
-				.findFirst().get();
+				.collect(Collectors.toList());
+		if(CollectionUtil.isEmpty(lowerPhaseLst)) {
+			return canDenyFlag;
+		}
+		ApprovalPhaseState lowerPhase = lowerPhaseLst.get(0);
 		if(!lowerPhase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 			canDenyFlag = false;
 			return canDenyFlag;

@@ -19,8 +19,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalPhaseStateHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalRootStateHr;
@@ -225,8 +223,6 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			Optional<ApproverInforHr> notUnApproved = this.getNotUnApproved(phase.getLstApprovalFrame());
 			
 			//ループ中の人事承認フェーズには承認を行ったか(Approval phase đang xử lý được approval chưa)
-//			Boolean allFrameUnapproveFlaggetApprovalAtr = phase.getLstApprovalFrame().stream()
-//				.filter(x -> !x.().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
 			Boolean phaseNotApprovalFlag = phase.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) && !notUnApproved.isPresent();
 			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
 				//1.否認できるかチェックする
@@ -277,16 +273,6 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		}
 		return executedFlag;
 	}
-	public Optional<ApproverInforHr> getNotUnApproved(List<ApprovalFrameHr> listFrame) {
-		for(ApprovalFrameHr frame : listFrame) {
-			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
-				if(appr.getApprovalAtr() != ApprovalBehaviorAtr.APPROVED) {
-					return Optional.of(appr);
-				}
-			}
-		}
-		return Optional.empty();
-	}
 	/**
 	 * [RQ634]申請書を差し戻しする
 	 * 申請書を差し戻しする（承認者まで）
@@ -297,28 +283,31 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	@Override
 	public void remandForApproverHr(String rootStateID, Integer phaseOrder) {
 		//ドメインモデル「人事承認ルートインスタンス」を取得する
-//		Optional<ApprovalRootStateHr> opApprovalRootState = repoApprStateHr.getById(rootStateID);
-//		if(!opApprovalRootState.isPresent()){
-//			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-//		}
-//		ApprovalRootStateHr root = opApprovalRootState.get();
-//		List<ApprovalPhaseStateHr> listPhase = root.getLstPhaseState();
-//		listPhase.sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
-//		List<ApprovalPhaseStateHr> listUpperPhase = listPhase.stream().filter(x -> x.getPhaseOrder() >= phaseOrder).collect(Collectors.toList());
-//		//差し戻し実行者のフェーズから差し戻し先のフェーズまでループする(loop từ phase của người thực hiện trả về tới phase của destination trả về)
-//		listUpperPhase.forEach(approvalPhaseState -> {
-//			approvalPhaseState.getLstApprovalFrame().forEach(approvalFrame -> {
-//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//				approvalFrame.setRepresenterID("");
-//				approvalFrame.setApprovalDate(null);
-//				approvalFrame.setApprovalReason("");
-//			});
-//			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//		});
-//		ApprovalPhaseStateHr currentPhase = listPhase.stream().filter(x -> x.getPhaseOrder()== phaseOrder).findFirst().get();
-//		currentPhase.setApprovalAtr(ApprovalBehaviorAtr.REMAND);
-//		//ドメインモデル「人事承認枠」の承認状態をUpdateする
-//		repoApprStateHr.update(root);
+		Optional<ApprovalRootStateHr> opApprovalRootState = repoApprStateHr.getById(rootStateID);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootStateHr root = opApprovalRootState.get();
+		List<ApprovalPhaseStateHr> listPhase = root.getLstPhaseState();
+		listPhase.sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
+		List<ApprovalPhaseStateHr> listUpperPhase = listPhase.stream().filter(x -> x.getPhaseOrder() >= phaseOrder).collect(Collectors.toList());
+		//差し戻し実行者のフェーズから差し戻し先のフェーズまでループする(loop từ phase của người thực hiện trả về tới phase của destination trả về)
+		listUpperPhase.forEach(phase -> {
+			phase.getLstApprovalFrame().forEach(frame -> {
+				frame.getLstApproverInfo().forEach(appr -> {
+					appr.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+					appr.setAgentID("");;
+					appr.setApprovalDate(null);
+					appr.setApprovalReason("");
+				});
+				
+			});
+			phase.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+		});
+		ApprovalPhaseStateHr currentPhase = listPhase.stream().filter(x -> x.getPhaseOrder()== phaseOrder).findFirst().get();
+		currentPhase.setApprovalAtr(ApprovalBehaviorAtr.REMAND);
+		//ドメインモデル「人事承認枠」の承認状態をUpdateする
+		repoApprStateHr.update(root);
 	}
 	/**
 	 * [RQ634]申請書を差し戻しする
@@ -351,50 +340,52 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		//解除を実行したかフラグ=false（初期化）
 		Boolean executedFlag = false;
 		//ドメインモデル「人事承認ルートインスタンス」を取得する
-//		Optional<ApprovalRootStateHr> opRootState = repoApprStateHr.getById(rootStateID);
-//		if(!opRootState.isPresent()){
-//			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-//		}
-//		ApprovalRootStateHr root = opRootState.get();
-//		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
-//		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
-//		for(ApprovalPhaseStateHr phaseHr : root.getLstPhaseState()){
-//			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
-//			List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phaseHr));
-//			if(CollectionUtil.isEmpty(listApprover)){
-//				continue;
-//			}
-//			//指定する社員が承認を行った承認者かチェックする
-//			Boolean allFrameUnapproveFlag = phaseHr.getLstApprovalFrame().stream()
-//					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
-//			Boolean phaseNotApprovalFlag = phaseHr.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) && allFrameUnapproveFlag;
-//			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-//				continue;
-//			}
-//			//1.解除できるかチェックする
-//			Boolean canRelease = this.canReleaseCheckHr(phaseHr, employeeID);
-//			if(canRelease.equals(Boolean.FALSE)){
-//				break;
-//			}
-//			//ドメインモデル「人事承認フェーズインスタンス」．「人事承認枠」1～5ループする
-//			//指定する社員が承認を行った承認者かチェックする
-//			phaseHr.getLstApprovalFrame().forEach(frame -> {
-//				if(!frame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) && 
-//						this.checkExist(frame.getLstApproverID(), frame.getRepresenterID(), employeeID)){
-//					//(ドメインモデル「人事承認枠」)承認区分=「未承認」、代行者=空
-//					frame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//					frame.setRepresenterID("");
-//					frame.setApprovalDate(null);
-//					frame.setApprovalReason("");
-//				}
-//			});
-//			//「人事承認フェーズインスタンス」．承認区分=「未承認」
-//			phaseHr.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//			//ドメインモデル「人事承認ルートインスタンス」の承認状態をUpdateする
-//			repoApprStateHr.update(root);
-//			//解除を実行したかフラグ=true
-//			executedFlag = true;
-//		}
+		Optional<ApprovalRootStateHr> opRootState = repoApprStateHr.getById(rootStateID);
+		if(!opRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootStateHr root = opRootState.get();
+		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
+		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
+		for(ApprovalPhaseStateHr phaseHr : root.getLstPhaseState()){
+			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
+			List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phaseHr));
+			if(CollectionUtil.isEmpty(listApprover)){
+				continue;
+			}
+			Optional<ApproverInforHr> notUnApproved = this.getNotUnApproved(phaseHr.getLstApprovalFrame());
+			//指定する社員が承認を行った承認者かチェックする
+			Boolean phaseNotApprovalFlag = phaseHr.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) && !notUnApproved.isPresent();
+			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
+				continue;
+			}
+			//1.解除できるかチェックする
+			Boolean canRelease = this.canReleaseCheckHr(phaseHr, employeeID);
+			if(canRelease.equals(Boolean.FALSE)){
+				break;
+			}
+			//ドメインモデル「人事承認フェーズインスタンス」．「人事承認枠」1～5ループする
+			//指定する社員が承認を行った承認者かチェックする
+			phaseHr.getLstApprovalFrame().forEach(frame -> {
+				frame.getLstApproverInfo().forEach(appr -> {
+					if(!appr.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) && 
+							this.checkExist(Arrays.asList(appr.getApproverID()), appr.getAgentID(), employeeID)){
+						//(ドメインモデル「人事承認枠」)承認区分=「未承認」、代行者=空
+						appr.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+						appr.setAgentID("");
+						appr.setApprovalDate(null);
+						appr.setApprovalReason("");
+					}
+				});
+				
+			});
+			//「人事承認フェーズインスタンス」．承認区分=「未承認」
+			phaseHr.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+			//ドメインモデル「人事承認ルートインスタンス」の承認状態をUpdateする
+			repoApprStateHr.update(root);
+			//解除を実行したかフラグ=true
+			executedFlag = true;
+		}
 		return executedFlag;
 	}
 	/**
@@ -429,30 +420,42 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	//1.解除できるかチェックする
 	public Boolean canReleaseCheckHr(ApprovalPhaseStateHr phaseState, String employeeID) {
 		//「承認フェーズインスタンス」．承認形態をチェックする
-//		if(phaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「承認フェーズインスタンス」．承認形態が全員承認
-//			return phaseState.getLstApprovalFrame().stream()
-//				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && 
-//						this.checkExist(x.getLstApproverID(), x.getRepresenterID(), employeeID))
-//				.findAny().map(y ->true).orElse(false);
-//		}
-//		//「承認フェーズインスタンス」．承認形態が誰か一人
-//		//確定者を設定したかチェックする
-//		Optional<ApprovalFrameHr> opConfirmFrame = phaseState.getLstApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-//		if(opConfirmFrame.isPresent()){//if文がtrue
-//			ApprovalFrameHr frame = opConfirmFrame.get();
-//			if(!frame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) 
-//					&& this.checkExist(frame.getLstApproverID(), frame.getRepresenterID(), employeeID)){
-//				return true;
-//			}
-//			return false;
-//		}
-//		//if文がfalse
-//		//指定する社員が承認を行った承認者かチェックする
-//		return phaseState.getLstApprovalFrame().stream()
-//				.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) &&
-//						this.checkExist(x.getLstApproverID(), x.getRepresenterID(), employeeID))
-//				.findAny().map(y ->true).orElse(false);
-		return Boolean.TRUE;
+		if(phaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「承認フェーズインスタンス」．承認形態が全員承認
+			for(ApprovalFrameHr frame : phaseState.getLstApprovalFrame()) {
+				for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+					if(appr.getApproverID().equals(employeeID) ||
+							(Strings.isNotBlank(appr.getAgentID()) && appr.getAgentID().equals(employeeID))){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		//「承認フェーズインスタンス」．承認形態が誰か一人
+		//確定者を設定したかチェックする
+		Optional<ApprovalFrameHr> opConfirmFrame = phaseState.getLstApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		if(opConfirmFrame.isPresent()){//if文がtrue
+			ApprovalFrameHr frame = opConfirmFrame.get();
+			
+			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+				if(appr.getApproverID().equals(employeeID) ||
+						(Strings.isNotBlank(appr.getAgentID()) && appr.getAgentID().equals(employeeID))){
+					return true;
+				}
+			}
+			return false;
+		}
+		//if文がfalse
+		//指定する社員が承認を行った承認者かチェックする
+		for(ApprovalFrameHr frame : phaseState.getLstApprovalFrame()) {
+			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+				if(appr.getApproverID().equals(employeeID) ||
+						(Strings.isNotBlank(appr.getAgentID()) && appr.getAgentID().equals(employeeID))){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * 一括解除する
@@ -461,24 +464,27 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	 */
 	public void releaseAllHr(String rootStateID) {
 		//ドメインモデル「人事承認ルートインスタンス」を取得する
-//		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
-//		if(!opRoot.isPresent()){
-//			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-//		}
-//		ApprovalRootStateHr root = opRoot.get();
-//		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
-//		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
-//		root.getLstPhaseState().stream().forEach(phase -> {
-//			phase.getLstApprovalFrame().forEach(approvalFrame -> {
-//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//				approvalFrame.setRepresenterID("");
-//				approvalFrame.setApprovalDate(null);
-//				approvalFrame.setApprovalReason("");
-//			});
-//			phase.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//		});
-//		//ドメインモデル「人事承認ルートインスタンス」の承認状態をUpdateする
-//		repoApprStateHr.update(root);
+		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
+		if(!opRoot.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootStateHr root = opRoot.get();
+		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
+		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
+		root.getLstPhaseState().stream().forEach(phase -> {
+			phase.getLstApprovalFrame().forEach(frame -> {
+				frame.getLstApproverInfo().forEach(appr ->{
+					appr.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+					appr.setAgentID("");
+					appr.setApprovalDate(null);
+					appr.setApprovalReason("");
+				});
+				
+			});
+			phase.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+		});
+		//ドメインモデル「人事承認ルートインスタンス」の承認状態をUpdateする
+		repoApprStateHr.update(root);
 	}
 	/**
 	 * 1.否認できるかチェックする
@@ -492,50 +498,68 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	public Boolean checkCanDeny(ApprovalRootStateHr root, Integer order, String employeeID) {
 		//終了状態：否認できるフラグ = true
 		Boolean canDenyFlag = true;
-//		//ループ開始順序の異常をチェックする(check thu tu bat dau xu ly loop)
-//		if(root.getLstPhaseState().size() == 1 || order <= 0){
-//			return canDenyFlag;
-//		}
-//		List<ApprovalPhaseStateHr> lstLoop = root.getLstPhaseState()
-//				.stream().filter(x -> x.getPhaseOrder() <= order)
-//				.sorted(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed())
-//				.collect(Collectors.toList());
-//		//ループ開始順序(input)～１の順でループ
-//		for(ApprovalPhaseStateHr phase : lstLoop){
-//			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
-//			List<String> lstApprverId = this.getApproverFromPhaseHr(this.convertToImport(phase));
-//			if(lstApprverId.isEmpty()){
-//				continue;
-//			}
-//			//ループ中の「人事承認フェーズインスタンス」．承認区分をチェックする(check trạng thái approvalAtr của phase)
-//			if(!phase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){//「人事承認フェーズインスタンス」．承認区分 ≠ 承認済
-//				//終了状態：否認できるフラグ = false
-//				canDenyFlag = false;
-//				return canDenyFlag;
-//			}
-//			//「人事承認フェーズインスタンス」．承認区分 = 承認済
-//			//該当人事承認フェーズに確定者が設定したかチェックする(Approval phase đang xử lý có người 確定者 hay không)
-//			Optional<ApprovalFrameHr> opFrameConf = phase.getLstApprovalFrame().stream()
-//				 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-//			if(!opFrameConf.isPresent()){//false
-//				//承認を行ったのは指定する社員かチェックする
-//				canDenyFlag = phase.getLstApprovalFrame().stream()
-//						.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) 
-//								&& this.checkExist(x.getLstApproverID(), x.getRepresenterID(), employeeID))
-//						.findAny().map(y -> false).orElse(true);
-//				return canDenyFlag;
-//			}
-//			//true
-//			ApprovalFrameHr frameConf = opFrameConf.get();
-//			//指定する社員が確定者として承認を行ったかチェックする
-//			if(frameConf.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && 
-//					this.checkExist(frameConf.getLstApproverID(), frameConf.getRepresenterID(), employeeID)){
-//				canDenyFlag = false;
-//			} else {
-//				canDenyFlag = true;
-//			}
-//			return canDenyFlag;
-//		}
+		//ループ開始順序の異常をチェックする(check thu tu bat dau xu ly loop)
+		if(root.getLstPhaseState().size() == 1 || order > 5){
+			return canDenyFlag;
+		}
+		List<ApprovalPhaseStateHr> lstLoop = root.getLstPhaseState()
+				.stream().filter(x -> x.getPhaseOrder() >= order)
+				.sorted(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed())
+				.collect(Collectors.toList());
+		//ループ開始順序(input)～１の順でループ
+		for(ApprovalPhaseStateHr phase : lstLoop){
+			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
+			List<String> lstApprverId = this.getApproverFromPhaseHr(this.convertToImport(phase));
+			if(lstApprverId.isEmpty()){
+				continue;
+			}
+			//ループ中の「人事承認フェーズインスタンス」．承認区分をチェックする(check trạng thái approvalAtr của phase)
+			if(!phase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){//「人事承認フェーズインスタンス」．承認区分 ≠ 承認済
+				//終了状態：否認できるフラグ = false
+				canDenyFlag = false;
+				return canDenyFlag;
+			}
+			//「人事承認フェーズインスタンス」．承認区分 = 承認済
+			//該当人事承認フェーズに確定者が設定したかチェックする(Approval phase đang xử lý có người 確定者 hay không)
+			Optional<ApprovalFrameHr> opFrameConf = phase.getLstApprovalFrame().stream()
+				 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+			if(!opFrameConf.isPresent()){//false
+				//承認を行ったのは指定する社員かチェックする
+				Optional<ApproverInforHr> denyApproverInfor = Optional.empty();
+				for(ApprovalFrameHr frame : phase.getLstApprovalFrame()) {
+					for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+						if(appr.getApproverID().equals(employeeID)||
+							(Strings.isNotBlank(appr.getAgentID()) && appr.getAgentID().equals(employeeID))){
+							denyApproverInfor = Optional.of(appr);
+						}
+						if(denyApproverInfor.isPresent()) {
+							break;
+						}
+					}
+					if(denyApproverInfor.isPresent()) {
+						break;
+					}
+				}
+				if(denyApproverInfor.isPresent()) {
+					canDenyFlag = false;
+				} else {
+					canDenyFlag = true;
+				}
+				return canDenyFlag;
+			}
+			//true
+			ApprovalFrameHr frameConf = opFrameConf.get();
+			//指定する社員が確定者として承認を行ったかチェックする
+			for(ApproverInforHr appr : frameConf.getLstApproverInfo()) {
+				if(appr.getApproverID().equals(employeeID)||
+					(Strings.isNotBlank(appr.getAgentID()) && appr.getAgentID().equals(employeeID))){
+					canDenyFlag = false;
+				} else {
+					canDenyFlag = true;
+				}
+				return canDenyFlag;
+			}
+		}
 		return canDenyFlag;
 	}
 	
@@ -567,55 +591,92 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	public Boolean isApprovalPhaseComplete(ApprovalPhaseStateHr phase) {
 		String companyID = AppContexts.user().companyId();
 		
-//		//人事承認フェーズインスタンス」．承認形態をチェックする
-//		if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「人事承認フェーズインスタンス」．承認形態が全員承認
-//			//承認完了フラグ = true（初期化）
-//			//全員承認したかチェックする
-//			if( phase.getLstApprovalFrame().stream().filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED))
-//					.collect(Collectors.toList()).size() == 0){//true
-//				//承認完了フラグ = true
-//				return true;
-//			}
-//			//以外
-//			//アルゴリズム「未承認の承認者一覧を取得する」を実行する(「Lấy list approver chưa approval)
-//			List<ApprovalFrameHr> lstFrUnAppr = phase.getLstApprovalFrame().stream()
-//					.filter(c->c.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).collect(Collectors.toList());
-//			List<String> listUnapprApprover = new ArrayList<>();
-//			for(ApprovalFrameHr fr : lstFrUnAppr){
-//				listUnapprApprover.addAll(fr.getLstApproverID());
-//			}
-//			//承認代行情報の取得処理
-//			ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listUnapprApprover);
-//			if(apprAgent.getAllPathSetFlag().equals(Boolean.TRUE)){
-//				//承認完了フラグ = true
-//				return true;
-//			}
-//			return false;
-//		}
-//		//「人事承認フェーズインスタンス」．承認形態が誰か一人 
-//		//承認完了フラグ = false（初期化）
-//		Optional<ApprovalFrameHr> opFrameConfirm = phase.getLstApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-//		if(opFrameConfirm.isPresent()){
-//			ApprovalFrameHr approvalFrame = opFrameConfirm.get();
-//			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-//				return true;
-//			}
-//			List<String> listApprover = approvalFrame.getLstApproverID();
-//			ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listApprover);
-//			if(apprAgent.getAllPathSetFlag().equals(Boolean.TRUE)){
-//				return true;
-//			}
-//			return false;
-//		}
-//		Optional<ApprovalFrameHr> opApprovalFrameIsApprove = phase.getLstApprovalFrame().stream()
-//				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-//		if(opApprovalFrameIsApprove.isPresent()){
-//			return true;
-//		}
-//		//1.承認フェーズ毎の承認者を取得する(getApproverFromPhase)
-//		List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phase));
-//		ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listApprover);
-//		return apprAgent.getAllPathSetFlag().equals(Boolean.TRUE);
-		return Boolean.TRUE;
+		//人事承認フェーズインスタンス」．承認形態をチェックする
+		if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){//「人事承認フェーズインスタンス」．承認形態が全員承認
+			//承認完了フラグ = true（初期化）
+			//全員承認したかチェックする
+			Optional<ApproverInforHr> notApproved = this.getNotApproved(phase.getLstApprovalFrame());
+			if(!notApproved.isPresent()){
+				//承認完了フラグ = true
+				return true;
+			}
+			//以外
+			//アルゴリズム「未承認の承認者一覧を取得する」を実行する(「Lấy list approver chưa approval)
+			List<String> listUnapprApprover = this.getUnapproveApproverFromPhase(phase);
+			//承認代行情報の取得処理
+			ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listUnapprApprover);
+			if(apprAgent.getAllPathSetFlag().equals(Boolean.TRUE)){
+				//承認完了フラグ = true
+				return true;
+			}
+			return false;
+		}
+		//「人事承認フェーズインスタンス」．承認形態が誰か一人 
+		//承認完了フラグ = false（初期化）
+		Optional<ApprovalFrameHr> opFrameConfirm = phase.getLstApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		if(opFrameConfirm.isPresent()){
+			ApprovalFrameHr approvalFrame = opFrameConfirm.get();
+			Optional<ApproverInforHr> appr = approvalFrame.getLstApproverInfo().stream()
+					.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();
+			if(appr.isPresent()){
+				return true;
+			}
+			List<String> listApprover = approvalFrame.getLstApproverInfo().stream()
+					.map(c -> c.getApproverID()).collect(Collectors.toList());
+			ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listApprover);
+			if(apprAgent.getAllPathSetFlag().equals(Boolean.TRUE)){
+				return true;
+			}
+			return false;
+		}
+		Optional<ApproverInforHr> appr = this.getApproved(phase);
+		if(appr.isPresent()){
+			return true;
+		}
+		//1.承認フェーズ毎の承認者を取得する(getApproverFromPhase)
+		List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phase));
+		ApprovalRepresenterOutput apprAgent = collectApprAgentSv.getApprovalAgentInfor(companyID, listApprover);
+		return apprAgent.getAllPathSetFlag().equals(Boolean.TRUE);
+	}
+	private Optional<ApproverInforHr> getNotApproved(List<ApprovalFrameHr> listFrame) {
+		for(ApprovalFrameHr frame : listFrame) {
+			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+				if(!appr.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)) {
+					return Optional.of(appr);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	private Optional<ApproverInforHr> getNotUnApproved(List<ApprovalFrameHr> listFrame) {
+		for(ApprovalFrameHr frame : listFrame) {
+			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+				if(!appr.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)) {
+					return Optional.of(appr);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	private List<String> getUnapproveApproverFromPhase(ApprovalPhaseStateHr phase) {
+		List<String> lstResult = new ArrayList<>();
+		phase.getLstApprovalFrame().forEach(frame -> {
+			frame.getLstApproverInfo().forEach(appr -> {
+				if(appr.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+					lstResult.add(appr.getApproverID());
+				}
+			});
+		});
+		return lstResult.stream().distinct().collect(Collectors.toList());
+	}
+	public Optional<ApproverInforHr> getApproved(ApprovalPhaseStateHr phase) {
+		for(ApprovalFrameHr frame : phase.getLstApprovalFrame()) {
+			for(ApproverInforHr appr : frame.getLstApproverInfo()) {
+				if(appr.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)) {
+					return Optional.of(appr);
+				}
+			}
+		}
+		return Optional.empty();
 	}
 }

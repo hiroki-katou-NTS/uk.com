@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -204,37 +202,36 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 	public ApprovalPhaseState convertPhaseInsToPhaseState(AppPhaseInstance appPhaseInstance, AppPhaseConfirm appPhaseConfirm) {
 		// output「承認フェーズインスタンス」を初期化
 		ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
-//		approvalPhaseState.setApprovalAtr(appPhaseConfirm.getAppPhaseAtr());
-//		approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-//		approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
-//		approvalPhaseState.setListApprovalFrame(new ArrayList<>());
-//		appPhaseInstance.getListAppFrame().forEach(frameInstance -> {
-//			ApprovalFrame approvalFrame = new ApprovalFrame();
-//			approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//			approvalFrame.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-//			approvalFrame.setFrameOrder(frameInstance.getFrameOrder());
-//			approvalFrame.setConfirmAtr(frameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
-//			approvalFrame.setListApproverState(new ArrayList<>());
-//			frameInstance.getListApprover().forEach(approver -> {
-//				ApproverInfor approverState = new ApproverInfor();
-//				approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-//				approverState.setFrameOrder(frameInstance.getFrameOrder());
-//				approverState.setApproverID(approver);
-//				approvalFrame.getListApproverState().add(approverState);
-//			});
-//			approvalPhaseState.getListApprovalFrame().add(approvalFrame);
-//		});
-//		approvalPhaseState.getListApprovalFrame().forEach(frame -> {
-//			Optional<AppFrameConfirm> opAppFrameConfirm = appPhaseConfirm.getListAppFrame().stream()
-//					.filter(frameConfirm -> frameConfirm.getFrameOrder()==frame.getFrameOrder()).findAny();
-//			if(opAppFrameConfirm.isPresent()){
-//				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
-//				frame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-//				frame.setApproverID(appFrameConfirm.getApproverID().orElse(""));
-//				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(""));
-//				frame.setApprovalDate(appFrameConfirm.getApprovalDate());
-//			}
-//		});
+		approvalPhaseState.setApprovalAtr(appPhaseConfirm.getAppPhaseAtr());
+		approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+		approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
+		approvalPhaseState.setListApprovalFrame(new ArrayList<>());
+		appPhaseInstance.getListAppFrame().forEach(frameInstance -> {
+			ApprovalFrame approvalFrame = new ApprovalFrame();
+			approvalFrame.setFrameOrder(frameInstance.getFrameOrder());
+			approvalFrame.setConfirmAtr(frameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
+			approvalFrame.setLstApproverInfo(new ArrayList<>());
+			frameInstance.getListApprover().forEach(approver -> {
+				ApproverInfor approverState = new ApproverInfor();
+				approverState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+				approverState.setApproverID(approver);
+				approvalFrame.getLstApproverInfo().add(approverState);
+			});
+			approvalPhaseState.getListApprovalFrame().add(approvalFrame);
+		});
+		approvalPhaseState.getListApprovalFrame().forEach(frame -> {
+			Optional<AppFrameConfirm> opAppFrameConfirm = appPhaseConfirm.getListAppFrame().stream()
+					.filter(frameConfirm -> frameConfirm.getFrameOrder()==frame.getFrameOrder()).findAny();
+			if(opAppFrameConfirm.isPresent()){
+				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
+				if(!CollectionUtil.isEmpty(frame.getLstApproverInfo())) {
+					frame.getLstApproverInfo().get(0).setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+					frame.getLstApproverInfo().get(0).setApproverID(appFrameConfirm.getApproverID().orElse(""));
+					frame.getLstApproverInfo().get(0).setAgentID(appFrameConfirm.getRepresenterID().orElse(""));
+				}
+				frame.setAppDate(appFrameConfirm.getApprovalDate());
+			}
+		});
 		return approvalPhaseState;
 	}
 

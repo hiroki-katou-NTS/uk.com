@@ -122,8 +122,6 @@ public interface WorkplacePub {
 
 	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate);
 
-	Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
-
 	List<String> getLstWorkplaceIdBySidAndPeriod(String employeeId, DatePeriod period);
 
 	List<ResultRequest597Export> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
@@ -150,4 +148,14 @@ public interface WorkplacePub {
 	List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds);
 
 	Optional<WkpCdNameExport> findByWkpId(String wkpId);
+
+	/**
+	 * [No.575]職場コードから職場IDを取得する
+	 * @param 会社ID companyId
+	 * @param 職場コード wkpCd
+	 * @param 基準日 baseDate
+	 * @return
+	 */
+	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
+
 }

@@ -120,7 +120,9 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 
 		AffWorkplaceHistImport affWorkplaceHistImport = new AffWorkplaceHistImport();
 
+
 		Optional<SWkpHistExport> opSWkpHistExport = workplacePub.findBySid(employeeId, baseDate);
+
 		if (opSWkpHistExport.isPresent()) {			
 			affWorkplaceHistImport.setWorkplaceId(opSWkpHistExport.get().getWorkplaceId());			
 		}

@@ -538,5 +538,4 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		});	
 		return lst;
 	}
-
 }
