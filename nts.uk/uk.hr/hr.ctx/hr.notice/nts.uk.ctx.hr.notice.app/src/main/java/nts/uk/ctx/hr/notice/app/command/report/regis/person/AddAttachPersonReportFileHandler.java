@@ -30,7 +30,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
  * @author laitv
- *
+ * アルゴリズム「添付ファイル登録処理」を実行する(Thực hiện thuật toán "Xử lý đăng ký file đính kèm")
  */
 @Stateless
 public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<AddDocumentReportCommand, String> {
@@ -67,14 +67,14 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			return reportIdNew.toString();
 		} else {
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, Integer.valueOf(command.reportID),
-					command.docID, command.docName, command.fileId, command.fileName.length() > 49 ? command.fileName.substring(0, 48) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName.length() > 50 ? command.fileName.substring(0, 49) : command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
 			repoReportFile.add(domain);
 			
 			updateMissingDocName(command);
-			
+			                           
 			return command.reportID;
 		}
 	}
@@ -83,6 +83,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		String cid = AppContexts.user().companyId();
 		this.repoPersonReport.updateMissingDocName(cid, Integer.valueOf(command.getReportID()), command.getMissingDocName());
 	}
+	
 
 	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName) {
 		String sid = AppContexts.user().employeeId();

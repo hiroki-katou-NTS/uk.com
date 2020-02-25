@@ -53,12 +53,14 @@
 
 .divHead {
 	margin-left: 10px;
+	padding: 10px;
+	overflow-y: auto;
 }
 
 #C222_1, #C222_2{
 	width: 945px;
 	height: 45px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 .label.warning {
@@ -76,7 +78,7 @@
 #C222_3, #C222_4{
 	width: 209px; 
 	margin-left: 6px !important;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 #C222_4_1{

@@ -43,7 +43,7 @@ public class RegistrationPersonReportApprovalAllCommandHandler
 		}
 		reportList.forEach(x -> {
 			ApproveReportCommand approveCmd = new ApproveReportCommand(String.valueOf(x.getReportID()),
-					x.getRootSatteId(), TextResource.localize("A1_1_1"), ActionApprove.APPROVE.value);
+					x.getRootSatteId(), TextResource.localize("JHN003_A1_1_1"), ActionApprove.APPROVE.value);
 
 			// アルゴリズム[承認処理]を実行する
 			this.approve.approveReport(cId, approveCmd);

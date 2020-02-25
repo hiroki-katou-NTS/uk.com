@@ -133,7 +133,7 @@ module jhn001.f.vm {
                 return;
             }
             
-            let missingDocName= '';
+            let missingDocName = '';
             for (var i = 0; i < listItem.length; i++) {
                 let fileData = listItem[i];
                 if (fileData.fileId == null && id != fileData.id) {

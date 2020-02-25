@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.pubimp.person.info.item;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,12 +10,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -141,5 +141,11 @@ public class PersonInfoItemPubImpl implements PersonInfoItemPub{
 			comboboxItems.addAll(resultList);
 		}
 		return comboboxItems;
+	}
+
+	@Override
+	public String getItemDfId(String ctgId, String itemCd) {
+		String itemDfID = pernfoItemDefRep.getItemDfId(ctgId, itemCd);
+		return itemDfID;
 	}
 }

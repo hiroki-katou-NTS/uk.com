@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApproveReportSendBackCommand {
 	Integer reportID; // 届出ID
+	Integer reportLayoutId; 
 	Integer phaseNum; // フェーズ通番
 	Integer aprNum;// 承認者通番
 	String comment; // コメント

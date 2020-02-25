@@ -35,7 +35,7 @@ public class ApprovalFrameForAppDto {
 							
 							StringUtil.isNullOrEmpty(x.getAgentID(), true) == true ? x.getApproverID() : x.getAgentID(),
 									
-							Integer.valueOf(x.getApprovalAtr()), status.name(), "approverName",
+							Integer.valueOf(x.getApprovalAtr()), status.nameId, "approverName",
 							
 							x.getApprovalDate() == null ? null : x.getApprovalDate().toString("yyyy/MM/dd"),
 									

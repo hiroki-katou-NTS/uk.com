@@ -6,6 +6,8 @@ public interface AttachPersonReportFileRepository {
 	
 	List<AttachmentPersonReportFile> getListDomainByReportId(String cid, Integer reprtId);
 	
+	List<AttachmentPersonReportFile> getListAttachFileByCid(String cid);
+	
 	void add(AttachmentPersonReportFile domain);
 	
 	void delete(String fileId , String cid);
