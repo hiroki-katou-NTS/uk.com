@@ -288,13 +288,15 @@ module nts.uk.com.view.cmm018.shr {
             startDate: string;
             endDate: string;
             applicationType: number;
+            confirmationRootType: number;
             employmentRootAtr: number;
             constructor(approvalId: string, startDate: string, endDate: string, 
-                applicationType: number, employmentRootAtr: number){
+                applicationType: number, confirmationRootType: number, employmentRootAtr: number){
                     this.approvalId = approvalId;
                     this.startDate = startDate;
                     this.endDate = endDate;
                     this.applicationType = applicationType;
+                    this.confirmationRootType = confirmationRootType;
                     this.employmentRootAtr = employmentRootAtr;
             }
         }
