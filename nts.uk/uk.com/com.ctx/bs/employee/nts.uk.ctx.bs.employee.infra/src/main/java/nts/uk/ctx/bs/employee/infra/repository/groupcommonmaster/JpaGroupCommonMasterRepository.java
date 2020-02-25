@@ -23,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterRepository;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.NotUseCompanyList;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterCategory;
+import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterCategoryPK;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterItem;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUse;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUsePK;
@@ -30,13 +31,13 @@ import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUse
 @Stateless
 public class JpaGroupCommonMasterRepository extends JpaRepository implements GroupCommonMasterRepository {
 
-	private static final String GET_BY_CONTRACT_CODE = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode";
+	private static final String GET_BY_CONTRACT_CODE = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.pk.contractCode = :contractCode";
 
 	private static final String GET_ITEM_BY_CONTRACT_CODE_AND_LIST_MASTER_ID = "SELECT mi FROM BsymtGpMasterItem mi WHERE mi.contractCode = :contractCode AND mi.commonMasterId IN :commonMasterIds";
 
 	private static final String GET_NOT_USE_BY_LIST_ITEM_ID = "SELECT nu FROM BsymtGpMasterNotUse nu WHERE nu.pk.commonMasterItemId IN :commonMasterItemIds";
 
-	private static final String GET_BY_CONTRACT_CODE_AND_ID = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode AND mc.commonMasterId = :commonMasterId";
+	private static final String GET_BY_CONTRACT_CODE_AND_ID = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.pk.contractCode = :contractCode AND mc.pk.commonMasterId = :commonMasterId";
 
 	private static final String GET_ENABLE_ITEM = "SELECT mi FROM BsymtGpMasterItem mi "
 			+ "WHERE mi.contractCode = :contractCode " + "AND mi.commonMasterId = :commonMasterId "
@@ -82,7 +83,8 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	}
 
 	private BsymtGpMasterCategory mapCategory(GroupCommonMaster domain) {
-		return new BsymtGpMasterCategory(domain.getContractCode().v(), domain.getCommonMasterId(),
+		return new BsymtGpMasterCategory(
+				new BsymtGpMasterCategoryPK(domain.getCommonMasterId(), domain.getContractCode().v()),
 				domain.getCommonMasterCode().v(), domain.getCommonMasterName().v(), domain.getCommonMasterMemo());
 	}
 
@@ -183,8 +185,8 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	private GroupCommonMaster toCategoryDomain(BsymtGpMasterCategory entity) {
 
-		GroupCommonMaster domain = new GroupCommonMaster(new ContractCode(entity.getContractCode()),
-				entity.getCommonMasterId(), new CommonMasterCode(entity.getCommonMasterCode()),
+		GroupCommonMaster domain = new GroupCommonMaster(new ContractCode(entity.getPk().getContractCode()),
+				entity.getPk().getCommonMasterId(), new CommonMasterCode(entity.getCommonMasterCode()),
 				new CommonMasterName(entity.getCommonMasterName()), entity.getCommonMasterMemo());
 
 		return domain;
