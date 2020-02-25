@@ -277,8 +277,8 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	@Override
 	public void updateGroupCommonMaster(String contractCd, List<GroupCommonMaster> domains) {		
 		for(GroupCommonMaster item: domains) {
-			// update commonMaster
-			Optional<BsymtGpMasterCategory> findItem = this.queryProxy().find(item.getCommonMasterId(), BsymtGpMasterCategory.class);
+			// update commonMaster .find(item.getCommonMasterId(), BsymtGpMasterCategory.class);
+			Optional<BsymtGpMasterCategory> findItem = this.queryProxy().find(new BsymtGpMasterCategoryPK(item.getCommonMasterId(), contractCd) , BsymtGpMasterCategory.class);
 			if(!findItem.isPresent()) {
 				throw new BusinessException("don't exist in BsymtGpMasterCategory");
 			}
