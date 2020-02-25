@@ -731,6 +731,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             self.comRoot(new vmbase.CompanyAppRootADto(false, employRootAtr, 
                                 appTypeValue, app == undefined ? getText('CMM018_109') : app.localizedName, '-1', '',
                                 '',b,b,b,b,b));
+                        
                     }else{
                         self.findHistoryLastofApp(appTypeValue,employRootAtr); //list right
                     }
@@ -762,8 +763,6 @@ module nts.uk.com.view.cmm018.a.sub {
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-                        
-//                        self.singleSelectedCode('-1');
                     }else if(self.tabSelectedB() == 1){//workplace
                         let a = null;
                         _.each(self.lstWorkplace(), function(item){
@@ -788,7 +787,6 @@ module nts.uk.com.view.cmm018.a.sub {
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-//                        self.singleSelectedCode('-1');
                     }else{//person
                         let a = null;
                         _.each(self.lstPerson(), function(item){
@@ -813,9 +811,8 @@ module nts.uk.com.view.cmm018.a.sub {
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-//                        self.singleSelectedCode('-1');
                     }
-                    
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
             }
             /**
