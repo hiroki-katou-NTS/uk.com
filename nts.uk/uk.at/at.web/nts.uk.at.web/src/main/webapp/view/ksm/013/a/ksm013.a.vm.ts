@@ -16,10 +16,10 @@ module nts.uk.at.view.ksm013.a {
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 100 },
-                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 200 }
+                    { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 50 },
+                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 190 }
                 ]);
-                self.nurseClModel = new NurseClassificationModel("", "", 0, false);
+                self.nurseClModel = new NurseClassificationModel("", "", null, false);
                 self.isEditting = ko.observable(false);
                 self.selectedCode = ko.observable('');
                 self.selectedCode.subscribe(function(codeChanged: string) {
