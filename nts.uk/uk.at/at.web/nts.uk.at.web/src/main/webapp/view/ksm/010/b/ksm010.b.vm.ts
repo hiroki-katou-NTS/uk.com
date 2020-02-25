@@ -25,7 +25,7 @@ module nts.uk.at.view.ksm010.b {
                 self.getRankPriority().done(() => {
                     dfd.resolve();
                 });
-                    
+
                 return dfd.promise();
             }
 
@@ -33,7 +33,7 @@ module nts.uk.at.view.ksm010.b {
                 let self = this,
                     dfd = $.Deferred();
                 blockUI.grayout();
-                    
+
                 service.getRankAndRiority().done(function(data) {
 
                     for (let i = 0; i < data.listRankCodeSorted.length; i++) {
@@ -58,9 +58,11 @@ module nts.uk.at.view.ksm010.b {
                 let command = {
                     listRankCode: _.map(self.rankItems(), 'rankCd')
                 };
-                    
+
                 service.updatePriority(command).done(() => {
-                    info({ messageId: "Msg_15" });
+                    info({ messageId: "Msg_15" }).then(() => {
+                        self.cancel();
+                    });
                 });
             }
 
