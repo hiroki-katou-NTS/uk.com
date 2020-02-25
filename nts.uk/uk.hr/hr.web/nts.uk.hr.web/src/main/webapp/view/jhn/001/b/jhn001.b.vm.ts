@@ -98,8 +98,10 @@ module jhn001.b.vm {
             let self = this;
             let reportId = self.reportId();
 
-            if (reportId == null || reportId == '' || reportId == undefined)
+            if (reportId == null || reportId == '' || reportId == undefined){
+                alertError({ messageId: "Msgj_24" });
                 return;
+            }
 
             let objRemove = {
                 reportId: reportId
