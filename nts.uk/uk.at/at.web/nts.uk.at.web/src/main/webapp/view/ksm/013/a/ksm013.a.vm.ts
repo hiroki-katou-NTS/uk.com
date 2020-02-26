@@ -77,6 +77,7 @@ module nts.uk.at.view.ksm013.a {
             public register() {
                 let self = this,
                     dfd = $.Deferred();
+                self.nurseClModel.nurseClassificationName($.trim(self.nurseClModel.nurseClassificationName()));
                 if (self.validateAll()) {
                     return;
                 };
@@ -188,6 +189,9 @@ module nts.uk.at.view.ksm013.a {
                 self.officeWorker = ko.observable(officeWorker);
                 self.license.subscribe(function(codeChanged: any) {
                     if (codeChanged != 2) self.officeWorker(false);
+                });
+                self.nurseClassificationName.subscribe(function(codeChanged: string) {
+                     self.nurseClassificationName($.trim(self.nurseClassificationName()));
                 });
             }
 
