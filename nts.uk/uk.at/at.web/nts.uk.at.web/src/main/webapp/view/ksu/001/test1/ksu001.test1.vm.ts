@@ -339,7 +339,7 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
                 selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom()
-                    : self.selectedTab() === 'workplace' ? self.selectedLinkButtonWkp() : self.selectedLinkButtonWkpGroup,
+                    : self.selectedTab() === 'workplace' ? self.selectedLinkButtonWkp() : self.selectedLinkButtonWkpGroup(),
                 // listCheckNeededOfWorkTime for JA to JA send to JB
                 listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             } );
