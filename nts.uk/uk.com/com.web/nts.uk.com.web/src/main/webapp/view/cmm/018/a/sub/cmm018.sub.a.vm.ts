@@ -216,11 +216,11 @@ module nts.uk.com.view.cmm018.a.sub {
         phaseHtml(phase: vmbase.ApprovalPhaseDto, appTypeValue, employRootAtr, phaseOrder: number):any{
             let classPhase = 'openK_Phase' + phaseOrder;
             if(_.isEmpty(phase.approver) || phase.approver.length == 0){//phase chua setting
-                return '<div class="hyperlink approver-line ' + classPhase + '">' + getText('CMM018_99') + '</div>';
+                return '<div class="hyperlink approver-line ' + classPhase + '"><span>' + getText('CMM018_99') + '</span></div>';
             }
             let result = '<div class="approver">';
             _.each(phase.approver, function(approver){
-                result += '<div class="hyperlink approver-line ' + classPhase + '">' + approver.name + approver.confirmName +'</div>';
+                result += '<div class="hyperlink approver-line ' + classPhase + '"><span>' + approver.name + approver.confirmName +'</span></div>';
             });
                 result += '</div>'+ '<div class="from">' + '（' + phase.appFormName + '）' + '</div>';
            return result;
