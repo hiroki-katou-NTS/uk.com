@@ -6,7 +6,7 @@ module test.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-
+        baseDate: KnockoutObservable<Date>;
         isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
         listShifuto: KnockoutObservableArray<Shifuto> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
@@ -26,7 +26,21 @@ module test.viewmodel {
         selectedWorkplaceId: KnockoutObservable<string>;
         constructor() {
             let self = this;
+            self.baseDate = ko.observable(new Date());
             self.selectedWorkplaceId = ko.observableArray("");
+            self.selectedWorkplaceId.subscribe((val) => {
+				if (val) {
+					let param = {
+						workplaceId: val,
+						targetUnit: 0
+					}
+					service.getShiftMaster(param)
+                    .done((data) => {
+                        self.listShifuto(_.sortBy(data, 'shiftMastercode'));
+                        self.selectedCodes([]);
+                    });
+				}
+			});
             self.columns = ko.observableArray([
                 { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
                 { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 100 },
@@ -70,8 +84,8 @@ module test.viewmodel {
 				isMultiSelect: false,
 				treeType: 1,
 				selectedWorkplaceId: self.selectedWorkplaceId,
-				baseDate: new Date(),
-				selectType: 3,
+				baseDate: self.baseDate,
+				selectType: 4,
 				isShowSelectButton: true,
 				isDialog: false,
 				maxRows: 15,
@@ -103,7 +117,7 @@ module test.viewmodel {
                 isMultiSelect: self.selectedMode() == 1 ? true : false,
                 permission: self.selectedPer() == 1 ? true : false,
                 filter: self.selectedFilter(),
-                filterIDs: self.selectedFilterCodes(),
+                filterIDs: [self.selectedWorkplaceId()],
                 shifutoCodes: self.isMultiSelect() ? self.selectedCodes() : self.selectedCode()
             }
             setShared('kdl044Data', dataSetShare);

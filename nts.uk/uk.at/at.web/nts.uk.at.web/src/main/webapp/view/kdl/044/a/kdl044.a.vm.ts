@@ -15,9 +15,10 @@ module nts.uk.at.view.kdl044.a {
             isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
             placeHolders: string = "";
             dataTransfer: KnockoutObservable<any> = ko.observable();
+            gridFields: KnockoutObservableArray<String>;
             constructor() {
                 let self = this;
-
+                self.gridFields = ko.observableArray([]);
                 let holders = getText('KDL044_2') + '・'
                     + getText('KDL044_3') + '・'
                     + getText('KDL044_4') + '・'
@@ -58,22 +59,21 @@ module nts.uk.at.view.kdl044.a {
                         break;
                     }
                     case 1: {
-                        paras = { targetUnit: 0, workplaceIds: data.filterIDs, workplaceGroupID: null };
+                        paras = { targetUnit: 0, workplaceId: data.filterIDs[0], workplaceGroupID: null };
                         break;
                     }
                     case 2: {
-                        paras = { targetUnit: 1, workplaceIds: null, workplaceGroupID: data.filterIDs };
+                        paras = { targetUnit: 1, workplaceId: null, workplaceGroupID: data.filterIDs };
                         break;
                     }
                 }
                 service.getShiftMaster(paras).done(function (result) {
-
                     service.isMultipleManagement()
-                        .done((data) => {
-                            let isUse = data && data.workMultiple == 1;
-                            self.createHeader(isUse);
+                        .done((isUse) => {
+                            let isUseWorkMultiple = data && data.workMultiple == 1;
+                            self.createHeader(isUseWorkMultiple);
                             self.listShifuto(result);
-                            self.listShifuto(_.sortBy(result, [function (o) { return new Number(o.code); }]));
+                            self.listShifuto(_.sortBy(result, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }
@@ -89,6 +89,7 @@ module nts.uk.at.view.kdl044.a {
             }
 
             createHeader(isUse: boolean) {
+                let self = this;
                 if (!isUse) {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
@@ -98,6 +99,7 @@ module nts.uk.at.view.kdl044.a {
                         { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
                     ]);
+                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"]);
                 }
                 else {
                     self.columns = ko.observableArray([
@@ -109,6 +111,7 @@ module nts.uk.at.view.kdl044.a {
                         { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 150 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
                     ]);
+                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"]);
                 }
             }
 

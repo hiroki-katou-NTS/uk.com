@@ -22,7 +22,8 @@
 					<div
 						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
 	                              items: listShifuto, selectedKey: 'shiftMasterCode', 
-	                              fields: ['shiftMasterCode', 'shiftMasterName', 'workTypeName', 'workTimeName', 'workTime1', 'workTime2', 'remark'], 
+								  fields: gridFields(), 
+								  selected: selectedCodes,
 	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
 					<table id="multi-list" tabindex="0"
 						data-bind="ntsGridList: {	

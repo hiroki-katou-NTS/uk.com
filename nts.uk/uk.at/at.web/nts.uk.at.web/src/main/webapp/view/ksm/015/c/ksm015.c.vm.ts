@@ -1,6 +1,6 @@
 module nts.uk.at.view.ksm015.c.viewmodel {
 	export class ScreenModel {
-
+		baseDate: KnockoutObservable<Date>;
 		selectedWorkplaceId: KnockoutObservable<string>;
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -41,7 +41,6 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				maxRows: 15,
 				tabindex: 1,
 				systemType: 2
-
 			};
 
 			let ksm015Data = new Ksm015Data();
@@ -61,7 +60,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
-			if (self.selectedShiftMaster().length === 0) {
+			if (self.shiftItems().length === 0) {
 				nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 				return;
 			}
