@@ -14,17 +14,17 @@ import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition.Jc
 public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository implements HrApprovalRouteSettingRepository {
 
 	@Override
-	public HrApprovalRouteSetting getDomainByCid(String cid) {
+	public Optional<HrApprovalRouteSetting> getDomainByCid(String cid) {
 		
 		if(StringUtil.isNullOrEmpty(cid, true))
-			return null;
+			return Optional.empty();
 		
 		Optional<JcmmtRootArp> entity = this.queryProxy().find(cid, JcmmtRootArp.class);
 		if (!entity.isPresent()) {
-			return null;
+			return Optional.empty();
 		}
 		
-		return toDomain(entity.get());
+		return Optional.of(toDomain(entity.get()));
 		
 	}
 

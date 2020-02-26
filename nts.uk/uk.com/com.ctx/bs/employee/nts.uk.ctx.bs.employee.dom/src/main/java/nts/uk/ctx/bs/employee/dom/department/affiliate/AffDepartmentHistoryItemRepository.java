@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -31,4 +32,7 @@ public interface AffDepartmentHistoryItemRepository {
 	 * @return
 	 */
 	Optional<AffDepartmentHistoryItem> findByEmpDate(String employeeID, GeneralDate date);
+	
+	/** 部門と基準日から所属部門履歴項目を取得する */
+	List<AffDepartmentHistoryItem> getAffDepartmentHistoryItems(List<String> departmentIDs, GeneralDate baseDate);
 }
