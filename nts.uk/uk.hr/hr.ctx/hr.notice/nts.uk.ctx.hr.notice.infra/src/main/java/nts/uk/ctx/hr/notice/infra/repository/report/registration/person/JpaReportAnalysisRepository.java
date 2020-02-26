@@ -83,4 +83,11 @@ public class JpaReportAnalysisRepository extends JpaRepository implements Report
 		
 	}
 
+	@Override
+	public void insert(ReportAnalysis domain) {
+		
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+
 }
