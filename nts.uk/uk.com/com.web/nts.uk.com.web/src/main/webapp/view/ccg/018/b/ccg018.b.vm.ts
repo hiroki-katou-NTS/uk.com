@@ -175,7 +175,7 @@ module ccg018.b.viewmodel {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
                                 name: x.employeeName,
-                                workplaceName: x.workplaceName,
+                                affiliationName: x.affiliationName,
                                 employeeId: x.employeeId,
                                 topPageCode: topPagePersonSet.topMenuCode,
                                 loginMenuCode: topPagePersonSet.loginMenuCode,
@@ -187,7 +187,7 @@ module ccg018.b.viewmodel {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
                                 name: x.employeeName,
-                                workplaceName: x.workplaceName,
+                                affiliationName: x.affiliationName,
                                 employeeId: x.employeeId,
                                 topPageCode: '',
                                 loginMenuCode: '',
@@ -308,7 +308,7 @@ module ccg018.b.viewmodel {
     interface ITopPagePersonSet {
         code: string,
         name: string,
-        workplaceName: string,
+        affiliationName: string,
         employeeId: string,
         topPageCode: string,
         loginMenuCode: string,
@@ -320,7 +320,7 @@ module ccg018.b.viewmodel {
     class TopPagePersonSet {
         code: string;
         name: string;
-        workplaceName: string;
+        affiliationName: string;
         employeeId: string;
         topPageCode: KnockoutObservable<string>;
         loginMenuCode: KnockoutObservable<string>;
@@ -335,7 +335,7 @@ module ccg018.b.viewmodel {
 
             self.code = param.code;
             self.name = param.name;
-            self.workplaceName = param.workplaceName;
+            self.affiliationName = param.affiliationName;
             self.employeeId = param.employeeId;
             self.topPageCode = ko.observable(param.topPageCode);
             self.loginMenuCode = ko.observable(param.loginMenuCode);
