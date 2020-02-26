@@ -75,7 +75,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 	 */
 	private MenuOperation convertToDomain(JcmctMenuOperation x){
 		return MenuOperation.createFromJavaType(x.jcmctMenuOperationPK.programId, x.useMenu, x.jcmctMenuOperationPK.companyId, 
-												x.useApproval, x.useNotice, x.ccd);
+												x.useApproval, x.useNotice, x.noRankOrder, x.ccd);
 	}
 	
 	@Override

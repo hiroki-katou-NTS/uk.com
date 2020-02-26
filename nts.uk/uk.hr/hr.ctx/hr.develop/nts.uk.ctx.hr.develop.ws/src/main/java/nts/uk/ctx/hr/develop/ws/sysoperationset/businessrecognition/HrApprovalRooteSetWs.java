@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.develop.ws.sysoperationset.businessrecognition;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,10 +22,10 @@ public class HrApprovalRooteSetWs {
 	@POST
 	@Path("appRootSet")
 	public HrApprovalRootSetEx getEventMenu(){
-		HrApprovalRouteSetting set =  repoHrAppRSet.getDomainByCid(AppContexts.user().companyId());
-		if(set == null) return new HrApprovalRootSetEx(true, false, false);
+		Optional<HrApprovalRouteSetting> set =  repoHrAppRSet.getDomainByCid(AppContexts.user().companyId());
+		if(!set.isPresent()) return new HrApprovalRootSetEx(true, false, false);
 		
-		return new HrApprovalRootSetEx(set.isComMode(), set.isDevMode(), set.isEmpMode());
+		return new HrApprovalRootSetEx(set.get().isComMode(), set.get().isDevMode(), set.get().isEmpMode());
 	}
 	
 	

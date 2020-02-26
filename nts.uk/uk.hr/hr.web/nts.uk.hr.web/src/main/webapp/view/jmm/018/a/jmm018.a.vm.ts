@@ -1,17 +1,20 @@
 module nts.uk.com.view.jmm018.a {
     import viewModelTabB = nts.uk.com.view.jmm018.b.viewmodel;
     import viewModelTab2 = nts.uk.com.view.jmm018.tabb.viewmodel;
+    import viewModelTab3 = nts.uk.com.view.jmm018.z.viewmodel;
     
     export module viewmodel {
         export class ScreenModel {
             
             eventManage: KnockoutObservable<any>;
             screenModelTab2: KnockoutObservable<any>;
+            screenModelTab3: KnockoutObservable<any>;
             
             constructor(){
                 let _self = this;
                 _self.eventManage = ko.observable(new viewModelTabB.ScreenModel());
                 _self.screenModelTab2 = ko.observable(new viewModelTab2.ScreenModel());
+                _self.screenModelTab3 = ko.observable(new viewModelTab3.ScreenModel());
             }
             
             public start_page(): JQueryPromise<any> {
@@ -45,6 +48,16 @@ module nts.uk.com.view.jmm018.a {
                     activate: (event, info) => {
                         let _self = this;
                         _self.screenModelTab2().start();
+                        _self.removeErrorMonitor();
+                    }
+                });
+            }
+            
+            public onSelectTab3(): void {
+                $("#sidebar").ntsSideBar("init", {
+                    activate: (event, info) => {
+                        let _self = this;
+                        _self.screenModelTab3().start();
                         _self.removeErrorMonitor();
                     }
                 });
