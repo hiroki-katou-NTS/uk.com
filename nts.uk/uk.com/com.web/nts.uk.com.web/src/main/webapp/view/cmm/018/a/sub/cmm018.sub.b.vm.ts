@@ -566,7 +566,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.company.endDate;
                         startDate = history.company.startDate;
-                        listType.push(new vmbase.ApplicationType(history.company.applicationType,'', history.company.employmentRootAtr));
+                        let typeS = history.company.employmentRootAtr == 2 ? history.company.confirmationRootType : history.company.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS, '', history.company.employmentRootAtr));
                     }
                 }else if(self.tabSelectedB() == 1){
                     if(self.singleSelectedCode() == -1){
@@ -576,7 +577,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.workplace.endDate;
                         startDate = history.workplace.startDate;
-                        listType.push(new vmbase.ApplicationType(history.workplace.applicationType,'', history.workplace.employmentRootAtr));
+                        let typeS = history.workplace.employmentRootAtr == 2 ? history.workplace.confirmationRootType : history.workplace.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS, '', history.workplace.employmentRootAtr));
                     }
                 }else{
                     if(self.singleSelectedCode() == -1){
@@ -586,7 +588,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.person.endDate;
                         startDate = history.person.startDate;
-                        listType.push(new vmbase.ApplicationType(history.person.applicationType,'', history.person.employmentRootAtr));
+                        let typeS = history.person.employmentRootAtr == 2 ? history.person.confirmationRootType : history.person.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS,'', history.person.employmentRootAtr));
                     }
                 }
                 //QA#100601
