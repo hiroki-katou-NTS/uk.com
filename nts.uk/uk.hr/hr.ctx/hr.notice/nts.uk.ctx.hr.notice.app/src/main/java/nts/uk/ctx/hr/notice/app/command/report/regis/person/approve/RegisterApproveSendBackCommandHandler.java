@@ -74,7 +74,7 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 			String[] monthSplit = java.time.YearMonth.now().toString().split("-");
 
 			int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
-			//registerApproveHandler.countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 2, 2);
+			registerApproveHandler.countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 2, 2);
 		}
 		
 	}
