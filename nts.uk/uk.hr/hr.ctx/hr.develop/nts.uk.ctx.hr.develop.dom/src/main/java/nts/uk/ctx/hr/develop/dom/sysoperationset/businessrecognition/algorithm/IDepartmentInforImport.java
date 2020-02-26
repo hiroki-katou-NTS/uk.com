@@ -19,8 +19,12 @@ public interface IDepartmentInforImport {
 	/**call RQ 574 */
 	List<String> getDepartmentIdAndChildren(String companyId, GeneralDate baseDate, String departmentId);
 	
+	/**call RQ 644 */
+	List<RequestList643Import> getAffDepartmentHistoryItems(List<String> departmentIDs, GeneralDate baseDate);
+	
 	/**call RQ 600 */
 	List<ResultRequest600Import> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
 	
-	
+	/**call RQ 614 for JMM018Z*/
+	List<String> searchEmployeeByKey(String companyId, String key);
 }

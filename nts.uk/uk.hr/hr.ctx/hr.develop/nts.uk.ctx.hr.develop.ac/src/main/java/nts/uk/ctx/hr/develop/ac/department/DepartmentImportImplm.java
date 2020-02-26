@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.department.aff.AffDepartmentPub;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.IDepartmentInforImport;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.dto.DepartmentInforImport;
@@ -60,5 +61,28 @@ public class DepartmentImportImplm implements IDepartmentInforImport {
 		// TODO Auto-generated method stub
 		return departmentPub.getDepartmentIdAndChildren(companyId, baseDate, departmentId).stream().map(c->c).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<RequestList643Import> getAffDepartmentHistoryItems(List<String> departmentIDs, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return affDepartmentPub.getAffDepartmentHistoryItems(departmentIDs, baseDate).stream().map(c->new RequestList643Import(c.getEmployeeId(), c.getDepartmentId())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> searchEmployeeByKey(String companyId, String key) {
+		EmpInfo614Param param = new EmpInfo614Param(
+				GeneralDate.today().toString("yyyy/MM/dd"), 
+				companyId, 
+				key, 
+				false, 
+				false, 
+				false, 
+				false, 
+				false, 
+				true);
+		return syEmployeePub.findEmpByKeyWordsListSid(param).stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+	}
+	
+	
 
 }

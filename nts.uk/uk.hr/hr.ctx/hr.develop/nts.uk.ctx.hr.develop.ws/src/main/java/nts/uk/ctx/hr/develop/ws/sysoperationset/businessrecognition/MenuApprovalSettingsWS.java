@@ -10,7 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.command.MenuApprovalSettingsCommand;
+import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.dto.DepartmentInforDto;
+import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.dto.EmployeeInforDto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.dto.MenuApprovalSettingsInforDto;
+import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.dto.ParamSearchDto;
 import nts.uk.ctx.hr.develop.app.sysoperationset.businessrecognition.find.MenuApprovalSettingsFinder;
 
 @Path("menuApprovalSettings")
@@ -33,5 +36,23 @@ public class MenuApprovalSettingsWS {
 	@Path("/update")
 	public void update(List<MenuApprovalSettingsInforDto> param){
 		command.update(param.stream().map(c->c.getMenuApprovalSettings()).collect(Collectors.toList()));
+	}
+	
+	@POST
+	@Path("/startDepartment")
+	public DepartmentInforDto startDepartment() {
+		return finder.JMM018YStart();
+	}
+	
+	@POST
+	@Path("/getEmployeeByDepartmentId")
+	public List<EmployeeInforDto> getEmployeeByDepartmentId(ParamSearchDto param) {
+		return finder.getEmployee(param.getDepartmentId(), param.getChecks());
+	}
+	
+	@POST
+	@Path("/searchEmployeeBykey")
+	public List<EmployeeInforDto> searchEmployee(ParamSearchDto param) {
+		return finder.searchEmployee(param.getKey());
 	}
 }
