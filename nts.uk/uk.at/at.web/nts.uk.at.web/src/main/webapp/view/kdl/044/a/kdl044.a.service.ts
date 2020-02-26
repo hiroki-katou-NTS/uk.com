@@ -10,7 +10,7 @@ module nts.uk.at.view.kdl044.a {
             return nts.uk.request.ajax(paths.isMultipleManagement, command);
         }
         
-         export function getShiftMaster(command): JQueryPromise<any> {
+        export function getShiftMaster(command): JQueryPromise<any> {
             return nts.uk.request.ajax( "at", paths.getShiftMaster, command);
         }
         

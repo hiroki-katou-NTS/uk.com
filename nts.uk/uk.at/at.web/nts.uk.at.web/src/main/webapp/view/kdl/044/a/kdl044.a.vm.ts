@@ -83,10 +83,10 @@ module nts.uk.at.view.kdl044.a {
                     
                     
                     dfd.resolve();
-                } ).fail( function( res: any ) {
+                }).fail( function( res: any ) {
                     alertError( { messageId: "" } );
                     block.clear();
-                } );
+                });
                 block.clear();
                 return dfd.promise();
             }

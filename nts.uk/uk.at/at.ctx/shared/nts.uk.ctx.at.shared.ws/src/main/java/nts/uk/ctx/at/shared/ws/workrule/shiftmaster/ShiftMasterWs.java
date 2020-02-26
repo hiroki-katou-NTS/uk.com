@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommand;
@@ -48,6 +50,9 @@ public class ShiftMasterWs {
 	@Inject
 	private RegisterShiftMasterOrgCommandHandler registerOrgCmd;
 	
+	@Inject
+	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
+	
 	@POST
 	@Path("startPage")
 	public Ksm015bStartPageDto findAll(){
@@ -82,6 +87,12 @@ public class ShiftMasterWs {
 	@Path("delete")
 	public void delete(DeleteShiftMasterCommand command){
 		this.deleteCmd.handle(command);
+	}
+	
+	@POST
+	@Path("delete/org")
+	public void deleteOrg(DeleteShiftMasterOrgCommand command){
+		this.deleteOrgCmd.handle(command);
 	}
 	
 }
