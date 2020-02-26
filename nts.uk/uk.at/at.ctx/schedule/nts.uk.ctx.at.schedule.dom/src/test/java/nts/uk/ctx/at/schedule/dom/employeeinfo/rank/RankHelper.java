@@ -13,10 +13,10 @@ public class RankHelper {
 
 	public static class Priority {
 
-		public static final List<RankCode> DUMMY = new ArrayList<RankCode>(
+		public static List<RankCode> DUMMY = new ArrayList<RankCode>(
 				Arrays.asList(
-						new RankCode("001"), 
-						new RankCode("002"), 
-						new RankCode("003")));
+						new RankCode("01"), 
+						new RankCode("02"), 
+						new RankCode("03")));
 	}
 }

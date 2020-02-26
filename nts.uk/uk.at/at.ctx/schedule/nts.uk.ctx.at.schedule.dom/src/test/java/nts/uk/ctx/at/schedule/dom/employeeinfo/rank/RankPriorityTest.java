@@ -108,7 +108,7 @@ public class RankPriorityTest {
 				new RankCode("013")); // dummy
 
 		NtsAssert.businessException("Msg_1621", () -> {
-			target.update(listRankCdNew);
+			target.update(listRankCdNew); 
 		});
 	}
 
