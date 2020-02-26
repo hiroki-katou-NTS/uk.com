@@ -16,5 +16,5 @@ public class ApproveReportSendBackCommand {
 	String aprSid;
 	String sendBackSID;
 	Integer sendBackClass;// phân loại trả về. combobox 2
-	Integer selectedReturn;
+	Integer selectedReturn; // == 1 là trả về cho người làm đơn. #1 là trả về cho người appro
 }
