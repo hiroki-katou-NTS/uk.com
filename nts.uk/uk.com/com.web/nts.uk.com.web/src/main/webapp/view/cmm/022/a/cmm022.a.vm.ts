@@ -135,7 +135,9 @@ module nts.uk.com.view.cmm022.a {
 
                             });
                         }).ifNo(() => {
+                            
                             alert("Msg_1590");
+                            
                         });
                     } else {
                         alert(res.messageId);
@@ -145,9 +147,12 @@ module nts.uk.com.view.cmm022.a {
 
 
                 }).always(() => {
+                    
                     setTimeout(() => {
+                        
                         $("#master-item-list").igGrid("option", "height", (window.innerHeight - 283) + "px");
                         $("#master-list").igGrid("option", "height", (window.innerHeight - 306) + "px");
+                        
                     }, 100); 
                     nts.uk.ui.errors.clearAll();
                     block.clear();
