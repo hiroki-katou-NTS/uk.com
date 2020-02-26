@@ -111,7 +111,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
                 alreadySettingList: self.alreadySettingList,
-                selectedWorkplaceId: self.selectedWorkplaceId
+                selectedId: self.selectedWorkplaceId
             });
 
             self.selectVer27.subscribe(v => {
@@ -167,7 +167,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 self.selectedSetting.wkpId.valueHasMutated();
                 nts.uk.ui.block.invisible();
 
-                service.getAll(flwps.map((wkp) => { return wkp.workplaceId; }))
+                service.getAll(flwps.map((wkp) => { return wkp.id; }))
                     .done((dataResults: Array<IApplicationApprovalSettingWkp>) => {
                         self.lstAppApprovalSettingWkp = dataResults;
 

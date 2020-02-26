@@ -46,14 +46,11 @@ h4 {
 					<!-- BEGIN ORVERVIEW -->
 					<div>
 						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
-						<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-                        <note style="width:500px;"> <b>Update 2018/04/19</b> <br></br>
-<!-- 						<note style="width:500px;">
+						<note style="width:500px;">
 						<b>Update 2019/04/19</b> <br/>
 						- Add start mode (workplace or department)
 						<br/><br/>
-						<b>Update 2018/04/19</b> <br></br> -->
-						<!-- end -->
+						<b>Update 2018/04/19</b> <br></br>
 						- Add optional properties: restrictionOfReferenceRange
 						</note>
 						<h2>Overview</h2>
@@ -63,8 +60,7 @@ h4 {
 							<button data-bind="click: remove">Remove</button>
 						</div>
 						<div>
-						<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-<!-- 							<div>
+							<div>
 								<h4>Start mode:</h4>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: listStartMode,
@@ -72,8 +68,7 @@ h4 {
 									optionsText: 'name',
 									value: selectedStartMode,
 									enable: true}"/>
-							</div> -->
-						<!-- end -->
+							</div>
 							<div>
 								<h4>Tree select grid type:</h4>
 								<div
@@ -132,19 +127,13 @@ h4 {
 											<table class="table-tree-sample"
 												data-bind="with: rowSelected">
 												<tr>
-													<td style="min-width: 130px;">
-													<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-													    <label style="margin-right: 10px;">Workplace id:</label></td>
-														<!-- <label style="margin-right: 10px;">Affiliation id:</label></td> -->
-													<!-- end -->
+													<td style="min-width: 130px;"><label
+														style="margin-right: 10px;">Affiliation id:</label></td>
 													<td><span data-bind='text: workplaceId'></span></td>
 												</tr>
 												<tr>
-													<td style="min-width: 130px;">
-													<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-														<label style="margin-right: 10px;">Workplace code:</label></td>
-														<!-- <label style="margin-right: 10px;">Affiliation code:</label></td> -->
-													<!-- end -->
+													<td style="min-width: 130px;"><label
+														style="margin-right: 10px;">Affiliation code:</label></td>
 													<td><span data-bind='text: workplaceCode'></span></td>
 												</tr>
 											</table>

@@ -4,11 +4,8 @@ module nts.uk.com.view.cdl008.a {
     import SelectType = kcp.share.list.SelectType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-    import TreeType = kcp.share.tree.TreeType;
-//    import StartMode = kcp.share.tree.StartMode;
-//    import getText = nts.uk.resource.getText;
-    //end
+    import StartMode = kcp.share.tree.StartMode;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel {
         /**
@@ -25,10 +22,9 @@ module nts.uk.com.view.cdl008.a {
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
 
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            // 部門対応 #106784
-//            startMode: StartMode;
-            //end
+            // 部門対応 #106784
+            startMode: StartMode;
+
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -43,6 +39,13 @@ module nts.uk.com.view.cdl008.a {
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultipleSelect = inputCDL008.isMultiple;
+                    let currentDialog = nts.uk.ui.windows.getSelf();
+                    // currentDialog.setSize(400, 500);
+                    if(self.isMultipleSelect) {
+                        currentDialog.setHeight(570);
+                    } else {
+                        currentDialog.setWidth(500);
+                    }
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
                     } else {
@@ -61,52 +64,36 @@ module nts.uk.com.view.cdl008.a {
                     // If Selection Mode is Multiple Then not show Unselected Row
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
 
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                    // 部門対応 #106784
-//                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
-                    //end
+                    // 部門対応 #106784
+                    self.startMode = _.isNil(inputCDL008.startMode) ? StartMode.WORKPLACE : inputCDL008.startMode; // default workplace
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultipleSelect,
                     isMultipleUse: self.isMultipleUse,
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    treeType: TreeType.WORK_PLACE,
-//                    startMode: self.startMode,
-                    //end
+                    startMode: self.startMode,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    selectedWorkplaceId: null,
-//                    selectedId: null,
-                    //end
+                    selectedId: null,
                     maxRows: 12,
                     tabindex: 1,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
                     isShowNoSelectRow: self.isDisplayUnselect()
                 };
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 if (self.isMultipleSelect) {
-                    self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
+                    self.workplaces.selectedId = self.selectedMulWorkplace;
                 }
                 else {
-                    self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
+                    self.workplaces.selectedId = self.selectedSelWorkplace;
                 }
 
-//               if (self.isMultipleSelect) {
-//                    self.workplaces.selectedId = self.selectedMulWorkplace;
-//                }
-//                else {
-//                    self.workplaces.selectedId = self.selectedSelWorkplace;
-//                }
-//                if (self.startMode == StartMode.DEPARTMENT) {
-//                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
-//                }
-                //end
+                if (self.startMode == StartMode.DEPARTMENT) {
+                    nts.uk.ui.windows.getSelf().setTitle(getText("CDL008_5"));
+                }
             }
 
             /**
@@ -114,38 +101,25 @@ module nts.uk.com.view.cdl008.a {
              */
             private selectedWorkplace(): void {
                 var self = this;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        if(self.startMode == StartMode.WORKPLACE) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
+                        }
                         return;
                     }
                 }
-//                if (self.isMultipleSelect) {
-//                    if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-//                        if(self.startMode == StartMode.WORKPLACE) {
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
-//                        } else {
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
-//                        }
-//                        return;
-//                    }
-//                } else {
-//                    if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-//                        if(self.startMode == StartMode.WORKPLACE) {
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
-//                        } else {
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
-//                        }
-//                        return;
-//                    }
-//                }
-                //end
 
                 var selectedCode: any = self.selectedMulWorkplace();
                 if (!self.isMultipleSelect) {

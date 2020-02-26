@@ -148,6 +148,9 @@ public interface PerInfoItemDefRepositoty {
 	List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId);
 	String getItemName(String contractCode, String companyId, String categoryCode, String itemCode);
 	
+
+	String getItemDfId(String categoryId, String itemCode);
+	
 	List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst);
 
 	void updateAbolitionItem(List<PersonInfoItemDefinition> itemLst);
@@ -157,6 +160,7 @@ public interface PerInfoItemDefRepositoty {
 	
 	Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd);
+	List<String> getAllItemIdsByCtgCodeAndItemCd(String cid, List<String> ctgCodes, List<String> itemCds);
 
 	List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId , int abolitionAtr );
 	

@@ -70,7 +70,11 @@ public class AcquireListWorkplaceByEmpIDServiceImpl implements AcquireListWorkpl
 			// 社員参照範囲＝部門（配下含む）
 			if (empRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value) {
 				// 配下の職場をすべて取得する Lay Request list 154
-				listWorkPlaceID2 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, referenceDate);
+				// listWorkPlaceID2 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, referenceDate);
+				
+				// [No.573]職場の下位職場を基準職場を含めて取得する
+					listWorkPlaceID2 = workplaceAdapter.getWorkplaceIdAndChildren(AppContexts.user().companyId(), referenceDate, workPlaceID1);
+				
 			}
 			List<String> listResultWorkPlaceID = new ArrayList<>();
 			listResultWorkPlaceID.add(workPlaceID1);

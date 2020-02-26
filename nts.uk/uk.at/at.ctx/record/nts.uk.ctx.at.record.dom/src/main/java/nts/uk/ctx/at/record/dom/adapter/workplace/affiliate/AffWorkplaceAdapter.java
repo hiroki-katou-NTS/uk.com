@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 
 /**
  * The Interface AffWorkplaceAdapter.
@@ -48,20 +49,29 @@ public interface AffWorkplaceAdapter {
 	List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate);
 	
 	/**
-	 * 職場IDと基準日から上位職場を取得する
-	 * For KIF001 - update response
-	 * @param companyId
-	 * @param workPlaceId
-	 * @param baseDate
-	 * @return
-	 */
-	List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate);
-	
-	/**
 	 * KIF 001 - update response reqList 485
 	 * @param companyId
 	 * @param period
 	 * @return
 	 */
 	List<DatePeriod> getLstPeriod(String companyId, DatePeriod period);
+	
+	/**
+	 * [No.647期間に対応する職場構成を取得する
+	 *
+	 * @param companyId
+	 * @param datePeriod
+	 * @return List<職場構成>
+	 */
+	List<WorkPlaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod datePeriod);
+	
+	/**
+	 * [No.569]職場の上位職場を取得する
+	 * @param companyID
+	 * @param workplaceID
+	 * @param date
+	 * @return
+	 */
+	List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
+	
 }

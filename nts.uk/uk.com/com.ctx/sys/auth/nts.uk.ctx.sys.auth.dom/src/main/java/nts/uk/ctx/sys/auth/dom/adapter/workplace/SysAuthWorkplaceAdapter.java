@@ -63,5 +63,4 @@ public interface SysAuthWorkplaceAdapter {
      * @return
      */
     Optional<AffWorkplaceHistImport> findWkpByBaseDateAndEmpId(GeneralDate baseDate, String employeeId);
-
 }

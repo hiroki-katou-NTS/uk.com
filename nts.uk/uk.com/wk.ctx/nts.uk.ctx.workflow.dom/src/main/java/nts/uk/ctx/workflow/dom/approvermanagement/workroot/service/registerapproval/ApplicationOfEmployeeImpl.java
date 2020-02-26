@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappr
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,11 +11,10 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -26,7 +26,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
 	private ApprovalPhaseRepository phaseRespoitory;
 	/**
-	 * get root by application/confirm
+	 * 02.社員の対象申請の承認ルートを取得する
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> appOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
@@ -37,7 +37,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
+						&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType))
 				.collect(Collectors.toList());
 		if(lstPsRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 			lstPsRoots = lstPersonRootInfor
@@ -49,7 +49,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -62,28 +62,35 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprovalId(), 
 								x.getEmployeeId(), 
 								"",
-								x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getEmploymentAppHistoryItems().get(0).start(),
-								x.getEmploymentAppHistoryItems().get(0).end(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
+								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getHistoryItems().get(0).start(),
+								x.getApprRoot().getHistoryItems().get(0).end(),
+								x.getApprRoot().getBranchId(),
+								x.getApprRoot().getAnyItemApplicationId(),
+								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getEmploymentRootAtr().value,
+								x.getApprRoot().getNoticeId(),
+								x.getApprRoot().getBusEventId()))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}			
 		}
+		List<String> lstWkpId = new ArrayList<>();
+		//[No.650]社員が所属している職場を取得する
+		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
+		//[No.571]職場の上位職場を基準職場を含めて取得する
+		if(wkpid.isPresent()) {
+			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
+		}
 		
-		//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
-		List<String> findWpkIdsBySid = empAdapter.findWpkIdsBySid(companyID, sId, baseDate);
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: findWpkIdsBySid) {
+		for(String wpId: lstWkpId) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
-							&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType)))
+							&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType)))
 					.collect(Collectors.toList());
 			if(lstWpRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstWpRoots = lstWorkpalceRootInfor
@@ -96,7 +103,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstWpRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -108,14 +115,16 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprovalId(), 
 									"", 
 									x.getWorkplaceId(),
-									x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-									x.getEmploymentAppHistoryItems().get(0).start(),
-									x.getEmploymentAppHistoryItems().get(0).end(),
-									x.getBranchId(),
-									x.getAnyItemApplicationId(),
-									x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-									x.getEmploymentRootAtr().value))
+									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getHistoryItems().get(0).start(),
+									x.getApprRoot().getHistoryItems().get(0).end(),
+									x.getApprRoot().getBranchId(),
+									x.getApprRoot().getAnyItemApplicationId(),
+									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getEmploymentRootAtr().value,
+									x.getApprRoot().getNoticeId(),
+									x.getApprRoot().getBusEventId()))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}				
@@ -125,7 +134,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」): 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<CompanyApprovalRoot> lstRoots = lstCompanyRootInfor.stream()
 					.filter(x -> x.getCompanyId().equals(companyID)
-								&& this.checkByType(x.getConfirmationRootType(), x.getEmploymentRootAtr(), x.getApplicationType(), appType))
+								&& this.checkByType(this.typeV(x.getApprRoot()), this.typeS(x.getApprRoot()), x.getApprRoot().getEmploymentRootAtr().value, appType))
 					.collect(Collectors.toList());
 			if(lstRoots.isEmpty()){//TH: set cua type khong co -> lay theo common
 				lstRoots = lstCompanyRootInfor
@@ -137,7 +146,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(companyID, y.getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -149,23 +158,25 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprovalId(), 
 									"", 
 									"",
-									x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-									x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-									x.getEmploymentAppHistoryItems().get(0).start(),
-									x.getEmploymentAppHistoryItems().get(0).end(),
-									x.getBranchId(),
-									x.getAnyItemApplicationId(),
-									x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-									x.getEmploymentRootAtr().value))
+									x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+									x.getApprRoot().getHistoryItems().get(0).start(),
+									x.getApprRoot().getHistoryItems().get(0).end(),
+									x.getApprRoot().getBranchId(),
+									x.getApprRoot().getAnyItemApplicationId(),
+									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+									x.getApprRoot().getEmploymentRootAtr().value,
+									x.getApprRoot().getNoticeId(),
+									x.getApprRoot().getBusEventId()))
 							.collect(Collectors.toList());
 					return rootOutputs;
 				}
 			}
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	/**
-	 * get root by common
+	 * 03.社員の共通の承認ルートを取得する
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> commonOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
@@ -187,21 +198,28 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprovalId(), 
 							x.getEmployeeId(), 
 							"",
-							x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-							x.getEmploymentAppHistoryItems().get(0).start(),
-							x.getEmploymentAppHistoryItems().get(0).end(),
-							x.getBranchId(),
-							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-							x.getEmploymentRootAtr().value))
+							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+							null, 
+							x.getApprRoot().getHistoryItems().get(0).start(),
+							x.getApprRoot().getHistoryItems().get(0).end(),
+							x.getApprRoot().getBranchId(),
+							x.getApprRoot().getAnyItemApplicationId(),
+							null,
+							x.getApprRoot().getEmploymentRootAtr().value,
+							x.getApprRoot().getNoticeId(),
+							x.getApprRoot().getBusEventId()))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
-		//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
-		List<String> findWpkIdsBySid = empAdapter.findWpkIdsBySid(companyID, sId, baseDate);
+		List<String> lstWkpId = new ArrayList<>();
+		//[No.650]社員が所属している職場を取得する
+		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
+		//[No.571]職場の上位職場を基準職場を含めて取得する
+		if(wkpid.isPresent()) {
+			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
+		}
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: findWpkIdsBySid) {
+		for(String wpId: lstWkpId) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(共通)
 			List<WorkplaceApprovalRoot> lstWpCommonRoots = lstWorkpalceRootInfor
 					.stream()
@@ -216,14 +234,16 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprovalId(), 
 								"", 
 								x.getWorkplaceId(),
-								x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-								x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-								x.getEmploymentAppHistoryItems().get(0).start(),
-								x.getEmploymentAppHistoryItems().get(0).end(),
-								x.getBranchId(),
-								x.getAnyItemApplicationId(),
-								x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-								x.getEmploymentRootAtr().value))
+								x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+								x.getApprRoot().getHistoryItems().get(0).start(),
+								x.getApprRoot().getHistoryItems().get(0).end(),
+								x.getApprRoot().getBranchId(),
+								x.getApprRoot().getAnyItemApplicationId(),
+								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+								x.getApprRoot().getEmploymentRootAtr().value,
+								x.getApprRoot().getNoticeId(),
+								x.getApprRoot().getBusEventId()))
 						.collect(Collectors.toList());
 				return rootOutputs;
 			}
@@ -241,14 +261,16 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprovalId(), 
 							"", 
 							"",
-							x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
-							x.getEmploymentAppHistoryItems().get(0).start(),
-							x.getEmploymentAppHistoryItems().get(0).end(),
-							x.getBranchId(),
-							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
-							x.getEmploymentRootAtr().value))
+							x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
+							x.getApprRoot().getHistoryItems().get(0).start(),
+							x.getApprRoot().getHistoryItems().get(0).end(),
+							x.getApprRoot().getBranchId(),
+							x.getApprRoot().getAnyItemApplicationId(),
+							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
+							x.getApprRoot().getEmploymentRootAtr().value,
+							x.getApprRoot().getNoticeId(),
+							x.getApprRoot().getBusEventId()))
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
@@ -263,19 +285,35 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	 * @param appTypes
 	 * @return
 	 */
-	private boolean checkByType(ConfirmationRootType confirmType, EmploymentRootAtr empRootAtr,
-			ApplicationType appType, AppTypes appTypes){
-		if(appTypes.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
-			if(appTypes.getEmpRoot() == empRootAtr.value && appTypes.getCode().equals(confirmType.value)){
-				return true;
-			}
-		}else{
-			if(appTypes.getEmpRoot() == empRootAtr.value && appTypes.getCode().equals(appType.value)){
+	private boolean checkByType(Integer typeV, String typeS, int empR, AppTypes appTypes){
+		if(empR == 0) {
+			if(appTypes.getEmpRoot() == 0) return true;
+		}else if(empR == 5) {
+			if(appTypes.getEmpRoot() == 5 && appTypes.getCode().equals(typeS)) return true;
+		}else {
+			if(appTypes.getEmpRoot() == empR && Integer.valueOf(appTypes.getCode()).equals(typeV)){
 				return true;
 			}
 		}
-		
 		return false;
 	}
 
+	private String typeS(ApprovalRoot apprRoot) {
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT)) {
+			return apprRoot.getBusEventId();
+		}
+		return null;
+	}
+	private Integer typeV(ApprovalRoot apprRoot) {
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION)) {
+			return apprRoot.getApplicationType().value;
+		}
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION)) {
+			return apprRoot.getConfirmationRootType().value;
+		}
+		if(apprRoot.getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE)) {
+			return apprRoot.getNoticeId();
+		}
+		return null;
+	}
 }

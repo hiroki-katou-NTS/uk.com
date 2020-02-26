@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jhc002.a.style.css" />
+			<com:scriptfile path="jhc002.a.vm.js" />
+			<com:scriptfile path="jhc002.a.service.js" />
+			<com:scriptfile path="jhc002.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" tabindex="1" data-bind="click: save, enable: selectedHistId() != '' &amp;&amp; selectedHistId() == latestCareerPathHist()">#{i18n.getText('JHC002_A1_1')}</button>
+				<button tabindex="2" data-bind="enable: selectedHistId() != '' &amp;&amp; historyModeUpdate()">#{i18n.getText('JHC002_A1_2')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="main-area">
+					<div id="main-center-area">
+						<div class="container cf">
+							<div style="height: 150px;">
+								<assy-com params="screenMode: screenMode, masterId: masterId, 
+								histList: histList, selectedHistId: selectedHistId,
+							 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
+							 	getQueryResult: getQueryResult,
+							 	webAppId: 'hr',
+							 	getSelectedStartDate: getSelectedStartDate,
+							 	commandAdd: commandAdd,
+							 	commandUpdate: commandUpdate,
+							 	commandDelete: commandDelete,
+							 	delVisible: delVisible,
+							 	delChecked: delChecked,
+							 	afterRender: afterRender,
+							 	afterAdd: afterAdd,
+							 	afterUpdate: afterUpdate,
+							 	afterDelete: afterDelete"
+							 	
+							 	></assy-com>
+							</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHC002_A222_2')}</div>
+							<div class="contentTable">
+								<div class="nts-fixed-body-container ui-iggrid">
+									<table class="rightTable">
+										<colgroup>
+											<col width="100px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" colspan="1">#{i18n.getText('JHC002_A222_5')}</th>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: careerType">
+											<tr>
+												<td><span data-bind="text: name"></span>
+													<button class="small" data-bind="click: $parent.openDialogB, enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enable">#{i18n.getText('JHC002_A222_10')}</button></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="table">
+									<table id="fixed-table">
+										<colgroup>
+											<com:ko-if bind="maxClassLevel() &gt; 0">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 1">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 2">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 3">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 4">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 5">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 6">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 7">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 8">
+												<col width="165px" />
+											</com:ko-if>
+											<com:ko-if bind="maxClassLevel() &gt; 9">
+												<col width="165px" />
+											</com:ko-if>
+										</colgroup>
+										<thead>
+											<tr>
+												<com:ko-if bind="maxClassLevel() &gt; 0">
+													<th class="ui-widget-header lever1" colspan="1">#{i18n.getText('JHC002_A222_7')} 1</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 1">
+													<th class="ui-widget-header lever2" colspan="1">#{i18n.getText('JHC002_A222_7')} 2</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 2">
+													<th class="ui-widget-header lever3" colspan="1">#{i18n.getText('JHC002_A222_7')} 3</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 3">
+													<th class="ui-widget-header lever4" colspan="1">#{i18n.getText('JHC002_A222_7')} 4</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 4">
+													<th class="ui-widget-header lever5" colspan="1">#{i18n.getText('JHC002_A222_7')} 5</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 5">
+													<th class="ui-widget-header lever6" colspan="1">#{i18n.getText('JHC002_A222_7')} 6</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 6">
+													<th class="ui-widget-header lever7" colspan="1">#{i18n.getText('JHC002_A222_7')} 7</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 7">
+													<th class="ui-widget-header lever8" colspan="1">#{i18n.getText('JHC002_A222_7')} 8</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 8">
+													<th class="ui-widget-header lever9" colspan="1">#{i18n.getText('JHC002_A222_7')} 9</th>
+												</com:ko-if>
+												<com:ko-if bind="maxClassLevel() &gt; 9">
+													<th class="ui-widget-header lever10" colspan="1">#{i18n.getText('JHC002_A222_7')} 10</th>
+												</com:ko-if>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: listCareerType">
+											<tr>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 0">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l1,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel1,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 1">
+													<td><div id="combo-box" data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l2,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel2,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 2">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l3,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel3,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 3">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l4,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel4,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 4">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l5,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel5,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 5">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l6,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel6,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 6">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l7,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel7,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 7">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l8,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel8,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 8">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l9,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel9,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+												<com:ko-if bind="$parent.maxClassLevel() &gt; 9">
+													<td><div id="combo-box"
+															data-bind="ntsComboBox: {
+														options: $parent.careerClass,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: l10,
+														optionsText: 'name',
+														width: 160,
+														enable: $parent.selectedHistId() == $parent.latestCareerPathHist() &amp;&amp; enablel10,
+														columns: [ { prop: 'name', length: 4 },]}">
+														</div></td>
+												</com:ko-if>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

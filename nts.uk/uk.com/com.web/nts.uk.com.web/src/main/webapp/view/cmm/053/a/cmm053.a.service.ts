@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm053.a.service {
     var paths: any = {
         getSettingManager: "screen/com/cmm053/find/settingOfManager/{0}",
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
-        getWpName: "screen/com/kcp010/getLoginWkp",
+        getWpName: "workflow/approvermanagement/workroot/find-wpInfo-login",
         getEmployeeByCode: "workflow/approvermanagement/workroot/find/getEmployeeByCode",
         getPastHistory: "workflow/approvermanagement/workroot/find/settingOfManager/getPastHistory/{0}",
         insertHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/insert",

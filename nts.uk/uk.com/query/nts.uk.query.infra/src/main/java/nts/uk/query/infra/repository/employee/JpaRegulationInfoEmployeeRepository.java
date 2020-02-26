@@ -77,17 +77,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private static final String FIND_WORKPLACE = "SELECT awh.sid, wi.wkpcd, wi.bsymtWorkplaceInfoPK.wkpid, wi.wkpName"
+	private static final String FIND_WORKPLACE = "SELECT awh.sid, wi.workplaceCode, wi.pk.workplaceId, wi.workplaceName"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
-			+ " LEFT JOIN BsymtWorkplaceHist wh ON wh.bsymtWorkplaceHistPK.wkpid = awhi.workPlaceId"
-			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId"
-			+ " AND wi.bsymtWorkplaceInfoPK.wkpid = wh.bsymtWorkplaceHistPK.wkpid"
+			+ " LEFT JOIN BsymtWorkplaceInfor wi ON wi.pk.workplaceId = awhi.workPlaceId"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
-			+ " AND awh.endDate >= :refDate"
-			+ " AND wh.strD <= :refDate"
-			+ " AND wh.endD >= :refDate";
+			+ " AND awh.endDate >= :refDate";
 
 	private static final String EMPTY_LIST = "EMPTY_LIST";
 	private static final Integer ELEMENT_300 = 300;

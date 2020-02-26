@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="test.requestlist.start.js" />
+			<com:scriptfile path="test.requestlist.service.js" />
+			<com:scriptfile path="test.requestlist.vm.js" />
+			<com:stylefile path="test.requestlist.css" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div data-bind="ntsAccordion: { }">
+				<h3>559</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<button data-bind="click : run559">実行</button>
+					<h3>Output</h3>
+					<table>
+						<colgroup>
+							<col width="300px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" >workplaceId</th>
+								<th class="ui-widget-header" >hierarchyCode</th>
+								<th class="ui-widget-header" >workplaceCode</th>
+								<th class="ui-widget-header" >workplaceName</th>
+								<th class="ui-widget-header" >workplaceDisplayName</th>
+								<th class="ui-widget-header" >workplaceGenericName</th>
+								<th class="ui-widget-header" >workplaceExternalCode</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: data559">
+							<tr>
+								<td data-bind="text: workplaceId"></td>
+								<td data-bind="text: hierarchyCode"></td>
+								<td data-bind="text: workplaceCode"></td>
+								<td data-bind="text: workplaceName"></td>
+								<td data-bind="text: workplaceDisplayName"></td>
+								<td data-bind="text: workplaceGenericName"></td>
+								<td data-bind="text: workplaceExternalCode"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>560</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">listWorkplaceId</div>
+					<input data-bind="ntsTextEditor: {value: listWorkplaceId, option: {placeholder:'Id1, Id2, Id3...'}}"  />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<button data-bind="click : run560">実行</button>
+					<h3>Output</h3>
+					<table>
+						<colgroup>
+							<col width="300px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" >workplaceId</th>
+								<th class="ui-widget-header" >hierarchyCode</th>
+								<th class="ui-widget-header" >workplaceCode</th>
+								<th class="ui-widget-header" >workplaceName</th>
+								<th class="ui-widget-header" >workplaceDisplayName</th>
+								<th class="ui-widget-header" >workplaceGenericName</th>
+								<th class="ui-widget-header" >workplaceExternalCode</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: data560">
+							<tr>
+								<td data-bind="text: workplaceId"></td>
+								<td data-bind="text: hierarchyCode"></td>
+								<td data-bind="text: workplaceCode"></td>
+								<td data-bind="text: workplaceName"></td>
+								<td data-bind="text: workplaceDisplayName"></td>
+								<td data-bind="text: workplaceGenericName"></td>
+								<td data-bind="text: workplaceExternalCode"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>561</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">historyId</div>
+					<input data-bind="ntsTextEditor: {value: historyId}" />
+					<div data-bind="ntsFormLabel: {}">listWorkplaceId</div>
+					<input data-bind="ntsTextEditor: {value: listWorkplaceId, option: {placeholder:'Id1, Id2, Id3...'}}"  />
+					<button data-bind="click : run561">実行</button>
+					<h3>Output</h3>
+					<table>
+						<colgroup>
+							<col width="300px" />
+							<col width="150px" />
+							<col width="150px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+							<col width="200px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" >workplaceId</th>
+								<th class="ui-widget-header" >hierarchyCode</th>
+								<th class="ui-widget-header" >workplaceCode</th>
+								<th class="ui-widget-header" >workplaceName</th>
+								<th class="ui-widget-header" >workplaceDisplayName</th>
+								<th class="ui-widget-header" >workplaceGenericName</th>
+								<th class="ui-widget-header" >workplaceExternalCode</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: data561">
+							<tr>
+								<td data-bind="text: workplaceId"></td>
+								<td data-bind="text: hierarchyCode"></td>
+								<td data-bind="text: workplaceCode"></td>
+								<td data-bind="text: workplaceName"></td>
+								<td data-bind="text: workplaceDisplayName"></td>
+								<td data-bind="text: workplaceGenericName"></td>
+								<td data-bind="text: workplaceExternalCode"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>567</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<div data-bind="ntsFormLabel: {}">parentWorkplaceId</div>
+					<input data-bind="ntsTextEditor: {value: parentWorkplaceId}" />
+					<button data-bind="click : run567">実行</button>
+					<h3>Output</h3>
+					<input style="width:1000px" data-bind="ntsTextEditor: {value: data567, enable: false}" />
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>569</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<div data-bind="ntsFormLabel: {}">workplaceId</div>
+					<input data-bind="ntsTextEditor: {value: workplaceId}" />
+					<button data-bind="click : run569">実行</button>
+					<h3>Output</h3>
+					<input style="width:1000px" data-bind="ntsTextEditor: {value: data569, enable: false}" />
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>571</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<div data-bind="ntsFormLabel: {}">workplaceId</div>
+					<input data-bind="ntsTextEditor: {value: workplaceId}" />
+					<button data-bind="click : run571">実行</button>
+					<h3>Output</h3>
+					<input style="width:1000px" data-bind="ntsTextEditor: {value: data571, enable: false}" />
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>573</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">baseDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: baseDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<div data-bind="ntsFormLabel: {}">workplaceId</div>
+					<input data-bind="ntsTextEditor: {value: workplaceId}" />
+					<button data-bind="click : run573">実行</button>
+					<h3>Output</h3>
+					<input style="width:1000px" data-bind="ntsTextEditor: {value: data573, enable: false}" />
+				</div>
+				
+			</div>
+			<div data-bind="ntsAccordion: { }">
+				<h3>647</h3>
+				<div>
+					<h3>Input</h3>
+					<div data-bind="ntsFormLabel: {}">companyId</div>
+					<input data-bind="ntsTextEditor: {value: companyId}" />
+					<div data-bind="ntsFormLabel: {}">startDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: startDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<div data-bind="ntsFormLabel: {}">endDate</div>
+					<div data-bind="ntsDatePicker: {name: '', value: endDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
+					<button data-bind="click : run647">実行</button>
+					<h3>Output</h3>
+					<table>
+						<colgroup>
+							<col width="150px" />
+							<col width="500px" />
+							<col width="150px" />
+							<col width="150px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" >companyId</th>
+								<th class="ui-widget-header" >historyId</th>
+								<th class="ui-widget-header" >startDate</th>
+								<th class="ui-widget-header" >endDate</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: data647">
+							<tr>
+								<td data-bind="text: companyId"></td>
+								<td data-bind="text: historyId"></td>
+								<td data-bind="text: startDate"></td>
+								<td data-bind="text: endDate"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

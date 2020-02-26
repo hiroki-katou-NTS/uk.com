@@ -80,13 +80,13 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 			return null;
 		}
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate).map(x -> Arrays.asList(x)).orElse(Collections.emptyList());
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate, 0).map(x -> Arrays.asList(x)).orElse(Collections.emptyList());
 		if (CollectionUtil.isEmpty(comInfo)) {
 			// TODO thuc hien khi co tra loi QA
 			// return null;
 		} else {
 			List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
-					.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
+					.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 					.collect(Collectors.toList());
 			if (!CollectionUtil.isEmpty(comInfoCommon)) {
 				return null;
@@ -96,9 +96,9 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 		// 就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là
 		// common)
 		// ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-		List<WorkplaceApprovalRoot> wpInfo = wpRootRepository.findAllByBaseDate(companyId, baseDate);
+//		List<WorkplaceApprovalRoot> wpInfo = wpRootRepository.findAllByBaseDate(companyId, baseDate);
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
+//		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
 		// 承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
 		for (EmployeeImport empInfor : lstEmps) {
@@ -106,12 +106,12 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 			for (ApplicationType appType : ApplicationType.values()) {
 				// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân
 				// viên)
-				boolean isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, comInfo, wpInfo, psInfo,
-						empInfor, appType, baseDate);
+////				boolean isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, comInfo, wpInfo, psInfo,
+//						empInfor, appType, baseDate);
 				// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
-				if (!isEmpRoot) {
-					appTypes.add(appType.nameId);
-				}
+//				if (!isEmpRoot) {
+//					appTypes.add(appType.nameId);
+//				}
 			}
 
 			if (!CollectionUtil.isEmpty(appTypes)) {

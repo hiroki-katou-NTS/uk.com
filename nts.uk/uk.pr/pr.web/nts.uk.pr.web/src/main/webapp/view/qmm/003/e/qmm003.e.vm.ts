@@ -1,140 +1,144 @@
-module qmm003.e.viewmodel {
+module nts.uk.pr.view.qmm003.e.viewmodel {
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import setShared = nts.uk.ui.windows.setShared;
+    import constants = qmm003.share.constants;
+
     export class ScreenModel {
-        treeLeft: KnockoutObservableArray<ResidentialTaxNode>;
-        treeRight: KnockoutObservableArray<ResidentialTaxNode>;
-        resiTaxCodeLeft: KnockoutObservableArray<string>;
-        resiTaxCodeRight: KnockoutObservable<string>;
-        filteredData: KnockoutObservableArray<ResidentialTaxNode> = ko.observableArray([]);
-        nodeRegionPrefectures: KnockoutObservableArray<ResidentialTaxNode> = ko.observableArray([]);
-        japanLocation: Array<qmm003.b.service.model.RegionObject> = [];
-        precfecture: Array<ResidentialTaxNode> = [];
-        itemPrefecture: KnockoutObservableArray<ResidentialTaxNode> = ko.observableArray([]);
-        residentalTaxList: KnockoutObservableArray<qmm003.e.service.model.ResidentialTax> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable("");
-        year: KnockoutObservable<number> = ko.observable(null);
-        yearJapan: KnockoutObservable<string> = ko.observable("");
-        yes: boolean = true;
+        
+        source: KnockoutObservableArray<any>;
+        destination: KnockoutObservableArray<any>;
+        sourceSelectedCodes: KnockoutObservableArray<string>;
+        selectedCode: KnockoutObservable<string>;
+        headers: any;
+        listRegions: Array<any> = constants.listRegions;
+        listPrefectures: Array<any>;
+        listRsdTaxPayeeNodes: Array<Node> = [];
+        targetYm: KnockoutObservable<number>;
+        displayJapanYm: KnockoutObservable<string>;
+        enable: any;
 
         constructor() {
             let self = this;
-            self.init();
-            self.year.subscribe(function(value) {
-                self.yearJapan("(" + nts.uk.time.yearInJapanEmpire(self.year()).toString() + ")");
-            });
-
+            self.source = ko.observableArray([]);
+            self.destination = ko.observableArray([]);
+            self.sourceSelectedCodes = ko.observableArray([]);
+            self.selectedCode = ko.observable("");
+            self.headers = ko.observableArray([getText("QMM003_9")]);
+            self.listPrefectures = constants.listPrefectures;
+            self.targetYm = ko.observable(moment.utc().year() * 100 + (moment.utc().month() + 1));
+            self.displayJapanYm = ko.computed(function() {
+                return self.targetYm() ? nts.uk.time.yearmonthInJapanEmpire(self.targetYm()).toString().split(' ').join('') : "";
+            }, this);
+            self.enable = ko.computed(() => {
+                return self.sourceSelectedCodes().length > 0 && self.selectedCode().length > 0 && self.selectedCode().indexOf("_") != 0;
+            }, this);
         }
-
-        clickButton(): any {
-            let self = this;
-            self.yes = true;
-            nts.uk.ui.windows.setShared('yes', self.yes, true);
-            if (self.resiTaxCodeLeft() && self.resiTaxCodeRight() && self.year()) {
-                service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight(), self.year()).done(function(data: any) {
-                    nts.uk.ui.windows.close();
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-            } else {
-                if (nts.uk.text.isNullOrEmpty(self.year())) {
-                    //error 07, 01
-                    nts.uk.ui.dialog.alert("対象年度  が入力されていません。");
-                } else if (self.resiTaxCodeLeft().length === 0 || nts.uk.text.isNullOrEmpty(self.resiTaxCodeRight())) {
-                    //error 07
-                    nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                }
-
-            }
-        }
-
-        cancelButton(): void {
-            this.yes = false;
-            nts.uk.ui.windows.setShared('yes', this.yes, true);
-            nts.uk.ui.windows.close();
-        }
-
-        init(): void {
-            let self = this;
-            self.treeLeft = ko.observableArray([]);
-            self.treeRight = ko.observableArray([]);
-            self.resiTaxCodeLeft = ko.observableArray([]);
-            self.resiTaxCodeRight = ko.observable("");
-        }
-        //11.初期データ取得処理 11. Initial data acquisition processing
-        start(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
-            let self = this;
-            (qmm003.e.service.getResidentialTax()).done(function(data: Array<qmm003.e.service.model.ResidentialTax>) {
-                if (data.length > 0) {
-                    self.residentalTaxList(data);
-                    (qmm003.e.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
-                        self.japanLocation = locationData;
-                        self.itemPrefecture(self.precfecture);
-                        self.buildResidentalTaxTree();
-                        let node: Array<ResidentialTaxNode> = [];
-                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
-                        self.filteredData(node);
-                        self.treeLeft(self.nodeRegionPrefectures());
-                        self.treeRight(self.nodeRegionPrefectures());
+        
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.getAllResidentTaxPayee().done((data: Array<any>) => {
+                let listNodes = [];
+                self.listRegions.forEach(r => {
+                    let regionNode = new Node(r.code, r.name, [], 0);
+                    let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
+                    let prefectureNodes = [];
+                    prefectures.forEach(pr => {
+                        let prefectureNode = new Node(pr.code < 10 ? "_0" + pr.code : "_" + pr.code, pr.name, [], 1);
+                        if (data.length > 0) {
+                            let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
+                            let residentNodes = _.map(residentTaxPayees, rs => {
+                                let node = new Node(rs.code, rs.name, [], 2);
+                                self.listRsdTaxPayeeNodes.push(node);
+                                return node;
+                            });
+                            prefectureNode.children = residentNodes;
+                        }
+                        prefectureNodes.push(prefectureNode);
+                        self.listRsdTaxPayeeNodes.push(prefectureNode);
                     });
-                } else {
-                    nts.uk.ui.dialog.alert("対象データがありません。");
-                }
+                    regionNode.children = prefectureNodes;
+                    listNodes.push(regionNode);
+                    self.listRsdTaxPayeeNodes.push(regionNode);
+                });
+                self.source(listNodes);
+                self.destination(listNodes);
                 dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+            }).fail(error => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
 
-        buildResidentalTaxTree() {
+        execute() {
             let self = this;
-            var child = [];
-            let i = 0;
-            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTaxDetailDto) {
-                _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
-                    let isChild: boolean = false;
-                    let isPrefecture: boolean = false;
-                    _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
-                        if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                            _.each(self.nodeRegionPrefectures(), function(obj: ResidentialTaxNode) {
-                                if (obj.code === objRegion.regionCode) {
-                                    _.each(obj.childs, function(objChild: ResidentialTaxNode) {
-                                        if (objChild.code === objPrefecture.prefectureCode) {
-                                            objChild.childs.push(new ResidentialTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
-                                            isPrefecture = true;
-                                        }
+            $(".nts-input").filter(":enabled").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                let sourceBranchIds = [];
+                self.sourceSelectedCodes().forEach(nodeId => {
+                    if (nodeId.indexOf("_") == 0) {
+                        let node = _.find(self.listRsdTaxPayeeNodes, n => n.code == nodeId);
+                        if (node) {
+                            if (node.level == 1) {
+                                node.children.forEach(c => {
+                                    sourceBranchIds.push(c.code);
+                                });
+                            } else {
+                                node.children.forEach(c => {
+                                    c.children.forEach(r => {
+                                        sourceBranchIds.push(r.code);
                                     });
-                                    if (isPrefecture === false) {
-                                        obj.childs.push(new ResidentialTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new ResidentialTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
-                                    }
-                                    isChild = true;
-                                }
-                            });
-                            if (isChild === false) {
-                                let chi = [];
-                                self.nodeRegionPrefectures.push(new ResidentialTaxNode(objRegion.regionCode, objRegion.regionName, [new ResidentialTaxNode(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new ResidentialTaxNode(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                });
                             }
                         }
-                    });
+                    }                       
+                    else {
+                        sourceBranchIds.push(nodeId);
+                    }
                 });
-
-            });
+                let command = { sourceCode: sourceBranchIds, 
+                                destinationCode: self.selectedCode(), 
+                                targetYm: self.targetYm() };
+                service.integration(command).done(() => {
+                    nts.uk.ui.windows.close();
+                }).always(() => {
+                    block.clear;
+                });
+            }
         }
+
+        close() {
+            nts.uk.ui.windows.close();
+        }
+
     }
-    export class ResidentialTaxNode {
+
+    class Node {
         code: string;
+        searchCode: string;
         name: string;
         nodeText: string;
-        custom: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<ResidentialTaxNode>) {
+        children: any;
+        level: number; //0: region, 1: prefecture, 2: resident
+        
+        constructor(code: string, name: string, children: Array<Node>, level?: number) {
             let self = this;
             self.code = code;
-            self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
+            self.searchCode = level == 2 ? code : "";
+            self.name = level == 2 ? name : "";
+            self.nodeText = level == 2 ? _.escape(code + ' ' + name) : _.escape(name);
+            self.children = children;
+            if (level != null) self.level = level;
         }
     }
 
+}
 
-};

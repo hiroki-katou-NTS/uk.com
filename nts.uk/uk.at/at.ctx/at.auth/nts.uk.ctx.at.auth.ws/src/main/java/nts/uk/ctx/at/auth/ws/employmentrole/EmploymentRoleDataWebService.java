@@ -13,6 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.logging.log4j.util.Strings;
+
 //import nts.arc.error.BusinessException;
 //import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmd;
@@ -97,4 +99,14 @@ public class EmploymentRoleDataWebService {
 				: false;
 	}
 
+	//HOATT - CMM018_2
+	@POST
+	@Path("getemproleSet")
+	public EmploymentRoleDataDto getEmpRoleSet() {
+		String roleAtId = AppContexts.user().roles().forAttendance();
+		if(roleAtId == null || Strings.isBlank(roleAtId)) return null;		
+		//就業ロールを取得
+		EmploymentRoleDataDto data = this.employmentRoleFinder.getEmploymentRoleById(roleAtId);
+		return data;
+	}
 }

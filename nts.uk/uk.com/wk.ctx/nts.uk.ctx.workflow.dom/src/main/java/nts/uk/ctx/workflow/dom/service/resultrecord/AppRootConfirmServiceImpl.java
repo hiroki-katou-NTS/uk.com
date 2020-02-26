@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -18,7 +16,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseConfirm;
@@ -210,17 +208,14 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 		appPhaseInstance.getListAppFrame().forEach(frameInstance -> {
 			ApprovalFrame approvalFrame = new ApprovalFrame();
-			approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-			approvalFrame.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 			approvalFrame.setFrameOrder(frameInstance.getFrameOrder());
 			approvalFrame.setConfirmAtr(frameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
-			approvalFrame.setListApproverState(new ArrayList<>());
+			approvalFrame.setLstApproverInfo(new ArrayList<>());
 			frameInstance.getListApprover().forEach(approver -> {
-				ApproverState approverState = new ApproverState();
-				approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-				approverState.setFrameOrder(frameInstance.getFrameOrder());
+				ApproverInfor approverState = new ApproverInfor();
+				approverState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				approverState.setApproverID(approver);
-				approvalFrame.getListApproverState().add(approverState);
+				approvalFrame.getLstApproverInfo().add(approverState);
 			});
 			approvalPhaseState.getListApprovalFrame().add(approvalFrame);
 		});
@@ -229,10 +224,12 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 					.filter(frameConfirm -> frameConfirm.getFrameOrder()==frame.getFrameOrder()).findAny();
 			if(opAppFrameConfirm.isPresent()){
 				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
-				frame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-				frame.setApproverID(appFrameConfirm.getApproverID().orElse(""));
-				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(""));
-				frame.setApprovalDate(appFrameConfirm.getApprovalDate());
+				if(!CollectionUtil.isEmpty(frame.getLstApproverInfo())) {
+					frame.getLstApproverInfo().get(0).setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+					frame.getLstApproverInfo().get(0).setApproverID(appFrameConfirm.getApproverID().orElse(""));
+					frame.getLstApproverInfo().get(0).setAgentID(appFrameConfirm.getRepresenterID().orElse(""));
+				}
+				frame.setAppDate(appFrameConfirm.getApprovalDate());
 			}
 		});
 		return approvalPhaseState;
@@ -256,32 +253,32 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		// 解除できるフラグ = false(初期化)
 		boolean canCancel = false;
 		// 「承認フェーズインスタンス」．承認形態をチェックする
-		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
-			// 指定する社員が承認を行った承認者かチェックする
-			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-					.filter(frame -> (Strings.isNotBlank(frame.getApproverID())&&frame.getApproverID().equals(employeeID)) || 
-							(Strings.isNotBlank(frame.getRepresenterID())&&frame.getRepresenterID().equals(employeeID))).findAny();
-			if(opApprovalFrame.isPresent()){
-				// 解除できるフラグ = true
-				canCancel = true;
-			}
-		} else {
-			// 確定者を設定したかチェックする(kiểm tra có cài đặt 確定者 hay không)
-			Optional<ApprovalFrame> opFrameConfirm = approvalPhaseState.getListApprovalFrame().stream()
-					.filter(frame -> frame.getConfirmAtr()==ConfirmPerson.CONFIRM).findAny();
-			if(opFrameConfirm.isPresent()){
-				// 指定する社員が確定者として承認を行ったかチェックする
-				ApprovalFrame approvalFrame = opFrameConfirm.get();
-				if(approvalFrame.getApproverID().equals(employeeID) || approvalFrame.getRepresenterID().equals(employeeID)){
-					canCancel = true;
-				}
-			} else {
-				// 指定する社員が承認を解除できるか
-				if (approvalPhaseState.canRelease(employeeID)) {
-					canCancel = true;
-				}
-			}
-		}
+//		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
+//			// 指定する社員が承認を行った承認者かチェックする
+//			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
+//					.filter(frame -> (Strings.isNotBlank(frame.getApproverID())&&frame.getApproverID().equals(employeeID)) || 
+//							(Strings.isNotBlank(frame.getRepresenterID())&&frame.getRepresenterID().equals(employeeID))).findAny();
+//			if(opApprovalFrame.isPresent()){
+//				// 解除できるフラグ = true
+//				canCancel = true;
+//			}
+//		} else {
+//			// 確定者を設定したかチェックする(kiểm tra có cài đặt 確定者 hay không)
+//			Optional<ApprovalFrame> opFrameConfirm = approvalPhaseState.getListApprovalFrame().stream()
+//					.filter(frame -> frame.getConfirmAtr()==ConfirmPerson.CONFIRM).findAny();
+//			if(opFrameConfirm.isPresent()){
+//				// 指定する社員が確定者として承認を行ったかチェックする
+//				ApprovalFrame approvalFrame = opFrameConfirm.get();
+//				if(approvalFrame.getApproverID().equals(employeeID) || approvalFrame.getRepresenterID().equals(employeeID)){
+//					canCancel = true;
+//				}
+//			} else {
+//				// 指定する社員が承認を解除できるか
+//				if (approvalPhaseState.canRelease(employeeID)) {
+//					canCancel = true;
+//				}
+//			}
+//		}
 		return canCancel;
 	}
 

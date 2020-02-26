@@ -39,8 +39,8 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 		List<String> employeeIdLst = employee.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		// get worplaces: employee info
 		//01.申請者としての承認ルートを取得する
-		DataSourceApproverList wpApprover = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
-				employeeIdLst, query.getLstApps());
+		DataSourceApproverList wpApprover = registerApprovalRoot.lstEmps(companyId, query.getSysAtr(),
+				query.getBaseDate(), employeeIdLst, query.getLstApps());
 		//check data
 		if (wpApprover.getWpApprover().isEmpty()) {
 			throw new BusinessException("Msg_7");

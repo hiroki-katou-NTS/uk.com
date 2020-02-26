@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="contents-area cf">
+			<div class="contents-area cf" style ="padding-top: 20px;">
+				<div id="label-1">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHN001_A222_6')}</div>
+				</div>
+				<div id="table-1">
+					<table id="table-list-document">
+						<tbody data-bind="foreach: listDocument">
+							<tr>
+								<td>
+									<span  data-bind ="text: docName"></span>
+								</td>
+								<td>
+									<span style="text-align: left; padding-left: 5px;" data-bind="text: ngoactruoc"></span>
+									<span data-bind="html: sampleFileName, click: $parent.clickSampleFileName($data)"></span>
+									<span data-bind="text: ngoacsau"></span>
+								</td>
+								<td><span style="text-align: left; padding-left: 5px;"
+									      data-bind="html : fileName, click: $parent.clickFileName($data)"></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>
+
+

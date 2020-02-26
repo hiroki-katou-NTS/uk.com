@@ -10,16 +10,11 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         listSystemType: KnockoutObservableArray<any>;
         selectedSystemType: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-        restrictionOfReferenceRange: boolean;
-//        restrictionOfReferenceRange: KnockoutObservable<boolean>;
-        //end
+        restrictionOfReferenceRange: KnockoutObservable<boolean>;
         isDisplayUnselect: KnockoutObservable<boolean>;
         isShowBaseDate: KnockoutObservable<boolean>;
-        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//        selectedStartMode: KnockoutObservable<number>;
-//        listStartMode: KnockoutObservableArray<any>;
-        //end
+        selectedStartMode: KnockoutObservable<number>;
+        listStartMode: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -38,10 +33,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 {code : 5, name: '管理者', enable: self.enable}
             ]);
             self.selectedSystemType = ko.observable(5);
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            self.restrictionOfReferenceRange = true;
-//            self.restrictionOfReferenceRange = ko.observable(true);
-            //end
+            self.restrictionOfReferenceRange = ko.observable(true);
             self.isDisplayUnselect = ko.observable(false);
             self.isShowBaseDate = ko.observable(false);
 
@@ -51,20 +43,19 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                     self.isDisplayUnselect(false);
                 }
             });
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            self.selectMode.subscribe(mode => {
-//                if(mode && self.isDisplayUnselect()) {
-//                    nts.uk.ui.dialog.alert("Displaying Unselect Item is not available for Multiple Selection!");
-//                    self.selectMode(false);
-//                }
-//            });
-//
-//            self.listStartMode = ko.observableArray([
-//                {code : 0, name: 'Workplace'},
-//                {code : 1, name: 'Department'}
-//            ]);
-//            self.selectedStartMode = ko.observable(0);
-            //end
+
+            self.selectMode.subscribe(mode => {
+                if(mode && self.isDisplayUnselect()) {
+                    nts.uk.ui.dialog.alert("Displaying Unselect Item is not available for Multiple Selection!");
+                    self.selectMode(false);
+                }
+            });
+
+            self.listStartMode = ko.observableArray([
+                {code : 0, name: 'Workplace'},
+                {code : 1, name: 'Department'}
+            ]);
+            self.selectedStartMode = ko.observable(0);
         }
 
         /**
@@ -78,28 +69,22 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 baseDate: self.baseDate(),
                 isMultiple: self.selectMode(),
                 selectedSystemType: self.selectedSystemType(),
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,
+                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange(),
                 showNoSelection: self.isDisplayUnselect(),
                 isShowBaseDate: self.isShowBaseDate(),
-//                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange(),
-//                showNoSelection: self.isDisplayUnselect(),
-//                isShowBaseDate: self.isShowBaseDate(),
-//                startMode: self.selectedStartMode()
-                //end
+                startMode: self.selectedStartMode()
             }, true);
-
-            nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+            
+            let dialogWindow = nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml');
+            dialogWindow.setSize(400, 500);
+            dialogWindow.onClosed(function(): any {
                 // Check is cancel.
                 if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                     return;
                 }
                 //view all code of selected item
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
-//                var baseDateOutput = nts.uk.ui.windows.getShared('baseDateCDL008');
-                //end
+                var baseDateOutput = nts.uk.ui.windows.getShared('baseDateCDL008');
                 self.selectWorkplaceIds(output);
                 self.selectedBaseDate(baseDateOutput);
             })

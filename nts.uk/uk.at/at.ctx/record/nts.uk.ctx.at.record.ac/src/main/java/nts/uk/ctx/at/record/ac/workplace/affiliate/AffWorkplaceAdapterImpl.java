@@ -13,13 +13,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceConfigHistory;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 //import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -29,8 +33,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 
 	/** The wkp pub. */
+	
 	@Inject
-	private SyWorkplacePub wkpPub;
+	private WorkPlaceConfigPub workPlaceConfigPub;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter#findBySid(java.lang.String, nts.arc.time.GeneralDate)
@@ -38,7 +46,7 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	@Override
 	public Optional<AffWorkplaceDto> findBySid(String employeeId, GeneralDate baseDate) {
 
-		Optional<SWkpHistExport> opSWkpHistExport = this.wkpPub.findBySid(employeeId, baseDate);
+		Optional<SWkpHistExport> opSWkpHistExport = this.workplacePub.findBySid(employeeId, baseDate);
 		
 		AffWorkplaceDto affWorkplaceDto = new AffWorkplaceDto();
 		
@@ -53,7 +61,7 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 
 	@Override
 	public Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate) {
-		Optional<SWkpHistExport> opSWkpHistExport = this.wkpPub.findBySid(employeeId, baseDate);
+		Optional<SWkpHistExport> opSWkpHistExport = this.workplacePub.findBySid(employeeId, baseDate);
 		AffWorkPlaceSidImport affWorkPlaceSidImport = new AffWorkPlaceSidImport();
 		if(opSWkpHistExport.isPresent() && opSWkpHistExport != null){
 			affWorkPlaceSidImport = new AffWorkPlaceSidImport(opSWkpHistExport.get().getDateRange(),
@@ -71,30 +79,40 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	
 	@Override
 	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
-		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+		return this.workplacePub.findWpkIdsBySid(companyId ,employeeId, baseDate);
 	}
 	
 	@Override
 	public Map<GeneralDate, Map<String, List<String>>> findAffiliatedWorkPlaceIdsToRoot(String companyId, List<String> employeeId, DatePeriod baseDate){
-		return this.wkpPub.findWpkIdsBySids(companyId, employeeId, baseDate);
+		return this.workplacePub.findWpkIdsBySids(companyId, employeeId, baseDate);
 	}
 
 	@Override
 	public List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate) {
-		return this.wkpPub.findBySIdAndBaseDateV2(employeeIds, baseDate).stream().map(item -> {
+		return this.workplacePub.findBySIdAndBaseDateV2(employeeIds, baseDate).stream().map(item -> {
 			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
 		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate) {
-		return this.wkpPub.findParentWpkIdsByWkpId(companyId, workPlaceId, baseDate);
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period) {
+		List<DatePeriod> datePeriods = this.workplacePub.getLstPeriod(companyId, period);
+		return datePeriods;
 	}
 
 	@Override
-	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period) {
-		List<DatePeriod> datePeriods = this.wkpPub.getLstPeriod(companyId, period);
-		return datePeriods;
+	public List<WorkPlaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod datePeriod) {
+		return this.workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod).stream().map(item -> {
+			return new WorkPlaceConfig(item.getCompanyId(), item.getWkpConfigHistory().stream().map(i -> {
+				return new WorkplaceConfigHistory(i.getHistoryId(), i.getPeriod());
+			}).collect(Collectors.toList()));
+		}).collect(Collectors.toList());
 	}
-	
+
+	@Override
+	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date) {
+		
+		return this.workplacePub.getUpperWorkplace(companyID, workplaceID, date);
+	}
+
 }

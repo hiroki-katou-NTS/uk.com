@@ -1,7 +1,9 @@
-module qmm002.c {
+module nts.uk.pr.view.qmm002.c {
     __viewContext.ready(function() {
-        var screenModel = new qmm002.c.viewmodel.ScreenModel();
-        screenModel.startPage();
-        this.bind(screenModel);
+            var screenModel = new viewmodel.ScreenModel();
+            screenModel.startPage().done(function() {
+                __viewContext.bind(screenModel);
+                $("#treegridbankbranchsource_container").focus();
+            });
     });
 }

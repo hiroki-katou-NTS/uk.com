@@ -1,0 +1,83 @@
+#treegrid_container{
+	margin-left: 50px;
+	margin-right: 50px;
+	margin-top: 5px;
+}
+
+#treegrid_nodeText{
+	overflow: visible;
+} 
+
+/* #treegrid_container > div.ui-widget-header.ui-helper-reset{
+	overflow: visible !important;
+} */
+
+ /*#treegrid_nodeText > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useEventOrMenu > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useNotice > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+}
+
+#treegrid_useApproval > div.ntsControl.ntsHelpButton{
+	float: right;
+	margin-right: 10px;
+} */
+
+.sidebar-content{
+	overflow: inherit !important;
+}
+
+#button{
+	margin-left: 50px;
+	margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+#button button{
+    background: #fff;
+    padding: 3px 7px;
+}
+
+/* #treegrid_container,
+#treegrid_container #treegrid_scroll {
+	height: auto !important;
+} */
+
+/* #empty{
+	height: 30px;
+} */
+
+/* td div {
+	position: relative;
+	vertical-align: middle;
+} */
+
+/* .content-a{
+	height: 675px;
+} */
+
+
+.nts-treegridview .ui-iggrid-headertable tr:first-child {
+	    height: 40px !important;
+}
+
+.nts-treegridview .ui-iggrid-headertable th div.ntsControl.ntsHelpButton{
+    position: absolute;
+    left: 10px;
+    top: 3px;
+}
+
+.nts-treegridview .ui-iggrid-headertable th span.ui-iggrid-headertext {
+	margin-left: 40px !important;
+    width: calc(100% - 30px);
+    box-sizing: border-box;
+}

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<!-- <com:ValidatorScript>
+					
+			</com:ValidatorScript> -->
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jcm008.a.style.css" />
+			<com:scriptfile path="jcm008.a.start.js" />
+			<com:scriptfile path="jcm008.a.vm.js" />
+			<com:scriptfile path="jcm008.a.model.js" />
+			<com:scriptfile path="jcm008.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="reset" tabindex="1" class="proceed group-button-1" data-bind="click: register, disable: plannedRetirements().length === 0 || !$root.errors.isEmpty()">
+					#{i18n.getText('JCM008_A1_1')} </button>
+				<!-- A1_2 -->
+				<button id="register" tabindex="2" class="normal group-button-1" data-bind="click: exportExcel, disable: plannedRetirements().length === 0 || !$root.errors.isEmpty()">
+					#{i18n.getText('JCM008_A1_2')} </button>
+			</div>
+			<div id="contents-area">
+				<div id="message-area">
+
+				</div>
+				<div id="main-area" class="fixed-flex-layout">
+					<!-- A221-->
+					<div id="main-left-area" class="panel panel-frame fixed-flex-layout-left">
+						<ui:include src="main-left.xhtml" />
+					</div>
+					<div id="main-center-area" class="fixed-flex-layout-right">
+						<div id="info-accordion" data-bind="ntsAccordion: { active: true, collapsible: true}">
+							<h3>#{i18n.getText('JCM008_A222_11')}</h3>
+							<table id="retirementAgeInfo"></table>
+						</div>
+					</div>
+
+				</div>
+				<div class="emp-grid mt-20 fixed-flex-layout">
+					<table id="retirementDateSetting"></table>
+				</div>
+				<!-- A1_1 -->
+				<div class="employee-info-pop-up popup-panel ">
+					<div class="fixed-flex-layout">
+						<div id="pop-left" class="fixed-flex-layout-left mr-10">
+							<!-- A1_2 -->
+							<img id="emp-avatar" data-bind="attr:{src: employeeInfo().image}" alt="" onerror="javascript:this.src='images/avatar.png'"></img>
+						</div>
+						<div id="pop-right" class="fixed-flex-layout-right">
+							<!-- A1_3 -->
+							<h4 data-bind="text: employeeInfo().code"></h4>
+							<!-- A1_4 -->
+							<h4 data-bind="text: employeeInfo().name"></h4>
+							<!-- A1_5 -->
+							<h4 data-bind="text: employeeInfo().kanaName"></h4>
+							<!-- A1_6 -->
+							<h4 data-bind="text: employeeInfo().sex"></h4>
+							<h4>
+								<!-- A1_7 -->
+								<span data-bind="text: employeeInfo().dob" class="mr-10">
+								</span>
+								<!-- A1_8 -->
+								<span data-bind="text: employeeInfo().age">
+								</span>
+							</h4>
+						</div>
+					</div>
+					<div id="pop-bottom">
+						<!-- A1_9 -->
+						<!-- A1_10 -->
+						<p data-bind="if:employeeInfo().showDepartment">
+							#{i18n.getText('JAP0070_A1_9')}: <span
+								data-bind="text: employeeInfo().department"></span>
+						</p>
+						<!-- A1_11 -->
+						<!-- A1_12 -->
+						<p data-bind="if:employeeInfo().showPosition">
+							#{i18n.getText('JAP0070_A1_11')}: <span
+								data-bind="text: employeeInfo().position"></span>
+						</p>
+						<!-- A1_13 -->
+						<!-- A1_4 -->
+						<p data-bind="if:employeeInfo().showEmployment">
+							#{i18n.getText('JAP0070_A1_13')}: <span
+								data-bind="text: employeeInfo().employment"></span>
+						</p>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

@@ -23,8 +23,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
@@ -38,7 +39,7 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-	import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -55,8 +56,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd >= :startDate" + " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
 			+ " AND c.recordWorkWorktypeCode = :workTypeCode" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
-//	private String FIND_BY_LIST_DATE = "SELECT c " + " FROM KrcdtDaiPerWorkInfo c"
-//			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
+	private String FIND_BY_LIST_DATE = "SELECT c " + " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd IN :dates" + " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -112,24 +113,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId) {
-    	List<WorkInfoOfDailyPerformance> result = new ArrayList<>();
-    	
-    	String sql = "select * from KRCDT_DAI_PER_WORK_INFO h"
-				+ " where h.SID = ? ";
-		
-		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-			stmt.setString(1, employeeId);
-			
-			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				WorkInfoOfDailyPerformance ent = new WorkInfoOfDailyPerformance(rec.getString("SID"),rec.getGeneralDate("YMD"));
-				return ent;
-			});
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-//		List<WorkInfoOfDailyPerformance> data =  this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
-//				.setParameter("employeeId", employeeId).getList(c -> c.toDomain());
-		return result;
+		return this.queryProxy().query(FIND_BY_EMPLOYEE_ID, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId).getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -391,77 +376,35 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @SneakyThrows
 	@Override
 	public List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-    	List<String> subList = param.keySet().stream().collect(Collectors.toList());
-    	List<GeneralDate> subListDate = param.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-    	
-    	String subIn = NtsStatement.In.createParamsString(subList);
-    	String subInDate = NtsStatement.In.createParamsString(subListDate);
-
-		Map<String, Map<GeneralDate, List<ScheduleTimeSheet>>> scheTimes = new HashMap<>(); 
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_WORK_SCHEDULE_TIME WHERE SID IN (" + subIn + ") AND YMD IN (" + subInDate + ")")){
-			for (int i = 0; i < subList.size(); i++) {
-				stmt.setString(i + 1, subList.get(i));
-			}
-			
-			for (int i = 0; i < subListDate.size(); i++) {
-				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
-			}
-			
-			new NtsResultSet(stmt.executeQuery()).getList(c -> {
-				String sid = c.getString("SID");
-				GeneralDate ymd = c.getGeneralDate("YMD");
-				if(!scheTimes.containsKey(sid)){
-					scheTimes.put(sid, new HashMap<>());
-				}
-				if(!scheTimes.get(sid).containsKey(ymd)) {
-					scheTimes.get(sid).put(ymd, new ArrayList<>());
-				}
-				getScheduleTime(scheTimes, sid, ymd).add(new ScheduleTimeSheet(c.getInt("WORK_NO"), 
-						c.getInt("ATTENDANCE"), c.getInt("LEAVE_WORK")));
-				return null;
-			});
-		};
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAI_PER_WORK_INFO WHERE SID IN (" + subIn + ") AND YMD IN (" + subInDate + ")")){
-			for (int i = 0; i < subList.size(); i++) {
-				stmt.setString(i + 1, subList.get(i));
-			}
-			
-			for (int i = 0; i < subListDate.size(); i++) {
-				stmt.setDate(1 + i + subList.size(),  Date.valueOf(subListDate.get(i).localDate()));
-			}
-			
-			return new NtsResultSet(stmt.executeQuery()).getList(c -> {
-				Integer calcState = c.getInt("CALCULATION_STATE"), goStraight = c.getInt("GO_STRAIGHT_ATR"), 
-						backStraight = c.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = c.getInt("DAY_OF_WEEK");
-				String sid = c.getString("SID");
-				GeneralDate ymd = c.getGeneralDate("YMD");
-				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
-						new WorkInformation(c.getString("RECORD_WORK_WORKTIME_CODE"), c.getString("RECORD_WORK_WORKTYPE_CODE")), 
-						new WorkInformation(c.getString("SCHEDULE_WORK_WORKTIME_CODE"), c.getString("SCHEDULE_WORK_WORKTYPE_CODE")), 
-						calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
-						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
-						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
-						ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
-						getScheduleTime(scheTimes, sid, ymd));
-				domain.setVersion(c.getLong("EXCLUS_VER"));
-				return domain;
-			});
-		}
+		List<Object[]> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder(
+				"SELECT af, c from KrcdtDaiPerWorkInfo af LEFT JOIN af.scheduleTimes c ");
+		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
+		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
+		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream().filter(c -> {
+						KrcdtDaiPerWorkInfo af = (KrcdtDaiPerWorkInfo) c[0];
+						return p.get(af.krcdtDaiPerWorkInfoPK.employeeId).contains(af.krcdtDaiPerWorkInfoPK.ymd);
+					}).collect(Collectors.toList()));
+		});
+		return toDomainFromJoin(result);
 	}
 
-//	private List<WorkInfoOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
-//		return result.stream()
-//				.collect(Collectors.groupingBy(c1 -> c1[0],
-//						Collectors.collectingAndThen(Collectors.toList(),
-//								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtWorkScheduleTime) c[1])
-//										.collect(Collectors.toList()))))
-//				.entrySet().stream()
-//				.map(e -> KrcdtDaiPerWorkInfo.toDomain((KrcdtDaiPerWorkInfo) e.getKey(), e.getValue()))
-//				.collect(Collectors.toList());
-//	}
+	private List<WorkInfoOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
+		return result.stream()
+				.collect(Collectors.groupingBy(c1 -> c1[0],
+						Collectors.collectingAndThen(Collectors.toList(),
+								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtWorkScheduleTime) c[1])
+										.collect(Collectors.toList()))))
+				.entrySet().stream()
+				.map(e -> KrcdtDaiPerWorkInfo.toDomain((KrcdtDaiPerWorkInfo) e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
+	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override

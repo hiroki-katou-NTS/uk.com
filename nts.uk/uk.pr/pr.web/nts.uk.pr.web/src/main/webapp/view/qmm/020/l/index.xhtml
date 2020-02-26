@@ -2,93 +2,74 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <body>
-        <ui:composition template="../../../../master/dialog.xhtml">
-            <ui:define name="htmlHead">
-            	<com:stylefile path="qmm020.l.main.css" />
-				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
-				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
-            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
-				<com:scriptfile path="qmm020.l.start.js" />
-				<com:scriptfile path="qmm020.l.viewmodel.js" />
-				<com:scriptfile path="qmm020.l.service.js" />
-			    <script>var dialogSize = { width: 560, height: 520};</script>
-			    <style>.nts-list-box *{box-sizing: border-box} </style>		
-            </ui:define>
-            <ui:define name="content">
-			<!--<div id="functions-area"></div> -->
-            	<div id="contents-area" style="margin-left : 10px; margin-top: 10px">
-					<div class="cf">
-						<div><label id="L_LBL_001">明細書を設定する単位を選択してください。</label></div><br />
-						<div class ="label warning" style="margin-bottom: 10px;">運用途中で切り換える場合、変更前と変更後の明細項目の間で漏れがない様に確認してください。（漏れがある場合、未払いの原因になります。</div>
-						<table style="width:100%">
-							<tr>
-								<td style="width:150px">
-									<div class="form-label inline required">
-										<label id="L_LBL_003">会社</label>
-									</div>
-								</td>
-								<td>
-									<label id="L_LBL_004">利用する</label>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="form-label inline required">
-										<label id="L_LBL_005">マスタ</label>
-									</div>
-								</td>
-								<td>
-									<div class="cf" data-bind="ntsSwitchButton: {
-										options: roundingRulesMaster,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedRuleCodeMaster
-										}">
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>
-									<div id="L_SEL_001" data-bind="ntsRadioBoxGroup: {
-										options: itemListRadio,
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: selectedId,
-										enable: enable}">	
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="form-label inline required">
-										<label id="L_LBL_006">個人</label>
-									</div>
-								</td>
-								<td>
-									<div class="cf" data-bind="ntsSwitchButton: {
-										options: roundingRulesEmployee,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedRuleCodeEmployee
-										}">
-									</div>
-								</td>
-							</tr>
-						</table>
-						<br />
-					</div>
-						<hr></hr>
-					<div>
-						<button class="x-large proceed" id = "L_BTN_001" data-bind="click: settingScreen, enable: $root.errors.isEmpty">決定</button>
-						<button class="large" id="L_BTN_002" data-bind="click: closeDialog">キャンセル</button><br />
-					</div>
-				</div>
-            </ui:define>
-    	</ui:composition>
-   	</body>
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 525, height: 620};</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm020.l.vm.js" />
+        <com:scriptfile path="qmm020.l.start.js" />
+        <com:scriptfile path="qmm020.l.service.js" />
+        <com:stylefile path="qmm020.l.style.css" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="title" style="margin-bottom: 10px">
+                <span id="L1_1" class="label" style="margin-bottom: 10px; font-size: 19px;">#{i18n.getText('QMM020_71')}</span>
+                <span id="L1_2" class="label warning">#{i18n.getText('QMM020_72')}</span>
+            </div>
+
+            <div class="control-group" style="margin-left:10px">
+                <div id="L1_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_73')}</div>
+                <span style="margin-left: 20px" id="L1_4" class="label">#{i18n.getText('QMM020_74')}</span>
+            </div>
+            <div class="control-group" style="margin-left:10px" id="control-group-l5-l6">
+                <div id="L1_5" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
+                <div id="L1_6" tabindex="1" class="cf" data-bind="ntsSwitchButton: {
+                                        name: '#{i18n.getText('QMM020_76')}',
+                                        options: masterUse,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: selectedMasterUse,
+                                        required: true,
+                                        enable: true }"></div>
+            </div>
+
+            <div class="control-group" style="margin-left:10px">
+                <div id="L1_9" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                                name: '#{i18n.getText('QMM020_76')}',
+                                options: usageMaster,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: selectedUsageMaster,
+                                enable: selectedMasterUse() === 1
+                                }"></div>
+            </div>
+
+            <div class="control-group" style="margin-left:10px; " >
+                <div id="L1_15" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_11')}</div>
+                <div id="L1_16" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
+                                        name: 'Sample Switch',
+                                        options: individualUse,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: selectedIndividualUse,
+                                        required: true,
+                                        enable: true }"></div>
+            </div>
+
+        </div>
+        <div id= "functions-area-bottom" style="z-index: auto">
+
+            <button id="L2_1" tabindex="4" class="proceed large"
+                    data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+
+            <button id="L2_2" tabindex="5"
+                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
 </html>

@@ -1,7 +1,7 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Tree Grid 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Tree Grid 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
@@ -16,4 +16,4 @@
 *	infragistics.ui.grid.framework.js
 *	infragistics.ui.grid.multicolumnheaders.js
 */
-(function(factory){if(typeof define==="function"&&define.amd){define(["jquery","jquery-ui","./infragistics.util","./infragistics.ui.treegrid","./infragistics.ui.grid.mullticolumnheaders"],factory)}else{factory(jQuery)}})(function($){$.widget("ui.igTreeGridMultiColumnHeaders",$.ui.igGridMultiColumnHeaders,{css:{},options:{},_create:function(){this.element.data($.ui.igGridMultiColumnHeaders.prototype.widgetName,this.element.data($.ui.igTreeGridMultiColumnHeaders.prototype.widgetName));$.ui.igGridMultiColumnHeaders.prototype._create.apply(this,arguments)},destroy:function(){$.ui.igGridMultiColumnHeaders.prototype.destroy.apply(this,arguments);this.element.removeData($.ui.igGridMultiColumnHeaders.prototype.widgetName)},_injectGrid:function(){$.ui.igGridMultiColumnHeaders.prototype._injectGrid.apply(this,arguments)}});$.extend($.ui.igTreeGridMultiColumnHeaders,{version:"16.2.20162.2040"});return $.ui.igTreeGridMultiColumnHeaders});
+(function(factory){if(typeof define==="function"&&define.amd){define(["./infragistics.ui.treegrid","./infragistics.ui.grid.mullticolumnheaders"],factory)}else{return factory(jQuery)}})(function($){$.widget("ui.igTreeGridMultiColumnHeaders",$.ui.igGridMultiColumnHeaders,{css:{},options:{inherit:false},_create:function(){this.element.data($.ui.igGridMultiColumnHeaders.prototype.widgetName,this.element.data($.ui.igTreeGridMultiColumnHeaders.prototype.widgetName));$.ui.igGridMultiColumnHeaders.prototype._create.apply(this,arguments)},destroy:function(){this._superApply(arguments);this.element.removeData($.ui.igGridMultiColumnHeaders.prototype.widgetName)},_injectGrid:function(){$.ui.igGridMultiColumnHeaders.prototype._injectGrid.apply(this,arguments)}});$.extend($.ui.igTreeGridMultiColumnHeaders,{version:"19.1.20"});return $});

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title">#{i18n.getText('JMM018_A1_2')}</span>
+			<button tabindex="2" class="proceed"
+				data-bind="click: saveEventMenu">#{i18n.getText('JMM018_A3_2')}</button>
+		</div>
+
+		<div class="contents-area">
+			<div class = "ignite-grid">
+				<div id = "button">
+					<button id="buttonExpandAll">#{i18n.getText('JMM018_A422_2')}</button>
+					<button id="buttonCollapseAll">#{i18n.getText('JMM018_A422_3')}</button>
+				</div>
+				<div id = "list-table" tabindex="3">
+					<table id="treegrid"
+								data-bind="ntsTreeGridView:{
+										width: 'null',
+										height: window.innerHeight-380,
+										dataSource: listEventId,
+										value: itemSelected,
+										columns: columns,
+										initialExpandDepth: 0,
+										primaryKey: 'key',
+										childDataKey: 'listChild',
+										primaryText: 'nodeText',
+										multiple: false,
+										enable: true,
+										showCheckBox: false,
+										filter: true}">
+							</table>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

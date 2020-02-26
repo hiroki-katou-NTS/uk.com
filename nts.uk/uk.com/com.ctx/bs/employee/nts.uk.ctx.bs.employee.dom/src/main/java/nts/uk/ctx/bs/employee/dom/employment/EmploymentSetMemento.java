@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
 
+import java.util.Optional;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -46,4 +48,12 @@ public interface EmploymentSetMemento {
 	 * @param memo the new memo
 	 */
 	void setMemo(Memo memo);
+	
+	//グループ会社共通マスタID
+	void setEmpCommonMasterId(String  empCommonMasterId);
+	
+	// グループ会社共通マスタ項目ID
+	void setEmpCommonMasterItemId(String  empCommonMasterItemId); 
+	
+	
 }

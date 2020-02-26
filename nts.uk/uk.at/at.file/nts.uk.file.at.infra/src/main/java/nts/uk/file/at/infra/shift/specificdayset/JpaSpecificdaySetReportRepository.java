@@ -28,12 +28,12 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 			+ " AND s.SPECIFIC_DATE <= ?endYm";
 	
 	private static final String GET_WORKSPACE_SPEC_SET = "SELECT"
-			+ " DISTINCT s.WKPID, s.SPECIFIC_DATE, s.SPECIFIC_DATE_ITEM_NO, w.WKPCD, p.NAME "
+			+ " DISTINCT s.WKPID, s.SPECIFIC_DATE, s.SPECIFIC_DATE_ITEM_NO, w.WKP_CD, p.NAME "
 			+ "	FROM KSMMT_WP_SPEC_DATE_SET s"
 			+ " LEFT JOIN KSMST_SPECIFIC_DATE_ITEM p "
 			+ "	ON s.SPECIFIC_DATE_ITEM_NO = p.SPECIFIC_DATE_ITEM_NO "
-			+ " LEFT JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
-			+ "	AND w.WKPID = s.WKPID"
+			+ " LEFT JOIN BSYMT_WKP_INFO w ON w.CID = ?companyId "
+			+ "	AND w.WKP_ID = s.WKPID"
 			+ " WHERE p.USE_ATR = 1"
 			+ " AND s.SPECIFIC_DATE >= ?startYm"
 			+ " AND s.SPECIFIC_DATE <= ?endYm";

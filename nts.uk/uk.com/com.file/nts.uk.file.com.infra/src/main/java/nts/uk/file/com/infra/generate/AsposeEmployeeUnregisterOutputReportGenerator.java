@@ -40,7 +40,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
 
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+//		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
@@ -55,9 +55,9 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 
 	}
 
@@ -91,10 +91,10 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 		for (int j = 0; j < employeeUnregisLst.size(); j++) {
 
 			int totalRowOfEmployee = employeeUnregisLst.get(j).getAppType().size();
-			if (totalRowOfEmployee > 1) {
-				int numberOfPage = (x + totalRowOfEmployee) / 52;
+			if (totalRowOfEmployee > 1) {//NV co don chua setting
+				int numberOfPage = (x + totalRowOfEmployee -3) / 69;
 
-				int numberOfRowMerge = (52 * numberOfPage) - x;
+				int numberOfRowMerge = (69 * numberOfPage) - x + 3;
 				if (numberOfRowMerge > 0) {
 					cells.merge(x, 1, numberOfRowMerge, 1, true);
 					Cell sCd = cells.get(x, COLUMN_INDEX[1]);
@@ -137,13 +137,12 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						appType.setStyle(style);
 						x++;
 					}
-					 x = x + 1;
+					//Phan trang
 					HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-					hPageBreaks.add("H" + x);
+					hPageBreaks.add("P" + (69 * numberOfPage + 4));
 					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
-					vPageBreaks.add("H" + x);
-
-					 x = x - 1;
+					vPageBreaks.add("P" + (69 * numberOfPage + 4));
+					if(totalRowOfEmployee > numberOfRowMerge) {
 					cells.merge(x, 1, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell sCd1 = cells.get(x, COLUMN_INDEX[1]);
 					sCd1.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
@@ -160,6 +159,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 					Cell wpName1 = cells.get(x, COLUMN_INDEX[4]);
 					wpName1.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
 
+					}
 					for (int k = 0; k < totalRowOfEmployee - numberOfRowMerge; k++) {
 						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
 						setTitleStyle(sCode);

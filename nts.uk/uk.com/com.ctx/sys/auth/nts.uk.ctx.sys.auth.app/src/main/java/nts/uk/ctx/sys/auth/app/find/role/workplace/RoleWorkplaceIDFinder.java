@@ -20,8 +20,6 @@ import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
@@ -42,28 +40,24 @@ public class RoleWorkplaceIDFinder {
 	@Inject
 	private SysAuthWorkplaceAdapter sysAuthWorkplaceAdapter;
 	
+	
 	/** The workplace manager repository. */
-	@Inject
-	private WorkplaceManagerRepository workplaceManagerRepository;
+//	@Inject
+//	private WorkplaceManagerRepository workplaceManagerRepository;
 
 	/**
-	 * Find list wokplace id.
+	 * ロールIDから参照可能な職場リストを取得する
 	 *
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate, boolean oldFlag) {
+	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
 		String companyId = AppContexts.user().companyId();
-		if (systemType == SystemType.ADMINISTRATOR.value) {
+		if (systemType == SystemType.ADMINISTRATOR.value) {//システム＝管理者の場合
 			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
-			List<String> listWkpId = new ArrayList<>();
-			if(oldFlag){
-				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
-			}else{
-				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
-						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
-			}
-			
+			//運用している職場の情報をすべて取得する
+			List<String> listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 			workplaceIdDto.setListWorkplaceIds(listWkpId);
 			workplaceIdDto.setIsAllEmp(true);
 			return workplaceIdDto;
@@ -78,12 +72,8 @@ public class RoleWorkplaceIDFinder {
 		// if role is present
 		if (opRole.isPresent()) {
 			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
-				if(oldFlag){
-					listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
-				}else{
-					listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
-							.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
-				}
+				listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
+						.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(true);
 			} else {
@@ -123,9 +113,9 @@ public class RoleWorkplaceIDFinder {
 				listWkpId.addAll(workplaceAdapter.getWorkplaceId(referenceDate, employeeId));
 			}
 					
-			// requestList #30 get aff workplace history
+			// requestList #30 NEW
 			Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
-					.findWkpByBaseDateAndEmployeeId(referenceDate, employeeId);
+					.findWkpByBaseDateAndSIdNEW(referenceDate, employeeId);
 	
 			// add wkpId to listWkpId
 			if (opAffWorkplaceHistImport.isPresent()) {
@@ -139,8 +129,7 @@ public class RoleWorkplaceIDFinder {
 	
 			// action RequestList #154
 			if (employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD && workplaceId != null) {
-				List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId,
-						referenceDate);
+				List<String> list = workplaceAdapter.getAllChildrenOfWkpIdNEW(companyId, referenceDate, workplaceId);
 				listWkpId.addAll(list);
 			}
 		}
@@ -161,6 +150,7 @@ public class RoleWorkplaceIDFinder {
 		//check ReferenceRange 
 		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 			//get list WorkplaceId by WorkplaceAdapter
+			//運用している職場の情報をすべて取得する 
 			listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, param.getBaseDate())
 					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 		} else {

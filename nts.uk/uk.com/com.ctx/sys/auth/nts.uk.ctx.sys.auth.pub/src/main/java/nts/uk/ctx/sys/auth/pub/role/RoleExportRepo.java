@@ -28,13 +28,13 @@ public interface RoleExportRepo {
 		
 	
 	/**
-	 * Find work place id by role id.
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".システム.権限管理.Export.[RQ151]ロールIDから参照可能な職場リストを取得する
 	 *
 	 * @param systemType the system type
 	 * @param baseDate the base date
 	 * @return the workplace id export
 	 */
-	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate, boolean oldFlag);
+	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate);
 	
  	/**
 	 * Find by id.

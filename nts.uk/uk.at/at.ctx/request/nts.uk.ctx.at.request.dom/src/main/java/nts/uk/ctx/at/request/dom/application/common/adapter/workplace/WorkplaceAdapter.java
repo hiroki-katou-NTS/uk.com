@@ -39,4 +39,6 @@ public interface WorkplaceAdapter {
 	 * RequestList #83-1
 	 */
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date);
+	
+	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date);
 }

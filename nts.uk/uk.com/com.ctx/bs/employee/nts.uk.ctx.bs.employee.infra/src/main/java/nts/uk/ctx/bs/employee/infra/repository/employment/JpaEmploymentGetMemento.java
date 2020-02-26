@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment;
 
+import java.util.Optional;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
@@ -68,6 +70,16 @@ public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 	@Override
 	public Memo getMemo() {
 		return new Memo(this.typedValue.getMemo());
+	}
+
+	@Override
+	public Optional<String> empCommonMasterId() {
+		return  Optional.ofNullable(this.typedValue.getEmpCommonMasterId());
+	}
+
+	@Override
+	public Optional<String> empCommonMasterItemId() {
+		return Optional.ofNullable(this.typedValue.getEmpCommonMasterItemId());
 	}
 
 }

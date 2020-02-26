@@ -49,7 +49,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterApproverRootOutputDataSource dataSource) {
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+//		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
@@ -94,9 +94,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 
 	}
 
@@ -644,7 +644,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					}
 					for (int j = numberOfRowMerge; j < sizeOfForm; j++) {//in nhung dong trong con lai
 						Cell perName = cells.get(firstRow + j, COLUMN_INDEX[colPhase + 1]);
-						if(j > lstPerson.size()){
+						if(j >= lstPerson.size()){
 							perName.setValue("");
 						}else{
 							perName.setValue(lstPerson.get(j));

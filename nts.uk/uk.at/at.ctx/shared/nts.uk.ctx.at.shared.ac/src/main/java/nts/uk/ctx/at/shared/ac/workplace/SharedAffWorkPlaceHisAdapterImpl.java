@@ -10,18 +10,21 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 @Stateless
 public class SharedAffWorkPlaceHisAdapterImpl implements SharedAffWorkPlaceHisAdapter{
 	
+//	@Inject
+//	private SyWorkplacePub wkpPub;
+	
 	@Inject
-	private SyWorkplacePub wkpPub;
+	private WorkplacePub workplacePub;
 
 	@Override
 	public Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate) {
 
-		Optional<SWkpHistExport> opSWkpHistExport = this.wkpPub.findBySid(employeeId, processingDate);
+		Optional<SWkpHistExport> opSWkpHistExport = this.workplacePub.findBySid(employeeId, processingDate);
 		
 		if (!opSWkpHistExport.isPresent()) {
 			return Optional.empty();
@@ -37,7 +40,7 @@ public class SharedAffWorkPlaceHisAdapterImpl implements SharedAffWorkPlaceHisAd
 
 	@Override
 	public List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date) {
-		List<String> workPlaceIDList = this.wkpPub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
+		List<String> workPlaceIDList = this.workplacePub.getWorkplaceIdAndChildren(companyId, date, workplaceId);
 		return workPlaceIDList;
 	}
 

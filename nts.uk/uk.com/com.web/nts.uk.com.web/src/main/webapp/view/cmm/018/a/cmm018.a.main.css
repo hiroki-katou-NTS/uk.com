@@ -1,9 +1,9 @@
 .contents-area {
-	width: 1260px;
+	
 }
 
 .contents-area-tabpanel-3 {
-	width: 1345px;
+	
 }
 
 .dateControlBtn {
@@ -25,7 +25,8 @@
 
 #left-contents {
 	width: 260px;
-	height: 606px;
+	margin-bottom: 20px;
+	/* height: 606px; */
 }
 
 .contents-header td {
@@ -70,51 +71,9 @@ table.contents-header thead tr th {
 	border: 1px solid #CCC;
 }
 
-table#fixed-tableB tbody td {
-	border: 1px solid #CCC;
-}
-
-table#fixed-tableWpB tbody td {
-	border: 1px solid #CCC;
-}
-
-table#fixed-tablePsB tbody td {
-	border: 1px solid #CCC;
-}
-
 .fixName {
 	white-space: nowrap;
 	overflow: hidden;
-}
-/* #fixed-table {
-	height: 550px !important;
-}
-
-#fixed-tableWp {
-	height: 550px !important;
-}
-
-#fixed-tablePs {
-	height: 550px !important;
-} */
-.nts-fixed-table .nts-fixed-body-container {
-	overflow-x: hidden !important;
-}
-
-.nts-fixed-table table.fixed-table>tbody>tr {
-	max-height: 50px !important;
-}
-
-table#fixed-tableB tbody tr {
-	max-height: 50px !important;
-}
-
-table#fixed-tableWpB tbody tr {
-	max-height: 50px !important;
-}
-
-table#fixed-tablePsB tbody tr {
-	max-height: 50px !important;
 }
 
 .overflow-visible {
@@ -122,4 +81,187 @@ table#fixed-tablePsB tbody tr {
 }
 .aaa{
 	 text-overflow: clip !important;
+}
+#grid_matome_virtualContainer {
+	border:1px solid #dddddd
+}
+.button-delete {
+	background-image: url(../images/137.png);
+	width:32px;
+	height:32px;
+}
+.text-format{
+	white-space: nowrap;
+}
+
+table#grid_matome tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+.approver{
+	height: calc(100% - 23px);
+}
+.from {
+	height: 23px;
+}
+
+/* COLUMN APPNAME */
+.nts-grid-wrapper table tr td.ui-state-hover.appNameBgColor {
+	background-color: #CFF1A5;
+}
+.appNameBgColor {
+	background-color: #CFF1A5;
+}
+/* PHASE SETTING */
+table#grid_matome tr td.ui-state-hover.phaseBgColor {
+	background-color: #C5F1F7;
+}
+table#grid_matomeC tr td.ui-state-hover.phaseBgColor {
+	background-color: #C5F1F7;
+}
+table#grid_matomeE tr td.ui-state-hover.phaseBgColor {
+	background-color: #C5F1F7;
+}
+.phaseBgColor{
+	background-color: #C5F1F7;
+}
+/* PHASE NOT SETTING */
+table#grid_matome tr td.ui-state-hover.phaseBgColorNot {
+	background-color: white;
+}
+table#grid_matomeC tr td.ui-state-hover.phaseBgColorNot {
+	background-color: white;
+}
+table#grid_matomeE tr td.ui-state-hover.phaseBgColorNot {
+	background-color: white;
+}
+.phaseBgColorNot{
+	background-color: white;
+}
+/* APPROVER */
+.approver-line {
+	margin: 3px;
+	width: max-content;
+}
+table #grid_matome_headers thead tr th {
+	text-align: center;
+}
+table #grid_matome tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+.td-delete {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+table#grid_matome_headers_fixed thead tr th{
+	text-align: center;
+}
+.shyuugyo_left {
+	height: 350px;
+}
+.shyuugyo_right {
+	margin-left: 350px;
+}
+.jinji_left {
+	height: 250px;
+}
+.jinji_right {
+	margin-left: 20px;
+}
+.jinji_right1{
+	
+}
+.sidebar-content {
+    overflow: unset !important;
+}
+
+#grid_matomeB_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeB tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeB_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeB tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeB_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeC_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeC tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeC_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeC tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeC_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeD_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeD tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeD_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeD tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeD_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeE_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeE tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeE_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeE tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeE_headers_fixed thead tr th{
+	text-align: center;
+}
+
+#grid_matomeF_virtualContainer {
+	border:1px solid #dddddd
+}
+table#grid_matomeF tbody td {
+	white-space: nowrap;
+	font-size: 14px;
+	font-style: Meiryo;
+}
+table #grid_matomeF_headers thead tr th {
+	text-align: center;
+}
+table #grid_matomeF tbody tr td:LAST-CHILD {
+	text-align: center;
+}
+table#grid_matomeF_headers_fixed thead tr th{
+	text-align: center;
 }

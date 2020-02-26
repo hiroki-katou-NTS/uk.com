@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 承認者
@@ -30,32 +31,41 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	/**主キー*/
 	@EmbeddedId
 	public WwfmtAppoverPK wwfmtAppoverPK;
-	/**職位ID*/
-	@Column(name = "JOB_ID")
-	public String jobId;
+	/**承認者Gコード*/
+	@Column(name = "APPROVER_G_CD")
+	public String jobGCD;
 	/**社員ID*/
 	@Column(name = "SID")
 	public String employeeId;
-	/**順序*/
-	@Column(name = "DISPORDER")
-	public int displayOrder;
-	/**区分*/
-	@Column(name = "APPROVAL_ATR")
-	public int approvalAtr;
 	/**確定者*/
 	@Column(name = "CONFIRM_PERSON")
 	public int confirmPerson;
+	/**特定職場ID*/
+	@Column(name = "SPEC_WKP_ID")
+	public String specWkpId;
 
 	@ManyToOne
 	@JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", insertable = false, updatable = false),
-        @JoinColumn(name = "APPROVAL_PHASE_ID", referencedColumnName = "APPROVAL_PHASE_ID", insertable = false, updatable = false)
+        @JoinColumn(name = "APPROVAL_ID", referencedColumnName = "APPROVAL_ID", insertable = false, updatable = false),
+        @JoinColumn(name = "PHASE_ORDER", referencedColumnName = "PHASE_ORDER", insertable = false, updatable = false)
     })
 	public WwfmtApprovalPhase wwfmtApprovalPhase;
 	
 	@Override
 	protected Object getKey() {
 		return wwfmtAppoverPK;
+	}
+	/**
+	 * convert entity WwfmtAppover to domain Approver
+	 * @param entity
+	 * @return
+	 */
+	public Approver toDomainApprover(){
+		return Approver.createSimpleFromJavaType(
+				this.wwfmtAppoverPK.approverOrder,
+				this.jobGCD,
+				this.employeeId,
+				this.confirmPerson,
+				this.specWkpId);
 	}
 }

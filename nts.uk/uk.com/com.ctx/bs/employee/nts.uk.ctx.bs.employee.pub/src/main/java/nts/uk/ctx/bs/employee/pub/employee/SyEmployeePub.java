@@ -190,6 +190,11 @@ public interface SyEmployeePub {
 	List<TempAbsenceFrameExport> getTempAbsenceFrameByCid(String cid);
 	
 	/**
+	 * [RQ614]社員CD、ビジネスネーム、カナから検索キーワードをもとに社員IDを取得する
+	 */
+	List<EmpInfo614> findEmpByKeyWordsListSid(EmpInfo614Param param);
+
+	/**
 	 * RequestList596 削除された社員を取り除く
 	 * @param sids
 	 * @return
@@ -224,4 +229,13 @@ public interface SyEmployeePub {
 	List<String> filterSidByCidAndPeriod(String cid, DatePeriod period);
 	
 	Map<String, String> getAllSidAndScdBySids(List<String> sid);
+	
+	/**
+	 * 
+	 * 社員IDから個人社員基本情報を取得
+	 * @param sid
+	 * @return
+	 */
+	PersonInfoJhn001Export getEmployeeInfo(String sid);
+	
 }

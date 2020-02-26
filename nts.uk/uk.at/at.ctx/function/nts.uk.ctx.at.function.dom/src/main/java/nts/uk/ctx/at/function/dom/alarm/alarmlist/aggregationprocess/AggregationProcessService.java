@@ -15,8 +15,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WkpConfigAtTimeAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -36,9 +36,9 @@ public class AggregationProcessService {
 	
 	@Inject
 	private ExtractAlarmForEmployeeService extractService;
-
+	
 	@Inject
-	private SyWorkplaceAdapter syWorkplaceAdapter;
+	private WorkplaceAdapter workplaceAdapter;
 		
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
@@ -58,8 +58,10 @@ public class AggregationProcessService {
 		
 		// get list workplaceId and hierarchyCode 
 		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).filter(wp -> wp != null).distinct().collect(Collectors.toList());
-		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
-																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
+//		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
+//																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
+		//[No.560]職場IDから職場の情報をすべて取得する
+		List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyID, listWorkplaceId, baseDate);
 		
 		// Map employeeID to EmployeeSearchDto object
 		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
@@ -71,7 +73,8 @@ public class AggregationProcessService {
 		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		for(ValueExtractAlarm value: valueList) {
 			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID().orElse(null),
-					getWorkPlaceId(hierarchyWPMap, value.getWorkplaceID().orElse(null)),
+					value.getWorkplaceID().isPresent() && wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().isPresent() ?
+							wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().get().getHierarchyCode() : "",
 					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
 					value.getEmployeeID(),
 					mapEmployeeId.get(value.getEmployeeID()).getCode(),
@@ -96,8 +99,10 @@ public class AggregationProcessService {
 		
 		// get list workplaceId and hierarchyCode 
 		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).filter(wp -> wp != null).distinct().collect(Collectors.toList());
-		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
-																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
+//		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
+//																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
+		//[No.560]職場IDから職場の情報をすべて取得する
+		List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyID, listWorkplaceId, baseDate);
 		
 		// Map employeeID to EmployeeSearchDto object
 		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
@@ -111,7 +116,8 @@ public class AggregationProcessService {
 		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		return valueList.stream().map(value -> {
 			return new AlarmExtraValueWkReDto(value.getWorkplaceID().orElse(null),
-					getWorkPlaceId(hierarchyWPMap, value.getWorkplaceID().orElse(null)),
+					value.getWorkplaceID().isPresent() && wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().isPresent() ?
+							wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().get().getHierarchyCode() : "",
 					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
 					value.getEmployeeID(),
 					mapEmployeeId.get(value.getEmployeeID()).getCode(),
@@ -125,10 +131,6 @@ public class AggregationProcessService {
 					value.getCheckedValue().orElse(null)
 					);
 		}).collect(Collectors.toList());
-	}
-
-	private String getWorkPlaceId(Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap, String workplaceID) {
-		return workplaceID != null  && hierarchyWPMap.get(workplaceID) != null ? hierarchyWPMap.get(workplaceID).getHierarchyCd() : "";
 	}
 	
 	private Map<String, AlarmCategory> mapTextResourceToEnum(){

@@ -15,8 +15,6 @@ public class ApprovalRootStateSprExport {
 	
 	private Integer rootType;
 	
-	private String historyID;
-	
 	private GeneralDate approvalRecordDate;
 	
 	private String employeeID;

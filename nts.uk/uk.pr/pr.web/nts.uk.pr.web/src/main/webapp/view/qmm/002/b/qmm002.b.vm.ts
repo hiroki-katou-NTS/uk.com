@@ -1,114 +1,132 @@
-module nts.uk.pr.view.qmm002.b {
-    export module viewmodel {
-        export class ScreenModel {
-            lst_001: any;
-            lst_002: any;
-            selectedCodes: any;
-            messages: KnockoutObservable<any>;
+module nts.uk.pr.view.qmm002.b.viewmodel {
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
-            constructor() {
-                var self = this;
-                self.lst_001 = ko.observableArray([]);
-                self.lst_002 = ko.observableArray([]);
-                self.selectedCodes = ko.observableArray([]);
-                self.messages = ko.observableArray([
-                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
-                    { messageId: "ER005", message: "入力した銀行コードは既に存在しています。\r\n銀行コードを確認してください。" },
-                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
-                    { messageId: "ER007", message: "＊が選択されていません。" }
-                ]);
-            }
-
-            startPage() {
-                var self = this;
-                var list = nts.uk.ui.windows.getShared('listItem');
-                self.lst_001(list);
-            }
-
-            /**
-             * close screen qmm002b
-             */
-            close() {
-                var self = this;
-                nts.uk.ui.windows.close();
-            }
-
-
-            /**
-             * Delete List Bank, Branch
-             */
-            btn_001() {
-                var self = this;
-                if (!self.selectedCodes().length) {
-                    nts.uk.ui.dialog.confirm(self.messages()[3].message)
-                    return;
-                }
-                nts.uk.ui.dialog.confirm(self.messages()[0].message).ifYes(function() {
-                    var keyBank = [];
-                    _.forEach(self.selectedCodes(), function(item) {
-                        var code = item.split('-');
-                        var bankCode = code[0];
-                        var branchId = self.getNode(item, bankCode);
-                        keyBank.push({
-                            bankCode: bankCode,
-                            branchId: branchId
-                        });
-                    });
-
-                    var data =
-                        {
-                            bank: keyBank,
-                        };
-                    service.removeBank(data).done(function() {
-                        self.close();
-                    }).fail(function(error) {
-                        var messageList = self.messages();
-                        if (error.messageId == messageList[2].messageId) { // ER008
-                            var messageError = nts.uk.text.format(messageList[2].message, self.selectedCodes());
-                            nts.uk.ui.dialog.alert(messageError);
+    export class ScreenModel {
+        // tree grid variables
+        bankBranchList: KnockoutObservableArray<any>;
+        selectedBranchCodes: KnockoutObservableArray<any>;
+        headers: any;
+        constructor() {
+            var self = this;
+            self.headers = ko.observableArray([getText("QMM002_11")]);
+            self.bankBranchList = ko.observableArray([]);
+            self.selectedBranchCodes = ko.observableArray([]);
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.getAllBank().done((data: Array<any>) => {
+                if (_.isEmpty(data)) {
+                    dfd.resolve();
+                    alertError({messageId: "Msg_672"});
+                } else {
+                    block.invisible();
+                    self.bankBranchList(_.map(data, b => new Bank(b.code, b.name, b.kanaName, b.memo)));
+                    service.getAllBankBranch(_.map(data, b => b.code)).done((branchData: Array<any>) => {
+                        if (_.isEmpty(branchData)) {
+                            let displayList = _.map(data, b => {
+                                return new Node(b.code, b.code, b.name, []);
+                            });
+                            self.bankBranchList(displayList);
+                        } else {
+                            let displayList = _.map(data, b => {
+                                let lstBr = _.filter(branchData, br => { return br.bankCode == b.code; }).map(br => { return new Node(br.id, br.code, br.name, [])});
+                                return new Node(b.code, b.code, b.name, lstBr);
+                            });
+                            self.bankBranchList(displayList);
                         }
+                        dfd.resolve();
+                    }).fail(error => {
+                        alertError(error);
+                        dfd.reject();
+                    }).always(() => {
+                        block.clear();
                     });
-                });
-
-            }
-
-            /**
-             * select node information
-             */
-            getNode(codeNew, parentId): String {
-                var self = this;
-                self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
-                var node = _.find(self.lst_002(), function(item: BankInfo) {
-                    return item.treeCode == codeNew;
-                });
-
-                return node.branchId;
-            }
+                }
+            }).fail(error => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
         }
 
-        export class BankInfo {
-            treeCode: string;
-            code: string;
-            branchId: string;
-            name: string;
-            displayName: string;
-            nameKata: string;
-            memo: string;
-            childs: Array<BankInfo>;
-            parentCode: string;
+        cancel() {
+            setShared("QMM002BCancel", {isCancel: true});
+            nts.uk.ui.windows.close();
+        }
 
-            constructor(treeCode?: string, code?: string, branchId?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
-                var self = this;
-                self.treeCode = treeCode;
-                self.code = code;
-                self.branchId = branchId;
-                self.name = name;
-                self.displayName = self.code + "  " + self.name;
-                self.nameKata = nameKata;
-                self.memo = memo;
-                self.childs = childs;
-                self.parentCode = parentCode;
-            }
+        deleteList() {
+            let self = this;
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block.invisible();
+                service.deleteListBranch(self.selectedBranchCodes()).done(() => {
+                    info({ messageId: "Msg_16" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            }).ifNo(() => {
+            });
         }
     }
+    
+    class Node {
+        id: string;
+        code: string;
+        name: string;
+        nodeText: string;
+        children: any;
+        constructor(id: string, code: string, name: string, children: Array<Node>) {
+            var self = this;
+            self.id = id;
+            self.code = code;
+            self.name = name;
+            self.nodeText = _.escape(self.code + ' ' + self.name);
+            self.children = children;
+        }
+    }
+    
+    class Bank {
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        kanaName: KnockoutObservable<string>;
+        memo: KnockoutObservable<string>;
+        constructor(code: string, name: string, kana: string, memo: string) {
+            this.code = ko.observable(code);
+            this.name = ko.observable(name);
+            this.kanaName = ko.observable(kana);
+            this.memo = ko.observable(memo);
+        }
+    }
+    
+    class BankBranch {
+        id: KnockoutObservable<string>;
+        bankCode: KnockoutObservable<string>;
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        kanaName: KnockoutObservable<string>;
+        memo: KnockoutObservable<string>;
+        constructor(id: string, bankCode: string, code: string, name: string, kana: string, memo: string) {
+            this.id = ko.observable(id);
+            this.bankCode = ko.observable(bankCode);
+            this.code = ko.observable(code);
+            this.name = ko.observable(name);
+            this.kanaName = ko.observable(kana);
+            this.memo = ko.observable(memo);
+        }
+    }
+        
 }

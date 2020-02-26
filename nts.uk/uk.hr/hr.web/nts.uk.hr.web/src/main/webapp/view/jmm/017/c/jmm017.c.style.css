@@ -1,0 +1,13 @@
+.cf {
+	width: 900px;
+	margin: 40px auto;
+}
+.cf .settings{
+	margin: 10px;
+}
+.cf .settings .ScreenName{
+	margin-bottom: 20px;
+}
+.cf .inputTextarea {
+	height: 150px;
+}

@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,12 +43,12 @@ public class BreakDayOffRemainMngParam {
 	 * 前回代休の集計結果
 	 */
 	private Optional<BreakDayOffRemainMngOfInPeriod> optBeforeResult;
-	/**
-	 * 作成元区分
-	 */
-	private Optional<CreateAtr> creatorAtr;
-	/**
-	 * 対象期間
-	 */
-	private Optional<DatePeriod> processDate;
+    /**
+     * 作成元区分
+     */
+    private Optional<CreateAtr> creatorAtr;
+    /**
+     * 対象期間
+     */
+    private Optional<DatePeriod> processDate;
 }

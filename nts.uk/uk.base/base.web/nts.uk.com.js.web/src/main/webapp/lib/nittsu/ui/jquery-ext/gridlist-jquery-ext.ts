@@ -221,14 +221,18 @@ module nts.uk.ui.jqueryExtentions {
 
             if ($grid.igGridSelection('option', 'multipleSelection')) {
                 // for performance when select all
-                let baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                //let baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
                 if (_.isEqual(selectedId, baseID)) {
                     let chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
                     if (chk.attr("data-chk") === "off") {
                         chk.click();
                     }
                 } else {
+<<<<<<< HEAD
                     deselectAll($grid);
+=======
+		    deselectAll($grid);
+>>>>>>> TeamD/Release_Ver4_20200224
                     (<Array<string>>selectedId).forEach(id => {
                         if (_.includes(baseID, id)) {
                             $grid.igGridSelection('selectRowById', id)

@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 
 /**
  * 
@@ -27,27 +30,25 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 public class WorkplaceExportImpl implements WorkplaceExport {
 
 	@Inject
-	private WorkplaceConfigRepository workplaceConfigRepository;
+	private WorkplaceConfigurationRepository workplaceConfigRepository;
 
 	@Inject
-	private WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
-	@Inject 
-	private WorkplaceInfoRepository repoWkpInfo;
+	private WorkplaceInformationRepository workplaceConfigInfoRepository;
 
 	@Override
 	public List<WkpInfoDto> getAllWkpConfig(String companyId, List<String> listWkpId, GeneralDate baseDate) {
 		List<WkpInfoDto> results = new ArrayList<>();
 		// ドメインモデル「職場構成」を取得する
-		Optional<WorkplaceConfig> optWorkplaceConfig = this.workplaceConfigRepository.findByBaseDate(companyId,
+		Optional<WorkplaceConfiguration> optWorkplaceConfig = this.workplaceConfigRepository.findByDate(companyId,
 				baseDate);
 		if (!optWorkplaceConfig.isPresent()) {
 			return results;
 		}
 		// tai 1 ngay nhat dinh se chi lay duoc 1 histId
-		String histId = optWorkplaceConfig.get().getWkpConfigHistory().get(0).identifier();
+		String histId = optWorkplaceConfig.get().items().get(0).identifier();
 		// get WorkplaceConfigInfo de lay ra hierarchyCd
-		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.workplaceConfigInfoRepository
-				.findByHistoryIdsAndWplIds(companyId, Arrays.asList(histId), listWkpId);
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.convertData(this.workplaceConfigInfoRepository
+				.findByHistoryIdsAndWplIds(companyId, Arrays.asList(histId), listWkpId));
 
 		List<WorkplaceHierarchy> lstWkpHierarchy = new ArrayList<>();
 		lstWorkplaceConfigInfo.forEach(x -> lstWkpHierarchy.addAll(x.getLstWkpHierarchy()));
@@ -82,19 +83,19 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 		List<WkpInfoDto> results = new ArrayList<>();
 		List<WorkplaceHierarchy> lstWorkplaceHierarchyAll = new ArrayList<>();
 		// ドメインモデル「職場構成」を取得する
-		Optional<WorkplaceConfig> optWorkplaceConfig = this.workplaceConfigRepository.findByHistId(companyId, histId);
+		Optional<WorkplaceConfiguration> optWorkplaceConfig = this.workplaceConfigRepository.findByHistId(companyId, histId);
 		if (!optWorkplaceConfig.isPresent()) {
 			return results;
 		}
 		// EAP yeu cau loop theo tu tuong lai -> qua khu
-		optWorkplaceConfig.get().getWkpConfigHistory().sort((s1, s2) -> s1.span().isAfter(s2.span()) ? 1 : -1);
-		List<String> listHistId = optWorkplaceConfig.get().getWkpConfigHistory().stream().map(x -> x.identifier())
+		optWorkplaceConfig.get().items().sort((s1, s2) -> s1.span().isAfter(s2.span()) ? 1 : -1);
+		List<String> listHistId = optWorkplaceConfig.get().items().stream().map(x -> x.identifier())
 				.collect(Collectors.toList());
 
 		for (String hId : listHistId) {
 			// query WorkplaceConfigInfo de lay hierarchyCd
-			List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.workplaceConfigInfoRepository
-					.findByHistoryIdsAndWplIds(companyId, Arrays.asList(hId), listWkpId);
+			List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.convertData(this.workplaceConfigInfoRepository
+					.findByHistoryIdsAndWplIds(companyId, Arrays.asList(hId), listWkpId));
 			List<WorkplaceHierarchy> lstWkpHierarchy = new ArrayList<>();
 			lstWorkplaceConfigInfo.forEach(x -> lstWkpHierarchy.addAll(x.getLstWkpHierarchy()));
 			lstWorkplaceHierarchyAll.addAll(lstWkpHierarchy);
@@ -130,13 +131,13 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 	public List<WkpDto> getWkpConfigRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate) {
 		List<WkpDto> results = new ArrayList<>();
 		// ドメインモデル「職場構成」を取得する
-		Optional<WorkplaceConfig> optWorkplaceConfig = this.workplaceConfigRepository.findByBaseDate(companyId,
+		Optional<WorkplaceConfiguration> optWorkplaceConfig = this.workplaceConfigRepository.findByDate(companyId,
 				baseDate);
 		if (!optWorkplaceConfig.isPresent()) {
 			return results;
 		}
-		List<WkpDto> lstWkpInfoDto = repoWkpInfo.findByBaseDateWkpIds(companyId, baseDate, listWkpId).stream()
-				.map(c -> new WkpDto(c.getWorkplaceId(), c.getWorkplaceName().v())).collect(Collectors.toList());
+		List<WkpDto> lstWkpInfoDto = workplaceConfigInfoRepository.findByBaseDateWkpIds(companyId, listWkpId, baseDate).stream()
+				.map(c -> new WkpDto(c.getWorkplaceId(), c.getWorkplaceName())).collect(Collectors.toList());
 		results.addAll(lstWkpInfoDto);
 		if (listWkpId.size() != lstWkpInfoDto.size()) {
 			for(String id: listWkpId){
@@ -153,5 +154,16 @@ public class WorkplaceExportImpl implements WorkplaceExport {
 			if(wp.getWorkplaceId().equals(id)) return true;
 		}
 		return false;
+	}
+	
+	private List<WorkplaceConfigInfo> convertData(List<WorkplaceInformation> wp) {
+		Map<Pair<String, String>, List<WorkplaceInformation>> map =
+				wp.stream().collect(Collectors.groupingBy(p -> Pair.of(p.getCompanyId(), p.getWorkplaceHistoryId())));
+		List<WorkplaceConfigInfo> returnList = new ArrayList<WorkplaceConfigInfo>();
+		for (Pair<String, String> key : map.keySet()) {
+			returnList.add(new WorkplaceConfigInfo(key.getLeft(), key.getRight(), 
+					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
+		}
+		return returnList;
 	}
 }

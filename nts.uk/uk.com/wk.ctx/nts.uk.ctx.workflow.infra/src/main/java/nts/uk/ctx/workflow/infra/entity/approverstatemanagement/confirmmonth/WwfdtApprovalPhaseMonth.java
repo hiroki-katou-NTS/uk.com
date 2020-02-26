@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -61,23 +60,22 @@ public class WwfdtApprovalPhaseMonth extends UkJpaEntity {
 		return wwfdpApprovalPhaseMonthPK;
 	}
 	
-	public static WwfdtApprovalPhaseMonth fromDomain(String companyID, GeneralDate date, ApprovalPhaseState approvalPhaseState){
+	public static WwfdtApprovalPhaseMonth fromDomain(String companyID, String rootId, ApprovalPhaseState approvalPhaseState){
 		return WwfdtApprovalPhaseMonth.builder()
 				.wwfdpApprovalPhaseMonthPK(
 						new WwfdpApprovalPhaseMonthPK(
-								approvalPhaseState.getRootStateID(), 
+								rootId, 
 								approvalPhaseState.getPhaseOrder()))
 				.approvalAtr(approvalPhaseState.getApprovalAtr().value)
 				.approvalForm(approvalPhaseState.getApprovalForm().value)
 				.listWwfdtApprovalFrameMonth(
 						approvalPhaseState.getListApprovalFrame().stream()
-						.map(x -> WwfdtApprovalFrameMonth.fromDomain(companyID, date, x)).collect(Collectors.toList()))
+						.map(x -> WwfdtApprovalFrameMonth.fromDomain(companyID, rootId, approvalPhaseState.getPhaseOrder(), x)).collect(Collectors.toList()))
 				.build();
 	}
 	
 	public ApprovalPhaseState toDomain(){
 		return ApprovalPhaseState.builder()
-				.rootStateID(this.wwfdpApprovalPhaseMonthPK.rootStateID)
 				.phaseOrder(this.wwfdpApprovalPhaseMonthPK.phaseOrder)
 				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
 				.approvalForm(EnumAdaptor.valueOf(this.approvalForm, ApprovalForm.class))

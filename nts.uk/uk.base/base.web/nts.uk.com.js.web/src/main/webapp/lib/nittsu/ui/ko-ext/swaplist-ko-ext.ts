@@ -187,7 +187,7 @@ module nts.uk.ui.koExtentions {
             
             
             $grid1.igGrid({
-                width: leftGridWidth + CHECKBOX_WIDTH, 
+                //width: leftGridWidth + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: leftIggridColumns,
@@ -205,7 +205,7 @@ module nts.uk.ui.koExtentions {
             $grid1.ntsGridList('setupSelecting');
 
             $grid2.igGrid({
-                width: rightGridWidth + CHECKBOX_WIDTH,
+                //width: rightGridWidth + CHECKBOX_WIDTH,
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: rightIggridColumns,

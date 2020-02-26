@@ -401,10 +401,12 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
 				appName = "共通";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
-				appName = EnumAdaptor.valueOf(typeApp.getCode(), ApplicationType.class).nameId;
+				appName = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}
 			else if(typeApp.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
-				appName = EnumAdaptor.valueOf(typeApp.getCode(), ConfirmationRootType.class).nameId;
+				appName = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ConfirmationRootType.class).nameId;
+			}else {
+				appName = typeApp.getName();
 			}
 			em_Form.setValue(appName);
 			// SET STYLE CHO CỘT THỨ 3
@@ -480,10 +482,12 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
 				appName1 = "共通";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
-				appName1 = EnumAdaptor.valueOf(typeApp.getCode(), ApplicationType.class).nameId;
+				appName1 = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}
 			else if(typeApp.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
-				appName1 = EnumAdaptor.valueOf(typeApp.getCode(), ConfirmationRootType.class).nameId;
+				appName1 = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ConfirmationRootType.class).nameId;
+			}else {
+				appName1 = typeApp.getName();
 			}
 			
 			em_Form.setValue(appName1);

@@ -1,0 +1,8 @@
+/**
+ * 
+ */
+/**
+ * @author lanlt
+ *
+ */
+package nts.uk.ctx.hr.notice.infra.entity.report;

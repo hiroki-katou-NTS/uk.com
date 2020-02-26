@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+<body>
+
+	<ui:composition template="/master/base.xhtml">
+	
+		<ui:define name="htmlHead">
+		
+			<com:ValidatorScript>
+			
+					nts.uk.ctx.hr.notice.dom.report.Code_AlphaNumeric_3
+					
+					nts.uk.ctx.hr.notice.dom.report.registration.person.String_Any_200
+					
+			</com:ValidatorScript>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:scriptfile path="/view/jhn/shr/layout-control-validation.js" />
+			
+			<com:scriptfile path="/view/jhn/shr/layout-control-ko-ext.js" />
+			
+			<com:stylefile path="jhn001.c.style.css" />
+			
+			<com:scriptfile path="jhn001.c.service.js" />
+			
+			<com:scriptfile path="jhn001.c.vm.js" />
+			
+			<com:scriptfile path="jhn001.c.start.js" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+		
+			<div id="functions-area">
+			
+				<!-- 一覧へ戻る -->
+				<a  id="C1_1" tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/jhn/003/a/index.xhtml' }, enable: enaGoBack ">#{i18n.getText('JHN001_C1_1')}</a>
+				<!-- 承認 -->
+				<button id="C1_2" tabindex="2" data-bind="click : approve , enable: true" class="proceed" >#{i18n.getText('JHN001_C1_2')}</button>
+				<!-- 差し戻し  -->
+				<button id="C1_4" tabindex="3" data-bind="click : sendBack, visible: !layout().denyOraprrove()">#{i18n.getText('JHN001_C1_4')}</button>
+				<!-- 否認 -->
+				<button id="C1_4_1" tabindex="4" data-bind="click : deny, visible: layout().denyOraprrove()">#{i18n.getText('JHN001_C1_4_1')}</button>
+				<!-- 解除 -->
+				<button id="C1_5" tabindex="5" data-bind="click : cancel , enable: true">#{i18n.getText('JHN001_C1_5')}</button>
+				<!-- 登録 -->
+				<button id="C1_6" tabindex="5" data-bind="click : register , enable: true">#{i18n.getText('JHN001_C1_6')}</button>
+			
+			</div>
+			
+			<div id="contents-area">
+				
+				<div id="C222" data-bind="with: layout">
+						
+						<div class = "divHead">
+							
+							<div id="C222_1" class="label warning inlineCustom"  data-bind="text: message"></div>
+							
+							<div id="C222_2" class="label warning inlineCustom"  data-bind="text: backCommentContent,  visible: backComment"></div>
+
+
+						<div  style="margin-left: 2px; margin-bottom: 10px;" class="cell valign-center">
+
+							<div id="C222_3" style = "vertical-align: top"
+							
+								data-bind="ntsFormLabel: { constraint: ['String_Any_200'],required: false}">#{i18n.getText('JHN001_C222_3')}</div>
+							
+							
+							<textarea id="C222_3_1" tabindex="6"
+							
+								data-bind="ntsMultilineEditor: {
+															value: approveComment,
+															
+															name: '#[JHN011_B222_1_1]',
+															
+															constraint: 'String_Any_200',
+															
+															required:false,
+															
+															enable: true } " />
+						</div>
+
+						<div style='margin-left: 2px;' class="cell valign-center" >
+						
+								<div id="C222_4" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_C222_4')}</div>
+ 								<input id="C222_4_1" tabindex="6"
+									data-bind="ntsTextEditor: {
+																value: reportName,
+																name: '#[JHN011_B222_1_1]',
+																constraint: 'Code_AlphaNumeric_3',
+																required:true,
+																enable: false } " />	
+						</div>
+						
+						<div data-bind="ntsLayoutControl: { 
+							
+							editAble: 2,
+							
+							data: classifications,
+							
+							showColor: showColor, 
+							
+							outData: outData 
+						}">
+						
+						</div>
+
+<!--  					<div id = "C222_6" style="margin-top: 10px">
+					
+						<ui:include src="../../001/a/index1.xhtml" />
+						
+					</div> -->
+
+					<!-- danh sach list list file Doc. -->
+					<div id="C222_6" style="margin-left: 7px;">
+						<div class="contents-area cf" style="padding-top: 20px;">
+							<div id="label-1">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHN001_A222_6')}</div>
+							</div>
+							<div id="table-1">
+								<table id="table-list-document">
+									<tbody data-bind="foreach: listDocument">
+										<tr>
+											<td><span data-bind="text: docName"></span></td>
+											<td>
+											<span style="text-align: left; padding-left: 5px;" data-bind="text: ngoactruoc"></span>
+											<span data-bind="html: sampleFileName"></span>
+											<span data-bind="text: ngoacsau"></span></td>
+											<td>
+											<span style="text-align: left; padding-left: 5px;" data-bind="html : fileName"></span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div id = "appr" style="margin-left: 7px;">
+					
+						<ui:include src="../../001/a/index2.xhtml" />
+						
+					</div>  
+
+				</div>
+				
+			</div>
+			
+			</div>
+			
+		</ui:define>
+		
+	</ui:composition>
+	
+</body>
+
+</html>

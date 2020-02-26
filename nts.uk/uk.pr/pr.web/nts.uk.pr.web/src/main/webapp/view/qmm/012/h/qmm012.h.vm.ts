@@ -1,189 +1,138 @@
-module qmm012.h.viewmodel {
+module nts.uk.pr.view.qmm012.h.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import model = qmm012.share.model;
+    import block = nts.uk.ui.block;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import errors = nts.uk.ui.errors;
+    import info = nts.uk.ui.dialog.info;
+
     export class ScreenModel {
-        //textediter
+        currentSetting: KnockoutObservable<model.ValidityPeriodAndCycleSet> = ko.observable(null);
+        validityPeriodAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getValidityPeriodAtr());
+        cycleSettingAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCycleSettingAtr());
+        categoryAtr: string;
+        categoryAtrName: string;
+        itemNameCd: string;
+        name: string;
 
-        selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
-        //gridlist
-        gridListItems: KnockoutObservableArray<GridItemModel>;
-        columns: KnockoutObservableArray<any>;
-        gridListCurrentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        //Switch
-        Roundingrules_ValidityPeriod: KnockoutObservableArray<any>;
-        Roundingrules_CycleSetting: KnockoutObservableArray<any>;
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
-        CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
-        CurrentItemPeriod: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
-        CurrentCodeAndNameText: KnockoutObservable<string> = ko.observable('');
-        CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentStrY: KnockoutObservable<number> = ko.observable(1900);
-        CurrentEndY: KnockoutObservable<number> = ko.observable(1900);
-        CurrentCycleAtr: KnockoutObservable<number> = ko.observable(0);
-        H_Sel_January: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_February: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_InMarch: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_April: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_May: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_June: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_July: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_August: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_September: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_October: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_November: KnockoutObservable<boolean> = ko.observable(false);
-        H_Sel_December: KnockoutObservable<boolean> = ko.observable(false);
-        CycleSetting: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
-            var self = this;
-            //set Switch Data
-            self.Roundingrules_ValidityPeriod = ko.observableArray([
-                { code: 1, name: '設定する' },
-                { code: 0, name: '設定しない' }
-            ]);
+            let self = this;
+            let params = getShared("QMM012_B_TO_H_SALARY_ITEM_ID");
+            self.categoryAtr = params.categoryAtr;
+            self.categoryAtrName = model.getCategoryAtrText(params.categoryAtr);
+            self.itemNameCd = params.itemNameCd;
+            self.name = params.name;
+        }
 
-            self.Roundingrules_CycleSetting = ko.observableArray([
-                { code: 1, name: 'する' },
-                { code: 0, name: 'しない' }
-            ]);
-
-            self.CurrentItemPeriod.subscribe(function(ItemPeriod: service.model.ItemPeriod) {
-                self.CurrentPeriodAtr(ItemPeriod ? ItemPeriod.periodAtr : 0);
-                self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 1900);
-                self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 1900);
-                self.CurrentCycleAtr(ItemPeriod ? ItemPeriod.cycleAtr : 0);
-                self.H_Sel_January(ItemPeriod ? ItemPeriod.cycle01Atr == 1 ? true : false : false);
-                self.H_Sel_February(ItemPeriod ? ItemPeriod.cycle02Atr == 1 ? true : false : false);
-                self.H_Sel_InMarch(ItemPeriod ? ItemPeriod.cycle03Atr == 1 ? true : false : false);
-                self.H_Sel_April(ItemPeriod ? ItemPeriod.cycle04Atr == 1 ? true : false : false);
-                self.H_Sel_May(ItemPeriod ? ItemPeriod.cycle05Atr == 1 ? true : false : false);
-                self.H_Sel_June(ItemPeriod ? ItemPeriod.cycle06Atr == 1 ? true : false : false);
-                self.H_Sel_July(ItemPeriod ? ItemPeriod.cycle07Atr == 1 ? true : false : false);
-                self.H_Sel_August(ItemPeriod ? ItemPeriod.cycle08Atr == 1 ? true : false : false);
-                self.H_Sel_September(ItemPeriod ? ItemPeriod.cycle09Atr == 1 ? true : false : false);
-                self.H_Sel_October(ItemPeriod ? ItemPeriod.cycle10Atr == 1 ? true : false : false);
-                self.H_Sel_November(ItemPeriod ? ItemPeriod.cycle11Atr == 1 ? true : false : false);
-                self.H_Sel_December(ItemPeriod ? ItemPeriod.cycle12Atr == 1 ? true : false : false);
-
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            block.invisible();
+            service.getValidityPeriodAndCycleSet(self.categoryAtr, self.itemNameCd).done(function(data: model.IValidityPeriodAndCycleSet) {
+                self.currentSetting(new model.ValidityPeriodAndCycleSet(data));
+                self.currentSetting().categoryAtr(parseInt(self.categoryAtr, 10));
+                self.currentSetting().itemNameCd(self.itemNameCd);
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
             });
-            self.CurrentCycleAtr.subscribe(function(newValue) {
-                if (newValue == 1)
-                    self.CycleSetting(true);
-                else
-                    self.CycleSetting(false);
-            });
-            self.LoadItemPeriod();
+            return dfd.promise();
         }
-        LoadItemPeriod() {
-            //this dialog only load data in session from parrent call it
+
+        isEnableYearPeriod() {
             let self = this;
-            let itemMaster: qmm012.b.service.model.ItemMaster = nts.uk.ui.windows.getShared('itemMaster');
-            if (itemMaster != undefined) {
-                self.CurrentItemMaster(itemMaster);
-                self.CurrentCategoryAtrName(itemMaster.categoryAtrName);
-                self.CurrentCodeAndNameText(itemMaster.itemCode + "  " + itemMaster.itemName);
-            }
-            if (nts.uk.ui.windows.getShared('itemPeriod'))
-                self.CurrentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
+            return (self.currentSetting().periodAtr() == model.ValidityPeriodAtr.SETUP);
         }
-        getCurrentItemPeriod() {
-            //return  ItemPeriod customer has input to form
+
+        isEnableCycleSetting() {
             let self = this;
-            return new service.model.ItemPeriod(
-                self.CurrentItemMaster().itemCode,
-                self.CurrentPeriodAtr(),
-                self.CurrentStrY(),
-                self.CurrentEndY(),
-                self.CurrentCycleAtr(),
-                self.H_Sel_January() == true ? 1 : 0,
-                self.H_Sel_February() == true ? 1 : 0,
-                self.H_Sel_InMarch() == true ? 1 : 0,
-                self.H_Sel_April() == true ? 1 : 0,
-                self.H_Sel_May() == true ? 1 : 0,
-                self.H_Sel_June() == true ? 1 : 0,
-                self.H_Sel_July() == true ? 1 : 0,
-                self.H_Sel_August() == true ? 1 : 0,
-                self.H_Sel_September() == true ? 1 : 0,
-                self.H_Sel_October() == true ? 1 : 0,
-                self.H_Sel_November() == true ? 1 : 0,
-                self.H_Sel_December() == true ? 1 : 0
-            );
+            return (self.currentSetting().cycleSettingAtr() == model.CycleSettingAtr.USE);
         }
-        validateForm() {
+
+        isValidForm() {
             let self = this;
-            let returnResult = true;
-            if (self.CurrentStrY() > self.CurrentEndY()) {
-                nts.uk.ui.dialog.alert("範囲の指定が正しくありません。");
-                return false;
-            }
-            if (self.CurrentCycleAtr() == 1 && !self.H_Sel_January() && !self.H_Sel_December()) {
-                nts.uk.ui.dialog.alert("1月か12月が選択されていません。");
-                return false;
-            }
-            return returnResult;
-        }
-        clearError() {
-            $('#H_Inp_StartYear').ntsError('clear');
-            $('#H_Inp_EndYear').ntsError('clear');
-        }
-        SubmitDialog() {
-            let self = this;
-            let itemPeriodOld = self.CurrentItemPeriod();
-            let itemPeriod = self.getCurrentItemPeriod();
-            if (self.validateForm()) {
-                if (itemPeriodOld) {
-                    //it mean this item has been created before
-                    service.updateItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
-                        nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-                        nts.uk.ui.windows.close();
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alert(res.value);
-                    });
+            let isValid: boolean = true;
+            if (self.isEnableYearPeriod()) {
+                if (self.currentSetting().yearPeriodStart() && self.currentSetting().yearPeriodEnd()
+                    && self.currentSetting().yearPeriodStart() > self.currentSetting().yearPeriodEnd()) {
+                    $('#validityPeriod').ntsError('set', { messageId: "MsgQ_3" });
+                    isValid = false;
                 } else {
-                    service.addItemPeriod(itemPeriod, self.CurrentItemMaster()).done(function(res: any) {
-                        nts.uk.ui.windows.setShared('itemPeriod', itemPeriod);
-                        nts.uk.ui.windows.close();
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alert(res.value);
-                    });
+                    $('#validityPeriod').ntsError('clear');
                 }
+            } else {
+                $('#validityPeriod').ntsError('clear');
+                $('#validityPeriod .ntsDatepicker').ntsError('clear');
+            }
+
+            if (self.isEnableCycleSetting()) {
+                if (self.currentSetting().january() == false && self.currentSetting().february() == false
+                    && self.currentSetting().march() == false && self.currentSetting().april() == false
+                    && self.currentSetting().may() == false && self.currentSetting().june() == false
+                    && self.currentSetting().july() == false && self.currentSetting().august() == false
+                    && self.currentSetting().september() == false && self.currentSetting().october() == false
+                    && self.currentSetting().november() == false && self.currentSetting().december() == false) {
+                    $('#cycleSetting').ntsError('set', { messageId: "MsgQ_4" });
+                    isValid = false;
+                } else {
+                    $('#cycleSetting').ntsError('clear');
+                }
+            } else {
+                $('#cycleSetting').ntsError('clear');
+            }
+            return isValid;
+        }
+
+        execution() {
+            let self = this;
+            errors.clearAll();
+
+            if (self.isEnableYearPeriod()) {
+                $('.nts-input').trigger("validate");
+            }
+
+            if (errors.hasError() === false && self.isValidForm()) {
+                block.invisible();
+                if (!self.isEnableYearPeriod()) {
+                    self.currentSetting().yearPeriodStart(null);
+                    self.currentSetting().yearPeriodEnd(null);
+                }
+
+                if (!self.isEnableCycleSetting()) {
+                    self.currentSetting().january(null);
+                    self.currentSetting().february(null);
+                    self.currentSetting().march(null);
+                    self.currentSetting().april(null);
+                    self.currentSetting().may(null);
+                    self.currentSetting().june(null);
+                    self.currentSetting().july(null);
+                    self.currentSetting().august(null);
+                    self.currentSetting().september(null);
+                    self.currentSetting().october(null);
+                    self.currentSetting().november(null);
+                    self.currentSetting().december(null);
+                }
+                service.registerValidityPeriodAndCycleSet(ko.toJS(self.currentSetting)).done(() => {
+                    info({ messageId: "Msg_15" }).then(() => {
+                        setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.EXECUTION, cycleSettingAtr: self.isEnableCycleSetting(), validityPeriodAtr: self.isEnableYearPeriod() });
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(function(error) {
+                    alertError({ messageId: error.messageId });
+                }).always(() => {
+                    block.clear();
+                });
             }
         }
 
-        CloseDialog() {
+        cancel() {
+            setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.CANCEL });
             nts.uk.ui.windows.close();
         }
     }
-    class GridItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-
-    }
-    class ComboboxItemModel {
-        code: string;
-        name: string;
-        label: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-    class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
-
 }

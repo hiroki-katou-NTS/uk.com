@@ -42,7 +42,10 @@ public class ApplicationSettingFinder {
 					data.getAppReasonDispAtr().value, data.getAppContentChangeFlg().value, 
 					data.getScheReflectFlg().value, data.getPriorityTimeReflectFlg().value, 
 					data.getAttendentTimeReflectFlg().value, data.getClassScheAchi().value,
-					data.getReflecTimeofSche().value);
+					data.getReflecTimeofSche().value,
+					data.getApproverResSet().getCompanyUnit().value,
+					data.getApproverResSet().getWorkplaceUnit().value,
+					data.getApproverResSet().getEmployeeUnit().value);
 		}
 		return null;
 	}

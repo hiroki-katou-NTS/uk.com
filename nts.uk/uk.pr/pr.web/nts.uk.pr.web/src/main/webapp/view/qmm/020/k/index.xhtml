@@ -1,100 +1,99 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<com:stylefile path="qmm020.k.main.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
-			<com:scriptfile path="qmm020.k.start.js" />
-			<com:scriptfile path="qmm020.k.viewmodel.js" />
-			<com:scriptfile path="qmm020.k.service.js" />
-			<script>var dialogSize = { width: 500, height: 360};</script>
-			<style>
-.nts-list-box * {
-	box-sizing: border-box
-}
-</style>
-		</ui:define>
-		<ui:define name="content">
-			<div id="contents-area" style="margin-left: 10px; margin-top: 10px">
-				<div class="cf">
-					<div>
-						<label id="F_LBL_001">履歴情報を確認し、削除または修正を行ってください。</label>
-					</div>
-					<br />
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-					<!-- EDIT HISTORY  -->
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-					<table>
-						<tr valign="top">
-							<td style="width: 150px; float: left;">
-								<div class="form-label inline required">
-									<label id="LBL_005">編集方法の選択</label>
-								</div>
-							</td>
-							<td>
-								<div class="selectStyle">
-									<div id="SEL_001" data-bind="foreach: itemsRadio">
-										<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" name="textRadio" data-bind="checkedValue: value, 
-															checked: $parent.isRadioCheck,
-															enable: true" />
-										<span class="box"></span> 
-										<span class="label" data-bind="text: text"></span>
-										</label>
-										</span>
-									</div>
-									<div>
-										<div style="display: flex; margin-top: 10px">
-											<div class="form-label inline required">
-												<label id="K_LBL_003">期間</label>
-											</div>
-											<div>
-												<input id="K_INP_001" maxlength="7"
-													style="ime-mode: inactive"
-													data-bind="ntsTimeEditor: {
-															value: selectStartYm, 
-															option: timeEditorOption, 
-															enable: enableYm}">
-												</input>
-											</div>
-											<div>
-												<label> ~ </label>
-												<label id="K_LBL_004" style="display: inline-block;" data-bind="text: endYM"></label>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label inline required">
-									<label id="K_LBL_005">部門基準日</label>
-								</div>
-							</td>
-							<td><label id="K_LBL_006">2016/04</label></td>
-						</tr>
-					</table>
-					<br />
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-					<!-- THEM LICH SU  -->
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-				</div>
-				<hr></hr>
-				<div>
-					<button class="x-large proceed" id="K_BTN_001"
-						data-bind="click: historyProcess, enable: $root.errors.isEmpty">決定</button>
-					<button class="large" id="K_BTN_002" data-bind="click: closeDialog">キャンセル</button>
-					<br />
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 520, height: 360};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm020.k.vm.js"/>
+        <com:scriptfile path="qmm020.k.start.js"/>
+        <com:scriptfile path="qmm020.k.service.js"/>
+        <com:stylefile path="qmm020.k.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="padding: 20px;">
+            <div id="title" style="margin: 0px 0px 5px 5px">
+                <!-- K1_1 -->
+                <span id="K1_1" class="label" style="font-size: 19px;    margin: 5px 0px 5px 5px;">#{i18n.getText('QMM020_66')}</span>
+            </div>
+            <!-- K1_2 名称 -->
+            <div class=" table table-col-3">
+                <div class="cell valign-top">
+                    <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 9px 10px 0px 10px;">
+                        <span class="label">#{i18n.getText('QMM020_67')}</span>
+                    </div>
+                </div>
+                <div class ="cell valign-top" >
+                    <div id="K1_3" class="cell" tabIndex="1" data-bind="ntsRadioBoxGroup: {
+                                                            value: methodEditing,
+                                                            options: itemList(),
+                                                            optionsValue: 'code',
+                                                            enable: isFirst,
+                                                            optionsText: 'name'}">
+                    </div>
+                </div>
+            </div>
+            <table style="margin-top: 18px;" id="table_K6_K7_K8">
+                <tr>
+                    <td>
+                        <div id="K1_6" data-bind="ntsFormLabel: {required: false}" style="margin: 0px -20px 0px 182px;">
+                            <span  class="label">#{i18n.getText('QMM020_54')}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="K1_7" style="margin-left: 27px;" tabindex="2" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_55')}',
+												value: startYearMonthPeriod,
+												required: true,
+												enable: isCanPickDate(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'
+												}">
+                        </div>
+                        <span id="K1_8" style="margin-left: 5px;" class="label">#{i18n.getText('QMM020_56')}</span>
+                    </td>
+                    <td>
+                        <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
+                            <span id="K1_9" class="label" style="margin-left: 5px;" data-bind="text :  nts.uk.time.formatYearMonth(endYearMonthPeriod())"></span>
+                        </div>
+                        <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
+                            <div id="K1_12" style="margin-left:5px;" tabindex="3" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_63')}',
+												value: endYearMonthPeriod,
+												required: true,
+												enable: isCanPickDate(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'
+												}">
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+            <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_TWO ">
+                <div id="K1_10" data-bind="ntsFormLabel: {}" style="margin: 10px 10px 0px 10px;">
+                    <span class="label">#{i18n.getText('QMM020_62')}</span>
+                    <span id="K1_11" style="margin-left: 50px;" data-bind="text: startDateMaster"></span>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom" style="z-index: auto">
+            <div id="center">
+                <!-- K2_1 登録 -->
+                <button id="K2_1" tabindex="4" class="proceed large"
+                        data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+                <!-- K2_2 削除 -->
+                <button id="K2_2" tabindex="5"
+                        data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>
