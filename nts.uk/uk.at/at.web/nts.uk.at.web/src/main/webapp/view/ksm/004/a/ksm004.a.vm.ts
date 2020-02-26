@@ -60,7 +60,7 @@ module nts.uk.at.view.ksm004.a {
                 isShowAlreadySet: false,
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
-                selectedWorkplaceId: this.currentCalendarWorkPlace().key,
+                selectedId: this.currentCalendarWorkPlace().key,
                 alreadySettingList: ko.observableArray([]),
                 systemType : 2
             };
