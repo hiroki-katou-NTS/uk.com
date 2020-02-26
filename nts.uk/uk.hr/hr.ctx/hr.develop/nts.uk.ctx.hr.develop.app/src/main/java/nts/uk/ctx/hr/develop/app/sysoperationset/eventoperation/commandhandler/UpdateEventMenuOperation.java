@@ -47,7 +47,7 @@ public class UpdateEventMenuOperation extends CommandHandler<JMM018Cmd>{
 		for(MenuOperationCmd cmd: listMenu){
 			// ドメインモデル[メニュー管理]を更新する - update domain menu operation
 			eventMenuOperSer.updateMenu(MenuOperation.createFromJavaType(cmd.getProgramId(), cmd.getUseMenu(), 
-															companyId, cmd.getUseApproval(), cmd.getUseNotice(), ccd));
+															companyId, cmd.getUseApproval(), cmd.getUseNotice(), null, ccd));
 		}
 	}
 

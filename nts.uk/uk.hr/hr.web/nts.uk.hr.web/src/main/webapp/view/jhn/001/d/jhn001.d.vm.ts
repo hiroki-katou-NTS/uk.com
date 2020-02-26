@@ -90,7 +90,7 @@ module jhn001.d.viewmodel {
                 return;
             }
 
-            nts.uk.ui.dialog.confirm({ messageId: "Msgj_8" }).ifYes(() => {
+            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_8" }).ifYes(() => {
                 let selectedReturn = self.selectedReturn();
                 let selectedSendBackCls = self.selectedSendBackCls();
                 let  obj = _.find(self.listReturn(), function(o) { return o.id == selectedReturn; })
@@ -114,7 +114,7 @@ module jhn001.d.viewmodel {
                 
                 block();
                 service.saveData(command).done(() => {
-                    info({ messageId: "Msgj_10" }).then(function() {
+                    info({ messageId: "MsgJ_10" }).then(function() {
                         unblock();
                         close();
                     });

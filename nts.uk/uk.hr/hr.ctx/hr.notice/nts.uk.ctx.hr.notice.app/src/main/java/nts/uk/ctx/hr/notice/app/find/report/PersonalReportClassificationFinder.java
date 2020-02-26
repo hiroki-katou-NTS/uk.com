@@ -50,6 +50,13 @@ public class PersonalReportClassificationFinder {
 		}).collect(Collectors.toList());
 	}
 	
+	// get list report jhn011, bên màn JHN001 không cần check quyền.
+	public List<PersonalReportClassificationDto> getAllReportClsForJHN001(boolean abolition){
+		return this.reportClsRepo.getAllByCid(AppContexts.user().companyId(), abolition).stream().map(c -> {
+			return PersonalReportClassificationDto.fromDomain(c);
+		}).collect(Collectors.toList());
+	}
+	
 	/**
 	 * アルゴリズム「届出の内容表示処理」を実行する (Thực hiện thuật toán 「Xử lý hiển thị nội dung đơn xin」)
 	 * @param reportClsId

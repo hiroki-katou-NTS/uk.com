@@ -242,7 +242,12 @@ module nts.uk.at.view.kdw001.c {
 
                         //Convert list Object from server to view model list
                         let items = _.map(data.listEmployee, item => {
-                            return new UnitModel(item);
+                            return {
+                                code: item.employeeCode,
+                                name: item.employeeName,
+                                affiliationName: item.affiliationName,
+                                isAlreadySetting: true  
+                            }
                         });
                         self.employeeList(items);
 
@@ -378,19 +383,19 @@ module nts.uk.at.view.kdw001.c {
         export class UnitModel {
             code: string;
             name: string;
-            workplaceName: string;
+            affiliationName: string;
             isAlreadySetting: boolean;
             constructor(x: EmployeeSearchDto) {
                 let self = this;
                 if (x) {
                     self.code = x.employeeCode;
                     self.name = x.employeeName;
-                    self.workplaceName = x.workplaceName;
+                    self.affiliationName = x.workplaceName;
                     self.isAlreadySetting = false;
                 } else {
                     self.code = "";
                     self.name = "";
-                    self.workplaceName = "";
+                    self.affiliationName = "";
                     self.isAlreadySetting = false;
                 }
             }
