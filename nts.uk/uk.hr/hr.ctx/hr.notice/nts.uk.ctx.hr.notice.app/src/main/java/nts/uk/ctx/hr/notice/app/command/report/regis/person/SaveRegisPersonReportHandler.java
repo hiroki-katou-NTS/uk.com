@@ -36,8 +36,7 @@ import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalPhaseStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootContentHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApproverStateHrExport;
-import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
-import nts.uk.ctx.hr.shared.dom.create.approval.rootstate.ICreateApprovalStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrRepository;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -63,10 +62,8 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	private EmployeeInformationAdaptor empInfoAdaptor;
 	
 	@Inject
-	private IApprovalRootStateAdaptor approvalRootStateAdaptor;
+	private ApprovalRootStateHrRepository approvalRootStateRepo;
 	
-	@Inject
-	private ICreateApprovalStateAdaptor createApprovalStateAdaptor;
 	
 	@Inject
 	private HumanItemPub humanItemPub;
@@ -112,10 +109,10 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 			
 			// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
 			//(Thực hiện thuật toán [[No.309] Get approval route/1. Get Approval route for employee application])
-			ApprovalRootContentHrExport export = approvalRootStateAdaptor.getApprovalRootHr(cid, sid, String.valueOf(data.reportLayoutID), GeneralDate.today(), Optional.empty());
+			ApprovalRootContentHrExport export = approvalRootStateRepo.getApprovalRootHr(cid, sid, String.valueOf(data.reportLayoutID), GeneralDate.today(), Optional.empty());
 			
 			// アルゴリズム[[RQ637]承認ルートインスタンスを新規作成する]を実行する(Thực hiện thuật toán [[RQ637] Create new approval route instance])
-			createApprovalStateAdaptor.createApprStateHr(export, rootSateId, sid, GeneralDate.today());
+			approvalRootStateRepo.createApprStateHr(export, rootSateId, sid, GeneralDate.today());
 			
 			// [人事届出の登録.ルートインスタンスID]、[人事届出の承認.ルートインスタンスID]を登録する。[人事届出の承認．メール送信区分]=メールするに設定
 			//(Đăng ký [Registration of HR report. Root instance ID], [Approval of HR report. Root instance ID]. [Approval of HR report. Category gửi mail] = Setting mail)

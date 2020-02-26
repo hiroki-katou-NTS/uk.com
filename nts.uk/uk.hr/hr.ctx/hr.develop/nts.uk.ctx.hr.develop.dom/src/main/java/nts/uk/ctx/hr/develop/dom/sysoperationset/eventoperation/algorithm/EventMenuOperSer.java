@@ -116,10 +116,10 @@ public class EventMenuOperSer {
 					listMenuOper.add(menuOper.get());
 				}else{
 					menuRep.add(MenuOperation.createFromJavaType(obj.getProgramId().toString(), 0, 
-							AppContexts.user().companyId(), 0, 0,
+							AppContexts.user().companyId(), 0, 0, null,
 							new BigInteger(AppContexts.user().companyCode())));
 					listMenuOper.add(MenuOperation.createFromJavaType(obj.getProgramId().toString(), 0, 
-																		AppContexts.user().companyId(), 0, 0,
+																		AppContexts.user().companyId(), 0, 0, null,
 																		new BigInteger(AppContexts.user().companyCode())));
 				}
 			}
