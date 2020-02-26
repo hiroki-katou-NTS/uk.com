@@ -63,8 +63,8 @@ public class ShiftPalletCombinations implements DomainValue {
 		List<Combinations> list = new ArrayList<>();
 		Combinations com = null;
 
-		for (int i = 1; i <= this.combinations.size(); i++) {
-			com = new Combinations(i, this.combinations.get(i).getShiftCode());
+		for (int i = 0; i < this.combinations.size(); i++) {
+			com = new Combinations(i + 1, this.combinations.get(i).getShiftCode());
 			list.add(com);
 		}
 

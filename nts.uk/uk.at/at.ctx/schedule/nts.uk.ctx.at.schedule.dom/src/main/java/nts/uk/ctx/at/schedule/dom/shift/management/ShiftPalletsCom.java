@@ -30,9 +30,8 @@ public class ShiftPalletsCom implements DomainAggregate {
 		if(!(1 <= page && page <= 10)){
 			throw new BusinessException("Msg_1615");
 		}
-		
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
-		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
+//		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 		
 		this.companyId = companyId;
 		this.page = page;
@@ -40,15 +39,14 @@ public class ShiftPalletsCom implements DomainAggregate {
 	}
 	
 	public void modifyShiftPallets(ShiftPallet shiftPallet){
-		
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()		
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
+		this.shiftPallet = shiftPallet;
 	}
 	
 	public static interface Require {
 		// 会社別シフトパレットRepository.Update(会社別シフトパレット)
 		void update(ShiftPalletsCom shiftPalletsCom);
-		
 	}
 	
 }
