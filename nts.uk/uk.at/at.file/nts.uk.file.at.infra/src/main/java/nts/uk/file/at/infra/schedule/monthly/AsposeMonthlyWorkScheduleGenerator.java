@@ -109,6 +109,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -458,6 +459,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
+				if (CollectionUtil.isEmpty(workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()))) {
+					continue;
+				}
 				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()).get(0);
 				lstWorkplace.put(hierarchy.getHierarchyCode().v(), workplace);
 				

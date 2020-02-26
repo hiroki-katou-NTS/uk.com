@@ -90,7 +90,7 @@ public class WorkplaceInfoFinder {
 		// find
 		List<WorkplaceInfo> opWkpInfo = wkpInfoRepo.findByWkpId(findObj.getWorkplaceId());
 		// convert to Dto
-		if (CollectionUtil.isEmpty(opWkpInfo)) {
+		if (!CollectionUtil.isEmpty(opWkpInfo)) {
 			WorkplaceInfoDto dto = new WorkplaceInfoDto();
 			opWkpInfo.get(0).saveToMemento(dto);
 			return dto;

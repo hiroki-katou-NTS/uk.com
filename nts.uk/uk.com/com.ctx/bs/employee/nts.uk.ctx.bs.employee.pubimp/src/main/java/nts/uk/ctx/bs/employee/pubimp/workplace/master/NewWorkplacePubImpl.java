@@ -181,6 +181,9 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 				companyID, 
 				opWorkplaceConfig.get().items().get(0).identifier());
 		// 取得した「職場情報」から基準となる職場の階層コードを求める
+		if (!workplaceInforLst.stream().filter(x -> x.getWorkplaceId().equals(workplaceID)).findAny().isPresent()) {
+			return new ArrayList<String>();
+		}
 		WorkplaceInformation workplaceInfor = workplaceInforLst.stream().filter(x -> x.getWorkplaceId().equals(workplaceID)).findAny().get();
 		// 求めた基準となる職場の階層コードから上位階層の職場を求める
 		List<String> hierachyCDLst = new ArrayList<>();
