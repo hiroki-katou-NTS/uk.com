@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.a.viewmodel {
+module nts.uk.at.view.ksu001.dummy.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import alertError = nts.uk.ui.dialog.alertError;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
@@ -123,8 +123,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // 表示形式 ＝ 日付別(固定) = 0
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
-        //Workplace Code 
-        workplaceCode: KnockoutObservable<string> = ko.observable('');
+
 
         constructor() {
             let self = this;
@@ -227,13 +226,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // get data to stickData
                     // if buttonTable not selected, set stickData is null
                     if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
-                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
+                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)
+                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplaceGroup' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
                         $("#extable").exTable("stickData", null);
                     } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
                         let dataToStick = _.map($("#test1").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
                         $("#extable").exTable("stickData", dataToStick);
                     } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
                         let dataToStick = _.map($("#test2").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
+                        $("#extable").exTable("stickData", dataToStick);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplaceGroup') {
+                        let dataToStick = _.map($("#test3").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
                         $("#extable").exTable("stickData", dataToStick);
                     }
                     // jump initScreenQ only once
@@ -1957,7 +1960,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceNameDisplay(_.isNil(wkp) ? null : wkp.wkpDisplayName);
-                self.workplaceCode(_.isNil(wkp) ? null : wkp.workplaceCode);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();

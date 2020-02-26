@@ -6,6 +6,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
         workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
+        workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode); 
         selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
         workplaceId: string = getShared('dataForJB').workplaceId;
         listWorkType: any[] = getShared('dataForJB').listWorkType;
@@ -199,11 +200,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 tooltip: self.tooltip(),
                 data: data ? data.data : null,
                 textDecision: nts.uk.resource.getText("KSU001_923"),
-                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime
+                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime,
+                selectedTab: getShared("dataForJB").selectedTab,
+                workplaceId: getShared('dataForJB').workplaceId
             });
             
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jc/index.xhtml").onClosed(() => {
-                let dataFromJB = getShared("dataFromJC");
+                let dataFromJB = getShared("dataFromJB");
                 if (dataFromJB) {
                     self.textName(dataFromJB ? dataFromJB.text : self.textName());
                     self.tooltip(dataFromJB ? dataFromJB.tooltip : self.tooltip());

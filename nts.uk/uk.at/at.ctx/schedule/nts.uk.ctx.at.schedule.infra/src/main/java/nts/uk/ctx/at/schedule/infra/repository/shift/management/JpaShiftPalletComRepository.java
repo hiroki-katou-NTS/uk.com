@@ -127,7 +127,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	public void delete(ShiftPalletsCom shiftPalletsCom) {
 
 		String query = FIND_BY_PAGE;
-		query = query.replaceFirst("companyId", shiftPalletsCom.getCompanyId().v());
+		query = query.replaceFirst("companyId", shiftPalletsCom.getCompanyId());
 		query = query.replaceFirst("page", String.valueOf(shiftPalletsCom.getPage()));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();

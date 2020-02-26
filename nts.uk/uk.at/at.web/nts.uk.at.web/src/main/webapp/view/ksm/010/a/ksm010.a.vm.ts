@@ -111,7 +111,8 @@ module nts.uk.at.view.ksm010.a {
 
             saveData(): void {
                 let self = this;
-
+                self.rankSymbol($.trim(self.rankSymbol()));
+                
                 $("#rankCode").trigger("validate");
                 $("#rankSymbol").trigger("validate");
 

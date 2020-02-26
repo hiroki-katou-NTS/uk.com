@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
+			</com:ValidatorScript>
+
+			<!-- COMPONENT CCG001 -->
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- #CCG001 -->
+			<com:stylefile path="ksu001.dummy.main.css" />
+			<com:scriptfile path="ksu001.dummy.start.js" />
+			<com:scriptfile path="ksu001.dummy.vm.js" />
+			<com:scriptfile path="ksu001.dummy.service.js" />
+
+			<com:stylefile path="../o/ksu001.o.main.css" />
+			<com:scriptfile path="../o/ksu001.o.vm.js" />
+			<com:scriptfile path="../o/ksu001.o.service.js" />
+
+			<com:stylefile path="../test1/ksu001.test1.main.css" />
+			<com:scriptfile path="../test1/ksu001.test1.vm.js" />
+			<com:scriptfile path="../test1/ksu001.test1.service.js" />
+
+			<com:scriptfile path="../common/ksu001.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div data-bind="with: viewA">
+				<div id="functions-area">
+				</div>
+
+
+
+				<div id="ccgcomponent_contents">
+					<div class="left-content">
+					</div>
+					<div class="right-content">
+						<div id="top-area" style="visibility: hidden;">
+							<div id="top-area-right">
+								<label class="ml-2">#{i18n.getText('KSU001_42')}:</label>
+								<div tabindex="-1" class="cf"
+									data-bind="ntsSwitchButton: {
+										options: modeDisplay,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedModeDisplay}">
+								</div>
+								<button tabindex="-1"
+									class="color-button ml-2 size-image-button1"></button>
+							</div>
+						</div>
+						<div id="contain-view">
+							<div id="group-bt" style="visibility: hidden;" >
+								<button id="paste" class="size-image-button2"
+									data-bind="click: pasteData"></button>
+								<button id="copy" class="size-image-button2"
+									data-bind="click: copyData"></button>
+								<br />
+								<button id="undo" class="size-image-button2"
+									data-bind="click: undoData, timeClick: -1"></button>
+							</div>
+							<div id="qViewModel" style="display: none">
+								<div data-bind="with: $parent.viewQ">
+									<ui:include src="../test1/index.xhtml" />
+								</div>
+							</div>
+						</div>
+						<div style="visibility: hidden;" id="extable"></div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

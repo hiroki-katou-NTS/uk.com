@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -49,7 +50,7 @@ public class KscmtPaletteCmpCombi extends UkJpaEntity{
     })
 	public KscmtPaletteCmp kscmtPaletteCmp;
 	
-	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "kscmtPaletteCmpCombi", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "kscmtPaletteCmpCombi", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JoinTable(name = "KSCMT_PALETTE_CMP_COMBI_DTL")
 	public List<KscmtPaletteCmpCombiDtl> cmpCombiDtls;
 	
