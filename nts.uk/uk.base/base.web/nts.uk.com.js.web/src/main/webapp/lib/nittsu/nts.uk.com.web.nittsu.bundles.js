@@ -35766,11 +35766,7 @@ var nts;
                                 }
                             }
                             else {
-<<<<<<< HEAD
-                            	deselectAll($grid);
-=======
                                 deselectAll($grid);
->>>>>>> TeamD/Release_Ver4_20200224
                                 selectedId.forEach(function (id) {
                                     if (_.includes(baseID, id)) {
                                         $grid.igGridSelection('selectRowById', id);
