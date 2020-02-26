@@ -8,17 +8,17 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1000, height: 600 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode
+				nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm022.c.style.css" />
 			<com:scriptfile path="cmm022.c.start.js" />
 			<com:scriptfile path="cmm022.c.service.js" />
 			<com:scriptfile path="cmm022.c.vm.js" />
-			<com:scriptfile set="IGNITE" />
 
 		</ui:define>
-		<com:ValidatorScript>
-			nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode
-			nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemName
-		</com:ValidatorScript>
 
 		<ui:define name="content">
 			<div id="functions-area">
@@ -30,7 +30,7 @@
 				<div style = "width: 980px">
 				
 					<div class = "left-content">
-						<div class="panel-item"
+						<div class="panel-item" id = "height-panel"
 							data-bind="ntsPanel:{width: '410px', height: '430px', direction: 'right', showIcon: true, visible: true}">
 							<div style="width: 350px"
 								data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'commonMasterCode', comId: 'multi-list', 
@@ -48,7 +48,7 @@
 					</div>
 					
 					<div class = "right-content">
-						<div id="labelRequired" data-bind="ntsFormLabel: {required: true, constraint: 'CommonMasterItemCode'}">#{i18n.getText('CMM022_C222_1')}</div>
+						<div id="labelRequired" data-bind="ntsFormLabel: {required: true, constraint: ['CommonMasterItemCode', 'CommonMasterItemName'] }">#{i18n.getText('CMM022_C222_1')}</div>
 						<div style = "display: inline-block;">
 							<input data-bind="ntsTextEditor: {
 													name: '#[CMM020_C222_2]',

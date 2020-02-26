@@ -45,6 +45,16 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                     }
                     
                 });
+
+                setTimeout(() => {
+                    $(window).resize(function() {
+                        console.log(window.innerHeight);
+                        $("#height-panel").height(window.innerHeight - 125);
+                        $("#multi-list").igGrid("option", "height", (window.innerHeight - 175) + "px");
+                        $("#item-list").igGrid("option", "height", (window.innerHeight - 175) + "px");
+                        $("#tree-up-down").height(window.innerHeight - 150);
+                    });
+                }, 100); 
             }
 
             /**

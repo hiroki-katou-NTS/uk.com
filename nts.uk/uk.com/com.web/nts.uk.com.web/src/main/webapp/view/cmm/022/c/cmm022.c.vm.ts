@@ -19,6 +19,7 @@ module nts.uk.com.view.cmm022.c.viewmodel {
             
             selectedItem: KnockoutObservable<any> = ko.observable();
             changeList: KnockoutObservableArray<any> = ko.observableArray([]);
+            
             constructor() {
                 let self = this;
                 self.columns = ko.observableArray([
@@ -42,7 +43,7 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                         let param = {
                             commonMasterId: self.selectedItem().commonMasterId,
                             commonMasterCode: item,
-                            commonMasterName: self.selectedItem().commonMasterName,
+                            commonMasterName: self.commonMasterName(),
                             commonMasterMemo: self.selectedItem().commonMasterMemo
                         }
                         self.changeList().push(param);
@@ -53,13 +54,22 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                     if (temp != self.selectedItem().commonMasterName) {
                         let parameter = {
                             commonMasterId: self.selectedItem().commonMasterId,
-                            commonMasterCode: self.selectedItem().commonMasterCode,
+                            commonMasterCode: self.commonMasterCode(),
                             commonMasterName: temp,
                             commonMasterMemo: self.selectedItem().commonMasterMemo
                         }
                         self.changeList().push(parameter);
                     }
                 });
+
+                setTimeout(() => {
+                    $(window).resize(function() {
+                        console.log(window.innerHeight);
+                        $("#multi-list").igGrid("option", "height", (window.innerHeight - 175) + "px");
+                        $("#height-panel").height(window.innerHeight - 125);
+                    });                   
+                }, 500); 
+
             }
 
             /**
