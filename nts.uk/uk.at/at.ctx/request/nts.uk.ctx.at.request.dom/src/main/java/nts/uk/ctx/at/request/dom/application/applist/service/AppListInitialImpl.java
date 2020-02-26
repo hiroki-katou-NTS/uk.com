@@ -172,15 +172,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			return false;
 		}
 		// 「休出時間申請」又は「残業申請」の場合
-		// ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting
-		// by workplace)
+		// ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
 		// 対象が存在しない場合 - TH doi tuong k ton tai
 		if (!appFuncSet.isPresent()
 				|| appFuncSet.get().getInstructionUseSetting().getInstructionUseDivision().equals(UseAtr.NOTUSE)) {
-			// ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval
-			// setting by company)
+			// ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		}
 		if (!appFuncSet.isPresent()
@@ -309,14 +307,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				AppCompltLeaveFull appSub = null;
 				String appDateSub = null;
 				String appInputSub = null;
-				// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6
-				// - 申請一覧リスト取得振休振出
+				// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
 				AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
-				if (!sync.isSync()) {// TH k co don lien ket
-					// lay thong tin chi tiet
+				if (!sync.isSync()) {// TH k co don lien ket lay thong tin chi tiet
 					appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), lstWkType);
-				} else {// TH co don lien ket
-						// lay thong tin chi tiet A
+				} else {// TH co don lien ket lay thong tin chi tiet A
 					appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), lstWkType);
 					// check B co trong list don xin k?
 					String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
@@ -325,8 +320,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						lstSyncId.add(appIdSync);
 						appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
 						appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
-					} else {// not exist
-							// lay thong tin chung
+					} else {// not exist lay thong tin chung
 						Application_New sub = repoApp.findByID(companyId, appIdSync).get();
 						appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
 						appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
@@ -2092,8 +2086,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			// 取得できなかった場合
 			//職場の上位職場を取得する - ※RequestList569
 			List<String> lstWpkIDPr = wkpAdapter.getUpperWorkplaceRQ569(companyId, wkpId, date);
-			if (lstWpkIDPr.size() > 1) {
-				for (int i = 1; i < lstWpkIDPr.size(); i++) {
+			if (lstWpkIDPr.size() >= 1) {
+				for (int i = 0; i < lstWpkIDPr.size(); i++) {
 					// ドメイン「職場別申請承認設定」を取得する
 					wpkSet = repoRequestWkp.getRequestByWorkplace(companyId, lstWpkIDPr.get(i));
 					if (wpkSet.isPresent()) return wpkSet.get().getListApprovalFunctionSetting();
