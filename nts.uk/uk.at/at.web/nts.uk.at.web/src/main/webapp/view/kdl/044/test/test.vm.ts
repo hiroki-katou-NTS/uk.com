@@ -86,7 +86,6 @@ module test.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            let shifutos: Array<Shifuto> = [];
             let param = {targetUnit: null, workplaceIds: null, workplaceGroupID: null};
             service.getShiftMaster(param)
             .done((data) => {
