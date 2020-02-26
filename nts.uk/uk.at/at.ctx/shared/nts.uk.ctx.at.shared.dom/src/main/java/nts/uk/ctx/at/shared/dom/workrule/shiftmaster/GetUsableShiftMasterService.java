@@ -3,7 +3,10 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 /**
  * DS : 使用できるシフトマスタを取得する
@@ -11,9 +14,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author tutk
  *
  */
+@Stateless
 public class GetUsableShiftMasterService {
 
-	public static List<ShiftMaster> getUsableShiftMaster(Require require, String companyId,
+	public static List<ShiftMasterDto> getUsableShiftMaster(Require require, String companyId,
 			TargetOrgIdenInfor targetOrg) {
 
 		// 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 )
@@ -30,8 +34,8 @@ public class GetUsableShiftMasterService {
 
 		Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
 
-		List<ShiftMaster> getAllByCid(String companyId);
+		List<ShiftMasterDto> getAllByCid(String companyId);
 
-		List<ShiftMaster> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
+		List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
 	}
 }

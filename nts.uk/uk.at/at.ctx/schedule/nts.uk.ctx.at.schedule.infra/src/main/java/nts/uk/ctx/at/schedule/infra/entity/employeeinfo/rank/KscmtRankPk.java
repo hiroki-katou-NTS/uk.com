@@ -17,10 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscmtRankPk implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 会社ID
+	 */
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "RANK_CD")
-	public String rankCode;
+	/**
+	 * ランクコード
+	 */
+	@Column(name = "CD")
+	public String rankCd;
 }

@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu001.jb.viewmodel {
+module nts.uk.at.view.ksu001.jc.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
@@ -16,12 +16,14 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
-        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
-        arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
-        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
+        selectedTab : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().selectedTab;
+        workplaceId : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().workplaceId;
+        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJC').text || null);
+        arrTooltip: any[] = getShared('dataForJC').tooltip ? getShared('dataForJC').tooltip.match(/[^[\]]+(?=])/g) : [];
+        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJC').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
-        listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
+        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJC').textDecision);
+        listCheckNeededOfWorkTime: any[] = getShared('dataForJC').listCheckNeededOfWorkTime;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         nashi: string = getText("KSU001_98");
            
@@ -182,9 +184,37 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+        /**
+         *  query
+         * 
+         */
+    
 
+        initShiftWork() {
+            let self = this;
+
+            let taisho = {
+                targetUnit: 1,
+                workplaceId: '',
+                workplaceGroupId: ''
+            }
+            if (self.selectedTab == 'company') {
+                taisho = null;
+            }
+            if (self.selectedTab == 'workplace') {
+                taisho.workplaceId = self.workplaceId;
+            }
+            
+            
+            service.getShiftMasterWorkInfo(taisho).done(() => {
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
+            });
+        }
+        
         search(): void {
             let self = this;
+            
             let listWorkTimeSearch: any[] = [];
             let arrTmp: any[] = [];
             self.isEnableClearSearchButton(true);

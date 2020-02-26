@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
@@ -13,29 +14,28 @@ import nts.arc.task.tran.AtomTask;
  */
 public class InsertRankService {
 
+	//[1] ランクを新規登録する
 	public static AtomTask insert(Require require, String companyId, RankCode rankCd, RankSymbol rankSymbol) {
-		
+
 		if (require.checkRankExist(companyId, rankCd)) {
 			throw new BusinessException("Msg_3");
 		}
-		
+
 		Rank newRank = new Rank(companyId, rankCd, rankSymbol);
-		RankPriority rankPriority = require.getRankPriority(companyId);
+		Optional<RankPriority> optRankPriority = require.getRankPriority(companyId);
+		RankPriority rankPriority = null;
 		
-		if (rankPriority == null) {
-			RankPriority newRankPriority = new RankPriority(companyId, Arrays.asList(rankCd));
-			
-			return AtomTask.of(() -> {
-				require.insertRank(newRank);
-				require.insertRankPriority(newRankPriority);
-			});
+		if (!optRankPriority.isPresent()) {
+			rankPriority = new RankPriority(companyId, Arrays.asList(rankCd));
+		} else {
+			rankPriority = optRankPriority.get();
+			rankPriority.insert(rankCd);
 		}
-		
-		rankPriority.insert(rankCd);
-		
+
+		RankPriority newRankPriority = rankPriority;
+
 		return AtomTask.of(() -> {
-			require.insertRank(newRank);
-			require.updateRankPriority(rankPriority);
+			require.insertRank(newRank, newRankPriority);
 		});
 	}
 
@@ -44,16 +44,10 @@ public class InsertRankService {
 		boolean checkRankExist(String companyId, RankCode rankCd);
 
 		// [R2] ランクの優先順を取得する
-		RankPriority getRankPriority(String companyId);
+		Optional<RankPriority> getRankPriority(String companyId);
 
 		// [R3] ランクを新規登録する
-		void insertRank(Rank rank);
-
-		// [R4] ランクの優先順を新規登録する
-		void insertRankPriority(RankPriority rankPriority);
-
-		// [R5] ランクの優先順を変更する
-		void updateRankPriority(RankPriority rankPriority);
+		void insertRank(Rank rank, RankPriority rankPriority);
 	}
 
 }
