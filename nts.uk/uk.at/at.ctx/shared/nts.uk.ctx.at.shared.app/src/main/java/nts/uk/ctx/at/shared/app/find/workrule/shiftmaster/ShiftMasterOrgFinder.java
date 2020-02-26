@@ -81,6 +81,13 @@ public class ShiftMasterOrgFinder {
 
 	}
 	
+	public AlreadySettingWorkplaceDto getAlreadySetting() {
+		String companyId = AppContexts.user().companyId();
+		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
+
+		return null;
+	}
+	
 	@AllArgsConstructor
 	private static class RequireImpl implements GetUsableShiftMasterService.Require {
 		

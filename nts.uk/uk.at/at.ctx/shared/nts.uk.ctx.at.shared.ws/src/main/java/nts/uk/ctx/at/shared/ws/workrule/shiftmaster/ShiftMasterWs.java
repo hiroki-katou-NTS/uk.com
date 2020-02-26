@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMaster
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommandHandler;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.AlreadySettingWorkplaceDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015bStartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
@@ -69,6 +70,12 @@ public class ShiftMasterWs {
 	@Path("getlistByWorkPlace")
 	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
 		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
+	}
+	
+	@POST
+	@Path("getAlreadyConfigOrg")
+	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(FindShiftMasterDto dto){
+		return this.orgFinder.getAlreadySetting();
 	}
 	
 	@POST
