@@ -10,7 +10,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.department.master.AffDpmHistItemExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
@@ -90,7 +93,11 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	
 	@Override
 	public String getDepartmentIDByEmpDate(String employeeID, GeneralDate date) {
-		return depPub.getDepartmentHistItemByEmpDate(employeeID, date).getDepartmentId();
+		AffDpmHistItemExport ob = depPub.getDepartmentHistItemByEmpDate(employeeID, date);
+		if(ob == null) {
+			throw new BusinessException(new RawErrorMessage(employeeID + "の部門はまだ設定しない。"));
+		}		
+		return ob.getDepartmentId();
 	}
 
 	@Override

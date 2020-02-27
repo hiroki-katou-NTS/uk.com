@@ -2,18 +2,21 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -107,10 +110,17 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 						appTypesN.add(this.findName(lstName, null, event, EmploymentRootAtr.BUS_EVENT.value));
 					}
 				}
-				//set workplace infor
-				WorkplaceImport wpInforBySid = wpNameInfor.findBySid(empImport.getSId(), baseDate);
-				empImport.setWpCode(wpInforBySid.getWkpCode());
-				empImport.setWpName(wpInforBySid.getWkpName());
+				//Dep info
+				String id = Strings.EMPTY;
+				Optional<WkpDepInfo> wkpDepO = Optional.empty();
+				id = wpNameInfor.getDepartmentIDByEmpDate(empImport.getSId(), baseDate);
+				wkpDepO = wpNameInfor.findByDepIdNEW(companyId, id, baseDate);
+				if(!wkpDepO.isPresent()) {
+					wkpDepO = Optional.of(new WkpDepInfo("","コード削除済", "コード削除済"));
+				}
+				WkpDepInfo wkpDep = wkpDepO.get();
+				empImport.setWpCode(wkpDep.getCode());
+				empImport.setWpName(wkpDep.getName());
 				if (!CollectionUtil.isEmpty(appTypesN)) {
 					empImport.setPName(psInfor.getPersonInfo(empImport.getSId()).getEmployeeName());
 					EmployeeUnregisterOutput dataOuput = new EmployeeUnregisterOutput(empImport, appTypesN);
@@ -165,10 +175,17 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 						appTypes.add(conf.nameId);
 					}
 				}
-				//set workplace infor
-				WorkplaceImport wpInforBySid = wpNameInfor.findBySid(empImport.getSId(), baseDate);
-				empImport.setWpCode(wpInforBySid.getWkpCode());
-				empImport.setWpName(wpInforBySid.getWkpName());
+				//wkp info
+				String id = Strings.EMPTY;
+				Optional<WkpDepInfo> wkpDepO = Optional.empty();
+				id = wpNameInfor.getWorkplaceIDByEmpDate(empImport.getSId(), baseDate);
+				wkpDepO = wpNameInfor.findByWkpIdNEW(companyId, id, baseDate);
+				if(!wkpDepO.isPresent()) {
+					wkpDepO = Optional.of(new WkpDepInfo("","コード削除済", "コード削除済"));
+				}
+				WkpDepInfo wkpDep = wkpDepO.get();
+				empImport.setWpCode(wkpDep.getCode());
+				empImport.setWpName(wkpDep.getName());
 				if (!CollectionUtil.isEmpty(appTypes)) {
 					empImport.setPName(psInfor.getPersonInfo(empImport.getSId()).getEmployeeName());
 					EmployeeUnregisterOutput dataOuput = new EmployeeUnregisterOutput(empImport, appTypes);
