@@ -491,6 +491,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	public Optional<SWkpHistExport> findByWkpIdNew(String companyId, String wkpId, GeneralDate baseDate) {
 		return workplaceInformationRepository.getWkpNewByIdDate(companyId, wkpId, baseDate)
 				.map(c -> SWkpHistExport.builder()
+				.workplaceId(c.getWorkplaceId())
 				.workplaceCode(c.getWorkplaceCode().v())
 				.workplaceName(c.getWorkplaceName().v())
 				.wkpDisplayName(c.getWorkplaceDisplayName().v()).build());
