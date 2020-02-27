@@ -18,7 +18,7 @@ public class ShiftPallet implements DomainValue {
 
 	/** 表示情報 */
 	@Getter
-	private final ShiftPalletDisplayInfor displayInfor;
+	private ShiftPalletDisplayInfor displayInfor;
 
 	/** 組み合わせ */
 	@Getter
@@ -29,16 +29,15 @@ public class ShiftPallet implements DomainValue {
 		if (!(1 <= combinations.size() && combinations.size() <= 20)) {
 			throw new BusinessException("Msg_1616");
 		}
-
-		List<Integer> lstElement = combinations.stream().map(x -> x.getPositionNumber()).distinct()
-				.collect(Collectors.toList());
-
-		if (lstElement.size() < combinations.size()) {
+		
+	    List<Integer> lstElement = combinations.stream().map(x -> x.getPositionNumber()).distinct().collect(Collectors.toList());
+		
+		if(lstElement.size() < combinations.size()){
 			throw new BusinessException("Msg_1616");
+		}else {
+			combinations.sort((p1, p2)-> p1.getPositionNumber() - p2.getPositionNumber());
 		}
 		
-		combinations.sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
-
 		this.displayInfor = displayInfor;
 		this.combinations = combinations;
 	}

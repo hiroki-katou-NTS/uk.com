@@ -68,6 +68,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataComPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
+                 var test = _.map(data, "groupName")
+
+                    
                 });
             } else {
                 self.isVisibleWkpName(true);
@@ -424,7 +427,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         let workType = null, workTime = null, pairShortName = null;
                         workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
-                        let workTypeShortName = workType.abbreviationName;
+                      //  let workTypeShortName = workType.abbreviationName;
+                        let workTypeShortName = 'abc';
                         workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
                         let workTimeShortName = workTime ? workTime.abName : null;
                         pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
