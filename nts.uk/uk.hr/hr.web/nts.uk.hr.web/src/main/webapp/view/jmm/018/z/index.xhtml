@@ -14,7 +14,7 @@
 			<div class="contents-area tab3">
 				<div class="container cf">
 					<div class="table ui-iggrid">
-						<table id="fixed-table">
+						<table>
 							<colgroup>
 									<col width="300px" />
 									<col width="105px" />
@@ -37,6 +37,19 @@
 									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_8')}</th>
 								</tr>
 							</thead>
+							<tbody></tbody>
+						</table>
+						<table id="fixed-table" class="scroll">
+							<colgroup>
+									<col width="300px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+							</colgroup>
 							<tbody data-bind="foreach: menuApprovalSettingInforList()">
 								<tr>
 									<td><span class="limited-label" data-bind="text: name"></span></td>

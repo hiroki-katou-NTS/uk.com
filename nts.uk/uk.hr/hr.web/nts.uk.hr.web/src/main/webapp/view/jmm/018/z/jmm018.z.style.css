@@ -7,10 +7,7 @@
     text-align: center;
 }
 
-.tab3 .table td{
-	width: 105px;
-}
-
-.tab3 .table tr td:nth-child(1) {
-	width: 300px;
+.tab3 table.scroll{
+    overflow-y: scroll;
+    display: block;
 }

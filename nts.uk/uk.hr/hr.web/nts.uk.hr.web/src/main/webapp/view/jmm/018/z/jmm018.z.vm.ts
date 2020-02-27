@@ -15,6 +15,11 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         constructor() {
             let self = this;
             self.menuApprovalSettingInforList = ko.observableArray([]) 
+            $(window).resize(function() {
+                if(window.innerHeight > 400){
+                    $('#fixed-table').height(window.innerHeight - 248);
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -34,6 +39,9 @@ module nts.uk.com.view.jmm018.z.viewmodel {
                 block.clear();
                 dfd.resolve();
             });
+            if(window.innerHeight > 400){
+                $('#fixed-table').height(window.innerHeight - 248);
+            }
             return dfd.promise();
         }
         
