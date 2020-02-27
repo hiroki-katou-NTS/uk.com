@@ -20,21 +20,22 @@
 				<div class="label">#{i18n.getText('KDL044_1')}</div>
 				<div id="content">
 					<div
-						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code',comId: 'multi-list', 
-	                              items: listShifuto, selectedKey: 'code', 
-	                              fields: ['code', 'name', 'workType', 'workTime', 'time1', 'time2', 'remark'], 
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
+	                              items: listShifuto, selectedKey: 'shiftMasterCode', 
+								  fields: gridFields(), 
+								  selected: selectedCodes,
 	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
 					<table id="multi-list" tabindex="0"
 						data-bind="ntsGridList: {	
 								name: '#[KDL044_11]',  
 								height: 450,
 								options: listShifuto,
-								optionsValue: 'code',
+								optionsValue: 'shiftMasterCode',
 								columns: columns,
 								multiple: isMultiSelect(),								
 								value: selectedCodes,
 								rows: 10
-						}">
+						}">  
 					</table>
 				</div>
 			</div>

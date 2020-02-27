@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepository {
+public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepository {
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
 	private static final String SELECT_ALL_DTO = " SELECT " 
@@ -88,7 +88,7 @@ public class JpaShiftMaterImpl extends JpaRepository implements ShiftMasterRepos
 	public void update(ShiftMaster shiftMater) {
 		KshmtShiftMater oldData = this.queryProxy().query(SELECT_BY_CD_AND_CID, KshmtShiftMater.class)
 				.setParameter("companyId", shiftMater.getCompanyId())
-				.setParameter("shiftMaterCode", shiftMater.getShiftMaterCode()).getSingle().get();
+				.setParameter("shiftMaterCode", shiftMater.getShiftMasterCode()).getSingle().get();
 		KshmtShiftMater newData = KshmtShiftMater.toEntity(shiftMater);
 		oldData.name = newData.name;
 		oldData.color = newData.color;

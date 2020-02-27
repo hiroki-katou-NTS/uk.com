@@ -48,8 +48,12 @@ public class ShiftMasterOrgFinder {
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
 		String companyId = AppContexts.user().companyId();
 		Require require = new  RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
-		TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-		TargetOrgIdenInfor target = new TargetOrgIdenInfor(unit, targetId, targetId);
+		
+		TargetOrgIdenInfor target = null;
+		if(targetUnit != null && targetId != null) {
+			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
+			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+		}
 		
 		@SuppressWarnings("static-access")
 		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
@@ -75,6 +79,13 @@ public class ShiftMasterOrgFinder {
 		
 		return shiftMasters;
 
+	}
+	
+	public AlreadySettingWorkplaceDto getAlreadySetting() {
+		String companyId = AppContexts.user().companyId();
+		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
+
+		return null;
 	}
 	
 	@AllArgsConstructor

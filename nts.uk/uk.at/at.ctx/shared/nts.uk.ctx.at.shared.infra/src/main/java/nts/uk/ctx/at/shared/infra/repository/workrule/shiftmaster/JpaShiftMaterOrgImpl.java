@@ -28,10 +28,12 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit "
 			+ " AND c.kshmtShiftMaterOrgPK.targetId = :targetId";
 	private static final String DELETE_BY_CID_AND_TARGET = "DELETE from KshmtShiftMaterOrg c "
-			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :workplaceId"
+			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :companyId"
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit"
 			+ " AND c.kshmtShiftMaterOrgPK.targetId = :targetId";
-
+	private static final String SELECT_ALREADY_SETTING_WORKPLACE = SELECT_ALL
+			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :companyId "
+			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit ";
 	@Override
 	public boolean exists(String companyId, TargetOrgIdenInfor info) {
 		Optional<ShiftMasterOrganization> exist = getByTargetOrg(companyId, info);
@@ -120,5 +122,15 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 				this.targetId = targetOrg.getWorkplaceGroupId().get();
 			}
 		}
+	}
+
+	@Override
+	public List<String> getAlreadySettingWorkplace(String companyId) {
+		List<KshmtShiftMaterOrg> datas = this.queryProxy()
+				.query(SELECT_ALREADY_SETTING_WORKPLACE, KshmtShiftMaterOrg.class)
+				.setParameter("companyId", companyId)
+				.setParameter("targetUnit", TargetOrganizationUnit.WORKPLACE.value)
+				.getList();
+		return datas.stream().map(d -> d.kshmtShiftMaterOrgPK.targetId).collect(Collectors.toList());
 	}
 }
