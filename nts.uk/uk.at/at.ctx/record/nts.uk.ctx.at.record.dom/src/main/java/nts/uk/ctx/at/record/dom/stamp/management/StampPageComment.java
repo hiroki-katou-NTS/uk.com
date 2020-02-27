@@ -1,0 +1,21 @@
+package nts.uk.ctx.at.record.dom.stamp.management;
+
+import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+
+/**
+ * ページコメント設定
+ * @author phongtq
+ *
+ */
+
+public class StampPageComment {
+	
+	/** コメント */
+	@Getter
+	private PageComment pageComment;
+	
+	/** コメント色 */
+	@Getter
+	private ColorCode commentColor;
+}
