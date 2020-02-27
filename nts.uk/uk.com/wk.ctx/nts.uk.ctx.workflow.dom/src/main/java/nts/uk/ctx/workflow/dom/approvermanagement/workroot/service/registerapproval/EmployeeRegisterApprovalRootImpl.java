@@ -87,12 +87,13 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			for (AppTypes app : lstApps) {
 				if(app.getEmpRoot() == 0){// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
 					//03.社員の共通の承認ルートを取得する
-					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
+					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId,
+							baseDate, sysAtr);
 					
 				}else {
 					//02.社員の対象申請の承認ルートを取得する
 					appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, app,
-							baseDate);
+							baseDate, sysAtr);
 					
 				}
 				Optional<ApprovalRootCommonOutput> appE = appOfEmployee.isEmpty() ? Optional.empty() : Optional.of(appOfEmployee.get(0));
