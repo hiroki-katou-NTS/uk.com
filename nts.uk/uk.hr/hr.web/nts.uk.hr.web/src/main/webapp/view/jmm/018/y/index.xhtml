@@ -19,33 +19,58 @@
 
 			<div id="contents-area">
 				<div class="cf">
-					<div>
-						<div style="width: 390px" data-bind="ntsSearchBox: {
-							targetKey: 'code', 
-							mode:'igTree', 
-							comId:'treegrid', 
-							items: items1, 
-							selected: selectedCodes2, 
-							selectedKey: 'code', 
-							childField: 'childs', 
-							fields: ['name', 'code']}" />
-						<div style="display: inline-block;">
-							<table id="treegrid"
-								data-bind="ntsTreeGridView:{
-								width: 1000, 
-								height: 250,
-								options: items1,
-								virtualization: true, 
-								virtualizationMode: 'continuous',
-								selectedValues: selectedCode,
-								optionsValue: 'code',
-								optionsChild: 'childs',
-								optionsText: 'nodeText',
-								multiple: false,
-								enable: true,
-								columns: columns2,
-								showCheckBox: false}">
-							</table>
+					<div style="width: 880px; margin: 20px auto;">
+						<div style="display: inline-block; width: 530px">
+							<div style="display: inline-block; width: 360px" data-bind="ntsSearchBox: {
+								targetKey: 'departmentId', 
+								mode:'igTree', 
+								comId:'treegrid', 
+								items: departmentList, 
+								selected: searchBoxSelected, 
+								selectedKey: 'name', 
+								childField: 'childs', 
+								fields: ['name', 'departmentId']}" />
+							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM023_Y2_3')}</div>
+							<div style="display: inline-block;">
+								<table id="treegrid"
+									data-bind="ntsTreeGridView:{
+									width: 450, 
+									height: 450,
+									dataSource: departmentList,
+									value: departmentCode,
+									primaryKey: 'departmentId',
+									childDataKey: 'childs',
+									primaryText: 'name',
+									multiple: false,
+									enable: true,
+									enable: true,
+									columns: columns,
+									showCheckBox: false}">
+								</table>
+							</div>
+						</div>
+						<div style="display: inline-block;  width: 320px">
+							<div style="display: inline-block; width: 390px" class="nts-searchbbox-wrapper">
+								<div class="input-wrapper">
+									<span class="ntsControl">
+										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" placeholder="コード・名称で検索・・・" data-bind="value: key" />
+									</span>
+								</div>
+								<div class="input-wrapper">
+									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">#{i18n.getText('JMM023_Y1_1')}</button>
+								</div>
+							</div>
+							<div style="display: inline-block;">
+								<table id="single-list" data-bind="ntsGridList: {								
+									width: 314, 
+									height: 450,
+									dataSource: employeeList,
+									primaryKey: 'employeeCode',
+									columns: columns2,
+									multiple: false,
+									value: selectedCode
+								}"></table>
+							</div>
 						</div>
 					</div>
 				</div>

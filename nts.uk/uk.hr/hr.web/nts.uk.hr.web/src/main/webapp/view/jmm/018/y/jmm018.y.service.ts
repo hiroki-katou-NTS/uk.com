@@ -1,14 +1,19 @@
 module nts.uk.com.view.jmm018.y.service {
     var paths: any = {
-        searchUser: "ctx/sys/auth/user/findByKey",
+        start: "menuApprovalSettings/startDepartment",
+        getEmployeeByDepartmentId: "menuApprovalSettings/getEmployeeByDepartmentId",
+        searchEmployeeBykey: "menuApprovalSettings/searchEmployeeBykey"
     }
-    export function searchUser(key: string, Special: boolean, Multi: boolean, roleType: number): JQueryPromise<any> {
-        var userKeyDto = {
-            key: key,
-            Special: Special,
-            Multi: Multi,
-            roleType: roleType
-        };
-        return nts.uk.request.ajax("com", paths.searchUser, userKeyDto);
+    
+    export function start(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.start);
+    }
+    
+    export function getEmployeeByDepartmentId(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getEmployeeByDepartmentId, param);
+    }
+    
+    export function searchEmployeeBykey(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.searchEmployeeBykey, param);
     }
 }
