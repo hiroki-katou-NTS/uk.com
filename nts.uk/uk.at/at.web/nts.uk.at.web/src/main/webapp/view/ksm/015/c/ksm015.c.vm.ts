@@ -8,8 +8,10 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		shiftColumns: Array<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
+		forAttendent: KnockoutObservable<String>;
 		constructor() {
 			let self = this;
+			self.forAttendent = ko.observable('');
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
 			self.selectedWorkplaceId.subscribe((val) => {
@@ -52,9 +54,17 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		startPage(): JQueryPromise<any> {
 			let self = this;
-
 			let dfd = $.Deferred();
-			dfd.resolve(1);
+			nts.uk.ui.block.invisible();
+			service.isForAttendent()
+				.done((data) => {
+					self.forAttendent(data.forAttendent);
+					dfd.resolve(data);
+				}).fail(function (error) {
+					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+				}).always(function () {
+					nts.uk.ui.block.clear();
+				});
 			return dfd.promise();
 		}
 

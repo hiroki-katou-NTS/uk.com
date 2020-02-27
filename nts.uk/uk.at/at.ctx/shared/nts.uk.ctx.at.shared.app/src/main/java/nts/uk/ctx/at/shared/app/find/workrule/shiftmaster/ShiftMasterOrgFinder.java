@@ -82,10 +82,9 @@ public class ShiftMasterOrgFinder {
 	}
 	
 	public AlreadySettingWorkplaceDto getAlreadySetting() {
-		String companyId = AppContexts.user().companyId();
 		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
-
-		return null;
+		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId()));
+		return result;
 	}
 	
 	@AllArgsConstructor

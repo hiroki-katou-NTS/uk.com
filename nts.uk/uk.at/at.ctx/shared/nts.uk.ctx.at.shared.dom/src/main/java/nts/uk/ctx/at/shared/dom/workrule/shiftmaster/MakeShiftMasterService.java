@@ -35,26 +35,7 @@ public class MakeShiftMasterService {
 
 	public static interface Require {
 		boolean checkExists(String companyId, String workTypeCd, String workTimeCd);
-
 		void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd);
 	}
-
-//	@AllArgsConstructor
-//	private static class RequireImpl implements WorkInformation.Require {
-//
-//		private final BasicScheduleService basicScheduleService;
-//
-//		private final WorkTypeRepository workTypeRepository;
-//
-//		@Override
-//		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-//			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
-//		}
-//
-//		@Override
-//		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-//			return workTypeRepository.findByPK(companyId, workTypeCd);
-//		}
-//
-//	}
+	
 }
