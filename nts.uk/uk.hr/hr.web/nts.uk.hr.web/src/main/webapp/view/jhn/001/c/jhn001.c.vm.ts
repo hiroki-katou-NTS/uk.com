@@ -207,9 +207,24 @@ module jhn001.c.viewmodel {
             
             layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
             
-            layout.release(data.release);
+            
             
             layout.approve(data.approve);
+            
+            if(data.approve === false){
+                
+                if(data.release === true){
+                    
+                    layout.release(false);
+                    
+                }else{
+                    
+                    layout.release(true);
+                    
+                }
+                
+            
+            }
             
             var lstDoc = [];
             

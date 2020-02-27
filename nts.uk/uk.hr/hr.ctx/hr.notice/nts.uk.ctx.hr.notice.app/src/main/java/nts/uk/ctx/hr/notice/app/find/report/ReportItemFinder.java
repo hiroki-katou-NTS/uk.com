@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -36,6 +37,7 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalBehaviorAtrHrExport;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
@@ -75,7 +77,11 @@ public class ReportItemFinder {
 	@Inject
 	private EmployeeInformationAdaptor employeeInforAdapter;
 	
+	private static boolean approve = true;
+	
 	/**
+	 * 反映前Flg = false の場合：活性
+　　　　 *　反映前Flg = true の場合：非活性
 	 * アルゴリズム「届出一覧選択処理」を実行する (Thực hiện thuật toán "Xử lý select report list")
 	 * @param reportClsId
 	 * @return
@@ -86,7 +92,7 @@ public class ReportItemFinder {
 
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
-		boolean approve = false;
+		approve = true;
 		
 		List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
 		
@@ -103,7 +109,7 @@ public class ReportItemFinder {
 			
 			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
 				
-				approve = getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst, approve);
+				getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst);
 				
 			}
 			
@@ -151,25 +157,22 @@ public class ReportItemFinder {
 			}
 		}
 		
-		
+		boolean release = approvalStateHrImport == null?false: approvalStateHrImport.getApprState() == null? false: approvalStateHrImport.getApprState().isReflectFlag();
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, appPhaseLst, approvalStateHrImport.isErrorFlg(), approve)
+						itemInter, documentSampleDtoLst, appPhaseLst, release, approve)
 				: new ReportLayoutDto();
 	}
 	
 	/*
 	 * 承認情報の取得
 	 */
-	public boolean getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst,
-			boolean approve) {
+	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
 		
 		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
 		
-		approve = convertData(approvalStateHrImport, appPhaseLst);
-		
-		return approve;
+		convertData(approvalStateHrImport, appPhaseLst);
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
@@ -573,13 +576,13 @@ public class ReportItemFinder {
 		}
 	}
 	
-	private  boolean convertData(ApprRootStateHrImport apprRootState, List<ApprovalPhaseStateForAppDto> results) {
+	private  void convertData(ApprRootStateHrImport apprRootState, List<ApprovalPhaseStateForAppDto> results) {
+		
+		String sid = AppContexts.user().employeeId();
 		
 		ApprStateHrImport apprState = apprRootState.getApprState();
 		
-		boolean approve = true;
-		
-		if(apprState == null) return approve;
+		if(apprState == null) return;
 		
 		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
@@ -600,12 +603,6 @@ public class ReportItemFinder {
 			});
 			
 		});
-		
-		if(sids.contains(AppContexts.user().employeeId())) {
-			
-			//approve = false;
-			
-		}
 		
 		//アルゴリズム [社員の情報を取得する] を実行する (thực hiện thuật toán [lấy thông tin employee]) --- 
 		
@@ -646,6 +643,17 @@ public class ReportItemFinder {
 		
 		results.addAll(appDtoLst);
 		
-		return approve;
+		results.stream().forEach(c ->{
+			
+			c.getListApprovalFrame().stream().forEach(f ->{
+				
+				Optional<ApproverStateForAppDto> appr = f.getListApprover().stream().filter(i -> i.getApproverID().equals(sid) && i.getApprovalAtrValue().equals(new Integer(ApprovalBehaviorAtrHrExport.APPROVED.value))).findFirst();
+				
+				if(appr.isPresent()) {
+					
+					this.approve = false;
+				}
+			});
+		});
 	}
 }

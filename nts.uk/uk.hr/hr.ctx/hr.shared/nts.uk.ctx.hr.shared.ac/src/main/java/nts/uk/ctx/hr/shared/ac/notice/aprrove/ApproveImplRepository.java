@@ -80,6 +80,8 @@ public class ApproveImplRepository implements ApproveRepository {
 								approvalStateHr.getAppDate(),
 
 								approvalStateHr.getEmployeeID(),
+								
+								approvalStateHr.isReflectFlag(),
 
 								lstPhaseStateResult));
 

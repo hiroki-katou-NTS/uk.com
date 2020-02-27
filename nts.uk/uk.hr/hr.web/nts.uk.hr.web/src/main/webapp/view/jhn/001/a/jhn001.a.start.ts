@@ -9,5 +9,15 @@ module jhn001.a {
 
         __viewContext['viewModel'] = new viewmodel.ViewModel(reportId);
         __viewContext.bind(__viewContext['viewModel']);
+        $('.input-wrapper').addClass("notranslate");
+//        $(document.body).on('click', '.nts-guide-link', () => {
+//            if ($('.nts-guide-area').attr('display').val() == 'none') {
+//                $('#contents-area').height(800);
+//            } else {
+//                $('#contents-area').height(1200);
+//            }
+//        });
+//        
+    
     });
 }
