@@ -65,7 +65,7 @@
 									width: 314, 
 									height: 450,
 									dataSource: employeeList,
-									primaryKey: 'employeeCode',
+									primaryKey: 'sid',
 									columns: columns2,
 									multiple: false,
 									value: selectedCode
@@ -76,7 +76,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decision">#{i18n.getText('JMM023_Y1_1')}</button>
+				<button class="proceed x-large" data-bind="click: decision, enable: selectedCode()!=''">#{i18n.getText('JMM023_Y1_1')}</button>
 				<button data-bind="click: close" id="close">#{i18n.getText('JMM024_Y2_2')}</button>
 			</div>
 		</ui:define>

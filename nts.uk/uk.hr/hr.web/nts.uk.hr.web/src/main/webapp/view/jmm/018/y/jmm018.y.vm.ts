@@ -38,7 +38,7 @@ module nts.uk.com.view.jmm018.y.viewmodel {
             ]);
             self.selectedCode = ko.observable('');
             self.departmentCode.subscribe(function(val){
-                if(val != null){
+                if(val != ''){
                     self.findByDepartmentId();    
                 }
             });
@@ -67,16 +67,16 @@ module nts.uk.com.view.jmm018.y.viewmodel {
 
         findByDepartmentId(): void{
             let self = this;
-            let param = {departmentId: self.departmentCode(), checks: true};
+            let param = {departmentId: self.departmentCode(), checks: self.check()};
             block.grayout();
             new service.getEmployeeByDepartmentId(param).done(function(data: any) {
                 console.log(data);
+                self.selectedCode('');
                 self.employeeList(data);
             }).fail(function(err) {
                 error({ messageId: err.messageId });
             }).always(function() {
                 block.clear();
-                dfd.resolve();
             });
         }
         
@@ -86,6 +86,8 @@ module nts.uk.com.view.jmm018.y.viewmodel {
             block.grayout();
             new service.searchEmployeeBykey(param).done(function(data: any) {
                 console.log(data);
+                self.selectedCode('');
+                self.departmentCode(''),
                 self.employeeList(data);
             }).fail(function(err) {
                 error({ messageId: err.messageId });
@@ -95,7 +97,13 @@ module nts.uk.com.view.jmm018.y.viewmodel {
         }
 
         decision(): void {
-            nts.uk.ui.windows.setShared("shareToJMM018Z", undefined);
+            let self = this;
+            if(self.selectedCode() != ''){
+                let selectedEmp = _.find(self.employeeList(), t => t.sid == self.selectedCode());
+                nts.uk.ui.windows.setShared("shareToJMM018Z", selectedEmp);    
+            }else{
+                nts.uk.ui.windows.setShared("shareToJMM018Z", undefined);
+            }
             nts.uk.ui.windows.close();
         }
 
