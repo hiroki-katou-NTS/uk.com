@@ -86,7 +86,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
 		String rootSateId = data.rootSateId;
-		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
+		Integer reportIDNew = repo.getMaxReportId(cid) + 1;
 		
 		if (rootSateId == null) {
 			// 届出IDを採番する(Đánh số report ID)

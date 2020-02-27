@@ -103,7 +103,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		String rootSateId = data.rootSateId;
 		
 		// 届出IDを採番する(Đánh số report ID)
-		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
+		Integer reportIDNew = repo.getMaxReportId(cid) + 1;
 		
 		if (rootSateId == null) {
 			// アルゴリズム[GUIDを生成する]を実行する (Thực hiện thuật toán "Tạo GUID")
