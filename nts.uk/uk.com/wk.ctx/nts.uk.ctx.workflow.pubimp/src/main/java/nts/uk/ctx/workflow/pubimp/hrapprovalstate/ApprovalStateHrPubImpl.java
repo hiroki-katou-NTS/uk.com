@@ -82,7 +82,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		}
 		ApprovalRootStateHr root = opRoot.get();
 		//人事承認状態を作成 (Tạo HR approval state)
-		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), 
+		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), false,
 				root.getLstPhaseState().stream()
 					.map(ph -> new PhaseStateHrImport(ph.getPhaseOrder(), ph.getApprovalAtr().value, 
 						ph.getApprovalForm().value, ph.getLstApprovalFrame().stream()
@@ -94,6 +94,9 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 									).collect(Collectors.toList()))
 						).collect(Collectors.toList()))
 					).collect(Collectors.toList()));
+		//承認完了フラグ
+		boolean reflectFlag = this.isApprovedAllHr(apprState);
+		apprState.setReflectFlag(reflectFlag);
 		//エラーフラグ、人事承認状態　を渡す ( Truyền  HR approval state, Error flag)
 		return new ApprovalRootStateHrExport(errorFlg, apprState);
 	}
@@ -678,5 +681,39 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			}
 		}
 		return Optional.empty();
+	}
+	/**
+	 * 2.承認全体が完了したか
+	 * @param 承認ルートインスタンス apprState
+	 * @return 承認完了フラグ(true, false)
+				　true：承認全体が完了
+				　false：承認全体がまだ未完了
+	 */
+	@Override
+	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState) {
+		//承認完了フラグ = false（初期化）
+		Boolean approveAllFlag = false;
+		apprState.getLstPhaseState().stream()
+				.sorted((a,b) -> a.getPhaseOrder().compareTo(b.getPhaseOrder()))
+				.collect(Collectors.toList());
+		for(PhaseStateHrImport phase : apprState.getLstPhaseState()){
+			//「承認フェーズインスタンス」．承認区分が承認済かチェックする
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtr.APPROVED.value){
+				approveAllFlag = true;
+				break;
+			}
+			//1.人事承認フェーズ毎の承認者を取得する
+			List<String> listApprover = this.getApproverFromPhaseHr(phase);
+			//承認者一覧(output)に承認者がいるかチェックする
+			if(CollectionUtil.isEmpty(listApprover)){
+				continue;
+			}
+			//承認代行情報の取得処理
+			ApprovalRepresenterOutput apprAgentOutput = collectApprAgentSv.getApprovalAgentInfor(AppContexts.user().companyId(), listApprover);
+			if(apprAgentOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+				break;
+			}
+		}
+		return approveAllFlag;
 	}
 }

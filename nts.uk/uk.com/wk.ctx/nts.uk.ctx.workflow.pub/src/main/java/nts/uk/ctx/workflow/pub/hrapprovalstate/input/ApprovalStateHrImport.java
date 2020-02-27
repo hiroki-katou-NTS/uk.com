@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
@@ -15,6 +16,9 @@ public class ApprovalStateHrImport {
 	private GeneralDate appDate;
 	/**対象者ID*/
 	private String employeeID;
+	/**反映前flg*/
+	@Setter
+	private boolean reflectFlag;
 	/**承認フェーズ*/
 	private List<PhaseStateHrImport> lstPhaseState;
 }
