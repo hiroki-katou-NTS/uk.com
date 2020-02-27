@@ -22,32 +22,37 @@
 				<!-- A1_1 -->
 				<button tabindex="1"
 					data-bind="click: newItem,enable:commonMasters().length">#{i18n.getText('CMM022_A1_1')}</button>
-				<!-- A1_1 -->
+				<!-- A1_2 -->
 				<button tabindex="1" class="proceed"
 					data-bind="click: saveData,enable:commonMasters().length">#{i18n.getText('CMM022_A1_2')}</button>
-				<!-- A1_1 -->
+				<!-- A1_3 -->
 				<button tabindex="1"
 					data-bind="click: openDialogB,enable:commonMasters().length">#{i18n.getText('CMM022_A1_3')}</button>
-				<!-- A1_1 -->
+				<!-- A1_4 -->
 				<button tabindex="1"
 					data-bind="click: openDialogC,enable:commonMasters().length">#{i18n.getText('CMM022_A1_4')}</button>
-				<!-- A1_1 -->
+				<!-- A1_5 -->
 				<button tabindex="1"
 					data-bind="click: exportExcel,enable:commonMasters().length">#{i18n.getText('CMM022_A1_5')}</button>
 
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
+			<!-- A221 -->
 				<div class="column-1 ">
 					<div id="common-master_arena"
 						class="bg-green caret-right caret-background">
+						<!-- A221_1 -->
 						<i class="icon icon-searchbox"></i>
 						<div class="div_line">
+							<!-- A221_2 -->
 							<div style="width: 320px"
 								data-bind="ntsSearchBox: { searchMode: 'filter', targetKey: 'commonMasterId', comId: 'master-list', 
 							items: commonMasters , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
 						</div>
 
 						<div class="div_line">
+						<!-- A221_3 -->
+						
 							<table id="master-list"
 								data-bind="ntsGridList: {
                                 height: 250 ,
@@ -64,13 +69,18 @@
 						</div>
 					</div>
 				</div>
+				<!-- A222 -->
 				<div class="column-2">
+				<!-- A222_1 -->
 					<div class="div_line">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A222_1')}</div>
+						<!-- A222_2 -->
 						<label data-bind="text:selectedCommonMaster().commonMasterName"></label>
 					</div>
+					<!-- A222_3 -->
 					<div class="div_line">#{i18n.getText('CMM022_A222_3')}</div>
 					<div class="div_line">
+					<!-- A222_4 -->
 						<table id="master-item-list"
 							data-bind="ntsGridList: {
                                 height: 250 ,
@@ -89,11 +99,15 @@
 
 
 				</div>
+				<!-- A223 -->
 				<div class="column-3">
 					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A223_1')}</div>
+					<!-- A223_1 -->
+						<div
+							data-bind="ntsFormLabel: {required: true ,constraint:['CategoryCode','CategoryName']}">#{i18n.getText('CMM022_A223_1')}</div>
 					</div>
-					<div class="div_line">
+					<div class="div_line pl-15">
+						<!-- A223_2 -->
 						<input
 							data-bind="ntsTextEditor: {
 											value: selectedCommonMasterItem().commonMasterItemCode ,
@@ -103,6 +117,7 @@
 											option:{ width:'20px'},
 											enable:commonMasters().length
 											}" />
+						<!-- A223_3 -->
 						<input
 							data-bind="ntsTextEditor: {
 											value: selectedCommonMasterItem().commonMasterItemName ,
@@ -114,12 +129,16 @@
 											}" />
 					</div>
 					<div class="div_line">
+					<!-- A223_4 -->
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_A222_4')}</div>
 					</div>
-					<div class="div_line">
+					<div class="div_line pl-15">
+					<!-- A223_5 -->
 						<div
 							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:['CMM022_A222_5'] , enable:commonMasters().length }"></div>
+						<!-- A223_6 -->
 						#{i18n.getText('CMM022_A222_6')}
+						<!-- A223_7 -->
 						<div
 							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:['CMM022_A222_7'], enable:commonMasters().length }"></div>
 					</div>
