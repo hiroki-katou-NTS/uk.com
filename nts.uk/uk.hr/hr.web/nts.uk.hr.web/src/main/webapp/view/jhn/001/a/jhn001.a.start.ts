@@ -10,14 +10,21 @@ module jhn001.a {
         __viewContext['viewModel'] = new viewmodel.ViewModel(reportId);
         __viewContext.bind(__viewContext['viewModel']);
         $('.input-wrapper').addClass("notranslate");
-//        $(document.body).on('click', '.nts-guide-link', () => {
-//            if ($('.nts-guide-area').attr('display').val() == 'none') {
-//                $('#contents-area').height(800);
-//            } else {
-//                $('#contents-area').height(1200);
-//            }
-//        });
-//        
-    
+
+        setTimeout(() => $(window).trigger('resize'), 100);
+        
+        $(document.body).on('click', '.nts-guide-link', () => {
+            setTimeout(() => $(window).trigger('resize'), 5);
+        });
     });
 }
+
+$(window).on('resize', () => {
+    const $content = $('#contents-area');
+
+    if ($content.length) {
+        const bound = $content.get(0).getBoundingClientRect();
+
+        $content.css('height', `calc(100vh - ${bound.top + 20}px)`);
+    }
+});
