@@ -54,32 +54,66 @@
                   <div>
                     <table class="table table-sm table-bordered m-0 bg-white">
                       <tbody>
-                        <tr v-for="(frame, frameIndex) in phase.listApprovalFrame" v-bind:key="frameIndex">
-                          <td v-bind:class="{ 'uk-bg-powder-blue' : frame.approvalAtrValue==1, 'uk-bg-light-coral' : frame.approvalAtrValue==2 }"
-                            class="fixed-column-width align-middle text-center">
-                            <span v-if="frame.approvalAtrValue==1">
-                              <i class="fa fa-check"></i>   
-                            </span>
-                            <span v-else-if="frame.approvalAtrValue==2">
-                              <i class="fa fa-times"></i>
-                            </span>
-                          </td>
-                          <td>
-                            <div v-if="frame.approvalAtrValue==1 || frame.approvalAtrValue==2">
-                              <span class="text-break" v-if="frame.approverName"><span>{{ frame.approverName }}</span></span>
-                              <span class="text-break" v-else-if="frame.representerName"><span>{{ frame.representerName }}</span></span>
-                              <br/>
-                              <p class="text-break child-font-size mb-0 pl-2">{{ frame.approvalReason }}</p>
-                            </div>  
-                            <div v-else>
-                              <span class="text-break" v-for="(approver, approverIndex) in frame.listApprover" v-bind:key="approverIndex">
-                                <span>{{ approver.approverName }}</span>
-                                <span v-if="approver.representerName">({{ approver.representerName }})</span>
-                                <span v-if="approverIndex < frame.listApprover.length - 1">,</span>
+                        <template v-if="phase.listApprovalFrame.length > 1">
+                          <tr v-for="(frame, frameIndex) in phase.listApprovalFrame" v-bind:key="frameIndex">
+                            <td v-bind:class="{ 'uk-bg-powder-blue' : frame.listApprover[0].approvalAtrValue==1, 
+                                                'uk-bg-light-coral' : frame.listApprover[0].approvalAtrValue==2 }"
+                              class="fixed-column-width align-middle text-center">
+                              <span v-if="frame.listApprover[0].approvalAtrValue==1">
+                                <i class="fa fa-check"></i>   
                               </span>
-                            </div>      
-                          </td>
-                        </tr>
+                              <span v-else-if="frame.listApprover[0].approvalAtrValue==2">
+                                <i class="fa fa-times"></i>
+                              </span>
+                            </td>
+                            <td>
+                              <div v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
+                                <span class="text-break" v-if="frame.listApprover[0].agentID">
+                                  <span>{{ frame.listApprover[0].representerName }}</span>
+                                </span>
+                                <span class="text-break" v-else>
+                                  <span>{{ frame.listApprover[0].approverName }}</span>
+                                </span>
+                                <br/>
+                                <p class="text-break child-font-size mb-0 pl-2">{{ frame.listApprover[0].approvalReason }}</p>
+                              </div>  
+                              <div v-else>
+                                <span class="text-break">
+                                  <span>{{ frame.listApprover[0].approverName }}</span>
+                                  <span v-if="frame.listApprover[0].representerName">({{ approver.representerName }})</span>
+                                </span>
+                              </div>    
+                            </td>
+                          </tr>
+                        </template>
+                        <template v-else>
+                          <tr v-for="(approver, approverIndex) in phase.listApprovalFrame[0].listApprover" v-bind:key="approverIndex">
+                            <td v-bind:class="{ 'uk-bg-powder-blue' : approver.approvalAtrValue==1, 
+                                                'uk-bg-light-coral' : approver.approvalAtrValue==2 }"
+                              class="fixed-column-width align-middle text-center">
+                              <span v-if="approver.approvalAtrValue==1">
+                                <i class="fa fa-check"></i>   
+                              </span>
+                              <span v-else-if="approver.approvalAtrValue==2">
+                                <i class="fa fa-times"></i>
+                              </span>
+                            </td>
+                            <td>
+                              <div v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
+                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.representerName }}</span></span>
+                                <span class="text-break" v-else><span>{{ approver.approverName }}</span></span>
+                                <br/>
+                                <p class="text-break child-font-size mb-0 pl-2">{{ approver.approvalReason }}</p>
+                              </div>  
+                              <div v-else>
+                                <span class="text-break">
+                                  <span>{{ approver.approverName }}</span>
+                                  <span v-if="approver.representerName">({{ approver.representerName }})</span>
+                                </span>
+                              </div>    
+                            </td>
+                          </tr>
+                        </template>
                       </tbody>
                     </table>
                   </div>

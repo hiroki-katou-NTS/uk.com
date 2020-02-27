@@ -74,7 +74,7 @@ module jhn001.c.viewmodel {
             invisible();
             service.saveData(cmd).done(function(data) {
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-
+                    self.start();
                 });
                 unblock();
             }).fail(function(res: any) {
@@ -93,6 +93,7 @@ module jhn001.c.viewmodel {
             invisible();
             service.saveData(cmd).done(function(data) {
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.start();
                 });
                 unblock();
             }).fail(function(res: any) {
@@ -121,7 +122,7 @@ module jhn001.c.viewmodel {
             invisible();
             service.saveData(cmd).done(function(data) {
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-
+                    self.start();
                 });
                 unblock();
             }).fail(function(res: any) {
@@ -140,7 +141,7 @@ module jhn001.c.viewmodel {
             invisible();
             service.saveData(cmd).done(function(data) {
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-
+                    self.start();
                 });
                 unblock();
             }).fail(function(res: any) {

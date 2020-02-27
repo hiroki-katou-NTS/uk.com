@@ -20,7 +20,12 @@ import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootContentHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApproverStateHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ErrorFlagHrExport;
-import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrRepository;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.ApprovalStateHrPub;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApprovalStateHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.ApproverInfoHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.FrameHrImport;
+import nts.uk.ctx.workflow.pub.hrapprovalstate.input.PhaseStateHrImport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
@@ -33,11 +38,18 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
  *
  */
 @Stateless
-public class ApprovalRootStateAdaptor implements IApprovalRootStateAdaptor {
+public class ApprovalRootStateImpRepository implements ApprovalRootStateHrRepository {
 
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
+	
+	@Inject
+	private ApprovalStateHrPub approvalStateHrPub;
 
+	
+    /**
+     * Imp REQ [No.309]承認ルートを取得する cua hungnv
+     */
 	@Override
 	public ApprovalRootContentHrExport getApprovalRootHr(String companyID, String employeeID, String targetType,
 			GeneralDate date, Optional<Boolean> lowerApprove) {
@@ -48,6 +60,18 @@ public class ApprovalRootStateAdaptor implements IApprovalRootStateAdaptor {
 		ApprovalRootContentHrExport output = new ApprovalRootContentHrExport();
 		convertData(export, output);
 		return output;
+	}
+	
+	
+	/**
+	 * Imp [RQ637]承認ルートインスタンスを新規作成する của hoatt
+	 */
+	@Override
+	public boolean createApprStateHr(ApprovalRootContentHrExport apprSttHr, String rootStateID, String employeeID, GeneralDate appDate) {
+		
+		ApprovalStateHrImport inputReq637 = convertDataReq637(apprSttHr, rootStateID,  employeeID,  appDate);
+		boolean result = approvalStateHrPub.createApprStateHr(inputReq637);
+		return result;
 	}
 	
 	private void convertData(ApprovalRootContentExport input, ApprovalRootContentHrExport output){
@@ -112,5 +136,51 @@ public class ApprovalRootStateAdaptor implements IApprovalRootStateAdaptor {
 		output.setApprovalRootState(approvalRootStateHrExport);
 		
 	}
+	
+	private ApprovalStateHrImport convertDataReq637(ApprovalRootContentHrExport input  , String rootStateID, String employeeID, GeneralDate appDate){
+			
+			List<PhaseStateHrImport> lstPhaseState = new ArrayList<PhaseStateHrImport>();
+			List<ApprovalPhaseStateHrExport> listApprovalPhaseState = input.getApprovalRootState() != null ? input.getApprovalRootState().getListApprovalPhaseState() : new ArrayList<>();
+			if (!listApprovalPhaseState.isEmpty()) {
+				for (int i = 0; i < listApprovalPhaseState.size(); i++) {
+					ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i);
+					 Integer phaseOrder = approvalPhaseStateHrExport.getPhaseOrder();
+					 int approvalAtr    = approvalPhaseStateHrExport.getApprovalAtr().value;
+					 int approvalForm   = approvalPhaseStateHrExport.getApprovalForm().value;
+					 List<FrameHrImport> lstApprovalFrame = new ArrayList<>();
+					 List<ApprovalFrameHrExport> listApprovalFrameInput = approvalPhaseStateHrExport.getListApprovalFrame();
+					if (!listApprovalFrameInput.isEmpty()) {
+						for (int j = 0; j < listApprovalFrameInput.size(); j++) {
+							ApprovalFrameHrExport approvalFrameHrExport = listApprovalFrameInput.get(j);
+							int frameOrder = approvalFrameHrExport.getFrameOrder();
+							int confirmAtr = approvalFrameHrExport.getConfirmAtr();
+							
+							List<ApproverInfoHrImport> lstApproverInfo = new ArrayList<>();
+							List<ApproverStateHrExport> listApprove = approvalFrameHrExport.getListApprover();
+							if (!listApprove.isEmpty()) {
+								for (int k = 0; k < listApprove.size(); k++) {
+									ApproverStateHrExport ApproverStateHrExport = listApprove.get(k);
+									String approverID = ApproverStateHrExport.getApproverID();
+									int approvalAtr2 = ApproverStateHrExport.getApprovalAtr().value;
+									String agentID = ApproverStateHrExport.getAgentID();
+									GeneralDate approvalDate = ApproverStateHrExport.getApprovalDate();
+									String approvalReason = ApproverStateHrExport.getApprovalReason();
+									ApproverInfoHrImport ApproverInfoHrImport = new ApproverInfoHrImport(approverID, approvalAtr2, agentID, approvalDate, approvalReason);
+									lstApproverInfo.add(ApproverInfoHrImport);
+								}
+							}
+							FrameHrImport frameHrImport = new FrameHrImport(frameOrder, confirmAtr, appDate, lstApproverInfo);
+							lstApprovalFrame.add(frameHrImport);
+						}
+					}
+					 
+					 PhaseStateHrImport phaseStateHrImport = new PhaseStateHrImport(phaseOrder, approvalAtr, approvalForm, lstApprovalFrame);
+					 lstPhaseState.add(phaseStateHrImport);
+				}
+			}
+			
+			ApprovalStateHrImport result = new ApprovalStateHrImport(rootStateID, appDate, employeeID, false, lstPhaseState);
+			return result;
+		}
 
 }

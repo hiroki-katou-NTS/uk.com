@@ -33,7 +33,8 @@ public interface EmployeeAdapter {
 	 * @param baseDate　基準日
 	 * @return 社員情報
 	 */
-	List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+	List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> lstWkpDepId,
+			GeneralDate baseDate, int sysAtr);
 	
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)

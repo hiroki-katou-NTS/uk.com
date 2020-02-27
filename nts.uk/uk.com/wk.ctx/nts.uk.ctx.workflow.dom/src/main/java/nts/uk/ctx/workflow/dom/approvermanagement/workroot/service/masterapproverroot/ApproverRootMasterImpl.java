@@ -18,7 +18,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -189,7 +188,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private MasterWkpOutput getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID,
 			GeneralDate baseDate, int sysAtr, List<AppTypeName> lstName){
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
-		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
+		List<WkpDepInfo> lstWpInfor = new ArrayList<>();
 		for(WorkplaceApprovalRoot root: lstWps) {//loop theo wkp
 			List<ApprovalForApplication> wpRootInfor = new ArrayList<>();
 			ApprovalRootCommonOutput wpRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
@@ -216,13 +215,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			//Lay thong tin detail cua workplace
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場NEW」)
 			WkpDepInfo wkpInf = appRootCm.getWkpDepInfo(root.getWorkplaceId(), sysAtr);
-			WorkplaceImport wpDto = new WorkplaceImport(root.getWorkplaceId(), wkpInf.getCode(), wkpInf.getName());
 			wpRootInfor = this.getAppInfors(wpRoot, wpRootInfor, companyID, lstName);
 			
 			// fix data
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wkpInf, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
-			lstWpInfor.add(wpDto);
+			lstWpInfor.add(wkpInf);
 		}
 		//QA#100181
 		for (Map.Entry<String, WorkplaceApproverOutput> entry : mapWpRootInfor.entrySet()){
@@ -231,7 +229,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			wkp.setWpRootInfor(wpRootSort);
 			entry.setValue(wkp);
 		}
-		Collections.sort(lstWpInfor, Comparator.comparing(WorkplaceImport:: getWkpCode));
+		Collections.sort(lstWpInfor, Comparator.comparing(WkpDepInfo:: getCode));
 		return new MasterWkpOutput(mapWpRootInfor, lstWpInfor);
 	}
 	

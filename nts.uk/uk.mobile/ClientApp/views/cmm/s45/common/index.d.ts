@@ -8,27 +8,23 @@ export interface IApprovalPhase {
 }
 
 export interface IApprovalFrame {
-    approvalAtrName: string;
-    approvalAtrValue: number;
-    approvalReason: string;
-    approverID: string;
-    approverMail: string;
-    approverName: string;
     frameOrder: number;
     listApprover: Array<IApprover>;
-    phaseOrder: number;
-    representerID: string;
-    representerMail: string;
-    representerName: string;
 }
 
 export interface IApprover {
     approverID: string;
-    approverMail: string;
+    approvalAtrName: string;
+    approvalAtrValue: number;
+    agentID: string;
     approverName: string;
     representerID: string;
-    representerMail: string;
     representerName: string;
+    approvalDate: any;
+    approvalReason: string;
+    approverMail: string;
+    representerMail: string;
+    
 }
 
 export interface IAppInfo {

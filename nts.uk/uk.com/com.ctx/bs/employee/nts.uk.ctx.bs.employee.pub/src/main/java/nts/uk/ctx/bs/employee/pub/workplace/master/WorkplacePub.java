@@ -137,7 +137,7 @@ public interface WorkplacePub {
 
 	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);
 
-	List<SWkpHistExport> findBySId(List<String> sids);
+	List<SWkpHistExport> findBySId(List<String> sids, GeneralDate baseDate);
 
 	Optional<SWkpHistExport> findByWkpIdNew(String companyId, String wkpId, GeneralDate baseDate);
 
@@ -157,5 +157,7 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
+
+	List<SWkpHistExport> findBySId(List<String> sids);
 
 }

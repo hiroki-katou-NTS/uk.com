@@ -24,36 +24,48 @@ module nts.uk.com.view.cmm018.a.sub {
                         gridName = '#grid_matome';        
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 950 ? 950 : screen.width - 435;    
-                        } 
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }
                     } else {
                         gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
-                        }      
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }     
                     }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
                             width = screen.width - 430 > 950 ? 950 : screen.width - 430;    
-                        }      
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }     
                     } else {
                         gridName = '#grid_matomeD'; 
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
-                        }        
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }       
                     }
                 }else{//PERSON
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
                             width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
-                        }      
+                        } else {
+                            width = screen.width - 190 > 950 ? 950 : screen.width - 190;
+                        }     
                     } else {
                         gridName = '#grid_matomeF';     
                         if(systemAtr == 0) {
                             width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
-                        }    
+                        } else {
+                            width = screen.width - 190 > 950 ? 950 : screen.width - 190;
+                        }   
                     }
                 }
                 if($(gridName + '_container').length > 0){
@@ -216,11 +228,11 @@ module nts.uk.com.view.cmm018.a.sub {
         phaseHtml(phase: vmbase.ApprovalPhaseDto, appTypeValue, employRootAtr, phaseOrder: number):any{
             let classPhase = 'openK_Phase' + phaseOrder;
             if(_.isEmpty(phase.approver) || phase.approver.length == 0){//phase chua setting
-                return '<div class="hyperlink approver-line ' + classPhase + '">' + getText('CMM018_99') + '</div>';
+                return '<div class="hyperlink approver-line ' + classPhase + '"><span>' + getText('CMM018_99') + '</span></div>';
             }
             let result = '<div class="approver">';
             _.each(phase.approver, function(approver){
-                result += '<div class="hyperlink approver-line ' + classPhase + '">' + approver.name + approver.confirmName +'</div>';
+                result += '<div class="hyperlink approver-line ' + classPhase + '"><span>' + approver.name + approver.confirmName +'</span></div>';
             });
                 result += '</div>'+ '<div class="from">' + '（' + phase.appFormName + '）' + '</div>';
            return result;

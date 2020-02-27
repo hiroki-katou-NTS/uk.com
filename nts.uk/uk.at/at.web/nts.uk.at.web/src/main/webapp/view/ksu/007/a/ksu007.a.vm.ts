@@ -278,7 +278,7 @@ module nts.uk.at.view.ksu007.a {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        affiliationName: employeeSearch.affiliationName
                     };
                     employeeSearchs.push(employee);
                 }
@@ -491,7 +491,7 @@ module nts.uk.at.view.ksu007.a {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
 

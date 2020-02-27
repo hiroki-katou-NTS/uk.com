@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk005.h {
                 isShowAlreadySet: true,
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
-                selectedWorkplaceId: undefined,
+                selectedId: undefined,
                 alreadySettingList: ko.observableArray([]),                
                 systemType: 2
             };
@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk005.h {
                     model = self.model();
 
                 $.extend(tree, {
-                    selectedWorkplaceId: self.model().wid
+                    selectedId: self.model().wid
                 });
 
                 tree.alreadySettingList.removeAll();

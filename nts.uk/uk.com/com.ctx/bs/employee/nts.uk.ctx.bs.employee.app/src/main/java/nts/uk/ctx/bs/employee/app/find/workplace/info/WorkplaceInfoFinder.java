@@ -87,12 +87,13 @@ public class WorkplaceInfoFinder {
 	 * @return the workplace info dto
 	 */
 	public WorkplaceInfoDto findByWkpIdAndBaseDate(WkpInfoFindObject findObj) {
+		String companyID = AppContexts.user().companyId();
 		// find
-		List<WorkplaceInfo> opWkpInfo = wkpInfoRepo.findByWkpId(findObj.getWorkplaceId());
+		Optional<WorkplaceInformation> opWkpInfo = wkpInfoRepo.getWkpNewByIdDate(companyID, findObj.getWorkplaceId(), findObj.getBaseDate());
 		// convert to Dto
-		if (CollectionUtil.isEmpty(opWkpInfo)) {
+		if (opWkpInfo.isPresent()) {
 			WorkplaceInfoDto dto = new WorkplaceInfoDto();
-			opWkpInfo.get(0).saveToMemento(dto);
+			opWkpInfo.get().saveToMemento(dto);
 			return dto;
 		}
 		return null;

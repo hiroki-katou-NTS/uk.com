@@ -28,5 +28,5 @@ public interface RoleSetGrantedEmployeePub {
 	 * RequestList139: version 2
 	 * 指定職場の承認者一覧を取得する
 	 */
-	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpId, GeneralDate baseDate);
+	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpId, GeneralDate baseDate, int sysAtr);
 }

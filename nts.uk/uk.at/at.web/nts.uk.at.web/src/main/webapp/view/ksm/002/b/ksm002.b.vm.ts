@@ -32,7 +32,7 @@ module ksm002.b.viewmodel {
             isShowAlreadySet: false,
             isShowSelectButton: false,
             baseDate: ko.observable(new Date()),
-            selectedWorkplaceId: this.currentWorkPlace().id,
+            selectedId: this.currentWorkPlace().id,
             alreadySettingList: ko.observableArray([]),
             systemType : 2
         };

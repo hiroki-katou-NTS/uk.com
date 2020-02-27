@@ -17,5 +17,6 @@ public class MasterApproverRootOutputDataSource {
 	private boolean isCheckCompany;
 	private boolean isCheckPerson;
 	private boolean isCheckWorplace;
+	private int sysAtr;
 	
 }
