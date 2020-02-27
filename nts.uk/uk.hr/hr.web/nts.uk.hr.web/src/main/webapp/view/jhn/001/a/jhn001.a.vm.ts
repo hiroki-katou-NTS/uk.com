@@ -46,8 +46,9 @@ module jhn001.a.viewmodel {
                 layouts = self.layouts;
             
             $('#menu-header').addClass("notranslate");
-
-
+            
+            $('.input-wrapper').addClass("notranslate");
+            
             /*nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
             Page.SIDEBAR);*/
 
