@@ -110,7 +110,7 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 service.update(param).done(function(data: any) {
                     service.getListMaster().done(function(data: any){
                         self.listMaster(data);
-                        console.log(data);
+                        self.changeList([]);
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
                 }).fail(function(err) {
