@@ -44,13 +44,13 @@ public class RankPriorityTest {
 
 		RankPriority target = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(
-						new RankCode("01"), 
-						new RankCode("02"), 
-						new RankCode("03"))));
+						new RankCode("15"), 
+						new RankCode("11"), 
+						new RankCode("09"))));
 		
 		assertThat(target.getListRankCd())
 			.extracting(d -> d.v())
-			.containsExactly("01","02","03");
+			.containsExactly("15","11","09");
 		
 	}
 
@@ -146,7 +146,10 @@ public class RankPriorityTest {
 	public void update_success() {
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				RankHelper.Priority.DUMMY);
+				Arrays.asList(
+						new RankCode("01"), 
+						new RankCode("02"), 
+						new RankCode("03")));
 
 		List<RankCode> listRankCdNew = Arrays.asList(
 				new RankCode("15"), 
