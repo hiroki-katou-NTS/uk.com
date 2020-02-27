@@ -345,7 +345,7 @@ module nts.uk.at.view.ksm006.a {
                 service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
 
                     var existItem = self.workplaceAlreadySetList().filter((item) => {
-                        return item.workplaceId == self.workplaceGrid.selectedWorkplaceId();
+                        return item.workplaceId == self.workplaceGrid.selectedId;
                     })[0];
                     // Set AlreadySetting
                     if (!existItem) {
