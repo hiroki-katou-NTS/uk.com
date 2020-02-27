@@ -27,7 +27,7 @@
 								comId:'treegrid', 
 								items: departmentList, 
 								selected: searchBoxSelected, 
-								selectedKey: 'name', 
+								selectedKey: 'codeName', 
 								childField: 'childs', 
 								fields: ['name', 'departmentId']}" />
 							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM018_Y2_3')}</div>
@@ -39,8 +39,8 @@
 									dataSource: departmentList,
 									value: departmentCode,
 									primaryKey: 'departmentId',
-									childDataKey: 'childs',
-									primaryText: 'name',
+									childDataKey: 'children',
+									primaryText: 'codeName',
 									multiple: false,
 									enable: true,
 									enable: true,

@@ -26,7 +26,7 @@ module nts.uk.com.view.jmm018.y.viewmodel {
             self.searchBoxSelected = ko.observable('');
             self.columns = ko.observableArray([
                 { headerText: '', key: 'departmentId', dataType: "string", hidden: true },
-                { headerText: getText('JMM018_Y2_4_1'), key: 'name', width: '100%', dataType: "string" }
+                { headerText: getText('JMM018_Y2_4_1'), key: 'codeName', width: '100%', dataType: "string" }
             ]);
             
             self.key = ko.observable('');
@@ -50,11 +50,7 @@ module nts.uk.com.view.jmm018.y.viewmodel {
             block.grayout();
             new service.start().done(function(data: any) {
                 console.log(data);
-                let tg = [];
-                _.forEach(data.departmentInforList, (item) => {
-                    tg.push(new Department(item));
-                });
-                self.departmentList(tg);
+                self.departmentList(data.departmentInforList);
                 self.departmentCode(data.departmentIdSelect);
             }).fail(function(err) {
                 error({ messageId: err.messageId });
