@@ -67,7 +67,6 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	@Inject
 	private ApprovalRootStateHrRepository approvalRootStateRepo;
 	
-	
 	@Inject
 	private HumanItemPub humanItemPub;
 	
