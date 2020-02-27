@@ -30,7 +30,6 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			shiftMasterRepo.update(cmd.toDomain());
 		} else {
 			shiftMasterRepo.insert(cmd.toDomain());
-
 		}
 	}
 }

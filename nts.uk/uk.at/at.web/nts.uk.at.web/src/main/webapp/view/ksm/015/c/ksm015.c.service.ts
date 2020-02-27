@@ -3,6 +3,7 @@ module nts.uk.at.view.ksm015.c.service {
      *  Service paths
      */
     var paths: any = {
+        isForA
         getShiftMasterByWorkplace: 'ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace',
         register: 'ctx/at/shared/workrule/shiftmaster/register/shiftmaster/org',
         delete: 'ctx/at/shared/workrule/shiftmaster/delete/org'

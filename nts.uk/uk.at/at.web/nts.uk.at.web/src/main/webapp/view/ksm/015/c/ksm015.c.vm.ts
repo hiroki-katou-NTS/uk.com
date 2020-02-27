@@ -29,7 +29,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
 				isShowAlreadySet: true,
-				isMultipleUse: true,
+				isMultipleUse: false,
 				isMultiSelect: false,
 				treeType: 1,
 				selectedWorkplaceId: self.selectedWorkplaceId,
