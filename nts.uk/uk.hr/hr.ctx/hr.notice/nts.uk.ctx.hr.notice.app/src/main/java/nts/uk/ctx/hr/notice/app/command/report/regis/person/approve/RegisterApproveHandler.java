@@ -276,7 +276,7 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
 			
 			//アルコール[承認情報の取得]を実行する
-			reportItemFinder.getInfoApprover(rootStateID, approvalStateHrImport, appPhaseLst);
+			reportItemFinder.getInfoApprover(rootStateID, approvalStateHrImport, appPhaseLst, false);
 			
 			if(approvalStateHrImport.isErrorFlg()) {
 				
