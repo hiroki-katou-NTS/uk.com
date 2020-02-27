@@ -6,7 +6,11 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
 
-
+/**
+ * 打刻カード番号
+ * @author laitv
+ *
+ */
 @StringMaxLength(20)
 @StringCharType(CharType.ANY_HALF_WIDTH)
 @StringRegEx("^[a-zA-Z0-9\\s#$%&()~:|{}*+?@'<>_/;\"\\\\\\[\\]\\`-]{1,20}$")
