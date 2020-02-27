@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +25,7 @@ public class RankPriorityTest {
 					"000000000000-0001", // dummy
 					Collections.emptyList());
 		});
-	}
+	} 
 
 	@Test
 	public void create_rankPriority_dupicate() {
@@ -32,19 +34,24 @@ public class RankPriorityTest {
 			new RankPriority(
 					"000000000000-0001", // dummy
 					Arrays.asList(
-							new RankCode("001"), 
-							new RankCode("001")));
+							new RankCode("01"), 
+							new RankCode("01")));
 		});
 	}
 
 	@Test
 	public void create_rankPriority_success() {
 
-		new RankPriority("000000000000-0001", // dummy
+		RankPriority target = new RankPriority("000000000000-0001", // dummy
 				new ArrayList<RankCode>(Arrays.asList(
-						new RankCode("001"), 
-						new RankCode("002"), 
-						new RankCode("003"))));
+						new RankCode("01"), 
+						new RankCode("02"), 
+						new RankCode("03"))));
+		
+		assertThat(target.getListRankCd())
+			.extracting(d -> d.v())
+			.containsExactly("01","02","03");
+		
 	}
 
 	@Test
@@ -52,10 +59,10 @@ public class RankPriorityTest {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				Arrays.asList(new RankCode("001")));
+				Arrays.asList(new RankCode("01")));
 
 		NtsAssert.businessException("Msg_1621", () -> {
-			target.insert(new RankCode("001"));
+			target.insert(new RankCode("01"));
 		});
 	}
 	
@@ -64,25 +71,27 @@ public class RankPriorityTest {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				RankHelper.Priority.DUMMY);
+				new ArrayList<RankCode>(
+						Arrays.asList(
+								new RankCode("01"), 
+								new RankCode("02"), 
+								new RankCode("03"))));
 
-		target.insert(new RankCode("004"));
+		target.insert(new RankCode("04"));
+		
+		assertThat(target.getListRankCd())
+			.extracting(d -> d.v())
+			.containsExactly("01","02","03", "04");
 	}
 	
-	/**
-	 * Can't create RankPriority(cid = '001', listRankCd = EMPTY_LIST)
-	 * So need delete 2 times to Msg_1622 appear
-	 */
 	@Test
 	public void delete_fail_empty() {
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				new ArrayList<RankCode>(Arrays.asList(new RankCode("001"))));
+				new ArrayList<RankCode>(Arrays.asList(new RankCode("01"))));
 		
-		target.delete(new RankCode("001"));
-
 		NtsAssert.businessException("Msg_1622", () -> {
-			target.delete(new RankCode("001"));
+			target.delete(new RankCode("01"));
 		});
 	}
 
@@ -91,9 +100,17 @@ public class RankPriorityTest {
 
 		RankPriority target = new RankPriority(
 				"000000000000-0001", // dummy
-				RankHelper.Priority.DUMMY);
+				new ArrayList<RankCode>(
+						Arrays.asList(
+								new RankCode("01"), 
+								new RankCode("02"), 
+								new RankCode("03"))));
 
-		target.delete(new RankCode("001"));
+		target.delete(new RankCode("01"));
+		
+		assertThat(target.getListRankCd())
+			.extracting(d -> d.v())
+			.containsExactly("02","03");
 	}
 
 	@Test
@@ -103,9 +120,9 @@ public class RankPriorityTest {
 				RankHelper.Priority.DUMMY);
 
 		List<RankCode> listRankCdNew = Arrays.asList(
-				new RankCode("011"), 
-				new RankCode("011"),
-				new RankCode("013")); // dummy
+				new RankCode("11"), 
+				new RankCode("11"),
+				new RankCode("13")); // dummy
 
 		NtsAssert.businessException("Msg_1621", () -> {
 			target.update(listRankCdNew); 
@@ -132,11 +149,15 @@ public class RankPriorityTest {
 				RankHelper.Priority.DUMMY);
 
 		List<RankCode> listRankCdNew = Arrays.asList(
-				new RankCode("011"), 
-				new RankCode("012"), 
-				new RankCode("013"));
+				new RankCode("15"), 
+				new RankCode("06"), 
+				new RankCode("23"));
 		
 		target.update(listRankCdNew);
+		
+		assertThat(target.getListRankCd())
+			.extracting(d -> d.v())
+			.containsExactly("15","06","23");
 	}
 
 	@Test

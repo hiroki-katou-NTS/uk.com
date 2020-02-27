@@ -27,7 +27,7 @@ public class InsertRankServiceTest {
 		new Expectations() {
 			{
 				require.checkRankExist(
-						"000000000000-0001", // dummy
+						"000000000000-0001", // dummy 
 						new RankCode("01"));// dummy
 				result = true;
 			}
