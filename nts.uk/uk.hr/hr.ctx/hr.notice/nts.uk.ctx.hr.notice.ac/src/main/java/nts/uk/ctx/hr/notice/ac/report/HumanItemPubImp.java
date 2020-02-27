@@ -196,5 +196,21 @@ public class HumanItemPubImp implements HumanItemPub{
 		String itemDfID = itemPub.getItemDfId(ctgId, itemCd);
 		return itemDfID;
 	}
+
+	@Override
+	public List<DateRangeItemImport> getDateRangeItemByListCtgId(List<String> categoryIds) {
+		List<DateRangeItemExport> listDateRange = this.itemPub.getDateRangeItemByListCtgId(categoryIds);
+		
+		if (listDateRange.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<DateRangeItemImport> result = listDateRange.stream().map(dateRange -> {
+			return new DateRangeItemImport(dateRange.getPersonInfoCtgId(), dateRange.getStartDateItemId(),
+					dateRange.getEndDateItemId(), dateRange.getStartDateItemId());
+		}).collect(Collectors.toList());
+		
+		return result;
+	}
 	
 }
