@@ -20,6 +20,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonRep
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.SendBackClass;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,6 +40,9 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 	@Inject
 	private RegisterApproveHandler registerApproveHandler;
 	
+	@Inject
+	private ApproveRepository approveRepository;
+	
 
 	// アルゴリズム「差し戻し処理」を実行する(Thực hiện thuật toán"Xử lý return" )
 	@Override
@@ -51,6 +55,10 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する(Lấy thông tin của domain 「人事届出の承認/phê duyệt HR report」với key là Approver employee ID, report ID)
 		List<ApprovalPersonReport> listDomain =  repoApproval.getListDomainByReportIdAndSid(cid, reprtId, approverEmpID);
 
+		if (listDomain.isEmpty()) {
+			return;
+		}
+		
 		listDomain.forEach(dm -> {
 			dm.setAprDate(GeneralDateTime.now());
 			dm.setAprStatus(ApprovalStatus.Send_Back);
@@ -65,6 +73,16 @@ public class RegisterApproveSendBackCommandHandler extends CommandHandler<Approv
 		
 		// ドメイン「人事届出の登録」 を更新する
 		registrationPersonReportRepo.updateAfterSendBack(cid, reprtId, command.sendBackSID, command.comment);
+		
+		
+		if (command.selectedReturn == 1) {
+			// アルゴリズム [申請書を差し戻しする（申請本人まで）] を実行する
+			this.approveRepository.remandForApplicantHr(listDomain.get(0).getRootSatteId());
+		} else {
+			// アルゴリズム [申請書を差し戻しする（承認者まで）] を実行する
+			this.approveRepository.remandForApproverHr(listDomain.get(0).getRootSatteId(), command.phaseNum);
+		}
+		
 		
 		Optional<RegistrationPersonReport> regisPersonReportOpt =  this.registrationPersonReportRepo.getDomainByReportId( cid, reprtId );
 		
