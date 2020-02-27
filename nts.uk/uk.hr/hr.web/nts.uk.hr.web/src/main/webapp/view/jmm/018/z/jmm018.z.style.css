@@ -6,3 +6,11 @@
 .tab3 .table td.center{
     text-align: center;
 }
+
+.tab3 .table td{
+	width: 105px;
+}
+
+.tab3 .table tr td:nth-child(1) {
+	width: 300px;
+}

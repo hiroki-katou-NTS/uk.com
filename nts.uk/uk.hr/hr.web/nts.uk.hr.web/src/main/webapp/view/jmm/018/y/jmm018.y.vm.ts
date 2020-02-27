@@ -26,15 +26,15 @@ module nts.uk.com.view.jmm018.y.viewmodel {
             self.searchBoxSelected = ko.observable('');
             self.columns = ko.observableArray([
                 { headerText: '', key: 'departmentId', dataType: "string", hidden: true },
-                { headerText: getText('JMM018_Y2_4'), key: 'name', width: '100%', dataType: "string" }
+                { headerText: getText('JMM018_Y2_4_1'), key: 'name', width: '100%', dataType: "string" }
             ]);
             
             self.key = ko.observable('');
             self.employeeList = ko.observableArray([]);
             self.columns2 = ko.observableArray([
                 { headerText: '', key: 'sid', dataType: "string", hidden: true },
-                { headerText: getText('JMM018_Y2_4'), key: 'employeeCode', dataType: "string", width: '30%', },
-                { headerText: getText('JMM018_Y2_4'), key: 'employeeName', width: '70%', dataType: "string" }
+                { headerText: getText('JMM018_Y2_6_1'), key: 'employeeCode', dataType: "string", width: '30%', },
+                { headerText: getText('JMM018_Y2_6_2'), key: 'employeeName', width: '70%', dataType: "string" }
             ]);
             self.selectedCode = ko.observable('');
             self.departmentCode.subscribe(function(val){

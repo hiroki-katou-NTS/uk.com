@@ -30,7 +30,7 @@
 								selectedKey: 'name', 
 								childField: 'childs', 
 								fields: ['name', 'departmentId']}" />
-							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM023_Y2_3')}</div>
+							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM018_Y2_3')}</div>
 							<div style="display: inline-block;">
 								<table id="treegrid"
 									data-bind="ntsTreeGridView:{
@@ -57,7 +57,7 @@
 									</span>
 								</div>
 								<div class="input-wrapper">
-									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">#{i18n.getText('JMM023_Y1_1')}</button>
+									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">検索</button>
 								</div>
 							</div>
 							<div style="display: inline-block;">
@@ -76,8 +76,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decision, enable: selectedCode()!=''">#{i18n.getText('JMM023_Y1_1')}</button>
-				<button data-bind="click: close" id="close">#{i18n.getText('JMM024_Y2_2')}</button>
+				<button class="proceed x-large" data-bind="click: decision, enable: selectedCode()!=''">#{i18n.getText('JMM018_Y1_1')}</button>
+				<button data-bind="click: close" id="close">#{i18n.getText('JMM018_Y1_2')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
