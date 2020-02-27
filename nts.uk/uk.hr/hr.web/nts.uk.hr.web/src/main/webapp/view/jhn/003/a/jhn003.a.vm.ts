@@ -31,6 +31,7 @@ module jhn003.a.vm {
             
             self.searchInfo().approvalReport.subscribe((data) => {
                 self.approvalAllEnable(false);
+                self.searchInfo().approvalStatus(data ? 1 : null);
             });
         }
 
@@ -74,7 +75,7 @@ module jhn003.a.vm {
 
             service.approvalAll(command).done(() => {
 
-                dialog.info({ messageId: "Msg_15" });
+                dialog.info({ messageId: "MsgJ_47" });
 
             })
                 .fail((error) => {
