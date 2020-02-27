@@ -10,7 +10,8 @@ module nts.uk.com.view.cmm018.shr {
             getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
             getNameConfirmType: "workflow/approvermanagement/workroot/find/confirmRootType",
             getWkpDepInfo: "workflow/approvermanagement/workroot/find/wkpDepInfo",
-            getWpDepLogin: "workflow/approvermanagement/workroot/find/wkpDepInfo-login",
+            getWpLogin: "workflow/approvermanagement/workroot/find/wkpInfo-login",
+            getDepLogin: "workflow/approvermanagement/workroot/find/depInfo-login",
             settingCas005: "at/auth/workplace/employmentrole/getemproleSet",
             settingKaf022: "at/request/application/approval/appSet",
             setAppUseKaf022: "at/request/application/approval/app-useAtr",
@@ -43,10 +44,16 @@ module nts.uk.com.view.cmm018.shr {
         export function getWkpDepInfo(param): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getWkpDepInfo, param);
         }
-        //get wpName
-        export function getWpDepName(sysAtr): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getWpDepLogin, sysAtr);
+        //get wpName || depName
+        export function getWpDepName(sysAtr: number): JQueryPromise<any> {
+            if(sysAtr == 0){
+                return nts.uk.request.ajax("com", paths.getWpLogin);
+            }else{
+                return nts.uk.request.ajax("com", paths.getDepLogin);    
+            }
+            
         }
+        //EmploymentRoleDataWebService
         export function settingCas005(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.settingCas005);
         }

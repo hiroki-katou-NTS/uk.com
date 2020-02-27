@@ -510,7 +510,7 @@ module nts.uk.com.view.cmf003.b {
                     let employee : UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName,
+                        affiliationName: employeeSearch.affiliationName,
                         sid: employeeSearch.employeeId,
                         scd: employeeSearch.employeeCode,
                         businessname: employeeSearch.employeeName
@@ -823,7 +823,7 @@ module nts.uk.com.view.cmf003.b {
         export interface TargetEmployee {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
             sid: string;
             scd: string;

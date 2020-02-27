@@ -82,7 +82,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("getEmployeesInfo")
 	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
-		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(), employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate());		
+		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(),
+				employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate(), employeeSearch.getSysAtr());		
 	}
 	 @POST
 	 @Path("updateHistory")
@@ -178,9 +179,15 @@ public class WorkAppApprovalRootWebService extends WebService{
 		this.deleteByManager.handle(command);
 	}
 	@POST
-	@Path("find/wkpDepInfo-login")
-	public WkpDepInfo getWpInfoLogin(int sysAtr){
-		return appRootCm.getWkpDepInfoLogin(sysAtr);
+	@Path("find/wkpInfo-login")
+	public WkpDepInfo getWpInfoLogin(){
+		return appRootCm.getWkpDepInfoLogin(0);
+	}
+	
+	@POST
+	@Path("find/depInfo-login")
+	public WkpDepInfo getDepInfoLogin(){
+		return appRootCm.getWkpDepInfoLogin(1);
 	}
 	
 	@POST

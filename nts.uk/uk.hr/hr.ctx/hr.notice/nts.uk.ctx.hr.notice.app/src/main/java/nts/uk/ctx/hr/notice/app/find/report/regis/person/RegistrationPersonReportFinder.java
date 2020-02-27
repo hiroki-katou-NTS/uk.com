@@ -49,7 +49,7 @@ public class RegistrationPersonReportFinder {
 
 		// danh sách report bên màn hình JHN011.
 		
-		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportCls(false);
+		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportClsForJHN001(false);
 
 		
 		if (!listReportJhn011.isEmpty()) {

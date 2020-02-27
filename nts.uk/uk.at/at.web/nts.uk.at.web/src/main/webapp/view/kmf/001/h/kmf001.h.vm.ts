@@ -399,7 +399,7 @@ module nts.uk.pr.view.kmf001.h {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
         // Temp

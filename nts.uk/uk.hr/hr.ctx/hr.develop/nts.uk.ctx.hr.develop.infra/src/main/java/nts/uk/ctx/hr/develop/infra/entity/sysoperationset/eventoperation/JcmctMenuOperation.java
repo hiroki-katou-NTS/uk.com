@@ -35,6 +35,10 @@ public class JcmctMenuOperation extends UkJpaEntity {
 	@Column(name = "USE_APPROVAL")
 	public int useApproval;
 	
+	/* 承認機能を使用する */
+	@Column(name = "NO_RANK_ORDER")
+	public Integer noRankOrder;
+	
 	// 会社コード
 	@Column(name = "CCD")
 	public BigInteger ccd;

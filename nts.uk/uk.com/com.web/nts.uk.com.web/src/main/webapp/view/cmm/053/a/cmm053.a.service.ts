@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm053.a.service {
     var paths: any = {
         getSettingManager: "screen/com/cmm053/find/settingOfManager/{0}",
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
-        getWpName: "workflow/approvermanagement/workroot/find-wpInfo-login",
+        getWpName: "workflow/approvermanagement/workroot/find/wkpInfo-login",
         getEmployeeByCode: "workflow/approvermanagement/workroot/find/getEmployeeByCode",
         getPastHistory: "workflow/approvermanagement/workroot/find/settingOfManager/getPastHistory/{0}",
         insertHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/insert",
@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm053.a.service {
     }
 
     export function getWpName(): JQueryPromise<any> {
-        return ajax(paths.getWpName);
+        return nts.uk.request.ajax("com", paths.getWpName);
     }
 
     export function getEmployeeByCode(employeeParamFind): JQueryPromise<any> {

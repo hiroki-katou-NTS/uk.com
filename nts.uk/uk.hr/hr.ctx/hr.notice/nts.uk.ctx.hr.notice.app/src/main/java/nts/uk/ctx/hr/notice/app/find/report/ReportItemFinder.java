@@ -83,7 +83,6 @@ public class ReportItemFinder {
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
-		
 
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
@@ -149,6 +148,8 @@ public class ReportItemFinder {
 
 			}
 		}
+		
+		
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,

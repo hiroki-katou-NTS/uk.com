@@ -4,6 +4,7 @@
 package nts.uk.ctx.hr.notice.app.find.report.regis.person.approve;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +39,8 @@ public class ApprovalPersonReportFinder {
 	 */
 	public List<ApprovalPersonReportDto> getListDomain(int reportId) {
 		String cid = AppContexts.user().companyId();
+		String sidLogin = AppContexts.user().employeeId();
+		
 		List<ApprovalPersonReportDto> result = new ArrayList<>();
 		
 		List<ApprovalPersonReport> listDomain = repo.getListDomainByReportId(cid, reportId).stream()
@@ -46,7 +49,19 @@ public class ApprovalPersonReportFinder {
 		if (listDomain.isEmpty()) {
 			return new ArrayList<>();
 		}
-
+		
+		
+		// check xem trong danh sach nguoi appro co nguoi đang login hay không(trả về list vì người login có thể được cài đặt apprơ cho nhiều phase)
+		List<ApprovalPersonReport> domainLoginOpt = listDomain.stream().filter(dm -> dm.getAprSid().equals(sidLogin)).collect(Collectors.toList());
+		
+		if (domainLoginOpt.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		Comparator<ApprovalPersonReport> comparator = Comparator.comparing( ApprovalPersonReport::getPhaseNum );
+		int phaseMaxOfApprovalLogin = domainLoginOpt.stream().max(comparator).get().getPhaseNum();
+		
+		
 		// lấy thông tin người làm đơn.
 		Optional<RegistrationPersonReport> domainReport =  regisPersonReportRepo.getDomainByReportId( cid,  reportId);
 		String bussinessNameApplication = ""; // tên người làm đơn
@@ -62,20 +77,21 @@ public class ApprovalPersonReportFinder {
 		result.add(firstItemCombobox);
 		
 		for (int i = 0; i < listDomain.size(); i++) {
-			ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder()
-					.id(i+2)
-					.cid(cid) // 会社ID
-					.reportID(listDomain.get(i).getReportID()) // 届出ID
-					.phaseNum(listDomain.get(i).getPhaseNum())
-					.aprNum(listDomain.get(i).getAprNum())
-					.comment(listDomain.get(i).getComment() == null ? "" : listDomain.get(i).getComment().toString())
-					.inputSid(listDomain.get(i).getInputSid())
-					.appSid(listDomain.get(i).getAppSid())
-					.aprSid(listDomain.get(i).getAprSid())
-					.sendBackClass(listDomain.get(i).getSendBackClass().isPresent() ? listDomain.get(i).getSendBackClass().get().value : 2 )
-					.infoToDisplay("フェーズ" + listDomain.get(i).getPhaseNum()  + "の承認者" + listDomain.get(i).getAprNum() + ":  " + listDomain.get(i).getAprBussinessName())
-					.build();
-			result.add(itemCombobox);
+			ApprovalPersonReport domain = listDomain.get(i);
+			if ( (!sidLogin.equals(domain.getAprSid()) && domain.getPhaseNum() <= phaseMaxOfApprovalLogin)  ) {
+				ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder().id(i + 2).cid(cid) // 会社ID
+						.reportID(domain.getReportID()) // 届出ID
+						.phaseNum(domain.getPhaseNum())
+						.aprNum(listDomain.get(i).getAprNum())
+						.comment(domain.getComment() == null ? "" : listDomain.get(i).getComment().toString())
+						.inputSid(domain.getInputSid())
+						.appSid(domain.getAppSid())
+						.aprSid(domain.getAprSid())
+						.sendBackClass(domain.getSendBackClass().isPresent() ? domain.getSendBackClass().get().value : 2)
+						.infoToDisplay("フェーズ" + domain.getPhaseNum() + "の承認者" + domain.getAprNum() + ":  " + domain.getAprBussinessName())
+						.build();
+				result.add(itemCombobox);
+			}
 		}
 
 		return result;

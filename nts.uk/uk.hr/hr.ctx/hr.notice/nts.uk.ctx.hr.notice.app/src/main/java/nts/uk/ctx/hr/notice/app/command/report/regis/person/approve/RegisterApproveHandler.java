@@ -324,6 +324,12 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			
 			this.reportAnalysisRepo.update(reportAnalysisOpt.get());
 			
+		}else { 
+			
+			ReportAnalysis reportAnalysis = new ReportAnalysis(cid, reportDate, reportLayoutId, countClsBig, countClsSmall, 0);
+			
+			this.reportAnalysisRepo.insert(reportAnalysis);
+			
 		}
 		
 	}

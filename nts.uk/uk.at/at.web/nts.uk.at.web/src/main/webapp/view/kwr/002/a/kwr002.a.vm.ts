@@ -245,7 +245,7 @@ module nts.uk.com.view.kwr002.a {
                         id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        affiliationName: employeeSearch.affiliationName
                     };
                     employeeSearchs.push(employee);
                 }

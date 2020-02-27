@@ -52,7 +52,7 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 		}
 
 		val dataSource = new MasterApproverRootOutputDataSource(masterApp,this.setHeader(), query.isChkCompany(), query.isChkPerson(),
-				query.isChkWorkplace());
+				query.isChkWorkplace(), query.getSysAtr());
 
 		// generate file
 		masterGenerator.generate(context.getGeneratorContext(), dataSource);

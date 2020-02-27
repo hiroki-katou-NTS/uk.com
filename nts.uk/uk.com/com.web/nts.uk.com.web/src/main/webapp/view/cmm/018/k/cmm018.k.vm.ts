@@ -308,6 +308,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let dfd = $.Deferred();
             var employeeSearch = new service.model.EmployeeSearchInDto();
             employeeSearch.baseDate = self.standardDate();
+            employeeSearch.sysAtr = self.systemAtr;
             let lstWkp1 = [self.treeGrid.selectedId()];
             let lstA = [];
             let UNIT = 100;

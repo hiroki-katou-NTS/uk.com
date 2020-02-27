@@ -25,7 +25,7 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
-import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrRepository;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -49,7 +49,7 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	private EmployeeInformationAdaptor empInfoAdaptor;
 	
 	@Inject
-	private IApprovalRootStateAdaptor approvalRootStateAdaptor;
+	private ApprovalRootStateHrRepository approvalRootStateAdaptor;
 	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";

@@ -81,7 +81,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public List<EmployeeImport> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
 		List<String> lstEmpId = new ArrayList<>();
-		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate);
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate, 0);
 		lstEmpId.addAll(empId);
 //		for (String wkpId : workplaceIds) {
 //			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
@@ -108,9 +108,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	 * nts.arc.time.GeneralDate)
 	 */
 	public List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> workplaceIds,
-			GeneralDate baseDate) {
+			GeneralDate baseDate, int sysAtr) {
 		List<String> lstEmpId = new ArrayList<>();
-		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate);
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate, sysAtr);
 		lstEmpId.addAll(empId);
 
 		List<EmployeeImport> lstEmpDto = Collections.synchronizedList(new ArrayList<>());

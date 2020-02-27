@@ -56,7 +56,7 @@ module nts.uk.at.view.ksm006.a {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     treeType: ListType.WORK_PLACE,
-                    selectedWorkplaceId: self.selectedWorkplaceId,
+                    selectedId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
@@ -156,8 +156,8 @@ module nts.uk.at.view.ksm006.a {
                         self.workplaceName(data.name);
                     }
                     // Continue to find in childs.
-                    if (data.childs.length > 0) {
-                        this.setWorkplaceName(data.childs, workPlaceId);
+                    if (data.children.length > 0) {
+                        this.setWorkplaceName(data.children, workPlaceId);
                     }
                 }
             }
@@ -345,7 +345,7 @@ module nts.uk.at.view.ksm006.a {
                 service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
 
                     var existItem = self.workplaceAlreadySetList().filter((item) => {
-                        return item.workplaceId == self.workplaceGrid.selectedWorkplaceId();
+                        return item.workplaceId == self.workplaceGrid.selectedId;
                     })[0];
                     // Set AlreadySetting
                     if (!existItem) {
@@ -930,7 +930,7 @@ module nts.uk.at.view.ksm006.a {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
     }

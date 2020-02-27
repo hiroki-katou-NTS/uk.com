@@ -791,7 +791,7 @@ module nts.uk.com.view.cmm018.shr {
                 
                 let sum = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index).length;
                 for(i = 0; i < sum; i++) {
-                    let compareWidth = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index + ':eq(' + i +')').width();        
+                    let compareWidth = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index + ':eq(' + i +') span').width();        
                     if(compareWidth > widthPhase) {
                         widthPhase = compareWidth;        
                     } 
