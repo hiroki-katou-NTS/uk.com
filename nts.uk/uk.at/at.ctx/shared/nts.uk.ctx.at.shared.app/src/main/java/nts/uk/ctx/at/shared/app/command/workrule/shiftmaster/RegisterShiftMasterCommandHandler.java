@@ -38,8 +38,8 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	@Inject
 	private UpdateShiftMasterService updateShiftMasterService;
 	
-	@Injectable
-	private Require requireWorkInfo;
+//	@Injectable
+//	private Require requireWorkInfo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
