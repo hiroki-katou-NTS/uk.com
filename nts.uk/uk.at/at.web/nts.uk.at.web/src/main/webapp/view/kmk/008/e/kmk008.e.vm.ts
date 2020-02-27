@@ -65,7 +65,7 @@ module nts.uk.at.view.kmk008.e {
                     isShowAlreadySet: self.isShowAlreadySet,
                     isMultiSelect: false,
                     treeType: 1,
-                    selectedWorkplaceId: self.selectedWorkplaceId,
+                    selectedId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     selectType: 1,
                     isShowSelectButton: true,
