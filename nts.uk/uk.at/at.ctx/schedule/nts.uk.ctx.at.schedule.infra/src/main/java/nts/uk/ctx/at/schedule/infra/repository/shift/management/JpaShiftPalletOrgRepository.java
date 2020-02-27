@@ -15,6 +15,7 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
@@ -115,13 +116,13 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public void add(ShiftPalletsOrg shiftPalletsOrg) {
-		// TODO Auto-generated method stub
+		commandProxy().insert(KscmtPaletteOrg.fromDomain(shiftPalletsOrg));
 
 	}
 
 	@Override
 	public void update(ShiftPalletsOrg shiftPalletsOrg) {
-		// TODO Auto-generated method stub
+		commandProxy().update(KscmtPaletteOrg.fromDomain(shiftPalletsOrg));
 
 	}
 
@@ -133,7 +134,10 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page) {
-		// TODO Auto-generated method stub
+		/*String query = FIND_BY_PAGE;
+		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
+		query = query.replaceFirst("targetId", targetId);
+		query = query.replaceFirst("page", page);*/
 		return null;
 	}
 

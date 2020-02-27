@@ -119,15 +119,37 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 
 	@Override
 	public void updateRankPriority(RankPriority rankPriority) {
+		String companyId = rankPriority.getCompanyId();
 		List<KscmtRank> kscmtRanks = this.queryProxy().query(GET_LIST_RANK_BY_COMPANY, KscmtRank.class)
-				.setParameter("companyId", rankPriority.getCompanyId()).getList();
+				.setParameter("companyId", companyId).getList();
 		List<String> rankCds = rankPriority.getListRankCd().stream().map(x -> x.v()).collect(Collectors.toList());
 
 		kscmtRanks.stream().forEach(x -> {
 			x.priority = rankCds.indexOf(x.kscmtRankPk.rankCd) + 1;
 		});
 
-		this.commandProxy().updateAll(kscmtRanks);
+		String sqlDelete = "DELETE FROM KSCMT_RANK WHERE CID = ?";
+		String sqlInsert = "INSERT INTO KSCMT_RANK (CID, CD, SYNAME, PRIORITY) VALUES (?,?,?,?)";
+
+		try (PreparedStatement ps1 = this.connection().prepareStatement(sqlDelete)) {
+			ps1.setString(1, companyId);
+			ps1.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+		try (PreparedStatement ps2 = this.connection().prepareStatement(JDBCUtil.toInsertWithCommonField(sqlInsert))) {
+			for (int i = 0; i < kscmtRanks.size(); i++) {
+				ps2.setString(1, companyId);
+				ps2.setString(2, kscmtRanks.get(i).kscmtRankPk.rankCd);
+				ps2.setString(3, kscmtRanks.get(i).rankSymbol);
+				ps2.setInt(4, kscmtRanks.get(i).priority);
+				ps2.addBatch();
+			}
+			ps2.executeBatch();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

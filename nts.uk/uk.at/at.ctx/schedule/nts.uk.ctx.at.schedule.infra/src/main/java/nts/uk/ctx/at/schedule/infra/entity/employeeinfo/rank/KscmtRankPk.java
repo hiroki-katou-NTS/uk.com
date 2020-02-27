@@ -20,9 +20,15 @@ public class KscmtRankPk implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 会社ID
+	 */
 	@Column(name = "CID")
 	public String companyId;
 
+	/**
+	 * ランクコード
+	 */
 	@Column(name = "CD")
 	public String rankCd;
 }

@@ -8,7 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * ランク優先順
+ * ランクの優先順
  * 
  * @author sonnh1
  *

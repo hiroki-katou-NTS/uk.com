@@ -263,6 +263,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             setShared('dataForJB', {
                 selectedTab: self.selectedTab(),
                 workplaceName: __viewContext.viewModel.viewA.workPlaceNameDisplay(),
+                workplaceCode: __viewContext.viewModel.viewA.workplaceCode(), 
                 workplaceId: self.selectedTab() === 'company' ? null : __viewContext.viewModel.viewA.workplaceId,
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),

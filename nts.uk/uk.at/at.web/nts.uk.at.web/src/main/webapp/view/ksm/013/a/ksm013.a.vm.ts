@@ -16,10 +16,10 @@ module nts.uk.at.view.ksm013.a {
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 100 },
-                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 200 }
+                    { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 50 },
+                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 190 }
                 ]);
-                self.nurseClModel = new NurseClassificationModel("", "", 0, false);
+                self.nurseClModel = new NurseClassificationModel("", "", null, false);
                 self.isEditting = ko.observable(false);
                 self.selectedCode = ko.observable('');
                 self.selectedCode.subscribe(function(codeChanged: string) {
@@ -77,6 +77,7 @@ module nts.uk.at.view.ksm013.a {
             public register() {
                 let self = this,
                     dfd = $.Deferred();
+                self.nurseClModel.nurseClassificationName($.trim(self.nurseClModel.nurseClassificationName()));
                 if (self.validateAll()) {
                     return;
                 };
@@ -188,6 +189,9 @@ module nts.uk.at.view.ksm013.a {
                 self.officeWorker = ko.observable(officeWorker);
                 self.license.subscribe(function(codeChanged: any) {
                     if (codeChanged != 2) self.officeWorker(false);
+                });
+                self.nurseClassificationName.subscribe(function(codeChanged: string) {
+                     self.nurseClassificationName($.trim(self.nurseClassificationName()));
                 });
             }
 

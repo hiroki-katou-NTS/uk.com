@@ -111,7 +111,8 @@ module nts.uk.at.view.ksm010.a {
 
             saveData(): void {
                 let self = this;
-
+                self.rankSymbol($.trim(self.rankSymbol()));
+                
                 $("#rankCode").trigger("validate");
                 $("#rankSymbol").trigger("validate");
 
@@ -188,9 +189,7 @@ module nts.uk.at.view.ksm010.a {
             openB(): void {
                 let self = this;
                 let transferObj: any = {};
-                nts.uk.ui.windows.sub.modal('/view/ksm/010/b/index.xhtml').onClosed(() => {
-                    self.getListRank();
-                });
+                nts.uk.ui.windows.sub.modal('/view/ksm/010/b/index.xhtml');
             }
         }
 
