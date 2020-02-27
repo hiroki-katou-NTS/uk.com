@@ -39,17 +39,17 @@
 							</thead>
 							<tbody data-bind="foreach: menuApprovalSettingInforList()">
 								<tr>
-									<td data-bind="text: name"></td>
-									<td><div data-bind="ntsCheckBox: { checked: useApproval, enable: false }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.useApproval }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprRoot }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork1 }"></div></td>
+									<td><span class="limited-label" data-bind="text: name"></span></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: useApproval, enable: false }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.useApproval }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprRoot }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork1 }"></div></td>
 									<td>
 										<com:ko-if bind="menuApprovalSettings.availableAprWork1()">
 											<a class="" href="#" data-bind = "click: selectApprover1, text: approverName1"></a>
 										</com:ko-if>
 									</td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork2 }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork2 }"></div></td>
 									<td>
 										<com:ko-if bind="menuApprovalSettings.availableAprWork2()">
 											<a class="" href="#" data-bind = "click: selectApprover2, text: approverName2"></a>
