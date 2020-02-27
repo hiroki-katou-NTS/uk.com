@@ -4,7 +4,8 @@ module nts.uk.at.view.ksm015.c.service {
      */
     var paths: any = {
         getShiftMasterByWorkplace: 'ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace',
-        register: 'ctx/at/shared/workrule/shiftmaster/register/shiftmaster/org'
+        register: 'ctx/at/shared/workrule/shiftmaster/register/shiftmaster/org',
+        delete: 'ctx/at/shared/workrule/shiftmaster/delete/org'
     }
 
     export function getShiftMasterByWorkplace(data): JQueryPromise<any> {
@@ -13,6 +14,10 @@ module nts.uk.at.view.ksm015.c.service {
 
     export function registerOrg(data): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.register, data);
+    }
+
+    export function deleteOrg(data): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.delete, data);
     }
     
     /**
