@@ -95,7 +95,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 						).collect(Collectors.toList()))
 					).collect(Collectors.toList()));
 		//承認完了フラグ
-		boolean reflectFlag = this.isApproveAllComplete(apprState);
+		boolean reflectFlag = this.isApprovedAllHr(apprState);
 		apprState.setReflectFlag(reflectFlag);
 		//エラーフラグ、人事承認状態　を渡す ( Truyền  HR approval state, Error flag)
 		return new ApprovalRootStateHrExport(errorFlg, apprState);
@@ -690,7 +690,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 				　false：承認全体がまだ未完了
 	 */
 	@Override
-	public Boolean isApproveAllComplete(ApprovalStateHrImport apprState) {
+	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState) {
 		//承認完了フラグ = false（初期化）
 		Boolean approveAllFlag = false;
 		apprState.getLstPhaseState().stream()

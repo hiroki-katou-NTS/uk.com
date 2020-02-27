@@ -179,7 +179,7 @@ public class ApprovalRootStateImpRepository implements ApprovalRootStateHrReposi
 				}
 			}
 			
-			ApprovalStateHrImport result = new ApprovalStateHrImport(rootStateID, appDate, employeeID, lstPhaseState);
+			ApprovalStateHrImport result = new ApprovalStateHrImport(rootStateID, appDate, employeeID, false, lstPhaseState);
 			return result;
 		}
 

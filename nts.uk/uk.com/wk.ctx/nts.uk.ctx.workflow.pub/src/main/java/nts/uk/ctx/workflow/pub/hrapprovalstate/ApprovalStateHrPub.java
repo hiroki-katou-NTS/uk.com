@@ -81,5 +81,5 @@ public interface ApprovalStateHrPub {
 				　true：承認全体が完了
 				　false：承認全体がまだ未完了
 	 */
-	public Boolean isApproveAllComplete(ApprovalStateHrImport apprState);
+	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState);
 }
