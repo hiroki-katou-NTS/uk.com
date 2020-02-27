@@ -49,8 +49,8 @@ module jhn001.a.viewmodel {
             
             $('.input-wrapper').addClass("notranslate");
             
-            /*nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
-            Page.SIDEBAR);*/
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+            Page.NORMAL);
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
