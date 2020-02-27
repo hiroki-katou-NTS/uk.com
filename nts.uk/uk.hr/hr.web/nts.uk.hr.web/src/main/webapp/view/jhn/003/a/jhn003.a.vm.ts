@@ -74,7 +74,7 @@ module jhn003.a.vm {
 
             service.approvalAll(command).done(() => {
 
-                dialog.info({ messageId: "Msg_15" });
+                dialog.info({ messageId: "Msgj_47" });
 
             })
                 .fail((error) => {
