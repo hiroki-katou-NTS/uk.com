@@ -52,6 +52,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringLength;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
@@ -1172,7 +1173,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		employeeData.lstDetailedPerformance = new ArrayList<>();
 		
 		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), query.getBaseDate(), lstWorkplaceImport, lstWorkplaceConfigInfo);
-		workplaceData.lstEmployeeReportData.add(employeeData);
+		if (workplaceData != null) {
+			workplaceData.lstEmployeeReportData.add(employeeData);
+		}	
 		
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getWorkingDate().compareTo(o2.getWorkingDate())).forEach(x -> {
 			GeneralDate workingDate = x.getWorkingDate();
@@ -1737,6 +1740,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
+				if (CollectionUtil.isEmpty(workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()))) {
+					continue;
+				}
 				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()).get(0);
 				lstWorkplace.put(hierarchy.getHierarchyCode().v(), workplace);
 				

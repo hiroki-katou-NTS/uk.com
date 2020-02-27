@@ -934,7 +934,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			employeeData.position = "";
 		
 		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
-		workplaceData.lstEmployeeReportData.add(employeeData);
+		if (workplaceData != null) {
+			workplaceData.lstEmployeeReportData.add(employeeData);
+		}
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getYearMonth().compareTo(o2.getYearMonth())).forEach(x -> {
 			YearMonth workingDate = x.getYearMonth();
 			
@@ -1016,7 +1018,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 				// Enable data presentation
-				workplaceData.setHasData(true);
+				if (workplaceData != null) {
+					workplaceData.setHasData(true);
+				}
 			});
 		});
 		return employeeData;
