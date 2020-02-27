@@ -20,10 +20,11 @@ import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMaster
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.AlreadySettingWorkplaceDto;
-import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015bStartPageDto;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015StartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class ShiftMasterWs.
@@ -55,8 +56,14 @@ public class ShiftMasterWs {
 	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
 	
 	@POST
+	@Path("isForAttendent")
+	public Ksm015StartPageDto isForAttendent(){
+		return Ksm015StartPageDto.builder().forAttendent(AppContexts.user().roles().forAttendance()).build() ;
+	}
+	
+	@POST
 	@Path("startPage")
-	public Ksm015bStartPageDto findAll(){
+	public Ksm015StartPageDto findAll(){
 		return this.finder.startScreen();
 	}
 	

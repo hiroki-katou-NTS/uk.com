@@ -112,6 +112,7 @@ class RegisterShiftMasterDto {
        remark: String;
        workTypeCd: String;
        workTimeSetCd: String;
+       newMode: boolean;
        constructor(form: RegistrationForm) {
               this.shiftMasterName = form.shiftMasterName();
               this.shiftMasterCode = form.selectedCode();
@@ -119,5 +120,6 @@ class RegisterShiftMasterDto {
               this.remark = form.note();
               this.workTypeCd = form.workTypeCd();
               this.workTimeSetCd = form.workTimeSetCd();
+              this.newMode = form.newMode();
        }
 }

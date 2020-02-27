@@ -23,6 +23,7 @@ public class RegisterShiftMasterCommand {
 	private String remark;
 	private String workTypeCd;
 	private String workTimeSetCd;
+	private Boolean newMode;
 	
 	public ShiftMaster toDomain() {
 		String companyId = AppContexts.user().companyId();
