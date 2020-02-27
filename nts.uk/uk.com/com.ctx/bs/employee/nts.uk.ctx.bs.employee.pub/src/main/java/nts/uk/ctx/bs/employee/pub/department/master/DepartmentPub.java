@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface DepartmentPub {
 
@@ -89,4 +90,11 @@ public interface DepartmentPub {
      * @return
      */
     public List<String> getDepartmentIDAndUpper(String companyID, String departmentID, GeneralDate date);
+    /**
+     * 期間内に特定の部門（List）に所属している社員一覧を取得
+     * @param 部門ID（List) lstDepId
+     * @param 期間 period
+     * @return List<社員ID>
+     */
+    public List<String> getlstSidByDepAndDate(List<String> lstDepId, DatePeriod period);
 }

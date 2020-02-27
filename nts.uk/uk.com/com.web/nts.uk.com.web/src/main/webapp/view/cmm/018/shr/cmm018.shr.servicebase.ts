@@ -44,9 +44,10 @@ module nts.uk.com.view.cmm018.shr {
             return nts.uk.request.ajax("com", paths.getWkpDepInfo, param);
         }
         //get wpName
-        export function getWpDepName(sysAtr): JQueryPromise<any> {
+        export function getWpDepName(sysAtr: number): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getWpDepLogin, sysAtr);
         }
+        //EmploymentRoleDataWebService
         export function settingCas005(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.settingCas005);
         }

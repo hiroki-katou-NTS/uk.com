@@ -82,7 +82,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("getEmployeesInfo")
 	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
-		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(), employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate());		
+		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(),
+				employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate(), employeeSearch.getSysAtr());		
 	}
 	 @POST
 	 @Path("updateHistory")
