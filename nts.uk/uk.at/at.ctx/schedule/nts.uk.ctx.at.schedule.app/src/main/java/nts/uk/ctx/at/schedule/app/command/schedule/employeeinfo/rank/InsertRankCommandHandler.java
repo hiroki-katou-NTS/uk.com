@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankSymbol;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * ランクを登録する
+ * ランクマスタを登録する
  * 
  * @author sonnh1
  *
@@ -35,9 +35,10 @@ public class InsertRankCommandHandler extends CommandHandler<RankCommand> {
 		RankCommand rankCommand = context.getCommand();
 		RequireImpl require = new RequireImpl(rankRepo);
 
+		//1: 新しいランクを追加する(Require, 会社ID, ランクコード, ランク記号)
 		AtomTask persist = InsertRankService.insert(require, companyId, new RankCode(rankCommand.getRankCd()),
 				new RankSymbol(rankCommand.getRankSymbol()));
-
+        //2:
 		transaction.execute(() -> {
 			persist.run();
 		});

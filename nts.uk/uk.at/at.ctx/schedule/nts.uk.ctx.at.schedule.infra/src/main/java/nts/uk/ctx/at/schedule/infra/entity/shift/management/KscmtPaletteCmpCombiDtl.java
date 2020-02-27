@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.management;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -35,7 +36,7 @@ public class KscmtPaletteCmpCombiDtl extends UkJpaEntity{
 	@Column(name = "SHIFT_MASTER_CD")
 	public String shiftMasterCd;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
     	@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION")

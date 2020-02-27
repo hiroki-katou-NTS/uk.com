@@ -188,9 +188,7 @@ module nts.uk.at.view.ksm010.a {
             openB(): void {
                 let self = this;
                 let transferObj: any = {};
-                nts.uk.ui.windows.sub.modal('/view/ksm/010/b/index.xhtml').onClosed(() => {
-                    self.getListRank();
-                });
+                nts.uk.ui.windows.sub.modal('/view/ksm/010/b/index.xhtml');
             }
         }
 
