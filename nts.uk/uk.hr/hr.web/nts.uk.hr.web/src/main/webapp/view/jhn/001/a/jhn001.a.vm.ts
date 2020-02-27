@@ -48,10 +48,8 @@ module jhn001.a.viewmodel {
             $('#menu-header').addClass("notranslate");
 
 
-            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
-                Page.SIDEBAR);
-
-            $('.nts-guide-area').addClass("notranslate");
+            /*nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+            Page.SIDEBAR);*/
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
@@ -559,7 +557,7 @@ module jhn001.a.viewmodel {
                 };
 
                 service.removeData(objRemove).done(() => {
-                    info({ messageId: "Msg_40" }).then(function() {
+                    info({ messageId: "MsgJ_40" }).then(function() {
                         self.reportClsId(null);
                         self.start(null , false);
                     });
@@ -572,7 +570,6 @@ module jhn001.a.viewmodel {
         public backTopScreenTopReport(): void {
             let self = this;
             window.history.back();
-            //nts.uk.request.jump("hr", "/view/jhn/003/a/index.xhtml");
         }
     }
 

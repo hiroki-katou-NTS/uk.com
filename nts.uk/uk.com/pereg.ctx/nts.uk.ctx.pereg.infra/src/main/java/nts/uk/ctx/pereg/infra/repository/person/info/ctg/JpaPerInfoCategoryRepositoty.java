@@ -128,6 +128,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	
+	private final static String GET_DATE_RANGE_ID_BY_LIST_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
+			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIds";
 
 	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
 			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
@@ -474,6 +477,24 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
 				item.endDateItemId, item.dateRangeItemId);
 	}
+	
+	
+	@Override
+	public List<DateRangeItem> getDateRangeItemByListCtgId(List<String> perInfoCtgIds) {
+		List<PpemtDateRangeItem> listEntity = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_LIST_CTG_ID, PpemtDateRangeItem.class).setParameter("perInfoCtgIds", perInfoCtgIds)
+				.getList();
+		if (listEntity.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<DateRangeItem> result = listEntity.stream().map(item -> {
+			return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+					item.endDateItemId, item.dateRangeItemId);
+		}).collect(Collectors.toList());
+		
+		return result;
+	}
 
 	@Override
 	public List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd,
@@ -744,4 +765,5 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainPerInfoCtgFromEntity(c);
 				});
 	}
+
 }

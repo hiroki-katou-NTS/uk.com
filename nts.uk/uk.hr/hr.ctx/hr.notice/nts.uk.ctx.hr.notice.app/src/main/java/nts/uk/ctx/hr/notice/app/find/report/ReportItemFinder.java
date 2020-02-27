@@ -86,6 +86,8 @@ public class ReportItemFinder {
 
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
+		boolean approve = false;
+		
 		List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
 		
 		Optional<RegistrationPersonReport> registrationPersonReport = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportId() == null ? null : Integer.valueOf(params.getReportId()));
@@ -101,7 +103,7 @@ public class ReportItemFinder {
 			
 			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
 				
-				getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst);
+				approve = getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst, approve);
 				
 			}
 			
@@ -153,18 +155,21 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, appPhaseLst)
+						itemInter, documentSampleDtoLst, appPhaseLst, approvalStateHrImport.isErrorFlg(), approve)
 				: new ReportLayoutDto();
 	}
 	
 	/*
 	 * 承認情報の取得
 	 */
-	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
+	public boolean getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst,
+			boolean approve) {
 		
 		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
 		
-		appPhaseLst.addAll(convertData(approvalStateHrImport));
+		approve = convertData(approvalStateHrImport, appPhaseLst);
+		
+		return approve;
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
@@ -568,11 +573,13 @@ public class ReportItemFinder {
 		}
 	}
 	
-	private List<ApprovalPhaseStateForAppDto> convertData(ApprRootStateHrImport apprRootState) {
+	private  boolean convertData(ApprRootStateHrImport apprRootState, List<ApprovalPhaseStateForAppDto> results) {
 		
 		ApprStateHrImport apprState = apprRootState.getApprState();
 		
-		if(apprState == null) return new ArrayList<>();
+		boolean approve = true;
+		
+		if(apprState == null) return approve;
 		
 		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
@@ -593,6 +600,12 @@ public class ReportItemFinder {
 			});
 			
 		});
+		
+		if(sids.contains(AppContexts.user().employeeId())) {
+			
+			//approve = false;
+			
+		}
 		
 		//アルゴリズム [社員の情報を取得する] を実行する (thực hiện thuật toán [lấy thông tin employee]) --- 
 		
@@ -631,6 +644,8 @@ public class ReportItemFinder {
 		
 		appDtoLst.sort(Comparator.comparing(ApprovalPhaseStateForAppDto::getPhaseOrder));
 		
-		return appDtoLst;
+		results.addAll(appDtoLst);
+		
+		return approve;
 	}
 }

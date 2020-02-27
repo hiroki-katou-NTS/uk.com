@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
@@ -84,6 +83,21 @@ public class PersonInfoItemPubImpl implements PersonInfoItemPub{
 		return new DateRangeItemExport(dateRangeItem.getPersonInfoCtgId(), dateRangeItem.getStartDateItemId(),
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
+	
+	@Override
+	public List<DateRangeItemExport> getDateRangeItemByListCtgId(List<String> categoryIds) {
+		List<DateRangeItem> listDateRangeItem = perInfoCategoryRepo.getDateRangeItemByListCtgId(categoryIds);
+		if (listDateRangeItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<DateRangeItemExport> listDateRangeItemExport = listDateRangeItem.stream().map(dateRangeItem -> {
+			return new DateRangeItemExport(dateRangeItem.getPersonInfoCtgId(), dateRangeItem.getStartDateItemId(),
+					dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
+		}).collect(Collectors.toList());
+		
+		return listDateRangeItemExport;
+	}
 
 	@Override
 	public List<ComboBoxObject> getCombo(SelectionItemExport selectionItemDto,
@@ -148,4 +162,5 @@ public class PersonInfoItemPubImpl implements PersonInfoItemPub{
 		String itemDfID = pernfoItemDefRep.getItemDfId(ctgId, itemCd);
 		return itemDfID;
 	}
+
 }
