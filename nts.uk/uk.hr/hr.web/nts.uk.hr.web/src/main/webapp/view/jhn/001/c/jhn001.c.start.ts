@@ -12,3 +12,14 @@ module jhn001.c {
         });
     });
 }
+
+
+$(window).on('resize', () => {
+    const $content = $('#contents-area');
+
+    if ($content.length) {
+        const bound = $content.get(0).getBoundingClientRect();
+
+        $content.css('height', `calc(100vh - ${bound.top + 20}px)`);
+    }
+});
