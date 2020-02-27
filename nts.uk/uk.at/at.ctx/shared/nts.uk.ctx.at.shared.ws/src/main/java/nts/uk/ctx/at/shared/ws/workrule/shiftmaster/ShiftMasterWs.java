@@ -13,8 +13,13 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.RegisterShiftMasterOrgCommandHandler;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.AlreadySettingWorkplaceDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015bStartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
@@ -43,10 +48,16 @@ public class ShiftMasterWs {
 	@Inject
 	private DeleteShiftMasterCommandHandler deleteCmd;
 	
+	@Inject
+	private RegisterShiftMasterOrgCommandHandler registerOrgCmd;
+	
+	@Inject
+	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
+	
 	@POST
 	@Path("startPage")
 	public Ksm015bStartPageDto findAll(){
-		return this.finder.startBScreen();
+		return this.finder.startScreen();
 	}
 	
 	@POST
@@ -62,6 +73,18 @@ public class ShiftMasterWs {
 	}
 	
 	@POST
+	@Path("getAlreadyConfigOrg")
+	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(FindShiftMasterDto dto){
+		return this.orgFinder.getAlreadySetting();
+	}
+	
+	@POST
+	@Path("register/shiftmaster/org")
+	public void registerShiftMasterOrg(RegisterShiftMasterOrgCommand dto){
+		this.registerOrgCmd.handle(dto);;
+	}
+	
+	@POST
 	@Path("register")
 	public void register(RegisterShiftMasterCommand command){
 		this.registerCmd.handle(command);
@@ -71,6 +94,12 @@ public class ShiftMasterWs {
 	@Path("delete")
 	public void delete(DeleteShiftMasterCommand command){
 		this.deleteCmd.handle(command);
+	}
+	
+	@POST
+	@Path("delete/org")
+	public void deleteOrg(DeleteShiftMasterOrgCommand command){
+		this.deleteOrgCmd.handle(command);
 	}
 	
 }

@@ -15,6 +15,5 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 @Data
 public class Ksm015bStartPageDto {
 	List<ShiftMasterDto> shiftMasters;
-	List<WorkTypeDto> workTypes;
-	List<WorkTimeSettingDto> workTimeSettings;
+	
 }

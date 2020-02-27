@@ -14,17 +14,19 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 public class ShiftMasterDto {
 	private String companyId;
 	private String shiftMasterName;
-	private String shiftMaterCode;
+	private String shiftMasterCode;
 	private String color;
 	private String remark;
 	private String workTypeCd;
 	private String workTypeName;
 	private String workTimeCd;
 	private String workTimeName;
+	private String workTime1;
+	private String workTime2;
 
 	public ShiftMasterDto(ShiftMaster domain) {
 		this.companyId = domain.getCompanyId();
-		this.shiftMaterCode = domain.getShiftMaterCode().v();
+		this.shiftMasterCode = domain.getShiftMasterCode().v();
 		ShiftMasterDisInfor info = domain.getDisplayInfor();
 		this.shiftMasterName = info.getName().v();
 		this.color = info.getColor().v();
@@ -34,7 +36,7 @@ public class ShiftMasterDto {
 	public ShiftMasterDto (String companyId, String shiftMasterName, String shiftMaterCode, String color, String remark, String workTypeCd, String workTypeName, String workTimeCd, String workTimeName) {
 		this.companyId = companyId;
 		this.shiftMasterName = shiftMasterName;
-		this.shiftMaterCode = shiftMaterCode;
+		this.shiftMasterCode = shiftMaterCode;
 		this.color = color;
 		this.remark = remark;
 		this.workTypeCd = workTimeCd;

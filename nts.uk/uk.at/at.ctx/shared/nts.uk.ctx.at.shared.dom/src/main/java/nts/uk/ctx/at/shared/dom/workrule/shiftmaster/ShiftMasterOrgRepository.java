@@ -19,4 +19,6 @@ public interface ShiftMasterOrgRepository {
 	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg);
 
 	public List<ShiftMasterOrganization> getByCid(String companyId);
+	
+	public List<String> getAlreadySettingWorkplace(String companyId);
 }

@@ -44,11 +44,11 @@ public class KshmtShiftMaterOrg extends UkJpaEntity {
 		return new ShiftMasterOrganization(key.companyId, targetinfo, shiftMasterCodes);
 	}
 
-	public static KshmtShiftMaterOrg toEntity(ShiftMasterOrganization domain) {
+	public static KshmtShiftMaterOrg toEntity(ShiftMasterOrganization domain, String shiftMasterCode) {
 		
 		KshmtShiftMaterOrgPK key = new KshmtShiftMaterOrgPK();
 		key.setCompanyId(domain.getCompanyId());
-		key.setShiftMaterCode(domain.getListShiftMaterCode().get(0));
+		key.setShiftMaterCode(shiftMasterCode);
 		
 		TargetOrgIdenInfor target =  domain.getTargetOrg();	
 		Integer unit = target.getUnit().value;
@@ -60,10 +60,7 @@ public class KshmtShiftMaterOrg extends UkJpaEntity {
 			key.setTargetId(target.getWorkplaceGroupId().get());
 		}
 		
-		
-		return new KshmtShiftMaterOrg(key);
-		
-		
+		return new KshmtShiftMaterOrg(key);	
 	}
 
 	public KshmtShiftMaterOrg(KshmtShiftMaterOrgPK key) {

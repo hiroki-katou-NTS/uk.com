@@ -54,8 +54,12 @@ public class WorkInformation {
 	 * @param require
 	 */
 	public ErrorStatusWorkInfo checkErrorCondition(Require require) {
-		String companyId = AppContexts.user().companyId();
 		try {
+			// if $勤務種類.isEmpty
+			if(this.workTypeCode == null ) {
+				return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
+			}
+			
 			// require.勤務種類を取得する(@勤務種類コード)
 			SetupType setupType = require.checkNeededOfWorkTimeSetting(this.workTypeCode.v());
 
@@ -77,7 +81,7 @@ public class WorkInformation {
 			}
 
 			// 不要
-			if (setupType == SetupType.OPTIONAL) {
+			if (setupType == SetupType.NOT_REQUIRED) {
 				// @就業時間帯コード ==null
 				if (this.getSiftCode() == null) {
 					return ErrorStatusWorkInfo.NORMAL;
@@ -92,8 +96,8 @@ public class WorkInformation {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
 		}
 
-		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード)
-		Optional<WorkType> workTypeOpt = require.findByPK(companyId, this.siftCode == null ? null : this.siftCode.v());
+		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
+		Optional<WorkType> workTypeOpt = require.findByPK(this.siftCode == null ? null : this.siftCode.v());
 		// if $就業時間帯.isEmpty
 		if (!workTypeOpt.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
@@ -105,6 +109,6 @@ public class WorkInformation {
 	public static interface Require {
 		SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
 
-		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+		Optional<WorkType> findByPK(String workTypeCd);
 	}
 }

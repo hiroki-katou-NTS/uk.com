@@ -25,12 +25,11 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RegisterShiftMasterCommand cmd = context.getCommand();
-		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId, new ShiftMasterCode(cmd.getShiftMaterCode()).v());
+		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId, new ShiftMasterCode(cmd.getShiftMasterCode()).v());
 		if (existed.isPresent()) {
 			shiftMasterRepo.update(cmd.toDomain());
 		} else {
 			shiftMasterRepo.insert(cmd.toDomain());
-
 		}
 	}
 }
