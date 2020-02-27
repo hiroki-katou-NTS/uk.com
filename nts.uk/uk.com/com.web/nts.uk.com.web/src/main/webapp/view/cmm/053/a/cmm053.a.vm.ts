@@ -161,7 +161,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             service.getInfoEmLogin().done(function(employeeInfo) {
                 service.getWpName().done(function(wpName) {
                     self.employeeInputList.push(new EmployeeKcp009(employeeInfo.sid,
-                        employeeInfo.employeeCode, employeeInfo.employeeName, wpName.wkpName, wpName.wkpName));
+                        employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
                     self.initKCP009();
                 });
             });

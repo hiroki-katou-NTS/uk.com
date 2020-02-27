@@ -90,7 +90,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 					boolean isEmpRoot =false;
 					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							notice.toString(), baseDate, 4);
+							notice.toString(), baseDate, 4, sysAtr);
 					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
 					if (!isEmpRoot) {
 						appTypesN.add(this.findName(lstName, notice, null, EmploymentRootAtr.NOTICE.value));
@@ -101,7 +101,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 					boolean isEmpRoot =false;
 					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							event, baseDate, 5);
+							event, baseDate, 5, sysAtr);
 					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
 					if (!isEmpRoot) {
 						appTypesN.add(this.findName(lstName, null, event, EmploymentRootAtr.BUS_EVENT.value));
@@ -148,7 +148,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 					boolean isEmpRoot =false;
 					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							appType.value.toString(), baseDate, 1);
+							appType.value.toString(), baseDate, 1, sysAtr);
 					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
 					if (!isEmpRoot) {
 						appTypes.add(appType.nameId);
@@ -159,7 +159,7 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 					boolean isEmpRoot =false;
 					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
-							conf.value.toString(), baseDate, 2);
+							conf.value.toString(), baseDate, 2, sysAtr);
 					// 承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
 					if (!isEmpRoot) {
 						appTypes.add(conf.nameId);
