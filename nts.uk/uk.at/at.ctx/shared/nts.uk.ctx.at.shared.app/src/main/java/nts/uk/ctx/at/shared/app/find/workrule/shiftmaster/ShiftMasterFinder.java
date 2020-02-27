@@ -22,9 +22,9 @@ public class ShiftMasterFinder {
 	private ShiftMasterRepository shiftMasterRepo;
 
 	// シフトマスタの一覧を取得する
-	public Ksm015bStartPageDto startScreen() {
+	public Ksm015StartPageDto startScreen() {
 		String companyId = AppContexts.user().companyId();
-		Ksm015bStartPageDto startPage = new Ksm015bStartPageDto();
+		Ksm015StartPageDto startPage = new Ksm015StartPageDto();
 
 		List<ShiftMasterDto> shiftMasters = shiftMasterRepo.getAllDtoByCid(companyId);
 		startPage.setShiftMasters(shiftMasters);

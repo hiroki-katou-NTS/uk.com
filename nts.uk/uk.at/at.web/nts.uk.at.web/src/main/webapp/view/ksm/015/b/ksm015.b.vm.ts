@@ -57,6 +57,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		}
 
 		public register() {
+
+			$(".nts-input").trigger("validate");
+			if (nts.uk.ui.errors.hasError()){
+				return;
+			}
+
 			let self = this;
 			let param = new RegisterShiftMasterDto(self.registrationForm());
 			nts.uk.ui.block.grayout();
