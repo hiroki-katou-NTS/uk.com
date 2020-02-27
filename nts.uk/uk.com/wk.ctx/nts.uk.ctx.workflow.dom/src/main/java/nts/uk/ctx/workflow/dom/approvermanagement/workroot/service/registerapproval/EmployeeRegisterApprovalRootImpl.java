@@ -13,11 +13,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -54,8 +57,6 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	private PersonApprovalRootRepository psRootRepository;
 	@Inject
 	private ApplicationOfEmployee appEmployee;
-//	@Inject
-//	private ApprovalRootService approvalService;
 	@Inject
 	private ApprovalPhaseRepository phaseRepo;
 	@Inject
@@ -98,12 +99,12 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				this.getData(sysAtr, appE, companyID, empId, baseDate, appOutput, app);
 			}
 		}
-		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
+		List<WkpDepInfo> lstWpInfor = new ArrayList<>();
 		for (Map.Entry<String, WpApproverAsAppOutput> m : appOutput.entrySet()) {
 			WpApproverAsAppOutput wp = (WpApproverAsAppOutput) m.getValue();
 			lstWpInfor.add(wp.getWpInfor());
 		}
-		Collections.sort(lstWpInfor, Comparator.comparing(WorkplaceImport:: getWkpCode));
+		Collections.sort(lstWpInfor, Comparator.comparing(WkpDepInfo:: getCode));
 		return new DataSourceApproverList(appOutput, lstWpInfor);
 	}
 
@@ -145,10 +146,21 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		lstAppTypes.add(apptype);
 		infor.setLstAppTypes(this.sortByAppTypeConfirm(lstAppTypes));
 		infor.getMapAppType().put(apptype, phaseInfors);
-		WorkplaceImport wpInfor = wpAdapter.findBySid(empId, baseDate);
-		if (!appOutput.isEmpty() && appOutput.containsKey(wpInfor.getWkpId())) {
+		//wkpDep info
+		String id = Strings.EMPTY;
+		Optional<WkpDepInfo> wkpDepO = Optional.empty();
+		if(sysAtr == 0){
+			id = wpAdapter.getWorkplaceIDByEmpDate(empId, GeneralDate.today());
+			wkpDepO = wpAdapter.findByWkpIdNEW(companyID, id, baseDate);
+		}else{
+			id = wpAdapter.getDepartmentIDByEmpDate(empId, GeneralDate.today());
+			wkpDepO = wpAdapter.findByDepIdNEW(companyID, id, baseDate);
+		}
+		if(!wkpDepO.isPresent()) return appOutput;
+		WkpDepInfo wkpDep = wkpDepO.get();
+		if (!appOutput.isEmpty() && appOutput.containsKey(wkpDep.getId())) {
 			//TH da ton tai wpk 
-			WpApproverAsAppOutput wpRoot = appOutput.get(wpInfor.getWkpId());
+			WpApproverAsAppOutput wpRoot = appOutput.get(wkpDep.getId());
 			Map<String, EmpApproverAsApp> mapEmAp = wpRoot.getMapEmpRootInfo();
 			if(!mapEmAp.isEmpty() && mapEmAp.containsKey(empId)) {//TH da ton tai nhan vien
 				EmpApproverAsApp employ = mapEmAp.get(empId);
@@ -168,7 +180,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		} else {//TH chua ton tai wpk
 			WorkplaceImport wkInfor = wpAdapter.findBySid(empId, baseDate);
 			mapEmpRootInfo.put(empId, infor);
-			WpApproverAsAppOutput output = new WpApproverAsAppOutput(wpInfor, mapEmpRootInfo, Arrays.asList(empInfor));
+			WpApproverAsAppOutput output = new WpApproverAsAppOutput(wkpDep, mapEmpRootInfo, Arrays.asList(empInfor));
 			appOutput.put(wkInfor.getWkpId(), output);
 		}
 		return appOutput;

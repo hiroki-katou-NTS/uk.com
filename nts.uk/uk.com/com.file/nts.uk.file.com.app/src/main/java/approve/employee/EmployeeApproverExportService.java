@@ -45,7 +45,8 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 		if (wpApprover.getWpApprover().isEmpty()) {
 			throw new BusinessException("Msg_7");
 		}
-		EmployeeApproverDataSource dataSource = new EmployeeApproverDataSource(this.setHeader(), wpApprover.getWpApprover(), wpApprover.getLstWpInfor());
+		EmployeeApproverDataSource dataSource = new EmployeeApproverDataSource(this.setHeader(),
+				wpApprover.getWpApprover(), wpApprover.getLstWpInfor(), query.getSysAtr());
 		//IN
 		this.employeeGenerator.generate(context.getGeneratorContext(), dataSource);
 

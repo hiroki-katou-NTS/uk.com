@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm018.l {
                 service.saveExcel({sysAtr: self.sysAtr, baseDate: self.date(), lstAppName: self.lstAppName})
                 .done(function(){nts.uk.ui.block.clear();})
                 .fail(function(res: any){
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId});  
+                    nts.uk.ui.dialog.alertError(res.message);  
                     nts.uk.ui.block.clear();
                 })
             }
