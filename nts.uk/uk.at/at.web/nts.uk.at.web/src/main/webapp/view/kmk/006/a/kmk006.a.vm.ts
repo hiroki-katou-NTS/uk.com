@@ -158,7 +158,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     isMultipleUse: false,
                     treeType: TreeType.WORK_PLACE,
-                    selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                    selectedId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDateTreeList,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
@@ -173,7 +173,7 @@ module nts.uk.at.view.kmk006.a {
                     isMultiSelect: false,
                     isMultipleUse: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectedWorkplaceId: self.totalSelectedWorkplaceId,
+                    selectedId: self.totalSelectedWorkplaceId,
                     baseDate: self.baseDateTreeListTotal,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
@@ -270,7 +270,7 @@ module nts.uk.at.view.kmk006.a {
 
                         nts.uk.ui.block.invisible();
                         self.treeItemCode($('#tree-grid-srcc').getRowSelected()[0].workplaceCode);
-                        let wkplId: string = $('#component-items-list').getRowSelected()[0].workplaceId;
+                        let wkplId: string = $('#component-items-list').getRowSelected()[0].id;
                         var params: any = {
                             "workplaceId": wkplId,
                             "baseDate"   : self.baseDateTreeList()
@@ -313,7 +313,7 @@ module nts.uk.at.view.kmk006.a {
                         }
                         nts.uk.ui.block.invisible();
                         self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
-                        let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
+                        let wkplId: string = $('#tree-grid').getRowSelected()[0].id;
                         var params: any = {
                             "workplaceId": wkplId,
                             "baseDate"   : self.inputDate()
