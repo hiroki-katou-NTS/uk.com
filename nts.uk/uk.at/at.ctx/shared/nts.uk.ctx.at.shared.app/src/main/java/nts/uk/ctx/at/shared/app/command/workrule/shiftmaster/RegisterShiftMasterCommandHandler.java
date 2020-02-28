@@ -9,12 +9,15 @@ import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.DefaultBasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,42 +30,60 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
-	
-	
-//	@Injectable
-//	private Require requireWorkInfo;
+
+	@Inject
+	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private WorkTypeRepository workTypeRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
+
 		RegisterShiftMasterCommand cmd = context.getCommand();
-		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId, new ShiftMasterCode(cmd.getShiftMasterCode()).v());
-		if(cmd.getNewMode() && existed.isPresent()) {
+		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId,
+				new ShiftMasterCode(cmd.getShiftMasterCode()).v());
+		if (cmd.getNewMode() && existed.isPresent()) {
 			throw new BusinessException("Msg_1610");
 		}
-		if (existed.isPresent()) {
-			shiftMasterRepo.update(cmd.toDomain());
+
+		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo);
+		ShiftMaster dom = cmd.toDomain();
+		dom.checkError(workRequired);
+
+		MakeShiftMasterService.Require createRequired = new MakeShiftMasterRequireImpl(shiftMasterRepo);
+		UpdateShiftMasterService.Require updateRequired = new UpdateShiftMasterRequireImpl(shiftMasterRepo);
+		AtomTask persist;
+		if (cmd.getNewMode()) {
+			persist = MakeShiftMasterService.makeShiftMater(workRequired, createRequired, companyId,
+					cmd.getShiftMasterCode(), cmd.getWorkTypeCd(), Optional.ofNullable(cmd.getWorkTimeSetCd()),
+					dom.getDisplayInfor());
 		} else {
-			shiftMasterRepo.insert(cmd.toDomain());
+			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
+					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
 		}
 		
+		transaction.execute(() -> {
+			persist.run();
+		});
 		
 	}
-	
+
 	@AllArgsConstructor
 	private static class WorkInfoRequireImpl implements WorkInformation.Require {
 		
-		private final String companyId = AppContexts.user().companyId();
+		private static final String companyId = AppContexts.user().companyId();
 		
 		@Inject
-		private DefaultBasicScheduleService defaultBasicScheduleService;
+		private BasicScheduleService service;
 		
 		@Inject
 		private WorkTypeRepository workTypeRepo;
-		
+
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			return defaultBasicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+			 return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
 		@Override
@@ -70,26 +91,47 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 	}
-	
+
 	@AllArgsConstructor
-	private static class ShiftMasterRequireImpl implements WorkInformation.Require {
-		
-		private final String companyId = AppContexts.user().companyId();
-		
+	private static class MakeShiftMasterRequireImpl implements MakeShiftMasterService.Require {
+
 		@Inject
-		private DefaultBasicScheduleService defaultBasicScheduleService;
-		
-		@Inject
-		private WorkTypeRepository workTypeRepo;
-		
+		private ShiftMasterRepository shiftMasterRepo;
+
 		@Override
-		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			return defaultBasicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		public boolean checkExists(String companyId, String workTypeCd, String workTimeCd) {
+			return shiftMasterRepo.checkExists(companyId, workTypeCd, workTimeCd);
 		}
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
+			shiftMasterRepo.insert(shiftMater);
 		}
+
+	}
+
+	@AllArgsConstructor
+	private static class UpdateShiftMasterRequireImpl implements UpdateShiftMasterService.Require {
+
+		private static final String companyId = AppContexts.user().companyId();
+		
+		@Inject
+		private ShiftMasterRepository shiftMasterRepo;
+
+		@Override
+		public void update(ShiftMaster shiftMater) {
+			shiftMasterRepo.update(shiftMater);
+		}
+
+		@Override
+		public Optional<ShiftMaster> getByShiftMaterCd(String shiftMaterCode) {
+			return shiftMasterRepo.getByShiftMaterCd(companyId, shiftMaterCode);
+		}
+
+		@Override
+		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
+			return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workTypeCd, workTimeCd);
+		}
+
 	}
 }

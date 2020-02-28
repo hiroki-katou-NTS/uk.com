@@ -56,9 +56,18 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.invisible();
-			service.isForAttendent()
+			service.startPage()
 				.done((data) => {
 					self.forAttendent(data.forAttendent);
+					
+					if(data.alreadyConfigWorkplaces) {
+						let alreadySettings = [] 
+						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
+							alreadySettings.push({workplaceId: wp, isAlreadySetting: true});
+						});
+						self.alreadySettingList(alreadySettings);
+					}
+
 					dfd.resolve(data);
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -83,6 +92,13 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			service.registerOrg(param)
 				.done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) !== -1;
+					if(isNew) {
+						let currents = self.alreadySettingList();
+						self.alreadySettingList([]);
+						currents.push({workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true});
+						self.alreadySettingList(currents);
+					}
 					self.selectedWorkplaceId.valueHasMutated();
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
