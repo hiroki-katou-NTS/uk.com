@@ -49,14 +49,14 @@ class RegistrationForm {
               self.workTypeDisplay = ko.observable('');
               self.workTypeCd.subscribe((val) => {
                      console.log(val);
-                     self.workTypeDisplay(val + ' ' + self.shiftMasterName());
+                     self.workTypeDisplay(val + '   ' + self.shiftMasterName());
               });
               self.workTimeSetCd = ko.observable('');
               self.workTimeSetName = ko.observable('');
               self.workTimeSetDisplay = ko.observable('');
               self.workTimeSetCd.subscribe((val) => {
                      console.log(val);
-                     self.workTimeSetDisplay(val + ' ' + self.workTimeSetName());
+                     self.workTimeSetDisplay(val + '   ' + self.workTimeSetName());
               });
        }
 
