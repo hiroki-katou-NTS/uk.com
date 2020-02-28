@@ -1,30 +1,24 @@
-module qmm002.c.service {
-    var paths: any = {
-        transfer: "basic/system/bank/branch/transfer",
-        getBankList: "basic/system/bank/find/all"
-    }
+module nts.uk.pr.view.qmm002.c {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    export module service {
+        var paths = {
+            getAllBank: "ctx/pr/transfer/bank/get-all-bank",
+            getAllBankBranch: "ctx/pr/transfer/bank/get-all-bank-branch",
+            integration: "ctx/pr/transfer/emppaymentinfo/bank-integration"
+        }
 
-    export function tranferBranch(data): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax('com', paths.transfer, data)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    
-    export function getBankList(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getBankList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
+        export function getAllBank(): JQueryPromise<any> {
+            return ajax("pr", paths.getAllBank);
+        };
+
+        export function getAllBankBranch(data: Array<string>): JQueryPromise<any> {
+            return ajax("pr", paths.getAllBankBranch, data);
+        };
+        
+        export function integration(data: any): JQueryPromise<any> {
+            return ajax("pr", paths.integration, data);
+        };
+
     }
 }

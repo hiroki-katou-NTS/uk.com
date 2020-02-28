@@ -1,222 +1,235 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.Memo
-					nts.uk.ctx.basic.dom.system.bank.linebank.LineBankName
-					nts.uk.ctx.basic.dom.system.bank.linebank.LineBankCode
-					nts.uk.ctx.basic.dom.system.bank.linebank.AccountNo
-					nts.uk.ctx.basic.dom.system.bank.linebank.RequesterName
-					nts.uk.ctx.basic.dom.system.bank.linebank.ConsignorCode
-					nts.uk.ctx.basic.dom.system.bank.linebank.ConsignorMemo
-   				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="qmm006.a.main.css" />
-			<com:scriptfile path="qmm006.a.start.js" />
-			<com:scriptfile path="qmm006.a.viewmodel.js" />
-			<com:scriptfile path="qmm006.a.service.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="btn_clearForm" data-bind="click: clearForm ">新規</button>
-				<button id="btn_saveData"
-					data-bind="click: saveData, enable: $root.errors.isEmpty"
-					class="proceed">登録</button>
-				<button id="btn_openCDialog"
-					data-bind="click: openCDialog, enable: enableBtn003 ">振込元銀行の置換</button>
-				<button id="btn_masterCorrectionLog" data-bind="click: btn007">マスタ修正ログ</button>
-				<button id="btn_remove"
-					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
-				<a href="#" data-bind="click: jumpToQmm002A, ntsLinkButton: { }"><img
-					id="link_icon"
-					src="data:image/png;base64,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" /><span
-					id="link_text">振込元銀行の登録へ</span></a>
-			</div>
-
-			<div id="contents-area" class="cf">
-				<div class="left-content">
-					<div id="lst_listOfBanks"
-						class="caret-right caret-background bg-green">
-						<table id="single-list"
-							data-bind="ntsGridList: {
-					       width: 440,
-					       height: 575,
-					       options: items,
-					       optionsValue: 'lineBankCode',
-					       columns: columns,
-					       multiple: false,
-					       value: currentCode
-					     }"></table>
-					</div>
-
-				</div>
-				<div class="right-content" data-bind="with: currentLineBank">
-					<div class="right-content-left">
-						<div id="lbl_codeName"
-							data-bind="ntsFormLabel:{constraint: ['LineBankCode','LineBankName'],required: true}">コード/名称</div>
-						<div id="lbl_bankBranch" data-bind="ntsFormLabel:{required: true}">銀行/支店</div>
-						<div id="lbl_accountClassification"
-							data-bind="ntsFormLabel:{required: true}">口座区分</div>
-						<div id="lbl_accountNumber"
-							data-bind="ntsFormLabel:{constraint: 'AccountNo',required: true}">口座番号</div>
-					</div>
-					<div class="right-content-right">
-						<div class="control-group">
-							<span> <input id="inp_lineBankCode" data-name="取引銀行区分 "
-								data-bind="ntsTextEditor: {
-									value: lineBankCode,
-									constraint:'LineBankCode',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '25px',
-					                    textalign: 'center'
-					                },
-									required: true,
-									enable: $parent.isEnable,
-									readonly: false}" /></span>
-							<span> <input id="inp_lineBankName" data-name="取引銀行名"
-								data-bind="ntsTextEditor: {
-									value: lineBankName,
-									constraint: 'LineBankName',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '180px',
-					                    textalign: 'left'
-					                },
-									required: true,
-									enable: true,
-									readonly: false}" /></span>
-						</div>
-						<div class="control-group">
-							<button data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
-							<label id="lbl_bankCode" data-name="銀行コード"
-								data-bind="text: $parent.bankCode"></label> <label
-								id="lbl_bankName" data-bind="text: $parent.bankName"></label> <label
-								id="lbl_hyphen">-</label> <label id="lbl_branchCode"
-								data-name="支店コード" data-bind="text: $parent.branchCode"></label>
-							<label data-bind="text: $parent.branchName"></label>
-						</div>
-						<div class="control-group">
-							<span id="sel_classification" class="cf"
-								style="min-width: 90px; height: 30px"
-								data-bind="ntsSwitchButton: {
-								options: $parent.roundingRules,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: accountAtr,
-								enable: true }"></span>
-						</div>
-						<div class="control-group">
-							<span> <input id="inp_accountNumber" data-name="口座番号"
-								data-bind="ntsTextEditor: {
-									value: accountNo,
-									constraint:'AccountNo',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '70px',
-					                    textalign: 'left'
-					                },
-									required: true,
-									enable: true,
-									readonly: false}" /></span>
-						</div>
-					</div>
-
-					<hr />
-
-					<div class="right-content-left">
-						<div id="lbl_transferRequestName"
-							data-bind="ntsFormLabel:{constraint: 'RequesterName'}">振込依頼者名</div>
-						<div id="lbl_memo" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
-					</div>
-
-					<div class="right-content-right">
-						<div class="control-group">
-							<span> <input id="inp_transferRequestName"
-								data-name="振込依頼者名 "
-								data-bind="ntsTextEditor: {
-									value: requesterName,
-									constraint:'RequesterName',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '310px',
-					                    textalign: 'left'
-					                },
-									required: false,
-									enable: $parent.isEnable,
-									readonly: false}" /></span>
-						</div>
-						<div class="control-group">
-							<textarea id="inp_memo" style="height: 130px; width: 450px"
-								data-name="メモ"
-								data-bind="ntsMultilineEditor: {
-									constraint: 'Memo',
-									value: memo,
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '450px',
-					                    textalign: 'left'
-					                },
-									required: false,
-									enable: true,
-									readonly: false}" />
-						</div>
-					</div>
-
-					<hr />
-
-					<div class="right-content-left">
-						<div id="lbl_consignorCodeUsage"
-							data-bind="ntsFormLabel:{constraint: ['ConsignorCode','ConsignorMemo']}">委託者コード/用途</div>
-					</div>
-
-					<div class="right-content-right" data-bind="foreach: consignors">
-						<div class="control-group">
-							<label data-bind="text: noIcon"></label> <span> <input
-								class="consignor" data-name="委託者コード"
-								data-bind="ntsTextEditor: {
-									value: consignorCode,
-									constraint:'ConsignorCode',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '120px',
-					                    textalign: 'left'
-					                },
-									required: false,
-									enable: true,
-									readonly: false}" />
-							</span> <span> <input class="consignor" data-name="用途"
-								data-bind="ntsTextEditor: {
-									value: consignorMemo,
-									constraint:'ConsignorMemo',
-									option: {
-					                    textmode: 'text',
-					                    placeholder: '',
-					                    width: '180px',
-					                    textalign: 'left'
-					                },
-									required: false,
-									enable: true,
-									readonly: false}" /></span>
-						</div>
-
+	    <ui:define name="htmlHead">
+	        <com:scriptfile set="IGNITE"/>
+	        <com:scriptfile path="qmm006.a.service.js"/>
+	        <com:scriptfile path="qmm006.a.vm.js"/>
+	        <com:scriptfile path="qmm006.a.start.js"/>
+	        <com:ValidatorScript>
+		        nts.uk.ctx.pr.transfer.dom.sourcebank.SourceBankCode
+		        nts.uk.ctx.pr.transfer.dom.sourcebank.SourceBankName
+		        nts.uk.ctx.pr.transfer.dom.sourcebank.TransferRequesterName
+		        nts.uk.shr.com.primitive.Memo
+		        nts.uk.ctx.pr.transfer.dom.bank.AccountNumber
+		        nts.uk.ctx.pr.transfer.dom.sourcebank.EntrustorCode
+		        nts.uk.ctx.pr.transfer.dom.sourcebank.EntrustorUse
+		    </com:ValidatorScript>
+	    </ui:define>
+	    <ui:define name="content">
+	        <div id="functions-area">
+	            <!-- A1_1 -->
+	            <button tabindex="1" data-bind="click: createNew, enable: updateMode(), timeClick: 500">#{i18n.getText('QMM006_1')}</button>
+	            <!-- A1_2 -->
+	            <button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty, click: register, timeClick: 500">#{i18n.getText('QMM006_2')}</button>
+	            <!-- A1_3 -->
+	            <button tabindex="3" data-bind="click: openDialogQmm006c, timeClick: 500, enable: listSourceBank().length > 1">#{i18n.getText('QMM006_3')}</button>
+	            <!-- A1_4 -->
+	            <button tabindex="4" data-bind="enable: false">#{i18n.getText('QMM006_4')}</button>
+	            <!-- A1_5 -->
+	            <button tabindex="5" class="danger" data-bind="enable: updateMode(), click: remove, timeClick: 500">#{i18n.getText('QMM006_5')}</button>
+	            <!-- A1_6 -->
+	            <a class="goout" tabindex="6" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('QMM006_6')}</a>
+	        </div>
+	        <div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left" style="padding-top: 10px; padding-left: 20px">
+					<!-- A2_1 -->
+					<div data-bind="ntsPanel:{width: '400px', height: '500px', direction: 'right', showIcon: false, visible: true}">
+						<!-- A2_2 -->
+						<table id="A2_2" tabindex="7" data-bind="ntsGridList: {
+								rows: 20,
+								width: '400px',
+								name: '#[QMM006_7]', 
+								dataSource: listSourceBank,
+								primaryKey: 'code', 
+								columns: [
+					                { headerText: '#{i18n.getText('QMM006_8')}', key: 'code', width: 50, formatter: _.escape },
+					                { headerText: '#{i18n.getText('QMM006_9')}', key: 'name', width: 170, formatter: _.escape },
+					                { headerText: '#{i18n.getText('QMM006_10')}', key: 'accountType', width: 80, formatter: _.escape },
+					                { headerText: '#{i18n.getText('QMM006_11')}', key: 'accountNumber', width: 100, formatter: _.escape }
+					            ], 
+								multiple: false,
+								columnResize: true,
+								itemDraggable: true,
+								value: selectedSourceBankCode
+							}"></table>
 					</div>
 				</div>
+				<div class="fixed-flex-layout-right" data-bind="with: selectedSourceBank"  style="padding-top: 10px;">
+					<div class="valign-center control-group">
+						<!-- A3_1 -->
+						<div data-bind="ntsFormLabel: { required: true, constraint: ['SourceBankCode', 'SourceBankName'] }">#{i18n.getText('QMM006_12')}</div>
+						<!-- A3_2 -->
+						<input tabindex="8" id="A3_2" data-bind="ntsTextEditor: {
+							name: '#[QMM006_13]',
+							value: code,
+							constraint: 'SourceBankCode',
+							required: true, enable: $vm.updateMode() == false}" />
+						<!-- A3_3 -->
+						<input tabindex="9" id="A3_3" data-bind="ntsTextEditor: {
+							name: '#[QMM006_14]',
+							value: name,
+							constraint: 'SourceBankName',
+							required: true}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_4 -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM006_15')}</div>
+						<!-- A3_5 -->
+						<button tabindex="10" id="A3_5" data-bind="click: openDialogQmm006b, timeClick: 500">#{i18n.getText('QMM006_16')}</button>
+						<!-- A3_6 -->
+						<span class="label" data-bind="text: bankCode" style="padding-left: 20px"></span>
+						<!-- A3_7 -->
+						<span class="label" data-bind="text: bankName" style="padding-left: 10px"></span>
+						<!-- A3_8 -->
+						<span class="label" style="padding-left: 10px" data-bind="visible: branchId() != null">#{i18n.getText('QMM006_17')}</span>
+						<!-- A3_9 -->
+						<span class="label" data-bind="text: branchCode" style="padding-left: 10px"></span>
+						<!-- A3_10 -->
+						<span class="label" data-bind="text: branchName" style="padding-left: 10px"></span>
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_11 -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM006_10')}</div>
+						<!-- A3_37 -->
+						<div tabindex="11" id="switch-acc-type" data-bind="ntsSwitchButton: {
+							name: '口座区分',
+							options: $vm.accountTypes,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: accountType,
+							required: true,
+							enable: true }"></div>
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_13 -->
+						<div data-bind="ntsFormLabel: { required: true, constraint: 'AccountNumber' }">#{i18n.getText('QMM006_11')}</div>
+						<!-- A3_14 -->
+						<input tabindex="12" id="A3_16" data-bind="ntsTextEditor: {
+							name: '#[QMM006_11]',
+							value: accountNumber,
+							constraint: 'AccountNumber',
+							required: true}" />
+					</div>
+					<!-- A3_15 -->
+					<hr/>
+					<div class="valign-center control-group">
+						<!-- A3_16 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'TransferRequesterName' }">#{i18n.getText('QMM006_18')}</div>
+						<!-- A3_17 -->
+						<input tabindex="13" id="A3_17" data-bind="ntsTextEditor: {
+							name: '#[QMM006_18]',
+							value: transferRequesterName,
+							constraint: 'TransferRequesterName',
+							required: false}" />
+					</div>
+					<div class="valign-top control-group">
+						<!-- A3_18 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'Memo' }">#{i18n.getText('QMM006_19')}</div>
+						<!-- A3_19 -->
+						<textarea style="height: 150px" tabindex="14" data-bind="ntsMultilineEditor: {
+							value: memo,
+							name: '#[QMM006_19]',
+							constraint: 'Memo',
+							option: {width: '350px'},
+							readonly: false}" />
+					</div>
+					<!-- A3_20 -->
+					<hr/>
+					<div class="valign-center control-group">
+						<!-- A3_21 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: ['EntrustorCode', 'EntrustorUse'] }">#{i18n.getText('QMM006_20')}</div>
+						<!-- A3_22 -->
+						<span class="label" style="padding-left: 15px">#{i18n.getText('QMM006_21')}</span>
+						<!-- A3_23 -->
+						<input tabindex="15" id="A3_23" data-bind="ntsTextEditor: {
+							name: '#[QMM006_22]',
+							value: entrustorInforCode1,
+							constraint: 'EntrustorCode',
+							required: entrustorInforCode1Required}" />
+						<!-- A3_24 -->
+						<input tabindex="16" id="A3_24" data-bind="ntsTextEditor: {
+							name: '#[QMM006_23]',
+							value: entrustorInforUse1,
+							constraint: 'EntrustorUse',
+							required: entrustorInforUse1Required}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_25 -->
+						<span class="label" style="padding-left: 205px">#{i18n.getText('QMM006_24')}</span>
+						<!-- A3_26 -->
+						<input tabindex="17" id="A3_26" data-bind="ntsTextEditor: {
+							name: '#[QMM006_25]',
+							value: entrustorInforCode2,
+							constraint: 'EntrustorCode',
+							required: entrustorInforCode2Required}" />
+						<!-- A3_27 -->
+						<input tabindex="18" id="A3_27" data-bind="ntsTextEditor: {
+							name: '#[QMM006_26]',
+							value: entrustorInforUse2,
+							constraint: 'EntrustorUse',
+							required: entrustorInforUse2Required}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_28 -->
+						<span class="label" style="padding-left: 205px">#{i18n.getText('QMM006_27')}</span>
+						<!-- A3_29 -->
+						<input tabindex="19" id="A3_29" data-bind="ntsTextEditor: {
+							name: '#[QMM006_28]',
+							value: entrustorInforCode3,
+							constraint: 'EntrustorCode',
+							required: entrustorInforCode3Required}" />
+						<!-- A3_30 -->
+						<input tabindex="20" id="A3_30" data-bind="ntsTextEditor: {
+							name: '#[QMM006_29]',
+							value: entrustorInforUse3,
+							constraint: 'EntrustorUse',
+							required: entrustorInforUse3Required}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_31 -->
+						<span class="label" style="padding-left: 205px">#{i18n.getText('QMM006_30')}</span>
+						<!-- A3_32 -->
+						<input tabindex="21" id="A3_32" data-bind="ntsTextEditor: {
+							name: '#[QMM006_31]',
+							value: entrustorInforCode4,
+							constraint: 'EntrustorCode',
+							required: entrustorInforCode4Required}" />
+						<!-- A3_33 -->
+						<input tabindex="22" id="A3_33" data-bind="ntsTextEditor: {
+							name: '#[QMM006_32]',
+							value: entrustorInforUse4,
+							constraint: 'EntrustorUse',
+							required: entrustorInforUse4Required}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_34 -->
+						<span class="label" style="padding-left: 205px">#{i18n.getText('QMM006_33')}</span>
+						<!-- A3_35 -->
+						<input tabindex="23" id="A3_35" data-bind="ntsTextEditor: {
+							name: '#[QMM006_34]',
+							value: entrustorInforCode5,
+							constraint: 'EntrustorCode',
+							required: entrustorInforCode5Required}" />
+						<!-- A3_36 -->
+						<input tabindex="24" id="A3_36" data-bind="ntsTextEditor: {
+							name: '#[QMM006_35]',
+							value: entrustorInforUse5,
+							constraint: 'EntrustorUse',
+							required: entrustorInforUse5Required}" />
+					</div>
+				</div>
 			</div>
-		</ui:define>
+			<style>
+				.form-label{width: 185px}
+				div.valign-center.control-group { width: 685px }
+				div.valign-top.control-group { width: 610px }
+			</style>
+	    </ui:define>
 	</ui:composition>
 </body>
 </html>

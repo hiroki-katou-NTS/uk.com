@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobGInfor;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 
@@ -81,5 +82,17 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 						x.getJobTitleName(), 
 						x.getDisporder()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<JobGInfor> getJobGInfor(String companyId, List<String> jobGCd) {
+		return syJobTitlePub.getJobGInfor(companyId, jobGCd).stream()
+				.map(c -> new JobGInfor(c.getCode(), c.getName()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getJobIDFromGroup(String companyID, String approverGroupCD) {
+		return syJobTitlePub.getJobIDFromGroup(companyID, approverGroupCD);
 	}
 }

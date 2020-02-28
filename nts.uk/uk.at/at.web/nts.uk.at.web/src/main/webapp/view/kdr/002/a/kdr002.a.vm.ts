@@ -144,7 +144,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     name: employeeSearch.employeeName,
                     workplaceCode: employeeSearch.workplaceCode,
                     workplaceId: employeeSearch.workplaceId,
-                    workplaceName: employeeSearch.workplaceName
+                    affiliationName: employeeSearch.affiliationName
                 };
                 employeeSearchs.push(employee);
                 self.selectedEmployeeCode.push(employee.code);
@@ -313,7 +313,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         name?: string;
         workplaceCode?: string;
         workplaceId?: string;
-        workplaceName?: string;
+        affiliationName?: string;
     }
 
     export class ListType {

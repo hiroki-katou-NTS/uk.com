@@ -10,7 +10,7 @@ public class CompanyAppRootADto {
 	private boolean color;
 	private int employRootAtr;
 	private boolean common;
-	private Integer appTypeValue;
+	private String appTypeValue;
 	private String appTypeName;
 	private String approvalId;
 	private String historyId;

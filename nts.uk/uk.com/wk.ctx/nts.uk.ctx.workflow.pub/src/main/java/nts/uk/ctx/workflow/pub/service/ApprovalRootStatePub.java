@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.pub.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
@@ -283,5 +284,17 @@ public interface ApprovalRootStatePub {
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
     
     public List<ApprovalPhaseStateExport> getApprovalDetail(String appID);
-
+ 
+    /**
+     * [No.309]承認ルートを取得する
+     * Phần đối ứng cho bên Jinji (人事)
+     * 1.社員の対象申請の承認ルートを取得する
+     * @param 会社ID companyID
+     * @param 社員ID employeeID
+     * @param ・対象申請 targetType
+     * @param 基準日 date
+     * @param Optional<下位序列承認無＞ lowerApprove
+     * @return
+     */
+    public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, String targetType, GeneralDate date, Optional<Boolean> lowerApprove);
 }

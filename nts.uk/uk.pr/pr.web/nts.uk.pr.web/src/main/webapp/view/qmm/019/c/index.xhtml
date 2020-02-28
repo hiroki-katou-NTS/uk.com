@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 680,
+                height: 330
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.c.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.c.service.js"/>
+        <com:scriptfile path="qmm019.c.vm.js"/>
+        <com:scriptfile path="qmm019.c.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="valign-center control-group">
+                <!-- 対象データ -->
+                <div id="C1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_100')}</div>
+                <!-- 明細書コード -->
+                <label id="C1_2" data-bind="text: statementCode"></label>
+                <!-- 明細書名 -->
+                <label id="C1_3" data-bind="text: statementName"></label>
+                <label>（</label>
+                <!-- 開始年月 -->
+                <label id="C1_4" data-bind="text: startMonth"></label>
+                <label> ～ </label>
+                <!-- 終了年月 -->
+                <label id="C1_5" data-bind="text: endMonth"></label>
+                <label>）</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- 編集方法の選択 -->
+                <div id="C1_6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_102')}</div>
+            </div>
+            <div class="valign-center control-group">
+                <!-- 編集方法 -->
+                <div style="margin-left: 30px" id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                                                            name: '#[QMM019_102]',
+                                                            options: itemHistoryEditList,
+                                                            optionsValue: 'id',
+                                                            optionsText: 'name',
+                                                            value: itemHistoryEdit,
+                                                            enable: isLastHistory}"></div>
+                <div id="right-item">
+                    <div class="valign-center control-group">
+                        <!-- ※すべての履歴を削除すると、明細書のデータも削除します -->
+                        <label id="C1_10" class="color-danger">#{i18n.getText('QMM019_103')}</label>
+                    </div>
+                    <div class="valign-center control-group">
+                        <!-- 開始年月 -->
+                        <label id="C1_11">#{i18n.getText('QMM019_43')}</label>
+                        <!-- 開始年月 -->
+                        <div id="C1_12" tabindex="2" data-bind="ntsDatePicker: {
+                                                            name: '#[QMM019_43]',
+                                                            value: newStartMonth,
+                                                            required: true,
+                                                            enable: itemHistoryEdit() == 1,
+                                                            dateFormat: 'yearmonth'}"></div>
+                        <!-- 終了年月 -->
+                        <label>  ～  </label>
+                        <label id="C1_13" data-bind="text: endMonth"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="3" data-bind="click: decide, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

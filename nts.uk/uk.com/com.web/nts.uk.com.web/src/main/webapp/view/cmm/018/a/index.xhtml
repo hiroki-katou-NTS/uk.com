@@ -20,15 +20,18 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="sub/cmm018.sub.a.vm.js" />
+			<com:scriptfile path="sub/cmm018.sub.b.vm.js" />
+
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="with: viewmodelA">
 				<!-- A1_2: Tab 会社 -->
-				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTabCom">#{i18n.getText('Com_Company')}</a></li>
 				<!-- A1_3: Tab 職場 -->
-				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="text: a1_3, visible: visibleTabWkp"></a></li>
 				<!-- A1_4: Tab 個人 -->
-				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li><a href="#tabpanel-3" role="tab-navigator" data-bind="visible: visibleTabPs">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -45,7 +48,7 @@
 					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
-					<div style="margin-top: 10px;">
+					<div id="hoatt" style="margin-top: 10px;" >
 						<table>
 							<tr>
 								<td>
@@ -54,200 +57,122 @@
 								</td>
 								<td>
 									<!-- A1_10: 会社名 -->
-									<div style = "width: 760px" data-bind = "text: nameCompany"></div>
+									<div style = "width: calc(100vw - 575px); max-width: 700px;" data-bind = "text: nameCompany"></div>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
+									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
 									<!-- A1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
+									<div data-bind="if: systemAtr() == 0">
+										<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedModeCode,
 											enable: true}"></div>
+									</div>
 								</td>
 							</tr>
 						</table>
 					</div>
 					<div>
 						<!-- SCREEN A -->
-						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
-							<!-- A2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+						<div class="mode_Common"  data-bind="visible: checkAAA">
+							<!-- SHYUUGYO -->
+							<div data-bind="if:systemAtr()==0">
+								<!-- A2: List gridList -->
+								<div id = "left-contents" style="float: left;margin-left: 20px;">
+									<div style="width: 280px;padding-bottom: 1px;" class="caret-right caret-background bg-green">
+										<div style="margin: 10px 20px 20px 20px">
+											<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+											<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+										</div>
+										<div style="margin: 20px">
+											<table tabindex="2" id="single-list-dataSource"
+												data-bind="ntsGridList:{
+													width: 240,
+													rows: rowHist,
+													options: listHistory,								
+													optionsValue: 'id',
+													columns: columns,
+													multiple: false,
+													value: currentCode,
+													enable: true}" >
+											</table>
+										</div>
 									</div>
-									<div style="margin: 20px">
-										<table tabindex="2" id="single-list-dataSource"
-											data-bind="ntsGridList:{
-												width: 240,
-												height: 258,
-												options: listHistory,								
-												optionsValue: 'id',
-												columns: columns,
-												multiple: false,
-												value: currentCode,
-												enable: true}" >
-										</table>
+								</div>
+								<!-- A3: List -->
+								<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 305px;">
+									<div style="padding-top: 10px">
+										<!-- A3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- A3_2: 選択する期間 -->
+										<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
+<!-- 									<div data-bind="with: $parent.viewmodelSubA">
+										<button data-bind="click: resize1">Resizecolum1</button>
+										<button data-bind="click: resize2">Resizecolum2</button>
+										<button data-bind="click: resize3">Resizecolum3</button>
+										<button data-bind="click: cal1">cal</button>
+										<div style="display: inline-block;">
+										<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
+									</div> -->
+									<div style="margin-top: 10px;margin-left: 20px;">
+										<table id="grid_matome"></table>
 									</div>
 								</div>
 							</div>
-							<!-- A3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
+							<!-- JINJI -->
+							<div data-bind="if: systemAtr()==1">
 								<div>
-									<!-- A3_1: Label 有効期間 -->
-									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- A3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+								<!-- A2: List gridList -->
+								<div style="margin-left: 20px; margin-top: 10px;">
+									<div style="width: 382px; height: 179px; display: inline-block;" 
+										class="caret-background bg-green">
+										<div style="display: inline-flex">
+											<div style="margin: 20px;">
+												<table id="single-list-dataSource"
+													data-bind="ntsGridList:{
+														width: 240,
+														rows: rowHist,
+														options: listHistory,								
+														optionsValue: 'id',
+														columns: columns,
+														multiple: false,
+														value: currentCode,
+														enable: true}" >
+												</table>
+											</div>
+											<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+												<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+												<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+											</div>
+										</div>
+									</div>
+									<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+										<!-- A3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- A3_2: 選択する期間 -->
+										<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
 								</div>
 								<br/>
-								<table class="contents-header" id="fixed-table">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="60px"/>
-									</colgroup>
-									<thead>
-										<tr >
-											<!-- A3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- A3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- A3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- A3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- A3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- A3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-											<!-- A3_29: クリア（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
-										</tr>
-										<tr>
-											<!-- A3_10: 承認者指定（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11: 承認者（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody data-bind = "foreach: cpA">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- A3_12: App Name -->
-											<td class="name td-first-bg aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- A3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;"  
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- A3_16: -->
-											<td class="approver"><div>
-												<div data-bind="foreach: appPhase1.approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"></div><br />
-												</div>
-											</div></td>
-											<!-- A3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- A3_19: -->
-											<td class="approver">
-												<div data-bind="foreach: appPhase2.approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- A3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- A3_22: -->										
-											<td class="approver">
-												<div data-bind="foreach: appPhase3.approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- A3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- A3_25: -->
-											<td class="approver">
-												<div data-bind="foreach: appPhase4.approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"></div><br />
-												</div>
-											</td>
-											<!-- A3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;"  
-														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-												<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- A3_28: -->
-											<td class="approver">
-												<div data-bind="foreach: appPhase5.approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- A3_29: Button delete -->
-											<td class="allow-pay">
-												<div>
-													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+								<!-- A3: List -->
+								<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
+										<table id="grid_matome"></table>
+								</div>
+								</div>
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" style="display:none" data-bind="visible: selectedModeCode">
+						<div class="mode_Private" data-bind="visible: selectedModeCode" style="margin-top: 10px;">
+							<div style="display: inline-flex">
 							<!-- B2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
-								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
+							<div id = "left-contents" style="width: 320px;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
+								<div style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -255,7 +180,7 @@
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<!-- Tree -->
-									<div>
+									<div style="margin: 20px;">
 									<table id="treegrid2"
 											data-bind="ntsTreeGridView:{
 												width: 270,
@@ -273,140 +198,17 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
+							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- B3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<br/>
-								<table class="contents-header" id="fixed-tableB" style = "table-layout: fixed;">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-									</colgroup>
-									<thead>
-										<tr>
-											<!-- B3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- B3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- B3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- B3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- B3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- B3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-										</tr>
-										<tr>
-											<!-- B3_10: 承認者指定（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11: 承認者（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- B3_12: App Name -->
-											<td class="name td-first-bg control-group aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<!-- B3_13: -->
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- B3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- B3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</div></td>
-											<!-- B3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- B3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- B3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- B3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- B3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- B3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- B3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-												<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- B3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+								<div style="margin-top: 10px; margin-left: 20px;">
+									<table id="grid_matomeB"></table>
+								</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -414,7 +216,7 @@
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
-					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<span class="title" data-bind="text: a1_3"></span>
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
@@ -426,45 +228,46 @@
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
-						<table>
-							<tr>
-								<td style = "width: 100px;">
-								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008">職場選択 </button>
-								</td>
-								<td style = "width: 100px;">
-									<div style = "margin-left: 20px;">職場コード:</div>
-								</td>
-								<td>
-									<div data-bind = "text: wpCode"></div>
-								</td>
-								<td style = "width: 100px;">
-									<div style = "margin-left: 20px;">職場名称:</div>
-								</td>
-								<td style = "width: 500px;">
-									<div data-bind = "text: wpName"></div>
-								</td>
-								<td>
-									<!-- C1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
-								</td>
-								<td>
-									<!-- C1_12: SwitchButton モード切替 -->
+						<div class="table">
+							<div class="cell" style = "width: 100px;">
+								<button style = "margin-left: 20px" data-bind = "click: openDialogCDL008, text: c1_1"> </button>
+							</div>
+							<div class="cell" style = "width: 100px;">
+								<div style = "margin-left: 20px;" data-bind="text: c1_3"></div>
+							</div>
+							<div class="cell" >
+								<div data-bind = "text: wpCode"></div>
+							</div>
+							<div class="cell"  style = "width: 100px;">
+								<div style = "margin-left: 20px;" data-bind="text: c1_4"></div>
+							</div>
+							<div class="cell" style = "width: calc(100vw - 850px); max-width: 500px; display: inline-block;">
+								<div data-bind = "text: wpName"></div>
+							</div>
+							<div  class="cell" >
+								<!-- C1_11: Label モード切替： -->
+								<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
+							</div>
+							<div  class="cell" >
+								<!-- C1_12: SwitchButton モード切替 -->
+								<div data-bind="if: systemAtr() == 0">
 									<div data-bind="ntsSwitchButton: {
-											options: listMode,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedModeCode,
-											enable: true}" ></div>
-								</td>
-							</tr>
-						</table>
+										options: listMode,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedModeCode,
+										enable: true}" ></div>
+								</div>
+							</div>
+						</div>
 					</div>
-					<div>
-						<!-- SCREEN C -->
-						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+					<!-- SCREEN C -->
+					<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+						<!-- SHYUUGYO -->
+						<div data-bind="if:systemAtr()==0">
 							<!-- C2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
+							<div id = "left-contents" style="float: left;margin-left: 20px;">
+								<div style="width: 280px; height: 340px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -473,7 +276,7 @@
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
 												width: 240,
-												height: 258,
+												rows: rowHist,
 												options: listHistory,								
 												optionsValue: 'id',
 												columns: columns,
@@ -485,317 +288,101 @@
 								</div>
 							</div>
 							<!-- C3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
-								<div>
+							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 305px;">
+								<div style="padding-top: 10px;">
 									<!-- C3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- C3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<br/>
-								<table class="contents-header" id="fixed-tableWp">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="60px"/>
-									</colgroup>
-									<thead>
-										<tr>
-											<!-- C3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- C3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- C3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- C3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- C3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- C3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-											<!-- C3_29: クリア（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
-										</tr>
-										<tr>
-											<!-- C3_10: 承認者指定（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- C3_11: 承認者（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- C3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- C3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- C3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- C3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- C3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- C3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- C3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- C3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- C3_12: App Name -->
-											<td class="name td-first-bg aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- C3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;"  
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- C3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</div></td>
-											<!-- C3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;"  
-														data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- C3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- C3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- C3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- C3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- C3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- C3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-											<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- C3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- C3_29: Button delete -->
-											<td class="allow-pay">
-												<div>
-													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+								<div style="margin-top: 10px;margin-left: 20px;">
+									<table id="grid_matomeC"></table>
+								</div>
 							</div>
 						</div>
-						<!-- SCREEN D -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
-							<!-- D2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
-								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
-									<div style="margin: 10px 20px 20px 20px">
-										<!-- D2_2: -->
-										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
-										<!-- D2_3 -->
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
-									</div>
-									<!-- Tree -->
-									<div>
-									<table id="treegrid2"
-											data-bind="ntsTreeGridView:{
-												width: 270,
-												dataSource: dataDisplay,
-												value: singleSelectedCode,
-												optionsValue: 'approvalId',
-												optionsChild: 'lstbyApp',
-												optionsText: 'nameAppType',
-												multiple: false,
-												enable: true,
-												initialExpandDepth: 0,
-												rows: 15,
-												showCheckBox: false}"></table>
+						<!-- JINJI -->
+						<div data-bind="if: systemAtr()==1">
+							<div>
+							<!-- A2: List gridList -->
+							<div style="margin-left: 20px; margin-top: 10px;">
+								<div style="width: 382px; height: 179px; display: inline-block;" 
+									class="caret-background bg-green">
+									<div style="display: inline-flex">
+										<div style="margin: 20px;">
+											<table id="single-list-dataSource"
+												data-bind="ntsGridList:{
+													width: 240,
+													rows: rowHist,
+													options: listHistory,								
+													optionsValue: 'id',
+													columns: columns,
+													multiple: false,
+													value: currentCode,
+													enable: true}" >
+											</table>
+										</div>
+										<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+											<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+											<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+										</div>
 									</div>
 								</div>
-							</div>
-							<!-- D3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelB">
-								<div>
-									<!-- D3_1: Label 有効期間 -->
+								<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+									<!-- A3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
-									<!-- D3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									<!-- A3_2: 選択する期間 -->
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<br/>
-								<table class="contents-header" id="fixed-tableWpB" style = "table-layout: fixed;">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-									</colgroup>
-									<thead>
-										<tr>
-											<!-- B3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- B3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- B3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- D3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- B3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- D3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-										</tr>
-										<tr>
-											<!-- D3_10: 承認者指定（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- D3_11: 承認者（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- D3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- D3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- D3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- D3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- D3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- D3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- D3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- D3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- D3_12: App Name -->
-											<td class="name td-first-bg aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<!-- D3_13: -->
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- D3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- D3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</div></td>
-											<!-- D3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- D3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- D3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- D3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- D3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- D3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- D3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-												<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- D3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+							</div>
+							<br/>
+							<!-- A3: List -->
+							<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 20px">
+								<table id="grid_matomeC"></table>
+							</div>
 							</div>
 						</div>
+					</div>
+					<!-- SCREEN D -->
+					<div class="mode_Private" data-bind="visible: selectedModeCode">
+						<!-- D2: List gridList -->
+						<div id = "left-contents" style="float: left;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
+							<div style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
+								<div style="margin: 10px 20px 20px 20px">
+									<!-- D2_2: -->
+									<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
+									<!-- D2_3 -->
+									<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
+								</div>
+								<!-- Tree -->
+								<div style="margin: 20px;">
+								<table id="treegrid2"
+										data-bind="ntsTreeGridView:{
+											width: 270,
+											dataSource: dataDisplay,
+											value: singleSelectedCode,
+											optionsValue: 'approvalId',
+											optionsChild: 'lstbyApp',
+											optionsText: 'nameAppType',
+											multiple: false,
+											enable: true,
+											initialExpandDepth: 0,
+											rows: 15,
+											showCheckBox: false}"></table>
+								</div>
+							</div>
+						</div>
+						<!-- D3: List -->
+						<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 340px;" data-bind="with: $parent.viewmodelSubB">
+							<div style="padding-top: 10px;">
+								<!-- D3_1: Label 有効期間 -->
+								<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+								<!-- D3_2: 選択する期間 -->
+								<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+							</div>
+							<div style="margin-top: 10px; margin-left: 20px;">
+								<table id="grid_matomeD"></table>
+							</div>
+							</div>
 					</div>
 				</div>
 			</div>
@@ -813,45 +400,50 @@
 				</div>
 				<div class="contents-area-tabpanel-3">
 						<!-- CCG001 -->
-						<div data-bind="visible: viewmodelA.visibleCCG001">
+					<div data-bind="visible: viewmodelA.visibleCCG001">
 							<div id="ccgcomponent"></div>
 						</div>
 					<div class="contents-area-tabpanel-3" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
-						<table>
-							<tr>
-								<td style = "width: 880px">
-								<!-- KCP009 -->
-								<div data-bind ="visible: visibleCCG001">
-									<div id="emp-component"></div>
-								</div>
-								<div data-bind ="visible: !visibleCCG001()">
-									<div data-bind = "text: empInfoLabel" style = "margin-left: 20px"></div>
-								</div>
-								</td>
-								<td>
-									<!-- E1_11: Label モード切替： -->
-									<div >#{i18n.getText('CMM018_8')}</div>
-								</td>
-								<td>
-									<!-- E1_12: SwitchButton モード切替 -->
-									<div data-bind="ntsSwitchButton: {
-											options: listMode,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedModeCode,
-											enable: true}"></div>
-								</td>
-							</tr>
-						</table>
+						<div style = "width: 880px; display: inline-block; vertical-align: middle;">
+							<!-- KCP009 -->
+							<div data-bind ="visible: visibleCCG001">
+								<div id="emp-component"></div>
+							</div>
+							<div data-bind ="visible: !visibleCCG001()">
+								<div data-bind = "text: empInfoLabel" style = "margin-left: 20px"></div>
+							</div>
+						</div>
+						<div class="custom-switch" style="display: inline-block;" data-bind="if: systemAtr() == 0">
+							<div style="display: inline-block;" 
+								data-bind="style: { 
+									width: (screen.width - 80 &#60;= 1250) ? (selectedModeCode() == 0) ? '375px' : '410px' : '0px'
+		
+								}"></div>
+							<div style="display: inline-block;">
+								<!-- E1_11: Label モード切替： -->
+								<div>#{i18n.getText('CMM018_8')}</div>
+							</div>
+							<div style="display: inline-block;">
+								<!-- E1_12: SwitchButton モード切替 -->
+								<div data-bind="ntsSwitchButton: {
+									options: listMode,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedModeCode,
+									enable: true}"></div>
+							</div>
+						</div>
 					</div>
 					<div>
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+							<!-- SHYUUGYO -->
+							<div data-bind="if: systemAtr()==0">
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;"
-							data-bind="style: {marginLeft: visibleCCG001() ? '90px' : '20px'}">
-								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
+							data-bind="style: {marginLeft: visibleCCG001() ? '75px' : '20px'}">
+								<div style="width: 280px; height: 340px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
@@ -860,7 +452,7 @@
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
 												width: 240,
-												height: 258,
+												rows: rowHist,
 												options: listHistory,								
 												optionsValue: 'id',
 												columns: columns,
@@ -872,158 +464,69 @@
 								</div>
 							</div>
 							<!-- E3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"
+							<div id = "right-contents" style="margin-bottom: 20px; margin-left: 360px;"
 							data-bind="style: {marginRight: visibleCCG001() ? '0px' : '60px'}">
-								<div>
+								<div style="padding-top: 10px;">
 									<!-- E3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- E3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+								</div>
+								<div style="margin-top: 10px;margin-left: 20px;">
+									<table id="grid_matomeE"></table>
+								</div>
+								</div>
+							</div>
+							<!-- JINJI -->
+							<div data-bind="if: systemAtr()==1">
+								<div>
+								<!-- E2: List gridList -->
+								<div style="margin-left: 90px; margin-top: 10px;">
+									<div style="width: 382px; height: 179px; display: inline-block;" 
+										class="caret-background bg-green">
+										<div style="display: inline-flex">
+											<div style="margin: 20px;">
+												<table id="single-list-dataSource"
+													data-bind="ntsGridList:{
+														width: 240,
+														rows: rowHist,
+														options: listHistory,								
+														optionsValue: 'id',
+														columns: columns,
+														multiple: false,
+														value: currentCode,
+														enable: true}" >
+												</table>
+											</div>
+											<div style="margin: 30px 20px 20px 0px;display: inline-block;width: 100px;">
+												<button style="margin-top: 20px" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
+												<button style="margin-top: 20px" class="danger" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
+											</div>
+										</div>
+									</div>
+									<div style="width: 310px; display: inline-block; vertical-align: bottom;">
+										<!-- E3_1: Label 有効期間 -->
+										<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+										<!-- E3_2: 選択する期間 -->
+										<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
+									</div>
 								</div>
 								<br/>
-								<table class="contents-header" id="fixed-tablePs">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="60px"/>
-									</colgroup>
-									<thead>
-										<tr>
-											<!-- E3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- E3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- E3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- E3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- E3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- E3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-											<!-- E3_29: クリア（見出し） -->
-											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
-										</tr>
-										<tr>
-											<!-- E3_10: 承認者指定（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- E3_11: 承認者（見出し） -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- E3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- E3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- E3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- E3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- E3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- E3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- E3_10 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- E3_11 -->
-											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody style = "height: 200px;" data-bind = "foreach: cpA">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- E3_12: App Name -->
-											<td class="name td-first-bg aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- E3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- E3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</div></td>
-											<!-- E3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- E3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- E3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- E3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- E3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- E3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- E3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-												<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- E3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- E3_29: Button delete -->
-											<td class="allow-pay">
-												<div>
-													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+								<!-- E3: List -->
+								<div style="margin-top: 10px; margin-bottom: 20px;margin-left: 90px">
+									<div data-bind="with: $parent.viewmodelSubA">
+										<table id="grid_matomeE"></table>
+									</div>
+								</div>
+								</div>
 							</div>
 						</div>
 						<!-- SCREEN F -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
+						<div class="mode_Private" data-bind="visible: selectedModeCode" style="clear: both;">
 							<!-- F2: List gridList -->
 							<div id = "left-contents" style="float: left;" 
-							data-bind="style: {marginLeft: visibleCCG001() ? '86px' : '20px'}">
-								<div style="width: 280px; height: 470px;" data-bind="with: $parent.viewmodelB" class="caret-right caret-background bg-green">
+							data-bind="style: {marginLeft: visibleCCG001() ? '75px' : '20px'}">
+								<div style="width: 315px; height: 470px;" data-bind="with: $parent.viewmodelSubB" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- F2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -1031,7 +534,7 @@
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDeleteB">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<!-- Tree -->
-									<div>
+									<div style="margin: 20px;">
 									<table id="treegrid2"
 											data-bind="ntsTreeGridView:{
 												width: 270,
@@ -1049,146 +552,26 @@
 								</div>
 							</div>
 							<!-- F3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"  
+							<div id = "right-contents" style="margin-bottom: 20px; margin-left: 395px;"  
 							data-bind="style: {marginRight: visibleCCG001() ? '0px' : '50px'}">
-								<div data-bind="with: $parent.viewmodelB">
+								<div style="padding-top: 10px;" data-bind="with: $parent.viewmodelSubB">
 									<!-- F3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- F3_2: 選択する期間 -->
-									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
+									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<br/>
-								<table class="contents-header" id = "fixed-tablePsB" style = "table-layout: fixed;" data-bind="with: $parent.viewmodelB">
-									<colgroup>
-										<col width="100px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-										<col width="80px"/>
-										<col width="70px"/>
-									</colgroup>
-									<thead>
-										<tr>
-											<!-- F3_4: 申請の種類（見出し） -->
-											<th rowspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- F3_5: フェーズ1⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- F3_6: フェーズ2⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- F3_7: フェーズ3⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- F3_8: フェーズ4⇒（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- F3_9: フェーズ5（見出し） -->
-											<th colspan="2" class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-										</tr>
-										<tr>
-											<!-- F3_10: 承認者指定（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- F3_11: 承認者（見出し） -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- F3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- F3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- F3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- F3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- F3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- F3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- F3_10 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- F3_11 -->
-											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-										</tr>
-									</thead>
-									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- F3_12: App Name -->
-											<td class="name td-first-bg aaa" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div style="display: inline-block;" data-bind="style: {width: employRootAtr != 0 ? '100%' : '62px'}">
-													<div class = "limited-label" data-bind = "text: appTypeName"></div>
-												</div>
-												<!-- F3_13: -->
-												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
-												</div>
-											</td>
-											<!-- F3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div class = "fixName" data-bind="text: appPhase1.appFormName"></div>
-											</td>
-											<!-- F3_16: -->
-											<td class="approver" data-bind="with: appPhase1"><div>
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</div></td>
-											<!-- F3_17: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
-												<div data-bind="text: appPhase2.appFormName"></div>
-											</td>
-											<!-- F3_19: -->
-											<td class="approver" data-bind="with: appPhase2">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- F3_20: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
-												<div data-bind="text: appPhase3.appFormName"></div>
-											</td>
-											<!-- F3_22: -->										
-											<td class="approver" data-bind="with: appPhase3">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div></td>
-											<!-- F3_23: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
-												<div data-bind="text: appPhase4.appFormName"></div>
-											</td>
-											<!-- F3_25: -->
-											<td class="approver" data-bind="with: appPhase4">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-											<!-- F3_26: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
-														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,employRootAtr,5)}"></button>
-												<div data-bind="text: appPhase5.appFormName"></div>
-											</td>
-											<!-- F3_28: -->
-											<td class="approver" data-bind="with: appPhase5">
-												<div data-bind="foreach: approver">
-													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+								<div style="margin-left: 20px; margin-top: 10px;">
+									<table id="grid_matomeF"></table>
+								</div>
+								</div>
 						</div>
 					</div>
 				</div>
 				</div>
+			</div>
+			<div id="help-content" style="position: absolute; z-index: 990; display: none;">
+				<span class="caret-helpbutton caret-left" style="top: 0px;"></span>
+				<img src="../images/CMM018_001.png" />
 			</div>
 		</ui:define>
 	</ui:composition>

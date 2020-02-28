@@ -37,7 +37,7 @@ public class GetDataApprovalRootOfSubjectRequest {
 		GeneralDate generalDate = GeneralDate.fromString(objApprovalRootInput.getStandardDate(), "yyyy/MM/dd");
 		List<ApprovalRootOfSubjectRequestDto> data =  this.approvalRootRepo.getApprovalRootOfSubjectRequest(companyID,
 				sid, objApprovalRootInput.getEmploymentRootAtr(), 
-				objApprovalRootInput.getAppType(),generalDate)
+				objApprovalRootInput.getAppType(),generalDate, 0)
 				.stream()
 				.map(c->ApprovalRootOfSubjectRequestDto.fromDomain(c))
 				.collect(Collectors.toList());

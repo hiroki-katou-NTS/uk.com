@@ -21,8 +21,8 @@ import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPerPK;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceScreenRepo;
@@ -97,12 +97,12 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 
-		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
+		String query = "SELECT w FROM BsymtWorkplaceInfor w WHERE w.pk.workplaceId IN :wkpId";
 		CollectionUtil.split(workPlaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			this.queryProxy().query(query, BsymtWorkplaceInfo.class)
+			this.queryProxy().query(query, BsymtWorkplaceInfor.class)
 				.setParameter("wkpId", subList)
-				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
-					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
+				.getList().stream().forEach(w -> {
+					lstWkp.put(w.getPk().getWorkplaceId(), w.getWorkplaceName());
 				});
 		});
 		return lstWkp;

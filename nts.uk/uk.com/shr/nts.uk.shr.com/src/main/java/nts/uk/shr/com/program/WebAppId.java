@@ -13,7 +13,9 @@ public enum WebAppId {
 	// Attendance
 	AT("at"),
 	// mobile
-	MOBI("mobile");
+	MOBI("mobile"),
+	// hr
+	HR("hr");
 	
 	public String name;
 	WebAppId(String name) {

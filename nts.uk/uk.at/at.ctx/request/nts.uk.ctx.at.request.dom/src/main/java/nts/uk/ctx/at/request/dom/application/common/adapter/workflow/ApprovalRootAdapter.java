@@ -5,7 +5,6 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverInfoImport;
 
 
 /**
@@ -25,7 +24,7 @@ public interface ApprovalRootAdapter {
 	 * @return
 	 */
 	List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr, int appType,
-			GeneralDate standardDate);
+			GeneralDate standardDate, int sysAtr);
 	
 	/**
 	 * 3.職位から承認者へ変換する
@@ -35,7 +34,7 @@ public interface ApprovalRootAdapter {
 	 * @param baseDate
 	 * @param jobTitleId
 	 */
-	List<ApproverInfoImport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId);
+//	List<ApproverInfoImport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId);
 	
 	Integer getCurrentApprovePhase(String rootStateID, Integer rootType);
 }

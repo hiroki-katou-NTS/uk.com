@@ -11,9 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.CommonProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -21,6 +24,8 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -34,6 +39,21 @@ public class ConfirmStatusInfoEmp {
 	private IFindDataDCRecord iFindDataDCRecord;
 
 	@Inject
+	private IdentificationRepository identificationRepository;
+
+	@Inject
+	private ApprovalStatusAdapter approvalStatusAdapter;
+
+	@Inject
+	private ApplicationRecordAdapter applicationRecordAdapter;
+
+	@Inject
+	private ConfirmationMonthRepository confirmationMonthRepository;
+
+	@Inject
+	private RealityStatusService realityStatusService;
+	
+	@Inject
 	private GetClosurePeriod getClosurePeriod;
 
 	/**
@@ -46,7 +66,7 @@ public class ConfirmStatusInfoEmp {
 		List<ClosurePeriod> lstClosure = new ArrayList<>();
 		if (periodOpt.isPresent()) {
 			// 期間を指定して集計期間を求める
-			lstClosure = iFindDataDCRecord.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
+			lstClosure = getClosurePeriod.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
 		} else {
 			// TODO: 年月を指定して集計期間を求める
 			GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
@@ -68,15 +88,15 @@ public class ConfirmStatusInfoEmp {
 		// Output「社員の会社所属状況．所属状況．期間」のMAX期間を求める
 		DatePeriod dateEmpExport = CommonProcess.getMaxPeriod(statusOfEmps.get(0).getListPeriod());
 		// ドメインモデル「日の本人確認」を取得する
-		List<Identification> indentities = iFindDataDCRecord.findByEmployeeID(employeeId, dateEmpExport.start(),
+		List<Identification> indentities = identificationRepository.findByEmployeeID(employeeId, dateEmpExport.start(),
 				dateEmpExport.end());
 
 		// 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
-		List<ApproveRootStatusForEmpImport> lstApprovalDayStatus = iFindDataDCRecord
+		List<ApproveRootStatusForEmpImport> lstApprovalDayStatus = approvalStatusAdapter
 				.getApprovalByListEmplAndListApprovalRecordDateNew(dateEmpExport.datesBetween(),
 						Arrays.asList(employeeId), 1);
 
-		List<ApplicationRecordImport> lstApplication = iFindDataDCRecord
+		List<ApplicationRecordImport> lstApplication = applicationRecordAdapter
 				.getApplicationBySID(Arrays.asList(employeeId), dateEmpExport.start(), dateEmpExport.end());
 
 		List<AggrPeriodEachActualClosure> aggrPeriods = lstClosure.stream().flatMap(x -> x.getAggrPeriods().stream())
@@ -85,13 +105,13 @@ public class ConfirmStatusInfoEmp {
 		List<InformationMonth> inforMonths = new ArrayList<>();
 		for (AggrPeriodEachActualClosure mergePeriodClr : aggrPeriods) {
 
-			List<ConfirmationMonth> lstConfirmMonth = iFindDataDCRecord.findBySomeProperty(
+			List<ConfirmationMonth> lstConfirmMonth = confirmationMonthRepository.findBySomeProperty(
 					Arrays.asList(employeeId), mergePeriodClr.getYearMonth().v(),
 					mergePeriodClr.getClosureDate().getClosureDay().v(),
 					mergePeriodClr.getClosureDate().getLastDayOfMonth(), mergePeriodClr.getClosureId().value);
 
 			// 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
-			List<ApproveRootStatusForEmpImport> lstApprovalMonthStatus = iFindDataDCRecord
+			List<ApproveRootStatusForEmpImport> lstApprovalMonthStatus = approvalStatusAdapter
 					.getApprovalByListEmplAndListApprovalRecordDateNew(Arrays.asList(mergePeriodClr.getOriginalClosurePeriod().end()),
 							Arrays.asList(employeeId), 2);
 			lstApprovalMonthStatusAll.addAll(lstApprovalMonthStatus);
@@ -100,7 +120,7 @@ public class ConfirmStatusInfoEmp {
 		}
 
 		// [No.303]対象期間に日別実績のエラーが発生している年月日を取得する
-		List<EmployeeDateErrorOuput> lstOut = iFindDataDCRecord
+		List<EmployeeDateErrorOuput> lstOut = realityStatusService
 				.checkEmployeeErrorOnProcessingDate(employeeId, dateEmpExport.start(), dateEmpExport.end()).stream()
 				.map(x -> {
 					return new EmployeeDateErrorOuput(employeeId, x.getDate(), x.getHasError());
@@ -119,7 +139,7 @@ public class ConfirmStatusInfoEmp {
 			List<ClosurePeriod> lstClosure = new ArrayList<>();
 			if (periodOpt.isPresent()) {
 				// 期間を指定して集計期間を求める
-				lstClosure = iFindDataDCRecord.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
+				lstClosure = getClosurePeriod.fromPeriod(employeeId, periodOpt.get().end(), periodOpt.get());
 			} else {
 				// TODO: 年月を指定して集計期間を求める
 				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
@@ -142,20 +162,20 @@ public class ConfirmStatusInfoEmp {
 			// Output「社員の会社所属状況．所属状況．期間」のMAX期間を求める
 			DatePeriod dateEmpExport = CommonProcess.getMaxPeriod(statusOfEmps.get(0).getListPeriod());
 			// ドメインモデル「日の本人確認」を取得する
-			List<Identification> indentities = iFindDataDCRecord.findByEmployeeID(employeeId,
+			List<Identification> indentities = identificationRepository.findByEmployeeID(employeeId,
 					dateEmpExport.start(), dateEmpExport.end());
 
 			// 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
-			List<ApproveRootStatusForEmpImport> lstApprovalDayStatus = iFindDataDCRecord
+			List<ApproveRootStatusForEmpImport> lstApprovalDayStatus = approvalStatusAdapter
 					.getApprovalByListEmplAndListApprovalRecordDateNew(dateEmpExport.datesBetween(),
 							Arrays.asList(employeeId), 1);
 
 			// [No.26]社員、期間に一致する申請を取得する
-			List<ApplicationRecordImport> lstApplication = iFindDataDCRecord
+			List<ApplicationRecordImport> lstApplication = applicationRecordAdapter
 					.getApplicationBySID(Arrays.asList(employeeId), dateEmpExport.start(), dateEmpExport.end());
 			// [No.303]対象期間に日別実績のエラーが発生している年月日を取得する
 			// [No.303]対象期間に日別実績のエラーが発生している年月日を取得する
-			List<EmployeeDateErrorOuput> lstOut = iFindDataDCRecord
+			List<EmployeeDateErrorOuput> lstOut = realityStatusService
 					.checkEmployeeErrorOnProcessingDate(employeeId, dateEmpExport.start(), dateEmpExport.end()).stream()
 					.map(x -> {
 						return new EmployeeDateErrorOuput(employeeId, x.getDate(), x.getHasError());
@@ -167,13 +187,13 @@ public class ConfirmStatusInfoEmp {
 			List<InformationMonth> inforMonths = new ArrayList<>();
 			for (AggrPeriodEachActualClosure mergePeriodClr : aggrPeriods) {
 
-				List<ConfirmationMonth> lstConfirmMonth = iFindDataDCRecord.findBySomeProperty(
+				List<ConfirmationMonth> lstConfirmMonth = confirmationMonthRepository.findBySomeProperty(
 						Arrays.asList(employeeId), mergePeriodClr.getYearMonth().v(),
 						mergePeriodClr.getClosureDate().getClosureDay().v(),
 						mergePeriodClr.getClosureDate().getLastDayOfMonth(), mergePeriodClr.getClosureId().value);
 
 				// 対応するImported「（就業．勤務実績）承認対象者の承認状況」をすべて取得する
-				List<ApproveRootStatusForEmpImport> lstApprovalMonthStatus = iFindDataDCRecord
+				List<ApproveRootStatusForEmpImport> lstApprovalMonthStatus = approvalStatusAdapter
 						.getApprovalByListEmplAndListApprovalRecordDateNew(
 								Arrays.asList(mergePeriodClr.getOriginalClosurePeriod().end()), Arrays.asList(employeeId), 2);
 				inforMonths.add(new InformationMonth(mergePeriodClr, lstConfirmMonth, lstApprovalMonthStatus));

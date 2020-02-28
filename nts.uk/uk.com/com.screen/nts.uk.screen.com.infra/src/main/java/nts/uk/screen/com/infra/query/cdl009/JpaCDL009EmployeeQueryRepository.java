@@ -29,22 +29,19 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 	public static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
 	/** The Constant SEARCH_BY_WORKPLACE. */
-	private static final String SEARCH_BY_WORKPLACE = "SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.businessName, wi.wkpName, "
+	private static final String SEARCH_BY_WORKPLACE = "SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.businessName, wi.workplaceName, "
 			+ "ach.startDate, ach.endDate, absHis.startDate, absHis.endDate, absHisItem.tempAbsFrameNo "
 			+ "FROM BsymtAffiWorkplaceHist awh "
 			+ "LEFT JOIN BsymtAffCompanyHist ach ON ach.bsymtAffCompanyHistPk.sId = awh.sid "
 			+ "LEFT JOIN BsymtTempAbsHistory absHis ON e.bsymtEmployeeDataMngInfoPk.sId = absHis.sid "
 			+ "LEFT JOIN BsymtTempAbsHisItem absHisItem ON absHis.histId = absHisItem.histId "
 			+ "LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awh.hisId = awhi.hisId "
-			+ "LEFT JOIN BsymtWorkplaceHist wkphist ON wkphist.bsymtWorkplaceHistPK.wkpid = awhi.workPlaceId "
-			+ "LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wkphist.bsymtWorkplaceHistPK.historyId "
+			+ "LEFT JOIN BsymtWorkplaceInfor wi ON wi.pk.workplaceId = awhi.workPlaceId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo e ON awh.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId "
 			+ "WHERE awhi.workPlaceId IN :wplIds "
 			+ "AND awh.strDate <= :refDate "
 			+ "AND awh.endDate >= :refDate "
-			+ "AND wkphist.strD <= :refDate "
-			+ "AND wkphist.endD >= :refDate "
 			+ "AND e.delStatus = 0";
 	
 

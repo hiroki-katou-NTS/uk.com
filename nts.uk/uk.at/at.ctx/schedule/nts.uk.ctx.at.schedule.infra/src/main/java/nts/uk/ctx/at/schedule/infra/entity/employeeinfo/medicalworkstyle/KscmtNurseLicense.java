@@ -13,16 +13,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+// 看護区分
 @Getter
 @Setter
 @Entity
 @Table(name = "KSCMT_NURSE_LICENSE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtNurseLicense extends UkJpaEntity implements Serializable {
-
+public class KscmtNurseLicense extends ContractUkJpaEntity implements Serializable { 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

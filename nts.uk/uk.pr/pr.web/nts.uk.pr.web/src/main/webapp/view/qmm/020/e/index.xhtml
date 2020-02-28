@@ -1,81 +1,67 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:stylefile path="qmm.020.e.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm.020.e.viewmodel.js" />
-			<com:scriptfile path="qmm.020.e.start.js" />
-			<com:scriptfile path="qmm.020.e.service.js" />
-		</ui:define>
-		<ui:define name="content">
-			<div class="contents-area">
-				<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-				<!-- LEFT -->
-				<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-				<div style="margin-left: 10px;" class="left-content">
-					<div class="bg-green caret-right caret-background"
-						style="float: left; width: 250px; height: 300px; margin: 20px 50px;">
-						<button id="E_BTN_003" style="margin: 20px 20px" data-bind="click:openJDialog">履歴追加</button>
-						<button id="E_BTN_004" style="margin: 20px 20px" data-bind="click:openKDialog">履歴編集</button>
-						<div id="E_LST_002"
-						data-bind="ntsListBox: {
-										options: itemList,
-										optionsValue: 'historyId',
-										optionsText: 'displayDate',
-										multiple: false,	
-										value: selectedCode,
-										enable: isEnable(),
-										rows: 5,
-										columns: [
-											{ key: 'displayDate', length: 10 }
-										]}"></div>
-						<div style="margin: 10px 20px;"></div>
-						<span data-bind="text: selectedCode"></span>
-					</div>
-				</div>
-				<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-				<!-- RIGHT -->
-				<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-				<div style="margin: 10px 20px;" class="right-content">
-					<div class="form-label">
-						<label id="E_LBL_001">雇用に明細書を紐ずける</label>
-						<HR
-							style="display: block; margin-top: 1.2em; margin-left: -1em; width: 800px;" />
-						<br></br>
-					</div>
-					<div id="E_LST_001">
-						<div style="width: 700px"
-							data-bind="ntsSearchBox: {
-							comId: 'single-list',
-							items: items, 		
-							selected: companyCode, 
-							selectedKey: 'code', 
-							fields: ['name', 'code']}" />
+<div>
+    <div class="sidebar-content-header" style = "min-width: 1000px;">
+            <span class="title">#{i18n.getText('QMM020_8')}</span>
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="click: registerClassification, enable: !enableRegis() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('QMM020_1')}</button>
 
-						<table id="single-list"
-							data-bind="ntsGridList: {								
-								height: 350,
-								dataSource: items,
-								primaryKey: 'classificationCode',
-								columns: columns2,
-								multiple: false,
-								value: companyCode
-								
-								
-							}"
-							class="cf"></table>
-					</div>
+            <button id="A1_3" tabindex="3"
+                data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
 
-				</div>
-			</div>
+            <button id="A1_4" tabindex="4"
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
 
-		</ui:define>
-	</ui:composition>
-</body>
-</html>
+    </div>
+    <div style="margin-top: 35px;" class="contents-area fixed-flex-layout">
+        <div class="fixed-flex-layout-left" style="margin-left: 20px; margin-right: 10px;">
+            <div >
+                <i id="img-calendar" class="image image-calendar"/>
+            </div>
+            <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '220px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="E1_3" tabindex="5" data-bind="click: openJScreen,timeClick: 800, enable: enableNew()">#{i18n.getText('QMM020_13')}</button>
+
+                    <button id="E1_4" tabindex="6" data-bind="click: openKScreen,timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table  id="E1_5" tabindex="7" data-bind="ntsGridList: {
+                                            height: 165,
+                                            name: '#QMM020_14',
+                                            rows:6,
+                                            dataSource: listStateCorrelationHisClassification,
+                                            primaryKey: 'hisId',
+                                            columns: [
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
+                                                        { headerText: '', key: 'name', width: 150, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: hisIdSelected
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right">
+            <div class="control-group" >
+                <div id="E2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_35')}</div>
+            </div>
+            <div style="border-bottom: #CCCCCC 1px solid; width: 840px; margin-top:-10px; margin-bottom: 10px"></div>
+            <div>
+                <div style="width: 260px" tabindex="8" data-bind="
+                        ntsSearchBox: {
+                                        searchMode: 'highlight',
+                                        targetKey: 'masterCode',
+                                        comId: 'E3_1',
+	                                    items: listStateLinkSettingMaster,
+	                                    enable: enableSearchButton,
+	                                    selectedKey: 'masterCode',
+	                                    selected: currentCode,
+	                                    fields: ['categoryName', 'masterCode'], mode: 'igGrid'}"
+                />
+
+                <table id="E3_1" ></table>
+
+            </div>
+        </div>
+    </div>
+</div>

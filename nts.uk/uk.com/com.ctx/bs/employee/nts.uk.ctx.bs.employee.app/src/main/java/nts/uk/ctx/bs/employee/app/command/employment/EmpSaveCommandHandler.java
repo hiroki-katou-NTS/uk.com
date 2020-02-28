@@ -47,8 +47,7 @@ public class EmpSaveCommandHandler extends CommandHandler<EmpSaveCommand> {
 		Employment employment = new Employment(command);
 
 		// Find exist Employment
-		Optional<Employment> empOptional = this.repository.findEmployment(companyId,
-				command.getEmploymentCode().v());
+		Optional<Employment> empOptional = this.repository.findEmployment(companyId, command.getEmploymentCode().v());
 
 		// Update
 		if (empOptional.isPresent()) {

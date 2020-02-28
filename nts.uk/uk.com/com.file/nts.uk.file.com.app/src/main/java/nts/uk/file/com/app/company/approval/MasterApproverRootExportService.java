@@ -1,6 +1,7 @@
 package nts.uk.file.com.app.company.approval;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.AppTypeName;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.ApproverRootMaster;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.file.com.app.HeaderEmployeeUnregisterOutput;
@@ -39,8 +41,9 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 		String companyID = AppContexts.user().companyId();
 		
 		// get data
-		MasterApproverRootOutput masterApp = masterRoot.masterInfors(companyID, query.getBaseDate(),
-				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
+		MasterApproverRootOutput masterApp = masterRoot.masterInfors(companyID, query.getSysAtr(), query.getBaseDate(),
+				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson(), query.getLstAppName().stream()
+				.map(c -> new AppTypeName(c.getValue(), c.getLocalizedName(), c.getEmployRootAtr())).collect(Collectors.toList()));
 		
 		// check condition
 		if (masterApp.getComRootInfor() == null && masterApp.getWkpRootOutput().getWorplaceRootInfor().isEmpty()
@@ -49,7 +52,7 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 		}
 
 		val dataSource = new MasterApproverRootOutputDataSource(masterApp,this.setHeader(), query.isChkCompany(), query.isChkPerson(),
-				query.isChkWorkplace());
+				query.isChkWorkplace(), query.getSysAtr());
 
 		// generate file
 		masterGenerator.generate(context.getGeneratorContext(), dataSource);

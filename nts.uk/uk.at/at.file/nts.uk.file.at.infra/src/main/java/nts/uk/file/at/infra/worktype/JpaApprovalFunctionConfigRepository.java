@@ -1,7 +1,5 @@
 package nts.uk.file.at.infra.worktype;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -122,9 +120,9 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    WHERE CID = ?cid ");
 		sql.append("    UNION ALL ");
 		sql.append("    SELECT ");
-		sql.append("     IIF(WPI.WKPCD IS NOT NULL, WPI.WKPCD, ?masterUnregistered) AS CODE, ");
-		sql.append("     IIF(WPH.END_DATE = ?baseDate AND WPI.WKP_NAME IS NOT NULL, WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
-		sql.append("     IIF(WP_CONFIG.HIERARCHY_CD IS NULL OR WPH.END_DATE < ?baseDate, '999999999999999999999999999999',WP_CONFIG.HIERARCHY_CD) AS HIERARCHY_CD, ");
+		sql.append("     IIF(WPI.WKP_CD IS NOT NULL, WPI.WKP_CD, ?masterUnregistered) AS CODE, ");
+		sql.append("     IIF(WPI.WKP_NAME IS NOT NULL, WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
+		sql.append("     IIF(WP_CONFIG.HIERARCHY_CD IS NULL, '999999999999999999999999999999',WP_CONFIG.HIERARCHY_CD) AS HIERARCHY_CD, ");
 		sql.append("     WP.APP_TYPE, ");
 		sql.append("     WP.USE_ATR, ");
 		sql.append("     WP.REQUIRED_INSTRUCTION_FLG, ");
@@ -144,9 +142,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     (SELECT *, ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS NUM_ORDER, ");
 		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID, WKP_ID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS ROW_NUMBER ");
 		sql.append("     FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END DISPLAY_ORDER FROM KRQST_WP_APP_CF_DETAIL) WP_APP_CF_DETAIL) WP ");
-		sql.append("     LEFT JOIN (SELECT CID, WKPID, HIST_ID, END_DATE, ROW_NUMBER() OVER(PARTITION BY CID, WKPID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WORKPLACE_HIST) WPH ON WP.CID = WPH.CID AND WP.WKP_ID = WPH.WKPID AND WPH.RN = 1 ");
-		sql.append("     LEFT JOIN BSYMT_WORKPLACE_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKPID AND WPH.HIST_ID = WPI.HIST_ID ");
-		sql.append("     LEFT JOIN (SELECT WCI.CID, WCI.WKPID, WCI.HIERARCHY_CD FROM BSYMT_WKP_CONFIG_INFO WCI JOIN (SELECT CID, HIST_ID, ROW_NUMBER() OVER(PARTITION BY CID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WKP_CONFIG) WC ON WCI.CID = WC.CID AND WCI.HIST_ID = WC.HIST_ID AND WC.RN = 1) WP_CONFIG ON WP.CID = WP_CONFIG.CID AND WP.WKP_ID = WP_CONFIG.WKPID ");
+		sql.append("     LEFT JOIN BSYMT_WKP_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKP_ID");
+		sql.append("     LEFT JOIN (SELECT WCI.CID, WCI.WKP_ID, WCI.HIERARCHY_CD FROM BSYMT_WKP_INFO WCI JOIN (SELECT CID, WKP_HIST_ID, ROW_NUMBER() OVER(PARTITION BY CID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WKP_CONFIG_2) WC ON WCI.CID = WC.CID AND WCI.WKP_HIST_ID = WC.WKP_HIST_ID AND WC.RN = 1) WP_CONFIG ON WP.CID = WP_CONFIG.CID AND WP.WKP_ID = WP_CONFIG.WKP_ID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
 		sql.append("     ORDER BY TEMP.HIERARCHY_CD, TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
@@ -192,26 +189,12 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 				.setParameter("notLateOrLeaveAppCancelText", TextResource.localize("KAF022_312"))
 				.setParameter("lateOrLeaveAppSettingText", TextResource.localize("KAF022_313"))
 				.setParameter("notLateOrLeaveAppSettingText", TextResource.localize("KAF022_314"))
-			    .setParameter("baseDate", conVertToDateSQL(baseDate))
 				.getResultList();
 		} catch (NoResultException e) {
 			return Collections.emptyList();
 		}
 		return resultQuery;
 	}
-
-    private java.sql.Date conVertToDateSQL(String baseDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.sql.Date sqlDate = null;
-        java.util.Date date = null;
-        try {
-            date = format.parse(baseDate);
-            sqlDate = new java.sql.Date(date.getTime());
-        } catch (ParseException e) {
-            return null;
-        }
-        return sqlDate;
-    }
 
 
 	@Override

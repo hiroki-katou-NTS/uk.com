@@ -281,7 +281,7 @@ module nts.uk.at.view.kmk008.g {
                         self.showinfoSelectedEmployee(true);
                         self.employeeList([]);
                         self.employeeList(_.map(data.listEmployee, item => {
-                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+                            return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
                         }));
                         if (self.employeeList() && self.employeeList().length > 0){
                             self.selectedEmpCode(self.employeeList()[0].code);
@@ -376,12 +376,12 @@ module nts.uk.at.view.kmk008.g {
         export class UnitModel {
             code: string;
             name: string;
-            workplaceName: string;
+            affiliationName: string;
             employeeId: string;
-            constructor(code: string, name: string, workplaceName: string, employeeId: string) {
+            constructor(code: string, name: string, affiliationName: string, employeeId: string) {
                 this.code = code;
                 this.name = name;
-                this.workplaceName = workplaceName;
+                this.affiliationName = affiliationName;
                 this.employeeId = employeeId;
             }
         }

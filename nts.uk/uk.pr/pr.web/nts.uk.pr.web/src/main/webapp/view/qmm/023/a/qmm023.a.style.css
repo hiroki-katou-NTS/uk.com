@@ -1,0 +1,25 @@
+#qmm-all {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 1070px;
+}
+
+#qmm-all .cell:nth-child(1) {
+    width: 520px;
+}
+
+#qmm-all .cell:nth-child(2) {
+    width: 550px;
+}
+
+#qmm-right .table .cell:nth-child(1) {
+    width: 200px;
+}
+
+#qmm-right .table .cell:nth-child(2) {
+    width: 350px;
+}
+
+#A2_3 tbody tr td:nth-child(3){
+    text-align: right;
+}

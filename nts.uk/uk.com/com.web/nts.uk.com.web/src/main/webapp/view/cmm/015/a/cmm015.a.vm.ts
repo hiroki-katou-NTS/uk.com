@@ -4,7 +4,7 @@ module cmm015.a.viewmodel {
 
         dataSource: KnockoutObservableArray<viewmodel.model.PayClassificationDto>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        index_of_itemDelete: KnockoutObservable<number>;;
+        index_of_itemDelete: KnockoutObservable<number>;
         adddata: any;
         isDeleteEnable: KnockoutObservable<boolean>;
         currentCode: KnockoutObservable<string>;

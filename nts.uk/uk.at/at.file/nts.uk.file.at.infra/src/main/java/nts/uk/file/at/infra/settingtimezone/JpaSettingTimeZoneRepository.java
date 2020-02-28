@@ -316,31 +316,22 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         StringBuilder exportSQL = new StringBuilder();
         exportSQL.append("SELECT k.BONUS_PAY_SET_CD, ");
         exportSQL.append("       k.BONUS_PAY_SET_NAME,");
-        exportSQL.append("       w.WKPCD,");
+        exportSQL.append("       w.WKP_CD,");
         exportSQL.append("       w.WKP_NAME");
-        exportSQL.append("     FROM (SELECT HIST_ID, WKPID, CID  ");
-        exportSQL.append("     FROM BSYMT_WORKPLACE_HIST ");
-        exportSQL.append("     WHERE END_DATE = '9999-12-31' AND CID = ?  ");
-        exportSQL.append("     ) h  ");
-        exportSQL.append("  INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME  ");
-        exportSQL.append("        FROM BSYMT_WORKPLACE_INFO  ");
-        exportSQL.append("        ) w  ");
-        exportSQL.append("     ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID  ");
-        exportSQL.append("  INNER JOIN BSYMT_WKP_CONFIG wc ");
-        exportSQL.append("        ON wc.CID = h.CID AND wc.END_DATE = '9999-12-31'");
-        exportSQL.append("  INNER JOIN BSYMT_WKP_CONFIG_INFO wci ");
-        exportSQL.append("     ON wci.WKPID = w.WKPID ");
-        exportSQL.append("     AND wci.CID = wc.CID");
-        exportSQL.append("     AND wci.HIST_ID = wc.HIST_ID");
-        exportSQL.append(" RIGHT JOIN ");
-        exportSQL.append("   (SELECT ");
+        exportSQL.append("  FROM (SELECT WKP_HIST_ID, CID, WKP_ID, WKP_CD, WKP_NAME, HIERARCHY_CD  ");
+        exportSQL.append("     FROM BSYMT_WKP_INFO  ");
+        exportSQL.append("     ) w  ");
+        exportSQL.append("  INNER JOIN BSYMT_WKP_CONFIG_2 wc ");
+        exportSQL.append("     ON wc.CID = w.CID AND wc.END_DATE = '9999-12-31'");
+        exportSQL.append("  RIGHT JOIN ");
+        exportSQL.append("     (SELECT ");
         exportSQL.append("          a.BONUS_PAY_SET_CD, ");
         exportSQL.append("          a.BONUS_PAY_SET_NAME,");
-        exportSQL.append("          i.WKPCD, ");
+        exportSQL.append("          i.WKP_CD, ");
         exportSQL.append("          a.WKPID, ");
         exportSQL.append("          a.CID ");
-        exportSQL.append("      FROM (SELECT DISTINCT WKPCD , WKPID, CID ");
-        exportSQL.append("          FROM BSYMT_WORKPLACE_INFO ");
+        exportSQL.append("      FROM (SELECT DISTINCT WKP_CD , WKP_ID, CID ");
+        exportSQL.append("          FROM BSYMT_WKP_INFO ");
         exportSQL.append("          WHERE CID = ?) i ");
         exportSQL.append("      RIGHT JOIN  (SELECT   s.BONUS_PAY_SET_CD, ");
         exportSQL.append("                 p.BONUS_PAY_SET_NAME,");
@@ -352,9 +343,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         exportSQL.append("               FROM KBPMT_BONUS_PAY_SET ");
         exportSQL.append("               WHERE CID = ?) p");
         exportSQL.append("            RIGHT JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
-        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID WHERE a.CID = ? )  k ");
-        exportSQL.append("    ON w.WKPID = k.WKPID ");
-        exportSQL.append("   ORDER BY CASE WHEN wci.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
+        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKP_ID WHERE a.CID = ? )  k ");
+        exportSQL.append("    ON w.WKP_ID = k.WKPID ");
+        exportSQL.append("   ORDER BY CASE WHEN w.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
 
         try(PreparedStatement stmt = this.connection().prepareStatement(exportSQL.toString())){
             stmt.setString(1,companyId);
@@ -587,7 +578,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_121, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_121)
-                .value(rs.getString("WKPCD") != null && rs.getString("WKP_NAME") != null ? rs.getString("WKPCD") : "")
+                .value(rs.getString("WKP_CD") != null && rs.getString("WKP_NAME") != null ? rs.getString("WKP_CD") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_122, MasterCellData.builder()

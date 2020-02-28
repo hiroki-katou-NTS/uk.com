@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ac.role.workplace;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,18 +26,14 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 	private RoleExportRepo roleExportRepo;
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.dom.access.role.workplace.SyRoleWorkplaceAdapter#
-	 * findListWkpIdByRoleId(java.lang.Integer)
+	 * ロールIDから参照可能な職場リストを取得する
 	 */
 	@Override
-	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate, boolean oldFlag) {
+	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
 		WorkplaceIDImport workplaceIDImport = new WorkplaceIDImport();
 
-		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate, oldFlag);
+		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate);
 		workplaceIDImport.setIsAllEmp(workplaceIdExport.getIsAllEmp());
 		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
 

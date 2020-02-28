@@ -2,7 +2,6 @@ module nts.uk.com.view.cmm018.n {
     export module service {
         let servicePath = {
             getRightList: 'workflow/approvermanagement/workroot/find/applicationType',
-            getInforRoot: "workflow/approvermanagement/workroot/getEmployeeRegisterApprovalRoot",
             saveAsExcel: "approval/report/employee",
             getConfirm: 'workflow/approvermanagement/workroot/find/confirmRootType'
         };
@@ -28,10 +27,12 @@ module nts.uk.com.view.cmm018.n {
                 baseDate: any;
                 lstEmpIds: Array<any>;
                 lstApps: any;
-                constructor(baseDate: any, lstEmpIds: Array<any>, lstApps: any) {
+                sysAtr: number;
+                constructor(baseDate: any, lstEmpIds: Array<any>, lstApps: any, sysAtr: number) {
                     this.baseDate = baseDate;
                     this.lstEmpIds = lstEmpIds;
                     this.lstApps = lstApps;
+                    this.sysAtr = sysAtr;
                 }
             }
         }

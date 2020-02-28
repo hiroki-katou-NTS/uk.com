@@ -81,7 +81,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOu
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
@@ -95,7 +94,6 @@ import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
@@ -177,8 +175,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomainService {
 
-	@Inject
-	private WorkInformationRepository workInformationRepository;
+//	@Inject
+//	private WorkInformationRepository workInformationRepository;
 
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
@@ -1539,8 +1537,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
-					affiliationInforOfDailyPerfor.getWplID(), day);
+//			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+//					affiliationInforOfDailyPerfor.getWplID(), day);
+			
+			// [No.569]職場の上位職場を取得する
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, affiliationInforOfDailyPerfor.getWplID(), day);
 
 			// 自動計算設定の取得(get auto calculation setting)
 			BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
@@ -2032,7 +2033,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
 					affiliationInforOfDailyPerfor.getWplID(), day);
 
 			// 加給設定を取得する

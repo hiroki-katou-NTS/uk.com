@@ -1,15 +1,17 @@
-module nts.qmm017 {
+module nts.uk.pr.view.qmm017.a {
     __viewContext.ready(function() {
-        var screenModel = new nts.qmm017.ScreenModel();
-        screenModel.start().done(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        __viewContext['screenModel'] = screenModel;
+        screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $(document).delegate("#treeGrid", "igtreegridselectionrowselectionchanging", function(evt, ui) {
-                $("#treeGrid").igTreeGridSelection("clearSelection");
-                $("#treeGrid").igTreeGridSelection("selectRow", ui.row.index);
-                screenModel.treeGridHistory().singleSelectedCode(ui.row.id);
-                screenModel.bindDataByChanging(ui.row.id);
-            });
-        });
+            __viewContext['screenModel'].initScreenDTabData();
+            __viewContext['screenModel'].screenDViewModel.showHintBox();
+            setTimeout(function () {
+                $('body').on('click', '.switch-button button', function() {
+                    $(this).parent().parent().next().find('input').ntsError('clear')
+                });
+            }, 200)
 
+        });
     });
 }

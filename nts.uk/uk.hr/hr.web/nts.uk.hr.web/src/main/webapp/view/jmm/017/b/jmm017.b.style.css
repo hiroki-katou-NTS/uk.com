@@ -1,0 +1,69 @@
+.sidebar-html {
+	overflow: hidden
+}
+
+.conditionBox {
+	margin: 5px;
+	border: 1px solid #999999;
+	padding: 10px 20px;
+	max-width: 1120px;
+	min-width: 870px;
+	width: fit-content;
+}
+
+.row .inline {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 10px 10px;
+}
+
+.row .lable {
+	margin: 0 0 0 20px;
+}
+
+#findBtn {
+	margin-left: 30px;
+}
+
+.gridTableContent {
+	max-width: 100%;
+	min-width: 913px;
+	margin-left: 5px;
+	width: calc(100% - 10px);
+}
+
+.gridControlBtn {
+	margin: 10px 5px;
+}
+
+.gridControlBtn button {
+	background: #fff;
+	padding: 3px 7px;
+}
+
+.tooltip-grid-notes {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.ui-iggrid tbody td {
+	white-space: nowrap;
+}
+
+#gridContent .ui-iggrid-expandbuttoncontainer, #gridContent .ui-iggrid-expandbuttoncontainer-group-by
+	{
+	height: 21px;
+}
+
+#gridContent .ui-iggrid-expandbutton {
+	margin: 0 20% 0 20%;
+}
+
+#gridContent .ui-iggrid-groupbyarea {
+	background-color: #fff;
+}
+
+#gridContent .ui-iggrid-groupbylabelrightedgeend, .ui-iggrid-groupbylabelrightedgeend.ui-state-default {
+    border-color: #fff #fff #fff transparent;
+}

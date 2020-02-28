@@ -8,9 +8,12 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.infra.entity.filemanagement.BpsmtPersonFileManagement;
 import nts.uk.ctx.pereg.infra.entity.filemanagement.BpsmtPersonFileManagementPK;
 
@@ -26,6 +29,9 @@ public class JpaEmployeeFileManagement extends JpaRepository implements EmpFileM
 
 	public static final String DELETE_BY_PID_FILETYPE = "DELETE FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
+	public static final String GET_ALL_BY_LISTPID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.pid IN :lstPid";
+
+	
 	// public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM
 	// BsymtPersonFileManagement c WHERE c.BsymtPersonFileManagementPK.fileid =
 	// :fileid";
@@ -139,6 +145,17 @@ public class JpaEmployeeFileManagement extends JpaRepository implements EmpFileM
 	public void removebyFileId(String fileId) {
 		BpsmtPersonFileManagementPK pk = new BpsmtPersonFileManagementPK(fileId);
 		this.commandProxy().remove(BpsmtPersonFileManagement.class, pk);
+	}
+	
+	@Override
+	public List<PersonFileManagement> getPersonalFileManagementFromPID(List<String> lstPid) {
+		
+		List<PersonFileManagement> results = new ArrayList<>();
+		CollectionUtil.split(lstPid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(GET_ALL_BY_LISTPID, BpsmtPersonFileManagement.class).setParameter("lstPid", subList)
+				.getList(i -> toDomainEmpFileManagement(i)));
+		});
+		return results;
 	}
 
 }

@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 public class MasterApproverRootDto {
+	private int sysAtr;
 	private GeneralDate baseDate;
 	private boolean chkCompany;
 	private boolean chkWorkplace;

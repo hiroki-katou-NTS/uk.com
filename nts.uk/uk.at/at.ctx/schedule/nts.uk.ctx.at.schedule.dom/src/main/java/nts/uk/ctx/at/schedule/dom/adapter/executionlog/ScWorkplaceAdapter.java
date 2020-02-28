@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
 
 /**
@@ -57,5 +58,24 @@ public interface ScWorkplaceAdapter {
 	 */
 	// RequestList #65
 	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	
+	/**
+	 * [No.571]職場の上位職場を基準職場を含めて取得する
+	 *
+	 * @param companyId
+	 * @param baseDate
+	 * @param workplaceId
+	 * @return
+	 */
+	List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
+	
+	/**
+	 * [No.650]社員が所属している職場を取得する
+	 * 社員と基準日から所属職場履歴項目を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	 AffWorkplaceHistoryItem getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 
 }

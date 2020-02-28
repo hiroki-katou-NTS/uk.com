@@ -1,28 +1,16 @@
-module qmm018.a.service {
-    var paths: any = {
-        averagePayItemSelect: "pr/core/averagepay/findByCompanyCode",
-        averagePayItemInsert: "pr/core/averagepay/register",
-        averagePayItemUpdate: "pr/core/averagepay/update"
+module nts.uk.pr.view.qmm018.a.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
+    var paths = {
+        getStatemetItemData: "ctx/pr/core/averagewagecalculationset/getStatemetItemData",
+        registration: "ctx/pr/core/averagewagecalculationset/registration"
     }
-    
-    /**
-     * select average pay item
-     */
-    export function averagePayItemSelect(): JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.averagePayItemSelect);
-    }
-    
-    /**
-     * insert average pay item, salary items, attend items
-     */
-    export function averagePayItemInsert(command): JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.averagePayItemInsert, command);
-    }
-    
-    /**
-     * update average pay item, salary items, attend items
-     */
-    export function averagePayItemUpdate(command): JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.averagePayItemUpdate, command);
+    export function getStatemetItemData(): JQueryPromise<any> {
+        var _path = format(paths.getStatemetItemData);
+        return ajax('pr', _path);
+    };
+    export function registration(command: any) : JQueryPromise<any> {
+        return nts.uk.request.ajax('pr', paths.registration, command);
     }
 }

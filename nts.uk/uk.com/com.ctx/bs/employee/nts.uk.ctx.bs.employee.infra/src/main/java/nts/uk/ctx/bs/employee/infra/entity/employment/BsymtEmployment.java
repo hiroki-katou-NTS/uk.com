@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.employment;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -45,7 +46,14 @@ public class BsymtEmployment extends UkJpaEntity implements Serializable {
 	@Column(name = "MEMO")
 	private String memo;
 	
-
+	@Basic(optional = true)
+	@Column(name = "COMMON_MASTER_ID")
+	private String empCommonMasterId;
+	
+	@Basic(optional = true)
+	@Column(name = "COMMON_MASTER_ITEM_ID")
+	private String empCommonMasterItemId;
+	
 	/**
 	 * Instantiates a new cempt employment.
 	 */

@@ -4,7 +4,6 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
-
 public interface WorkplaceConfigInfoAdapter {
 	/**
 	 * Find by history ids and wpl ids.
@@ -22,4 +21,14 @@ public interface WorkplaceConfigInfoAdapter {
 			List<String> workplaceIds);
 	
 	List<JobTitleExport> findAllById(String companyId,List<String> positionIds ,GeneralDate baseDate );
+	
+	/**
+	 * [No.560]職場IDから職場の情報をすべて取得する
+	 * 
+	 * @param companyId
+	 * @param listWorkplaceId
+	 * @param baseDate
+	 * @return
+	 */
+	List<WorkplaceInfor> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
 }

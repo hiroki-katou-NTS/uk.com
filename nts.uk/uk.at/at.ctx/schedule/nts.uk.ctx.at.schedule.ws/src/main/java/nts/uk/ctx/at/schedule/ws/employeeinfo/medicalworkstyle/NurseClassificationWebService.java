@@ -20,6 +20,10 @@ import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseCatego
 import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseDetailCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseDetailCategoryQuery;
 
+/**
+ * @author ThanhNX
+ *
+ */
 @Path("ctx/at/nurse/classification")
 @Produces(MediaType.APPLICATION_JSON)
 public class NurseClassificationWebService extends WebService {

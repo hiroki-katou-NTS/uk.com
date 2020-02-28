@@ -39,7 +39,7 @@ module nts.uk.at.view.kdl034.a.viewmodel {
                 let applicant = new Approver(result.applicantId, result.applicantName, null, result.applicantJob, false);
                 listApprover.push(applicant);
                 approvalFrame.forEach(function(approver) {
-                    if(result.phaseLogin == 0 || approver.phaseOrder < result.phaseLogin){
+                    if(result.phaseLogin == 0 || approver.phaseOrder > result.phaseLogin){
                         listApprover.push(new Approver(approver.approverID, approver.approverName,
                         approver.phaseOrder, approver.jobTitle, approver.agentFlag));
                     }

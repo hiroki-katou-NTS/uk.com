@@ -39,17 +39,17 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 
-	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.wkpcd , wm.wkpName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
-			+ "FROM BsymtWorkplaceInfo wm "
-			+ "LEFT JOIN SacmtWorkplaceManager wi ON wm.bsymtWorkplaceInfoPK.wkpid = wi.workplaceId "
+	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
+			+ "FROM BsymtWorkplaceInfor wm "
+			+ "LEFT JOIN SacmtWorkplaceManager wi ON wm.pk.workplaceId = wi.workplaceId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson ps ON edm.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
-			+ "WHERE wm.bsymtWorkplaceInfoPK.cid =:companyId AND wi.kacmtWorkplaceManagerPK.workplaceManagerId IS NOT NULL ORDER BY wm.wkpcd, edm.employeeCode, wi.startDate ASC";
+			+ "WHERE wm.pk.companyId =:companyId AND wi.kacmtWorkplaceManagerPK.workplaceManagerId IS NOT NULL ORDER BY wm.workplaceCode, edm.employeeCode, wi.startDate ASC";
 
 	private static final String WORKPLACE_SELECT_ALL_BY_CID = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , [1], [2], [3] "
 			+ "FROM " + "( "
-			+ "SELECT wm.WKPCD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-			+ "FROM " + "BSYMT_WORKPLACE_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
+			+ "SELECT wm.WKP_CD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
+			+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
 			+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
 			+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
 			+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
@@ -65,17 +65,17 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 				.append("SELECT wkpcd , wkpName , employeeCode , businessName , startDate, endDate , [1], [2], [3]");
 		builderString.append(" FROM");
 		builderString.append(
-				" (SELECT wm.wkpcd , wm.wkpName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate , kwa.availability, wkf.functionNo");
-		builderString.append(" FROM BsymtWorkplaceInfo wm");
-		builderString.append(" LEFT JOIN SacmtWorkplaceManager wi ON wm.bsymtWorkplaceInfoPK.wkpid = wi.workplaceId");
+				" (SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate , kwa.availability, wkf.functionNo");
+		builderString.append(" FROM BsymtWorkplaceInfor wm");
+		builderString.append(" LEFT JOIN SacmtWorkplaceManager wi ON wm.pk.workplaceId = wi.workplaceId");
 		builderString.append(
 				" LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId");
 		builderString.append(" LEFT JOIN BpsmtPerson ps ON edm.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId");
 		builderString.append(
-				" INNER JOIN KacmtWorkPlaceAuthority kwa ON wi.kacmtWorkplaceManagerPK.workplaceManagerId = kwa.kacmtWorkPlaceAuthorityPK.roleId AND wm.bsymtWorkplaceInfoPK.cid = kwa.kacmtWorkPlaceAuthorityPK.companyId");
+				" INNER JOIN KacmtWorkPlaceAuthority kwa ON wi.kacmtWorkplaceManagerPK.workplaceManagerId = kwa.kacmtWorkPlaceAuthorityPK.roleId AND wm.pk.companyId = kwa.kacmtWorkPlaceAuthorityPK.companyId");
 		builderString.append(
 				" INNER JOIN KacmtWorkPlaceFunction wkf ON kwa.kacmtWorkPlaceAuthorityPK.functionNo = wkf.functionNo");
-		builderString.append(" WHERE wm.bsymtWorkplaceInfoPK.cid  =:companyId)");
+		builderString.append(" WHERE wm.pk.companyId  =:companyId)");
 		builderString.append(" AS sourceTable PIVOT ( ");
 		builderString.append(" MAX(kwa.availability) ");
 		builderString.append(" FOR [wkf.functionNo] IN ([1],[2],[3])");
@@ -177,8 +177,8 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		String functions = workPlaceFunction.stream().map(x -> x.getFunctionNo().v().toString())
 				.collect(Collectors.toList()).stream().collect(Collectors.joining("], [", "[", "]"));
 		String SQL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , %s " + "FROM ( "
-				+ "SELECT wm.WKPCD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-				+ "FROM " + "BSYMT_WORKPLACE_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
+				+ "SELECT wm.WKP_CD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
+				+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
 				+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
 				+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
 				+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
