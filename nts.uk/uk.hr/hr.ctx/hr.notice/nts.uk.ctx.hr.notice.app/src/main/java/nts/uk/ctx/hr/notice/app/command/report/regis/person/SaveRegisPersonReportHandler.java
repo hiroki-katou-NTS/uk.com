@@ -87,7 +87,6 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		//ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -100,75 +99,11 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	public void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = data.rootSateId;
 		
 		// 届出IDを採番する(Đánh số report ID)
-		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
+		Integer reportIDNew = repo.getMaxReportId(cid) + 1;
 		
-		if (rootSateId == null) {
-			// アルゴリズム[GUIDを生成する]を実行する (Thực hiện thuật toán "Tạo GUID")
-			rootSateId = IdentifierUtil.randomUniqueId();
-			
-			// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
-			//(Thực hiện thuật toán [[No.309] Get approval route/1. Get Approval route for employee application])
-			ApprovalRootContentHrExport export = approvalRootStateRepo.getApprovalRootHr(cid, sid, String.valueOf(data.reportLayoutID), GeneralDate.today(), Optional.empty());
-			
-			// アルゴリズム[[RQ637]承認ルートインスタンスを新規作成する]を実行する(Thực hiện thuật toán [[RQ637] Create new approval route instance])
-			approvalRootStateRepo.createApprStateHr(export, rootSateId, sid, GeneralDate.today());
-			
-			// [人事届出の登録.ルートインスタンスID]、[人事届出の承認.ルートインスタンスID]を登録する。[人事届出の承認．メール送信区分]=メールするに設定
-			//(Đăng ký [Registration of HR report. Root instance ID], [Approval of HR report. Root instance ID]. [Approval of HR report. Category gửi mail] = Setting mail)
-			List<ApprovalPersonReport> listDomainApproval = new ArrayList<>();
-			if (export.getApprovalRootState() != null && !export.getApprovalRootState().getListApprovalPhaseState().isEmpty()) {
-				List<ApprovalPhaseStateHrExport> listApprovalPhaseState = export.getApprovalRootState().getListApprovalPhaseState();
-				for (int i = 0; i < listApprovalPhaseState.size(); i++) {
-					ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i); 
-					if (!approvalPhaseStateHrExport.getListApprovalFrame().isEmpty()) {
-						List<ApprovalFrameHrExport> listApprovalFrame = approvalPhaseStateHrExport.getListApprovalFrame();
-						for (int j = 0; j < listApprovalFrame.size(); j++) {
-							ApprovalFrameHrExport approvalFrameHrExport = listApprovalFrame.get(j);
-							if (!approvalFrameHrExport.getListApprover().isEmpty()) {
-								List<ApproverStateHrExport> listApprover = approvalFrameHrExport.getListApprover();
-								for (int k = 0; k < listApprover.size(); k++) {
-									ApproverStateHrExport approverStateHrExport = listApprover.get(k);
-									ApprovalPersonReport domain = ApprovalPersonReport.builder()
-											.cid(cid)
-											.rootSatteId(rootSateId)
-											.reportID(reportIDNew)
-											.reportName(data.reportName)
-											.refDate(GeneralDateTime.now())
-											.inputDate(GeneralDateTime.now())
-											.appDate(GeneralDateTime.now())
-											.aprDate(GeneralDateTime.now())
-											.aprSid(approverStateHrExport.getApproverID())
-											.aprBussinessName(approverStateHrExport.getApproverName())
-											.emailAddress(null)
-											.phaseNum(approvalPhaseStateHrExport.getPhaseOrder())
-											.aprStatus(ApprovalStatus.Not_Acknowledged)
-											.aprNum(approvalFrameHrExport.getFrameOrder())
-											.arpAgency(approverStateHrExport.getRepresenterID() == null || approverStateHrExport.getRepresenterID() == "" ? false : true)
-											.comment(null)
-											.aprActivity(ApprovalActivity.Activity)
-											.emailTransmissionClass(EmailTransmissionClass.DoNotSend)
-											.appSid(sid)
-											.inputSid(sid)
-											.reportLayoutID(data.reportLayoutID)
-											.sendBackSID(Optional.empty())
-											.sendBackClass(Optional.empty())
-											.build();
-									listDomainApproval.add(domain);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			if (!listDomainApproval.isEmpty()) {
-				approvalPersonReportRepo.addAll(listDomainApproval);
-			}
-			
-		}
+		String	rootSateId = saveInfoApporver(data, sid, cid, reportIDNew);
 		
 		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
 		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
@@ -220,6 +155,74 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	    // Thực hiện thuật toán"[RQ631]Lấy trạng thái và người phê duyệt Application form)
 	    // chưa làm chức năng gửi mail => chưa cần gọi [RQ631]
 	}
+
+	private String saveInfoApporver(SaveReportInputContainer data, String sid, String cid, Integer reportIDNew) {
+		String rootSateId;
+		// アルゴリズム[GUIDを生成する]を実行する (Thực hiện thuật toán "Tạo GUID")
+		rootSateId = IdentifierUtil.randomUniqueId();
+		
+		// アルゴリズム[[No.309]承認ルートを取得する/1.社員の対象申請の承認ルートを取得する]を実行する
+		//(Thực hiện thuật toán [[No.309] Get approval route/1. Get Approval route for employee application])
+		ApprovalRootContentHrExport export = approvalRootStateRepo.getApprovalRootHr(cid, sid, String.valueOf(data.reportLayoutID), GeneralDate.today(), Optional.empty());
+		
+		// アルゴリズム[[RQ637]承認ルートインスタンスを新規作成する]を実行する(Thực hiện thuật toán [[RQ637] Create new approval route instance])
+		approvalRootStateRepo.createApprStateHr(export, rootSateId, sid, GeneralDate.today());
+		
+		// [人事届出の登録.ルートインスタンスID]、[人事届出の承認.ルートインスタンスID]を登録する。[人事届出の承認．メール送信区分]=メールするに設定
+		//(Đăng ký [Registration of HR report. Root instance ID], [Approval of HR report. Root instance ID]. [Approval of HR report. Category gửi mail] = Setting mail)
+		List<ApprovalPersonReport> listDomainApproval = new ArrayList<>();
+		if (export.getApprovalRootState() != null && !export.getApprovalRootState().getListApprovalPhaseState().isEmpty()) {
+			List<ApprovalPhaseStateHrExport> listApprovalPhaseState = export.getApprovalRootState().getListApprovalPhaseState();
+			for (int i = 0; i < listApprovalPhaseState.size(); i++) {
+				ApprovalPhaseStateHrExport approvalPhaseStateHrExport = listApprovalPhaseState.get(i); 
+				if (!approvalPhaseStateHrExport.getListApprovalFrame().isEmpty()) {
+					List<ApprovalFrameHrExport> listApprovalFrame = approvalPhaseStateHrExport.getListApprovalFrame();
+					for (int j = 0; j < listApprovalFrame.size(); j++) {
+						ApprovalFrameHrExport approvalFrameHrExport = listApprovalFrame.get(j);
+						if (!approvalFrameHrExport.getListApprover().isEmpty()) {
+							List<ApproverStateHrExport> listApprover = approvalFrameHrExport.getListApprover();
+							for (int k = 0; k < listApprover.size(); k++) {
+								ApproverStateHrExport approverStateHrExport = listApprover.get(k);
+								ApprovalPersonReport domain = ApprovalPersonReport.builder()
+										.cid(cid)
+										.rootSatteId(rootSateId)
+										.reportID(reportIDNew)
+										.reportName(data.reportName)
+										.refDate(GeneralDateTime.now())
+										.inputDate(GeneralDateTime.now())
+										.appDate(GeneralDateTime.now())
+										.aprDate(GeneralDateTime.now())
+										.aprSid(approverStateHrExport.getApproverID())
+										.aprBussinessName(approverStateHrExport.getApproverName())
+										.emailAddress(null)
+										.phaseNum(approvalPhaseStateHrExport.getPhaseOrder())
+										.aprStatus(ApprovalStatus.Not_Acknowledged)
+										.aprNum(approvalFrameHrExport.getFrameOrder())
+										.arpAgency(approverStateHrExport.getRepresenterID() == null || approverStateHrExport.getRepresenterID() == "" ? false : true)
+										.comment(null)
+										.aprActivity(ApprovalActivity.Activity)
+										.emailTransmissionClass(EmailTransmissionClass.DoNotSend)
+										.appSid(sid)
+										.inputSid(sid)
+										.reportLayoutID(data.reportLayoutID)
+										.sendBackSID(Optional.empty())
+										.sendBackClass(Optional.empty())
+										.build();
+								listDomainApproval.add(domain);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (!listDomainApproval.isEmpty()) {
+			approvalPersonReportRepo.addAll(listDomainApproval);
+		}
+		return rootSateId;
+	}
+	
+	
 	
 	public List<ReportItem> creatDataReportItem(SaveReportInputContainer data, Integer reportId) {
 
@@ -312,9 +315,16 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 	public void updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
 		String cid = AppContexts.user().companyId();
+		String sid = AppContexts.user().employeeId();
+		String rootSateId = data.rootSateId;
+		
 		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
 		if (!domainReportOpt.isPresent()) {
 			return;
+		}
+		
+		if (rootSateId == null) {
+			rootSateId = saveInfoApporver(data, sid, cid, data.reportID);
 		}
 		
 		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
@@ -323,6 +333,7 @@ public class SaveRegisPersonReportHandler extends CommandHandler<SaveReportInput
 		
 		RegistrationPersonReport domainReport = domainReportOpt.get();
 		domainReport.setCid(cid);
+		domainReport.setRootSateId(rootSateId);
 		domainReport.setReportLayoutID(data.reportLayoutID);
 		domainReport.setReportCode(data.reportCode);
 		domainReport.setReportName(data.reportName);

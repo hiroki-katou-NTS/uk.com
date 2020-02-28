@@ -72,7 +72,6 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -85,19 +84,13 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	public void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = data.rootSateId;
-		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
-		
-		if (rootSateId == null) {
-			// 届出IDを採番する(Đánh số report ID)
-			rootSateId = IdentifierUtil.randomUniqueId();
-		}
+		Integer reportIDNew = repo.getMaxReportId(cid) + 1;
 		
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
-				.rootSateId(data.isSaveDraft == 1 ? null : rootSateId)
+				.rootSateId(null)
 				.workId(data.workId)
 				.reportID(reportIDNew)
 				.reportLayoutID(data.reportLayoutID)
