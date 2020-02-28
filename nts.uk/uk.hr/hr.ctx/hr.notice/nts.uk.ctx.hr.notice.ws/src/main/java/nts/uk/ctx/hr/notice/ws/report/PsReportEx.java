@@ -21,4 +21,6 @@ public class PsReportEx {
 	private int isAbolition;
 	//備考 REMARK
 	private String remark;
+	//下位序列承認無
+	private Boolean noRankOrder;
 }

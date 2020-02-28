@@ -83,10 +83,12 @@ module nts.uk.com.view.cmm018.shr {
             value: any;
             localizedName: string;
             employRootAtr: number;
-            constructor(value: any, localizedName: string, employRootAtr: number){
+            lowerApprove: Boolean;
+            constructor(value: any, localizedName: string, employRootAtr: number, lowerApprove: Boolean){
                 this.value = value;
                 this.localizedName = localizedName;
                 this.employRootAtr = employRootAtr;
+                this.lowerApprove = lowerApprove;
             }
         }
         //screenA
