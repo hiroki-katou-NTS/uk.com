@@ -24,6 +24,7 @@
 							<div style="display: inline-block; width: 360px" data-bind="ntsSearchBox: {
 								targetKey: 'departmentId', 
 								mode:'igTree', 
+								searchMode : 'highlight',
 								comId:'treegrid', 
 								items: departmentList, 
 								selected: searchBoxSelected, 
@@ -53,7 +54,7 @@
 							<div style="display: inline-block; width: 390px" class="nts-searchbbox-wrapper">
 								<div class="input-wrapper">
 									<span class="ntsControl">
-										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" placeholder="#{i18n.getText('JMM018_Y2_5_1')}" data-bind="value: key" />
+										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" data-bind="value: key, attr: {placeholder: '#{i18n.getText('JMM018_Y2_5')}'}" />
 									</span>
 								</div>
 								<div class="input-wrapper">
