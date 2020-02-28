@@ -2867,6 +2867,24 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/qui/004/a/index.xhtml");
     public static final Program QUI004C = new Program(WebAppId.PR, ProgramIdConsts.QUI004C, "QUI004_35",
             "/view/qui/004/c/index.xhtml");
+	
+	/**
+     * KSM010A
+     */
+	public static final Program KSM010A = new Program(WebAppId.AT, ProgramIdConsts.KSM010A, "KSM010_1",
+			"/view/ksm/010/a/index.xhtml");
+	
+	/**
+     * KSM010B
+     */
+	public static final Program KSM010B = new Program(WebAppId.AT, ProgramIdConsts.KSM010B, "KSM010_8",
+			"/view/ksm/010/b/index.xhtml");
+
+	/**
+     * KSM013A
+     */
+	public static final Program KSM013A = new Program(WebAppId.AT, ProgramIdConsts.KSM013A, "KSM013_1",
+			"/view/ksm/013/a/index.xhtml");	
 
 
     /**

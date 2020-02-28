@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="test.service.js" />
+			<com:scriptfile path="test.start.js" />
+			<com:scriptfile path="test.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button style="margin-left: 100px;" data-bind="click : openDialog">Open
+					KDL 044</button>
+			</div>
+			<div id="contents-area">
+				<div style="padding-bottom: 10px;">
+					<div style="padding-right: 47px;" data-bind="ntsFormLabel: {required: true}">選択モード</div>
+					<div
+						data-bind="ntsRadioBoxGroup: {
+					options: modeList,
+					optionsValue: 'id',
+					optionsText: 'name',
+					value: selectedMode,
+					enable: enable}">
+					</div>
+				</div>
+				<div style="padding-bottom: 10px;">
+					<div data-bind="ntsFormLabel: {required: true}">未選択許可区分</div>
+					<div
+						data-bind="ntsRadioBoxGroup: {
+					options: permissionList,
+					optionsValue: 'id',
+					optionsText: 'name',
+					value: selectedPer,
+					enable: enable}">
+					</div>
+				</div>
+				<div style="padding-bottom: 10px;">
+					<div style="padding-right: 30px;" data-bind="ntsFormLabel: {required: true}">絞り込み区分</div>
+					<div
+						data-bind="ntsRadioBoxGroup: {
+					options: filterList,
+					optionsValue: 'id',
+					optionsText: 'name',
+					value: selectedFilter,
+					enable: enable}">
+					</div>
+				</div>
+				<div style=" margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">シフト選択</div>
+				<div data-bind="visible:isMultiSelect">
+				<table id="multi-list" tabindex="0"
+					data-bind="ntsGridList: {	
+								name: '#[KDL044_11]',  
+								height: 450,
+								options: listShifuto,
+								optionsValue: 'shiftMasterCode',
+								columns: columns,
+								multiple: true,								
+								value: selectedCodes,
+								rows: 10
+						}">
+				</table>
+				</div>
+				<div data-bind="visible:!isMultiSelect()">
+				<table id="multi-list" tabindex="0"
+					data-bind="ntsGridList: {	
+								name: '#[KDL044_11]',  
+								height: 450,
+								options: listShifuto,
+								optionsValue: 'shiftMasterCode',
+								columns: columns,
+								multiple: false,								
+								value: selectedCode,
+								rows: 10
+						}">
+				</table>
+				</div>
+				<div style="margin-top: 10px; margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">絞り込み対象</div>
+				<div id="tree-grid" style="width: 460px;"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
