@@ -127,7 +127,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		if (lstWkpAppr.size() == 0) {
 			throw new BusinessException("Msg_7");
 		}
-		int firstRow = 2;
+		int firstRow = 1;
 		List<WkpDepInfo> lstWpInfor = dataSource.getLstWpInfor();
 		String text = "";
 		if(dataSource.getSysAtr() == 0) {
