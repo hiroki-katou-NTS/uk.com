@@ -37,12 +37,12 @@
 				<div id="left-content"
 					data-bind="ntsPanel:{width: '410px', height: '480px', direction: 'right', showIcon: false, visible: true}">
 					<div style="width: 380px" tabindex="5" data-bind="ntsSearchBox: {searchMode: 
-						'filter',targetKey: 'shiftMaterCode', 
+						'filter',targetKey: 'shiftMasterCode', 
 						comId: 'gridlist-tbl', 
 						items: shiftMasters, 
 						selected: selectedShiftMaster, 
-						selectedKey: 'shiftMaterCode', 
-						fields: ['shiftMasterName', 'shiftMaterCode'], 
+						selectedKey: 'shiftMasterCode', 
+						fields: ['shiftMasterName', 'shiftMasterCode'], 
 						mode: 'igGrid'}"></div>
 
 					<div id="gridlist-div">
@@ -50,7 +50,7 @@
 								width: 380,
 								height: 370,
 								options: shiftMasters,
-								optionsValue: 'shiftMaterCode',
+								optionsValue: 'shiftMasterCode',
 								columns: ko.observableArray(searchOptions.gridColums),
 								multiple: false,
 								value: selectedShiftMaster,

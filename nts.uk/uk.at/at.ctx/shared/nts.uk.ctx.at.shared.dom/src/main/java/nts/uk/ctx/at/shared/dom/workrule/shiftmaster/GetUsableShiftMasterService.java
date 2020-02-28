@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +21,20 @@ public class GetUsableShiftMasterService {
 	public static List<ShiftMasterDto> getUsableShiftMaster(Require require, String companyId,
 			TargetOrgIdenInfor targetOrg) {
 
-		// 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 )
-		Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
 		// 2: *getAll(会社ID)
-		if (!shiftMaterOrgOpt.isPresent()) {
+		if(targetOrg == null) {
 			return require.getAllByCid(companyId);
 		}
+		
+		// 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 )
+		Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
+		
 		// 3: *get(会社ID, List<シフトマスタコード>)
-		return require.getByListShiftMaterCd(companyId, shiftMaterOrgOpt.get().getListShiftMaterCode());
+		if (shiftMaterOrgOpt.isPresent()) {
+			return require.getByListShiftMaterCd(companyId, shiftMaterOrgOpt.get().getListShiftMaterCode());
+		}
+		
+		return Collections.emptyList();
 	}
 
 	public static interface Require {

@@ -61,7 +61,7 @@ public class KshmtShiftMater extends UkJpaEntity {
 	}
 
 	public static KshmtShiftMater toEntity(ShiftMaster domain) {
-		return new KshmtShiftMater(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMaterCode().v()),
+		return new KshmtShiftMater(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMasterCode().v()),
 				domain.getDisplayInfor().getName().v(), domain.getDisplayInfor().getColor().v(),
 				domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v()
 						: null,

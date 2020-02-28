@@ -1,5 +1,5 @@
 let gridColums = [
-       { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMaterCode', width: 55 },
+       { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 55 },
        { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 125, formatter: _.escape },
        { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 125, formatter: _.escape },
        { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 125, formatter: _.escape }
@@ -63,7 +63,7 @@ class RegistrationForm {
        public bindData(shiftMaster: ShiftMaster) {
               let self = this;
               if (shiftMaster) {
-                     self.selectedCode(shiftMaster.shiftMaterCode);
+                     self.selectedCode(shiftMaster.shiftMasterCode);
                      self.shiftMasterName(shiftMaster.shiftMasterName);
                      self.color("#" + shiftMaster.color);
                      self.note(shiftMaster.remark);
@@ -96,7 +96,7 @@ class RegistrationForm {
 interface ShiftMaster {
        companyId: String;
        shiftMasterName: String;
-       shiftMaterCode: String;
+       shiftMasterCode: String;
        color: String;
        remark: String;
        workTypeCd: String;
@@ -107,17 +107,19 @@ interface ShiftMaster {
 
 class RegisterShiftMasterDto {
        shiftMasterName: String;
-       shiftMaterCode: String;
+       shiftMasterCode: String;
        color: String;
        remark: String;
        workTypeCd: String;
        workTimeSetCd: String;
+       newMode: boolean;
        constructor(form: RegistrationForm) {
               this.shiftMasterName = form.shiftMasterName();
-              this.shiftMaterCode = form.selectedCode();
+              this.shiftMasterCode = form.selectedCode();
               this.color = form.color().replace('#', '');
               this.remark = form.note();
               this.workTypeCd = form.workTypeCd();
               this.workTimeSetCd = form.workTimeSetCd();
+              this.newMode = form.newMode();
        }
 }

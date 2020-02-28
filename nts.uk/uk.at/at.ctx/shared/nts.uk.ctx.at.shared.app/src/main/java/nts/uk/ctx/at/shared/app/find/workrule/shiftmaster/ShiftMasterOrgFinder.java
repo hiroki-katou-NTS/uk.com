@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,6 +11,8 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetUsableShiftMasterService;
@@ -37,13 +40,20 @@ public class ShiftMasterOrgFinder {
 	
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	
+	@Inject
+	private WorkTimeSettingFinder workTimeFinder;
 
 	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
 		String companyId = AppContexts.user().companyId();
 		Require require = new  RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
-		TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
-		TargetOrgIdenInfor target = new TargetOrgIdenInfor(unit, targetId, targetId);
+		
+		TargetOrgIdenInfor target = null;
+		if(targetUnit != null && targetId != null) {
+			TargetOrganizationUnit unit = EnumAdaptor.valueOf(targetUnit, TargetOrganizationUnit.class);
+			target = new TargetOrgIdenInfor(unit, targetId, targetId);
+		}
 		
 		@SuppressWarnings("static-access")
 		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
@@ -52,8 +62,29 @@ public class ShiftMasterOrgFinder {
 			return Collections.emptyList();
 		}
 		
+		List<String> workTimeCodes = shiftMasters.stream().map(s -> s.getWorkTimeCd()).collect(Collectors.toList());
+		
+		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
+		
+		shiftMasters.forEach(shiftMaster -> {
+			Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
+			
+			if(oWorkTime.isPresent()) {
+				WorkTimeDto worktime = oWorkTime.get();
+				shiftMaster.setWorkTime1(worktime.workTime1);
+				shiftMaster.setWorkTime2(worktime.workTime2);
+			}
+			
+		});
+		
 		return shiftMasters;
 
+	}
+	
+	public AlreadySettingWorkplaceDto getAlreadySetting() {
+		AlreadySettingWorkplaceDto result = new AlreadySettingWorkplaceDto();
+		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId()));
+		return result;
 	}
 	
 	@AllArgsConstructor

@@ -8,6 +8,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author ThanhNX
+ *
+ */
 @Stateless
 public class DeleteNurseCategoryCommandHandler extends CommandHandler<DeleteNurseCategoryCommand> {
 
@@ -21,6 +25,7 @@ public class DeleteNurseCategoryCommandHandler extends CommandHandler<DeleteNurs
 		
 		DeleteNurseCategoryCommand command = context.getCommand();
 		
+		//delete ログイン会社ID, コード
 		nurseClassificationRepository.delete(companyId, command.getNurseClassificationCode());
 
 	}

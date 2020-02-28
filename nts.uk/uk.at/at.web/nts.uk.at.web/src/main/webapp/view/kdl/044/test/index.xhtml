@@ -8,6 +8,11 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="test.service.js" />
 			<com:scriptfile path="test.start.js" />
 			<com:scriptfile path="test.vm.js" />
@@ -59,7 +64,7 @@
 								name: '#[KDL044_11]',  
 								height: 450,
 								options: listShifuto,
-								optionsValue: 'code',
+								optionsValue: 'shiftMasterCode',
 								columns: columns,
 								multiple: true,								
 								value: selectedCodes,
@@ -73,7 +78,7 @@
 								name: '#[KDL044_11]',  
 								height: 450,
 								options: listShifuto,
-								optionsValue: 'code',
+								optionsValue: 'shiftMasterCode',
 								columns: columns,
 								multiple: false,								
 								value: selectedCode,
@@ -82,18 +87,7 @@
 				</table>
 				</div>
 				<div style="margin-top: 10px; margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">絞り込み対象</div>
-				<table id="multi-list" tabindex="0"
-					data-bind="ntsGridList: {	
-								name: '#[KDL044_11]',  
-								height: 450,
-								options: listFilter,
-								optionsValue: 'code',
-								columns: filterColumns,
-								multiple: isMultiSelect(),								
-								value: selectedFilterCodes,
-								rows: 10
-						}">
-				</table>
+				<div id="tree-grid" style="width: 460px;"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

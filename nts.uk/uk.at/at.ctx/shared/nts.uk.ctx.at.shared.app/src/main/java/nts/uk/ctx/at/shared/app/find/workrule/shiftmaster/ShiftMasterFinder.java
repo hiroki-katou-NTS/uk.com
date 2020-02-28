@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetUsableShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,18 +20,15 @@ public class ShiftMasterFinder {
 
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
-	
-	@Inject 
-	private GetUsableShiftMasterService getShiftMasterSv;
 
 	// シフトマスタの一覧を取得する
-	public Ksm015bStartPageDto startBScreen() {
+	public Ksm015StartPageDto startScreen() {
 		String companyId = AppContexts.user().companyId();
-		Ksm015bStartPageDto startPage = new Ksm015bStartPageDto();
+		Ksm015StartPageDto startPage = new Ksm015StartPageDto();
 
 		List<ShiftMasterDto> shiftMasters = shiftMasterRepo.getAllDtoByCid(companyId);
 		startPage.setShiftMasters(shiftMasters);
-
+		
 		return startPage;
 
 	}

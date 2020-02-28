@@ -18,15 +18,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterShiftMasterCommand {
 	private String companyId;
 	private String shiftMasterName;
-	private String shiftMaterCode;
+	private String shiftMasterCode;
 	private String color;
 	private String remark;
 	private String workTypeCd;
 	private String workTimeSetCd;
+	private Boolean newMode;
 	
 	public ShiftMaster toDomain() {
 		String companyId = AppContexts.user().companyId();
-		ShiftMasterCode code = new ShiftMasterCode(shiftMaterCode);
+		ShiftMasterCode code = new ShiftMasterCode(shiftMasterCode);
 		ShiftMasterName name = new ShiftMasterName(shiftMasterName);
 		ColorCodeChar6 colorP = new ColorCodeChar6(color);
 		Remarks remarks = !StringUtils.isEmpty(remark) ? new Remarks(remark) : null;

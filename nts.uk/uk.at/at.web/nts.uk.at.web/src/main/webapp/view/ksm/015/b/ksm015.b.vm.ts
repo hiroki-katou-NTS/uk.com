@@ -28,7 +28,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			service.startPage().done((data) => {
 				self.shiftMasters(data.shiftMasters);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
-					self.selectedShiftMaster(data.shiftMasters[0].shiftMaterCode);
+					self.selectedShiftMaster(data.shiftMasters[0].shiftMasterCode);
 				} else {
 					self.registrationForm().newMode(true);
 				}
@@ -51,12 +51,18 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		public bindShiftMasterInfoToForm(code: String) {
 			let self = this;
 			let selectedSm = _.findLast(self.shiftMasters(), (val) => {
-				return val.shiftMaterCode === code;
+				return val.shiftMasterCode === code;
 			});
 			self.registrationForm().bindData(selectedSm);
 		}
 
 		public register() {
+
+			$(".nts-input").trigger("validate");
+			if (nts.uk.ui.errors.hasError()){
+				return;
+			}
+
 			let self = this;
 			let param = new RegisterShiftMasterDto(self.registrationForm());
 			nts.uk.ui.block.grayout();
@@ -66,13 +72,13 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 						.done((data) => {
 							nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 							self.shiftMasters(data);
-							self.selectedShiftMaster(param.shiftMaterCode);
+							self.selectedShiftMaster(param.shiftMasterCode);
 						});
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 				}).always(function () {
 					nts.uk.ui.block.clear();
-				})
+				});
 		}
 
 		public deleteShiftMaster() {
@@ -81,7 +87,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let param = new RegisterShiftMasterDto(self.registrationForm());
 			nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
-					let i = _.findIndex(self.shiftMasters(), x => { return x.shiftMaterCode == self.selectedShiftMaster });
+					let i = _.findIndex(self.shiftMasters(), x => { return x.shiftMasterCode == self.selectedShiftMaster });
 					service.deleteShiftMaster(param).done((data) => {
 						service.getlist()
 							.done((data) => {
@@ -90,10 +96,10 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 								} else {
 									if (i >= self.shiftMasters().length - 1) {
 										self.shiftMasters(data);
-										self.selectedShiftMaster(self.shiftMasters()[i - 1].shiftMaterCode);
+										self.selectedShiftMaster(self.shiftMasters()[i - 1].shiftMasterCode);
 									} else {
 										self.shiftMasters(data);
-										self.selectedShiftMaster(self.shiftMasters()[i + 1].shiftMaterCode);
+										self.selectedShiftMaster(self.shiftMasters()[i + 1].shiftMasterCode);
 										nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 										nts.uk.ui.block.clear();
 									}

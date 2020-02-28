@@ -2,7 +2,10 @@ package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 /**
@@ -13,8 +16,10 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 	・List<就業時間帯の設定>
  */
 @Data
-public class Ksm015bStartPageDto {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Ksm015StartPageDto {
 	List<ShiftMasterDto> shiftMasters;
-	List<WorkTypeDto> workTypes;
-	List<WorkTimeSettingDto> workTimeSettings;
+	String forAttendent;
 }

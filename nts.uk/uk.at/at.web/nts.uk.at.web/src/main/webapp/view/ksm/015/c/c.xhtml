@@ -6,15 +6,17 @@
         <a class="goback"
             data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
         <!-- C1 -->
-        <button tabindex="1" class="proceed">#{i18n.getText('KSM015_8')}</button>
+        <button tabindex="1" class="proceed" data-bind="click: registerOrd">#{i18n.getText('KSM015_8')}</button>
         <!-- C2 -->
-        <button class="danger" tabindex="3">#{i18n.getText('KSM015_9')}</button>
+        <button class="danger" tabindex="3" data-bind="click: deleteShiftMaster">#{i18n.getText('KSM015_9')}</button>
         <!-- C3 -->
-        <button tabindex="2">#{i18n.getText('KSM015_21')}</button>
+        <button tabindex="2" data-bind="click: openDialogCopy">#{i18n.getText('KSM015_21')}</button>
 
     </div>
-    <div class="contents-area">
-        <div id="tree-grid"></div>
+    <div class="contents-area cf">
+        <div class="grid-container">
+            <div id="tree-grid"></div>
+        </div>
         <div id="register-form">
             <div class="form-title">
                 <span>項目移送 :</span> <span>項目移送</span>
@@ -24,16 +26,16 @@
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM015_23',["#Com_Workplace"])}</div>
             </div>
             <div class="valign-center control-group">
-                <button>#{i18n.getText('KSM015_30')}</button>
-                <button>#{i18n.getText('KSM015_31')}</button>
+                <button data-bind="click: openDialogKDL044">#{i18n.getText('KSM015_30')}</button>
+                <button data-bind="click: clearShiftMaster">#{i18n.getText('KSM015_31')}</button>
             </div>
             <table id="shift-list" data-bind="ntsGridList: {
                 height: 350,
                 options: shiftItems,
-                optionsValue: 'code',
-                columns: shiftGridColumns,
+                optionsValue: 'shiftMasterCode',
+                columns: shiftColumns,
                 multiple: true,
-                value: shiftGridColumns
+                value: selectedShiftMaster
             }"></table>
         </div>
     </div>

@@ -9,5 +9,6 @@ import lombok.Data;
 @Data
 public class FindShiftMasterDto {
 	private String workplaceId;
+	private String workplaceGroupId;
 	private Integer targetUnit;
 }
