@@ -64,7 +64,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	@Inject
 	private PersonAdapter psAdapter;
 	@Inject
-	private CollectApprovalRootService collectApprRootService;
+	private CollectApprovalRootService collectApprSv;
 	
 	/**
 	 * 01.申請者としての承認ルートを取得する
@@ -122,8 +122,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
 		if (approvalRootOp.isPresent()) {
 			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
-			LevelOutput p = collectApprRootService.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
-			err = EnumAdaptor.valueOf(p.getErrorFlag(), ErrorFlag.class);
+			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
+			err = collectApprSv.checkApprovalRoot(p);
 
 			for(LevelInforOutput level : p.getLevelInforLst()) {
 				int phaseNumber = level.getLevelNo();
