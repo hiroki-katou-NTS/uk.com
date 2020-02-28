@@ -5,7 +5,7 @@ module jhn001.c {
         __viewContext['viewModel'] = new viewmodel.ViewModel();
         __viewContext.bind(__viewContext['viewModel']);
         
-        setTimeout(() => $(window).trigger('resize'), 100);
+        setTimeout(() => $(window).trigger('resize'), 1000);
         
         $(document.body).on('click', '.nts-guide-link', () => {
             setTimeout(() => $(window).trigger('resize'), 5);

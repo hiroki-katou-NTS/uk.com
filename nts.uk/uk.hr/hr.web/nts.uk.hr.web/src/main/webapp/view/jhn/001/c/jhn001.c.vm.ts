@@ -108,6 +108,7 @@ module jhn001.c.viewmodel {
             setShared('JHN001D_PARAMS', {reportId: layout.reportId()});
             invisible();
             modal('/view/jhn/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                self.start();
                 unblock();
             });
         }
