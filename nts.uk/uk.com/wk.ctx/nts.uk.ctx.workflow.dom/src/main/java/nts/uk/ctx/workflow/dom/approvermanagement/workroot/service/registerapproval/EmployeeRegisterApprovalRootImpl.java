@@ -122,7 +122,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		if (approvalRootOp.isPresent()) {
 			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
 			//2.承認ルートを整理する（二次開発）
-			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
+			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases,
+					EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove() == null ? Optional.empty() : apptype.getLowerApprove());
 			//7.承認ルートの異常チェック
 			err = collectApprSv.checkApprovalRoot(p);
 
