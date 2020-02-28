@@ -43,24 +43,24 @@ public class ApprovalPersonReportFinder {
 		
 		List<ApprovalPersonReportDto> result = new ArrayList<>();
 		
-		List<ApprovalPersonReport> listDomain = repo.getListDomainByReportId(cid, reportId).stream()
+		// lay danh sach nguoi duoc seting appro cho don xin nay
+		List<ApprovalPersonReport> listDomain = repo.getListDomainByReportId(cid, reportId);
+		
+		// lay danh sach nguoi đã appro cho don xin nay
+		List<ApprovalPersonReport> listDomainApproved = repo.getListDomainByReportId(cid, reportId).stream()
 				.filter(apr -> apr.getAprStatus().value == ApprovalStatus.Approved.value).collect(Collectors.toList());
 		
-		if (listDomain.isEmpty()) {
+		if (listDomainApproved.isEmpty()) {
 			return new ArrayList<>();
 		}
 		
+		Optional<ApprovalPersonReport> domainAppro = listDomain.stream().filter(i -> i.getAprSid().equals(sidLogin)).findFirst();
 		
-		// check xem trong danh sach nguoi appro co nguoi đang login hay không(trả về list vì người login có thể được cài đặt apprơ cho nhiều phase)
-		List<ApprovalPersonReport> domainLoginOpt = listDomain.stream().filter(dm -> dm.getAprSid().equals(sidLogin)).collect(Collectors.toList());
-		
-		if (domainLoginOpt.isEmpty()) {
+		if (domainAppro.isPresent()) {
 			return new ArrayList<>();
 		}
 		
-		Comparator<ApprovalPersonReport> comparator = Comparator.comparing( ApprovalPersonReport::getPhaseNum );
-		int phaseMaxOfApprovalLogin = domainLoginOpt.stream().max(comparator).get().getPhaseNum();
-		
+		int phaseMaxOfApprovalLogin = domainAppro.get().getPhaseNum();
 		
 		// lấy thông tin người làm đơn.
 		Optional<RegistrationPersonReport> domainReport =  regisPersonReportRepo.getDomainByReportId( cid,  reportId);
@@ -71,19 +71,19 @@ public class ApprovalPersonReportFinder {
 		
 		ApprovalPersonReportDto firstItemCombobox = ApprovalPersonReportDto.builder()
 				.id(1)
-				.reportID(listDomain.get(0).getReportID())
-				.appSid(listDomain.get(0).getAppSid())
+				.reportID(listDomainApproved.get(0).getReportID())
+				.appSid(listDomainApproved.get(0).getAppSid())
 				.infoToDisplay("申請者：  " + bussinessNameApplication  ).build();
 		result.add(firstItemCombobox);
 		
-		for (int i = 0; i < listDomain.size(); i++) {
-			ApprovalPersonReport domain = listDomain.get(i);
+		for (int i = 0; i < listDomainApproved.size(); i++) {
+			ApprovalPersonReport domain = listDomainApproved.get(i);
 			if ( (!sidLogin.equals(domain.getAprSid()) && domain.getPhaseNum() >= phaseMaxOfApprovalLogin)  ) {
 				ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder().id(i + 2).cid(cid) // 会社ID
 						.reportID(domain.getReportID()) // 届出ID
 						.phaseNum(domain.getPhaseNum())
-						.aprNum(listDomain.get(i).getAprNum())
-						.comment(domain.getComment() == null ? "" : listDomain.get(i).getComment().toString())
+						.aprNum(listDomainApproved.get(i).getAprNum())
+						.comment(domain.getComment() == null ? "" : listDomainApproved.get(i).getComment().toString())
 						.inputSid(domain.getInputSid())
 						.appSid(domain.getAppSid())
 						.aprSid(domain.getAprSid())

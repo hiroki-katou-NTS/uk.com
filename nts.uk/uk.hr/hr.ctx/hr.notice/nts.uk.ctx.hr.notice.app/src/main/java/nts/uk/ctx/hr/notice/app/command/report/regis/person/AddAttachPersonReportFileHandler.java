@@ -68,6 +68,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		String cid = AppContexts.user().companyId();
 		try {
 			AttachedFileName validateFileName = new AttachedFileName(command.fileName);
+			validateFileName.validate();
 		} catch (Exception e) {
 			throw new BusinessException("MsgJ_JHN001_1");
 		}
