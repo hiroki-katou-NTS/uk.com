@@ -54,13 +54,14 @@ public class ApprovalPersonReportFinder {
 			return new ArrayList<>();
 		}
 		
-		Optional<ApprovalPersonReport> domainAppro = listDomain.stream().filter(i -> i.getAprSid().equals(sidLogin)).findFirst();
+		List<ApprovalPersonReport> domainAppro = listDomain.stream().filter(i -> i.getAprSid().equals(sidLogin)).collect(Collectors.toList());
 		
-		if (domainAppro.isPresent()) {
+		if (domainAppro.isEmpty()) {
 			return new ArrayList<>();
 		}
 		
-		int phaseMaxOfApprovalLogin = domainAppro.get().getPhaseNum();
+		int phaseMinOfApprovalLogin = domainAppro.stream().min(Comparator.comparing(ApprovalPersonReport::getPhaseNum)).get().getPhaseNum();
+		
 		
 		// lấy thông tin người làm đơn.
 		Optional<RegistrationPersonReport> domainReport =  regisPersonReportRepo.getDomainByReportId( cid,  reportId);
@@ -78,7 +79,7 @@ public class ApprovalPersonReportFinder {
 		
 		for (int i = 0; i < listDomainApproved.size(); i++) {
 			ApprovalPersonReport domain = listDomainApproved.get(i);
-			if ( (!sidLogin.equals(domain.getAprSid()) && domain.getPhaseNum() >= phaseMaxOfApprovalLogin)  ) {
+			if ( (!sidLogin.equals(domain.getAprSid()) && domain.getPhaseNum() >= phaseMinOfApprovalLogin)  ) {
 				ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder().id(i + 2).cid(cid) // 会社ID
 						.reportID(domain.getReportID()) // 届出ID
 						.phaseNum(domain.getPhaseNum())
