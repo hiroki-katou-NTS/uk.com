@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -31,6 +32,7 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.DateRangeItemImport;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.AttachedFileName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -63,13 +65,17 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		AddDocumentReportCommand command = context.getCommand();
 		GeneralDateTime fileStorageDate = GeneralDateTime.now();
 		
-		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
+		try {
+			AttachedFileName validateFileName = new AttachedFileName(command.fileName);
+		} catch (Exception e) {
+			throw new BusinessException("MsgJ_JHN001_1");
+		}
 		
 		if (command.reportID == null) {
 			Integer reportIdNew = repoPersonReport.getMaxReportId(cid) + 1;
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, reportIdNew,
-					command.docID, command.docName, command.fileId, command.fileName.length() > 49 ? command.fileName.substring(0, 48) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
@@ -80,7 +86,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			return reportIdNew.toString();
 		} else {
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, Integer.valueOf(command.reportID),
-					command.docID, command.docName, command.fileId, command.fileName.length() > 50 ? command.fileName.substring(0, 49) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
@@ -99,9 +105,6 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 	
 
 	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName) {
-		String sid = AppContexts.user().employeeId();
-		String pid = AppContexts.user().personId();
-		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		
 		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
