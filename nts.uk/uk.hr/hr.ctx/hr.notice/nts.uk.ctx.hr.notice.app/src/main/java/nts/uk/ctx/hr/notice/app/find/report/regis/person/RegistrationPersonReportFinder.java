@@ -134,7 +134,7 @@ public class RegistrationPersonReportFinder {
 
 		return this.PerReportClassRepo.getAllByCid(AppContexts.user().companyId(), false).stream().map(c -> {
 			return PersonalReportClassificationDto.fromDomain(c);
-		}).collect(Collectors.toList());
+		}).sorted(Comparator.comparing(PersonalReportClassificationDto::getReportName)).collect(Collectors.toList());
 	};
 	
 	
