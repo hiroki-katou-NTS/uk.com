@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementCode
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementName
+        </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1080,
+                height: 620
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.h.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.h.service.js"/>
+        <com:scriptfile path="qmm019.h.vm.js"/>
+        <com:scriptfile path="qmm019.h.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="table table1">
+                <div class="cell valign-center">
+                    <!--H1_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_176')}</div>
+                </div>
+            </div>
+            <div class="table table2">
+                <div class="cell valign-center">
+                    <!--H1_2-->
+                    <div id="H1_2" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                        name: '#[QMM019_177]',
+                        options: cloneList,
+                        optionsValue: 'id',
+                        optionsText: 'name',
+                        value: isClone,
+                        enable: statementLayoutList().length > 0}"/>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_5-->
+                    <div id="H1_5" tabindex="2" data-bind="ntsComboBox: {
+                        name: '#[QMM019_180]',
+                        options: statementLayoutList,
+                        optionsValue: 'statementCode',
+                        visibleItemsCount: 5,
+                        value: statementLayoutCodeSelected,
+                        optionsText: 'statementName',
+                        enable: isEnable,
+                        columns: [
+                            { prop: 'statementCode', length: 2 },
+                            { prop: 'statementName', length: 20 },
+                        ]}"/>
+                </div>
+                <div class="cell valign-center" style="white-space: nowrap;">
+                    <com:ko-if bind="(layoutPatternCloneText() != '')">
+                        <label>（ </label>
+                        <!--H1_7-->
+                        <label id="H1_7" class="label" data-bind="text: layoutPatternCloneText"/>
+                        <label> ）</label>
+                    </com:ko-if>
+                </div>
+            </div>
+            <div class="table table2">
+                <div class="cell valign-center">
+                    <!--H1_8-->
+                    <div id="H1_8" class="label">#{i18n.getText('QMM019_181')}</div>
+                </div>
+            </div>
+            <br/>
+            <div class="table table3">
+                <div class="cell valign-center">
+                    <!--H1_9-->
+                    <div id="H1_9" data-bind="ntsFormLabel: { required: true, constraint: ['StatementCode', 'StatementName']}">#{i18n.getText('QMM019_7')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_10-->
+                    <input id="H1_10" class="check-validate" tabindex="3" data-bind="ntsTextEditor: {
+                        name: '#[QMM019_15]',
+                        value: statementCode,
+                        constraint: 'StatementCode',
+                        required: true }"/>
+                    <!--H1_11-->
+                    <input id="H1_11" class="check-validate" tabindex="4" data-bind="ntsTextEditor: {
+                        name: '#[QMM019_16]',
+                        value: statementName,
+                        constraint: 'StatementName',
+                        required: true }"/>
+                </div>
+            </div>
+            <div class="table table3">
+                <div class="cell valign-center">
+                    <!--H1_12-->
+                    <div id="H1_12" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_43')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_13-->
+                    <div tabindex="5" class="check-validate" data-bind="ntsDatePicker: {
+                        name: '#[QMM019_43]',
+                        value: startDate,
+                        dateFormat: 'yearmonth',
+                        required: true}"/>
+                    <!--H1_14-->
+                    <com:ko-if bind="(startDateJp() != null)">
+                        <span> （</span>
+                        <span class="label" data-bind="text: startDateJp"/>
+                        <span>）</span>
+                    </com:ko-if>
+                </div>
+            </div>
+            <div class="table table3">
+                <div class="cell">
+                    <!--H1_15-->
+                    <div id="H1_15" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_48')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_16-->
+                    <div class="label">#{i18n.getText('QMM019_182')}</div>
+                    <!--H1_17-->
+                    <div class="grid-area">
+                        <!-- レイアウト一覧 -->
+                        <table id="grid" data-bind="ntsGridList: {
+                        width: 830,
+                        rows: 7,
+                        columnResize: true,
+                        dataSource: layoutPatternData,
+                        primaryKey: 'id',
+                        columns: layoutPatternColumns,
+                        multiple: false,
+                        value: layoutPatternSelected
+                    }"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="6" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_183')}</button>
+            <button tabindex="7" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

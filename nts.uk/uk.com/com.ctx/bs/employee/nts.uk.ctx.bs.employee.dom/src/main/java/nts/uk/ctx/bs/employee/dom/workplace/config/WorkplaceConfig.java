@@ -34,16 +34,6 @@ public class WorkplaceConfig extends AggregateRoot
 	private List<WorkplaceConfigHistory> wkpConfigHistory;
 
 	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(WorkplaceConfigSetMemento memento) {
-		memento.setCompanyId(this.companyId);
-		memento.setWkpConfigHistory(this.wkpConfigHistory);
-	}
-
-	/**
 	 * Instantiates a new workplace config.
 	 *
 	 * @param memento the memento

@@ -1,0 +1,55 @@
+#contents-area {
+    padding-left: 20px !important;
+}
+
+.table {
+    width: 800px;
+    margin-top: 10px;
+}
+
+.table2 .cell:nth-child(1) {
+    width: 300px;
+    padding-left: 50px;
+    padding-right: 10px;
+}
+
+.table2 .cell:nth-child(2) {
+    width: 220px;
+}
+
+.table2 .cell:nth-child(3) {
+    width: 280px;
+}
+
+.table3 .cell:nth-child(1) {
+    width: 170px;
+}
+
+.table3 .cell:nth-child(2) {
+    width: 630px;
+}
+
+.ntsRadioBox:first-child {
+    margin-bottom: 10px;
+}
+
+#H1_5, #H1_7 {
+    margin-top: 25px;
+}
+
+#H1_8 {
+    margin-left: 30px;
+}
+
+#H1_9, #H1_12, #H1_15 {
+    width: 200px;
+}
+
+#H1_15 {
+    vertical-align: top;
+}
+
+.grid-area {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

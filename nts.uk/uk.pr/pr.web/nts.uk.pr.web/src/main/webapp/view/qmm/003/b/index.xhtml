@@ -7,49 +7,52 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<script>var dialogSize = { width: 420, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm003.b.start.js" />
-			<com:scriptfile path="qmm003.b.vm.js" />
+			<com:scriptfile path="../share/constants.js"/>
 			<com:scriptfile path="qmm003.b.service.js" />
-			<script>
-				var dialogSize = {
-					width : 339,
-					height : 550
-				};
-			</script>
+			<com:scriptfile path="qmm003.b.vm.js" />
+			<com:scriptfile path="qmm003.b.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="flex valign-center" style="margin-left: 15px">
-					<label id="B_LBL_001">サンプル納付先情報を表示しています。</label>
+				<div class="valign-center control-group">
+					<!-- B1_1 -->
+					<span class="label">#{i18n.getText('QMM003_23')}</span>
 				</div>
-				<i class="icon icon-searchbox"></i>
-				<div style="margin-top: -11px; margin-left: 50px;" id="B_SCH_001"
-					data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-				<div>
-					<table id="treegrid2"
-						data-bind="ntsTreeGridView:{
-											   	width: 300,
-												height: 360,
-												options: items,
-												value: singleSelectedCode,
-												optionsValue: 'code',
-												optionsChild: 'childs',
-												optionsText: 'nodeText',
-												multiple: false,
-												enable: false,
-												showCheckBox: false}"
-						class="cf"></table>
+				<div class="valign-center control-group" style="width: 400px">
+					<!-- B1_2 -->
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<!-- B1_3 -->
+					<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'code', mode:'igTree', comId:'B2_1', items: items2, 
+						selected: selectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'searchCode']}" />
 				</div>
+				<!-- B1_3 -->
+				<table id="B2_1" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 400,
+						rows: 15,
+						name: '#[QMM003_8]',
+						dataSource: items2,
+						value: selectedCode,
+						headers: headers,
+						primaryKey: 'code',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: false,
+						enable: true,
+						showCheckBox: false}"></table>
 			</div>
-			<hr />
-			<div>
-				<button id="B_BTN_001" class="proceed"
-					data-bind="click: clickButton">決定</button>
-				<button id="B_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+			<div id="functions-area-bottom">
+				<!-- B3_1 -->
+				<button tabindex="3" class="x-large proceed" data-bind="enable: enable, click: select, timeClick: 500">#{i18n.getText('QMM003_24')}</button>
+				<!-- B3_2 -->
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>
+			<style>
+				#B2_1_container{clear: both}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

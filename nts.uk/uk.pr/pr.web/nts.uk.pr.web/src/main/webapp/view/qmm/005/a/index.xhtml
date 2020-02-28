@@ -1,115 +1,181 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../qmm005.js" />
-		</ui:define>
+<ui:composition template="../../../../master/base.xhtml">
 
-		<ui:define name="content">
-			<div id="functions-area">
-				<div class="btn-group-left">
-					<button id="A_BTN_001" data-bind="click: saveData">登録</button>
-					<button id="A_BTN_002" data-bind="click: btn002Click">マスタ修正ログ</button>
-				</div>
-				<div class="btn-group-right">
-					<a id="A_BTN_003" class="btn" data-bind="click: btn003Click">賞与の基準日設定へ</a>
-					<a id="A_BTN_004" class="btn" data-bind="click: btn004Click">予備の基準日設定へ</a>
-					<a id="A_BTN_005" class="btn" data-bind="click: btn005Click">雇用区分の登録へ</a>
-				</div>
-				<div class="clear-fix"></div>
-			</div>
-			<div id="contents-area">
-				<label id="A_LBL_001">給与・賞与の処理年月の設定を行います。</label>
-				<table id="A_LST_001" class="table">
-					<thead>
-						<tr>
-							<th rowspan="2"></th>
-							<th rowspan="2">処理区分</th>
-							<th rowspan="2" class="wrap">基準日の 詳細設定</th>
-							<th colspan="1">給与</th>
-							<th rowspan="2" class="hide"></th>
-							<th colspan="2">賞与</th>
-						</tr>
-						<tr>
-							<th>次回給与支払日 | 社員抽出基準日</th>
-							<th>利用</th>
-							<th>支給月</th>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: items">
-						<tr>
-							<th data-bind="text: $index() + 1"></th>
-							<td class="division">
-								<div data-bind="if: enable()" class="text-left">
-									<span data-bind="text: label"></span>
-									<button id="A_BTN_006" data-bind="click: showModalDialogD">編集</button>
-								</div>
-								<div data-bind="if: !enable()" class="text-center">
-									<button id="A_BTN_007" class="hafl-width" data-bind="click: showModalDialogC">追加</button>
-								</div>
-							</td>
-							<td><button id="A_BTN_008" class='full-width' data-bind="click: showModalDialogB, enable: enable()">設定</button></td>
-							<td><div class="caret">
-									<div id="A_SEL_001"
-										data-bind="ntsComboBox: {
-											options: sel001Data,
-											optionsValue: 'index',
-											value:  sel001,
-											optionsText: 'label',
-											editable: false,
-											enable: enable(),
-											columns: [{ prop: 'label', length: 4 }]}">
-									</div>
-								</div>
-								<div id="A_SEL_002"
-									data-bind="ntsComboBox: {
-										options: sel002Data,
-										optionsValue: 'index',
-										value:  sel002,
-										optionsText: 'label',
-										editable: false,
-										enable: enable(),
-										columns: [{ prop: 'label', length: 4 }]}"></div>
-							</td>
-							<td class="hide"></td>
-							<td class="text-center">
-								<div id="A_SEL_003"
-									data-bind="ntsCheckBox: {
-										checked: sel003,
-										enable: enable() }"></div>
-							</td>
-							<td><div class="caret">
-									<div id="A_SEL_004"
-										data-bind="ntsComboBox: {
-											options: sel004Data,
-											optionsValue: 'index',
-											value:  sel004,
-											optionsText: 'label',
-											editable: false,
-											enable: enable(),
-											columns: [{ prop: 'label', length: 4 }]}">
-									</div>
-								</div>
-								<div id="A_SEL_005"
-									data-bind="ntsComboBox: {
-										options: sel005Data,
-										optionsValue: 'index',
-										value:  sel005,
-										optionsText: 'label',
-										editable: false,
-										enable: enable(),
-										columns: [{ prop: 'label', length: 4 }]}"></div></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</ui:define>
-	</ui:composition>
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm005.a.start.js"/>
+        <com:scriptfile path="qmm005.a.service.js"/>
+        <com:scriptfile path="qmm005.a.vm.js"/>
+        <com:stylefile path="qmm005.a.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1 登録-->
+            <button tabindex="1" class="proceed" data-bind="click: registerProcessing"
+                    style="margin-left: 30px">#{i18n.getText('QMM005_1')  }</button>
+            <!--A1_2 マスタ修正ログ-->
+            <button tabindex="2" class="" data-bind="enable: false">#{i18n.getText('QMM005_2')}</button>
+            <!--A1_3  賞与の基準日設定-->
+            <button tabindex="3" class="" style="margin-left: 450px"
+                    data-bind="enable: false">#{i18n.getText('QMM005_3')}</button>
+            <!--A1_4 予備の基準日設定-->
+            <button tabindex="4" class="" data-bind="enable: false">#{i18n.getText('QMM005_4')}</button>
+            <!--A1_5 雇用区分の登録-->
+            <a tabindex="5" class="goout" data-bind="ntsLinkButton: {action: toCmm008}, enable: true"
+               style="margin-left: 30px">#{i18n.getText('QMM005_5')}</a>
+        </div>
+        <div id="contents-area">
+            <!--A2_1 給与・賞与の処理年月の設定を行います。-->
+            <div class="label" style="padding: 15px 25px;">#{i18n.getText('QMM005_6')}</div>
+            <!--A2_2 処理区分一覧-->
+            <div style="width: 1280px">
+                <div class="table-left" style="margin-left: 25px;">
+                    <table id="A2_2">
+                        <colgroup>
+                            <col width="35px"/>
+                            <col width="160px"/>
+                            <col width="70px"/>
+                            <col width="380px"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="ui-widget-header" rowspan="2"></th>
+                            <!--A2_3 処理区分-->
+                            <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_7')}</th>
+                            <!--A2_4 基準日の詳細設定-->
+                            <th class="ui-widget-header" rowspan="2"
+                                style="    white-space: normal;">#{i18n.getText('QMM005_8')}</th>
+                            <!--A2_5 給与-->
+                            <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
+                        </tr>
+                        <tr>
+                            <!--A2_6 次回給与支払日|社員抽出基準日-->
+                            <th class="ui-widget-header">#{i18n.getText('QMM005_10')}</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: itemBinding">
+                        <tr>
+                            <td style="background-color: #CFF1A5;text-align: right">
+                                <!--A2_7 処理区分NO-->
+                                <div class="label"
+                                     data-bind="text:processInfomation.processCateNo"
+                                     style=" padding-bottom: 9px; "></div>
+                            </td>
+                            <td style="text-align: left;background-color: #CFF1A5">
+                                <!--A2_8 処理区分名称-->
+                                <div id="A2_8" class="flex valign-center" style="display: inline-block;"
+                                     data-bind="if: processInfomation.processCls() != '' ">
+
+                                    <label
+                                            style="width: 100px; vertical-align: text-bottom; padding-left: 5px;"
+                                            class="limited-label"
+                                            data-bind="text: processInfomation.processCls()"></label>
+
+                                    <!--A2_9 編集-->
+                                    <button tabindex="6" class="small" id="button_update"
+                                            data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
+                                </div>
+                                <com:ko-if bind="processInfomation.processCls() == ''">
+                                    <!--A4_1-->
+                                    <button id="button_register" tabindex="7" style="width: 150px; margin-left: 2px "
+                                            class="small"
+                                            data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
+                                </com:ko-if>
+                            </td>
+                            <td style="text-align: center">
+                                <!--A2_10 詳細設定-->
+                                <button tabindex="-1" class="small"
+                                        data-bind="enable: processInfomation.processCls(),click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
+                            </td>
+                            <td>
+                                <div class="flex valign-center">
+                                    <!--A2_11 処理年一覧-->
+                                    <div tabindex="8" id="processYears" data-bind="ntsComboBox: {
+                                name: '#[#QMM005_30]',
+                                 width:78,
+                                options: years,
+                                optionsValue: 'code',
+                                 visibleItemsCount: 8,
+                                 enable: processInfomation.processCls() != '',
+                                value:yaersSelected,
+                                dropDownAttachedToBody:true,
+                                columns:
+                                [ { prop: 'name', length: 3 },
+                                { prop: 'fix_leng', length: 10 }
+                            ]}"></div>
+                                    <!--A2_13 キャレット-->
+                                    <span
+                                            class="caret-right caret-inline"></span>
+                                    <!--A2_14 次回給与支払日-->
+                                    <div tabindex="9" id="yearMonthProcess" data-bind="ntsComboBox: {
+                            name: '#[#QMM005_47]',
+                            width:270,
+                            options: monthsSubcriceYear,
+                            optionsValue: 'code',
+                            visibleItemsCount: 8,
+                            value: monthsSelectd,
+                            optionsText: 'name',
+                            dropDownAttachedToBody:true,
+                            enable: processInfomation.processCls() != '',
+                            columns: [
+                                { prop: 'name', length: 5,lengthDropDown: 5 },
+
+                            ]}"
+                                         style="margin-left: 10px"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!--A3_1 対象雇用一覧-->
+                <div class="table-left" style="margin-left: 5px;">
+                    <table id="A3_1">
+                        <colgroup>
+                            <col width="400px"/>
+                        </colgroup>
+                        <thead>
+
+                        <tr>
+                            <!--A3_2 対象となる雇用-->
+                            <th class="ui-widget-header" rowspan="2"
+                                style="height: 45px;">#{i18n.getText('QMM005_19')}</th>
+                        </tr>
+
+                        </thead>
+                        <tbody data-bind="foreach: itemBinding">
+                        <tr>
+                            <td>
+                                <div class="flex valign-center">
+                                    <!--A3_3 雇用設定-->
+                                    <button tabindex="10" class="small"
+                                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable: isNotAbolition() ">#{i18n.getText('QMM005_20')}</button>
+                                    <!--A3_4 対象雇用-->
+                                    <input id="EmployeeString" style="width: 285px;margin-left: 10px;"
+                                           data-bind="ntsTextEditor: {
+                                value: employeeString,
+                                readonly: true,
+                                enable:isNotAbolition(),
+                                }"/>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+
+</ui:composition>
+
 </body>
 </html>

@@ -6,6 +6,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.config;
 
 import java.util.List;
 
+import nts.uk.shr.com.history.DateHistoryItem;
+
 /**
  * The Interface WorkplaceConfigSetMemento.
  */
@@ -23,5 +25,5 @@ public interface WorkplaceConfigSetMemento {
 	 *
 	 * @param wkpConfigHistory the new wkp config history
 	 */
-	public void setWkpConfigHistory(List<WorkplaceConfigHistory> wkpConfigHistory);
+	public void setWkpConfigHistory(List<DateHistoryItem> wkpConfigHistory);
 }

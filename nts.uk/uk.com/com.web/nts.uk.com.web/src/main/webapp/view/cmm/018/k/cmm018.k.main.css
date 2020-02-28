@@ -3,7 +3,7 @@
 }
 
 .leftExtend {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .selectApprover {
@@ -12,7 +12,52 @@
 }
 
 .approverSelect {
-	float: right;
-	margin-right: 320px;
 	margin-top: 5px;
+}
+#swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer, #swap-list-grid2_container{
+	height:160px !important;
+}
+#swap-list-search-area-input {
+	width: 180px !important;
+}
+table.ntsSwapGrid tbody tr td {
+	white-space: nowrap !important;
+}
+#swap-list-search-area{
+	height: 35px !important;
+}
+.ntsMoveDataArea, #swap-list-move-data,  .move-button, #swap-list-gridArea1{
+	vertical-align: top;
+	width: 45px !important;
+}
+#single-tree-grid_scroll, #single-tree-grid_container{
+	height:307px !important;
+}
+.row-search {
+	display:none;
+}
+.settingApprover {
+	margin-top: 10px !important;
+}
+.titleSelect {
+	width: 320px !important;
+}
+.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn {
+	min-width: 45px;
+}
+.ntsSearchBox {
+	width: 250px !important;
+}
+.upDown-container {
+	vertical-align: top;
+	padding-top: 85px !important;
+}
+#swap-list-move-data{
+	padding-top: 40px !important;
+}
+.nts-column {
+	width: 150px !important;
+}
+html{
+	overflow:hidden;
 }

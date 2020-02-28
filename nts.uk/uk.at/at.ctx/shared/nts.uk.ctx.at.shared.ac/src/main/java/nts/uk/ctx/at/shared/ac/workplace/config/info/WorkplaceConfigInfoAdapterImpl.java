@@ -11,13 +11,19 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.JobTitleExport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkPlaceConfigInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.bs.employee.pub.workplace.config.info.WorkPlaceConfigInfoPub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.JobTitleHistoryExport;
 
 @Stateless
 public class WorkplaceConfigInfoAdapterImpl implements WorkplaceConfigInfoAdapter {
 	@Inject
 	private WorkPlaceConfigInfoPub wpConfigInfoPub;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	@Override
 	public List<WorkPlaceConfigInfoImport> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
@@ -40,5 +46,14 @@ public class WorkplaceConfigInfoAdapterImpl implements WorkplaceConfigInfoAdapte
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<WorkplaceInfor> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		List<WorkplaceInforExport> workplaceInfors = this.workplacePub.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
+		return workplaceInfors.stream().map(e -> new WorkplaceInfor(e.getWorkplaceId(), 
+				e.getHierarchyCode(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getWorkplaceDisplayName(),
+				e.getWorkplaceGenericName(), e.getWorkplaceExternalCode()
+				)).collect(Collectors.toList());
+	}
 
 }

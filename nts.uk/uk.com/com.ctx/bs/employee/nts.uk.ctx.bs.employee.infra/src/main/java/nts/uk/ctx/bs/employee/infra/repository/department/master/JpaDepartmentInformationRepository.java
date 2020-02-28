@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
@@ -135,6 +136,24 @@ public class JpaDepartmentInformationRepository extends JpaRepository implements
 	@Override
 	public void updateDepartment(DepartmentInformation department) {
 		this.commandProxy().update(BsymtDepartmentInfor.fromDomain(department));
+	}
+
+	@Override
+	public Optional<DepartmentInformation> getInfoDep(String companyId, String depId, GeneralDate baseDate) {
+		String GET_INFO_BY_ID = "SELECT info FROM BsymtDepartmentInfor info"
+				+ " inner join BsymtDepartmentConfig  conf"
+				+ " on info.pk.departmentHistoryId = conf.pk.departmentHistoryId "
+				+ " where info.pk.companyId = :companyId"
+				+ " and info.deleteFlag = 0"
+				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
+				+ " and info.pk.departmentId = :depId";
+		List<DepartmentInformation> lst = this.queryProxy().query(GET_INFO_BY_ID, BsymtDepartmentInfor.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.setParameter("depId", depId)
+				.getList(c -> c.toDomain());
+		if(lst.isEmpty()) return Optional.empty();
+		return Optional.of(lst.get(0));
 	}
 
 }

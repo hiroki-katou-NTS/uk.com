@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+					nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_500
+					nts.uk.ctx.hr.shared.dom.primitiveValue.Integer_1_5
+					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20
+			</com:ValidatorScript>
+
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="nts.uk.com.js.web" />
+			<com:stylefile path="../b/jmm017.b.style.css" />
+			<com:scriptfile path="../b/jmm017.b.service.js" />
+			<com:scriptfile path="../b/jmm017.b.vm.js" />
+
+			<com:stylefile path="jmm017.a.style.css" />
+			<com:scriptfile path="jmm017.a.service.js" />
+			<com:scriptfile path="jmm017.a.vm.js" />
+			<com:scriptfile path="jmm017.a.start.js" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
+				<li data-bind="click: onSelectTabA"><a tabindex="-1"
+					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('JMM017_A1_2')}</a></li>
+				<li data-bind="click: onSelectTabB, visible: usageFlgCommon"><a tabindex="-1"
+					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('JMM017_A1_3')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<!-- COMPANY WORK TIME SETTING  START -->
+			<div id="tabpanel-1" role="tabpanel" data-bind="">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('JMM017_A3_2')}</span>
+					<button tabindex="1" id="saveBtn" class="proceed" data-bind="click: saveGuideDispSetting, enable: $root.errors.isEmpty()">#{i18n.getText('JMM017_A3_3')}</button>
+				</div>
+
+				<div class="contents-area tab1">
+					<div class="settings">
+						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_A422_1')}</div>
+						<div data-bind="ntsCheckBox: { checked: usageFlgCommon }">#{i18n.getText('JMM017_A422_2')}</div>
+					</div>
+					<div class="settings">
+						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_A422_3')}</div>
+						<input data-bind="ntsNumberEditor: {
+							name: '#{i18n.getText('JMM017_A422_4')}',
+							value: guideMsgAreaRow,
+							constraint: 'Integer_1_5',
+							required: true,
+							enable: usageFlgCommon,
+							option: {width: '15px'}}" />
+						<span style="margin-left: 40px">#{i18n.getText('JMM017_A422_5')}</span>
+					</div>
+					<div class="settings">
+						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_A422_6')}</div>
+						<input data-bind="ntsNumberEditor: {
+							name: '#{i18n.getText('JMM017_A422_7')}',
+							value: guideMsgMaxNum,
+							constraint: 'Integer_1_500',
+							required: true,
+							enable: usageFlgCommon,
+							option: {width: '30px'}}" />
+						<span style="margin-left: 26px">#{i18n.getText('JMM017_A422_8')}</span>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: tab2ViewModel">
+				<ui:include src="../b/index.xhtml" />
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

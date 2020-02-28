@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.syworkplace;
 
-import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -21,5 +21,5 @@ public interface GwSyWorkplaceAdapter {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	List<SWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate);
+	Optional<SWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate);
 }

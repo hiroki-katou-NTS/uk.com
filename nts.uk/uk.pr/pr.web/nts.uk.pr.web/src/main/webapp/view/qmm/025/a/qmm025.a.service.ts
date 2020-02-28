@@ -1,55 +1,27 @@
-module qmm025.a.service {
-    var paths: any = {
-        findAll: "pr/core/rule/law/tax/residential/input/findAll",
-        getYearKey: "pr/proto/paymentdatemaster/processing/findbylogin",
-        remove: "pr/core/rule/law/tax/residential/input/remove",
-        update: "pr/core/rule/law/tax/residential/input/update"
-    }
-    export function findAll(yearKey: number): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.findAll + "/" + yearKey)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
+module nts.uk.pr.view.qmm025.a {
+    import ajax = nts.uk.request.ajax;
+    export module service {
+        var paths: any = {
+            getEmpInfoDept: "transfer/rsdttaxpayee/getEmpInfoDept",
+            getRsdtTaxPayAmount: "transfer/rsdttaxpayee/getRsdtTaxPayAmount",
+            registerTaxPayAmount: "core/emprsdttaxinfo/amountinfo/registerTaxPayAmount",
+            deleteTaxPayAmount: "core/emprsdttaxinfo/amountinfo/deleteTaxPayAmount"
+        }
 
-    export function getYearKey(): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.getYearKey)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
+        export function getEmpInfoDept(param): JQueryPromise<any> {
+            return ajax('pr', paths.getEmpInfoDept, param);
+        }
 
-    export function remove(command): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.remove, command)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
+        export function getRsdtTaxPayAmount(param): JQueryPromise<any> {
+            return ajax('pr', paths.getRsdtTaxPayAmount, param);
+        }
 
-    export function update(command): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.update, command)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        export function registerTaxPayAmount(param): JQueryPromise<any> {
+            return ajax('pr', paths.registerTaxPayAmount, param);
+        }
+
+        export function deleteTaxPayAmount(param): JQueryPromise<any> {
+            return ajax('pr', paths.deleteTaxPayAmount, param);
+        }
     }
 }

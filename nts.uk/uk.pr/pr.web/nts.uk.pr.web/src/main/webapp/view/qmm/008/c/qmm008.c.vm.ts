@@ -1,661 +1,451 @@
-module nts.uk.pr.view.qmm008.c {
-    export module viewmodel {
-        import InsuranceOfficeItem = service.model.finder.InsuranceOfficeItemDto;
-        import RoundingDto = service.model.finder.RoundingDto;
-        import RoundingItemDto = service.model.finder.RoundingItemDto;
-        import Enum = service.model.finder.Enum;
-        import PensionRateDto = service.model.finder.PensionRateDto;
-        import PensionRateItemDto = service.model.finder.PensionRateItemDto;
-        import FundRateItemDto = service.model.finder.FundRateItemDto;
-        import ScreenBaseModel = base.simplehistory.viewmodel.ScreenBaseModel;
+module nts.uk.pr.view.qmm008.c.viewmodel {
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
+    import model = nts.uk.pr.view.qmm008.share.model;
+    import service = nts.uk.pr.view.qmm008.c.service;
+    export class ScreenModel {
 
-        export class ScreenModel extends ScreenBaseModel<service.model.Office, service.model.Pension>{
-            pensionModel: KnockoutObservable<PensionRateModel>
-            pensionInsuranceOfficeList: KnockoutObservableArray<InsuranceOfficeItem>;
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
+        isSelectFirstOfficeAndHistory: boolean = true;
+        jumpTopPageIfNoData: boolean = false;
+        // History Tree Grid C1_1 -> C1_12 
+        socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
+        isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
+        welfareInsuranceRateTreeList: KnockoutObservableArray<model.TreeGridNode> = ko.observableArray([]);
+        selectedWelfareInsurance: KnockoutObservable<string> = ko.observable(null);
+        // for fix grid height in ie
+        treeGridHeight: KnockoutObservable<number> = ko.observable(595);
+        // Office and history info
+        selectedOffice: any = null;
+        selectedHistoryId: string = "";
 
-            selectedInsuranceOfficeId: KnockoutObservable<string>;
-
-            //list rounding options
-            roundingList: KnockoutObservableArray<Enum>;
-            //numberInputOptions
-            Rate2: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
-            pensionFilteredData: KnockoutObservableArray<any>;
-            //for pension fund switch button
-            pensionFundInputOptions: KnockoutObservableArray<any>;
-            //for pension auto calculate switch button
-            pensionCalculateOptions: KnockoutObservableArray<any>;
-            //for control data after close dialog
-            isTransistReturnData: KnockoutObservable<boolean>;
-            fundInputEnable: KnockoutObservable<boolean>;
-
-            // Flags
-            isLoading: KnockoutObservable<boolean>;
-            currentOfficeCode: KnockoutObservable<string>;
-            japanYear: KnockoutObservable<string>;
-            sendOfficeData: KnockoutObservable<string>;
-
-            errorList: KnockoutObservableArray<any>;
-            dirty: nts.uk.ui.DirtyChecker;
-            backupDataDirty: KnockoutObservable<PensionRateDto>;
-            canOpenOfficeRegisterDialog: KnockoutObservable<boolean>;
-            constructor() {
-                super({
-                    functionName: '厚生年金',
-                    service: service.instance,
-                    removeMasterOnLastHistoryRemove: false
-                });
-                var self = this;
-                //init model
-                self.pensionModel = ko.observable(new PensionRateModel());
-
-                // init insurance offices list
-                self.pensionInsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
+        // Welfare Item
+        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
+        welfareInsuranceRateHistory: KnockoutObservable<model.WelfarePensionInsuranceRateHistory> = ko.observable(null);
+        employeeMonthlyInsuFee: KnockoutObservable<model.EmployeePensionMonthlyInsuFee> = ko.observable(null);
+        welfareInsuranceClassification: KnockoutObservable<model.WelfarePensionInsuranceClassification> = ko.observable(null);
+        bonusEmployeePensionInsuranceRate: KnockoutObservable<model.BonusEmployeePensionInsuranceRate> = ko.observable(null);
 
 
-                self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
-                //init rounding list
-                self.roundingList = ko.observableArray<Enum>([]);
-                self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    decimallength: 2
-                }));
-                //pension fund switch 
-                self.pensionFundInputOptions = ko.observableArray([
-                    { code: '1', name: '有' },
-                    { code: '0', name: '無' }
-                ]);
-                //pension calculate switch 
-                self.pensionCalculateOptions = ko.observableArray([
-                    { code: '0', name: 'する' },
-                    { code: '1', name: 'しない' }
-                ]);
-                // add history dialog
-                self.isTransistReturnData = ko.observable(false);
-
-                self.isLoading = ko.observable(true);
-                self.currentOfficeCode = ko.observable('');
-                self.japanYear = ko.observable('');
-                self.sendOfficeData = ko.observable('');
-
-                self.fundInputEnable = ko.computed(() => {
-                    return self.pensionModel().fundInputApply() == 1;
-                });
-                self.errorList = ko.observableArray([
-                    { messageId: "ER001", message: "＊が入力されていません。" },
-                    { messageId: "ER007", message: "＊が選択されていません。" },
-                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
-                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
-                ]);
-                self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
-                self.backupDataDirty = ko.observable<PensionRateDto>();
-                self.canOpenOfficeRegisterDialog = ko.observable(true);
-            } //end constructor
-
-            // Start
-            public start(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                self.getAllRounding().done(function() {
-                    // Resolve
-                    dfd.resolve(null);
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-                // Return.
-                return dfd.promise();
+        constructor() {
+            let self = this;
+            $("#C3").ntsFixedTable({});
+            $("#C4").ntsFixedTable({});
+            $("#C5").ntsFixedTable({});
+            self.initBlankData();
+            self.watchDataChanged();
+            if ((/Chrome/.test(navigator.userAgent)) && !(/Edge/.test(navigator.userAgent))) {
+                self.treeGridHeight(580);
             }
+        }
 
-            //load All rounding method
-            public getAllRounding(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                // Invoked service method
-                service.findAllRounding().done(function(data: Array<Enum>) {
-                    // Set list.
-                    self.roundingList(data);
-                    dfd.resolve(data);
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
+        exportExcel(): void {
+            let type = 0;
+            let params = {
+                date: null,
+                mode: 6
+            };
 
-                // Return.
-                return dfd.promise();
-            }
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let startDate = result.standardYearMonth;
+                    let data = {
+                        startDate: startDate
+                    }
+                    service.exportExcel(data).done(function() {
+                        //nts.uk.ui.windows.close();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            });
+        }
 
-            //string rounding to value
-            public convertRounding(stringRounding: string) {
-                switch (stringRounding) {
-                    case Rounding.TRUNCATION: return "0";
-                    case Rounding.ROUNDUP: return "1";
-                    case Rounding.DOWN4_UP5: return "2";
-                    case Rounding.DOWN5_UP6: return "3";
-                    case Rounding.ROUNDDOWN: return "4";
-                    default: return "0";
+        watchDataChanged() {
+            let self = this;
+            self.selectedWelfareInsurance.subscribe(function(selectedValue: any) {
+                nts.uk.ui.errors.clearAll();
+                if (selectedValue) {
+                    self.changeBySelectedValue();
+                    if (!self.isUpdateMode()) {
+                        self.isUpdateMode(true);
+                        self.showAllOfficeAndHistory();
+                    }
+                    // if select history
+                    if (selectedValue.length >= 36) {
+                        self.isSelectedHistory(true);
+                    } else { // if select office
+                        self.isSelectedHistory(false);
+                        self.initBlankData();
+                    }
+                }
+            });
+        }
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            return self.showAllOfficeAndHistory();
+        }
+
+        showAllOfficeAndHistory(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.findAllOffice().done(function(data) {
+                block.clear();
+                if (data) {
+                    if (data.length == 0) {
+                        if (self.jumpTopPageIfNoData) {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        }
+                        self.registerBusinessEstablishment();
+                    } else {
+                        // from json to model
+                        let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
+                        data.forEach(office => {
+                            socailInsuranceOfficeList.push(new model.SocialInsuranceOffice(office));
+                        });
+                        self.socialInsuranceOfficeList(socailInsuranceOfficeList);
+                        self.convertToTreeGridList();
+                        // select first office and last history
+                        if (self.isSelectFirstOfficeAndHistory) {
+                            self.isSelectFirstOfficeAndHistory = false;
+                            let firstOffice = data[0].welfareInsuranceRateHistory
+                            if (firstOffice.history.length > 0) self.selectedWelfareInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
+                            else self.selectedWelfareInsurance(firstOffice.socialInsuranceCode);
+                        } else {
+                            self.changeBySelectedValue();
+                        }
+                    }
+                }
+                dfd.resolve();
+            }).fail(function(err) {
+                dfd.reject();
+                block.clear();
+                dialog.alertError(err.message);
+            });
+            return dfd.promise();
+        }
+
+        changeBySelectedValue() {
+            let self = this;
+            // ___ represent office code and history id
+            if (self.selectedWelfareInsurance()) {
+                let selectedInsuranceCode = self.selectedWelfareInsurance().split('___')[0],
+                    selectedHistoryId = self.selectedWelfareInsurance().split('___')[1],
+                    selectedHistoryPeriod = null,
+                    listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
+                self.selectedHistoryId = selectedHistoryId;
+                // find office
+                self.selectedOffice = _.find(listInsuranceOffice, { socialInsuranceCode: selectedInsuranceCode });
+                if (selectedHistoryId) {
+                    let selectedHistoryPeriod;
+                    // find history
+                    if (self.selectedOffice) {
+                        selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedHistoryId });
+                    }
+                    // 201809 -> 2018/09
+                    if (selectedHistoryPeriod) {
+                        selectedHistoryPeriod.displayJapanYearMonth = "(" + self.convertYearMonthToDisplayJpanYearMonth(selectedHistoryPeriod.startMonth) + ")";
+                        selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
+                        selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
+                        self.selectedHistoryPeriod(selectedHistoryPeriod);
+                    }
+                    self.showEmployeePensionByHistoryId(self.selectedHistoryId);
+                } else {
+                    self.selectedHistoryPeriod({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
                 }
             }
+        }
 
-            //value to string rounding
-            public convertToRounding(stringValue: string) {
-                switch (stringValue) {
-                    case "0": return Rounding.TRUNCATION;
-                    case "1": return Rounding.ROUNDUP;
-                    case "2": return Rounding.DOWN4_UP5;
-                    case "3": return Rounding.DOWN5_UP6;
-                    case "4": return Rounding.ROUNDDOWN;
-                    default: return Rounding.TRUNCATION;
+        showEmployeePensionByHistoryId(historyId) {
+            let self = this;
+            block.invisible();
+            service.findEmployeePensionByHistoryId(historyId).done(function(data) {
+                if (data) {
+                    self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification(data.welfarePensionInsuranceClassification));
+                    self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee(data.employeesPensionMonthlyInsuranceFee));
+                    self.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(data.bonusEmployeePensionInsuranceRate));
                 }
-            }
+                if (!self.isUpdateMode()) $('#C2_7').focus();
+                block.clear();
+            }).fail(function(err) {
+                block.clear();
+                dialog.alertError(err.message);
+            });
+        }
 
-            public loadPension(data: PensionRateDto) {
-                var self = this;
-                if (data == null) {
+        initDataByLastestHistory() {
+            let self = this;
+        }
+        initBlankData() {
+            let self = this;
+            self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee(null));
+            self.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(null));
+            self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification(null));
+        }
+        convertToTreeGridList() {
+            let self = this,
+                pensionList = ko.toJS(self.socialInsuranceOfficeList),
+                displayPensionList: Array<model.TreeGridNode> = [],
+                pensionItem = {};
+
+            // each office
+            pensionList.forEach(function(office) {
+                let pensionItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, [], office.socialInsuranceCode, office.socialInsuranceName);
+                if (office.welfareInsuranceRateHistory) {
+                    let displayStart, displayEnd = "";
+                    // each history
+                    office.welfareInsuranceRateHistory.history.forEach(function(history) {
+                        displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
+                        displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
+                        // ___ is for child contain office code and history id
+                        pensionItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, [], "", ""));
+                    });
+                }
+                displayPensionList.push(pensionItem);
+            });
+            self.welfareInsuranceRateTreeList(displayPensionList);
+        }
+
+        convertYearMonthToDisplayYearMonth(yearMonth) {
+            return nts.uk.time.formatYearMonth(Number(yearMonth)).toString();
+        }
+
+        convertYearMonthToDisplayJpanYearMonth(yearMonth) {
+            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString();
+        }
+
+        register() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.tab-c .nts-input').filter(':enabled').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            // Register data
+            let command = {
+                officeCode: self.selectedOffice.socialInsuranceCode,
+                bonusEmployeePensionInsuranceRate: ko.toJS(self.bonusEmployeePensionInsuranceRate),
+                employeesPensionMonthlyInsuranceFee: ko.toJS(self.employeeMonthlyInsuFee),
+                welfarePensionInsuranceClassification: ko.toJS(self.welfareInsuranceClassification),
+                yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
+            }
+            command = self.formatDataBeforeSubmit(command);
+            if (command.welfarePensionInsuranceClassification.fundClassification == model.FUND_CLASSIFICATION.JOIN) {
+                self.validateRemainRatio(command);
+                if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                //Set pension detail.
-                self.pensionModel().historyId = data.historyId;
-                self.pensionModel().companyCode = data.companyCode;
-                self.pensionModel().officeCode(data.officeCode);
-                self.pensionModel().startMonth(nts.uk.time.formatYearMonth(parseInt(data.startMonth)));
-                self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
-                self.japanYear("(" + nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString() + ")");
-                self.pensionModel().autoCalculate(data.autoCalculate);
-                self.pensionModel().fundInputApply(data.fundInputApply);
-
-                data.premiumRateItems.forEach(function(item, index) {
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
-                        self.pensionModel().rateItems().pensionSalaryPersonalSon(item.personalRate);
-                        self.pensionModel().rateItems().pensionSalaryCompanySon(item.companyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.MALE) {
-                        self.pensionModel().rateItems().pensionBonusPersonalSon(item.personalRate);
-                        self.pensionModel().rateItems().pensionBonusCompanySon(item.companyRate);
-                    }
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.FEMALE) {
-                        self.pensionModel().rateItems().pensionSalaryPersonalDaughter(item.personalRate);
-                        self.pensionModel().rateItems().pensionSalaryCompanyDaughter(item.companyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.FEMALE) {
-                        self.pensionModel().rateItems().pensionBonusPersonalDaughter(item.personalRate);
-                        self.pensionModel().rateItems().pensionBonusCompanyDaughter(item.companyRate);
-                    }
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.UNKNOW) {
-                        self.pensionModel().rateItems().pensionSalaryPersonalUnknown(item.personalRate);
-                        self.pensionModel().rateItems().pensionSalaryCompanyUnknown(item.companyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.UNKNOW) {
-                        self.pensionModel().rateItems().pensionBonusPersonalUnknown(item.personalRate);
-                        self.pensionModel().rateItems().pensionBonusCompanyUnknown(item.companyRate);
-                    }
-                });
-
-                data.fundRateItems.forEach(function(item, index) {
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
-                        self.pensionModel().fundRateItems().salaryPersonalSonBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanySonBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().salaryPersonalSonExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanySonExemption(item.exemptionChargeCompanyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.MALE) {
-                        self.pensionModel().fundRateItems().bonusPersonalSonBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanySonBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().bonusPersonalSonExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanySonExemption(item.exemptionChargeCompanyRate);
-                    }
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.FEMALE) {
-                        self.pensionModel().fundRateItems().salaryPersonalDaughterBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanyDaughterBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().salaryPersonalDaughterExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanyDaughterExemption(item.exemptionChargeCompanyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.FEMALE) {
-                        self.pensionModel().fundRateItems().bonusPersonalDaughterBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanyDaughterBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().bonusPersonalDaughterExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanyDaughterExemption(item.exemptionChargeCompanyRate);
-                    }
-                    if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.UNKNOW) {
-                        self.pensionModel().fundRateItems().salaryPersonalUnknownBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanyUnknownBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().salaryPersonalUnknownExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().salaryCompanyUnknownExemption(item.exemptionChargeCompanyRate);
-                    }
-                    if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.UNKNOW) {
-                        self.pensionModel().fundRateItems().bonusPersonalUnknownBurden(item.burdenChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanyUnknownBurden(item.burdenChargeCompanyRate);
-                        self.pensionModel().fundRateItems().bonusPersonalUnknownExemption(item.exemptionChargePersonalRate);
-                        self.pensionModel().fundRateItems().bonusCompanyUnknownExemption(item.exemptionChargeCompanyRate);
-                    }
-                });
-
-                //set rounding list
-                self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
-                self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
-                self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
-                self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
-
-                //Set selected rounding method
-                data.roundingMethods.forEach(function(item, index) {
-                    if (item.payType == PaymentType.SALARY) {
-                        self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
-                        self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
-                    }
-                    else {
-                        self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
-                        self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
-                    }
-                });
-
-                self.pensionModel().maxAmount(data.maxAmount);
-                self.pensionModel().childContributionRate(data.childContributionRate);
+            } else {
+                command = self.updateOptionalData(command);
             }
-
-            private pensionCollectData() {
-                var self = this;
-                var rates = self.pensionModel().rateItems();
-
-                var rateItems: Array<PensionRateItemDto> = [];
-                rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.MALE, rates.pensionSalaryPersonalSon(), rates.pensionSalaryCompanySon()));
-                rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.FEMALE, rates.pensionSalaryPersonalDaughter(), rates.pensionSalaryCompanyDaughter()));
-                rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.UNKNOW, rates.pensionSalaryPersonalUnknown(), rates.pensionSalaryCompanyUnknown()));
-                rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.MALE, rates.pensionBonusPersonalSon(), rates.pensionBonusCompanySon()));
-                rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.FEMALE, rates.pensionBonusPersonalDaughter(), rates.pensionBonusCompanyDaughter()));
-                rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.UNKNOW, rates.pensionBonusPersonalUnknown(), rates.pensionBonusCompanyUnknown()));
-
-                var fundRates = self.pensionModel().fundRateItems();
-                var fundRateItems: Array<FundRateItemDto> = [];
-                fundRateItems.push(new FundRateItemDto(PaymentType.SALARY, InsuranceGender.MALE, fundRates.salaryPersonalSonBurden(), fundRates.salaryCompanySonBurden(), fundRates.salaryPersonalSonExemption(), fundRates.salaryCompanySonExemption()));
-                fundRateItems.push(new FundRateItemDto(PaymentType.SALARY, InsuranceGender.FEMALE, fundRates.salaryPersonalDaughterBurden(), fundRates.salaryCompanyDaughterBurden(), fundRates.salaryPersonalDaughterExemption(), fundRates.salaryCompanyDaughterExemption()));
-                fundRateItems.push(new FundRateItemDto(PaymentType.SALARY, InsuranceGender.UNKNOW, fundRates.salaryPersonalUnknownBurden(), fundRates.salaryCompanyUnknownBurden(), fundRates.salaryPersonalUnknownExemption(), fundRates.salaryCompanyUnknownExemption()));
-                fundRateItems.push(new FundRateItemDto(PaymentType.BONUS, InsuranceGender.MALE, fundRates.bonusPersonalSonBurden(), fundRates.bonusCompanySonBurden(), fundRates.bonusPersonalSonExemption(), fundRates.bonusCompanySonExemption()));
-                fundRateItems.push(new FundRateItemDto(PaymentType.BONUS, InsuranceGender.FEMALE, fundRates.bonusPersonalDaughterBurden(), fundRates.bonusCompanyDaughterBurden(), fundRates.bonusPersonalDaughterExemption(), fundRates.bonusCompanyDaughterExemption()));
-                fundRateItems.push(new FundRateItemDto(PaymentType.BONUS, InsuranceGender.UNKNOW, fundRates.bonusPersonalUnknownBurden(), fundRates.bonusCompanyUnknownBurden(), fundRates.bonusPersonalUnknownExemption(), fundRates.bonusCompanyUnknownExemption()));
-
-                var roundingMethods: Array<RoundingDto> = [];
-                var rounding = self.pensionModel().roundingMethods();
-                roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
-                roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
-
-                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), self.pensionModel().fundInputApply(), rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
-            }
-
-            //get current item office 
-            public getDataOfPensionSelectedOffice(): InsuranceOfficeItem {
-                var self = this;
-                var saveVal: InsuranceOfficeItem = null;
-                // Set parent value
-                self.pensionInsuranceOfficeList().forEach(function(item, index) {
-                    if (self.currentOfficeCode() == item.code) {
-                        saveVal = item;
-                    }
-                });
-                return saveVal;
-            }
-
-            /**
-            * Load History detail.
-            */
-            onSelectHistory(id: string): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                self.isLoading(true);
-                self.isClickHistory(true);
-                self.currentOfficeCode(self.getCurrentOfficeCode(id));
-                service.instance.findHistoryByUuid(id).done(dto => {
-                    self.backupDataDirty(dto);
-                    self.loadPension(dto);
-                    self.dirty.reset();
-                    self.isLoading(false);
-                    dfd.resolve();
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-                return dfd.promise();
-            }
-
-            onSave(): JQueryPromise<string> {
-                var self = this;
-                var dfd = $.Deferred<string>();
-                self.dirty.reset();
-                //check auto calculate
-                if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
-                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
-                        // Validate.
-                        $('.nts-input').ntsEditor('validate');
-                        if ($('.nts-input').ntsError('hasError')) {
-                            dfd.reject();
-                            return dfd.promise();
-                        }
-
-                        //update pension
-                        service.updatePensionRate(self.pensionCollectData()).done(function() {
-                            self.backupDataDirty(self.pensionCollectData());
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alert(res.message);
+            block.invisible();
+            // Update historyId for case clone previous data
+            command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
+            command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
+            command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
+            if (self.isUpdateMode()) {
+                service.checkWelfarePensionInsuranceGradeFeeChange(command).done(function(data) {
+                    block.clear();
+                    if (data) {
+                        dialog.confirm({ messageId: "MsgQ_209" }).ifYes(function() {
+                            self.registerIfValid(command);
                         });
-
-                    }).ifNo(function() {
-                    });
-                }
-                else {
-                    // Validate.
-                    $('.nts-input').ntsEditor('validate');
-                    if ($('.nts-input').ntsError('hasError')) {
-                        dfd.reject();
-                        return dfd.promise();
+                    } else {
+                        self.registerIfValid(command);
                     }
-
-                    service.updatePensionRate(self.pensionCollectData()).done(function() {
-                        self.backupDataDirty(self.pensionCollectData());
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alert(res.message);
-                    });
-                }
-
-                dfd.resolve(self.pensionModel().historyId);
-                return dfd.promise();
+                }).fail(function(err) {
+                    block.clear();
+                    dialog.alertError(err.message);
+                });
+            } else {
+                self.registerIfValid(command);
             }
+        }
 
-            clearErrors(): void {
-                if (nts.uk.ui._viewModel) {
-                    $('.save-error').ntsError('clear');
-                }
-            }
+        formatDataBeforeSubmit (command){
+            let self = this;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate = self.formatWelfareContributionRate(command.bonusEmployeePensionInsuranceRate.femaleContributionRate);
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate = self.formatWelfareContributionRate(command.bonusEmployeePensionInsuranceRate.maleContributionRate);
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate = self.formatWelfareContributionRate(command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate);
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate = self.formatWelfareContributionRate(command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate);
+            return command;
+        }
 
-            /**
-              * On select master data.
-              */
-            onSelectMaster(code: string): void {
-                var self = this;
-                self.isClickHistory(false);
-                self.clearErrors();
-            }
+        formatWelfareContributionRate (contributionFee) {
+            let self = this;
+            contributionFee.individualBurdenRatio = self.formatThreeDigit(contributionFee.individualBurdenRatio);
+            contributionFee.employeeContributionRatio = self.formatThreeDigit(contributionFee.employeeContributionRatio);
+            contributionFee.individualExemptionRate = self.formatThreeDigit(contributionFee.individualExemptionRate);
+            contributionFee.employeeExemptionRate = self.formatThreeDigit(contributionFee.employeeExemptionRate);
+            return contributionFee;
+        }
 
-            /**
-             * Clear all input and switch to new mode.
-             */
-            onRegistNew(): void {
-                var self = this;
-                if (self.canOpenOfficeRegisterDialog()) {
-                    self.OpenModalOfficeRegister();
-                }
-                self.canOpenOfficeRegisterDialog(false);
-                self.isClickHistory(false);
-            }
+        formatThreeDigit (input){
+            input = String(input);
+            return input.substring(0, input.indexOf('.')+4);
+        }
 
-            isDirty(): boolean {
-                var self = this;
-                return self.dirty.isDirty();
-            }
+        registerIfValid(command) {
+            let self = this;
+            block.invisible();
+            service.registerEmployeePension(command).done(function(data) {
+                block.clear();
+                self.selectedWelfareInsurance.valueHasMutated();
+                dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    $('#C2_7').focus();
+                });
+                self.isUpdateMode(true);
+            }).fail(function(err) {
+                block.clear();
+                dialog.alertError(err.message);
+            });
+        }
 
-            public getCurrentOfficeCode(childId: string): string {
-                var self = this;
-                var returnValue: string;
-                if (self.masterHistoryList.length > 0) {
-                    self.masterHistoryList.forEach(function(parentItem) {
-                        if (parentItem.historyList) {
-                            parentItem.historyList.forEach(function(childItem) {
-                                if (childItem.uuid == childId) {
-                                    self.sendOfficeData(parentItem.name);
-                                    returnValue = parentItem.code;
-                                }
-                            });
-                        } else {
-                            return parentItem.code;
+        printPDF() {
+            // TODO
+            console.log('TODO');
+        }
+
+        registerBusinessEstablishment() {
+            let self = this;
+            modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
+                self.isSelectFirstOfficeAndHistory = true;
+                self.jumpTopPageIfNoData = true;
+                self.showAllOfficeAndHistory();
+                $('#C1_5').focus();
+            });
+        }
+
+        standardRemunerationMonthlyAmount() {
+            let self = this;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
+            let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
+            setShared("QMM008_F_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
+            modal("/view/qmm/008/f/index.xhtml").onClosed(() => {
+            });
+        }
+
+        masterCorrectionLog() {
+            // TODO
+            console.log('TODO');
+        }
+
+        createNewHistory() {
+            let self = this;
+            let selectedOffice = self.selectedOffice;
+            let history = selectedOffice.welfareInsuranceRateHistory.history;
+            setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice, history: history });
+            modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
+                let params = getShared("QMM008_G_RES_PARAMS");
+                if (params) {
+                    let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
+                    let historyId = nts.uk.util.randomId();
+                    // update previous history
+                    if (history.length > 0) {
+                        let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                        history[0].endMonth = beforeLastestMonth.format('YYYYMM');
+                    }
+                    // add new history
+                    history.unshift({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
+                    // each office
+                    socialInsuranceOfficeList.forEach(office => {
+                        if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
+                            // add new history and update previous history
+                            office.welfareInsuranceRateHistory.history = history;
+                            office = new model.SocialInsuranceOffice(office);
                         }
                     });
+                    self.socialInsuranceOfficeList(socialInsuranceOfficeList);
+                    self.convertToTreeGridList();
+                    self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + historyId);
+                    // init data
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
+                        self.showEmployeePensionByHistoryId(history[1].historyId);
+                    } else {
+                        self.initBlankData();
+                    }
+                    self.isUpdateMode(false);
                 }
-                return returnValue;
-            }
+                $("#C2_7").focus();
+            });
+        }
 
-            private OpenModalOfficeRegisterWithDirtyCheck() {
-                var self = this;
-                if (self.dirty.isDirty()) {
-                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
-                        self.loadPension(self.backupDataDirty());
-                        self.OpenModalOfficeRegister();
-                        self.dirty.reset();
-                    }).ifNo(function() {
-                    });
+        editHistory() {
+            let self = this;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId, history = selectedOffice.welfareInsuranceRateHistory.history;
+            let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
+            setShared("QMM008_H_PARAMS", { screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: history });
+            modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
+                $("#C1_5").focus();
+                let params = getShared("QMM008_H_RES_PARAMS");
+                if (params) {
+                    self.showAllOfficeAndHistory();
+                    if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
+                        // select office if no history
+                        if (history.length <= 1) {
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
+                        } else {
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)
+                        }
+                    }
                 }
-                else {
-                    self.OpenModalOfficeRegister();
-                }
-            }
+            });
+        }
+        validateRemainRatio(command) {
+            let bonusPensionInsurance = command.bonusEmployeePensionInsuranceRate;
+            let salaryPensuinInrurance = command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate;
+            // C3_9, C3_11 - C4_19, C4_21
+            // C3_9 - C4_19
+            let salaryMaleContributionRate = salaryPensuinInrurance.maleContributionRate;
+            if (Number(salaryMaleContributionRate.individualBurdenRatio) < Number(salaryMaleContributionRate.individualExemptionRate)) $('#C3_9').ntsError('set', { messageId: "MsgQ_219" });
+            // C3_11 - C4_21
+            if (Number(salaryMaleContributionRate.employeeContributionRatio) < Number(salaryMaleContributionRate.employeeExemptionRate)) $('#C3_11').ntsError('set', { messageId: "MsgQ_220" });
+            // C3_18, C3_20 - C4_38, C4_40
+            let salaryFemaleContributionRate = salaryPensuinInrurance.femaleContributionRate;
+            // C3_18 - C4_38
+            if (Number(salaryFemaleContributionRate.individualBurdenRatio) < Number(salaryFemaleContributionRate.individualExemptionRate)) $('#C3_18').ntsError('set', { messageId: "MsgQ_221" });
+            // C3_20 - C4_40
+            if (Number(salaryFemaleContributionRate.employeeContributionRatio) < Number(salaryFemaleContributionRate.employeeExemptionRate)) $('#C3_20').ntsError('set', { messageId: "MsgQ_222" });
+            // C3_13, C3_15 - C4_23, C4_25
+            let bonusMaleContributionRate = bonusPensionInsurance.maleContributionRate;
+            // C3_13 - C4_23
+            if (Number(bonusMaleContributionRate.individualBurdenRatio) < Number(bonusMaleContributionRate.individualExemptionRate)) $('#C3_13').ntsError('set', { messageId: "MsgQ_223" });
+            // C3_15 - C4_25
+            if (Number(bonusMaleContributionRate.employeeContributionRatio) < Number(bonusMaleContributionRate.employeeExemptionRate)) $('#C3_15').ntsError('set', { messageId: "MsgQ_224" });
+            // C3_22, C3_24 - C4_42, C4_44
+            let bonusFemaleContributionRate = bonusPensionInsurance.femaleContributionRate;
+            // C3_22 - C4_42
+            if (Number(bonusFemaleContributionRate.individualBurdenRatio) < Number(bonusFemaleContributionRate.individualExemptionRate)) $('#C3_22').ntsError('set', { messageId: "MsgQ_223" });
+            // C3_24 - C4_44
+            if (Number(bonusFemaleContributionRate.employeeContributionRatio) < Number(bonusFemaleContributionRate.employeeExemptionRate)) $('#C3_24').ntsError('set', { messageId: "MsgQ_224" });
 
-            //open office register dialog
-            private OpenModalOfficeRegister() {
-                var self = this;
-                // Set parent value
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
-                    //when close dialog -> reload office list
-                    var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
-                    self.reloadMasterHistory(codeOfNewOffice);
-                    //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
-                });
-            }
-
-            public OpenModalStandardMonthlyPricePensionWithDirtyCheck() {
-                var self = this;
-                if (self.dirty.isDirty()) {
-                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
-                        self.loadPension(self.backupDataDirty());
-                        self.OpenModalStandardMonthlyPricePension();
-                        self.dirty.reset();
-                    }).ifNo(function() {
-                    });
-                }
-                else {
-                    self.OpenModalStandardMonthlyPricePension();
-                }
-            }
-
-            //open modal standard monthly price pension 
-            public OpenModalStandardMonthlyPricePension() {
-                // Set parent value
-                nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
-                nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
-
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(() => {
-                    // Get child value
-                    var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
-                });
-            }
-
-            //jump back to health
-            public goToHealth() {
-                nts.uk.request.jump("/view/qmm/008/b/index.xhtml");
-            }
         }
 
-        export class PensionRateModel {
-            historyId: string;
-            companyCode: string;
-            officeCode: KnockoutObservable<string>;
-            startMonth: KnockoutObservable<string>;
-            endMonth: KnockoutObservable<string>;
-            fundInputApply: KnockoutObservable<number>;
-            autoCalculate: KnockoutObservable<number>;
-            rateItems: KnockoutObservable<PensionRateItemModel>;
-            fundRateItems: KnockoutObservable<FunRateItemModel>;
-            roundingMethods: KnockoutObservable<PensionRateRoundingModel>;
-            maxAmount: KnockoutObservable<number>;
-            childContributionRate: KnockoutObservable<number>;
-            constructor() {
-                this.startMonth = ko.observable('');
-                this.endMonth = ko.observable('');
-                this.officeCode = ko.observable('');
-                this.fundInputApply = ko.observable(0);
-                this.autoCalculate = ko.observable(0);
-                this.rateItems = ko.observable(new PensionRateItemModel());
-                this.fundRateItems = ko.observable(new FunRateItemModel());
-                this.roundingMethods = ko.observable(new PensionRateRoundingModel());
-                this.maxAmount = ko.observable(0);
-                this.childContributionRate = ko.observable(0);
-            }
+        updateOptionalData (command) {
+            // update to 0 to prevent handling from format exception
+            // value change to null by server
+            let bonusEmployeePension = command.bonusEmployeePensionInsuranceRate.historyId;
+            let employeePensionMonthly = command.employeesPensionMonthlyInsuranceFee.historyId;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate.individualExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate.employeeExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate.individualExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate.employeeExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate.individualExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate.employeeExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate.individualExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate.employeeExemptionRate = 0;
+            return command;
         }
 
-        export class PensionRateItemModel {
-            pensionSalaryPersonalSon: KnockoutObservable<number>;
-            pensionSalaryCompanySon: KnockoutObservable<number>;
-            pensionBonusPersonalSon: KnockoutObservable<number>;
-            pensionBonusCompanySon: KnockoutObservable<number>;
-
-            pensionSalaryPersonalDaughter: KnockoutObservable<number>;
-            pensionSalaryCompanyDaughter: KnockoutObservable<number>;
-            pensionBonusPersonalDaughter: KnockoutObservable<number>;
-            pensionBonusCompanyDaughter: KnockoutObservable<number>;
-
-            pensionSalaryPersonalUnknown: KnockoutObservable<number>;
-            pensionSalaryCompanyUnknown: KnockoutObservable<number>;
-            pensionBonusPersonalUnknown: KnockoutObservable<number>;
-            pensionBonusCompanyUnknown: KnockoutObservable<number>;
-            constructor() {
-                this.pensionSalaryPersonalSon = ko.observable(0);
-                this.pensionSalaryCompanySon = ko.observable(0);
-                this.pensionBonusPersonalSon = ko.observable(0);
-                this.pensionBonusCompanySon = ko.observable(0);
-
-                this.pensionSalaryPersonalDaughter = ko.observable(0);
-                this.pensionSalaryCompanyDaughter = ko.observable(0);
-                this.pensionBonusPersonalDaughter = ko.observable(0);
-                this.pensionBonusCompanyDaughter = ko.observable(0);
-
-                this.pensionSalaryPersonalUnknown = ko.observable(0);
-                this.pensionSalaryCompanyUnknown = ko.observable(0);
-                this.pensionBonusPersonalUnknown = ko.observable(0);
-                this.pensionBonusCompanyUnknown = ko.observable(0);
-            }
-        }
-
-        export class FunRateItemModel {
-            salaryPersonalSonExemption: KnockoutObservable<number>;
-            salaryCompanySonExemption: KnockoutObservable<number>;
-            bonusPersonalSonExemption: KnockoutObservable<number>;
-            bonusCompanySonExemption: KnockoutObservable<number>;
-
-            salaryPersonalSonBurden: KnockoutObservable<number>;
-            salaryCompanySonBurden: KnockoutObservable<number>;
-            bonusPersonalSonBurden: KnockoutObservable<number>;
-            bonusCompanySonBurden: KnockoutObservable<number>;
-
-            salaryPersonalDaughterExemption: KnockoutObservable<number>;
-            salaryCompanyDaughterExemption: KnockoutObservable<number>;
-            bonusPersonalDaughterExemption: KnockoutObservable<number>;
-            bonusCompanyDaughterExemption: KnockoutObservable<number>;
-
-            salaryPersonalDaughterBurden: KnockoutObservable<number>;
-            salaryCompanyDaughterBurden: KnockoutObservable<number>;
-            bonusPersonalDaughterBurden: KnockoutObservable<number>;
-            bonusCompanyDaughterBurden: KnockoutObservable<number>;
-
-            salaryPersonalUnknownExemption: KnockoutObservable<number>;
-            salaryCompanyUnknownExemption: KnockoutObservable<number>;
-            bonusPersonalUnknownExemption: KnockoutObservable<number>;
-            bonusCompanyUnknownExemption: KnockoutObservable<number>;
-
-            salaryPersonalUnknownBurden: KnockoutObservable<number>;
-            salaryCompanyUnknownBurden: KnockoutObservable<number>;
-            bonusPersonalUnknownBurden: KnockoutObservable<number>;
-            bonusCompanyUnknownBurden: KnockoutObservable<number>;
-
-            constructor() {
-                this.salaryPersonalSonExemption = ko.observable(0);
-                this.salaryCompanySonExemption = ko.observable(0);
-                this.bonusPersonalSonExemption = ko.observable(0);
-                this.bonusCompanySonExemption = ko.observable(0);
-
-
-                this.salaryPersonalSonBurden = ko.observable(0);
-                this.salaryCompanySonBurden = ko.observable(0);
-                this.bonusPersonalSonBurden = ko.observable(0);
-                this.bonusCompanySonBurden = ko.observable(0);
-
-                this.salaryPersonalDaughterExemption = ko.observable(0);
-                this.salaryCompanyDaughterExemption = ko.observable(0);
-                this.bonusPersonalDaughterExemption = ko.observable(0);
-                this.bonusCompanyDaughterExemption = ko.observable(0);
-
-                this.salaryPersonalDaughterBurden = ko.observable(0);
-                this.salaryCompanyDaughterBurden = ko.observable(0);
-                this.bonusPersonalDaughterBurden = ko.observable(0);
-                this.bonusCompanyDaughterBurden = ko.observable(0);
-
-                this.salaryPersonalUnknownExemption = ko.observable(0);
-                this.salaryCompanyUnknownExemption = ko.observable(0);
-                this.bonusPersonalUnknownExemption = ko.observable(0);
-                this.bonusCompanyUnknownExemption = ko.observable(0);
-
-                this.salaryPersonalUnknownBurden = ko.observable(0);
-                this.salaryCompanyUnknownBurden = ko.observable(0);
-                this.bonusPersonalUnknownBurden = ko.observable(0);
-                this.bonusCompanyUnknownBurden = ko.observable(0);
-            }
-        }
-        export class PensionRateRoundingModel {
-            pensionSalaryPersonalComboBox: KnockoutObservableArray<Enum>;
-            pensionSalaryPersonalComboBoxItemName: KnockoutObservable<string>;
-            pensionSalaryPersonalComboBoxCurrentCode: KnockoutObservable<number>
-            pensionSalaryPersonalComboBoxSelectedCode: KnockoutObservable<string>;
-
-            pensionSalaryCompanyComboBox: KnockoutObservableArray<Enum>;
-            pensionSalaryCompanyComboBoxItemName: KnockoutObservable<string>;
-            pensionSalaryCompanyComboBoxCurrentCode: KnockoutObservable<number>
-            pensionSalaryCompanyComboBoxSelectedCode: KnockoutObservable<string>;
-
-            pensionBonusPersonalComboBox: KnockoutObservableArray<Enum>;
-            pensionBonusPersonalComboBoxItemName: KnockoutObservable<string>;
-            pensionBonusPersonalComboBoxCurrentCode: KnockoutObservable<number>
-            pensionBonusPersonalComboBoxSelectedCode: KnockoutObservable<string>;
-
-            pensionBonusCompanyComboBox: KnockoutObservableArray<Enum>;
-            pensionBonusCompanyComboBoxItemName: KnockoutObservable<string>;
-            pensionBonusCompanyComboBoxCurrentCode: KnockoutObservable<number>
-            pensionBonusCompanyComboBoxSelectedCode: KnockoutObservable<string>;
-            constructor() {
-                this.pensionSalaryPersonalComboBox = ko.observableArray<Enum>(null);
-                this.pensionSalaryPersonalComboBoxItemName = ko.observable('');
-                this.pensionSalaryPersonalComboBoxCurrentCode = ko.observable(1);
-                this.pensionSalaryPersonalComboBoxSelectedCode = ko.observable('');
-
-                this.pensionSalaryCompanyComboBox = ko.observableArray<Enum>(null);
-                this.pensionSalaryCompanyComboBoxItemName = ko.observable('');
-                this.pensionSalaryCompanyComboBoxCurrentCode = ko.observable(3);
-                this.pensionSalaryCompanyComboBoxSelectedCode = ko.observable('002');
-
-                this.pensionBonusPersonalComboBox = ko.observableArray<Enum>(null);
-                this.pensionBonusPersonalComboBoxItemName = ko.observable('');
-                this.pensionBonusPersonalComboBoxCurrentCode = ko.observable(3);
-                this.pensionBonusPersonalComboBoxSelectedCode = ko.observable('002');
-
-                this.pensionBonusCompanyComboBox = ko.observableArray<Enum>(null);
-                this.pensionBonusCompanyComboBoxItemName = ko.observable('');
-                this.pensionBonusCompanyComboBoxCurrentCode = ko.observable(3);
-                this.pensionBonusCompanyComboBoxSelectedCode = ko.observable('002');
-            }
-        }
-
-        export class PaymentType {
-            static SALARY = 'Salary';
-            static BONUS = 'Bonus'
-        }
-        export class Rounding {
-            static ROUNDUP = 'RoundUp';
-            static TRUNCATION = 'Truncation';
-            static ROUNDDOWN = 'RoundDown';
-            static DOWN5_UP6 = 'Down5_Up6';
-            static DOWN4_UP5 = 'Down4_Up5'
-        }
-        export class InsuranceGender {
-            static MALE = "Male";
-            static FEMALE = "Female";
-            static UNKNOW = "Unknow";
-        }
-        export enum AutoCalculateType {
-            Auto = 0,
-            Manual = 1
-        }
     }
 }
+

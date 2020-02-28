@@ -5686,6 +5686,17 @@ module nts.uk.ui.jqueryExtentions {
                         setting.descriptor.headerCells = owner._headerCells;
                         setting.descriptor.headerParent = owner._headerParent;
                     }
+                    
+                    if (owner.dataSource._filter && owner.dataSource._filteredData 
+                        && _.size(owner.dataSource._filteredData) <= _.size(owner.dataSource._origDs)) {
+                        let pk = owner.dataSource.settings.primaryKey;
+                        let keyIdxes = {};
+                        owner.dataSource._filteredData.forEach((d, i) => {
+                            keyIdxes[d[pk]] = i;
+                        });
+                        
+                        setting.descriptor.keyIdxes = keyIdxes;
+                    }
                 });
             }
             
@@ -5742,11 +5753,15 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(colIdx)) {
                     let colIdx = descriptor.isFixedColumn(key);
                     if (!util.isNullOrUndefined(colIdx)) {
-                        return descriptor.fixedTable.find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
+                        return (descriptor.fixedTable || fixedColumns.getFixedTable($grid)).find("tr:eq(" + (idx - descriptor.startRow) + ") td:eq(" + colIdx + ")");    
                     }
                 }
-                if (!util.isNullOrUndefined(idx) && idx >= descriptor.startRow 
-                    && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                if (_.size(descriptor.elements) > 0 && !util.isNullOrUndefined(idx) 
+                    && idx >= descriptor.startRow && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
+                    if (_.size(descriptor.elements[0]) === _.size(descriptor.fixedColumns) + _(descriptor.colIdxes).keys().size()) {
+                        return $(descriptor.elements[idx - descriptor.startRow][colIdx + _.size(descriptor.fixedColumns)]);
+                    }
+                    
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                 }
                 

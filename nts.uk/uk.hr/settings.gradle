@@ -1,0 +1,33 @@
+include 'hr.web:nts.uk.hr.web'
+
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ac'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.infra'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.ws'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pub'
+include 'hr.ctx:hr.shared:nts.uk.ctx.hr.shared.pubimp'
+
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ac'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.infra'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.ws'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pub'
+include 'hr.ctx:hr.develop:nts.uk.ctx.hr.develop.pubimp'
+
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ac'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.dom'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.infra'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.ws'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pub'
+include 'hr.ctx:hr.notice:nts.uk.ctx.hr.notice.pubimp'
+
+include 'hr.screen:nts.uk.screen.hr.ws'
+include 'hr.screen:nts.uk.screen.hr.app'
+include 'hr.screen:nts.uk.screen.hr.infra'
+
+include 'hr.file:nts.uk.file.hr.ws'
+include 'hr.file:nts.uk.file.hr.app'
+include 'hr.file:nts.uk.file.hr.infra'

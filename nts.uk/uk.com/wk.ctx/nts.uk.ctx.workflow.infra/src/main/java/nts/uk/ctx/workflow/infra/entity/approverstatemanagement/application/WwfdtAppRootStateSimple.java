@@ -26,9 +26,6 @@ public class WwfdtAppRootStateSimple extends UkJpaEntity {
 	@EmbeddedId
 	public WwfdpApprovalRootStatePK wwfdpApprovalRootStatePK;
 	
-	@Column(name="HIST_ID")
-	public String historyID;
-	
 	@Column(name="EMPLOYEE_ID")
 	public String employeeID;
 	

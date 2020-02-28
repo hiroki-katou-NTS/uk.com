@@ -1,0 +1,15 @@
+html {
+	overflow: hidden;
+}
+
+.layout-control.dragable {
+	width: 1100px !important;
+}
+
+.layout-control div.ui-sortable {
+	overflow-x: auto !important;
+}
+
+.layout-control .item-classification{
+	width: 685px !important;
+}

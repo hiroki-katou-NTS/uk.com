@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment;
 
+import java.util.Optional;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
@@ -92,4 +94,20 @@ public class JpaEmploymentSetMemento implements EmploymentSetMemento {
 		this.typedValue.setMemo(memo.v());
 	}
 
+	@Override
+	public void setEmpCommonMasterId(String empCommonMasterId) {
+		this.typedValue.setEmpCommonMasterId(empCommonMasterId);
+	}
+
+	
+		//this.typedValue.setEmpCommonMasterItemId(empCommonMasterItemId);
+	
+	@Override
+	public void setEmpCommonMasterItemId(String empCommonMasterItemId) {
+		this.typedValue.setEmpCommonMasterItemId(empCommonMasterItemId);
+		//Optional.ofNullable(empCommonMasterItemId);
+		
+	}
+
+	
 }

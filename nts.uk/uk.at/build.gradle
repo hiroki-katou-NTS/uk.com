@@ -302,6 +302,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra') {
 	dependencies {
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 	}
@@ -370,6 +371,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
 	dependencies {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
@@ -501,6 +503,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.infra') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+        compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 	}
 }
 
@@ -657,6 +660,7 @@ project (':at.web:nts.uk.at.web') {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 		
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'

@@ -3,10 +3,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import ListType = kcp.share.list.ListType;
     import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-    import TreeType = kcp.share.tree.TreeType;
-//    import StartMode = kcp.share.tree.StartMode;
-    //end
+    import StartMode = kcp.share.tree.StartMode;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
@@ -57,18 +54,14 @@ module nts.uk.com.view.ccg.share.ccg {
             /** Quick search tab options */
             showAllReferableEmployee: boolean; // 参照可能な社員すべて
             showOnlyMe: boolean; // 自分だけ
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            showSameDepartment: boolean; // 同じ部門の社員
-//            showSameDepartmentAndChild: boolean; // 同じ部門とその配下の社員
-            //end
+            showSameDepartment: boolean; // 同じ部門の社員
+            showSameDepartmentAndChild: boolean; // 同じ部門とその配下の社員
             showSameWorkplace: boolean; // 同じ職場の社員
             showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
 
             /** Advanced search properties */
             showEmployment: boolean; // 雇用条件
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            showDepartment: boolean; // 部門条件
-            //end
+            showDepartment: boolean; // 部門条件
             showWorkplace: boolean; // 職場条件
             showClassification: boolean; // 分類条件
             showJobTitle: boolean; // 職位条件
@@ -81,9 +74,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isOpenEmploymentList: KnockoutObservable<boolean>;
             isOpenClassificationList: KnockoutObservable<boolean>;
             isOpenJoptitleList: KnockoutObservable<boolean>;
-            ///start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            isOpenDepartmentList: KnockoutObservable<boolean>;
-            //end
+            isOpenDepartmentList: KnockoutObservable<boolean>;
             isOpenWorkplaceList: KnockoutObservable<boolean>;
             isOpenWorkTypeList: KnockoutObservable<boolean>;
             isInDialog: boolean;
@@ -99,9 +90,7 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeEmployment: KnockoutObservableArray<string>;
             selectedCodeClassification: KnockoutObservableArray<string>;
             selectedCodeJobtitle: KnockoutObservableArray<string>;
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            selectedCodeDepartment: KnockoutObservableArray<string>;
-            //end
+            selectedCodeDepartment: KnockoutObservableArray<string>;
             selectedCodeWorkplace: KnockoutObservableArray<string>;
             selectedCodeEmployee: KnockoutObservableArray<string>;
 
@@ -109,9 +98,7 @@ module nts.uk.com.view.ccg.share.ccg {
             employments: ComponentOption;
             classifications: ComponentOption;
             jobtitles: ComponentOption;
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            departments: TreeComponentOption;
-            //end
+            departments: TreeComponentOption;
             workplaces: TreeComponentOption;
             employeeinfo: ComponentOption;
             closureList: KnockoutObservableArray<any>;
@@ -190,9 +177,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedCodeEmployment = ko.observableArray([]);
                 self.selectedCodeClassification = ko.observableArray([]);
                 self.selectedCodeJobtitle = ko.observableArray([]);
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.selectedCodeDepartment = ko.observableArray([]);
-                //end
+                self.selectedCodeDepartment = ko.observableArray([]);
                 self.selectedCodeWorkplace = ko.observableArray([]);
                 self.selectedCodeEmployee = ko.observableArray([]);
                 self.closureList = ko.observableArray([]);
@@ -219,9 +204,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenEmploymentList = ko.observable(false);
                 self.isOpenClassificationList = ko.observable(false);
                 self.isOpenJoptitleList = ko.observable(false);
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.isOpenDepartmentList = ko.observable(false);
-                //end
+                self.isOpenDepartmentList = ko.observable(false);
                 self.isOpenWorkplaceList = ko.observable(false);
                 self.isOpenWorkTypeList = ko.observable(false);
                 self.isFocusAdvancedSearchTab = ko.pureComputed(() => {
@@ -532,14 +515,12 @@ module nts.uk.com.view.ccg.share.ccg {
                         self.isOpenJoptitleList(true);
                     }
                 });
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                $('#DepartmentList').on('keydown', function(e) {
-//                    if (e.which == TAB_KEY_CODE && !self.isOpenDepartmentList()) {
-//                        $('#tab-2 #DepartmentList .ui-accordion-header').click();
-//                        self.isOpenDepartmentList(true);
-//                    }
-//                });
-                //end
+                $('#DepartmentList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenDepartmentList()) {
+                        $('#tab-2 #DepartmentList .ui-accordion-header').click();
+                        self.isOpenDepartmentList(true);
+                    }
+                });
                 $('#WorkplaceList').on('keydown', function(e) {
                     if (e.which == TAB_KEY_CODE && !self.isOpenWorkplaceList()) {
                         $('#tab-2 #WorkplaceList .ui-accordion-header').click();
@@ -595,6 +576,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             } else {
                                 dfd.resolve();
                             }
+                            nts.uk.ui.block.clear();
                         });
                     });
                 };
@@ -604,42 +586,37 @@ module nts.uk.com.view.ccg.share.ccg {
                 } else {
                     initComponent();
                 }
+
                 return dfd.promise();
             }
 
             private setShowHideByReferenceRange(): void {
                 let self = this;
                 // set advanced search tab flag
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.showAdvancedSearchTab = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-//                    self.showAdvancedSearchTab && (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
-                //end
+                self.showAdvancedSearchTab = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.showAdvancedSearchTab && (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.showAllReferableEmployee = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-//                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
-//                    && self.showAllReferableEmployee;
-//
-//                // 部門対応 #106786
-//                self.showSameDepartment = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-//                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
-//                    && self.showSameDepartment;
-//                self.showSameDepartmentAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-//                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
-//                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
-//                    && self.showSameDepartmentAndChild;
-                //end
+
+                self.showAllReferableEmployee = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                    && self.showAllReferableEmployee;
+
+                // 部門対応 #106786
+                self.showSameDepartment = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                    && self.showSameDepartment;
+                self.showSameDepartmentAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
+                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
+                    && self.showSameDepartmentAndChild;
+
                 self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
                     self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameWorkplace;
                 self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                        || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
-//                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
-//                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
-                    //end
+                    (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
+                        || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
                     && self.showSameWorkplaceAndChild;
             }
 
@@ -650,76 +627,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 $.when(service.getRefRangeBySysType(self.systemType),
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    self.loadClosure()).done((refRange, noValue) => {
-                        self.referenceRange = refRange;
-                        
-                        self.loadWkpManagedByLoginnedUser().done(() => {
-                            dfd.resolve();
-                        }).fail(err => nts.uk.ui.dialog.alertError(err));
+                    self.loadClosure()
+                ).done((refRange, noValue) => {
+                    self.referenceRange = refRange;
+                    dfd.resolve();
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
 
                 return dfd.promise();
             }
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            private loadWkpManagedByLoginnedUser(): JQueryPromise<any> {
-                let dfd = $.Deferred<void>();
-                let self = this,
-                    isCheckForAdvancedSearch = self.showAdvancedSearchTab && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF,
-                    isCheckForAllReferable = self.showAllReferableEmployee && self.systemType === ConfigEnumSystemType.EMPLOYMENT && self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF;
-                  
-                if (isCheckForAdvancedSearch || isCheckForAllReferable) {
-                    service.getCanManageWpkForLoginUser().done(manageWkp => {
-                        self.checkForAdvancedSearch(manageWkp);
-                        self.checkForAllReferable(manageWkp);
-                        
-                        dfd.resolve();
-                    }).fail(err => dfd.reject(err));    
-                } else {
-                    self.checkForAdvancedSearch([]);
-                    self.checkForAllReferable([]);
-                    
-                    dfd.resolve(); 
-                }
-
-                return dfd.promise();
-            }
-            
-            private checkForAdvancedSearch (manageWkp: Array<any>) {
-                let self = this;
-                if (self.showAdvancedSearchTab) {
-                    if (self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF) {
-                        if (self.systemType === ConfigEnumSystemType.EMPLOYMENT) {
-                            if (_.isEmpty(manageWkp)) {
-                                self.showAdvancedSearchTab = false;
-                            }
-                        } else {
-                            self.showAdvancedSearchTab = false;
-                        }
-                    }
-                }
-            }
-            
-            private checkForAllReferable (manageWkp: Array<any>) {
-                let self = this;
-                if (self.systemType === ConfigEnumSystemType.ADMINISTRATOR) {
-                    self.showAllReferableEmployee = true;
-                } else {
-                    if (self.showAllReferableEmployee) {
-                        if (self.referenceRange === EmployeeReferenceRange.ONLY_MYSELF) {
-                            if (self.systemType === ConfigEnumSystemType.EMPLOYMENT) {
-                                if (_.isEmpty(manageWkp)) {
-                                    self.showAllReferableEmployee = false;        
-                                }
-                            } else {
-                                self.showAllReferableEmployee = false;
-                            }       
-                        }
-                        
-                    }    
-                }
-            }
-            //end
 
             /**
              * Set advanced search param
@@ -727,16 +642,11 @@ module nts.uk.com.view.ccg.share.ccg {
             private setAdvancedSearchParam(): void {
                 let self = this;
                 let param = this.queryParam;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                param.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
-//                param.referenceRange = SearchReferenceRange.ALL_REFERENCE_RANGE;
-                //end
+                param.referenceRange = SearchReferenceRange.ALL_REFERENCE_RANGE;
 
                 // filter param
                 param.filterByEmployment = self.showEmployment;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                param.filterByDepartment = self.showDepartment;
-                //end
+                param.filterByDepartment = self.showDepartment;
                 param.filterByWorkplace = self.showWorkplace;
                 param.filterByClassification = self.showClassification;
                 param.filterByJobTitle = self.showJobTitle;
@@ -755,9 +665,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.employmentCodes = self.showEmployment ? self.selectedCodeEmployment() : [];
                 self.queryParam.classificationCodes = self.showClassification ? self.selectedCodeClassification() : [];
                 self.queryParam.jobTitleCodes = self.showJobTitle ? self.selectedCodeJobtitle() : [];
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.queryParam.departmentCodes = self.showDepartment ? self.selectedCodeDepartment() : [];
-                //end
+                self.queryParam.departmentCodes = self.showDepartment ? self.selectedCodeDepartment() : [];
                 self.queryParam.workplaceCodes = self.showWorkplace ? self.selectedCodeWorkplace() : [];
                 self.queryParam.worktypeCodes = self.showWorktype ? self.selectedWorkTypeCode() : [];
                 self.queryParam.closureIds = self.showClosure ? [self.selectedClosure()] : [];
@@ -798,18 +706,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Quick search tab options */
                 self.showAllReferableEmployee = _.isNil(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
                 self.showOnlyMe = true;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.showSameDepartment = _.isNil(options.showSameDepartment) ? false : options.showSameDepartment;
-//                self.showSameDepartmentAndChild = _.isNil(options.showSameDepartmentAndChild) ? false : options.showSameDepartmentAndChild;
-                //end
+                self.showSameDepartment = _.isNil(options.showSameDepartment) ? false : options.showSameDepartment;
+                self.showSameDepartmentAndChild = _.isNil(options.showSameDepartmentAndChild) ? false : options.showSameDepartmentAndChild;
                 self.showSameWorkplace = _.isNil(options.showSameWorkplace) ? false : options.showSameWorkplace;
                 self.showSameWorkplaceAndChild = _.isNil(options.showSameWorkplaceAndChild) ? false: options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
                 self.showEmployment = _.isNil(options.showEmployment) ? true : options.showEmployment;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.showDepartment = _.isNil(options.showDepartment) ? true : options.showDepartment;
-                //end
+                self.showDepartment = _.isNil(options.showDepartment) ? true : options.showDepartment;
                 self.showWorkplace = _.isNil(options.showWorkplace) ? true : options.showWorkplace;
                 self.showClassification = _.isNil(options.showClassification) ? true : options.showClassification;
                 self.showJobTitle = _.isNil(options.showJobTitle) ? true : options.showJobTitle;
@@ -1325,55 +1229,30 @@ module nts.uk.com.view.ccg.share.ccg {
             private reloadAdvanceSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
                 if (!self.tab2HasLoaded) {
                     self.tab2HasLoaded = true;
                 }
                 // set advanced search param
                 self.queryParam.retireStart = self.retireStart();
                 self.queryParam.retireEnd = self.retireEnd();
+
                 // reload advanced search tab.
                 if (_.isEmpty($('.blockUI.blockOverlay'))) {
                     nts.uk.ui.block.grayout();
                 }
+
                 self.setComponentOptions();
-                self.loadEmploymentPart()
-                    .done(() => self.loadClassificationPart()
-                        .done(() => self.loadJobTitlePart()
-                            .done(() => self.loadWorkplacePart()
-                                .done(() => self.loadWorktypePart()
-                                    .done(() => {
-                                        nts.uk.ui.block.clear();// clear block UI
-                                        self.fixComponentWidth();
-                                        dfd.resolve();
-                                    })))));
-//                if (self.showAdvancedSearchTab) {
-//                    if (!self.tab2HasLoaded) {
-//                        self.tab2HasLoaded = true;
-//                    }
-//                    // set advanced search param
-//                    self.queryParam.retireStart = self.retireStart();
-//                    self.queryParam.retireEnd = self.retireEnd();
-                // reload advanced search tab.
-//                    if (_.isEmpty($('.blockUI.blockOverlay'))) {
-//                        nts.uk.ui.block.grayout();
-//                    }
-//                    self.setComponentOptions();
-//                    $.when(self.loadEmploymentPart(),
-//                        self.loadClassificationPart(),
-//                        self.loadJobTitlePart(),
-//                        self.loadDepartmentPart(),
-//                        self.loadWorkplacePart(),
-//                        self.loadWorktypePart()
-//                    ).done(() => {
-//                        nts.uk.ui.block.clear();// clear block UI
-//                        self.fixComponentWidth();
-//                        dfd.resolve();
-//                    });
-//                } else {
-//                    dfd.resolve();
-//                }
-                //end
+                $.when(self.loadEmploymentPart(),
+                    self.loadClassificationPart(),
+                    self.loadJobTitlePart(),
+                    self.loadDepartmentPart(),
+                    self.loadWorkplacePart(),
+                    self.loadWorktypePart()
+                ).done(() => {
+                    nts.uk.ui.block.clear();// clear block UI
+                    self.fixComponentWidth();
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -1446,20 +1325,18 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Load department part
              */
-            ///start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            private loadDepartmentPart(): JQueryPromise<void> {
-//                let self = this;
-//                let dfd = $.Deferred<void>();
-//                if (self.showDepartment) {
-//                    $('#departmentList').ntsTreeComponent(self.departments).done(() => {
-//                        dfd.resolve();
-//                    });
-//                } else {
-//                    dfd.resolve();
-//                }
-//                return dfd.promise();
-//            }
-            //end
+            private loadDepartmentPart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showDepartment) {
+                    $('#departmentList').ntsTreeComponent(self.departments).done(() => {
+                        dfd.resolve();
+                    });
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
 
             /**
              * Load workplace part
@@ -1468,18 +1345,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showWorkplace) {
-                    ///start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
-                        .done(selectedCodes => {
-                            self.selectedCodeWorkplace(selectedCodes);
-                            $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
-                                dfd.resolve();
-                            });
-                        })
-//                    $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
-//                        dfd.resolve();
-//                    });
-                    //end
+                    $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
+                        dfd.resolve();
+                    });
                 } else {
                     dfd.resolve();
                 }
@@ -1507,44 +1375,33 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function click by button detail department or work place (open dialog)
              */
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            detailWorkplace(): void {            
-//            detailDepartmentWorkplace(startMode: StartMode): void {
-            //end
+            detailDepartmentWorkplace(startMode: StartMode): void {
                 let self = this;
                 let inputCDL008 = {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
                     selectedSystemType: self.systemType,
+                    selectedCodes: startMode == 0 ? self.selectedCodeWorkplace() : self.selectedCodeDepartment(),
                     isShowBaseDate: false,
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    selectedCodes: self.selectedCodeWorkplace(),
-//                    selectedCodes: startMode == 0 ? self.selectedCodeWorkplace() : self.selectedCodeDepartment(),
-//                    startMode: startMode
-                    //end
+                    startMode: startMode
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
                 nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
                     if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                         return;
                     }
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    // reload KCP004
-                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
-                    $('#workplaceList').ntsTreeComponent(self.workplaces);
-//                    // 部門対応
-//                    if (startMode == StartMode.WORKPLACE) {
-//                        // reload selected workplace
-//                        self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
-//                        self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-//                        $('#workplaceList').ntsTreeComponent(self.workplaces);
-//                    } else {
-//                        // reload selected department
-//                        self.selectedCodeDepartment(nts.uk.ui.windows.getShared('outputCDL008'));
-//                        self.departments.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-//                        $('#departmentList').ntsTreeComponent(self.departments);
-//                    }
-                    //end
+                    // 部門対応
+                    if (startMode == StartMode.WORKPLACE) {
+                        // reload selected workplace
+                        self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
+                        self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                        $('#workplaceList').ntsTreeComponent(self.workplaces);
+                    } else {
+                        // reload selected department
+                        self.selectedCodeDepartment(nts.uk.ui.windows.getShared('outputCDL008'));
+                        self.departments.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                        $('#departmentList').ntsTreeComponent(self.departments);
+                    }
                 });
             }
 
@@ -1647,14 +1504,11 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmployeeLogin(): void {
                 let self = this;
                 nts.uk.ui.block.grayout(); // block ui
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                let param = {
-//                    baseDate: moment.utc().toDate(),
-//                    systemType: self.systemType
-//                };
-//                service.searchEmployeeByLogin(param)
-                //end
-                service.searchEmployeeByLogin(new Date(moment().format('YYYY-MM-DD')).toISOString(), self.systemType)                
+                let param = {
+                    baseDate: moment.utc("2018-06-30 00:00:00").toDate(),
+                    systemType: self.systemType
+                };
+                service.searchEmployeeByLogin(param)
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
@@ -1879,12 +1733,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1195' });
                     return false;
                 }
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                if (self.showDepartment && nts.uk.util.isNullOrEmpty(self.selectedCodeDepartment())) {
-//                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1196' });
-//                    return false;
-//                }
-                //end
+                if (self.showDepartment && nts.uk.util.isNullOrEmpty(self.selectedCodeDepartment())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1196' });
+                    return false;
+                }
                 if (self.showWorkplace && nts.uk.util.isNullOrEmpty(self.selectedCodeWorkplace())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1197' });
                     return false;
@@ -1968,10 +1820,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return {
                         code: item.employeeCode,
                         name: item.employeeName,
-                        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                        workplaceName: item.workplaceName                        
-//                        affiliationName: item.affiliationName
-                        //end
+                        affiliationName: item.affiliationName
                     };
                 });
             }
@@ -1979,18 +1828,12 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * search Employee by Reference range
              */
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            public searchAllListEmployee(): void {            
+            public searchEmployeeByReferenceRange(referenceRange: SearchReferenceRange): void {
                 var self = this;
-                self.queryParam.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;                
+                self.queryParam.referenceRange = referenceRange;
                 self.quickSearchEmployee();
             }
-//            public searchEmployeeByReferenceRange(referenceRange: SearchReferenceRange): void {
-//                var self = this;
-//                self.queryParam.referenceRange = referenceRange;
-//                self.quickSearchEmployee();
-//            }
-            //end
+
             /**
              * Search current login employee
              */
@@ -2002,41 +1845,20 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // A：締め状態更新
                 if (self.systemType == ConfigEnumSystemType.EMPLOYMENT && self.showClosure) {
-                    self.getEmployeeLogin();
-                    //hoatt #107198
-//                    service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
-//                        if (_.isNil(id)) {
-//                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1434' });
-//                            return;
-//                        }
-//                        if (self.selectedClosure() != id) {
-//                            self.selectedClosure(id);
-//                        }
-//                        self.getEmployeeLogin();
-//                    });
+                    service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
+                        if (_.isNil(id)) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1434' });
+                            return;
+                        }
+                        if (self.selectedClosure() != id) {
+                            self.selectedClosure(id);
+                        }
+                        self.getEmployeeLogin();
+                    });
                 } else {
                     self.getEmployeeLogin();
                 }
             }
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)            
-            /**
-             * search Employee of Departmant_only
-             */
-            public searchEmployeeOfDepOnly(): void {
-                var self = this;
-                self.queryParam.referenceRange = SearchReferenceRange.DEPARTMENT_ONLY;
-                self.quickSearchEmployee();
-            }
-            
-            /**
-             * search Employee of Departmant and child
-             */
-            public searchEmployeeOfDepAndChild(): void {
-                var self = this;
-                self.queryParam.referenceRange = SearchReferenceRange.DEPARTMENT_AND_CHILD;
-                self.quickSearchEmployee();
-            }
-            //end
 
             /**
              * Search employee by code
@@ -2259,38 +2081,33 @@ module nts.uk.com.view.ccg.share.ccg {
                     tabindex: self.ccg001Tabindex,
                     maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                 };
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//                self.departments = {
-//                    isShowAlreadySet: false,
-//                    systemType: self.systemType,
-//                    isMultipleUse: true,
-//                    isMultiSelect: true,
-//                    startMode: StartMode.DEPARTMENT,
-//                    selectType: SelectType.SELECT_ALL,
-//                    isShowSelectButton: true,
-//                    selectedId: self.selectedCodeDepartment,
-//                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-//                    maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
-//                    isFullView: true,
-//                    hasPadding: false,
-//                    tabindex: self.ccg001Tabindex,
-//                    isDialog: true
-//                };
-                //end
+
+                self.departments = {
+                    isShowAlreadySet: false,
+                    systemType: self.systemType,
+                    isMultipleUse: true,
+                    isMultiSelect: true,
+                    startMode: StartMode.DEPARTMENT,
+                    selectType: SelectType.SELECT_ALL,
+                    isShowSelectButton: true,
+                    selectedId: self.selectedCodeDepartment,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isFullView: true,
+                    hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
+                    isDialog: true
+                };
+
                 self.workplaces = {
                     isShowAlreadySet: false,
                     systemType: self.systemType,
                     isMultipleUse: true,
                     isMultiSelect: true,
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    treeType: TreeType.WORK_PLACE,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedWorkplaceId: self.selectedCodeWorkplace,                    
-//                    startMode: StartMode.WORKPLACE,
-//                    selectType: SelectType.SELECT_ALL,
-//                    selectedId: self.selectedCodeWorkplace,
-                    //end
+                    startMode: StartMode.WORKPLACE,
+                    selectType: SelectType.SELECT_ALL,
                     isShowSelectButton: true,
+                    selectedId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
@@ -2328,14 +2145,9 @@ module nts.uk.com.view.ccg.share.ccg {
         }
         
         export class ReferenceRange {
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            static ALL_EMPLOYEE = 0;
-            static DEPARTMENT_AND_CHILD = 1;
-            static DEPARTMENT_ONLY = 2;            
-//            static ALL_REFERENCE_RANGE = 0;
-//            static AFFILIATION_AND_ALL_SUBORDINATES = 1;
-//            static AFFILIATION_ONLY = 2;
-            //end
+            static ALL_REFERENCE_RANGE = 0;
+            static AFFILIATION_AND_ALL_SUBORDINATES = 1;
+            static AFFILIATION_ONLY = 2;
         }
 
         export class EmployeeReferenceRange extends ReferenceRange {
@@ -2373,10 +2185,8 @@ module nts.uk.com.view.ccg.share.ccg {
             static CCG001_29 = nts.uk.resource.getText('CCG001_29');
             static CCG001_34 = nts.uk.resource.getText('CCG001_34');
             static CCG001_35 = nts.uk.resource.getText('CCG001_35');
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            static CCG001_36 = nts.uk.resource.getText('CCG001_36');
-//            static CCG001_37 = nts.uk.resource.getText('CCG001_37');
-            //end
+            static CCG001_36 = nts.uk.resource.getText('CCG001_36');
+            static CCG001_37 = nts.uk.resource.getText('CCG001_37');
             static CCG001_38 = nts.uk.resource.getText('CCG001_38');
             static CCG001_39 = nts.uk.resource.getText('CCG001_39');
             static CCG001_42 = nts.uk.resource.getText('CCG001_42');
@@ -2393,9 +2203,7 @@ module nts.uk.com.view.ccg.share.ccg {
             static CCG001_108 = nts.uk.resource.getText('CCG001_108');
             static CCG001_109 = nts.uk.resource.getText('CCG001_109');
             static Com_Employment = nts.uk.resource.getText('Com_Employment');
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            static Com_Department = nts.uk.resource.getText('Com_Department');
-            //end
+            static Com_Department = nts.uk.resource.getText('Com_Department');
             static Com_Workplace = nts.uk.resource.getText('Com_Workplace');
             static Com_Class = nts.uk.resource.getText('Com_Class');
             static Com_Jobtitle = nts.uk.resource.getText('Com_Jobtitle');
@@ -2468,7 +2276,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: searchAllListEmployee">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.ALL_REFERENCE_RANGE+`)}">
                                 <i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
                                 <label class="labelBigButton">`+CCG001TextResource.CCG001_34+`</label> 
                             </div>
@@ -2485,10 +2293,30 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                             <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
                         </div>
                     <!-- /ko -->
+                    <!-- ko if: showSameDepartment -->
+                        <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
+                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
+                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_36+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showSameDepartmentAndChild -->
+                        <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
+                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
+                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_37+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                        </div>
+                    <!-- /ko -->
                     <!-- ko if: showSameWorkplace -->
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: searchEmployeeOfDepOnly">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_38+`</label> 
                             </div>
@@ -2498,7 +2326,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                     <!-- ko if: showSameWorkplaceAndChild -->
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
-                                data-bind="click: searchEmployeeOfDepAndChild">
+                                data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
                                 <label class="labelSmallButton">`+CCG001TextResource.CCG001_39+`</label> 
                             </div>
@@ -2586,6 +2414,19 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         </div>
                                     </div>
                                 <!-- /ko -->
+                                <!-- ko if: showDepartment -->
+                                    <div class="accordion" id="DepartmentList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.Com_Department+`</label>
+                                        </h3>
+                                        <div class="contentkcpWorkplace">
+                                            <div id="departmentList"></div><br/>
+                                            <button id="btnDetailDepartment" class="small"
+                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+StartMode.DEPARTMENT+`)}">`+CCG001TextResource.CCG001_55+`</button>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
                                 <!-- ko if: showWorkplace -->
                                     <div class="accordion" id="WorkplaceList"
                                         data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
@@ -2594,8 +2435,8 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                                         </h3>
                                         <div class="contentkcpWorkplace">
                                             <div id="workplaceList"></div><br/>
-                                            <button id="btnDetailWorkplace"
-                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: detailWorkplace">`+CCG001TextResource.CCG001_55+`</button>
+                                            <button id="btnDetailWorkplace"  class="small"
+                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: function(){detailDepartmentWorkplace(`+StartMode.WORKPLACE+`)}">`+CCG001TextResource.CCG001_55+`</button>
                                         </div>
                                     </div>
                                 <!-- /ko -->

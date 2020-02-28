@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1000, height: 600 };</script>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile set="IGNITE" />
+
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qsi003.b.vm.js" />
+        <com:scriptfile path="qsi003.b.start.js" />
+        <com:scriptfile path="qsi003.b.service.js" />
+        <com:stylefile path="qsi003.b.style.css" />
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurbeneinfo.BasicPenNumber
+            nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.ReasonsForRegisRoman
+        </com:ValidatorScript>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="B1_1" tabindex="1" class="proceed" data-bind = "click : updateReasonRomajiName, , enable: $root.errors.isEmpty()">#{i18n.getText('QSI003_12')}</button>
+
+            <button id="B1_2" tabindex="2" data-bind="click: cancel"  >#{i18n.getText('QSI003_13')}</button>
+        </div>
+        <div id="contents-area">
+            <!-- kcp009-->
+            <div id="B2_2">
+                <div tabindex="3" id="emp-component" style="margin-left: 85px;" ></div>
+            </div>
+            <!-- div left -->
+            <div style="margin-left: 100px">
+                <div id = "B3_2" style="border-bottom: 1px solid #bfb4b4;" class="control-group">
+                    <span id = "B3_1" class="label">#{i18n.getText('QSI003_15')}</span>
+                </div>
+                <div class="control-group">
+                    <div id = "B3_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_16')}</div>
+                    <input id= "B3_4" data-bind="ntsTextEditor: {
+                                    value: basicPenNumber,
+                                    name: '#{i18n.getText('QSI003_16')}',
+                                    constraint: 'BasicPenNumber',
+                                    enable: true,
+                                    readonly: false}" />
+                </div>
+
+                <div class="control-group">
+                    <div id="B3_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_17')}</div>
+                    <div id="B3_6" class="cf" data-bind="ntsSwitchButton: {
+                        name: '#{i18n.getText('QSI003_17')}',
+                        options: roundingRules,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: residentCardp,
+                        required: true,
+                        enable: true }"></div>
+                </div>
+                <div>
+                    <div id = "B3_9" style="float:left" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_20')}</div>
+                    <div style="float:left">
+                        <div id = "B3_10"   data-bind="ntsCheckBox: { checked: shortResidentp }">#{i18n.getText('QSI003_21')}</div>
+                        <br></br>
+                        <div id = "B3_11" data-bind="ntsCheckBox: { checked: addressOverseap }">#{i18n.getText('QSI003_22')}</div>
+                        <br></br>
+                        <div id = "B3_12" data-bind="ntsCheckBox: { checked: listedp }">#{i18n.getText('QSI003_23')}</div>
+                        <br></br>
+                        <div id = "B3_13" data-bind="ntsCheckBox: { checked: otherp }">#{i18n.getText('QSI003_24')}</div>
+                        <input id = "B3_14"  data-bind="ntsTextEditor: {
+                                    value: otherReasonp,
+                                    name: '#{i18n.getText('QSI003_25')}',
+                                    enable: $vm.otherp(),
+                                    constraint: 'ReasonsForRegisRoman'}" />
+                    </div>
+                </div>
+            </div>
+            <!-- div right -->
+            <div style="clear: both"></div>
+            <div style="margin-left: 100px">
+                <div id = "B4_2" style="border-bottom: 1px solid #bfb4b4;" class="control-group">
+                    <span id = "B4_1" class="label">#{i18n.getText('QSI003_26')}</span>
+                </div>
+                <div class="control-group">
+                    <div  id="B4_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_17')}</div>
+                    <div  id="B4_4" class="cf" data-bind="ntsSwitchButton: {
+                        name: '#{i18n.getText('QSI003_27')}',
+                        options: roundingRules,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: residentCards,
+                        required: true,
+                        enable: true }"></div>
+                </div>
+                <div>
+                    <div style="float:left" id="B4_7" data-bind="ntsFormLabel: {}">#{i18n.getText('QSI003_20')}</div>
+                    <div style="float:left">
+                        <div id = "B4_8" data-bind="ntsCheckBox: { checked: shortResidents }">#{i18n.getText('QSI003_28')}</div>
+                        <br></br>
+                        <div id = "B4_9" data-bind="ntsCheckBox: { checked: addressOverseas }">#{i18n.getText('QSI003_29')}</div>
+                        <br></br>
+                        <div id = "B4_10" data-bind="ntsCheckBox: { checked: listeds }">#{i18n.getText('QSI003_30')}</div>
+                        <br></br>
+                        <div id = "B4_11" data-bind="ntsCheckBox: { checked: others }">#{i18n.getText('QSI003_31')}</div>
+                        <input id = "B4_12" data-bind="ntsTextEditor: {
+                                    value: otherReasons,
+                                    name: '#{i18n.getText('QSI003_32')}',
+                                    enable: $vm.others(),
+                                    constraint: 'ReasonsForRegisRoman'}" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

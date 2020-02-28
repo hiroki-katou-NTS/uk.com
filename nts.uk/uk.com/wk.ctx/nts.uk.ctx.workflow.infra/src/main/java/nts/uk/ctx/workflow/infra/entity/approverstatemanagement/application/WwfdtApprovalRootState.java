@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,11 +31,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Builder
 public class WwfdtApprovalRootState extends UkJpaEntity {
 	
-	@EmbeddedId
-	public WwfdpApprovalRootStatePK wwfdpApprovalRootStatePK;
-	
-	@Column(name="HIST_ID")
-	public String historyID;
+	@Id
+	@Column(name="ROOT_STATE_ID")
+	public String rootStateID;
 	
 	@Column(name="EMPLOYEE_ID")
 	public String employeeID;
@@ -45,34 +43,32 @@ public class WwfdtApprovalRootState extends UkJpaEntity {
 	
 	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(name = "WWFDT_APPROVAL_PHASE_ST")
-	public List<WwfdtApprovalPhaseState> listWwfdtApprovalPhaseState;
+	public List<WwfdtApprovalPhaseState> listWwfdtPhase;
 
 	@Override
 	protected Object getKey() {
-		return wwfdpApprovalRootStatePK; 
+		return rootStateID; 
 	}
 	
 	public static WwfdtApprovalRootState fromDomain(String companyID, ApprovalRootState approvalRootState){
 		return WwfdtApprovalRootState.builder()
-				.wwfdpApprovalRootStatePK(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()))
-				.historyID(approvalRootState.getHistoryID())
+				.rootStateID(approvalRootState.getRootStateID())
 				.employeeID(approvalRootState.getEmployeeID())
 				.recordDate(approvalRootState.getApprovalRecordDate())
-				.listWwfdtApprovalPhaseState(
+				.listWwfdtPhase(
 						approvalRootState.getListApprovalPhaseState().stream()
-						.map(x -> WwfdtApprovalPhaseState.fromDomain(companyID, approvalRootState.getApprovalRecordDate(), x))
+						.map(x -> WwfdtApprovalPhaseState.fromDomain(approvalRootState.getRootStateID(), x))
 						.collect(Collectors.toList()))
 				.build();
 	}
 	
 	public ApprovalRootState toDomain(){
 		return ApprovalRootState.builder()
-				.rootStateID(this.wwfdpApprovalRootStatePK.rootStateID)
+				.rootStateID(this.rootStateID)
 				.rootType(RootType.EMPLOYMENT_APPLICATION)
-				.historyID(this.historyID)
 				.approvalRecordDate(this.recordDate)
 				.employeeID(this.employeeID)
-				.listApprovalPhaseState(this.listWwfdtApprovalPhaseState.stream()
+				.listApprovalPhaseState(this.listWwfdtPhase.stream()
 											.map(x -> x.toDomain()).collect(Collectors.toList()))
 				.build();
 	}

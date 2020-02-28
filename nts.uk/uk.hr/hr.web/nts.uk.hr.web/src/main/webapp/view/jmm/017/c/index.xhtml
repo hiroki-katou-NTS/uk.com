@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 1000, height: 600 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_100
+			</com:ValidatorScript>
+			<com:stylefile path="jmm017.c.style.css" />
+			<com:scriptfile path="jmm017.c.service.js" />
+			<com:scriptfile path="jmm017.c.start.js" />
+			<com:scriptfile path="jmm017.c.vm.js" />
+		</ui:define>
+		
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="cf">
+					<div class="settings">
+						<div class="ScreenName" data-bind="text:screenName"></div>
+					</div>
+					<div class="settings">
+						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_C222_2')}</div>
+						<div tabindex="4" data-bind="ntsCheckBox: { checked: usageFlgByScreen }">#{i18n.getText('JMM017_C222_3')}</div>
+					</div>
+					<div class="settings">
+						<div data-bind="ntsFormLabel: {required: true}" class ="lableRequired">#{i18n.getText('JMM017_C222_4')}</div>
+					</div>
+					<div class="settings">
+						<textarea tabindex="1" class="inputTextarea" data-bind="ntsMultilineEditor: { 
+							value: guideMsgText,  
+							constraint: 'String_Any_100', 
+							name: '#{i18n.getText('JMM017_C222_5')}', 
+							required: true, 
+							enable: usageFlgByScreen,
+							option: {width: '850px', height: '150px'}
+							}" />
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="2" class="proceed x-large" data-bind="click: decide, enable: $root.errors.isEmpty()">#{i18n.getText('JMM017_C3_1')}</button>
+				<button tabindex="3" data-bind="click: cancel" id="cancel">#{i18n.getText('JMM017_C3_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

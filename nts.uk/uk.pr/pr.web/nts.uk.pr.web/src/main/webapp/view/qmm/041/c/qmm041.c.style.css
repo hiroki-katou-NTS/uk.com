@@ -1,0 +1,12 @@
+#C1_2 {
+    width: 150px;
+}
+
+.dialog-title {
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+#C1_3 label:first-child {
+    margin-bottom: 10px;
+}

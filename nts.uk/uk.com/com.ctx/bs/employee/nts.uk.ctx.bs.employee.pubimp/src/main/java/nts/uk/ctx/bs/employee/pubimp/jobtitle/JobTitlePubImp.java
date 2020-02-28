@@ -31,6 +31,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroupRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
@@ -41,6 +42,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleHistoryExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.JobGInforEx;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleInfoExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SequenceMasterExport;
@@ -79,6 +81,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	
 	@Inject
 	private SequenceMasterRepository repo;
+	
+	@Inject
+	private ApproverGroupRepository repoApprG;
 
 	/*
 	 * (non-Javadoc)
@@ -488,6 +493,23 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.map(x -> {
 			return new SequenceMasterExport(x.getCompanyId().v(), x.getOrder(), x.getSequenceCode().v(), x.getSequenceName().v());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<JobGInforEx> getJobGInfor(String companyId, List<String> jobGCd) {
+		return repoApprG.findByCd(companyId, jobGCd).stream()
+				.map(c -> new JobGInforEx(c.getCode(), c.getName()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getJobIDFromGroup(String companyID, String approverGroupCD) {
+		return repoApprG.findByCode(companyID, approverGroupCD).map(x -> {
+			return x.getApproverJobList().stream()
+					.sorted((a,b) -> a.getOrder() - b.getOrder())
+					.map(y -> y.getJobID())
+					.collect(Collectors.toList());
+		}).orElse(Collections.emptyList());
 	}
 
 }

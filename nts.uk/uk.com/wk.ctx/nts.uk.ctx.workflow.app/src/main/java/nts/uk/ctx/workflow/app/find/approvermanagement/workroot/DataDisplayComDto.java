@@ -10,6 +10,5 @@ import lombok.Data;
 public class DataDisplayComDto {
 	private int id;
 	private boolean overLap;
-	private String companyName;
 	private List<CompanyAppRootDto> lstCompanyRoot;
 }

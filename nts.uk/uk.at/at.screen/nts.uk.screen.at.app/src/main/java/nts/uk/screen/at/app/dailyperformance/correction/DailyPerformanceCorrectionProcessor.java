@@ -82,7 +82,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
@@ -215,8 +215,11 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private RoleRepository roleRepository;
 	
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 	
 	@Inject
 	private CheckLockDataDaily checkLockDataDaily;
@@ -1587,8 +1590,8 @@ public class DailyPerformanceCorrectionProcessor {
 				return Arrays.asList(employeeIdLogin);
 			}
 			DatePeriod period = new DatePeriod(range.getStartDate(), range.getEndDate());
-			List<String> lstWplId = syWorkplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
-			List<ResultRequest597Export> lstInfoEmp =  syWorkplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
+			List<String> lstWplId = workplacePub.getLstWorkplaceIdBySidAndPeriod(employeeIdLogin, period);
+			List<ResultRequest597Export> lstInfoEmp =  workplacePub.getLstEmpByWorkplaceIdsAndPeriod(lstWplId, period);
 			
 			
 //			List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(

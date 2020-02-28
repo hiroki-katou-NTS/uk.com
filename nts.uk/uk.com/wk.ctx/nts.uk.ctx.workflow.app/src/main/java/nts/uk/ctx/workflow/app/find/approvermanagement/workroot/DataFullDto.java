@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DataFullDto {
 	private String workplaceId;
+	private String companyName;
 	private List<DataDisplayComDto> lstCompany;
 	private List<DataDisplayWpDto> lstWorkplace;
 	private List<DataDisplayPsDto> lstPerson;

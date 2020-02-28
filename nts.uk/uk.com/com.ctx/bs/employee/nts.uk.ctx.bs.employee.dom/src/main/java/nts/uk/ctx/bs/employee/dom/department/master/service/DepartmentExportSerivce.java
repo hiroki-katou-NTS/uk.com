@@ -10,12 +10,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.department.DepartmentConfig;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**

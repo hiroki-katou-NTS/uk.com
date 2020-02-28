@@ -8,18 +8,22 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 @Stateless
 public class WorkplaceAcAdapter implements WorkplaceAdapter {
 
+//	@Inject
+//	private SyWorkplacePub workplacePub;
+	
 	@Inject
-	private SyWorkplacePub workplacePub;
+	private WorkplacePub workplacePub;
 
 	@Override
 	public Optional<WorkplaceImport> getWorlkplaceHistory(String employeeId, GeneralDate baseDate) {
@@ -35,8 +39,9 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 
 	@Override
 	public List<WorkplaceIdName> findWkpByWkpId(String companyId, GeneralDate baseDate, List<String> wkpIds) {
-		List<WorkPlaceInfoExport> listWorkPlaceInfoExport = workplacePub.findWkpByWkpId(companyId, baseDate, wkpIds);
-		return listWorkPlaceInfoExport.stream().map(e -> new WorkplaceIdName(e.getWorkplaceId(), e.getWorkPlaceName()))
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<WorkplaceInforExport> listWorkPlaceInfoExport = workplacePub.getWorkplaceInforByWkpIds(companyId, wkpIds, baseDate);
+		return listWorkPlaceInfoExport.stream().map(e -> new WorkplaceIdName(e.getWorkplaceId(), e.getWorkplaceName()))
 				.collect(Collectors.toList());
 	}
 	
@@ -62,6 +67,17 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 		return WorkplaceImport.builder().dateRange(wp.getDateRange()).employeeId(wp.getEmployeeId())
 				.wkpDisplayName(wp.getWkpDisplayName()).workplaceCode(wp.getWorkplaceCode())
 				.workplaceId(wp.getWorkplaceId()).workplaceName(wp.getWorkplaceName()).build();
+	}
+
+	@Override
+	public List<WorkPlaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		List<WorkplaceInforExport> listWorkPlaceInfoExport = workplacePub.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
+		
+		return listWorkPlaceInfoExport.stream().map(e -> new WorkPlaceInforExport(e.getWorkplaceId(), 
+				e.getHierarchyCode(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getWorkplaceDisplayName(),
+				e.getWorkplaceGenericName(), e.getWorkplaceExternalCode()
+				)).collect(Collectors.toList());
 	}
 	
 

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title">#{i18n.getText('JMM017_B3_2')}</span>
+		</div>
+
+		<div class="contents-area">
+			<div class ="conditionBox">
+				<div class="row">
+					<div class ="inline lable" style="min-width: 42px;"><span>#{i18n.getText('JMM017_B422_2')}</span></div>
+					<div id="combo-box1" tabindex="5" class ="inline"  data-bind="ntsComboBox: {
+							width: 180,
+							options: categoryList,
+							optionsValue: 'code',
+							visibleItemsCount: 10,
+							value: categoryCode,
+							optionsText: 'name',
+							selectFirstIfNull: false,
+							columns: [{ prop: 'name', length: 10 },]}">
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_4')}</span></div>
+					<div class ="inline">
+						<input  tabindex="6" data-bind="ntsTextEditor: {
+							name: '#{i18n.getText('JMM017_B422_5')}', 
+							value: eventName,
+							constraint: 'String_Any_20',
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_5')}'}}" />
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_6')}</span></div>
+					<div class ="inline">
+						<input tabindex="7" data-bind="ntsTextEditor: {
+							name: '#{i18n.getText('JMM017_B422_7')}', 
+							value: programName,
+							constraint: 'String_Any_20',
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_7')}'}}" />
+					</div>
+				</div>
+				<div class="row">
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_8')}</span></div>
+					<div class ="inline">
+						<input tabindex="8" data-bind="ntsTextEditor: {
+							name: '#{i18n.getText('JMM017_B422_9')}', 
+							value: screenName,
+							constraint: 'String_Any_20',
+							option: {width: '180px', placeholder: '#{i18n.getText('JMM017_B422_9')}'}}" />
+					</div>
+					<div class ="inline lable"><span>#{i18n.getText('JMM017_B422_10')}</span></div>
+					<div id="combo-box2" class ="inline" tabindex="9" data-bind="ntsComboBox: {
+							width: 130,
+							options: useList,
+							optionsValue: 'code',
+							visibleItemsCount: 3,
+							value: useSet,
+							optionsText: 'name',
+							selectFirstIfNull: false,
+							columns: [{ prop: 'name', length: 5 },]}">
+					</div>
+					<button tabindex="10" id="findBtn" class="inline" data-bind="click: find ">#{i18n.getText('JMM017_B422_12')}</button>
+				</div>
+			</div>
+			<div class="gridControlBtn">
+				<button tabindex="11" id="buttonExpandAll" class="inline" >#{i18n.getText('JMM017_B422_14')}</button>
+				<button tabindex="12" id="buttonCollapseAll" class="inline" >#{i18n.getText('JMM017_B422_15')}</button>
+			</div>
+			<div class="gridTableContent">
+				<div id="gridContent">
+					<table id="grid"></table>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

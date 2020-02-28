@@ -63,33 +63,31 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 				.stream().map(x -> new ApprovalComSprExport(
 						companyID, 
 						x.getApprovalId(), 
-						x.getApplicationType() == null ? null : x.getApplicationType().value, 
-						x.getBranchId(), 
-						x.getAnyItemApplicationId(), 
+						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, 
+						x.getApprRoot().getBranchId(), 
+						x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String branchId) {
-		return approvalPhaseRepository.getAllIncludeApprovers(companyId, branchId)
+	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String approvalId) {
+		return approvalPhaseRepository.getAllIncludeApprovers(approvalId)
 			.stream().map(x -> ApprovalPhaseSprExport.createFromJavaType(
-					x.getCompanyId(), 
-					x.getBranchId(), 
-					x.getApprovalPhaseId(), 
+					companyId, 
+					approvalId, 
+					x.getPhaseOrder(), 
 					x.getApprovalForm().value, 
-					x.getBrowsingPhase(), 
-					x.getOrderNumber(), 
+					x.getBrowsingPhase(),
+					x.getApprovalAtr().value,
 					x.getApprovers().stream().map(y -> ApproverSprExport.createFromJavaType(
-							y.getCompanyId(), 
-							y.getBranchId(), 
-							y.getApprovalPhaseId(), 
-							y.getApproverId(), 
-							y.getJobTitleId(), 
+							companyId, 
+							approvalId, 
+							x.getPhaseOrder(), 
+							y.getApproverOrder(), 
+							y.getJobGCD(), 
 							y.getEmployeeId(), 
-							y.getOrderNumber(), 
-							y.getApprovalAtr().value, 
 							y.getConfirmPerson().value)).collect(Collectors.toList())))
 			.collect(Collectors.toList());
 	}
@@ -102,11 +100,11 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getCompanyId(), 
 						x.getApprovalId(), 
 						x.getWorkplaceId(), 
-						x.getBranchId(), 
-						x.getAnyItemApplicationId(), 
+						x.getApprRoot().getBranchId(), 
+						x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr, 
-						x.getApplicationType() == null ? null : x.getApplicationType().value))
+						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value))
 				.collect(Collectors.toList());
 	}
 
@@ -118,9 +116,9 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getCompanyId(), 
 						x.getApprovalId(), 
 						x.getEmployeeId(), 
-						x.getApplicationType() == null ? null : x.getApplicationType().value, 
-						x.getBranchId(), 
-						x.getAnyItemApplicationId(), 
+						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, 
+						x.getApprRoot().getBranchId(), 
+						x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());
@@ -141,7 +139,6 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 		return result.stream().map(x -> new ApprovalRootStateSprExport(
 					x.getRootStateID(), 
 					x.getRootType().value, 
-					x.getHistoryID(), 
 					x.getApprovalRecordDate(), 
 					x.getEmployeeID()))
 			.collect(Collectors.toList());

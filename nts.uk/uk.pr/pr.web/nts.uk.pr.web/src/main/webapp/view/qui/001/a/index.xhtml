@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qui001.a.style.css"/>
+        <com:scriptfile path="qui001.a.service.js"/>
+        <com:scriptfile path="qui001.a.start.js"/>
+        <com:scriptfile path="qui001.a.vm.js"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button id="A1_1" tabindex="1" class="proceed" style="margin-left: 77px;" data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){exportPDF()}">
+                #{i18n.getText('QUI001_A1_1')}
+            </button>
+            <button id="A1_2" tabindex="2" data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){exportCSV()}">
+                #{i18n.getText('QUI001_A1_2')}
+            </button>
+            <button id="A1_4" tabindex="3" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: function(){openCScreen()}">
+                #{i18n.getText('QUI001_A1_4')}
+            </button>
+            <button id="A1_3" tabindex="4" data-bind="enable: false">
+                #{i18n.getText('QUI001_A1_3')}
+            </button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <div style="margin-top: 15px; min-width: 1000px; margin-bottom: 20px" class="fixed-flex-layout">
+                <div id="com-ccg001" style="height: 455px !important;"></div>
+
+                <div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
+                    <div class="panel panel-frame" style="margin-left: 45px; width: 665px;">
+                        <div class="valign-center control-group " > <!--style="height: 33px !important; padding-top: 0px; !important;"-->
+							<span class="label with-image">
+                                <img id="img-calendar" class="image image-calendar" src="../resources/QUI001_1.png"/>
+								<span id="A222_3">#{i18n.getText('QUI001_A222_3')}</span>
+							</span>
+                            <div id="A222_4" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QUI001_A222_4')}',
+																value: startDate,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" tabindex="5">
+                            </div>
+                            <span id="A222_5" data-bind="attr: {style: getStyle() }, text: startDateJp"
+                                  class="limited-label"></span>
+                            <span id="A222_6">#{i18n.getText('QUI001_A222_6')}</span>
+                            <div id="A222_7" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QUI001_A222_7')}',
+																value: endDate,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" tabindex="6">
+                            </div>
+                            <span id="A222_8" class="limited-label"
+                                  data-bind="attr: {style: getStyle() }, text: endDateJp"></span>
+                        </div>
+                    </div>
+                    <div class="bottom" style="margin-top: 15px; margin-left: 44px;">
+                        <div class="panel panel-frame" style=" height: 432px;">
+                            <div id="component-items-list" tabindex="8" style="margin-left: 40px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fixed-flex-layout-right" >
+                    <div class="panel panel-frame " style="width: 462px; height: 514px;">
+
+                        <div data-bind="with: empInsReportSetting">
+                            <div id="A222_12" class = "label"> #{i18n.getText('QUI001_A222_12')}</div>
+                            <div class = "valign-center control-group">
+                                <div style="margin-top: 12px;" id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_13')}</div>
+                                <div id = "A222_14"  data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QUI001_A222_14')}',
+                                                                value: $parent.fillingDate,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" tabindex="9"></div>
+                                <span id="A222_15" data-bind = "text: $vm.fillingDateJp"></span>
+                            </div>
+
+                            <div class="valign-center control-group">
+                                <div id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_16')}</div>
+                                <div id="A222_17" style=" height: 27px;" tabindex="10" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QUI001_A222_17')}',
+                                options: $vm.submittedNames,
+                                optionsValue: 'code',
+                                value: submitNameAtr,
+                                optionsText: 'name',
+                                enable: true  }"></div>
+
+                                <button id="A222_20" tabindex="11" data-bind="ntsHelpButton: {image: '../resources/QUI001_2.png', position: 'bottom center', enable: true }">?</button>
+                            </div>
+
+                            <div class="valign-center control-group ">
+                                <div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_21')}</div>
+                                <div id="A222_22" style=" width: 300px;" tabindex="12" data-bind="ntsComboBox: {
+                                name: '#[QUI001_A222_22]',
+                                options: $vm.outputOrders,
+                                optionsValue: 'code',
+                                visibleItemsCount: 4,
+                                optionsText: 'name',
+                                value: outputOrderAtr,
+                                editable: false,
+                                enable: true,
+                            }">
+                                </div>
+                            </div>
+
+                            <div class="valign-center control-group">
+                                <div id="A222_24" class="column-first" data-bind="ntsFormLabel: {  required: true }, enable: false">#{i18n.getText('QUI001_A222_24')}</div>
+                                <div id="A222_25" tabindex="13" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QUI001_A222_25')}',
+                                options: $vm.printPersonNumbers,
+                                value: myNumberClsAtr,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                enable: false  }"/>
+                            </div>
+
+                            <div id="A222_29" style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span id="A222_28" class="label">#{i18n.getText('QUI001_A222_28')}</span></div>
+
+                            <div class="valign-center control-group ">
+                                <div id="A222_30" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_30')}</div>
+                                <div id="A222_31" style=" width: 300px;" tabindex="14" data-bind="ntsComboBox: {
+                                name: '#[QUI001_A222_31]',
+                                options: $vm.officeInformations,
+                                optionsValue: 'code',
+                                visibleItemsCount: 3,
+                                value: officeClsAtr,
+                                optionsText: 'name',
+                                editable: false,
+                                enable: true
+                                }">
+                                </div>
+                            </div>
+
+                            <div class="valign-center control-group">
+                                <div id="A222_33" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_33')}</div>
+                                <div id="A222_34" tabindex="15" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QUI001_A222_34')}',
+                                options: $vm.changedName,
+                                optionsValue: 'code',
+                                value: nameChangeClsAtr,
+                                optionsText: 'name',
+                                enable: true  }"></div>
+                            </div>
+
+                        </div>
+
+                        <div data-bind="with: empInsRptTxtSetting">
+                            <div id="A222_38" style="border-bottom: 1px solid #bfb4b4;" class="control-group"><span id="A222_37" class="label">#{i18n.getText('QUI001_A222_37')}</span></div>
+
+                            <div class="valign-center control-group">
+                                <div id="A222_39" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI001_A222_39')}</div>
+                                <div id="A222_40" style=" height: 27px;" tabindex="16" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QUI001_A222_40')}',
+                                options: $vm.newLine,
+                                optionsValue: 'code',
+                                value: lineFeedCode,
+                                optionsText: 'name',
+                                enable: true  }"></div>
+                                <button id="A222_44" tabindex="11" data-bind="ntsHelpButton: {image: '../resources/QUI001_3.png', position: 'bottom center', enable: true }">?</button>
+
+                            </div>
+
+                            <div class="valign-center control-group ">
+                                <div id="A222_46" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_46')}</div>
+                                <div id="A222_47" style=" width: 300px;" tabindex="17" data-bind="ntsComboBox: {
+                                name: '#[QUI001_A222_47]',
+                                options: $vm.officeInformations,
+                                optionsValue: 'code',
+                                value: officeAtr,
+                                visibleItemsCount: 3,
+                                optionsText: 'name',
+                                enable: true}">
+                                </div>
+                            </div>
+
+                            <div class="valign-center control-group ">
+                                <div id="A222_49" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI001_A222_49')}</div>
+                                <div id="A222_50" style=" width: 50px; height: 18px" tabindex="17" data-bind="ntsTextEditor: {
+                                name: '#{i18n.getText('QUI001_A222_50')}',
+                                value: fdNumber,
+                                option: { decimallength: 0 }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

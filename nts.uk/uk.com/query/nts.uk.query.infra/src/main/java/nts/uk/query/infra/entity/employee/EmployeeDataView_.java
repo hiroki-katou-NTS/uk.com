@@ -4,9 +4,13 @@
  *****************************************************************/
 package nts.uk.query.infra.entity.employee;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 765, height: 640};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.PaymentAndDeductionItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.AttendanceItem
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.CompanyAndIndividualUnitPrice
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.DetailFormulaString
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.g.service.js"/>
+        <com:scriptfile path="qmm017.g.vm.js"/>
+        <com:stylefile path="qmm017.g.style.css"/>
+        <com:scriptfile path="qmm017.g.start.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div style="margin-left: 20px">
+                <div style="min-width: 550px">
+                    <div style="width: 130px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_142')}</div>
+                </div>
+                <div style="width: 700px; margin-top: 10px;">
+                    <div style="display: inline-block; vertical-align: middle">
+                        <div id="G1_2_container" tabindex="1">
+                            <table id="G1_2">
+                                <colgroup>
+                                    <col width="150px"/>
+                                    <col width="140px"/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th class="ui-widget-header"
+                                        rowspan="4" id="E3_2">#{i18n.getText('QMM017_18')}</th>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM017_24')}</th>
+                                </tr>
+
+                                </thead>
+                                <tbody data-bind="foreach: calculationFormulaList">
+                                <tr>
+                                    <td>
+                                        <div class="limited-label" data-bind="text: formulaItem">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input data-bind="ntsNumberEditor: {
+                                            value: trialCalculationValue,
+                                            constraint: constraint,
+                                            option: {
+                                                width: '110px',
+				                                decimallength: decimalLength
+                                            },
+                                            name: 'お試し計算値',
+                                            required: true,
+                                            readonly: readonly
+                                        }"/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="display:inline-block; vertical-align: middle; margin-left: 25px;">
+                        <button tabindex="2" data-bind="click: calculateInServer"
+                                style="height: 80px; width: 80px;">#{i18n.getText('QMM017_53')}</button>
+                    </div>
+                    <div class="large-right-caret-container" style="display: inline-block; margin-left: 10px;">
+                        <span class="caret-right outline large-right-caret"/>
+                    </div>
+                    <div style="background-color: #cff1a5; display:inline-block; width: 180px; height: 80px; margin-left: 25px; vertical-align: middle"
+                         class="panel panel-frame tab-panel-col-3">
+                        <div style="margin-top:5px;">#{i18n.getText('QMM017_144')}</div>
+                        <hr style="margin-top:15px;"/>
+                        <div data-bind="text: trialCalculationResult" style="text-align: right"/>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; min-width: 550px;">
+                    <div style="width: 130px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_45')}
+                    </div>
+                </div>
+                <hr/>
+                <div style="margin-top: 10px; min-width: 550px;">
+                    <div style="margin-top: 10px; min-width: 550px">
+                        <div>
+                        <textarea id="G1_12" tabindex="3" style="height: 100px; width: 666px;" data-bind="ntsMultilineEditor: {
+                            value: formulaContent,
+                            constraint: 'DetailFormulaString',
+                            readonly: true}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM017_146')}</button>
+        </div>
+    </ui:define>
+
+</ui:composition>
+</body>
+</html>

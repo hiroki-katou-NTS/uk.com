@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm008.a {
         screenModel.startPage().done(function() {
 //            nts.uk.ui.confirmSave(screenModel.dirtyChecker);
             __viewContext.bind(screenModel);
+              $('#empName').focus();
             // Load Component
 //            $('#emp-component').ntsListComponent(screenModel.listComponentOption);
         });

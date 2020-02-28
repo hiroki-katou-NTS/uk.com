@@ -904,9 +904,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			if (!job.isEmpty()) {
 
 				// 社員所属職場履歴を取得
-				List<SWkpHistImport> wkp = this.syWorkplaceAdapter.findBySid(companyId, employeeId,
+				Optional<SWkpHistImport> wkp = this.syWorkplaceAdapter.findBySid(companyId, employeeId,
 						GeneralDate.today());
-				if (!wkp.isEmpty()) {
+				if (wkp.isPresent()) {
 					// 社員所属雇用履歴を取得
 					Optional<SEmpHistImport> emp = this.syEmploymentAdapter.findSEmpHistBySid(companyId, employeeId,
 							GeneralDate.today());

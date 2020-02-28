@@ -6,31 +6,32 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 @Data
 @AllArgsConstructor
 public class ApproverDto {
-	/**承認者ID*/
-	private String approverId;
-	/**職位ID*/
-	private String jobTitleId;
+	/**承認者Gコード*/
+	private String jobGCD;
 	/**社員ID*/
 	private String employeeId;
+	/** 社員コード*/
+	private String empCode;
 	/**Name*/
 	private String name;
 	/**順序*/
-	private int orderNumber;
-	/**区分*/
-	private int approvalAtr;
+	private int approverOrder;
 	/**確定者*/
 	private int confirmPerson;
 	/**confirmPerson Name*/
 	private String confirmName;
+	/**特定職場ID*/
+	private String specWkpId;
 	
-	public static ApproverDto fromDomain(Approver domain, String name , String confirmName){
-		return new ApproverDto(domain.getApproverId(),
-					domain.getJobTitleId(),
+	public static ApproverDto fromDomain(Approver domain, String name , String confirmName, String empCode){
+		return new ApproverDto(
+					domain.getJobGCD(),
 					domain.getEmployeeId(),
+					empCode,
 					name,
-					domain.getOrderNumber(),
-					domain.getApprovalAtr().value,
+					domain.getApproverOrder(),
 					domain.getConfirmPerson().value,
-					confirmName);
+					confirmName,
+					domain.getSpecWkpId());
 	}
 }

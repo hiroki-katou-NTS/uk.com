@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,11 +11,13 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
@@ -47,13 +48,13 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	public void updateHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate,
 			String departmentApproverId, String dailyApproverId, boolean dailyDisplay) {
 		String endDate    = "9999-12-31";
-		Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId);
+		Optional<PersonApprovalRoot> commonPs  = this.repoPerson.getNewestCommonPsAppRoot(companyId, employeeId, 0);
 		Optional<PersonApprovalRoot> monthlyPs = this.repoPerson.getNewestMonthlyPsAppRoot(companyId, employeeId);
 
 		if (commonPs.isPresent() && monthlyPs.isPresent()) {
 			// １．バラバラ履歴の場合: TH 2 loai deu co ls
-			if (commonPs.get().getEmploymentAppHistoryItems().get(0).start()
-					.compareTo(monthlyPs.get().getEmploymentAppHistoryItems().get(0).start()) != 0) {
+			if (commonPs.get().getApprRoot().getHistoryItems().get(0).start()
+					.compareTo(monthlyPs.get().getApprRoot().getHistoryItems().get(0).start()) != 0) {
 				//TH 2 lich su khong giong nhau
 				this.insertHistoryCmm053Service.updateOrInsertDiffStartDate(companyId, employeeId, historyId, startDate,
 						endDate, commonPs, monthlyPs, departmentApproverId, dailyApproverId, dailyDisplay);
@@ -86,66 +87,73 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	@Override
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
 		if(Strings.isNotBlank(employeeIdApprover)){
-			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-					psAppRoot.getBranchId());
-			if (approvalPhase.isPresent()) {
-				ApprovalPhase updateApprovalPhase = approvalPhase.get();
-				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
-				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
+			Optional<ApprovalPhase> phase = this.repoAppPhase.getApprovalFirstPhase(psAppRoot.getApprovalId());
+			if (phase.isPresent()) {
+				ApprovalPhase updatePhase = phase.get();
+				List<Approver> approverOlds       = updatePhase.getApprovers();
+				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getApproverOrder() == 1).findFirst();
 				if (firstApprover.isPresent()) {
 					firstApprover.get().setEmployeeId(employeeIdApprover);
-					this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+					this.repoApprover.updateEmployeeIdApprover(updatePhase.getApprovalId(), updatePhase.getPhaseOrder(), firstApprover.get());
 				}
 			}
 		}
 	}
 	@Override
 	public void updateRootCMM053(String companyId, String a27, String a210,PersonApprovalRoot commonRoot, PersonApprovalRoot monthlyRoot, boolean dailyDisplay) {
-		List<Approver> lstApprNew = new ArrayList<>();
+		int phaseOrder = 1;
+		int approverOrder1 = 1;
+		int approverOrder2 = 2;
 		if(commonRoot != null){
-			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(companyId, commonRoot.getBranchId());
+			Optional<ApprovalPhase> commonPhase = repoAppPhase.getApprovalFirstPhase(commonRoot.getApprovalId());
 			//common
 			if(commonPhase.isPresent()){
+				List<Approver> lstApprNew = new ArrayList<>();
 				//承認フェーズ・承認形態　＝　誰か一人
 				ApprovalPhase phase = commonPhase.get();
 				if(phase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					phase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
+					phase.setApprovalAtr(ApprovalAtr.PERSON);
 					repoAppPhase.updateApprovalPhase(phase);
 				}
-				String phaseId = phase.getApprovalPhaseId();
+				String approvalId = commonRoot.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, phaseId);
+				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
 				//insert approver moi
-				String branchId = commonRoot.getBranchId();
 				//common
 				if(dailyDisplay){//common insert 2 record
 					//a210
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a210, 0, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a210, ConfirmPerson.NOT_CONFIRM.value, null));
 					//a27
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 1, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder2, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
 				}else{//common insert 1 record
-					lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  branchId, phaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0));
+					lstApprNew.add(Approver.createSimpleFromJavaType(approverOrder1, null, a27, ConfirmPerson.NOT_CONFIRM.value, null));
+				}
+				if(Strings.isNotBlank(approvalId) && !lstApprNew.isEmpty()){
+					repoApprover.addAllApprover(approvalId, phaseOrder, lstApprNew);
 				}
 	 		}
 		}
 		if(monthlyRoot != null){
 			//monthly A27
-			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(companyId, monthlyRoot.getBranchId());
+			Optional<ApprovalPhase> monthlyPhase = repoAppPhase.getApprovalFirstPhase(monthlyRoot.getApprovalId());
 			if(monthlyPhase.isPresent()){
+				List<Approver> lstApprM = new ArrayList<>();
 				ApprovalPhase mphase = monthlyPhase.get();
 				//承認フェーズ・承認形態　＝　誰か一人
 				if(mphase.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 					mphase.setApprovalForm(ApprovalForm.SINGLE_APPROVED);
+					mphase.setApprovalAtr(ApprovalAtr.PERSON);
 					repoAppPhase.updateApprovalPhase(mphase);
 				}
-				String mphaseId = mphase.getApprovalPhaseId();
+				String approvalId = mphase.getApprovalId();
 				//delete approver old
-				repoApprover.deleteAllApproverByAppPhId(companyId, mphaseId);
-				lstApprNew.add(Approver.createSimpleFromJavaType(companyId,  monthlyRoot.getBranchId(), mphaseId, UUID.randomUUID().toString(), null, a27, 0, 0, 0));
+				repoApprover.deleteAllApproverByAppPhId(approvalId, phaseOrder);
+				lstApprM.add(Approver.createSimpleFromJavaType(
+						approverOrder1, null, a27,  ConfirmPerson.NOT_CONFIRM.value, null));
+				repoApprover.addAllApprover(approvalId, phaseOrder, lstApprM);
 			}
 		}
-		if(!lstApprNew.isEmpty()){
-			repoApprover.addAllApprover(lstApprNew);
-		}
+		
 	}
 }

@@ -30,10 +30,10 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 			+ " AND c.YMD_K <= ?endDate";
 	
 	private static final String GET_WORKSPACE_CALENDAR_BY_DATE = "SELECT"
-			+ " s.WKPID, w.WKPCD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME, e.EVENT_NAME "
+			+ " s.WKPID, w.WKP_CD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME, e.EVENT_NAME "
 			+ "	FROM KSMMT_CALENDAR_WORKPLACE s"
-			+ " LEFT JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
-			+ "	and w.WKPID = s.WKPID"
+			+ " LEFT JOIN BSYMT_WKP_INFO w ON w.CID = ?companyId "
+			+ "	and w.WKP_ID = s.WKPID"
 			+ "	LEFT JOIN KSMMT_WORKPLACE_EVENT e ON s.WKPID = e.WKPID AND s.YMD_K = e.YMD_K"
 			+ " WHERE s.YMD_K >= ?startYm"
 			+ " AND s.YMD_K <= ?endYm";

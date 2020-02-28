@@ -23,6 +23,7 @@ module cmm001.a {
         checkInsert: KnockoutObservable<boolean>;
 
         constructor() {
+			console.log("ngon rồi");
             let self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("CMM001_16"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },

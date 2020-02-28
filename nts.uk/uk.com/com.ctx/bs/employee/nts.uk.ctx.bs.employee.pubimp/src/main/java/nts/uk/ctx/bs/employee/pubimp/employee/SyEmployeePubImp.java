@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -31,6 +33,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 //import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -45,6 +48,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoRegistered;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
@@ -56,14 +61,23 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.PersonInfoJhn001Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest596Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentState;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
+import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.service.PersonService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -99,8 +113,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWkpItemRepo;
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	@Inject
 	private EmploymentHistoryItemRepository emptHistItem;
@@ -119,7 +136,15 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 //	@Inject
 //	private AffJobTitleHistoryRepository affJobRep;
-
+	
+	@Inject
+	private EmploymentStatusPub employmentStatusPub;
+	
+	@Inject
+	private IPersonInfoPub personInfoPub;
+	
+	@Inject
+	private AffDepartmentHistoryRepository affDepartmentRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -352,8 +377,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		// Get List WkpId ( Get From RequestList #154(ANH THANH NWS))
-		List<String> lstWkpId = syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(
-				AppContexts.user().companyId(), affWkpItem.getWorkplaceId(), baseDate);
+		List<String> lstWkpId = workplacePub.getWorkplaceIdAndChildren(
+				AppContexts.user().companyId(), baseDate, affWkpItem.getWorkplaceId());
 
 		if (lstWkpId.isEmpty()) {
 			return null;
@@ -852,6 +877,78 @@ public class SyEmployeePubImp implements SyEmployeePub {
 					i.getUseClassification().value, i.getTempAbsenceFrName().toString());
 		}).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<EmpInfo614> findEmpByKeyWordsListSid(EmpInfo614Param param) {
+		//List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword());
+		//RQ617 fix performance
+//		List<DtoForRQ617> empList = personService.getFromKeywords(param.getKeyword(), param.cId);
+//		List<String> pids = empList.stream().map(c->c.getPersonId()).collect(Collectors.toList());
+		List<EmpInfo614> allEmployee = new ArrayList<>();
+		List<String> employeeIds = new ArrayList<>();
+//		if(!empList.isEmpty()) {
+			//List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(pids, param.cId);
+			//method Fix performance for 個人ID(List)から会社IDに一致する社員に絞り込む
+			List<EmployeeDataMngInfo> ListEmpMatchingName = empDataMngRepo.findEmployeesMatchingName(param.getKeyword(), param.cId);
+			employeeIds.addAll(ListEmpMatchingName.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
+			allEmployee.addAll(ListEmpMatchingName.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode().v())).collect(Collectors.toList()));
+			List<String> pids = ListEmpMatchingName.stream().map(c->c.getPersonId()).collect(Collectors.toList());
+//		}
+		String validcode = "^[A-Za-z0-9 ]+$";
+		if(param.getKeyword().matches(validcode)) {
+			List<EmployeeIdPersonalIdDto> ListEmpMatchingCode = empDataMngRepo.findEmployeePartialMatchCode(param.cId, param.getKeyword());
+			ListEmpMatchingCode.removeIf(c -> pids.contains(c.getPersonId()));
+			employeeIds.addAll(ListEmpMatchingCode.stream().map(c->c.getEmployeeId()).collect(Collectors.toList()));
+			allEmployee.addAll(ListEmpMatchingCode.stream().map(c->new EmpInfo614(c.getEmployeeId(), c.getPersonId(), c.getEmployeeCode())).collect(Collectors.toList()));
+		}
+		if(employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}else {
+			List<EmploymentStatus> findListOfEmployee = employmentStatusPub.findListOfEmployee(employeeIds, new DatePeriod(param.getBaseDate(), param.getBaseDate()));
+			if(!param.includePreEmployee) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.BEFORE_JOINING;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeRetirement) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.RETIREMENT;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeAbsence) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.LEAVE_OF_ABSENCE;
+					}else {
+						return false;
+					}
+				});
+			}
+			
+			if(!param.includeClosed) {
+				findListOfEmployee.removeIf(c->{
+					if(c.getEmploymentInfo().isEmpty()) {
+						return c.getEmploymentInfo().get(0).getEmploymentState() == EmploymentState.CLOSURE;
+					}else {
+						return false;
+					}
+				});
+			} 
+			List<String> employeeIdResult = findListOfEmployee.stream().map(c->c.getEmployeeId()).collect(Collectors.toList());
+			allEmployee.removeIf( c-> !employeeIdResult.contains(c.getEmployeeId()));
+			return allEmployee;
+		}
+	}
 	
 	@Override
 	public List<ResultRequest596Export> getEmpDeletedLstBySids(List<String> sids) {
@@ -968,5 +1065,25 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Map<String, String> empMaps = this.empDataMngRepo
 				.getAllSidAndScdBySids(sids.stream().distinct().collect(Collectors.toList()));
 		return empMaps;
+	}
+
+	@Override
+	public PersonInfoJhn001Export getEmployeeInfo(String sid) {
+		PersonInfoExport rersonInfoExport = personInfoPub.getPersonInfo(sid);
+		if (rersonInfoExport == null) {
+			return null;
+		}
+		
+		PersonInfoJhn001Export result = PersonInfoJhn001Export.builder()
+				.pid(rersonInfoExport.getPid())
+				.businessName(rersonInfoExport.getBusinessName())
+				.entryDate(rersonInfoExport.getEntryDate())
+				.gender(rersonInfoExport.getGender())
+				.birthDay(rersonInfoExport.getBirthDay())
+				.employeeId(rersonInfoExport.getEmployeeId())
+				.employeeCode(rersonInfoExport.getEmployeeCode())
+				.retiredDate(rersonInfoExport.getRetiredDate())
+				.build();
+		return result;
 	}
 }

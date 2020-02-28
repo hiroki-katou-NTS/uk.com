@@ -1,308 +1,208 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
-
 	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.PrefectureCode
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxReportCode
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomy
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomyKana
-					nts.uk.shr.com.primitive.Memo
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CompanyAccountNo
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CompanySpecifiedNo
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.RegisteredName
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CordinatePostOffice
-					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.CordinatePostalCode
-				</com:ValidatorScript>
-           	<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm003.a.vm.js" />
-			<com:scriptfile path="qmm003.a.start.js" />
-			<com:scriptfile path="qmm003.a.service.js" />
-			<com:stylefile path="qmm003.a.main.css" />
-
-		</ui:define>
-
-		<ui:define name="content">
-		<div id="functions-area">
-<!-- 		data-bind="click: resetData" -->
-				<button id="RESET_DATA" class="group-button-1 " data-bind="click: resetData">新規</button>
-				<button id="REGISTER" class="proceed group-button-1" data-bind="click: clickRegister, enable: $root.errors.isEmpty">登録</button>
-				<button id="PDF" class="group-button-1">印刷（PDF）</button>
-				<button id="CHOSSE_RESITAX" class="group-button-1" data-bind="click: openEDialog">納付先の統合</button>
-				<button id="MASTER_LOG" class="group-button-1">マスタ修正ログ</button>
-			<!-- 	 data-bind="click: Confirm" -->
-				<button id="DELETE_ONE" class="group-button-2 " data-bind="click: deleteAResidential, enable: enableBTN005 ">削除</button>
-				<button id="DELELE_MORE" class="group-button-2" data-bind="click: openDDialog, enable: enableBTN006">一括削除</button>
-		
-		</div>
-
-			<div id="contents-area" class="cf">
-
-				<div class="nts-left-content">
-					<div class="relative bg-green caret-right caret-background"
-						style="float: left; width: 400px; height: 610px; margin-top: 2px">
-						<i class="icon icon-searchbox"></i>
-						<!-- , click: search -->
-						<div id="search" style="width: 400px"
-							data-bind="ntsSearchBox: {items: redensitalTaxNodeList, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-						<div>
-							<table id="A_LST_001"
-								data-bind="ntsTreeGridView:{
-								   	width: 350,
-									height: 500,
-									options: redensitalTaxNodeList,
-									value: singleSelectedCode,
-									optionsValue: 'code',
-									optionsChild: 'childs',
-									optionsText: 'nodeText',
-									multiple: false,
-									enable: false,
-									showCheckBox: false}"
-								class="cf"></table>
-						</div>
-				
-					 <label id="A_LBL_011" data-bind="text: numberOfResidentialTax()"> 【登録件数】 0件</label>
-				
-							
-						
+	    <ui:define name="htmlHead">
+	        <com:scriptfile set="IGNITE"/>
+	        <com:scriptfile path="../share/constants.js"/>
+	        <com:scriptfile path="qmm003.a.service.js"/>
+	        <com:scriptfile path="qmm003.a.vm.js"/>
+	        <com:scriptfile path="qmm003.a.start.js"/>
+	        <com:ValidatorScript>
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeCode
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeName
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeKanaName
+		        nts.uk.shr.com.primitive.Memo
+		        nts.uk.ctx.pr.transfer.dom.bank.AccountNumber
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeSubscriberName
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeDesignationNum
+		        nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.CompileStationName
+		        nts.uk.shr.com.primitive.PostCode
+		    </com:ValidatorScript>
+	    </ui:define>
+	    <ui:define name="content">
+	        <div id="functions-area">
+	            <!-- A1_1 -->
+	            <button tabindex="1" data-bind="click: createNew, timeClick: 500, enable: updateMode()">#{i18n.getText('QMM003_1')}</button>
+	            <!-- A1_2 -->
+	            <button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty, click: register, timeClick: 500">#{i18n.getText('QMM003_2')}</button>
+	            <!-- A1_3 -->
+	            <button tabindex="3" data-bind="click : exportFilePdf">#{i18n.getText('QMM003_3')}</button>
+	            <!-- A1_4 -->
+	            <button tabindex="4" data-bind="click: openDialogQmm003e, timeClick: 500">#{i18n.getText('QMM003_4')}</button>
+	            <!-- A1_5 -->
+	            <button tabindex="5" data-bind="enable: false">#{i18n.getText('QMM003_5')}</button>
+	            <!-- A1_6 -->
+	            <button tabindex="6" class="danger" data-bind="enable: updateMode(), click: remove, timeClick: 500">#{i18n.getText('QMM003_6')}</button>
+	            <!-- A1_7 -->
+	            <button tabindex="7" class="danger" data-bind="enable: totalRtp() > 0, click: openDialogQmm003d, timeClick: 500">#{i18n.getText('QMM003_7')}</button>
+	        </div>
+	        <div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left" style="padding-top: 6px; padding-left: 20px">
+					<!-- A2_1 -->
+					<div data-bind="ntsPanel:{width: '400px', height: '450px', direction: 'right', showIcon: true, visible: true}">
+						<!-- A2_2 -->
+						<div style="width: 400px" tabindex="8"
+							data-bind="ntsSearchBox: {
+								targetKey: 'id', 
+								mode:'igTree', 
+								comId:'rsdTree', 
+								items: items2, 
+								selected: selectedCode, 
+								selectedKey: 'id', 
+								childField: 'children', 
+								fields: ['name', 'code']}" />
+						<!-- A2_3 -->
+						<table id="rsdTree" tabindex="9"
+							data-bind="ntsTreeGridView:{
+								width: 400,
+								rows: 15,
+								name: '#[#QMM003_8]', 
+								dataSource: items2,
+								value: selectedCode,
+								headers: headers,
+								primaryKey: 'id',
+								childDataKey: 'children',
+								primaryText: 'nodeText',
+								multiple: false,
+								enable: true,
+								showCheckBox: false}"></table>
+						<!-- A2_9 -->
+						<div class="label" data-bind="text: dispTotalRtp" style="padding-top: 10px; text-align: right"></div>
 					</div>
 				</div>
-				<div class="nts-right-content"  data-bind="with: currentResidential">
-
-					<div>
-						<!-- table  -->
-						<table id="expand-example2">
-							<tbody>
-								<tr class ="flex">
-									<th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {constraint: ['ResiTaxCode','ResiTaxAutonomy'], required: true ,readonly: true}" class="form-label">
-											<label id="A_LBL_002">コード/名称</label>
-										</div>
-									</th>
-									<th colspan="1" >
-									
-		                           <div >
-										<input  data-name="ResiTaxCode" id="A_INP_002"  class="save-error"  data-bind="ntsTextEditor: {
-												value: resiTaxCode,
-												constraint: 'ResiTaxCode',
-												required: true,
-												enable: $parent.isNew ,
-												readonly: false }" />
-								  </div>
-									</th>
-									<th colspan="2" >
-		                           <div >
-										<input data-name="ResiTaxAutonomy" id="A_INP_003"  class="save-error"  data-bind="ntsTextEditor: {
-												value: resiTaxAutonomy,
-												constraint: 'ResiTaxAutonomy',
-												required: true,
-												enable: true,
-												readonly: false }" />
-								  </div>										
-									</th>								
-									<th colspan="3" >
-										<button id="A_BTN_007" data-bind="click: openBDialog,enable: $parent.isNew"  style="margin-left: 5px;height: inherit;">参照</button>													 		
-									</th>								
-								</tr>
-								<!-- update UI -->	
-								<tr class ="flex">
-								 <th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxAutonomyKana'}" class="form-label ">
-											<label id="A_LBL_013">カナ名</label>
-										</div>
-								 </th>
-								 <th>
-								 <div >
-										<input  data-name="ResiTaxAutonomyKana" id="A_INP_010"  class="save-error"  data-bind="ntsTextEditor: {
-												value: resiTaxAutonomyKana,
-												constraint: 'ResiTaxAutonomyKana',
-												enable: true,
-												readonly: false }" style="margin-top: 5px;"/>					
-									</div>
-								 </th>
-								</tr>						
-
-								<!--  3  -->
-								<tr class= "flex">
-									<th colspan="1" class="th flex">
-										<div data-bind="ntsFormLabel: {required: true}" class="form-label ">
-											<label id="A_LBL_003">都道府県</label>
-										</div>
-									</th>
-									<th colspan="2" class="th">
-										<div id="A_SEL_001"
-											data-bind="ntsComboBox: {
-						                        options: $parent.itemPrefecture,
-												optionsValue: 'code',
-												value: prefectureCode,
-												optionsText: 'name',
-												editable: true,
-												enable: true,
-												columns: [{ prop: 'name', length: 10 }]}">
-										</div>
-									</th>								
-								</tr>
-							</tbody>
-						</table>
-						<hr />
+				<div class="fixed-flex-layout-right" data-bind="with: selectedResidentTaxPayee"  style="padding-top: 5px;">
+					<div class="valign-center control-group">
+						<!-- A3_1 -->
+						<div data-bind="ntsFormLabel: { required: true, constraint: ['ResidentTaxPayeeCode', 'ResidentTaxPayeeName'] }">#{i18n.getText('QMM003_9')}</div>
+						<!-- A3_2 -->
+						<input tabindex="10" id="A3_2" data-bind="ntsTextEditor: {
+							name: '#[QMM003_11]',
+							value: code,
+							constraint: 'ResidentTaxPayeeCode',
+							required: true, enable: $vm.updateMode() == false}" />
+						<!-- A3_3 -->
+						<input tabindex="11" id="A3_3" data-bind="ntsTextEditor: {
+							name: '#[QMM003_12]',
+							value: name,
+							constraint: 'ResidentTaxPayeeName',
+							required: true}" />
+						<!-- A3_4 -->
+						<button tabindex="12" class="small" data-bind="enable: $vm.updateMode() == false, click: openDialogQmm003b">#{i18n.getText('QMM003_13')}</button>
 					</div>
-					<!-- table  -->
-					<div>
-						<table id="expand-example1">
-							<tbody>
-								<tr class= "flex">
-									<th colspan="1" class="th">
-										<div data-bind="ntsFormLabel: {}">
-											<label id="A_LBL_004"> 住民税報告先 </label>
-										</div>
-									</th>
-									<th colspan="2">
-										<button id="A_BTN_009" data-bind="click: openCDialog, enable: enableBTN009" style="height: inherit;">参照</button>													 		
-									
- 			 							 <label id="A_LBL_012"   class="save-error"  data-bind="text: resiTaxReportCode"></label>					
-									</th>							
-								</tr>							
-								<!--  2  -->
-								<tr class= "flex">
-									<th colspan="1" class="th">
-										<div class="form-label"
-											data-bind="ntsFormLabel:{constraint: 'CompanyAccountNo', required: false}"
-											style="margin-top: 5px;">
-											<label id="A_LBL_005">口座番号 </label>
-										</div>
-									</th>
-
-									<th colspan="2" class="th">
-									<div >
-										<input  data-name="CompanyAccountNo" id="A_INP_004"  class="save-error"  data-bind="ntsTextEditor: {
-												value: companyAccountNo,
-												constraint: 'CompanyAccountNo',
-												enable: true,
-												readonly: false }" style="margin-top: 5px;"/>					
-									</div>
-									</th>
-								</tr>
-								<!--  3  -->
-								<tr class= "flex">
-									<th colspan="1" class="th">
-										<div class="form-label" data-bind="ntsFormLabel:{constraint:'RegisteredName'}"
-											style="margin-top: 5px;">
-											<label id="A_LBL_006">加入者名</label>
-										</div>
-									</th>
-
-									<th colspan="2" class="th">
-									<div >
-										<input data-name="RegisteredName" id="A_INP_005"   class="save-error"  data-bind="ntsTextEditor: {
-												value: registeredName,
-												constraint: 'RegisteredName',
-												enable: true,
-												readonly: false }" style="margin-top: 5px;"/>			
-									</div>
-									</th>
-								</tr>
-							</tbody>
-						</table>
-						<hr />
+					<div class="valign-center control-group">
+						<!-- A3_5 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'ResidentTaxPayeeKanaName' }">#{i18n.getText('QMM003_14')}</div>
+						<!-- A3_6 -->
+						<input tabindex="13" id="A3_6" data-bind="ntsTextEditor: {
+							name: '#[QMM003_14]',
+							value: kanaName,
+							constraint: 'ResidentTaxPayeeKanaName',
+							required: false}" />
 					</div>
-					<!-- p3 -->
-					<!-- table -->
-					<table id="expand-example">
-						<tbody>
-							<!-- 1  -->
-							<tr class= "flex">
-								<th colspan="1" class="th">
-									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'CompanySpecifiedNo'}"
-										style="margin-top: 5px; width: 200px">
-										<label id="A_LBL_007">指定番号</label>
-									</div>
-								</th>
-
-								<th colspan="2" class='th' >
-								<div >
-										<input  data-name="CompanySpecifiedNo" id="A_INP_006"  class="save-error"  data-bind="ntsTextEditor: {
-												value: companySpecifiedNo,
-												constraint: 'CompanySpecifiedNo',
-												enable: true,
-												readonly: false }"  style="margin-top: 5px;"/>
-								
-								</div>
-								</th>
-							</tr>
-
-							<!-- 2  -->
-							<tr class= "flex">
-								<th colspan="1" class="th">
-									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'CordinatePostalCode'}"
-										style="margin-top: 5px;">
-										<label id="A_LBL_008">とりまとめ局　郵便番号</label>
-									</div>
-								</th>
-
-								<th colspan="2" class='th'>
-								<div >
-										<input data-name="CordinatePostalCode" id="A_INP_007"   class="save-error"  data-bind="ntsTextEditor: {
-												value: cordinatePostalCode,
-												constraint: 'CordinatePostalCode',
-												enable: true,
-												readonly: false }"  style="margin-top: 5px;"/>			
-									
-								</div>
-								</th>
-							</tr>
-							<!-- 3  -->
-							<tr class= "flex">
-								<th colspan="1" class="th">
-									<div class="form-label" data-bind="ntsFormLabel:{constraint:'CordinatePostOffice'}"
-										style="margin-top: 5px;">
-										<label id="A_LBL_009">とりまとめ局　名</label>
-									</div>
-								</th>
-
-								<th colspan="2" class="th">
-								<div >
-										<input data-name="CordinatePostOffice" id="A_INP_008"  class="save-error"  data-bind="ntsTextEditor: {
-												value: cordinatePostOffice,
-												constraint: 'CordinatePostOffice',
-												enable: true,
-												readonly: false }"  style="margin-top: 5px;"/>				
-								</div>
-								</th>
-							</tr>
-							<!-- 4  -->
- 							<tr class= "flex">
-								<th colspan="1" class="th" style="vertical-align: top;">
-									<div class="flex">
-									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'Memo'}">
-										<label id="A_LBL_010">メモ</label>
-									</div>
-									</div>
-								</th>
-
-								<th colspan="2" class="th">
-								<div >
-										<textarea  data-name="Memo" id="A_INP_009"  class="save-error"  data-bind="ntsMultilineEditor:{
-												value: memo,
-												constraint: 'Memo',
-												enable: true,
-												readonly: false }" />									
-								</div>
-								</th>
-							</tr>
-						</tbody>
-					</table>
-				
-	<!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+					<div class="valign-center control-group">
+						<!-- A3_7 -->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_15')}</div>
+						<!-- A3_8 -->
+						<div id="prefectureCbb" tabindex="14" data-bind="ntsComboBox: {
+							name: '都道府県',
+							options: $vm.listPrefectures,
+							optionsValue: 'code',
+							optionsText: 'name',
+							visibleItemsCount: 10,
+							value: prefectures,
+							required: true,
+							selectFirstIfNull: true,
+							columns: [
+								{ prop: 'name', length: 10 }
+							]}"></div>
+					</div>
+					<!-- A3_10 -->
+					<hr/>
+					<div class="valign-center control-group">
+						<!-- A3_11 -->
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_16')}</div>
+						<!-- A3_12 -->
+						<button tabindex="15" class="small" data-bind="click: openDialogQmm003c, timeClick: 500">#{i18n.getText('QMM003_13')}</button>
+						<!-- A3_13 -->
+						<span class="label" data-bind="text: reportCd" style="padding-left: 20px"></span>
+						<!-- A3_14 -->
+						<span class="label" data-bind="text: reportName" style="padding-left: 20px"></span>
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_15 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'AccountNumber' }">#{i18n.getText('QMM003_17')}</div>
+						<!-- A3_16 -->
+						<input tabindex="16" id="A3_16" data-bind="ntsTextEditor: {
+							name: '#[QMM003_17]',
+							value: accountNumber,
+							constraint: 'AccountNumber',
+							required: false}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_17 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'ResidentTaxPayeeSubscriberName' }">#{i18n.getText('QMM003_18')}</div>
+						<!-- A3_18 -->
+						<input tabindex="17" id="A3_18" data-bind="ntsTextEditor: {
+							name: '#[QMM003_18]',
+							value: subscriberName,
+							constraint: 'ResidentTaxPayeeSubscriberName',
+							required: false}" />
+					</div>
+					<!-- A3_19 -->
+					<hr/>
+					<div class="valign-center control-group">
+						<!-- A3_20 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'ResidentTaxPayeeDesignationNum' }">#{i18n.getText('QMM003_19')}</div>
+						<!-- A3_21 -->
+						<input tabindex="18" id="A3_21" data-bind="ntsTextEditor: {
+							name: '#[QMM003_19]',
+							value: designationNum,
+							constraint: 'ResidentTaxPayeeDesignationNum',
+							required: false}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_22 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'PostCode' }">#{i18n.getText('QMM003_20')}</div>
+						<!-- A3_23 -->
+						<input tabindex="19" id="A3_18" data-bind="ntsTextEditor: {
+							name: '#[QMM003_20]',
+							value: postCode,
+							constraint: 'PostCode',
+							required: false}" />
+					</div>
+					<div class="valign-center control-group">
+						<!-- A3_24 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'CompileStationName' }">#{i18n.getText('QMM003_21')}</div>
+						<!-- A3_25 -->
+						<input tabindex="20" id="A3_18" data-bind="ntsTextEditor: {
+							name: '#[QMM003_21]',
+							value: compileStationName,
+							constraint: 'CompileStationName',
+							required: false}" />
+					</div>
+					<div class="valign-top control-group">
+						<!-- A3_26 -->
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'Memo' }">#{i18n.getText('QMM003_22')}</div>
+						<!-- A3_27 -->
+						<textarea style="height: 30px" tabindex="21" data-bind="ntsMultilineEditor: {
+							value: memo,
+							name: '#[QMM003_22]',
+							constraint: 'Memo',
+							option: {width: '350px'},
+							readonly: false}" />
+					</div>
 				</div>
 			</div>
-		</ui:define>
+			<style>
+				.form-label{width: 185px}
+				div.valign-center.control-group { width: 625px }
+				div.valign-top.control-group { width: 610px }
+			</style>
+	    </ui:define>
 	</ui:composition>
 </body>
 </html>

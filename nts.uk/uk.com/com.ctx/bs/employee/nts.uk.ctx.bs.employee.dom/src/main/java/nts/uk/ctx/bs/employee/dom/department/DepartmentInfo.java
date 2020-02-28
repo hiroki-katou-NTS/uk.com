@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.dom.department;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -14,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
  * The Class DepartmentInfo.
  */
 @Getter
+@AllArgsConstructor
 // 部門情報
 public class DepartmentInfo extends AggregateRoot {
 

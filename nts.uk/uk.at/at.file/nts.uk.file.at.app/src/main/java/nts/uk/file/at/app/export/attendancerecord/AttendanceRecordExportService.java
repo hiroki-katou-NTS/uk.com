@@ -23,6 +23,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
@@ -60,8 +62,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
@@ -117,7 +120,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	private EmployeeInformationPub employeePub;
 
 	@Inject
-	private WorkplaceConfigInfoRepository wplConfigInfoRepo;
+	private WorkplaceInformationRepository wplConfigInfoRepo;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -186,8 +189,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		if (!wplIds.isEmpty()) {
 
 			// Get Workplace config info
-			List<WorkplaceConfigInfo> wplConfigInfoList = wplConfigInfoRepo
-					.findByWkpIdsAtTime(AppContexts.user().companyId(), GeneralDate.localDate(LocalDate.now()), wplIds);
+			List<WorkplaceConfigInfo> wplConfigInfoList = this.convertData(wplConfigInfoRepo
+					.findByBaseDateWkpIds2(AppContexts.user().companyId(), wplIds, GeneralDate.localDate(LocalDate.now())));
 			List<WorkplaceHierarchy> hierarchyList = new ArrayList<>();
 
 			// Find heirarchy for each workplace
@@ -1385,5 +1388,16 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			return String.format(FORMAT, hourInt, minuteInt);
 		}
+	}
+	
+	private List<WorkplaceConfigInfo> convertData(List<WorkplaceInformation> wp) {
+		Map<Pair<String, String>, List<WorkplaceInformation>> map =
+				wp.stream().collect(Collectors.groupingBy(p -> Pair.of(p.getCompanyId(), p.getWorkplaceHistoryId())));
+		List<WorkplaceConfigInfo> returnList = new ArrayList<WorkplaceConfigInfo>();
+		for (Pair<String, String> key : map.keySet()) {
+			returnList.add(new WorkplaceConfigInfo(key.getLeft(), key.getRight(), 
+					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
+		}
+		return returnList;
 	}
 }

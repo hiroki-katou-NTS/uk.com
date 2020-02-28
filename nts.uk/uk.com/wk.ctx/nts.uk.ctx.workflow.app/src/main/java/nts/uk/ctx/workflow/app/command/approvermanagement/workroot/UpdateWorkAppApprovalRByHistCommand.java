@@ -26,4 +26,6 @@ public class UpdateWorkAppApprovalRByHistCommand {
 	private List<UpdateHistoryDto> lstUpdate;
 	/**	checkMode, common: 0, private: 1 */
 	private int checkMode;
+	/**0: 就業; 1: 人事*/
+	private int sysAtr;
 }

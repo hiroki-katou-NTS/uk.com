@@ -12,7 +12,7 @@ public class ApprovalForApplication {
 	/**
 	 * 申請種類
 	 */
-	Integer appType;
+	String appType;
 	/**
 	 * 申請種類 name
 	 */

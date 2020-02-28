@@ -7,6 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
 
 /**
  * 
@@ -99,6 +103,22 @@ public class WorkplaceInformation extends AggregateRoot {
 			throw new BusinessException("Msg_368");
 		} else if (this.hierarchyCode.v().length() > 30)
 			throw new BusinessException("Msg_369");
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkplaceInfoSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setHistoryId(this.workplaceHistoryId);
+		memento.setWorkplaceId(this.workplaceId);
+		memento.setWorkplaceCode(new WkpCode(this.workplaceCode.v()));
+		memento.setWorkplaceName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName(this.workplaceName.v()));
+		memento.setWkpGenericName(new WorkplaceGenericName(this.workplaceGeneric.v()));
+		memento.setWkpDisplayName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName(this.workplaceDisplayName.v()));
+		memento.setOutsideWkpCode(new OutsideWorkplaceCode(this.workplaceExternalCode.map(x -> x.v()).orElse("")));
 	}
 	
 }

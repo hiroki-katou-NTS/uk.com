@@ -14,30 +14,27 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApprovalPhaseImport {
-	/** 会社ID */
-	private String companyId;
-	/** 分岐ID */
-	private String branchId;
-	/** 承認フェーズID */
-	private String approvalPhaseId;
+	/** 承認ID */
+	private String approvalId;
+	/** 承認フェーズ順序 */
+	private int phaseOrder;
 	/** 承認形態 */
 	private int approvalForm;
 	/** 閲覧フェーズ */
 	private int browsingPhase;
-	/** 順序 */
-	private int orderNumber;
+	/**承認者指定区分*/
+	private int approvalAtr;
 	/** 承認者 */
 	private List<ApproverInfoImport> approvers;
 
-	public ApprovalPhaseImport(String companyId, String branchId, String approvalPhaseId, int approvalForm,
-			int browsingPhase, int orderNumber) {
+	public ApprovalPhaseImport(String approvalId, int phaseOrder, int approvalForm,
+			int browsingPhase, int approvalAtr) {
 		super();
-		this.companyId = companyId;
-		this.branchId = branchId;
-		this.approvalPhaseId = approvalPhaseId;
+		this.approvalId = approvalId;
+		this.phaseOrder = phaseOrder;
 		this.approvalForm = approvalForm;
 		this.browsingPhase = browsingPhase;
-		this.orderNumber = orderNumber;
+		this.approvalAtr = approvalAtr;
 	}
 
 	public void addApproverList(List<ApproverInfoImport> approvers) {

@@ -1,0 +1,9 @@
+.dialog-title {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    min-width: 550px;
+}
+.dialog-first-element div{
+    display: inline-block;
+    margin-top: 20px;
+}
