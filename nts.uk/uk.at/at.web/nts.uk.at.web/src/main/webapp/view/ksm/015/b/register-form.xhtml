@@ -20,7 +20,7 @@ required: true}" />
 name: '#[KSM015_25]',
 value: registrationForm().shiftMasterName,
 constraint: 'ShiftMasterName',
-option: { width: '60px', textalign: 'right' },
+option: { width: '50px', textalign: 'right' },
 required: true}" />
     </div>
     <!-- B7_3 -->
@@ -31,16 +31,16 @@ required: true}" />
         <!-- B8_3_1 -->
         <div class="b73-desc">
             <!-- B8_3_2 -->
-            <div class="table" data-bind="show: registrationForm().workTypeDisplay()">
+            <div class="table" data-bind="show: registrationForm().workTypeDisplay() != ''">
                 <div class="cell">
-                    <span>#{i18n.getText('KSM015_15')}</span>
+                    <span class="work-lable">#{i18n.getText('KSM015_15')}</span>
                     <span data-bind="text: registrationForm().workTypeDisplay()"></span>
                 </div>
             </div>
 
-            <div class="table" data-bind="show: registrationForm().workTimeSetDisplay()">
+            <div class="table" data-bind="show: registrationForm().workTimeSetDisplay() != '' ">
                 <div class="cell">
-                    <span>#{i18n.getText('KSM015_16')}</span>
+                    <span class="work-lable">#{i18n.getText('KSM015_16')}</span>
                     <span data-bind="text: registrationForm().workTimeSetDisplay()"></span>
                 </div>
             </div>

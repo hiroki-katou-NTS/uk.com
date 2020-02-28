@@ -56,9 +56,13 @@ public class ShiftMasterWs {
 	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
 	
 	@POST
-	@Path("isForAttendent")
+	@Path("startCPage")
 	public Ksm015StartPageDto isForAttendent(){
-		return Ksm015StartPageDto.builder().forAttendent(AppContexts.user().roles().forAttendance()).build() ;
+		AlreadySettingWorkplaceDto configWorkplace = this.orgFinder.getAlreadySetting();
+		return Ksm015StartPageDto.builder()
+				.forAttendent(AppContexts.user().roles().forAttendance())
+				.alreadyConfigWorkplaces(configWorkplace.getWorkplaceIds())
+				.build() ;
 	}
 	
 	@POST
@@ -81,7 +85,7 @@ public class ShiftMasterWs {
 	
 	@POST
 	@Path("getAlreadyConfigOrg")
-	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(FindShiftMasterDto dto){
+	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(){
 		return this.orgFinder.getAlreadySetting();
 	}
 	
