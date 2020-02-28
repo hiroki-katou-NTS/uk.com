@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm018.a {
             selectTypeSet : KnockoutObservable<number> = ko.observable(0);
             //___________KCP009______________
             employeeInputList: KnockoutObservableArray<vmbase.EmployeeKcp009> = ko.observableArray([]);
-            systemReference: KnockoutObservable<number> = ko.observable(vmbase.SystemType.EMPLOYMENT);
+            systemReference: KnockoutObservable<number> = ko.observable(vmbase.SystemType.PERSONNEL);
             isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
             targetBtnText: string = getText("KCP009_3");
             listComponentOption: vmbase.ComponentOption;
@@ -540,7 +540,7 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;    
                 self.employeeInputList([]);
                 _.each(dataList, function(item){
-                        self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.affiliationName,""));
+                        self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.affiliationName,item.affiliationName));
                 });
                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                 if(dataList.length == 0){

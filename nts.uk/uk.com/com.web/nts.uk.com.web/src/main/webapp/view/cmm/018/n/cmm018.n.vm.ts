@@ -145,7 +145,7 @@ export module viewmodel {
             });
             
             //xuat file
-            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp);
+            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp, self.sysAtr);
             nts.uk.ui.block.invisible();
             service.saveAsExcel(data).done(()=>{
                  nts.uk.ui.block.clear();   

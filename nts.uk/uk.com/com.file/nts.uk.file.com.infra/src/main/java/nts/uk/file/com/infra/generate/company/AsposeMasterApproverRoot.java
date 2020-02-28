@@ -524,7 +524,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					int numberOfNotMerger = (sizeOfForm - numberOfRowMerge);
 					this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
-					firstRow = firstRow + 1;
+					firstRow = firstRow + sizeOfForm - numberOfRowMerge;
 
 				}
 

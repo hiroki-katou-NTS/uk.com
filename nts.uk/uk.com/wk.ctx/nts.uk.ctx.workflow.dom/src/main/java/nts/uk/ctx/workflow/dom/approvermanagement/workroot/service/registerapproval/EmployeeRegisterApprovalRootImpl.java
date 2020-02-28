@@ -64,7 +64,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	@Inject
 	private PersonAdapter psAdapter;
 	@Inject
-	private CollectApprovalRootService collectApprRootService;
+	private CollectApprovalRootService collectApprSv;
 	
 	/**
 	 * 01.申請者としての承認ルートを取得する
@@ -87,12 +87,13 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			for (AppTypes app : lstApps) {
 				if(app.getEmpRoot() == 0){// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
 					//03.社員の共通の承認ルートを取得する
-					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
+					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId,
+							baseDate, sysAtr);
 					
 				}else {
 					//02.社員の対象申請の承認ルートを取得する
 					appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, app,
-							baseDate);
+							baseDate, sysAtr);
 					
 				}
 				Optional<ApprovalRootCommonOutput> appE = appOfEmployee.isEmpty() ? Optional.empty() : Optional.of(appOfEmployee.get(0));
@@ -121,8 +122,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
 		if (approvalRootOp.isPresent()) {
 			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
-			LevelOutput p = collectApprRootService.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
-			err = EnumAdaptor.valueOf(p.getErrorFlag(), ErrorFlag.class);
+			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
+			err = collectApprSv.checkApprovalRoot(p);
 
 			for(LevelInforOutput level : p.getLevelInforLst()) {
 				int phaseNumber = level.getLevelNo();

@@ -265,13 +265,17 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<ApprovalForApplication> lstEvent = wpRootInfor.stream()
 				.filter(c -> c.getEmpRootAtr() == 5).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(lstApp)) {
-			Collections.sort(lstApp, Comparator.comparing(ApprovalForApplication:: getAppType));
+			lstApp.sort((a, b) -> {
+				return Integer.valueOf(a.getAppType()).compareTo(Integer.valueOf(b.getAppType()));
+			});
 		}
 		if(!CollectionUtil.isEmpty(lstConfirm)) {
 			Collections.sort(lstConfirm, Comparator.comparing(ApprovalForApplication:: getAppType));
 		}
 		if(!CollectionUtil.isEmpty(lstNotice)) {
-			Collections.sort(lstNotice, Comparator.comparing(ApprovalForApplication:: getAppType));
+			lstNotice.sort((a, b) -> {
+				return Integer.valueOf(a.getAppType()).compareTo(Integer.valueOf(b.getAppType()));
+			});
 		}
 		if(!CollectionUtil.isEmpty(lstEvent)) {
 			Collections.sort(lstEvent, Comparator.comparing(ApprovalForApplication:: getAppType));

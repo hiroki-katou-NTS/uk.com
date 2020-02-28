@@ -407,7 +407,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
 			String appName = "";
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
-				appName = "共通";
+				appName = "共通ルート";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
 				appName = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}
@@ -488,7 +488,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
 			String appName1 = "";
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
-				appName1 = "共通";
+				appName1 = "共通ルート";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
 				appName1 = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}
