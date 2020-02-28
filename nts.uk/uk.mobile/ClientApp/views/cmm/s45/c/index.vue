@@ -80,7 +80,7 @@
                               <div v-else>
                                 <span class="text-break">
                                   <span>{{ frame.listApprover[0].approverName }}</span>
-                                  <span v-if="frame.listApprover[0].representerName">({{ approver.representerName }})</span>
+                                  <span v-if="frame.listApprover[0].representerName">({{ frame.listApprover[0].representerName }})</span>
                                 </span>
                               </div>    
                             </td>
