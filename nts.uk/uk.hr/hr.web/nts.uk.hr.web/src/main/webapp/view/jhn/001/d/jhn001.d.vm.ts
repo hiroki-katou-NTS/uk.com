@@ -29,7 +29,7 @@ module jhn001.d.viewmodel {
             self.listSendBackCls = ko.observableArray([
                 new ItemModel(2, ''),
                 new ItemModel(0, '記載不備'),
-                new ItemModel(1, '添付書類不')
+                new ItemModel(1, '添付書類不備')
             ]);
             self.selectedSendBackCls = ko.observable(0);
             self.start();
