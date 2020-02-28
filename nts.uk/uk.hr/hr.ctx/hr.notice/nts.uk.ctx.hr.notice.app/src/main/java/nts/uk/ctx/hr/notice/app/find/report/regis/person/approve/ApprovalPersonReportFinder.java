@@ -78,7 +78,7 @@ public class ApprovalPersonReportFinder {
 		
 		for (int i = 0; i < listDomainApproved.size(); i++) {
 			ApprovalPersonReport domain = listDomainApproved.get(i);
-			if ( (!sidLogin.equals(domain.getAprSid()) && domain.getPhaseNum() >= phaseMaxOfApprovalLogin)  ) {
+			if ( (domain.getPhaseNum() >= phaseMaxOfApprovalLogin)  ) {
 				ApprovalPersonReportDto itemCombobox = ApprovalPersonReportDto.builder().id(i + 2).cid(cid) // 会社ID
 						.reportID(domain.getReportID()) // 届出ID
 						.phaseNum(domain.getPhaseNum())
