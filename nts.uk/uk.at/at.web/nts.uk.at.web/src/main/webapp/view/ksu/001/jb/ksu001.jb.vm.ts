@@ -427,14 +427,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         let workType = null, workTime = null, pairShortName = null;
-                        
-                        // Cắt ShiftCode thành WorkTypeCode & WorkTimeCode
-                        let wpSetWorkTypeCode = wPSet.shiftCode.split("-")[0];
-                        let wpSetWorkTimeCode = wPSet.shiftCode.split("-")[1];
-                        workType = _.find(self.listWorkType, { 'workTypeCode': wpSetWorkTypeCode });
-                        
+                          workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
                         let workTypeShortName = workType.abbreviationName;
-                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wpSetWorkTimeCode });
+                        //let workTypeShortName = 'abc';
+                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
                         let workTimeShortName = workTime ? workTime.abName : null;
                         pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
                         arrPairShortName.push(pairShortName);
