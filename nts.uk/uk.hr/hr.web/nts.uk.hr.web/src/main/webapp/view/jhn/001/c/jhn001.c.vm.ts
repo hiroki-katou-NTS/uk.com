@@ -108,6 +108,7 @@ module jhn001.c.viewmodel {
             setShared('JHN001D_PARAMS', {reportId: layout.reportId()});
             invisible();
             modal('/view/jhn/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+                self.start();
                 unblock();
             });
         }
@@ -207,6 +208,25 @@ module jhn001.c.viewmodel {
             
             layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
             
+            
+            
+            layout.approve(data.approve);
+            
+            if(data.approve === false){
+                
+                if(data.release === true){
+                    
+                    layout.release(false);
+                    
+                }else{
+                    
+                    layout.release(true);
+                    
+                }
+                
+            
+            }
+            
             var lstDoc = [];
             
             for (var i = 0; i < data.documentSampleDto.length; i++) {
@@ -258,6 +278,7 @@ module jhn001.c.viewmodel {
                     fileSize: fileData.fileSize,
                 }
                 
+                
                 lstDoc.push(obj);
                 
             }
@@ -297,6 +318,8 @@ module jhn001.c.viewmodel {
         approvalRootState?: Array<any>;
         listDocument?: Array<any>;
         listApprovalFrame?: Array<any>;
+        release?: boolean;
+        approve?: boolean;
     }
 
     class Layout {
@@ -314,6 +337,8 @@ module jhn001.c.viewmodel {
         approvalRootState : KnockoutObservableArray<any> = ko.observableArray([]);
         listDocument : KnockoutObservableArray<any> = ko.observableArray([]);
         approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
+        release:  KnockoutObservable<boolean> = ko.observable(false);
+        approve:  KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
 //            self.reportId(param.reportId);

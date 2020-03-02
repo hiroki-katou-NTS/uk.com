@@ -44,6 +44,8 @@ public interface PerInfoCategoryRepositoty {
 	// vinhpx: start
 	DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId);
 	
+	List<DateRangeItem> getDateRangeItemByListCtgId(List<String> perInfoCtgIds);
+	
 	List<PersonInfoCategory> getPerInfoCtgByParentCode(String parentCtgCd, String contractCd);
 	
 	List<PersonInfoCategory> getPerInfoCtgByParentCdWithOrder(String parentCtgCd, String contractCd, String companyId, boolean isASC);
