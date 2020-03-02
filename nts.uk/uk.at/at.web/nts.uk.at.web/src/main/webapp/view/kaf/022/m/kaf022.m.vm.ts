@@ -158,7 +158,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this,
                 s27 = self.selectVer27(),
                 lwps = $('#wkp-list').getDataList(),
-                flwps = flat(_.cloneDeep(lwps), "childs");
+                flwps = flat(_.cloneDeep(lwps), "children");
 
             // clear all msg when reload data.
             clearError();
@@ -197,12 +197,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this,
                 lwps = $('#wkp-list').getDataList(),
                 rstd = $('#wkp-list').getRowSelected(),
-                flwps = flat(_.cloneDeep(lwps), "childs"),
-                wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId),
+                flwps = flat(_.cloneDeep(lwps), "children"),
+                wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id),
                 param = {
                     targetType: 4,
                     name: wkp ? wkp.name : '',
-                    code: wkp ? wkp.workplaceCode : '',
+                    code: wkp ? wkp.code : '',
                     baseDate: ko.toJS(self.baseDate),
                     itemListSetting: _.map(self.alreadySettingList(), m => m.workplaceId)
                 };
