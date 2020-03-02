@@ -26,7 +26,7 @@ public interface SprApprovalSearchPub {
 	public List<ApprovalPersonSprExport> getApprovalRootPs(String companyID, GeneralDate date, Integer employmentRootAtr,
 			Integer confirmRootAtr);
 	
-	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String branchId);
+	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String approvalId);
 	
 	public List<ApprovalRootStateSprExport> getAppByApproverDate(String companyID, String approverID, GeneralDate date);
 	

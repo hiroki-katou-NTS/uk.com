@@ -42,9 +42,14 @@
 						data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div>
 					<br></br>
 					<!-- M1_8 -->
-					<div class="divCheckbox" id="chkWorkplace"
-						data-bind="ntsCheckBox: { checked: isWorkplace }">#{i18n.getText('CMM018_76')}</div>
-					<br></br>
+					<div data-bind = "if: sysAtr() == 0">
+						<div class="divCheckbox" id="chkWorkplace"
+							data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Workplace'])}</div>
+					</div>
+					<div data-bind = "if: sysAtr() == 1">
+						<div class="divCheckbox" id="chkWorkplace"
+							data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Department'])}</div>
+					</div>
 					<!-- M1_9 -->
 					<div class="divCheckbox" id="chkPerson"
 						data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div>

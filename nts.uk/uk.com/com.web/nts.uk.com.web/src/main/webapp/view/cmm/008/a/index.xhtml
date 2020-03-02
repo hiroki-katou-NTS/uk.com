@@ -20,6 +20,7 @@
 				nts.uk.ctx.bs.employee.dom.employment.EmploymentName
 				nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode
 				nts.uk.shr.com.primitive.Memo
+				
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -94,7 +95,40 @@
 									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo'}" />
 							</div>
 						</div>
-						
+						<div data-bind="visible : true" > 
+						<div class="fixed-flex-layout">
+							<div data-bind="ntsFormLabel: {}" class="width-label fixed-flex-layout-left">
+								<label data-bind ="text :$parent.commonMasterName"></label>
+							</div>
+							<div  tabindex="10" id="combo-box" data-bind="ntsComboBox: {
+								options: $parent.itemListMatter,
+								optionsValue: 'commonMasterItemId',
+								visibleItemsCount: 5,
+								value: $parent.selectedCodeMaster,
+								optionsText: 'commonMasterItemName',
+								editable: false ,
+								selectFirstIfNull: false ,
+								required: false ,
+								columns: [
+									{ prop: 'commonMasterItemName', length: 10 },
+								]}"></div> 
+								
+								<!-- <div tabindex="11" id = "selectedCode_Reason1Id"  style="width: 170px" 
+									 data-bind="ntsComboBox: {
+												options: listRetirementReason1 ,
+												name: '{#JCM007_A222_20}' ,
+												optionsValue: 'value',
+												value: selectedCode_Reason1 ,
+												optionsText: 'text',
+												enable : enable_listRetirementReason1 ,
+												editable: false ,
+												selectFirstIfNull: false ,
+												required: true ,
+												columns: [
+													{ prop: 'text', length: 15 }
+												]}"></div> -->
+						</div>
+						</div>
 					</div>
 				</div>
 			</div>

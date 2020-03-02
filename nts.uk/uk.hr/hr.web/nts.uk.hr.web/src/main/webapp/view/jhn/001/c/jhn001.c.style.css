@@ -1,0 +1,113 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 645px;
+}
+
+/* #functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1260px) {
+	#functions-area, #contents-area {
+		
+	}
+} */
+
+#master-wrapper{
+	overflow-y: hidden;
+}
+
+#contents-area {
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+.valign-center {
+	vertical-align: middle !important;
+}
+
+.divHeader {
+	margin: 5px;
+}
+
+#C222 {
+	width: 1000px;
+	float: left;
+	position: relative;
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    overflow-y: scroll;
+}
+
+.input_002 {
+	display: inline-block;
+}
+
+.inlineCustom {
+	display: inline-block;
+	margin: 5px;
+}
+
+.divHead {
+	margin-left: 10px;
+	padding: 10px;
+
+}
+
+#C222_1, #C222_2{
+	width: 945px;
+	height: 45px;
+	margin-bottom: 10px;
+}
+
+.label.warning {
+    padding: 15px 10px;
+    font-size: 1rem;
+    background-color: #F7EFD4;
+    color: #C12017;
+}
+
+#C222_3_1{
+	width: 565px; 
+	height: 43px;
+}
+
+#C222_3, #C222_4{
+	width: 209px; 
+	margin-left: 6px !important;
+	margin-bottom: 10px;
+}
+
+#C222_4_1{
+	width: 100px !important; 
+}
+
+#table-phase, #table-phase td, #table-phase th {
+	border: 1px solid black;
+	text-align: center;
+	height: 25px;
+}
+
+#table-phase td {
+	height: 25px;
+}
+
+#label-1 {
+	float: left;
+	width: 209px;
+}
+
+#table-1 {
+	margin-top: 8px;
+	margin-left: 150px;
+}
+
+.layout-control .drag-panel{
+	height: 345px !important;
+	padding: 2px !important;
+}
+

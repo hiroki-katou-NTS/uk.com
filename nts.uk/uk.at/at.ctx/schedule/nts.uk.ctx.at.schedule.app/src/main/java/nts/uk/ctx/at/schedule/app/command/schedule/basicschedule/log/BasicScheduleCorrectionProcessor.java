@@ -120,7 +120,7 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 				? workTypeRepository.getCodeNameWorkType(companyId, listWorkTypeCode) : new HashMap<>();
 		Map<String, String> listWorkTimeCodeName = listWorkTimeCode.size() > 0
 				? workTimeSettingRepository.getCodeNameByListWorkTimeCd(companyId, listWorkTimeCode) : new HashMap<>();
-		Map<Pair<String, GeneralDate>, Pair<String,String>> listWorkplaceIdDateName = (listWorkplaceIdd.size() > 0
+		Map<String, Pair<String,String>> listWorkplaceIdDateName = (listWorkplaceIdd.size() > 0
 				&& listDate.size() > 0)
 						? syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplaceIdd, listDate)
 						: new HashMap<>();
@@ -185,8 +185,8 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					itemInfo = correctedItem.toItemInfo(classificationCodeNameBef, classificationCodeNameAft);
 					break;
 				case 65:
-					Pair<String, String> pairWpkCodeNameBef = listWorkplaceIdDateName.get(Pair.of(correctedItem.getBefore(), date));
-					Pair<String, String> pairWpkCodeNameAft = listWorkplaceIdDateName.get(Pair.of(correctedItem.getAfter(), date));
+					Pair<String, String> pairWpkCodeNameBef = listWorkplaceIdDateName.get(correctedItem.getBefore());
+					Pair<String, String> pairWpkCodeNameAft = listWorkplaceIdDateName.get(correctedItem.getAfter());
 					String workplaceNameBef = correctedItem.getBefore() != null ? pairWpkCodeNameBef.getLeft() + " " + pairWpkCodeNameBef.getRight() : null;
 					String workplaceNameAft = correctedItem.getAfter() != null ? pairWpkCodeNameAft.getLeft() + " " + pairWpkCodeNameAft.getRight() : null;
 					itemInfo = correctedItem.toItemInfo(workplaceNameBef, workplaceNameAft);

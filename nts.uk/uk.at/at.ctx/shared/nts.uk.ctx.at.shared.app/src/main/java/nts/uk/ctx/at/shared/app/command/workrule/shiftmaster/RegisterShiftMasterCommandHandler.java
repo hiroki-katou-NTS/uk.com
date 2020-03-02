@@ -28,7 +28,6 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
 	
-
 	
 //	@Injectable
 //	private Require requireWorkInfo;

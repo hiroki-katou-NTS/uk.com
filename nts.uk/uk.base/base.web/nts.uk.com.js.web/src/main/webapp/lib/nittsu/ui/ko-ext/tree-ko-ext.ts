@@ -48,6 +48,7 @@ module nts.uk.ui.koExtentions {
             
             let $tree = $(element);
             
+            $tree.data("dataSource", _.cloneDeep(options));
 //            let template = "{{if ${"+optionsValue+"}.indexOf('1') >= 0}} <img src='http://igniteui.com/images/samples/tree/book.png'>" + 
 //                " {{elseif ${"+optionsValue+"}.indexOf('2') >= 0}}<img src='http://igniteui.com/images/samples/tree/coins.png'>" +
 //                "{{else}}<img src='http://igniteui.com/images/samples/tree/documents-folder.png'/>{{/if}}${"+optionsValue+"}"
@@ -193,8 +194,9 @@ module nts.uk.ui.koExtentions {
             let multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
             
             // Update datasource.
-            let originalSource = $tree.igTree('option', 'dataSource').__ds;
+            let originalSource = $tree.data("dataSource");
             if (!_.isEqual(originalSource, options)) {
+                $tree.data("dataSource", _.cloneDeep(options));
                 $tree.igTree("option", "dataSource", _.cloneDeep(options));
                 $tree.igTree("dataBind");
             }
@@ -204,14 +206,6 @@ module nts.uk.ui.koExtentions {
                 $tree.ntsTreeDrag("deselectAll");
                 $tree.find("a").removeClass("ui-state-active");
             } else {
-                let getOffset = function($node){
-                    let offset = $node[0].offsetTop, parent = $node[0].offsetParent;
-                    while(!_.isNil(parent) && parent.tagName.toLowerCase() != "ul"){
-                        offset+= parent.offsetTop;
-                        parent = parent.offsetParent;
-                    }
-                    return offset;           
-                }
                 if (multiple) {
                     $tree.find("a").removeClass("ui-state-active");
                     selectedValues.forEach(function(val) {
@@ -221,22 +215,31 @@ module nts.uk.ui.koExtentions {
                             let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
                             if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                                 $tree.igTree("toggleCheckstate", $node);
-                            }   
+                            }  
+                            $tree.igTree("expandToNode", $node);
                         }
                     });
-                    if(selectedValues.length > 0){
-                       let $selectingNode = $tree.igTree("nodesByValue", selectedValues[0]);
-                        if ($selectingNode.length > 0) {
-                            $tree.scrollTop(getOffset($selectingNode));  
+                    if (selectedValues.length > 0) {
+                        var lastV = $tree.data("values");
+                        if(!_.isNil(lastV)) {
+                            var newV = _.difference(selectedValues, lastV),
+                                scrollTo = newV.length === 0 ? selectedValues[0] : newV[0],
+                                $selectingNode = $tree.igTree("nodesByValue", scrollTo);
+                            
+                            if ($selectingNode.length > 0) {
+                                setTimeout(() => { $tree[0].scrollTop = $tree.ntsTreeDrag("getPosition", $selectingNode); }, 100);
+                            }
                         }
+                        $tree.data("values", selectedValues);
+                        
                     }
                 } else {
                     $tree.igTree("clearSelection");
-                    let $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                    var $selectingNode = $tree.igTree("nodesByValue", singleValue);
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
                         $tree.igTree("expandToNode", $selectingNode);
-                        $tree.scrollTop(getOffset($selectingNode));  
+                        setTimeout(() => { $tree[0].scrollTop = $tree.ntsTreeDrag("getPosition", $selectingNode); }, 100);
                     }
                 }
             }

@@ -246,7 +246,7 @@ module nts.uk.at.view.ksm005.c {
                         id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        affiliationName: employeeSearch.affiliationName
                     };
                     employeeSearchs.push(employee);
                 }
@@ -702,7 +702,7 @@ module nts.uk.at.view.ksm005.c {
         id: string;
         code: string;
         name?: string;
-        workplaceName?: string;
+        affiliationName?: string;
         isAlreadySetting?: boolean;
     }
 

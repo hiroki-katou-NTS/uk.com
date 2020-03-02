@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -35,6 +37,10 @@ public class Employment extends AggregateRoot {
 	/** The memo. */
 	// メモ.
 	private Memo memo;
+	//グループ会社共通マスタID
+	private Optional <String>  empCommonMasterId;
+	// グループ会社共通マスタ項目ID
+	private Optional <String>  empCommonMasterItemId;
 
 	/**
 	 * Instantiates a new employment.
@@ -48,6 +54,8 @@ public class Employment extends AggregateRoot {
 		this.employmentName = memento.getEmploymentName();
 		this.empExternalCode = memento.getEmpExternalcode();
 		this.memo = memento.getMemo();
+		this.empCommonMasterId = memento.empCommonMasterId();
+		this.empCommonMasterItemId = memento.empCommonMasterItemId();
 	}
 
 	/**
@@ -62,6 +70,12 @@ public class Employment extends AggregateRoot {
 		memento.setEmploymentName(this.employmentName);
 		memento.setEmpExternalCode(this.empExternalCode);
 		memento.setMemo(this.memo);
+		memento.setEmpCommonMasterId(this.empCommonMasterId==null?null:this.empCommonMasterId.get());
+		String empCommonMasterItemIdValue = null;
+		if(this.empCommonMasterItemId.isPresent()){
+			empCommonMasterItemIdValue = this.empCommonMasterItemId.get();
+		}
+		memento.setEmpCommonMasterItemId(empCommonMasterItemIdValue);
 	}
 
 	/*

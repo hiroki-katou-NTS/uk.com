@@ -27,8 +27,7 @@
 				<h4 style="margin-top: 30px; margin-bottom: 10px; font-size: 17px">Parameters:</h4>
 					<div>
 						<table>
-						<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-<!-- 							<tr>
+							<tr>
 								<td class="header-text">起動モード:</td>
 								<td class="content-sample"><div
 										data-bind="ntsRadioBoxGroup: {
@@ -37,8 +36,7 @@
 									     optionsText: 'name',
 									     value: selectedStartMode,
 									     enable: enable}"></div></td>
-							</tr> -->
-							<!-- end -->
+							</tr>
 							<tr>
 								<td class="header-text">基準日</td>
 								<td class="content-sample">
@@ -94,45 +92,41 @@
 						CDL008 dialog</button>
 						<br />
 						<div style="font-weight: bold">Returned Data:</div>
-						<!-- start CDL008,KCP004,CCG001: revertCode (職場・部門対応) -->
-                        <div>Selected Work place id:</div>
-<!-- 						<div data-bind="if: selectedStartMode() == 0">Selected Workplace id:</div>
-<!-- 						<div data-bind="if: selectedStartMode() == 1">Selected Department id:</div> -->
-						<!-- end -->
+						<div>Selected Work place id:</div>
 						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
 						<div>Selected Base date:</div>
 						<div style="word-break: break-all;" data-bind="text: selectedBaseDate"></div>
 						<h2 style="margin-top: 50px;">Guide</h2>
 						<pre>
 						<![CDATA[
-//open dialog cdl008
-public openDialogCDL008(): void {
-   let self = this;
-   let canSelected = self.canSelectWorkplaceIds() ? self.canSelectWorkplaceIds().split(',') : [];
-   nts.uk.ui.windows.setShared('inputCDL008', {
-	   baseDate: self.baseDate(),//基準日
-	   selectedCodes: self.selectMode() ? canSelected : canSelected[0],//職場ID 選択済項目
-	   isMultiple: self.selectMode(),//選択モード
-	   selectedSystemType: self.selectedSystemType(),//システム区分
-	   isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,//参照範囲の絞込
-	   showNoSelection: self.isDisplayUnselect(),//Unselection Item
-	   isShowBaseDate: self.isShowBaseDate(),//Show base date
-	   startMode: self.selectedStartMode()//Start mode
-   }, true);
-
-   nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
-	   // Check is cancel.
-	   if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
-		   return;
-	   }
-	   //view all code of selected item
-	   var output = nts.uk.ui.windows.getShared('outputCDL008');
-	   self.selectWorkplaceIds(output);
-	   var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
-	   self.selectedBaseDate(baseDateOutput);
-   })
-}
-]]>
+						//open dialog cdl008
+						public openDialogCDL008(): void {
+				           let self = this;
+				           let canSelected = self.canSelectWorkplaceIds() ? self.canSelectWorkplaceIds().split(',') : [];
+				           nts.uk.ui.windows.setShared('inputCDL008', {
+				               baseDate: self.baseDate(),//基準日
+				               selectedCodes: self.selectMode() ? canSelected : canSelected[0],//職場ID 選択済項目
+				               isMultiple: self.selectMode(),//選択モード
+				               selectedSystemType: self.selectedSystemType(),//システム区分
+				               isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,//参照範囲の絞込
+				               showNoSelection: self.isDisplayUnselect(),//Unselection Item
+				               isShowBaseDate: self.isShowBaseDate(),//Show base date
+				               startMode: self.selectedStartMode()//Start mode
+				           }, true);
+				
+				           nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+				               // Check is cancel.
+				               if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+				                   return;
+				               }
+				               //view all code of selected item 
+				               var output = nts.uk.ui.windows.getShared('outputCDL008');
+				               self.selectWorkplaceIds(output);
+				               var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
+				               self.selectedBaseDate(baseDateOutput);
+				           })
+				       }
+						]]>
 						</pre>
 					</div>
 				</div>

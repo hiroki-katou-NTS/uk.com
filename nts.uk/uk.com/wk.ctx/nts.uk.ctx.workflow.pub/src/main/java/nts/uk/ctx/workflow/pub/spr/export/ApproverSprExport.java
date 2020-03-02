@@ -12,34 +12,28 @@ import lombok.Getter;
 public class ApproverSprExport {
 	/**会社ID*/
 	private String companyId;
-	/**分岐ID*/
-	private String branchId;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
-	/**承認者ID*/
-	private String approverId;
+	/**承認ID*/
+	private String approvalId;
+	/**承認フェーズ順序*/
+	private int phaseOrder;
+	/**承認者順序*/
+	private int approverOrder;
 	/**職位ID*/
 	private String jobTitleId;
 	/**社員ID*/
 	private String employeeId;
-	/**順序*/
-	private int orderNumber;
-	/**承認者指定区分*/
-	private Integer approvalAtr;
 	/**確定者*/
 	private Integer confirmPerson;
 	
-	public static ApproverSprExport createFromJavaType(String companyId, String branchId, String approvalPhaseId, String approverId,
-		String jobTitleId, String employeeId, int orderNumber, Integer approvalAtr, Integer confirmPerson){
+	public static ApproverSprExport createFromJavaType(String companyId, String approvalId, int phaseOrder,
+			int approverOrder, String jobTitleId, String employeeId, Integer confirmPerson){
 		return new ApproverSprExport(
 				companyId, 
-				branchId, 
-				approvalPhaseId, 
-				approverId, 
+				approvalId, 
+				phaseOrder, 
+				approverOrder, 
 				jobTitleId, 
 				employeeId, 
-				orderNumber, 
-				approvalAtr, 
 				confirmPerson);
 	} 
 }

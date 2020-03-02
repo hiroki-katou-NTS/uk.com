@@ -1,91 +1,210 @@
-@CHARSET "UTF-8";
-
-/* general */
-body{
-	overflow-x: auto;
-}
-#left-content {
-	margin-left: 30px;
-	padding: 20px;
-	display: inline-block;
-	vertical-align: top;
-}
-#right-content {
-	margin-left: 20px;
-	display: inline-block;
-	min-height: 600px;
-	width: 930px;
-	vertical-align: top;
+.column-1 {
+    width: 215px;
 }
 
-.ntsSearchBox{
-	width: 202px;
-}
-.fix-button-operation {
-	width: 30px;
-    height: 26px;
+.column-2 {
+    margin-left: 215px;
 }
 
-.separate-vertical {
-	margin-bottom: 10px;
+.tab-row {
+    margin-top: 10px;
+    min-width: 800px;
 }
 
-.wrap-tab {
-	min-height: 530px;
+.tab-row-medium {
+    margin-top: 10px;
+    min-width: 600px;
 }
 
-.separate-span{
-	margin-left: 30px;
+.tab-row .row {
+    margin-top: 10px;
 }
 
-.separate-button {
-	margin-left: 10px;
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -10px;
 }
 
-.fix-button {
-	min-width: 75px;
+#C3_1 tr {
+    height: 34px;
 }
 
-.fix-input {
-	width: 150px;
+.large-right-caret::after {
+    font-size: 2em;
+    color: #97D155 !important;
 }
 
-.ib {
-	display: inline-block;
+.large-right-caret-container {
+    position: relative;
+    left: -5px;
+    vertical-align: top;
+    margin-top: 115px;
 }
 
-.if {
-	display: inline-flex;
+.search-icon {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: #00B050;
+    border-radius: 5px;
 }
 
-.va-middle {
-	vertical-align: -webkit-baseline-middle;
+.search-icon:before {
+    width: 12px;
+    height: 12px;
+    border: solid 2px #FFF;
+    border-radius: 100%;
+    top: 6px;
+    left: 7px;
 }
 
-/* screen a */
-
-#copy_btn {
-	margin-left: 110px;
+.search-icon::after {
+    top: 18px;
+    left: 22px;
+    height: 8px;
+    width: 2px;
+    border-radius: 0 0 5px 5px;
+    background-color: #FFF;
+    transform: rotate(-45deg);
 }
 
-#code_name_lbl {
-	margin-bottom: 10px;
+.search-icon::before, .search-icon::after {
+    content: '';
+    position: absolute;
+    display: block;
 }
 
-#edit_history_btn {
-	margin-left: 128px;
+.large-caret::after {
+    font-size: 3em;
+    color: #97D155 !important;
 }
 
-#tree_history {
-	margin-top: 10px;
+.tab-panel-row {
 }
 
-#title_span {
-	margin-right: 20px;
+.tab-panel-col-1 {
+    display: inline-block;
+    width: 215px;
+    vertical-align: top;
+    margin-top: 50px;
 }
 
-/* screen b */
+.tab-panel-col-2 {
+    width: 215px;
+    display: inline-block;
+    margin-left: 5px;
+}
 
-/* screen c */
- 
-/* screen d */
+.tab-panel-col-3 {
+    width: 240px;
+    height: 250px;
+    vertical-align: top;
+    display: inline-block;
+    margin-left: 28px;
+}
+
+#D1_4 div[class^='tab-content'] {
+    height: 290px;
+}
+
+.cal-container {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.cal-container button {
+    height: 30px;
+    width: 30px;
+}
+
+.search-box-sm input {
+    margin-left: 40px;
+    width: 120px !important;
+}
+
+.formula-button {
+    width: 232px;
+}
+
+.list-box tr td:nth-child(2) {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 148px;
+}
+
+.list-box .ui-iggrid .ui-iggrid-tablebody td {
+    height: 23px;
+}
+
+.display-notes {
+    word-break: break-all;
+    overflow: auto;
+}
+
+textarea {
+    resize: none;
+    background: transparent;
+    /* color: transparent; */
+}
+
+#input-content-area {
+    position: absolute;
+    top: 560px;
+    left: 100px;
+    padding: 3px;
+    /* padding-top: 0px; */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: normal;
+    color: transparent;
+    width: 462px;
+    z-index: -9999;
+}
+
+#input-area {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#cursor-key {
+    visibility: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+#input-cursor {
+    position: absolute;
+    pointer-events: none;
+    border-left: 1px solid black;
+    border-right: none;
+    width: 0;
+    cursor: text;
+    height: 18px;
+}
+
+.editor-line {
+    display: block;
+}
+
+#auto-complete {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#auto-complete-container {
+    position: absolute;
+    z-index: 1000;
+}
+
+#auto-complete-container {
+    position: absolute;
+    z-index: 9999;
+}
+
+.nts-fixed-body-container.ui-iggrid {
+    overflow-x: hidden;
+}

@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/sidebar.xhtml">
+
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="qmm036.a.start.js"/>
+        <com:scriptfile path="qmm036.a.service.js"/>
+        <com:scriptfile path="qmm036.a.vm.js"/>
+        <com:stylefile path="qmm036.a.style.css"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.AmountOfMoney
+            nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.ItemPriceType
+        </com:ValidatorScript>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <!--A2_1-->
+        <ul class="navigator">
+            <!--A2_2-->
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1"
+                   role="tab-navigator" class="active">#{i18n.getText('QMM036_3')}</a></li>
+            <!--A2_3-->
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2"
+                   role="tab-navigator">#{i18n.getText('QMM036_4')}</a></li>
+        </ul>
+    </ui:define>
+    <ui:define name="sidebar-content">
+        <div id="tabpanel-1" role="tabpanel1">
+            <div class="sidebar-content-header" style="width: 1100px">
+                <span class="title" data-bind="text : titleTab"></span>
+                <!--A1_1-->
+                <button tabindex="1"
+                        data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
+                        class="proceed">#{i18n.getText('QMM036_2')}</button>
+            </div>
+            <!--A3_2-->
+            <div id="com-ccg001"></div>
+            <div class="contents-area">
+                <div style="display: table; margin: 15px 0px 15px 65px; width: 915px;">
+                    <!--A3_1-->
+                    <div tabindex="2" id="emp-component" style="display: table-cell;"></div>
+                </div>
+                <div class="row">
+                    <div class="cell group-master">
+                        <div class="panel" style="margin-left: 30px"
+                             data-bind="ntsPanel:{width: '230px', height: '260px',showIcon: true, direction: 'bottom', visible: true}">
+                            <!--A4_3 検索-->
+                            <div tabindex="4" style="width: 220px"
+                                 data-bind="ntsSearchBox: {
+                                     searchMode: 'highlight',
+                                     targetKey: 'key',
+                                     comId: 'A4_4',
+                                     items: lstStatementItem,
+                                     selected: currentCodeStatement,
+                                     selectedKey: 'key',
+                                     fields: ['itemNameCd', 'name'],
+                                     mode: 'igGrid'}"/>
+                            <table id="A4_4" tabindex="5"
+                                   data-bind="ntsGridList: { name: '#[QMM031_11]',
+                                        options: lstStatementItem,
+                                        primaryKey: 'key',
+                                        columns: columns,
+                                        multiple: false,
+                                        rows: 8,
+                                        value: currentCodeStatement
+							}"></table>
+                        </div>
+                        <div class="panel"
+                             data-bind="ntsPanel:{width: '270px', height: '185px', direction: 'none', visible: true}">
+                            <div class="row margin-bottom-12">
+                                <div class="cell left">
+                                    <!--A5_3-->
+                                    <button id="A5_2" tabindex="6"
+                                            data-bind="click: toScreenB, enable: isScreenB()">#{i18n.getText('QMM036_10')}</button>
+                                </div>
+                                <div class="cell right">
+                                    <!--A5_4-->
+                                    <button id="A5_3" tabindex="7"
+                                            data-bind="click: toScreenC, enable: isScreenC()">#{i18n.getText('QMM036_11')}</button>
+                                </div>
+                            </div>
+                            <!--A5_5-->
+                            <div id="list-box" tabindex="8" data-bind="ntsListBox: {
+                                    name: '#[QMM036_12]',
+                                    options: lstHistory,
+                                    optionsValue: 'index',
+                                    optionsText: 'period',
+                                    multiple: false,
+                                    value: selectedHisCode,
+                                    enable: true,
+                                    rows: 5,
+                                    columns: columnsHis
+                                    }"></div>
+                        </div>
+                    </div>
+                    <div class="cell group-center" style="width: 50px; min-width: 50px">
+                        <!--A6_1 キャレット-->
+                        <span class="caret-right"></span>
+                    </div>
+                    <div class="cell">
+
+                        <div class="row">
+                            <div class="cell label-space">
+                                <!--A7_1 -->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM036_14')}</div>
+                            </div>
+                            <div class="cell cell-space">
+                                <!--A7_2-->
+                                <div class="label" data-bind="text: categoryAtrText"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="cell label-space">
+                                <!--A7_3-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM036_16')}</div>
+                            </div>
+                            <div class="cell cell-space">
+                                <span class="label" data-bind="text: itemNameCd"></span>
+                                <!--A7_4-->
+                                <span class="label" data-bind="text: name"></span>
+                                <!--A7_5-->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="cell label-space">
+                                <!--A7_6-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM036_19')}</div>
+                            </div>
+                            <div class="cell cell-space" style="width: 300px; min-width: 200px;">
+                                <!--A7_7 履歴開始年月-->
+                                <span class="label" data-bind="text: period"></span>
+                                <!--<span class="label" data-bind="text: periodStartYM"></span>-->
+                                <!--A7_8 ～-->
+                                <!--<span class="label">#{i18n.getText('QMM036_21')}</span>-->
+                                <!--A7_9 履歴開始年月-->
+                                <!--<span class="label" data-bind="text: periodEndYM"></span>-->
+                            </div>
+                        </div>
+                        <div class="row" style="width: 300px;min-width: 300px;">
+                            <div class="cell label-space">
+                                <!--A7_10-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM036_23')}</div>
+                            </div>
+                            <div class="cell cell-space" style="width: 200px; min-width: 200px;">
+                                <!--A7_11-->
+                                <span class="label" data-bind="text: totalAmount"></span>
+                            </div>
+                        </div>
+                        <div><table tabindex="10" id="gridBreakdownItem"></table> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+
+</body>
+</html>

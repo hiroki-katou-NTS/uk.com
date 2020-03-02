@@ -8,12 +8,16 @@ import nts.arc.time.GeneralDate;
 public interface CompanyApprovalRootRepository {
 
 	/**
-	 * get All Company Approval Root
-	 * 
+	 * getComRootStart CMM018
 	 * @param companyId
+	 * @param sysAtr
+	 * @param lstAppType
+	 * @param lstNoticeID
+	 * @param lstEventID
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId);
+	List<CompanyApprovalRoot> getComRootStart(String companyId, int sysAtr, List<Integer> lstAppType,
+			List<Integer> lstNoticeID, List<String> lstEventID);
 
 	/**
 	 * get ComApprovalRoot
@@ -34,7 +38,8 @@ public interface CompanyApprovalRootRepository {
 	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr);
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, 
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr);
 
 	/**
 	 * add Company Approval Root
@@ -72,23 +77,25 @@ public interface CompanyApprovalRootRepository {
 	void deleteComApprovalRoot(String companyId, String approvalId, String historyId);
 
 	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する 
-	 * @param companyID
-	 * @param date
-	 * @param appType
-	 * @param rootAt
+	 * 会社別承認ルート
+	 * @param companyID 会社ID
+	 * @param date 基準日
+	 * @param rootAtr 就業ルート区分
+	 * @param targetType 対象申請
+	 * @param sysAtr システム区分 
 	 * @return
 	 */
-	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt);
+	Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, EmploymentRootAtr rootAtr,
+			String targetType, int sysAtr);
 
 	/**
-	 * ドメインモデル「会社別就業承認ルート」を取得する(共通）
-	 * @param companyID
-	 * @param date
-	 * @param appType
+	 * 会社別承認ルート common
+	 * @param companyID 会社ID
+	 * @param date 基準日
+	 * @param sysAtr システム区分
 	 * @return
 	 */
-	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date);
+	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date, int sysAtr);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する
@@ -97,7 +104,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param baseDate
 	 * @return
 	 */
-	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate);
+	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate, int sysAtr);
 	/**
 	 * get Company Approval Root By type
 	 * @param companyId
@@ -105,7 +112,8 @@ public interface CompanyApprovalRootRepository {
 	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType, int employmentRootAtr);
+	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType,
+			int employmentRootAtr, String id, int sysAtr);
 	
 	/**
 	 * getComAppRootLast
@@ -113,10 +121,9 @@ public interface CompanyApprovalRootRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate);
+	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate, int sysAtr);
 	
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
-	
-	List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date);
+	List<CompanyApprovalRoot> findByBaseDateJinji(String cid, GeneralDate baseDate, List<Integer> lstNoticeID, List<String> lstEventID);
 }

@@ -4,8 +4,8 @@ module nts.uk.com.view.cmm018.k.service{
     var servicePath = {
         searchModeEmployee: "workflow/approvermanagement/workroot/getEmployeesInfo",
         personInfor: "workflow/approvermanagement/workroot/getInforPerson",
-        JobTitleInfor: "workflow/approvermanagement/workroot/getInforJobTitle",
-        jobTitleName: "workflow/approvermanagement/workroot/getJobtitleName"
+        jobGroup: "bs/employee/jobtitle/group/approver/getAll",
+        jobGroupName: "bs/employee/jobtitle/group/approver/findByCd",
     }    
     /**
      * search data mode employee
@@ -18,18 +18,18 @@ module nts.uk.com.view.cmm018.k.service{
         return nts.uk.request.ajax('com', servicePath.personInfor, SID);
     }
     
-    export function getJobTitleInfor(baseDate: any){
-        return nts.uk.request.ajax('com', servicePath.JobTitleInfor, baseDate);
+    export function jobGroup(){
+        return  nts.uk.request.ajax('com', servicePath.jobGroup);   
     }
-    
-    export function getJobTitleName(job: any){
-        return  nts.uk.request.ajax('com', servicePath.jobTitleName, job);   
+    export function jobGroupName(){
+        return  nts.uk.request.ajax('com', servicePath.jobGroupName);   
     }
     
     export module model{
         export class EmployeeSearchInDto {
                 baseDate: Date;
                 workplaceIds: string[];
+                sysAtr: number;
             }    
         export class EmployeeSearchDto {
                 companyId: string;

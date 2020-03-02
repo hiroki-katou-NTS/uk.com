@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employee.service;
 
+import java.util.List;
+
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
 
@@ -19,4 +21,10 @@ public interface SearchEmployeeService {
 	 * @return the employee search data
 	 */
 	EmployeeSearchData searchByCode(EmployeeSearchDto dto);
+	
+	
+	List<EmpBasicInfo> getEmpBasicInfo(List<String> lstSid);
+	
+	
+	
 }

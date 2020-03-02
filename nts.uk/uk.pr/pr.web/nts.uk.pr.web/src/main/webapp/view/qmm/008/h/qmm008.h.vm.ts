@@ -1,237 +1,147 @@
-module nts.uk.pr.view.qmm008.h {
-    export module viewmodel {
-        import ListHealthInsuranceAvgEarnDto = service.model.ListHealthInsuranceAvgEarnDto;
-        import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
-        import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateItemModel;
-        import HealthInsuranceRoundingModel = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRoundingModel;
-        import HealthInsuranceRateModelofScreenA = nts.uk.pr.view.qmm008.b.viewmodel.HealthInsuranceRateModel;
-        import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.b.service.model.finder.InsuranceOfficeItemDto;
-
-        export class ScreenModel {
-            listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
-            healthInsuranceRateModel: HealthInsuranceRateModel;
-            numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
-            errorList: KnockoutObservableArray<any>;
-            dirty: nts.uk.ui.DirtyChecker;
-            constructor(officeName: string, healthModel: HealthInsuranceRateModelofScreenA) {
-                var self = this;
-                self.healthInsuranceRateModel = new HealthInsuranceRateModel(
-                    healthModel.officeCode(),
-                    officeName,
-                    healthModel.historyId,
-                    healthModel.startMonth(),
-                    healthModel.endMonth(),
-                    healthModel.autoCalculate(),
-                    healthModel.rateItems(),
-                    healthModel.roundingMethods());
-
-                self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
-
-                // Common NtsNumberEditor Option
-                self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3
-                }));
-                //dirty check
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
-                self.errorList = ko.observableArray([
-                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
-                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
-                ]);
-            }
-
-            /**
-             * Start page.
-             */
-            public startPage(): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                self.loadHealthInsuranceAvgearn().done(() =>
-                    dfd.resolve());
-                return dfd.promise();
-            }
-
-            /**
-             * Load HealthInsuranceAvgEarn.
-             */
-            private loadHealthInsuranceAvgearn(): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(res => {
-                    var salMin: number = 0;
-                    res.listHealthInsuranceAvgearnDto.forEach(item => {
-                        self.listHealthInsuranceAvgearn.push(
-                            new HealthInsuranceAvgEarnModel(
-                                item.grade,
-                                item.avgEarn,
-                                salMin,
-                                item.upperLimit,
-                                new HealthInsuranceAvgEarnValueModel(
-                                    item.personalAvg.healthGeneralMny,
-                                    item.personalAvg.healthNursingMny,
-                                    item.personalAvg.healthBasicMny,
-                                    item.personalAvg.healthSpecificMny),
-                                new HealthInsuranceAvgEarnValueModel(
-                                    item.companyAvg.healthGeneralMny,
-                                    item.companyAvg.healthNursingMny,
-                                    item.companyAvg.healthBasicMny,
-                                    item.companyAvg.healthSpecificMny)
-                            )
-                        );
-                        salMin = item.upperLimit;
+module nts.uk.pr.view.qmm008.h.viewmodel {
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
+    import model = nts.uk.pr.view.qmm008.share.model;
+    import service = nts.uk.pr.view.qmm008.h.service;
+    export class ScreenModel {
+        socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
+        socialInsuranceName: KnockoutObservable<string> = ko.observable('');
+        startMonth: KnockoutObservable<string> = ko.observable('');
+        displayEndMonth: KnockoutObservable<string> = ko.observable('');
+        modifyMethod: KnockoutObservable<number> = ko.observable(1);
+        modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
+        isLastestHistory: KnockoutObservable<boolean> = ko.observable(false);
+        selectedHistory: any = null;
+        screen: string = "";
+        previousHistory: any = null;
+        constructor() {
+            let self = this;
+            let params = getShared("QMM008_H_PARAMS");
+            if (params) {
+                block.invisible();
+                let selectedOffice = params.selectedOffice;
+                self.selectedHistory = params.selectedHistory;
+                self.startMonth(self.selectedHistory.startMonth);
+                self.displayEndMonth(getText('QMM008_208', [self.selectedHistory.displayEnd]));
+                self.screen = params.screen;
+                let history = params.history;
+                if (history && history.length > 0) {
+                    history.forEach((historyItem, index) => {
+                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index + 1];
                     });
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.listHealthInsuranceAvgearn);
-                    dfd.resolve();
-                });
-                return dfd.promise();
+                    self.isLastestHistory(params.selectedHistory.startMonth == history[0].startMonth);
+                }
+                self.socialInsuranceCode(selectedOffice.socialInsuranceCode);
+                self.socialInsuranceName(selectedOffice.socialInsuranceName);
+                self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM008_206')));
+                self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.UPDATE, getText('QMM008_207')));
             }
-
-            /**
-             * Collect data from input.
-             */
-            private collectData(): ListHealthInsuranceAvgEarnDto {
-                var self = this;
-                var data: ListHealthInsuranceAvgEarnDto = { historyId: self.healthInsuranceRateModel.historyId, listHealthInsuranceAvgearnDto: [] };
-                self.listHealthInsuranceAvgearn().forEach(item => {
-                    data.listHealthInsuranceAvgearnDto.push(ko.toJS(item));
-                });
-                return data;
+            block.clear();
+        }
+        editHistory() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("#H1_10").trigger("validate");
+            if(nts.uk.ui.errors.hasError()){
+                return;
             }
-
-            /**
-             * Call service to save healthInsuaranceAvgearn.
-             */
-            public save(): void {
-                var self = this;
-                // Return if has error.
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+            if (self.modifyMethod() == model.MOFIDY_METHOD.UPDATE) {
+                if (self.startMonth() > self.selectedHistory.endMonth.toString()) {
+                    dialog.alertError({ messageId: "Msg_107" });
                     return;
                 }
-                service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(() =>
-                    self.closeDialog());
+                if (self.previousHistory) {
+                    if (self.startMonth() <= self.previousHistory.startMonth.toString()) {
+                        dialog.alertError({ messageId: "Msg_107" });
+                        return;
+                    }
+                }
+                self.updateHistory();
+            } else {
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(function () {
+                    self.deleteHistory();
+                });
             }
+        }
 
-            private clearError(): void {
-                $('.has-error').ntsError('clear');
-            }
-
-            /**
-             * ReCalculate the healthInsuranceAvgearn list
-             */
-            public reCalculate(): void {
-                var self = this;
-                self.clearError();
-                // Clear current listHealthInsuranceAvgearn
-                self.listHealthInsuranceAvgearn.removeAll();
-
-                // Recalculate listHealthInsuranceAvgearn
-                service.recalculateHealthInsuranceAvgearn(self.healthInsuranceRateModel.historyId).done(res => {
-                    var salMin: number = 0;
-                    res.listHealthInsuranceAvgearnDto.forEach(item => {
-                        self.listHealthInsuranceAvgearn.push(
-                            new HealthInsuranceAvgEarnModel(
-                                item.grade,
-                                item.avgEarn,
-                                salMin,
-                                item.upperLimit,
-                                new HealthInsuranceAvgEarnValueModel(
-                                    item.personalAvg.healthGeneralMny,
-                                    item.personalAvg.healthNursingMny,
-                                    item.personalAvg.healthBasicMny,
-                                    item.personalAvg.healthSpecificMny),
-                                new HealthInsuranceAvgEarnValueModel(
-                                    item.companyAvg.healthGeneralMny,
-                                    item.companyAvg.healthNursingMny,
-                                    item.companyAvg.healthBasicMny,
-                                    item.companyAvg.healthSpecificMny)
-                            )
-                        );
-                        salMin = item.upperLimit;
+        updateHistory() {
+            let self = this;
+            let newHistory = self.selectedHistory;
+            newHistory.startMonth = self.startMonth();
+            let command = { officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: newHistory };
+            if (self.screen == "B") {
+                service.editHealthInsuranceHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
+            } else if (self.screen == "C") {
+                service.editWelfareInsuranceHistory(command).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
                     });
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
                 });
             }
 
-            private closeDialogWithDirtyCheck(): void {
-                var self = this;
-                if (self.dirty.isDirty()) {
-                    nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
-                        self.dirty.reset();
-                        self.closeDialog();
-                    }).ifCancel(function() {
+            else if (self.screen == "I") {
+                service.editContributionHistory(command).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
                     });
-                }
-                else {
-                    self.closeDialog();
-                }
-            }
-
-            /**
-             * Close dialog.
-             */
-            private closeDialog(): void {
-                nts.uk.ui.windows.close();
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
             }
         }
 
-        /**
-         * HealthInsuranceRate Model
-         */
-        export class HealthInsuranceRateModel {
-            officeCode: string;
-            officeName: string;
-            historyId: string;
-            startMonth: string;
-            endMonth: string;
-            autoCalculate: number;
-            rateItems: HealthInsuranceRateItemModel;
-            roundingMethods: HealthInsuranceRoundingModel;
-            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel, roundingMethods: HealthInsuranceRoundingModel) {
-                this.officeCode = officeCode;
-                this.officeName = officeName;
-                this.historyId = historyId;
-                this.startMonth = startMonth;
-                this.endMonth = endMonth;
-                this.autoCalculate = autoCalculate;
-                this.rateItems = rateItems;
-                this.roundingMethods = roundingMethods;
+        deleteHistory() {
+            let self = this;
+            let command = { officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: self.selectedHistory };
+            if (self.screen == "B") {
+                service.deleteHealthInsuranceHistory(command).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
+            } else if (self.screen == "C") {
+                service.deleteWelfareInsuranceHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
+            } else if (self.screen == "I") {
+                service.deleteContributionHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
             }
         }
 
-        /**
-         * HealthInsuranceAvgEarn Model
-         */
-        export class HealthInsuranceAvgEarnModel {
-            grade: number;
-            avgEarn: number;
-            lowerLimit: number;
-            upperLimit: number;
-            companyAvg: HealthInsuranceAvgEarnValueModel;
-            personalAvg: HealthInsuranceAvgEarnValueModel;
-            constructor(grade: number, avgEarn: number, lowerLimit: number,
-                upperLimit: number, personalAvg: HealthInsuranceAvgEarnValueModel,
-                companyAvg: HealthInsuranceAvgEarnValueModel) {
-                this.grade = grade;
-                this.avgEarn = avgEarn;
-                this.lowerLimit = lowerLimit;
-                this.upperLimit = upperLimit;
-                this.companyAvg = companyAvg;
-                this.personalAvg = personalAvg;
-            }
-        }
-
-        /**
-         * HealthInsuranceAvgEarnValue Model
-         */
-        export class HealthInsuranceAvgEarnValueModel {
-            healthGeneralMny: KnockoutObservable<number>;
-            healthNursingMny: KnockoutObservable<number>;
-            healthBasicMny: KnockoutObservable<number>;
-            healthSpecificMny: KnockoutObservable<number>;
-            constructor(general: number, nursing: number, basic: number, specific: number) {
-                this.healthGeneralMny = ko.observable(general);
-                this.healthNursingMny = ko.observable(nursing);
-                this.healthBasicMny = ko.observable(basic);
-                this.healthSpecificMny = ko.observable(specific);
-            }
+        cancel() {
+            nts.uk.ui.windows.close();
         }
     }
+
 }
+

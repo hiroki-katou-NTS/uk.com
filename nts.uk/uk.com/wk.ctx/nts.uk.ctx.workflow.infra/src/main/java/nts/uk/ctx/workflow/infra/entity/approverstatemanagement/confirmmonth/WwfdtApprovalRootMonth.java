@@ -55,12 +55,11 @@ public class WwfdtApprovalRootMonth extends UkJpaEntity {
 	public static WwfdtApprovalRootMonth fromDomain(String companyID, ApprovalRootState approvalRootState){
 		return WwfdtApprovalRootMonth.builder()
 				.wwfdpApprovalRootMonthPK(new WwfdpApprovalRootMonthPK(approvalRootState.getRootStateID()))
-				.historyID(approvalRootState.getHistoryID())
 				.employeeID(approvalRootState.getEmployeeID())
 				.recordDate(approvalRootState.getApprovalRecordDate())
 				.listWwfdtApprovalPhaseMonth(
 						approvalRootState.getListApprovalPhaseState().stream()
-						.map(x -> WwfdtApprovalPhaseMonth.fromDomain(companyID, approvalRootState.getApprovalRecordDate(), x))
+						.map(x -> WwfdtApprovalPhaseMonth.fromDomain(companyID, approvalRootState.getRootStateID(), x))
 						.collect(Collectors.toList()))
 				.build();
 	}
@@ -69,7 +68,6 @@ public class WwfdtApprovalRootMonth extends UkJpaEntity {
 		return ApprovalRootState.builder()
 				.rootStateID(this.wwfdpApprovalRootMonthPK.rootStateID)
 				.rootType(RootType.CONFIRM_WORK_BY_MONTH)
-				.historyID(this.historyID)
 				.approvalRecordDate(this.recordDate)
 				.employeeID(this.employeeID)
 				.listApprovalPhaseState(this.listWwfdtApprovalPhaseMonth.stream()

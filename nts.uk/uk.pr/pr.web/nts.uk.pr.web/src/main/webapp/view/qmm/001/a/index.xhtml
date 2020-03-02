@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+	<ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.shared.dom.salgenpurposeparam.ParamTime
+            nts.uk.ctx.pr.shared.dom.salgenpurposeparam.ParamCharacter
+            nts.uk.ctx.pr.shared.dom.salgenpurposeparam.ParamNumber
+			nts.uk.ctx.pr.shared.dom.salgenpurposeparam.GenPurposeParamNo
+			nts.uk.ctx.pr.shared.dom.salgenpurposeparam.GenPurposeParamName
+        </com:ValidatorScript>
+		<com:scriptfile set="IGNITE"/>
+		<com:stylefile path="qmm001.a.style.css"/>
+		<com:scriptfile path="qmm001.a.service.js"/>
+		<com:scriptfile path="qmm001.a.start.js"/>
+		<com:scriptfile path="qmm001.a.vm.js"/>
+	</ui:define>
+
+	<ui:define name="content">
+		<div id="functions-area">
+			<button id="A1_1" tabindex="1" class="proceed"
+					data-bind="click : register, enable: isEnableSubmit()">#{i18n.getText('QMM001_4')}</button>
+			<button id="A1_2" tabindex="2"
+					data-bind="click : creatPdf, enable: false">#{i18n.getText('QMM001_5')}</button>
+			<button id="A1_3" tabindex="3"
+					data-bind="click : remove, enable: false ">#{i18n.getText('QMM001_6')}</button>
+		</div>
+		<div id="contents-area" class="cf">
+
+			<!-- left sign screen -->
+			<div id="content-left" class="pull-left">
+				<!-- panel -->
+				<div
+						data-bind="ntsPanel:{
+							width: '278px',
+							direction: 'right',
+							showIcon: true,
+							visible: true}">
+
+
+					<div  id="A2_2" tabindex="4"
+						 data-bind="ntsSearchBox: {
+								searchMode: 'highlight',
+								targetKey: 'paraNo',
+								mode: 'igGrid',
+								comId: 'sel_item_grid',
+								items: listItems ,
+								searchText: '検索',
+								selected: '',
+								selectedKey: 'paraNo',
+								fields: ['paraNo','name'],
+								mode: 'igGrid'
+								}"/>
+					<!-- value search resulf  -->
+					<table  id="sel_item_grid" tabindex="5"
+						   data-bind="ntsGridList: {
+								options: listItems,
+								primaryKey: 'paraNo',
+								showNumbering: false,
+								columns: [
+					                { headerText: '#{i18n.getText('QMM001_8')}', width: 75, key: 'paraNo'},
+					                { headerText: '#{i18n.getText('QMM001_9')}', width: 184, key: 'name', formatter: _.escape}
+					            ],
+								multiple: false,
+								rows: 12,
+								value: selectedSalGenParaIdent}">
+					</table>
+					<!-- arrow -->
+					<span id="caret" class="caret-bottom inline"></span>
+
+					<div id="history" class="cf">
+						<button tabindex="6" id="A2_9"
+								data-bind="click: openDialogB, enable: isOpenDialogB(), timeClick: 600">#{i18n.getText('QMM001_10')}</button>
+						<button style="float: right" tabindex="7" id="A2_10" 
+								data-bind="click: openDialogC, enable: isOpenDiaLogC(), timeClick: 600 ">#{i18n.getText('QMM001_11')}</button>
+					</div>
+					<!-- History place -->
+					<div id="history_lst" tabindex="8"
+						 data-bind="ntsListBox: {
+							options: listHistory,
+							optionsValue: 'historyId',
+							optionsText: 'historyId',
+							value: selectedSalGenParaHistory,
+							enable: salGenParaIdent().historyAtr != nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE,
+							multiple: false,
+							rows: 5,
+							columns: [
+								{ key: 'display', length: 17 }
+							]}">
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- middle sign  -->
+			<div id="content-right"
+				 style="width: 100%">
+			<div class="control-group">
+				<div class="form-lable"
+					 data-bind="ntsFormLabel: {}">
+					<label>#{i18n.getText('QMM001_14')}</label>
+				</div>
+				<span id="A3_2" style="margin-left: 19px;" data-bind="text: salGenParaIdent().paraNo"/>
+				<span id="A3_3" style="margin-left: 10px;" data-bind="text: salGenParaIdent().name"/>
+			</div>
+			<div class = "control-group">
+				<div class="form-lable" data-bind="ntsFormLabel: {}">
+					<label>#{i18n.getText('QMM001_15')}</label>
+				</div>
+				<span id="A3_5" style="margin-left:39px;" data-bind="text: $vm.getTextEnumParaAttriType(salGenParaIdent().attributeType)"/>
+			</div>
+			<div class = "control-group">
+				<div class="form-lable"  data-bind="ntsFormLabel: {}">
+					<label>#{i18n.getText('QMM001_16')}</label>
+				</div>
+				<span id="A3_7" style="margin-left: 25px;" data-bind="text: $vm.getTextEnumParaHisAtr(salGenParaIdent().historyAtr)"/>
+			</div>
+
+					<div data-bind="if:salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+						<div class = "control-group">
+							<div class="form-lable" data-bind="ntsFormLabel: {}">
+								<label>#{i18n.getText('QMM001_17')}</label>
+							</div>
+							<span id="A3_12" style="margin-left: 25px;">#{i18n.getText('QMM001_18')}</span>
+						</div>
+					</div>
+
+					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.ADD">
+						<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
+							<div class = "control-group">
+								<div class="form-lable" data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('QMM001_17')}</label>
+								</div>
+								<span id="A3_9" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
+								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
+								<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
+							</div>
+						</div>
+						<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
+							<div class = "control-group">
+								<div class="form-lable" data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('QMM001_17')}</label>
+								</div>
+								<span id="A3_9" style="margin-left: 25px;" data-bind="text: salGenParaHistory().startDate"/>
+								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
+								<span id="A3_11" data-bind="text: salGenParaHistory().endDate"/>
+							</div>
+						</div>
+					</div>
+
+					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.UPDATE">
+						<div data-bind="if:salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+							<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
+								<div class = "control-group">
+									<div class="form-lable" data-bind="ntsFormLabel: {}">
+										<label>#{i18n.getText('QMM001_17')}</label>
+									</div>
+									<span id="A3_9" style="margin-left: 25px;" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
+									<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
+									<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
+								</div>
+							</div>
+
+							<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
+								<div class = "control-group">
+									<div class="form-lable" data-bind="ntsFormLabel: {}">
+										<label>#{i18n.getText('QMM001_17')}</label>
+									</div>
+									<span id="A3_9" style="margin-left: 25px;" data-bind="text: salGenParaHistory().startDate"/>
+									<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
+									<span id="A3_11" data-bind="text: salGenParaHistory().endDate"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				<div id="A3_13" class="set-row" style="width: 100%">
+					<hr/>
+				</div>
+			<div class = "control-group">
+				<div class="form-lable" data-bind="ntsFormLabel: { required: true }">
+					<label>#{i18n.getText('QMM001_19')}</label>
+				</div>
+				<div id="A4_2" tabindex="9" style="margin-left: 20px" class="cf" data-bind="ntsSwitchButton: {
+							name:'#{i18n.getText('QMM001_19')}',
+							options: itemsSwitchParaAvailable(),
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedSwitchParaAvai,
+							enable: isEnableSwitchButton(),
+							required: true
+							}">
+				</div>
+			</div>
+				<!--case 1-->
+				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.NUMBER">
+					<div class = "control-group">
+						<div class="form-lable" data-bind="ntsFormLabel: {required: true } ">
+							<label id="A4_5">#{i18n.getText('QMM001_22')}</label>
+						</div>
+					<input id="A4_6" tabindex="10" style="margin-left: 5px"
+						   data-bind="ntsNumberEditor: {
+																option : {width: '100px', decimallength: 2},
+																name: '#{i18n.getText('QMM001_22')}',
+																value: value,
+																required: true,
+																constraint: 'ParamNumber',
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
+																placeHolder: 'クリア',
+																} "/>
+					</div>
+				</div>
+
+				<!--case 2-->
+
+				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TIME">
+					<div class = "control-group">
+						<div class="form-lable" data-bind="ntsFormLabel: { required: true } ">
+							<label id="A4_7">#{i18n.getText('QMM001_23')}</label>
+						</div>
+
+					<input id="A4_8" style="margin-left: 5px" tabindex="11" class="B3_7"
+						   data-bind="ntsNumberEditor: {
+																option : {width: '70px'},
+																name: '#{i18n.getText('QMM001_23')}',
+																value: value,
+																required: true,
+																constraint: 'ParamTime',
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
+																placeHolder: 'クリア',
+																} "/>
+					</div>
+				</div>
+				<!--case 3-->
+				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TEXT">
+					<div class = "control-group">
+						<div class="form-lable" data-bind="ntsFormLabel: { required: true } ">
+							<label id="A4_9">#{i18n.getText('QMM001_24')}</label>
+						</div>
+					<input id="A4_10" style="margin-left: 5px" tabindex="12" class="B3_7"
+						   data-bind="ntsTextEditor: {
+																option : {width: '170'},
+																name: '#{i18n.getText('QMM001_24')}',
+																value: value,
+																required: true,
+																constraint: 'ParamCharacter',
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
+																placeHolder: 'クリア',
+																} "/>
+                	</div>
+				</div>
+				<!--case 4-->
+
+				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TARGET_EXEMPT">
+					<div class = "control-group">
+						<div class="form-lable" data-bind="ntsFormLabel: { required: true }">
+							<label id="A4_11">#{i18n.getText('QMM001_25')}</label>
+						</div>
+					<div id="A4_12" tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+							name:'#{i18n.getText('QMM001_25')}',
+							options: itemsSwitchParaTargetAtr,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedSwitchParaTargetAtr,
+							required: true,
+							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE }"/>
+					</div>
+				</div>
+
+				<!--case 5-->
+
+					<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.SELECTION">
+						<div class = "control-group">
+							<div style="display: inline-flex;">
+								<div class="form-lable" data-bind="ntsFormLabel: { required: true } ">
+									<label id="A4_16">#{i18n.getText('QMM001_44')}</label>
+								</div>
+							<div  id="A4_17" tabindex="14" class="B3_7" style="margin-top: 2px;margin-left: 39px;"
+								  data-bind="ntsComboBox: {
+							   		name :'#{i18n.getText('QMM001_44')}',
+									enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
+									optionsValue: 'code',
+									optionsText: 'name',
+									required:true,
+									selectFirstIfNull: true,
+									value: valueComboBox,
+									columns: [{ prop: 'code'},
+									{ prop: 'name' }],
+									options: listSalGenOptions()} "/>
+							</div>
+						</div>
+					</div>
+				<span id="A4_15" style="margin-left: 105px;" data-bind="text: salGenParaIdent().explanation"/>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

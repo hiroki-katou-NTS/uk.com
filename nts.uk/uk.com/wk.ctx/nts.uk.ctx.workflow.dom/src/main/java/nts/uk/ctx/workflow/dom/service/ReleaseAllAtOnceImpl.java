@@ -43,11 +43,12 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-				approvalFrame.setApproverID("");
-				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(null);
-				approvalFrame.setApprovalReason("");
+				approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+					approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+					approverInfor.setAgentID("");
+					approverInfor.setApprovalDate(null);
+					approverInfor.setApprovalReason("");
+				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
@@ -69,15 +70,17 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-					return;
-				}
-				if(Strings.isBlank(approvalFrame.getRepresenterID())){
-					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getApproverID(), false));
-				} else {
-					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getRepresenterID(), true));
-				}
-				listApprover.addAll(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+					if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+						return;
+					}
+					if(Strings.isBlank(approverInfor.getAgentID())){
+						listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approverInfor.getApproverID(), false));
+					} else {
+						listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approverInfor.getAgentID(), true));
+					}
+					listApprover.addAll(approvalFrame.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				});
 			});
 			break;
 		}

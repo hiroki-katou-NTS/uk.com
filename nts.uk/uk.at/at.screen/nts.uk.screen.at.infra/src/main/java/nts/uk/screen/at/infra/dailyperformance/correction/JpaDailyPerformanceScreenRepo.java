@@ -91,8 +91,8 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMng
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -552,21 +552,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString
-				.append("SELECT w.WKPCD, w.WKP_NAME, w.WKPID FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
-		builderString.append("ON w.WKPID = a.WKPID AND w.CID = a.CID AND w.HIST_ID = a.HIST_ID ");
-		builderString.append("WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ? ");
+				.append("SELECT w.WKP_CD, w.WKP_NAME, w.WKP_ID FROM BSYMT_WKP_INFO w ");
+		builderString.append("WHERE w.CID = ?");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT w FROM BsymtWorkplaceInfo w JOIN ");
-		builderString.append("BsymtWorkplaceHist a ");
-		builderString.append("ON w.bsymtWorkplaceInfoPK.wkpid = a.bsymtWorkplaceHistPK.wkpid ");
-		builderString.append("AND w.bsymtWorkplaceInfoPK.cid = a.bsymtWorkplaceHistPK.cid ");
-		builderString.append("AND w.bsymtWorkplaceInfoPK.historyId = a.bsymtWorkplaceHistPK.historyId ");
-		builderString.append("WHERE a.bsymtWorkplaceHistPK.cid = :cid ");
-		builderString.append("AND a.bsymtWorkplaceHistPK.wkpid = :wkpid ");
-		builderString.append("AND a.strD <= :baseDate ");
-		builderString.append("AND a.endD >= :baseDate ");
+		builderString.append("SELECT w FROM BsymtWorkplaceInfor w ");
+		builderString.append("WHERE w.pk.companyId = :cid ");
+		builderString.append("AND w.pk.workplaceId = :wkpid ");
 		SEL_FIND_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -593,16 +586,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SELECT_BY_LISTSID_WPH = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append(" SELECT bwi.bsymtWorkplaceInfoPK.wkpid, bwi.wkpDisplayName");
-		builderString.append(" FROM BsymtWorkplaceInfo bwi ");
+		builderString.append(" SELECT bwi.pk.workplaceId, bwi.workplaceDisplayName");
+		builderString.append(" FROM BsymtWorkplaceInfor bwi ");
 		builderString.append(
-				" JOIN BsymtWorkplaceHist bwh ON bwi.bsymtWorkplaceInfoPK.historyId = bwh.bsymtWorkplaceHistPK.historyId");
-		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.wkpid = bwh.bsymtWorkplaceHistPK.wkpid");
-		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.cid = bwh.bsymtWorkplaceHistPK.cid");
-		builderString.append(" WHERE bwi.bsymtWorkplaceInfoPK.cid = :companyId");
-		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.wkpid IN :wkpids");
-		builderString.append(" AND bwh.strD <= :baseDate");
-		builderString.append(" AND bwh.endD >= :baseDate");
+				" JOIN BsymtWorkplaceConfig bwc ON bwi.pk.workplaceHistoryId = bwc.pk.workplaceHistoryId");
+		builderString.append(" AND bwi.pk.companyId = bwc.pk.companyId");
+		builderString.append(" WHERE bwi.pk.companyId = :companyId");
+		builderString.append(" AND bwi.pk.workplaceId IN :wkpids");
+		builderString.append(" AND bwc.startDate <= :baseDate");
+		builderString.append(" AND bwc.endDate >= :baseDate");
 		SELECT_BY_LISTSID_NAME = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -753,10 +745,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 
-		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
-		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
-				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
-					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
+		String query = "SELECT w FROM BsymtWorkplaceInfor w WHERE w.pk.workplaceId IN :wkpId";
+		this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("wkpId", workPlaceIds)
+				    .getList().stream().forEach(w -> {
+					lstWkp.put(w.getPk().getWorkplaceId(), w.getWorkplaceName());
 				});
 		return lstWkp;
 	}
@@ -772,10 +764,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 
-		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
-		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
-				.setParameter("baseDate", dateRange).getList().stream().forEach(w -> {
-					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
+		String query = "SELECT w FROM BsymtWorkplaceInfor w WHERE w.pk.workplaceId IN :wkpId";
+		this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("wkpId", workPlaceIds)
+				.getList().stream().forEach(w -> {
+					lstWkp.put(w.getPk().getWorkplaceId(), w.getWorkplaceName());
 				});
 		return lstWkp;
 	}
@@ -1263,10 +1255,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<CodeName> findWorkplace(String companyId, GeneralDate date) {
 		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC)) {
 			statement.setString(1, companyId);
-			statement.setDate(2, Date.valueOf(date.localDate()));
-			statement.setDate(3, Date.valueOf(date.localDate()));
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WKPCD"), rs.getString("WKP_NAME"), rs.getString("WKPID"));
+				return new CodeName(rs.getString("WKP_CD"), rs.getString("WKP_NAME"), rs.getString("WKP_ID"));
 			});
 
 		} catch (SQLException e) {
@@ -1590,9 +1580,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<CodeName> findWorkplaceId(String companyId, GeneralDate date, String id) {
-		return this.queryProxy().query(SEL_FIND_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
-				.setParameter("wkpid", id).setParameter("baseDate", date)
-				.getSingle(w -> new CodeName(w.getWkpcd(), w.getWkpName(), w.getBsymtWorkplaceInfoPK().getWkpid()));
+		return this.queryProxy().query(SEL_FIND_WORKPLACE, BsymtWorkplaceInfor.class).setParameter("cid", companyId)
+				.setParameter("wkpid", id)
+				.getSingle(w -> new CodeName(w.getWorkplaceCode(), w.getWorkplaceName(), w.getPk().getWorkplaceId()));
 	}
 
 	@Override
@@ -1697,8 +1687,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		CollectionUtil.split(resultList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			wplName.putAll(this.queryProxy().query(SELECT_BY_LISTSID_NAME, Object[].class)
 					.setParameter("companyId", companyId)
-					.setParameter("wkpids", subList.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
-					.setParameter("baseDate", date).getList().stream()
+					.setParameter("wkpids", subList.stream()
+					.map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
+					.setParameter("baseDate", date)	
+					.getList().stream()
 					.collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1]))));
 		});
 

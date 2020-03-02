@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.pub.spr.export.EmpInfoSprExport;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpJobHistSprExport;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
  * 
@@ -43,8 +43,11 @@ public class EmployeeSprPubImpl implements EmployeeSprPub {
 	@Inject
 	private IPersonInfoPub personInfoPub;
 	
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	@Override
 	public void validateEmpCodeSpr(String employeeCD) {
@@ -115,7 +118,7 @@ public class EmployeeSprPubImpl implements EmployeeSprPub {
 
 	@Override
 	public List<String> findListWorkplaceIdByCidAndWkpIdAndBaseDate(String companyId, String workplaceId, GeneralDate baseDate){
-		return syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, baseDate);
+		return workplacePub.getAllChildrenOfWorkplaceId(companyId, baseDate, workplaceId);
 	}
 
 }

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1050,
+                height: 580
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.b.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.b.service.js"/>
+        <com:scriptfile path="qmm019.b.vm.js"/>
+        <com:scriptfile path="qmm019.b.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="valign-center control-group" style="margin-bottom: 25px">
+                <!-- 新たに作成する履歴の作成情報を入力してください。 -->
+                <label id="B1_1">#{i18n.getText('QMM019_40')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- コード/名称 -->
+                <div id="B1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
+                <!-- 明細書コード -->
+                <label id="B1_3" data-bind="text: statementCode"> </label>
+                <!-- 明細書名 -->
+                <label id="B1_4" data-bind="text: statementName"></label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- 期間 -->
+                <div id="B1_5" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_42')}</div>
+                <!-- 開始年月 -->
+                <div id="B1_6" tabindex="1" data-bind="ntsDatePicker: {
+                                                            name: '#[QMM019_43]',
+                                                            value: startMonth,
+                                                            required: true,
+                                                            dateFormat: 'yearmonth'}"></div>
+                <!-- 開始年月和暦 -->
+                <div id="B1_7_wrap">
+                    <com:ko-if bind="((yearMonthJapan() != null) &amp;&amp; (yearMonthJapan() != ''))">
+                        <span class="pull-right">）</span>
+                        <label class="pull-right" id="B1_7" data-bind="text: yearMonthJapan"></label>
+                        <span class="pull-right">（</span>
+                    </com:ko-if>
+                </div>
+                <!-- 終了年月 -->
+                <label id="B1_8"> ～ #{i18n.getText('QMM019_44')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- レイアウトの引き継ぎ -->
+                <div id="B1_9" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_45')}</div>
+                <!-- 明細履歴区分 -->
+                <div id="B_10" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                                                            name: '#[QMM019_45]',
+                                                            options: itemHistoryDivisionList,
+                                                            optionsValue: 'id',
+                                                            optionsText: 'name',
+                                                            value: itemHistoryDivision,
+                                                            enable: true}"></div>
+            </div>
+            <div class="valign-center control-group">
+                <div class="space"></div>
+                <!-- レイアウトパターンの選択 -->
+                <label id="B2_1">#{i18n.getText('QMM019_48')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <div class="space"></div>
+                <div class="grid-area">
+                    <!-- レイアウト一覧 -->
+                    <table id="grid" data-bind="ntsGridList: {
+                        width: 830,
+                        rows: 7,
+                        columnResize: true,
+                        dataSource: layoutPatternData,
+                        primaryKey: 'id',
+                        columns: layoutPatternColumns,
+                        multiple: false,
+                        value: layoutPatternIdSelected
+                    }"></table>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="3" data-bind="click: decide, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

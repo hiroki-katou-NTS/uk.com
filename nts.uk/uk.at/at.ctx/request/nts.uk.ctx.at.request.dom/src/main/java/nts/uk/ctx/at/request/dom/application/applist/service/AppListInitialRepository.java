@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -10,9 +11,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWo
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt
@@ -147,4 +148,13 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public int detailSet(String companyId, String wkpId, Integer appType, GeneralDate date);
+	/**
+	 * 職場IDから申請承認設定情報取得
+	 * @param companyId
+	 * @param wkpId
+	 * @param appType
+	 * @param date
+	 * @return
+	 */
+	public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
 }

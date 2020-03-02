@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 480, height: 440 };</script>
+			<com:stylefile path="jhc002.c.style.css" />
+			<com:scriptfile path="jhc002.c.service.js" />
+			<com:scriptfile path="jhc002.c.start.js" />
+			<com:scriptfile path="jhc002.c.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="cf">
+					<div>
+						<div class="label" >#{i18n.getText('JHC002_C222_1')}</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: isNotice">#{i18n.getText('JHC002_C3_1')}</button>
+				<button data-bind="click: notNotice" id="notNotice">#{i18n.getText('JHC002_C3_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

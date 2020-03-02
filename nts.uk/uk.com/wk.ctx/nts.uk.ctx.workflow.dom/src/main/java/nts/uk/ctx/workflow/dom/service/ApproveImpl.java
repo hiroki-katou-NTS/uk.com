@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +20,13 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
@@ -64,8 +67,10 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
-					appDate);
+					appType.value.toString(), 
+					appDate,
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			//ドメインモデル「承認ルートインスタンス」を取得する
@@ -84,90 +89,136 @@ public class ApproveImpl implements ApproveService {
 			//本人による承認＝false　＆　申請者＝ログイン社員IDの場合
 			return approvalPhaseNumber;
 		}
-		
-		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+		// ドメインモデル「承認フェーズインスタンス」．順序を5～1の順でループする(loop domain model 「承認フェーズインスタンス」． thứ tự từ 5～1) 
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+			// ドメインモデル「承認フェーズインスタンス」．承認区分をチェックする(check domain 「承認フェーズインスタンス」．承認区分)
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				continue;
 			}
-			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-					return;
-				}
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-					List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-					if(!listApprover.contains(employeeID)){
-						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-							approvalFrame.setApproverID("");
-							approvalFrame.setRepresenterID(employeeID);
-							approvalFrame.setApprovalDate(GeneralDate.today());
-							approvalFrame.setApprovalReason(memo);
-							return;
+			boolean breakLoop = false;
+			// ドメインモデル「承認フェーズインスタンス」．「承認枠」1～5ループする(loop xử lý domain「承認フェーズインスタンス」．「承認枠」1～5)
+			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+				for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+					// 承認者情報．承認区分をチェック
+					if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+						String approverID = approverInfor.getApproverID();
+						if(!approverID.equals(employeeID)){
+							// 承認代行情報の取得処理
+							ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(approverID));
+							if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+								approverInfor.setAgentID(employeeID);
+								approverInfor.setApprovalDate(GeneralDate.today());
+								approverInfor.setApprovalReason(memo);
+								breakLoop = true;
+							} else {
+								continue;
+							}
+						} else {
+							// ループ中の承認者情報．承認区分　＝　承認済み
+							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approverInfor.setApproverID(employeeID);
+							approverInfor.setAgentID("");
+							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalReason(memo);
+							breakLoop = true;
 						}
-						return;
+					} else {
+						// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
+						if(!(approverInfor.getApproverID().equals(employeeID))||
+							(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID))){
+							continue;
+						}
+						// ループ中の承認者情報．承認区分　＝　承認済み
+						if(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID)) {
+							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approverInfor.setAgentID(employeeID);
+							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalReason(memo);
+							breakLoop = true;
+						}
+						if(approverInfor.getApproverID().equals(employeeID)) {
+							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approverInfor.setApproverID(employeeID);
+							approverInfor.setAgentID("");
+							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalReason(memo);
+							breakLoop = true;
+						}
 					}
-				} else {
-					// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
-					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
-						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
-						return;
+					if(breakLoop) {
+						break;
 					}
 				}
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-				approvalFrame.setApproverID(employeeID);
-				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(GeneralDate.today());
-				approvalFrame.setApprovalReason(memo);
-				return;
-			});
+				if(breakLoop) {
+					break;
+				}
+			}
+			// アルゴリズム「指定する承認フェーズの承認が完了したか」を実行する(thực hiện thuật toán 「」)
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
+			// 承認完了フラグをチェックする(check 承認完了フラグ)
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){
+				// ループ中のドメインモデル「承認フェーズインスタンス」．承認区分 = 未承認 (domain model trong loop 「承認フェーズインスタンス」．phân khu chứng nhận = chưa chứng nhận)
 				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				break;
 			}
+			// ループ中のドメインモデル「承認フェーズインスタンス」．承認区分 = 承認済(domain model trong loop 「承認フェーズインスタンス」．phân khu chứng nhận = đã confirm)
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+			// 承認フェーズ枠番 = ループ中の「承認フェーズインスタンス」．順序 (số hiệu khung phase chứng nhận = 「承認フェーズインスタンス」trong loop. thứ tự)
 			approvalPhaseNumber = approvalPhaseState.getPhaseOrder();
 		}
+		// ドメインモデル「承認ルートインスタンス」の承認状態をUpdateする(update trạng thái chứng nhận của domain model 「」)
 		approvalRootStateRepository.update(approvalRootState, rootType);
 		return approvalPhaseNumber;
 	}
 	
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState) {
-		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
-			Optional<ApprovalFrame> opApprovalFrameNotApprove = approvalPhaseState.getListApprovalFrame().stream()
-			.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-			if(!opApprovalFrameNotApprove.isPresent()){
+		// 「承認フェーズインスタンス」．承認形態をチェックする(check 「ApprovalPhaseInstance」．approvalForm)
+		ApprovalForm approvalForm = approvalPhaseState.getApprovalForm();
+		if(approvalForm==ApprovalForm.EVERYONE_APPROVED){
+			// 全員承認したかチェックする(check xem tất cả người xác nhận đã xác nhận chưa)
+			Optional<ApproverInfor> notApproved = approvalPhaseState.getNotApproved();
+			if(!notApproved.isPresent()){
 				return true;
 			}
+			// アルゴリズム「未承認の承認者一覧を取得する」を実行する(thực hiện xử lý 「Lấy list approver chưa  xác nhận」)
 			List<String> listUnapproveApprover = this.getUnapproveApproverFromPhase(approvalPhaseState);
+			// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「 lấy thông đại hiện approve」)
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listUnapproveApprover);
 			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
 				return true;
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		// 確定者を設定したかチェックする(check có cài đặt người 確定者 hay không)
+		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream()
+				.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameIsConfirm.isPresent()){
 			ApprovalFrame approvalFrame = opApprovalFrameIsConfirm.get();
-			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			// 確定者が承認済かチェックする(check người xác nhận đã xác nhận hay chưa)
+			Optional<ApproverInfor> approvedApproverInfor = approvalFrame.getLstApproverInfo().stream()
+				.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();	
+			if(approvedApproverInfor.isPresent()){
 				return true;
 			}
-			List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+			List<String> listApprover = approvalFrame.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+			// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「Lấy thông tin đại diện approve」)
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
 				return true;
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
-		if(opApprovalFrameIsApprove.isPresent()){
+		// 承認済の承認枠があるかチェックする(check xem có approvalFrame đã được xác nhận hay khồng)
+		Optional<ApproverInfor> approvedApproverInfor = approvalPhaseState.getApproved();
+		if(approvedApproverInfor.isPresent()){
 			return true;
 		}
+		// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する(thực hiện xử lý 「Lấy approver cho mỗi approvalPhase」)
 		List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+		// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「lấy thông tin đại diện approve」)
 		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 		if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.TRUE)){
 			return true;
@@ -185,8 +236,10 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
-					appDate);
+					appType.value.toString(), 
+					appDate,
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
@@ -195,7 +248,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
-		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approveAllFlag = true;
@@ -217,10 +270,11 @@ public class ApproveImpl implements ApproveService {
 	public List<String> getUnapproveApproverFromPhase(ApprovalPhaseState approvalPhaseState) {
 		List<String> listUnapproveApprover = new ArrayList<>();
 		approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-				List<String> approvers = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				listUnapproveApprover.addAll(approvers);
-			}
+			approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+				if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+					listUnapproveApprover.add(approverInfor.getApproverID());
+				}
+			});
 		});
 		return listUnapproveApprover.stream().distinct().collect(Collectors.toList());
 	}
@@ -235,8 +289,10 @@ public class ApproveImpl implements ApproveService {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					appType, 
-					appDate);
+					appType.value.toString(), 
+					appDate,
+					SystemAtr.WORK,
+					Optional.empty());
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+		<com:stylefile path="qui002.a.style.css"/>
+		<com:scriptfile path="qui002.a.service.js"/>
+		<com:scriptfile path="qui002.a.start.js"/>
+		<com:scriptfile path="qui002.a.vm.js"/>
+		<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+		<com:ValidatorScript>
+			nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.FdNumber
+		</com:ValidatorScript>
+	</ui:define>
+
+	<ui:define name="content">
+		<div id="functions-area">
+			<button id="A1_1" tabindex="1" class="proceed" style="margin-left: 75px;"
+					data-bind="enable: selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click:  function(){ exportFile(); }">#{i18n.getText('QUI002_A1_1')}</button>
+			<button id="A1_2" tabindex="2"
+					data-bind="enable: false, click:  function(){ openScreenB(); }">#{i18n.getText('QUI002_A1_2')}</button>
+
+		</div>
+		<div id="contents-area" class="fixed-flex-layout">
+		<div style="margin-top: 15px; min-width: 1000px;" class="fixed-flex-layout">
+			<div id="com-ccg001" ></div>
+
+			<div class="fixed-flex-layout-left" style="margin-left: 25px;margin-right: 10px;">
+				<div  style="margin-left: 45px;">
+                    <div class="panel panel-frame">
+                        <div id="component-items-list" tabindex="4"></div>
+                    </div>
+				</div>
+			</div>
+			<div class="fixed-flex-layout-right" data-bind="with: empInsReportSetting">
+				<div class="panel panel-frame " style="width: 445px; height: 359px;">
+					<!--A222_12-->
+					<div id="A222_12" class = "label"> #{i18n.getText('QUI002_A222_12')}</div>
+					<!--A222_13-->
+					<div class = "valign-center control-group">
+						<div id="A222_13" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_A222_13')}</div>
+						<!--A222_14-->
+						<div id = "A222_14" tabindex="5" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QUI002_A222_14')}',
+																value: $parent.filingDate,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" ></div>
+						<!--A222_15-->
+						<span data-bind = "text: $parent.filingDateJp" ></span>
+					</div>
+
+					<div class="valign-center control-group">
+						<!--A222_16-->
+						<div  id="A222_16" class="column-first" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('QUI002_A222_16')}</div>
+						<!--A222_17-->
+							<div id="A222_17" tabindex="6" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QUI002_A222_17')}',
+                                options: $parent.submitNameAtrs,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                constraint: 'EmpSubNameClass',
+                                value: submitNameAtr,
+                                enable: true  }"></div>
+						<!--A222_20-->
+						<button tabindex="7" data-bind="ntsHelpButton: {image: '../resources/QUI002_2.png', position: 'bottom center', enable: true }">?</button>
+					</div>
+					<!-- A4-->
+					<div class="valign-center control-group ">
+						<!--A222_21-->
+						<div id="A222_21" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_A222_21')}</div>
+						<!--A222_22-->
+						<div id="A222_22" style=" width: 300px;" tabindex="8" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI002_A222_22')}',
+                        options: $parent.outputOrders,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: outputOrderAtr,
+                        optionsText: 'name',
+                        editable: false,
+                        enable: true,
+                        required: true,
+                        selectFirstIfNull: true
+                        }"></div>
+					</div>
+
+					<div class="valign-center control-group">
+						<!--A222_24-->
+						<div id="A222_24" class="column-first" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QUI002_A222_24')}</div>
+						<!--A222_25-->
+						<div id="A222_25" style=" width: 300px;" tabindex="9" data-bind="ntsComboBox: {
+                        name: '#{i18n.getText('QUI002_A222_25')}',
+                        options: $parent.officeClsAtrs,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: officeClsAtr,
+                        optionsText: 'name',
+                        editable: false,
+                        enable: true,
+                        required: true,
+                        selectFirstIfNull: true
+                        }"></div>
+					</div>
+
+					<div class="valign-center control-group">
+						<!--A222_27-->
+						<div id="A222_27" class="column-first" data-bind="ntsFormLabel: {constrant: ''}">#{i18n.getText('QUI002_A222_27')}</div>
+						<!--A222_28-->
+						<button class="small" id="A222_28" tabindex="10" data-bind="enable: true, click:  function(){ $parent.openScreenB(); }">#{i18n.getText('QUI002_A222_28')}</button>
+
+
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

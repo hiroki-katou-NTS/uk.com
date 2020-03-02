@@ -12,7 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -48,24 +49,24 @@ public class WwfdtApproverDay extends UkJpaEntity {
 		return wwfdpApproverDayPK;
 	}
 	
-	public static WwfdtApproverDay fromDomain(String companyID, GeneralDate date, ApproverState approverState){
+	public static WwfdtApproverDay fromDomain(String companyID, String rootId, int phaseOrder, ApprovalFrame frame, ApproverInfor approverState){
 		return WwfdtApproverDay.builder()
 				.wwfdpApproverDayPK(
 						new WwfdpApproverDayPK(
-								approverState.getRootStateID(), 
-								approverState.getPhaseOrder(), 
-								approverState.getFrameOrder(), 
+								rootId, 
+								phaseOrder, 
+								frame.getFrameOrder(), 
 								approverState.getApproverID()))
 				.companyID(companyID)
-				.recordDate(date)
+				.recordDate(frame.getAppDate())
 				.build();
 	}
 	
-	public ApproverState toDomain(){
-		return ApproverState.builder()
-				.rootStateID(this.wwfdpApproverDayPK.rootStateID)
-				.phaseOrder(this.wwfdpApproverDayPK.phaseOrder)
-				.frameOrder(this.wwfdpApproverDayPK.frameOrder)
+	public ApproverInfor toDomain(){
+		return ApproverInfor.builder()
+//				.rootStateID(this.wwfdpApproverDayPK.rootStateID)
+//				.phaseOrder(this.wwfdpApproverDayPK.phaseOrder)
+//				.frameOrder(this.wwfdpApproverDayPK.frameOrder)
 				.approverID(this.wwfdpApproverDayPK.approverID)
 				.build();
 	}

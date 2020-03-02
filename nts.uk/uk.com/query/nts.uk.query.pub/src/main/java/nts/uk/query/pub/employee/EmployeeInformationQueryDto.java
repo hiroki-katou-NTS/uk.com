@@ -42,4 +42,18 @@ public class EmployeeInformationQueryDto {
 	/** The to get employment cls. */
 	boolean toGetEmploymentCls; // 就業区分を取得する
 
+	public EmployeeInformationQueryDto(List<String> employeeIds, GeneralDate referenceDate, boolean toGetWorkplace,
+			boolean toGetDepartment, boolean toGetPosition, boolean toGetEmployment, boolean toGetClassification,
+			boolean toGetEmploymentCls) {
+		super();
+		this.employeeIds = employeeIds;
+		this.referenceDate = referenceDate;
+		this.toGetWorkplace = toGetWorkplace;
+		this.toGetDepartment = toGetDepartment;
+		this.toGetPosition = toGetPosition;
+		this.toGetEmployment = toGetEmployment;
+		this.toGetClassification = toGetClassification;
+		this.toGetEmploymentCls = toGetEmploymentCls;
+	}
+
 }

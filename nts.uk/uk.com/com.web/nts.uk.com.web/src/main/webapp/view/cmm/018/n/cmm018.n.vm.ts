@@ -3,7 +3,7 @@ module nts.uk.com.view.cmm018.n {
 export module viewmodel {
     export class ScreenModel {
         //Right table's properties.
-        applicationType: KnockoutObservableArray<ItemModel>;
+        lstAppDis: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentAppType: KnockoutObservableArray<number>;
 
@@ -13,15 +13,21 @@ export module viewmodel {
         // Options
         baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
-
+        sysAtr: number;
+        lstAppName : Array<any> = [];
         constructor() {
             var self = this;
-
+            let param = nts.uk.ui.windows.getShared('CMM018N_PARAM');
+            self.sysAtr = param.sysAtr || 0;
+            _.each(param.lstName, function(app){
+                self.lstAppName.push({id: app.employRootAtr.toString() +  app.value, code: app.value, name: app.localizedName, empRoot: app.employRootAtr});
+            });
+            
             //Init right table.
-            self.applicationType = ko.observableArray([]);
+            self.lstAppDis = ko.observableArray([]);
 
             self.columns = ko.observableArray([
-                { headerText: '社員CD', key: 'code', width: 30, hidden: true},
+                { headerText: '', key: 'id', width: 30, hidden: true},
                 { headerText: '申請一覧', key: 'name', width: 200 }
             ]);
 
@@ -29,7 +35,15 @@ export module viewmodel {
             //Init selectedEmployee
             self.selectedEmployee = ko.observableArray([]);
             self.baseDate = ko.observable(moment(new Date()).toDate());
-            self.start();
+            if(self.sysAtr == 0){
+                self.start();
+            }else{
+                self.lstAppDis.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
+                _.each(self.lstAppName, app => {
+                    self.lstAppDis.push({id: app.id, code: app.code, name: app.name, empRoot: app.empRoot});
+                });
+                self.loadGrid();
+            }
         }
 
         loadGrid() {
@@ -86,17 +100,17 @@ export module viewmodel {
             var dfd = $.Deferred();
             service.getRightList().done(function(data: any) {
                 let items : ItemModel[] = [];
-                items.push( new ItemModel(99,  "共通ルート", 0));
+                items.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
                 _.forEach(data, function(value: any){
                     if(value.value !== 14){
-                        items.push(new ItemModel(value.value, value.localizedName, 1));
+                        items.push({id: '1' + value.value, code: value.value, name: value.localizedName, empRoot: 1});
                     }
                 })
                 service.getConfirmName().done(function(confirm: any){
                     _.forEach(confirm, function(obj){
-                        items.push(new ItemModel(obj.value + 20, obj.localizedName, 2));
+                        items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 1});
                     });
-                     self.applicationType(items);
+                     self.lstAppDis(items);
                     self.loadGrid();
                 });
                 dfd.resolve();
@@ -125,19 +139,13 @@ export module viewmodel {
             let lstApp = []
             _.each(self.currentAppType(), function(code){
                 let a = self.findTypeSelected(code);
-                let empRoot1 = a.empRoot;
-                let code1 = empRoot1 == 2 ? (a.code - 20) : a.code;
-                lstApp.push({code: code1,
-                             empRoot: empRoot1});
+                lstApp.push({code: a.code,
+                             empRoot: a.empRoot,
+                             name: a.name});
             });
-//            let lst1 = [];
-//            _.each(self.selectedEmployee(), function(emp){
-//                lst1.push(emp.employeeId);
-//            });
-            
             
             //xuat file
-            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp);
+            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp, self.sysAtr);
             nts.uk.ui.block.invisible();
             service.saveAsExcel(data).done(()=>{
                  nts.uk.ui.block.clear();   
@@ -146,28 +154,18 @@ export module viewmodel {
                  nts.uk.ui.block.clear();
             });
         }
-        findTypeSelected(appType: number){
+        findTypeSelected(id: number){
             let self = this;
-            return _.find(self.applicationType(), function(app){
-                return app.code == appType;
+            return _.find(self.lstAppDis(), function(app){
+                return app.id == id;
             });
         }
     }
-
-        export class ItemModel {
-            code: number;
+        export interface ItemModel {
+            id: string;
+            code: any;
             name: string;
             empRoot: number;
-            constructor(code: number, name: string, empRoot: number) {
-                this.code = code;
-                this.name = name;
-                this.empRoot = empRoot;
-            }
-        }
-        
-        export interface IItemModel {
-            value: number;
-            localizedName: string;
         }
     }
 }

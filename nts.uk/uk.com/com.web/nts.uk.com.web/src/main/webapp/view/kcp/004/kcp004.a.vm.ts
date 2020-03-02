@@ -1,10 +1,7 @@
 module kcp004.a.viewmodel {
     import UnitModel = kcp.share.tree.UnitModel;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
-    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-    import TreeType = kcp.share.tree.TreeType;
-//    import StartMode = kcp.share.tree.StartMode;
-    //end
+    import StartMode = kcp.share.tree.StartMode;
     import SelectType = kcp.share.tree.SelectionType;
     import UnitAlreadySettingModel = kcp.share.tree.UnitAlreadySettingModel; 
     import SystemType = kcp.share.tree.SystemType;
@@ -42,10 +39,9 @@ module kcp004.a.viewmodel {
         rowSelected: KnockoutObservable<RowSelection>;
         isBindingTreeGrid: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//        listStartMode: KnockoutObservableArray<any>;
-//        selectedStartMode: KnockoutObservable<StartMode>;
-        //end
+
+        listStartMode: KnockoutObservableArray<any>;
+        selectedStartMode: KnockoutObservable<StartMode>;
 
         constructor() {
             let self = this;
@@ -82,13 +78,11 @@ module kcp004.a.viewmodel {
             ]);
             self.selectedSelectionType = ko.observable(3);
 
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            self.listStartMode = ko.observableArray([
-//                {code : StartMode.WORKPLACE, name: 'Workplace'},
-//                {code : StartMode.DEPARTMENT, name: 'Department'}
-//            ]);
-//            self.selectedStartMode = ko.observable(StartMode.WORKPLACE);
-            //end
+            self.listStartMode = ko.observableArray([
+                {code : StartMode.WORKPLACE, name: 'Workplace'},
+                {code : StartMode.DEPARTMENT, name: 'Department'}
+            ]);
+            self.selectedStartMode = ko.observable(StartMode.WORKPLACE);
 
             self.listSystemType = ko.observableArray([
                 {code : 1, name: '個人情報', enable: self.enable},
@@ -104,12 +98,8 @@ module kcp004.a.viewmodel {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                treeType: TreeType.WORK_PLACE,
-                selectedWorkplaceId: self.getSelectedWorkplaceId(),
-//                startMode: self.selectedStartMode(),
-//                selectedId: self.getSelectedWorkplaceId(),
-                //end
+                startMode: self.selectedStartMode(),
+                selectedId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),
@@ -141,13 +131,11 @@ module kcp004.a.viewmodel {
                     self.getSelectedData();
                 });
             });
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-//            self.selectedStartMode.subscribe(code => {
-//                self.reloadTreeGrid().done(() => {
-//                    self.getSelectedData();
-//                });
-//            });
-            //end
+            self.selectedStartMode.subscribe(code => {
+                self.reloadTreeGrid().done(() => {
+                    self.getSelectedData();
+                });
+            });
             self.isDialog.subscribe(function(value) {
                 self.reloadTreeGrid();
             });
@@ -244,12 +232,8 @@ module kcp004.a.viewmodel {
                 return;
             }
             let data = $('#tree-grid').getRowSelected();
-            //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.workplaceId).join(", ") : '');
-            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.workplaceCode).join(", ") : '');
-//            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.id).join(", ") : '');
-//            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.code).join(", ") : '');
-            //end
+            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.id).join(", ") : '');
+            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.code).join(", ") : '');
         }
 
         private setTreeData() {
@@ -258,12 +242,8 @@ module kcp004.a.viewmodel {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
-                //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                treeType: TreeType.WORK_PLACE,
-                selectedWorkplaceId: self.getSelectedWorkplaceId(),
-//                startMode: self.selectedStartMode(),
-//                selectedId: self.getSelectedWorkplaceId(),
-                //end
+                startMode: self.selectedStartMode(),
+                selectedId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),

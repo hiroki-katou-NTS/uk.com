@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -23,7 +24,7 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
@@ -48,8 +49,8 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	private SyEmployeePub employeePub;
 
 	/** The workplace pub. */
-	@Inject
-	private SyWorkplacePub workplacePub;
+//	@Inject
+//	private SyWorkplacePub workplacePub;
 
 	@Inject
 	private PersonAdapter psInfor;
@@ -66,6 +67,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	
 	@Inject
 	private SyCompanyPub syCompanyPub;
+	
+	@Inject
+	private WorkplacePub wkplacePub;
 
 	/*
 	 * (non-Javadoc)
@@ -77,7 +81,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public List<EmployeeImport> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
 		List<String> lstEmpId = new ArrayList<>();
-		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate);
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate, 0);
 		lstEmpId.addAll(empId);
 //		for (String wkpId : workplaceIds) {
 //			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
@@ -104,9 +108,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	 * nts.arc.time.GeneralDate)
 	 */
 	public List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> workplaceIds,
-			GeneralDate baseDate) {
+			GeneralDate baseDate, int sysAtr) {
 		List<String> lstEmpId = new ArrayList<>();
-		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate);
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate, sysAtr);
 		lstEmpId.addAll(empId);
 
 		List<EmployeeImport> lstEmpDto = Collections.synchronizedList(new ArrayList<>());
@@ -126,7 +130,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date) {		
-		return workplacePub.findWpkIdsBySid(companyId, employeeId, date);
+		return wkplacePub.findWpkIdsBySid(companyId, employeeId, date);
 	}
 
 	@Override
@@ -217,6 +221,18 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public List<ResultRequest596Import> getEmpDeletedLstBySids(List<String> sids) {
 		return employeePub.getEmpDeletedLstBySids(sids).stream()
 				.map(x -> new ResultRequest596Import(x.getSid(), x.getEmployeeCode(), x.getEmployeeName())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+		return this.wkplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	@Override
+	public Optional<String> getWkpBySidDate(String employeeID, GeneralDate date) {
+		val wkp = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		if(wkp == null) return Optional.empty();
+		return Optional.of(wkp.getWorkplaceId());
 	}
 	
 	

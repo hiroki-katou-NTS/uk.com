@@ -1,9 +1,9 @@
-module qmm012.h {
+module nts.uk.pr.view.qmm012.h {
     __viewContext.ready(function() {
-        let screenModel = new h.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
-
+        let screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+            _.defer(() => { $("#H2_2").focus(); });
+        });
     });
-
-
 }

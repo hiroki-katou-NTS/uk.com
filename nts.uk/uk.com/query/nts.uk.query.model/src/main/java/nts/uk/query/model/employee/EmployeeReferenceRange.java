@@ -13,11 +13,11 @@ public enum EmployeeReferenceRange {
 
 	/** The department and child. */
 	// 部門（配下含む）
-	DEPARTMENT_AND_CHILD(1, "Enum_EmployeeReferenceRange_departmentAndChild", "部門（配下含む）"),
+	DEPARTMENT_AND_CHILD(1, "Enum_EmployeeReferenceRange_departmentAndChild", "部門・職場（配下含む）"),
 
 	/** The department only. */
 	// 部門（配下含まない）
-	DEPARTMENT_ONLY(2, "Enum_EmployeeReferenceRange_departmentOnly", "部門（配下含まない）"),
+	DEPARTMENT_ONLY(2, "Enum_EmployeeReferenceRange_departmentOnly", "部門・職場（配下含まない）"),
 
 	/** The only myself. */
 	// 自分のみ

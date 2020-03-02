@@ -22,7 +22,7 @@ public interface ApprovalRootPub {
 	 *            基準日
 	 */
 	List<ApprovalRootExport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr, int appType,
-			GeneralDate standardDate);
+			GeneralDate standardDate, int sysAtr);
 
 	/**
 	 * 3.職位から承認者へ変換する

@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+<div style="width: 800px">
+    <div class="flex valign-center tab-row">
+        <!--B1_1 賃金テーブルコード/名称 -->
+        <div id="B1_1" style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+        <!--B1_2 賃金テーブルコード -->
+        <!--B1_3 賃金テーブル名称-->
+        <div style="width: 260px;" data-bind="with: selectedWageTable">
+            <div style="display: inline-block" data-bind="text: wageTableCode"></div>
+            <div class="limited-label" style="display: inline-block; margin-left: 10px; width: 190px; vertical-align: text-bottom;"
+                 data-bind="text: wageTableName"></div>
+        </div>
+        <div id="B1_4" style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
+        <div data-bind="with: selectedHistory">
+            <div style="display: inline-block" data-bind="text: displayStartMonth"></div>
+            <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
+            <div style="display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
+        </div>
+    </div>
+    <hr></hr>
+    <div class="tab-row">
+        <div id="B2_1" style="width: 70px; vertical-align: top"
+             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
+        <div class="fixed-table-container">
+            <table class="custom-fixed-table normal-fixed-table"
+                   data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
+                <colgroup>
+                    <col width="30px"/>
+                    <col width="163px"/>
+                    <col width="360px"/>
+                    <col width="170px"/>
+                </colgroup>
+                <thead>
+	                <tr>
+	                    <th class="ui-widget-header"></th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+	                    <th class="ui-widget-header">
+	                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
+	                        <button tabindex="-1" style="display: inline-block"
+	                                data-bind="ntsHelpButton: {image: '../resource/＃QMM017_1.png', position: 'bottom left'}">?</button>
+	                    </th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
+	                </tr>
+                </thead>
+                <tbody>
+	                <tr>
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_29')}</th>
+	                    <td>
+	                        <div data-bind="text: elementName"></div>
+	                    </td>
+	                    <td style="text-align: center;">
+                            <com:ko-if bind="masterNumericClassification() == 0">
+                                <div>#{i18n.getText('QMM016_34')}</div>
+                            </com:ko-if>
+                            <com:ko-if bind="masterNumericClassification() == 1">
+                                <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+                                    <input id="B2_8" tabindex="12" data-bind="ntsNumberEditor: {
+	                            		required: true,
+	                            		enable: $vm.updateMode() &amp;&amp; $vm.isSelectedHistory(),
+	                            		constraint: 'RangeLowerLimit',
+	                            		value: rangeLowerLimit,
+	                            		name: '#[QMM016_30]',
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+                                    <div>#{i18n.getText('QMM016_31')}</div>
+                                    <input id="B2_10" tabindex="13" data-bind="ntsNumberEditor: {
+	                            		required: true,
+	                            		enable: $vm.updateMode() &amp;&amp;
+	                            		$vm.isSelectedHistory(),
+	                            		constraint: 'RangeUpperLimit',
+	                            		value: rangeUpperLimit,
+	                            		name: '#[QMM016_32]',
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+                                </div>
+                            </com:ko-if>
+	                    </td>
+	                    <td style="text-align: center;">
+                            <com:ko-if bind="masterNumericClassification() == 0">
+                                <div>#{i18n.getText('QMM016_34')}</div>
+                            </com:ko-if>
+                            <com:ko-if bind="masterNumericClassification() == 1">
+                                <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+                                    <input id="B2_11" tabindex="14" data-bind="ntsNumberEditor: {
+	                            		required: true,
+	                            		enable: $vm.updateMode() &amp;&amp;
+	                            		$vm.isSelectedHistory(),
+	                            		constraint: 'StepIncrement',
+	                            		value: stepIncrement,
+	                            		name: '#[QMM016_33]',
+	                            		option: {grouplength: 3, decimallength: 2, width: '143px'}}"/>
+                                </div>
+                            </com:ko-if>
+	                    </td>
+	                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+        <button tabindex="15" data-bind="click: $vm.createOneDimensionWageTable" style="width: 400px;"
+                class="caret-bottom large-caret large">#{i18n.getText('QMM016_35')}</button>
+    </div>
+    <div class="tab-row" style="margin-top: 40px;">
+        <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
+        <button tabindex="16" style="margin-left: 30px;" id="B4_2" data-bind="enable: false">#{i18n.getText('QMM016_37')}</button>
+    </div>
+    <hr></hr>
+    <div class="tab-row" style="margin-top: 20px;" data-bind="if: $vm.wageTableContent().payment().length >0">
+        <table id="grid2"></table>
+    </div>
+</div>
+</ui:composition>

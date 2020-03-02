@@ -12,11 +12,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 /**
- * 
- * @author Doan Duy Hung
+ * 承認枠_承認者情報
+ * @author hoatt
  *
  */
 @NoArgsConstructor
@@ -25,49 +27,70 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="WWFDT_APPROVER_STATE")
 @Builder
 public class WwfdtApproverState extends UkJpaEntity {
-	
+	/**主キー*/
 	@EmbeddedId
-	public WwfdpApproverStatePK wwfdpApproverStatePK;
-	
-	@Column(name="CID")
-	public String companyID;
-	
-	@Column(name="APPROVAL_RECORD_DATE")
-	public GeneralDate recordDate;
+	public WwfdpApproverStatePK wwfdpApprovrStatePK;
+    /**承認区分*/
+	@Column(name="APPROVAL_ATR")
+	public Integer approvalAtr;
+	/**確定区分*/
+	@Column(name="CONFIRM_ATR")
+	public Integer confirmAtr;
+	/**代行者*/
+	@Column(name="AGENT_ID")
+	public String agentID;
+	/**承認日*/
+	@Column(name="APPROVAL_DATE")
+	public GeneralDate approvalDate;
+	/**理由*/
+	@Column(name="APPROVAL_REASON")
+	public String approvalReason;
+	/**対象日*/
+	@Column(name="APP_DATE")
+	public GeneralDate appDate;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="ROOT_STATE_ID",referencedColumnName="ROOT_STATE_ID"),
-		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER"),
-		@PrimaryKeyJoinColumn(name="FRAME_ORDER",referencedColumnName="FRAME_ORDER")
+		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER")
 	})
-	private WwfdtApprovalFrame wwfdtApprovalFrame;
+	private WwfdtApprovalPhaseState wwfdtApprovalPhaseState;
 
 	@Override
 	protected Object getKey() {
-		return wwfdpApproverStatePK;
+		return wwfdpApprovrStatePK;
 	}
 	
-	public static WwfdtApproverState fromDomain(String companyID, GeneralDate date, ApproverState approverState){
+	public static WwfdtApproverState fromDomain(String rootStateID, int phaseOrder, ApprovalFrame frame, ApproverInfor approverInfo){
 		return WwfdtApproverState.builder()
-				.wwfdpApproverStatePK(
+				.wwfdpApprovrStatePK(
 						new WwfdpApproverStatePK(
-								approverState.getRootStateID(), 
-								approverState.getPhaseOrder(), 
-								approverState.getFrameOrder(), 
-								approverState.getApproverID()))
-				.companyID(companyID)
-				.recordDate(date)
+								rootStateID, 
+								phaseOrder, 
+								frame.getFrameOrder(),
+								approverInfo.getApproverID()))
+				.approvalAtr(approverInfo.getApprovalAtr().value)
+				.confirmAtr(frame.getConfirmAtr().value)
+				.agentID(approverInfo.getAgentID())
+				.approvalDate(approverInfo.getApprovalDate())
+				.approvalReason(approverInfo.getApprovalReason())
+				.appDate(frame.getAppDate())
 				.build();
 	}
 	
-	public ApproverState toDomain(){
-		return ApproverState.builder()
-				.rootStateID(this.wwfdpApproverStatePK.rootStateID)
-				.phaseOrder(this.wwfdpApproverStatePK.phaseOrder)
-				.frameOrder(this.wwfdpApproverStatePK.frameOrder)
-				.approverID(this.wwfdpApproverStatePK.approverID)
-				.build();
-	}
-	
+//	public ApprovalFrame toDomain(){
+//		return ApprovalFrame.builder()
+//				.rootStateID(this.wwfdpApprovrStatePK.rootStateID)
+//				.phaseOrder(this.wwfdpApprovrStatePK.phaseOrder)
+//				.frameOrder(this.wwfdpApprovrStatePK.approverOrder)
+//				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
+//				.confirmAtr(EnumAdaptor.valueOf(this.confirmAtr, ConfirmPerson.class))
+//				.approverID(this.approverID)
+//				.representerID(this.representerID)
+//				.approvalDate(this.approvalDate)
+//				.approvalReason(this.approvalReason)
+//				.listApproverState(this.listWwfdtApproverState.stream()
+//									.map(x -> x.toDomain()).collect(Collectors.toList()))
+//				.build();
+//	}
 }

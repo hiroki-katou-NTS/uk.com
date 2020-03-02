@@ -14,6 +14,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface SyWorkplaceAdapter {
 
-	Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
+	Map<String, Pair<String, String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates);
 }

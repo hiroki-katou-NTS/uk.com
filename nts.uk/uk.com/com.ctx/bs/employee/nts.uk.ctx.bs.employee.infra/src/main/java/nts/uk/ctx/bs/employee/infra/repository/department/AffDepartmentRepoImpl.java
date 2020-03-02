@@ -14,7 +14,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.AffDepartmentRepository;
 import nts.uk.ctx.bs.employee.dom.department.AffiliationDepartment;
+import nts.uk.ctx.bs.employee.dom.department.Department;
+import nts.uk.ctx.bs.employee.dom.department.DepartmentInfo;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartment;
+import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
 
 /**
  * @author danpv
@@ -139,4 +142,10 @@ public class AffDepartmentRepoImpl extends JpaRepository implements AffDepartmen
 		return toListAffiliationDepartment(listEntity);
 	}
 
+	private static final String GET_DEPARTMENT_BY_COMPANY_ID = "SELECT a FROM BsymtDepartmentInfo a JOIN BsymtDepartmentHist b ON a.bsymtDepartmentInfoPK.histId = b.bsymtDepartmentHistPK.histId AND a.bsymtDepartmentInfoPK.cid = b.bsymtDepartmentHistPK.cid WHERE b.bsymtDepartmentHistPK.cid =:cid AND b.strD <=:baseDate AND b.endD >=:baseDate ORDER BY a.cd";
+
+	@Override
+	public List<DepartmentInfo> getAllDepartmentByCompanyIdAndBaseDate(String companyId, GeneralDate baseDate) {
+        return this.queryProxy().query(GET_DEPARTMENT_BY_COMPANY_ID, BsymtDepartmentInfo.class).setParameter("cid", companyId).setParameter("baseDate", baseDate).getList(item -> item.fromEntityToDomain());
+	}
 }

@@ -22,7 +22,7 @@ public class AdjustedApprovalPhases {
 		for (val phase : this.phases) {
 
 			val masterPhase = masterPhases.stream()
-					.filter(mp -> mp.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get();
+					.filter(mp -> mp.getPhaseOrder() == phase.getPhaseOrder()).findFirst().get();
 
 			// マスタに承認者が設定されているか
 			if (masterPhase.getApprovers().isEmpty()) {
