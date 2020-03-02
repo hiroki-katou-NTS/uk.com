@@ -60,7 +60,7 @@ module nts.uk.com.view.cmm022.a {
 
 
                 self.commonMasterItemId.subscribe((id) => {
-
+                    $("#A223_2").focus();
                     if (id == null) {
                         return;
                     }
@@ -69,6 +69,8 @@ module nts.uk.com.view.cmm022.a {
                     if (id) {
                         self.newMode(false);
                     }
+
+
 
                 });
 
@@ -94,6 +96,7 @@ module nts.uk.com.view.cmm022.a {
                     $(window).resize(function() {
                         $("#master-item-list").igGrid("option", "height", (window.innerHeight - 283) + "px");
                         $("#master-list").igGrid("option", "height", (window.innerHeight - 306) + "px");
+                        $("#common-master_arena").height((window.innerHeight - 240) + "px");
                     });
                 }, 100); 
             }
@@ -152,6 +155,7 @@ module nts.uk.com.view.cmm022.a {
                         
                         $("#master-item-list").igGrid("option", "height", (window.innerHeight - 283) + "px");
                         $("#master-list").igGrid("option", "height", (window.innerHeight - 306) + "px");
+                        $("#common-master_arena").height((window.innerHeight - 240) + "px");
                         
                     }, 100); 
                     nts.uk.ui.errors.clearAll();

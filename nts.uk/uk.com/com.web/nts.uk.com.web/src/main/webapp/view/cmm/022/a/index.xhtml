@@ -39,10 +39,9 @@
 			<div id="contents-area" class="fixed-flex-layout">
 			<!-- A221 -->
 				<div class="column-1 ">
+					<!-- A221_1 -->
 					<div id="common-master_arena"
-						class="bg-green caret-right caret-background">
-						<!-- A221_1 -->
-						<i class="icon icon-searchbox"></i>
+						data-bind="ntsPanel:{width: '320px', direction: 'right', showIcon: true, visible: true}">
 						<div class="div_line">
 							<!-- A221_2 -->
 							<div style="width: 320px"
@@ -51,15 +50,15 @@
 						</div>
 
 						<div class="div_line">
-						<!-- A221_3 -->
-						
+							<!-- A221_3 -->
+
 							<table id="master-list"
 								data-bind="ntsGridList: {
                                 height: 250 ,
 								dataSource: commonMasters ,
 								primaryKey: 'commonMasterId' ,
 								columns: [
-							                { headerText: '', key: 'commonMasterId', width: 100, hidden: true },
+							                { headerText: '', key: 'commonMasterId', width: 0 , hidden: true },
 							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
 							            ] ,
 								multiple: false ,
@@ -68,6 +67,7 @@
 							}"></table>
 						</div>
 					</div>
+
 				</div>
 				<!-- A222 -->
 				<div class="column-2">
@@ -79,7 +79,7 @@
 					</div>
 					<!-- A222_3 -->
 					<div class="div_line">#{i18n.getText('CMM022_A222_3')}</div>
-					<div class="div_line">
+					<div class="div_line caret-right caret-background">
 					<!-- A222_4 -->
 						<table id="master-item-list"
 							data-bind="ntsGridList: {
@@ -87,8 +87,8 @@
 								dataSource: commonMasterItems ,
 								primaryKey: 'commonMasterItemId' ,
 								columns: [
-							                { headerText: 'コード', key: 'commonMasterItemId', width: 100, hidden: true },
-							                { headerText: '#{i18n.getText('CMM022_A222_7')}', key: 'commonMasterItemCode', width: 150 }, 
+							                { headerText: 'コード', key: 'commonMasterItemId', width: 0 , hidden: true },
+							                { headerText: '#{i18n.getText('CMM022_A222_7')}', key: 'commonMasterItemCode', width: 100 }, 
 							                { headerText: '#{i18n.getText('CMM022_A222_8')}', key: 'commonMasterItemName', width: 200 }, 
 							            ] ,
 								multiple: false ,
@@ -108,7 +108,7 @@
 					</div>
 					<div class="div_line pl-15">
 						<!-- A223_2 -->
-						<input
+						<input id="A223_2"
 							data-bind="ntsTextEditor: {
 											value: selectedCommonMasterItem().commonMasterItemCode ,
 											required: true,
