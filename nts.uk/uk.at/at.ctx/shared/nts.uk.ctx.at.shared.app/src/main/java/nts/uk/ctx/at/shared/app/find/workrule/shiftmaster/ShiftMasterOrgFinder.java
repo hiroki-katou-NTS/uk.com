@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
@@ -71,8 +73,8 @@ public class ShiftMasterOrgFinder {
 			
 			if(oWorkTime.isPresent()) {
 				WorkTimeDto worktime = oWorkTime.get();
-				shiftMaster.setWorkTime1(worktime.workTime1);
-				shiftMaster.setWorkTime2(worktime.workTime2);
+				shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
+				shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
 			}
 			
 		});
