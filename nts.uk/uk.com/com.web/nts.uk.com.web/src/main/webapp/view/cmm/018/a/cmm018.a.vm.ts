@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm018.a {
             selectTypeSet : KnockoutObservable<number> = ko.observable(0);
             //___________KCP009______________
             employeeInputList: KnockoutObservableArray<vmbase.EmployeeKcp009> = ko.observableArray([]);
-            systemReference: KnockoutObservable<number> = ko.observable(vmbase.SystemType.PERSONNEL);
+            systemReference: KnockoutObservable<number>;
             isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
             targetBtnText: string = getText("KCP009_3");
             listComponentOption: vmbase.ComponentOption;
@@ -108,6 +108,8 @@ module nts.uk.com.view.cmm018.a {
                 let url = $(location).attr('search');
                 let urlParam: number = url.split("=")[1];
                 self.systemAtr(urlParam || 0);
+                self.systemReference = self.systemAtr() == 1 ? ko.observable(vmbase.SystemType.PERSONNEL)
+                            : ko.observable(vmbase.SystemType.EMPLOYMENT);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
                     
