@@ -129,7 +129,8 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 		});
 
 		String sqlDelete = "DELETE FROM KSCMT_RANK WHERE CID = ?";
-		String sqlInsert = "INSERT INTO KSCMT_RANK (CID, CD, SYNAME, PRIORITY) VALUES (?,?,?,?)";
+		
+//		String sqlInsert = "INSERT INTO KSCMT_RANK (CID, CD, SYNAME, PRIORITY) VALUES (?,?,?,?)";
 
 		try (PreparedStatement ps1 = this.connection().prepareStatement(sqlDelete)) {
 			ps1.setString(1, companyId);
@@ -137,19 +138,23 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+		
+		kscmtRanks.forEach(x->{
+			this.commandProxy().insert(x);
+		});
+		
 
-		try (PreparedStatement ps2 = this.connection().prepareStatement(JDBCUtil.toInsertWithCommonField(sqlInsert))) {
-			for (int i = 0; i < kscmtRanks.size(); i++) {
-				ps2.setString(1, companyId);
-				ps2.setString(2, kscmtRanks.get(i).kscmtRankPk.rankCd);
-				ps2.setString(3, kscmtRanks.get(i).rankSymbol);
-				ps2.setInt(4, kscmtRanks.get(i).priority);
-				ps2.addBatch();
-			}
-			ps2.executeBatch();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+//		try (PreparedStatement ps2 = this.connection().prepareStatement(JDBCUtil.toInsertWithCommonField(sqlInsert))) {
+//			for (int i = 0; i < kscmtRanks.size(); i++) {
+//				ps2.setString(1, companyId);
+//				ps2.setString(2, kscmtRanks.get(i).kscmtRankPk.rankCd);
+//				ps2.setString(3, kscmtRanks.get(i).rankSymbol);
+//				ps2.setInt(4, kscmtRanks.get(i).priority);
+//				ps2.executeUpdate();
+//			}
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 
 	/**

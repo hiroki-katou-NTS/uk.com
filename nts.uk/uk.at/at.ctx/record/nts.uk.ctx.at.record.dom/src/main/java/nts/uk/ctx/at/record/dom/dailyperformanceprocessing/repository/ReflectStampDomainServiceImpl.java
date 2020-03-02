@@ -817,14 +817,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// .find(employeeId, processingDate);
 		String workTimeCode = null;
 		String workTypeCode = null;
-		WorkTimeCode workTimeCodeDefault = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getSiftCode();
+		WorkTimeCode workTimeCodeDefault = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode();
 		
 		if(workInfoOfDailyPerformanceOpt.isPresent() && workInfoOfDailyPerformanceOpt.get().getRecordInfo() != null){
 			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTypeCode() != null){
 				workTypeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTypeCode().v();
 			}
-			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getSiftCode() != null){
-				workTimeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getSiftCode().v();
+			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode() != null){
+				workTimeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode().v();
 			}
 		}
 		
