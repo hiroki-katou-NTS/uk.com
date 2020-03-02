@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,14 +10,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -66,12 +60,15 @@ public class KscmtPaletteOrg extends UkJpaEntity{
 	}
 	
 	public ShiftPalletsOrg toDomain() {
-		return null;
-		/*return new ShiftPalletsOrg(new TargetOrgIdenInfor(new TargetOrganizationUnit(pk.targetUnit), pk.targetId),
-				pk.page,
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName),
-								EnumAdaptor.valueOf(useAtr, NotUseAtr.class), new ShiftRemarks(note)),
-						cmpCombis.stream().map(x -> x.toDomain()).collect(Collectors.toList())));*/
+		String workplaceId = null;
+		String groupWorkplaceId = null;
+		if (pk.targetUnit == 0) {
+			workplaceId = pk.targetId;
+		} else if (pk.targetUnit == 1)
+			groupWorkplaceId = pk.targetId;
+		return new ShiftPalletsOrg(
+				new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class), workplaceId,
+						groupWorkplaceId),
+				pk.page, null);
 	}
 }

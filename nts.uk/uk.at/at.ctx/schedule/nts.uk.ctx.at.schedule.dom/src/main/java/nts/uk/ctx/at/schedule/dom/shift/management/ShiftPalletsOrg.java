@@ -72,4 +72,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 		void update(ShiftPalletsOrg shiftPalletsOrg);
 
 	}
+	public ShiftPalletsOrg copy(TargetOrgIdenInfor targetOrg ) {
+		return new ShiftPalletsOrg(targetOrg, this.page, this.shiftPallet);
+	}
 }
