@@ -74,6 +74,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
 		boolean errorFlg = false;
 		ApprovalStateHrImport apprState = null;
+		//人事承認状況を取得する
 		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
 		if(!opRoot.isPresent()){
 			//エラーフラグ　＝　True (Error flag = True)
@@ -155,17 +156,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							//指定する社員が代行承認者かチェックする
 							if(apprAgent.getListAgent().contains(employeeID)){//true
 								//(ドメインモデル「人事承認枠」)承認区分=「承認済」、代行者=INPUT．社員ID
-								appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-								appr.setAgentID(employeeID);
-								appr.setApprovalDate(GeneralDate.today());
-								appr.setApprovalReason(comment);
+								this.setStateRQ632(appr, employeeID, comment);
 								continue;
 							}
 						}else{
-							appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-							appr.setAgentID("");
-							appr.setApprovalDate(GeneralDate.today());
-							appr.setApprovalReason(comment);
+							this.setStateRQ632(appr, "", comment);
 							continue;
 						}
 					} else {//「人事承認枠」．承認区分 ≠ 未承認
@@ -174,10 +169,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							continue;
 						}
 						//(ループ中の「人事承認枠」)承認区分=「承認済」、代行者=空
-						appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-						appr.setAgentID("");
-						appr.setApprovalDate(GeneralDate.today());
-						appr.setApprovalReason(comment);
+						this.setStateRQ632(appr, "", comment);
 						continue;
 					}
 				}
@@ -193,6 +185,12 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		}
 		repoApprStateHr.update(root);
 		return phaseOrder;
+	}
+	private void setStateRQ632(ApproverInforHr appr, String employeeID, String comment) {
+		appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+		appr.setAgentID(employeeID);
+		appr.setApprovalDate(GeneralDate.today());
+		appr.setApprovalReason(comment);
 	}
 	/**
 	 * [RQ633]申請書を否認する
@@ -248,11 +246,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							//指定する社員が代行承認者かチェックする
 	//						if文： 返す結果の承認代行者リスト. Contains(INPUT．社員ID)
 							if(apprAgent.getListAgent().contains(employeeID)){//true
-								appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-								appr.setAgentID(employeeID);
-								appr.setApprovalDate(GeneralDate.today());
-								appr.setApprovalReason(comment);
-								appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+								this.setStateRQ633(appr, employeeID, comment);
 								executedFlag = true;
 							}
 							continue;
@@ -262,11 +256,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							continue;
 						}
 					}
-					appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-					appr.setAgentID("");
-					appr.setApprovalDate(GeneralDate.today());
-					appr.setApprovalReason(comment);
-					appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+					this.setStateRQ633(appr, "", comment);
 					executedFlag = true;
 				}
 			}
@@ -275,6 +265,13 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			return executedFlag;
 		}
 		return executedFlag;
+	}
+	private void setStateRQ633(ApproverInforHr appr, String employeeID, String comment) {
+		appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+		appr.setAgentID(employeeID);
+		appr.setApprovalDate(GeneralDate.today());
+		appr.setApprovalReason(comment);
+		appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 	}
 	/**
 	 * [RQ634]申請書を差し戻しする
@@ -400,8 +397,10 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	 */
 	@Override
 	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr) {
+		//エラーフラグ　＝　True
 		if(apprSttHr == null) return true;
 		try{
+			//convert data
 			ApprovalRootStateHr root = new ApprovalRootStateHr(apprSttHr.getRootStateID(),
 				apprSttHr.getAppDate(), apprSttHr.getEmployeeID(),
 				apprSttHr.getLstPhaseState().stream().map(ph -> ApprovalPhaseStateHr.convert(ph.getPhaseOrder(),
@@ -414,9 +413,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 								).collect(Collectors.toList()))
 						).collect(Collectors.toList())
 				);
+			//ドメインモデル「人事承認ルートインスタンス」を追加
 			repoApprStateHr.insert(root);
 			return false;
 		}catch(Exception ex){
+			//エラーフラグ　＝　True
 			return true;
 		}
 	}
