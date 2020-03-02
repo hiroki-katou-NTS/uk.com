@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -39,10 +41,10 @@ public class ShiftMasterDto {
 		this.shiftMasterCode = shiftMaterCode;
 		this.color = color;
 		this.remark = remark;
-		this.workTypeCd = workTimeCd;
+		this.workTypeCd = workTypeCd;
 		this.workTypeName = workTypeName;
-		this.workTimeCd = workTimeCd;
-		this.workTimeName = workTimeName;
+		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "" ;
+		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "" ;
 	}
 	
 }

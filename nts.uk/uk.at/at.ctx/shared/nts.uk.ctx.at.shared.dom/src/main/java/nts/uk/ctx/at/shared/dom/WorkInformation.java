@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -28,7 +31,8 @@ public class WorkInformation {
 	private WorkTimeCode workTimeCode;
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
-		this.workTimeCode = workTimeCode == null ? null : new WorkTimeCode(workTimeCode);
+
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 

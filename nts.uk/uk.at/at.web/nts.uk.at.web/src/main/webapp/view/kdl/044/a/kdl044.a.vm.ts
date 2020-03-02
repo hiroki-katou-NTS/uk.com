@@ -62,9 +62,9 @@ module nts.uk.at.view.kdl044.a {
                             if (data.permission) {
                                 if (isUseWorkMultiple) {
                                     result.push(new Shifuto(
-                                        "999",
                                         "",
                                         getText('KDL044_13'),
+                                        "",
                                         "",
                                         "",
                                         "",
@@ -72,9 +72,9 @@ module nts.uk.at.view.kdl044.a {
                                     ));
                                 } else {
                                     result.push(new Shifuto(
-                                        "999",
                                         "",
                                         getText('KDL044_13'),
+                                        "",
                                         "",
                                         "",
                                         ""
