@@ -25,11 +25,14 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 
 			+ "FROM JcmmtMenuApr ma JOIN CcgstStandardMenu sm "
 			+ "ON ma.pkJcmmtMenuApr.programId = sm.programId "
-			+ "AND ma.pkJcmmtMenuApr.screenId = sm.screenID " 
+			+ "AND ma.pkJcmmtMenuApr.screenId = sm.screenID "
+			+ "AND ma.pkJcmmtMenuApr.cId = sm.ccgmtStandardMenuPK.companyId " 
 			+ "LEFT OUTER JOIN JhnmtRptLayout l "
-			+ "ON ma.rptLayoutId = l.jhnmtRptLayoutPk.rptLayoutId  "
+			+ "ON ma.rptLayoutId = l.jhnmtRptLayoutPk.rptLayoutId "
+			+ "AND ma.pkJcmmtMenuApr.cId = l.jhnmtRptLayoutPk.cid "
 			+ "LEFT OUTER JOIN JcmctMenuOperation mo "
 			+ "ON ma.pkJcmmtMenuApr.programId = mo.jcmctMenuOperationPK.programId "
+			+ "AND ma.pkJcmmtMenuApr.cId = mo.jcmctMenuOperationPK.companyId "
 
 			+ "WHERE " + "ma.pkJcmmtMenuApr.cId = :cId ";
 	
