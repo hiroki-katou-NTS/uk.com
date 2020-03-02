@@ -70,8 +70,6 @@ module nts.uk.com.view.cmm022.a {
                         self.newMode(false);
                     }
 
-
-
                 });
 
                 self.commonMasters.subscribe((data) => {
@@ -93,11 +91,14 @@ module nts.uk.com.view.cmm022.a {
                 
                 
                 setTimeout(() => {
+                    
                     $(window).resize(function() {
+                        
                         $("#master-item-list").igGrid("option", "height", (window.innerHeight - 283) + "px");
                         $("#master-list").igGrid("option", "height", (window.innerHeight - 306) + "px");
                         $("#common-master_arena").height((window.innerHeight - 240) + "px");
                     });
+                    
                 }, 100); 
             }
 
@@ -119,7 +120,6 @@ module nts.uk.com.view.cmm022.a {
 
 
                 }).fail(function(res) {
-
 
                     if (res.messageId == "Msg_1589") {
 
@@ -248,9 +248,13 @@ module nts.uk.com.view.cmm022.a {
     }
 
     export interface ICommonMaster {
+        //共通マスタID
         commonMasterId: string;
+        // 共通マスタコード
         commonMasterCode: string;
+        // 共通マスタ名
         commonMasterName: string;
+        // 備考
         commonMasterMemo: string;
     }
 
@@ -271,17 +275,26 @@ module nts.uk.com.view.cmm022.a {
     }
 
     export interface IMasterItem {
+        // 共通項目ID
         commonMasterItemId: string;
+        // 共通項目コード
         commonMasterItemCode: string;
+        // 共通項目名
         commonMasterItemName: string;
+        // 表示順
         displayNumber: number;
+        // 使用開始日
         usageStartDate: string;
+        // 使用終了日
         usageEndDate: string;
     }
 
     export class MasterItem {
+       
         commonMasterItemId: KnockoutObservable<String> = ko.observable();
+       
         commonMasterItemCode: KnockoutObservable<String> = ko.observable();
+      
         commonMasterItemName: KnockoutObservable<String> = ko.observable();
         displayNumber: KnockoutObservable<number> = ko.observable();
         usageStartDate: KnockoutObservable<String> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
