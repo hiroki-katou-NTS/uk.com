@@ -26,7 +26,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
 			service.startPage().done((data) => {
-				self.shiftMasters(data.shiftMasters);
+				self.shiftMasters( _.sortBy(data.shiftMasters, 'shiftMasterCode'));
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(data.shiftMasters[0].shiftMasterCode);
 				} else {
