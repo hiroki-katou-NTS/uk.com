@@ -433,7 +433,7 @@ module nts.uk.com.view.cmm018.a {
                 self.ccgcomponent = {
                
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: 2, // システム区分
+                systemType: wkp ? 2 : 4, // システム区分
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: true, // 基準日利用

@@ -1675,9 +1675,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<ApprovalPhaseStateImport_New> lstPhase = app.getLstPhaseState();
 		ApproverStt check = new ApproverStt(false, null);
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
-			int frameCount = appPhase.getListApprovalFrame().size();
 			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
 				List<ApproverStateImport_New> listApprover = frame.getListApprover();
+				int approverCount = frame.getListApprover().size();
 				for(ApproverStateImport_New appr : listApprover) {
 					// 承認枠.承認区分!=未承認
 					if (!appr.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
@@ -1688,7 +1688,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					} else {// 承認枠.承認区分 = 未承認
 						ApproverStt checkNotAppv = this.checkNotAppv(appr, lstAgent, appPhase.getApprovalAtr(),
-								app.getApplication(), sID, frameCount);
+								app.getApplication(), sID, approverCount);
 						if (checkNotAppv.isCheck()) {
 							check = new ApproverStt(true, checkNotAppv.getApprId());
 							;
