@@ -18,6 +18,10 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,6 +40,12 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
@@ -48,7 +58,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			throw new BusinessException("Msg_1610");
 		}
 
-		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo);
+		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
 		ShiftMaster dom = cmd.toDomain();
 		dom.checkError(workRequired);
 
@@ -80,6 +90,12 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		
 		@Inject
 		private WorkTypeRepository workTypeRepo;
+		
+		@Inject
+		private WorkTimeSettingRepository workTimeSettingRepository;
+		
+		@Inject
+		private WorkTimeSettingService workTimeSettingService;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -89,6 +105,17 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+
+		@Override
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
+				String workTypeCd, Integer workNo) {
+			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
 		}
 	}
 

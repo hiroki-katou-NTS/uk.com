@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -97,23 +98,4 @@ public class ShiftMasterDefault {
 
 	}
 	
-	@AllArgsConstructor
-	private static class RequireImpl_3 implements WorkInformation.Require {
-		
-		private final String companyId = AppContexts.user().companyId();
-		
-		@Override
-		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-
-	}
 }

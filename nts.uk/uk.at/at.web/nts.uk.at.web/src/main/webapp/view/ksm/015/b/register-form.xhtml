@@ -8,7 +8,7 @@
 name: '#[KSM015_24]',
 constraint: 'ShiftMasterCode',
 value: registrationForm().selectedCode,
-option: { width: '50px', textalign: 'right' },
+option: { width: '50px', textalign: 'left' },
 enable: registrationForm().newMode(),
 required: true}" />
     </div>
@@ -20,7 +20,7 @@ required: true}" />
 name: '#[KSM015_25]',
 value: registrationForm().shiftMasterName,
 constraint: 'ShiftMasterName',
-option: { width: '50px', textalign: 'right' },
+option: { width: '50px', textalign: 'left' },
 required: true}" />
     </div>
     <!-- B7_3 -->
@@ -60,8 +60,9 @@ required: true}" />
             #{i18n.getText('KSM015_16')}</div>
             <input tabindex="10" data-bind="ntsTextEditor: {	
                 name: '#[KSM015_20]',
+                constraint: 'Remarks',
                 value: registrationForm().note,
-                option: { width: '300px', textalign: 'right' },
+                option: { width: '300px', textalign: 'left' },
                 required: false}" />
     </div>
 </div>

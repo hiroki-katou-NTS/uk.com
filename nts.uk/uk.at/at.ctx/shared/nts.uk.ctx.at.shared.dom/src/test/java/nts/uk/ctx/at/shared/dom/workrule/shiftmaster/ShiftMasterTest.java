@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,6 +14,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @RunWith(JMockit.class)
 public class ShiftMasterTest {
@@ -27,13 +30,29 @@ public class ShiftMasterTest {
 	@Test
 	public void checkError_1() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		shiftMater.setWorkTypeCode(null);
+		new Expectations() {
+			{
+				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.empty();
+			}
+		};
 		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(requireWorkInfo));
 	}
 	
 	@Test
 	public void checkError_2() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
+		new Expectations() {
+			{
+				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
+				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				result = SetupType.REQUIRED;
+				
+			}
+		};
+		
 		NtsAssert.businessException("Msg_1609", () -> shiftMater.checkError(requireWorkInfo));
 	}
 	
@@ -43,6 +62,9 @@ public class ShiftMasterTest {
 		shiftMater.setSiftCode(null);
 		new Expectations() {
 			{
+				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 			}
@@ -55,6 +77,9 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
 		new Expectations() {
 			{
+				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.NOT_REQUIRED;
 			}

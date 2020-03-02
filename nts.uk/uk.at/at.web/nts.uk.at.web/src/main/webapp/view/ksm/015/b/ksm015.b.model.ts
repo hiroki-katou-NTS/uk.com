@@ -1,8 +1,8 @@
 let gridColums = [
        { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 55 },
-       { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 125, formatter: _.escape },
-       { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 125, formatter: _.escape },
-       { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 125, formatter: _.escape }
+       { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 70, formatter: _.escape },
+       { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 100, formatter: _.escape },
+       { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 100, formatter: _.escape }
 ];
 
 let searchValueOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
