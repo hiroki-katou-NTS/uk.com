@@ -22,7 +22,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -181,10 +180,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				wpRoot.setLstEmployeeInfo(lstEmp);
 			}
 		} else {//TH chua ton tai wpk
-			WorkplaceImport wkInfor = wpAdapter.findBySid(empId, baseDate);
 			mapEmpRootInfo.put(empId, infor);
 			WpApproverAsAppOutput output = new WpApproverAsAppOutput(wkpDep, mapEmpRootInfo, Arrays.asList(empInfor));
-			appOutput.put(wkInfor.getWkpId(), output);
+			appOutput.put(wkpDep.getId(), output);
 		}
 	}
 	private List<EmpOrderApproverAsApp> convet(List<LevelApproverList> approverLst) {
