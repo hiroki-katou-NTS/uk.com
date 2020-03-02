@@ -61,7 +61,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 					dom.getDisplayInfor());
 		} else {
 			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
-					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
+					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTimeSetCd(), cmd.getWorkTypeCd()));
 		}
 		
 		transaction.execute(() -> {

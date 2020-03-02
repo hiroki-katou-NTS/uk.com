@@ -45,6 +45,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		public createNew() {
 			let self = this;
 			nts.uk.ui.errors.clearAll();
+			self.selectedShiftMaster("");
 			self.registrationForm().clearData();
 		}
 

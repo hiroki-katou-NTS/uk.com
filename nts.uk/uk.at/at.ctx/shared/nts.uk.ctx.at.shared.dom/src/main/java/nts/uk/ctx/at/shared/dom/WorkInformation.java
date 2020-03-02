@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
@@ -23,7 +25,7 @@ public class WorkInformation {
 	private WorkTimeCode siftCode;
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
-		this.siftCode = workTimeCode == null ? null : new WorkTimeCode(workTimeCode);
+		this.siftCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 

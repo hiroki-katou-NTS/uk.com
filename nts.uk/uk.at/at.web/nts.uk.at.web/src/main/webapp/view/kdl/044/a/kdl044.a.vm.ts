@@ -15,10 +15,9 @@ module nts.uk.at.view.kdl044.a {
             isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
             placeHolders: string = "";
             dataTransfer: KnockoutObservable<any> = ko.observable();
-            gridFields: KnockoutObservableArray<String>;
+            gridFields: Array<String>;
             constructor() {
                 let self = this;
-                self.gridFields = ko.observableArray([]);
                 let holders = getText('KDL044_2') + '・'
                     + getText('KDL044_3') + '・'
                     + getText('KDL044_4') + '・'
@@ -63,9 +62,9 @@ module nts.uk.at.view.kdl044.a {
                             if (data.permission) {
                                 if (isUseWorkMultiple) {
                                     result.push(new Shifuto(
-                                        "999",
                                         "",
                                         getText('KDL044_13'),
+                                        "",
                                         "",
                                         "",
                                         "",
@@ -73,15 +72,14 @@ module nts.uk.at.view.kdl044.a {
                                     ));
                                 } else {
                                     result.push(new Shifuto(
-                                        "999",
                                         "",
                                         getText('KDL044_13'),
                                         "",
                                         "",
+                                        "",
                                         ""
                                     ));
-                                }
-                                
+                                }   
                             }
                             self.listShifuto();
                             self.listShifuto(_.sortBy(result, 'shiftMasterCode'));
@@ -110,9 +108,8 @@ module nts.uk.at.view.kdl044.a {
                         { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
                     ]);
-                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"]);
-                }
-                else {
+                    self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"];
+                } else {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
                         { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
@@ -122,7 +119,7 @@ module nts.uk.at.view.kdl044.a {
                         { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 150 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
                     ]);
-                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"]);
+                    self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"];
                 }
             }
 
