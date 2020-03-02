@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmm022.a {
 
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import alert = nts.uk.ui.dialog.alert;
     import info = nts.uk.ui.dialog.info;
@@ -231,6 +232,8 @@ module nts.uk.com.view.cmm022.a {
                 let self = this;
                 setShared('listMasterToB', self.commonMasters());
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
+                    let data: IDialogToMaster = getShared('DialogBToMaster');
+                    self.commonMasterItems(data.itemList);
 
                 });
             }
@@ -239,12 +242,20 @@ module nts.uk.com.view.cmm022.a {
                 let self = this;
                 setShared('listMasterToC', self.commonMasters());
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
+                    let data: IDialogToMaster = getShared('DialogCToMaster');
+                    self.commonMasters(data.masterList);
                 });
             }
 
         }
 
 
+    }
+    
+    
+    export interface IDialogToMaster {
+        masterList: Array<ICommonMaster>;
+        itemList: Array<IMasterItem>;
     }
 
     export interface ICommonMaster {
