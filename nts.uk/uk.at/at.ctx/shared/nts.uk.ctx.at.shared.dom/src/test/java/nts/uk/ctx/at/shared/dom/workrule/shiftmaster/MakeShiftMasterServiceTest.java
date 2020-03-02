@@ -12,6 +12,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService.Require;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @RunWith(JMockit.class)
 public class MakeShiftMasterServiceTest {
@@ -28,6 +29,9 @@ public class MakeShiftMasterServiceTest {
 		shiftMater.setSiftCode(null);
 		new Expectations() {
 			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 				
@@ -51,14 +55,18 @@ public class MakeShiftMasterServiceTest {
 	@Test
 	public void testMakeShiftMater_throw_Msg_1608() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		shiftMater.setWorkTypeCode(null);
-
+		new Expectations() {
+			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.empty();
+			}
+		};
 		NtsAssert.businessException("Msg_1608", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
 					requireWorkinfo, require, 
 					shiftMater.getCompanyId(),//dummy
 					shiftMater.getShiftMasterCode().v(), //dummy
-					null, //workType = null
+					shiftMater.getWorkTypeCode().v(), //dummy
 					Optional.of(shiftMater.getWorkTimeCode().v()), shiftMater.getDisplayInfor());//dummy
 			persist.run();
 		});
@@ -67,6 +75,15 @@ public class MakeShiftMasterServiceTest {
 	@Test
 	public void testMakeShiftMater_throw_Msg_1609() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
+		new Expectations() {
+			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
+				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				result = SetupType.REQUIRED;
+			}
+		};
 		NtsAssert.businessException("Msg_1609", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(requireWorkinfo, require, shiftMater.getCompanyId(),
 					shiftMater.getShiftMasterCode().v(), shiftMater.getWorkTypeCode().v(),
@@ -82,6 +99,9 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 			}
@@ -101,6 +121,9 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.NOT_REQUIRED;
 			}
@@ -121,6 +144,9 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
+				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
