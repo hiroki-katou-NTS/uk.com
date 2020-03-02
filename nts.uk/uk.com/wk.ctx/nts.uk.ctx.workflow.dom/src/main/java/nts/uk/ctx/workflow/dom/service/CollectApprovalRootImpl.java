@@ -516,7 +516,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// Input．システム区分をチェック(Check Input. SystemType)
 		if(systemAtr==SystemAtr.HUMAN_RESOURCES) {
 			// Input．下位序列承認無をチェック(Check ''ko approve cấp bậc thấp hơn'')
-			if(!lowerApprove.get()) {
+			if(!(lowerApprove.isPresent() && lowerApprove.get())) {
 				return result;
 			}
 		}
