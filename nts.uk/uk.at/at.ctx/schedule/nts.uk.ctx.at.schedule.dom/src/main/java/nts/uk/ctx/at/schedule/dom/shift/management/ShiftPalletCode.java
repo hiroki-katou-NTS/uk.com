@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  */
 
 @StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(2)
+@StringMaxLength(7)
 @ZeroPaddedCode
 public class ShiftPalletCode  extends CodePrimitiveValue<ShiftPalletCode> {
 	/** serialVersionUID */

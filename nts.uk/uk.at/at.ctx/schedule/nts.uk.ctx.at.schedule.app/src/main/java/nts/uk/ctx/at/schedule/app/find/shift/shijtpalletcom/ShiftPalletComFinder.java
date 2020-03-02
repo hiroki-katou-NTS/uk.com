@@ -29,12 +29,12 @@ public class ShiftPalletComFinder {
 														.map(d -> new PatternItemScreenDto(d.getPositionNumber(),
 																						   d.getCombinationName().v(),
 																						   d.getCombinations().stream()
-																											  .map(e -> new WorkPairSetScreenDto(e.getOrder(),e.getShiftCode().v()))
-																										   	  .collect(Collectors.toList())
-																					   	  ))
-														.collect(Collectors.toList())
-					))
-			.collect(Collectors.toList());
-		return listShiftPalletsComDto;
+														.map(e -> new WorkPairSetScreenDto(e.getOrder(),
+																 						   e.getShiftCode().v()))
+																							.collect(Collectors.toList())))			   
+																							.collect(Collectors.toList())))
+																							.collect(Collectors.toList());
+		return listShiftPalletsComDto;									
+		
 	}
 }

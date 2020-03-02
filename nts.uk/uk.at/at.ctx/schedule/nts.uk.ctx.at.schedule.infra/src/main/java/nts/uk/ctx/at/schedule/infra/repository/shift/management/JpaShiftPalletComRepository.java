@@ -44,7 +44,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		builderString.append("b.POSITION, b.POSITION_NAME,");
 		builderString.append("c.POSITION_ORDER, c.SHIFT_MASTER_CD");
 		builderString.append(
-				"FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
+				" FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
 		builderString.append("LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
 		SELECT = builderString.toString();
 
@@ -59,7 +59,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 												+ " b.POSITION, b.POSITION_NAME,"
 												+ " c.POSITION_ORDER, c.SHIFT_MASTER_CD"
 												+ " FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
-												+ " LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE"
+												+ " LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 												+ " WHERE a.CID = 'companyId'";
 
 	@AllArgsConstructor
@@ -187,7 +187,17 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 @Override
 public void deleteByPage(String companyID,int page) {
-	// TODO Auto-generated method stub
+	String query = FIND_BY_PAGE;
+	query = query.replaceFirst("companyId", companyID);
+	query = query.replaceFirst("page", String.valueOf(page));
+	try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+		ResultSet rs = stmt.executeQuery();
+		KscmtPaletteCmp kscmtPaletteCmp = toEntity(createShiftPallets(rs)).get(0);
+		commandProxy().remove(KscmtPaletteCmp.class, kscmtPaletteCmp.pk);
+		this.getEntityManager().flush();
+	} catch (SQLException ex) {
+		throw new RuntimeException(ex);
+	}
 	
 }
 

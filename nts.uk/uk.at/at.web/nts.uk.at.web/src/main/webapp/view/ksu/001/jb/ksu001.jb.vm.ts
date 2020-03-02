@@ -213,6 +213,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 if (dataFromJB) {
                     self.textName(dataFromJB ? dataFromJB.text : self.textName());
                     self.tooltip(dataFromJB ? dataFromJB.tooltip : self.tooltip());
+                    
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromJB.data });
                 }
             });
@@ -426,10 +427,14 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         let workType = null, workTime = null, pairShortName = null;
-                        workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
-                      //  let workTypeShortName = workType.abbreviationName;
-                        let workTypeShortName = 'abc';
-                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
+                        
+                        // Cắt ShiftCode thành WorkTypeCode & WorkTimeCode
+                        let wpSetWorkTypeCode = wPSet.shiftCode.split("-")[0];
+                        let wpSetWorkTimeCode = wPSet.shiftCode.split("-")[1];
+                        workType = _.find(self.listWorkType, { 'workTypeCode': wpSetWorkTypeCode });
+                        
+                        let workTypeShortName = workType.abbreviationName;
+                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wpSetWorkTimeCode });
                         let workTimeShortName = workTime ? workTime.abName : null;
                         pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
                         arrPairShortName.push(pairShortName);
