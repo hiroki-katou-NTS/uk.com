@@ -34,13 +34,13 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isMultipleUse: false,
 				isMultiSelect: false,
 				treeType: 1,
-				selectedWorkplaceId: self.selectedWorkplaceId,
+				selectedId: self.selectedWorkplaceId,
 				baseDate: self.baseDate,
 				selectType: 3,
 				isShowSelectButton: true,
 				isDialog: false,
 				alreadySettingList: self.alreadySettingList,
-				maxRows: 15,
+				maxRows: 21,
 				tabindex: 1,
 				systemType: 2
 			};

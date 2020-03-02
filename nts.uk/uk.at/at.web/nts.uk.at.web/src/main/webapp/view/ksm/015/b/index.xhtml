@@ -31,7 +31,7 @@
 				<!-- B1 -->
 				<button class="proceed" tabindex="2" data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
 				<!-- B2 -->
-				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster">#{i18n.getText('KSM015_9')}</button>
+				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster, disable: registrationForm().newMode()">#{i18n.getText('KSM015_9')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
