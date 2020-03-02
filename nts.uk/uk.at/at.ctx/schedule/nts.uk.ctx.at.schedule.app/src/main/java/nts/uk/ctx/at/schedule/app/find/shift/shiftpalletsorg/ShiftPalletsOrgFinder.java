@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,8 +20,10 @@ public class ShiftPalletsOrgFinder {
 	@Inject
 	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
 	
-	public List <PageandName> getbyWorkPlaceId(String workplaceId){
-	//	ShiftPalletsOrg shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(workplaceId);
-		return null;
+	public List<ShiftPalletsOrgDto>   getbyWorkPlaceId(String workplaceId){
+		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(workplaceId);
+		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId) )
+				.collect(Collectors.toList());						
+		return result;
 	}
 }

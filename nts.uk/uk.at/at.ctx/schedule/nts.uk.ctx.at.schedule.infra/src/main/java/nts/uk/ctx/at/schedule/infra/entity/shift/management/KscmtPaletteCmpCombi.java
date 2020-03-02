@@ -42,7 +42,7 @@ public class KscmtPaletteCmpCombi extends UkJpaEntity{
 	/** シフトパレット組み合わせの名称 */
 	@Column(name = "POSITION_NAME")
 	public String positionName;
-	
+		
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
