@@ -65,6 +65,6 @@ public class KshmtShiftMater extends UkJpaEntity {
 				domain.getDisplayInfor().getName().v(), domain.getDisplayInfor().getColor().v(),
 				domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v()
 						: null,
-						domain.getWorkTypeCode().v(),domain.getWorkTimeCode()==null?null:domain.getWorkTimeCode().v());
+						domain.getWorkTypeCode().v(), domain.getWorkTimeCode()==null ? null:domain.getWorkTimeCode().v());
 	}
 }
