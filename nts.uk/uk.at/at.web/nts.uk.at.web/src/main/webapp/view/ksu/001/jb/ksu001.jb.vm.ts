@@ -253,8 +253,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.each(self.source()[i].data, (dt) => {
                         listInsertWorkPairSetCommand.push({
                             pairNo: dt.index,
-                            workTypeCode: dt.data.workTypeCode,
-                            workTimeCode: dt.data.workTimeCode
+                            //workTypeCode: dt.data.workTypeCode,
+                            //workTimeCode: dt.data.workTimeCode
                         });
                     });
 
@@ -428,22 +428,15 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         let workType = null, workTime = null, pairShortName = null;
                           workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
-                        let workTypeShortName = workType.abbreviationName;
-                        //let workTypeShortName = 'abc';
+                        //let workTypeShortName = workType.abbreviationName;
+                        let workTypeShortName = 'abc';
                         workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
                         let workTimeShortName = workTime ? workTime.abName : null;
                         pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
                         arrPairShortName.push(pairShortName);
                         arrPairObject.push({
-                            index: wPSet.pairNo,
-                            data: {
-                                workTypeCode: workType.workTypeCode,
-                                workTypeName: workType.name,
-                                workTimeCode: workTime ? workTime.workTimeCode : null,
-                                workTimeName: workTime ? workTime.name : null,
-                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.startTime : '',
-                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.endTime : '',
-                            }
+                            index: wPSet.pairNo
+                           
                         });
                     });
                     // screen JA must not set symbol for arrPairObject

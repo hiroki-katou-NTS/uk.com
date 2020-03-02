@@ -92,7 +92,7 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 treeType: 1, // workplace tree.
                 selectType: 3, // select first item.
                 maxRows: 12, // maximum rows can be displayed.
-                selectedWorkplaceId: self.selectedWorkplaceId,
+                selectedId: self.selectedWorkplaceId,
                 baseDate: self.baseDate,
                 isDialog: false,
                 systemType: 2
