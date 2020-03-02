@@ -123,7 +123,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
 			//2.承認ルートを整理する（二次開発）
 			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases,
-					EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove() == null ? Optional.empty() : apptype.getLowerApprove());
+					EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove() == null ? Optional.empty() : Optional.of(apptype.getLowerApprove()));
 			//7.承認ルートの異常チェック
 			err = collectApprSv.checkApprovalRoot(p);
 
@@ -145,7 +145,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getSID(), ps.getEmployeeCode(), ps.getEmployeeName());
 		List<AppTypes> lstAppTypes = new ArrayList<>();	
 		EmpApproverAsApp infor = new EmpApproverAsApp(empInfor, mapAppType, lstAppTypes);
-		AppTypes ap = new AppTypes(apptype.getCode(), apptype.getId(), apptype.getEmpRoot(), err, apptype.getName(), Optional.empty());
+		AppTypes ap = new AppTypes(apptype.getCode(), apptype.getId(), apptype.getEmpRoot(), err, apptype.getName(), null);
 		lstAppTypes.add(ap);
 		infor.setLstAppTypes(this.sortByAppTypeConfirm(lstAppTypes));
 		infor.getMapAppType().put(ap, phaseInfors);
