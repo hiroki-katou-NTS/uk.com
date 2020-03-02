@@ -22,3 +22,10 @@
 }
 #content-area{
 	width: 1260px;
+}
+#switch-language {
+	display: inline-block !important;
+}
+button.ntsSwitchLanguage {
+	height: 30px !important;
+}

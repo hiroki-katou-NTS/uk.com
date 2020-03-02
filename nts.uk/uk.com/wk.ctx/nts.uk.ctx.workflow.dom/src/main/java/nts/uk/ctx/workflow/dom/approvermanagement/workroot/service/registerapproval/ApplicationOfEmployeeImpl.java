@@ -2,36 +2,37 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappr
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
+import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 @Stateless
 public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
-	private EmployeeAdapter empAdapter;
-	@Inject
 	private ApprovalPhaseRepository phaseRespoitory;
+	@Inject
+	private CollectApprovalRootService collectApprSv;
 	/**
 	 * 02.社員の対象申請の承認ルートを取得する
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> appOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
-			String companyID, String sId, AppTypes appType, GeneralDate baseDate) {
+			String companyID, String sId, AppTypes appType, GeneralDate baseDate, int sysAtr) {
 		//Lay theo person
 		//ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」): 申請本人の社員ID, 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）(ngoai loai don ３６協定時間申請）
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
@@ -49,7 +50,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
 			List<ApprovalPhase> lstPhase = new ArrayList<>();
 			lstPsRoots.stream().forEach(y -> {
-				phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
+				phaseRespoitory.getAllIncludeApprovers(y.getApprovalId()).stream().forEach(z -> {
 					lstPhase.add(z);
 				});
 				
@@ -76,16 +77,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 				return rootOutputs;
 			}			
 		}
-		List<String> lstWkpId = new ArrayList<>();
-		//[No.650]社員が所属している職場を取得する
-		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
-		//[No.571]職場の上位職場を基準職場を含めて取得する
-		if(wkpid.isPresent()) {
-			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
-		}
+		//対象者の所属職場・部門を含める上位職場・部門を取得する
+		List<String> lstWpDepIds = collectApprSv.getUpperIDIncludeSelf(companyID, sId, baseDate,
+				EnumAdaptor.valueOf(sysAtr, SystemAtr.class));
 		
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: lstWkpId) {
+		for(String wpId: lstWpDepIds) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
@@ -103,7 +100,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstWpRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprovalId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -146,7 +143,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			if(!CollectionUtil.isEmpty(lstRoots)) {
 				List<ApprovalPhase> lstPhase = new ArrayList<>();
 				lstRoots.stream().forEach(y -> {
-					phaseRespoitory.getAllIncludeApprovers(y.getApprRoot().getBranchId()).stream().forEach(z -> {
+					phaseRespoitory.getAllIncludeApprovers(y.getApprovalId()).stream().forEach(z -> {
 						lstPhase.add(z);
 					});
 					
@@ -180,11 +177,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	 */
 	@Override
 	public List<ApprovalRootCommonOutput> commonOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
-			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
-			List<PersonApprovalRoot> lstPersonRootInfor,
-			String companyID, 
-			String sId, 
-			GeneralDate baseDate) {
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
+			String companyID, String sId, GeneralDate baseDate, int sysAtr) {
 		//ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ): 申請本人の社員ID, 就業ルート区分(共通)
 		List<PersonApprovalRoot> lstPsCommonRoots = lstPersonRootInfor
 				.stream()
@@ -211,15 +205,11 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
-		List<String> lstWkpId = new ArrayList<>();
-		//[No.650]社員が所属している職場を取得する
-		Optional<String> wkpid = empAdapter.getWkpBySidDate(sId, baseDate);
-		//[No.571]職場の上位職場を基準職場を含めて取得する
-		if(wkpid.isPresent()) {
-			lstWkpId = empAdapter.getWorkplaceIdAndUpper(companyID, baseDate, wkpid.get());
-		}
+		//対象者の所属職場・部門を含める上位職場・部門を取得する
+		List<String> lstWpDepIds = collectApprSv.getUpperIDIncludeSelf(companyID, sId, baseDate,
+				EnumAdaptor.valueOf(sysAtr, SystemAtr.class));
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		for(String wpId: lstWkpId) {
+		for(String wpId: lstWpDepIds) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」): 職場ID（ループ中の職場ID）, 就業ルート区分(共通)
 			List<WorkplaceApprovalRoot> lstWpCommonRoots = lstWorkpalceRootInfor
 					.stream()
@@ -274,8 +264,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 					.collect(Collectors.toList());
 			return rootOutputs;
 		}
-		
-		return null;
+		return new ArrayList<>();
 	}
 	/**
 	 * check co loai don xin (application or confirm)

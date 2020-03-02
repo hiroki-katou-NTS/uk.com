@@ -14,6 +14,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOtherRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUpdateDomainEvent;
@@ -21,7 +23,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.LanguageConsts;
 
 /**
  * The Class OptionalItemSaveCommandHandler.
@@ -43,6 +47,9 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 	/** The order repo. */
 	@Inject
 	private FormulaDispOrderRepository orderRepo;
+	
+	@Inject
+	private OptionalItemNameOtherRepository itemNameOtherRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -75,6 +82,19 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
+		//insert or update en,vi..
+		if(!command.getLangId().equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
+			if(itemNameOtherRepo.findByKey(companyId, optionalItemNo, command.getLangId()).isPresent()) {
+				itemNameOtherRepo.update(new OptionalItemNameOther(new CompanyId(companyId),
+						command.getOptionalItemNo(), command.getLangId(), command.getOptionalItemName()));
+			}else {
+				itemNameOtherRepo.add(new OptionalItemNameOther(new CompanyId(companyId),
+						command.getOptionalItemNo(), command.getLangId(), command.getOptionalItemName()));
+			}
+			return;
+		}
+		
+		// process data jp
 		if (this.optItemSv.canRegister(dom, formulas)) {
 
 			// update optional item.

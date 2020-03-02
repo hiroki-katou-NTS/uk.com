@@ -18,7 +18,9 @@ module nts.uk.at.view.kmk003.a {
             removeWorkTimeByCode: "at/shared/worktimesetting/remove",
             findSettingFlexWork: "shared/selection/func/settingflexwork/get",
             findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used",
-            saveAsExcel: "at/file/worktime/report/export"
+            saveAsExcel: "at/file/worktime/report/export",
+            insertWorkTimeLang: "at/share/worktime/language/insert",
+            findByLangId: "at/shared/worktimesetting/findWTLanguageByCidAndLangId"
         };
 
         /**
@@ -101,8 +103,12 @@ module nts.uk.at.view.kmk003.a {
         /**
          * function remove work time by work time code
          */
-        export function removeWorkTime(workTimeCode: string): JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.removeWorkTimeByCode, { workTimeCode: workTimeCode });
+        export function removeWorkTime(workTimeCode: string, langId: string): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWorkTimeByCode, { workTimeCode: workTimeCode, langId: langId });
+        }
+        
+        export function insertWorkTimeLang(workTimeLanguage: any): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", servicePath.insertWorkTimeLang, workTimeLanguage);
         }
         
         /**
@@ -112,14 +118,18 @@ module nts.uk.at.view.kmk003.a {
             return nts.uk.request.ajax(servicePath.findAllUsedOvertimeWorkFrame);
         }
         
-        export function saveAsExcel(): JQueryPromise<any> {
+        export function findByLangId(langId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", servicePath.findByLangId + '/' + langId);
+        }
+        
+        export function saveAsExcel(langId: string): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             let domainType = "KMK003";
             if (program.length > 1){
                 program.shift();
                 domainType = domainType + program.join(" ");
             }
-            return nts.uk.request.exportFile( servicePath.saveAsExcel + "/" + domainType);
+            return nts.uk.request.exportFile(servicePath.saveAsExcel, {programName: domainType, langId: langId });
         }
         
         export module model {

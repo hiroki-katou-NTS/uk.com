@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 950, height: 520 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl044.a.main.css" />
+			<com:scriptfile path="kdl044.a.service.js" />
+			<com:scriptfile path="kdl044.a.vm.js" />
+			<com:scriptfile path="kdl044.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="label">#{i18n.getText('KDL044_1')}</div>
+				<div id="content">
+					<div
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
+	                              items: listShifuto, selectedKey: 'shiftMasterCode', 
+								  fields: gridFields(), 
+								  selected: selectedCodes,
+	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
+					<table id="multi-list" tabindex="0"
+						data-bind="ntsGridList: {	
+								name: '#[KDL044_11]',  
+								height: 450,
+								options: listShifuto,
+								optionsValue: 'shiftMasterCode',
+								columns: columns,
+								multiple: isMultiSelect(),								
+								value: selectedCodes,
+								rows: 10
+						}">  
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="0" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL044_9')}</button>
+				<button tabindex="0" data-bind="click: closeDialog">#{i18n.getText('KDL044_10')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

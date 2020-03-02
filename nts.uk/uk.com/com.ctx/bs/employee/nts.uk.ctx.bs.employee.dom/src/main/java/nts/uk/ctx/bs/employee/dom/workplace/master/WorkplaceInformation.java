@@ -1,20 +1,12 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
@@ -126,7 +118,7 @@ public class WorkplaceInformation extends AggregateRoot {
 		memento.setWorkplaceName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName(this.workplaceName.v()));
 		memento.setWkpGenericName(new WorkplaceGenericName(this.workplaceGeneric.v()));
 		memento.setWkpDisplayName(new nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName(this.workplaceDisplayName.v()));
-		memento.setOutsideWkpCode(new OutsideWorkplaceCode(this.workplaceExternalCode.get().v()));
+		memento.setOutsideWkpCode(new OutsideWorkplaceCode(this.workplaceExternalCode.map(x -> x.v()).orElse("")));
 	}
 	
 }

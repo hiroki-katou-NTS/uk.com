@@ -4,26 +4,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.reservation.Helper;
 
 public class ReservationDateTest {
 	
 	@Test
 	public void isPastDay() {
-		ReservationDate reservationDate1 = BentoInstanceHelper.getYesterday();
-		ReservationDate reservationDate2 = BentoInstanceHelper.getToday();
-		assertThat(reservationDate1.isPastDay()).isTrue();
-		assertThat(reservationDate2.isPastDay()).isFalse();
+		
+		ReservationDate yesterday = date(GeneralDate.today().addDays(-1));
+		assertThat(yesterday.isPastDay()).isTrue();
+		
+		ReservationDate today = date(GeneralDate.today());
+		assertThat(today.isPastDay()).isFalse();
 	}
 	
 	@Test
 	public void isToday() {
-		ReservationDate reservationDate1 = BentoInstanceHelper.getYesterday();
-		ReservationDate reservationDate2 = BentoInstanceHelper.getToday();
-		ReservationDate reservationDate3 = BentoInstanceHelper.getTomorrow();
-		assertThat(reservationDate1.isToday()).isFalse();
-		assertThat(reservationDate2.isToday()).isTrue();
-		assertThat(reservationDate3.isToday()).isFalse();
+		
+		ReservationDate yesterday = date(GeneralDate.today().addDays(-1));
+		assertThat(yesterday.isToday()).isFalse();
+		
+		ReservationDate today = date(GeneralDate.today());
+		assertThat(today.isToday()).isTrue();
+		
+		ReservationDate tomorrow = date(GeneralDate.today().addDays(1));
+		assertThat(tomorrow.isToday()).isFalse();
+	}
+	
+	@Test
+	public void getters() {
+		
+		ReservationDate target = date(GeneralDate.today());
+		NtsAssert.invokeGetters(target);
+		
 	}
 
+	private static ReservationDate date(GeneralDate date) {
+		return Helper.Reservation.Date.of(date);
+	}
 }

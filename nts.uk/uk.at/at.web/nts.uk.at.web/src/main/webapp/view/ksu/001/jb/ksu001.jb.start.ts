@@ -5,6 +5,7 @@ module nts.uk.at.view.ksu001.jb {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
+        screenModel.init();
         $('input#textName').focus();
     });
 }

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.info;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,13 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.Kcp010WorkplaceSearchData;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -65,6 +62,7 @@ public class Kcp010Finder {
 	}
 	
 	public Optional<Kcp010WorkplaceSearchData> findBySid(String employeeId, GeneralDate baseDate) {
+		String companyID = AppContexts.user().companyId();
 		//get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = workplaceHistoryRepo.getByEmpIdAndStandDate(employeeId, baseDate);
 		if(!affWrkPlc.isPresent()) 
@@ -77,16 +75,18 @@ public class Kcp010Finder {
 			return Optional.empty();
 		
 		// Get workplace info.
-		List<WorkplaceInfo> optWorkplaceInfo = wkpInfoRepo.findByWkpId(affWrkPlcItem.get().getWorkplaceId());
-		if (CollectionUtil.isEmpty(optWorkplaceInfo)) {
+		Optional<WorkplaceInformation> optWorkplaceInfo = wkpInfoRepo.getWkpNewByIdDate(companyID, affWrkPlcItem.get().getWorkplaceId(), baseDate);
+
+		// Check exist
+		if (!optWorkplaceInfo.isPresent()) {
 			return Optional.empty();
 		}
 
 		// Return workplace id
-		WorkplaceInfo wkpInfo = optWorkplaceInfo.get(0);
+		WorkplaceInformation wkpInfo = optWorkplaceInfo.get();
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
 				.workplaceId(wkpInfo.getWorkplaceId())
 				.code(wkpInfo.getWorkplaceCode().v())
-				.name(wkpInfo.getWkpDisplayName().v()).build());
+				.name(wkpInfo.getWorkplaceDisplayName().v()).build());
 	}
 }

@@ -33,6 +33,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -53,6 +54,13 @@ import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthly
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstFlexShortageLimit;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpDivErAl;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpErAlCommon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItem;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErDivAtd;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErOtkAtd;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
@@ -177,10 +185,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_ATTENDANCE_ITEM;
 
 	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.companyID = :companyId AND c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
-
-//	private final static String SEL_DP_ERROR_EMPLOYEE;
-
-	private final static String SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS;
 
 	
 //	private final static String SEL_ERROR_SETTING;
@@ -409,19 +413,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE t.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("AND t.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
 		SEL_ATTENDANCE_ITEM = builderString.toString();
-
-//		builderString = new StringBuilder();
-//		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-//		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
-//		builderString.append("AND e.employeeId IN :lstEmployee");
-//		SEL_DP_ERROR_EMPLOYEE = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
-		builderString.append("AND e.employeeId IN :lstEmployee ");
-		builderString.append("AND e.errorCode IN :errorCodes");
-		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
 
 		// builderString = new StringBuilder();
 		// builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
@@ -965,80 +956,94 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee) {
-		String GET_BY_LIST_EMP_AND_PERIOD = "SELECT a.*, b.* FROM KRCDT_SYAIN_DP_ER_LIST a"
-				+ " LEFT JOIN KRCDT_ER_ATTENDANCE_ITEM b"
-				+ " ON b.ID = a.ID "
-				+ " WHERE a.PROCESSING_DATE <= ?"
-				+ " AND a.PROCESSING_DATE >= ?"
-				+ " AND  a.SID IN (";
+		List<DPErrorDto> listDPError = new ArrayList<>();
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e FROM [table] e ");
+		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
+		builderString.append("AND e.employeeId IN :lstEmployee");
 
-		//fix exceeding max condition of IN statement
-		List<DPErrorDto> resultReturn = new ArrayList<>();
+		
 		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-            StringBuilder stringBuilder = new StringBuilder();
-			int size = subList.size();
-			for (int i = 0; i < size; i++) {
-				stringBuilder.append("?");
-				if (i < subList.size() - 1) {
-					stringBuilder.append(",");
-				}
-			}
-			stringBuilder.append(")");
-			String QUERY = GET_BY_LIST_EMP_AND_PERIOD + stringBuilder.toString();
-			try (PreparedStatement statement = this.connection().prepareStatement(QUERY)) {
-				statement.setDate(1, Date.valueOf(dateRange.getEndDate().localDate()));
-				statement.setDate(2, Date.valueOf(dateRange.getStartDate().localDate()));
-				for (int i = 0; i < size; i++) {
-					statement.setString(i + 3, subList.get(i));
-				}
-				List<DPErrorDto> results = new NtsResultSet(statement.executeQuery()).getList(rs ->
-						new DPErrorDto(
-								rs.getString("ERROR_CODE"),
-								"",
-								rs.getString("SID"),
-								rs.getGeneralDate("PROCESSING_DATE"),
-								rs.getInt("ATTENDANCE_ITEM_ID") == null ? new ArrayList<>() : Arrays.asList(rs.getInt("ATTENDANCE_ITEM_ID")),
-								(rs.getInt("ERROR_CANCELABLE") != null && rs.getInt("ERROR_CANCELABLE") == 1) ? true : false,
-								rs.getString("ERROR_MESSAGE") == null ? "" : rs.getString("ERROR_MESSAGE").trim(),
-								rs.getString("ID")));
 
-				Map<String, List<DPErrorDto>> groupResult = results.stream().collect(Collectors.groupingBy(DPErrorDto::getId));
-				groupResult.forEach((key, value) -> {
-					List<Integer> id = value.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toList());
-					value.get(0).setAttendanceItemId(id);
-					resultReturn.add(value.get(0));
-				});
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
+			listDPError.addAll(findErAl(KrcdtSyainDpErList.class, KrcdtErSuAtd.class, dateRange, subList, null, builderString));
+			listDPError.addAll(findErAl(KrcdtOtkErAl.class, KrcdtErOtkAtd.class, dateRange, subList, null, builderString));
+			listDPError.addAll(findErAl(KrcdtEmpDivErAl.class, KrcdtErDivAtd.class, dateRange, subList, null, builderString));
 		});
-		return resultReturn;
+		return listDPError;
 	}
 
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String> errorCodes) {
+		List<String> ec = errorCodes.stream().distinct().collect(Collectors.toList());
+
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e FROM [table] e ");
+		builderString.append("WHERE ( e.processingDate BETWEEN :startDate AND :endDate ) ");
+		builderString.append("AND e.employeeId IN :lstEmployee ");
+		builderString.append("AND e.errorCode IN :errorCodes");
+
 		List<DPErrorDto> dpErrors = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
-					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
-					.setParameter("lstEmployee", subList).setParameter("errorCodes", errorCodes).getList().stream()
-					.map(e -> {
-						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
-								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
-										.map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
-										.collect(Collectors.toList()) : Collections.emptyList(),
-								e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
-					}).collect(Collectors.toList()));
+			dpErrors.addAll(findErAl(KrcdtSyainDpErList.class, KrcdtErSuAtd.class, dateRange, subList, ec, builderString));
+			dpErrors.addAll(findErAl(KrcdtOtkErAl.class, KrcdtErOtkAtd.class, dateRange, subList, ec, builderString));
+			dpErrors.addAll(findErAl(KrcdtEmpDivErAl.class, KrcdtErDivAtd.class, dateRange, subList, ec, builderString));
 		});
 		return dpErrors;
+	}
+	
+	private <T extends KrcdtEmpErAlCommon, U extends KrcdtErAttendanceItem> List<DPErrorDto>  findErAl(Class<T> className, 
+			Class<U> cClassName, DateRange dateRange, List<String> subList, List<String> errorCodes, StringBuilder builderString) {
+
+		String sql = builderString.toString().replace("[table]", className.getSimpleName());
+		
+		TypedQueryWrapper<T> query = this.queryProxy().query(sql, className)
+				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
+				.setParameter("lstEmployee", subList);
+				
+		if (!CollectionUtil.isEmpty(errorCodes)) {
+			query.setParameter("errorCodes", errorCodes);
+		}
+		
+		List<T> r = query.getList();
+		
+		List<String> id = r.stream().map(c -> c.id).collect(Collectors.toList());
+		List<U> eai = new ArrayList<>();
+		
+		CollectionUtil.split(id, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sbId -> {
+			eai.addAll(this.queryProxy()
+					.query("SELECT e FROM " + cClassName.getSimpleName() + " e WHERE e.krcdtErAttendanceItemPK.iD in :er", cClassName)
+					.setParameter("er", sbId)
+					.getList());
+		});
+		
+		return query.getList().stream().map(e -> {
+			List<U> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(e.id)).collect(Collectors.toList());
+			
+			return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
+					ceai.isEmpty() ? Collections.emptyList() :
+									ceai.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
+										.collect(Collectors.toList()),
+					false, e.errorAlarmMessage);
+		}).collect(Collectors.toList());
 	}
 	
 	@Override
 	public List<EmpErrorCode> getListErAlItem28(String companyId, int errorType, DateRange range, String empId) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		List<EmpErrorCode> result = new ArrayList<>();
+		
+		result.addAll(internalGet(companyId, errorType, range, empId, con, "KRCDT_DAY_ERAL", "KRCDT_DAY_ERAL_SU_ATD"));
+		result.addAll(internalGet(companyId, errorType, range, empId, con, "KRCDT_DAY_OTK_ERAL", "KRCDT_DAY_ERAL_OTK_ATD"));
+		result.addAll(internalGet(companyId, errorType, range, empId, con, "KRCDT_DAY_DG_ERAL", "KRCDT_DAY_ERAL_DG_ATD"));
+		
+		return result;
+	}
+
+	private List<EmpErrorCode> internalGet(String companyId, int errorType, DateRange range, String empId,
+			Connection con, String className, String cClassName) {
 		List<EmpErrorCode> lstResult = new ArrayList<>();
-		String query = "select e.SID, e.PROCESSING_DATE, e.ERROR_CODE, i.ATTENDANCE_ITEM_ID from KRCDT_SYAIN_DP_ER_LIST e "
-				+ "join KRCDT_ER_ATTENDANCE_ITEM i on e.ID = i.ID "
+		String query = "select e.SID, e.PROCESSING_DATE, e.ERROR_CODE, i.ATTENDANCE_ITEM_ID from " + className + " e "
+				+ "join " + cClassName + " i on e.ID = i.ID "
 				+ "left join KRCMT_ERAL_SET s on e.ERROR_CODE = s.ERROR_ALARM_CD and s.CID = e.CID "
 				+ "where s.ERAL_ATR = ? " + " and e.CID =  ? "
 				+ "and e.PROCESSING_DATE BETWEEN ? AND ? " + " and e.SID = ? ";

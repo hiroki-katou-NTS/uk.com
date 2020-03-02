@@ -68,7 +68,7 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Override
 	public List<WkpHistImport> findWkpBySidAndBaseDate(List<String> sID, GeneralDate date) {
-		return wkpPubNew.findBySId(sID).stream().map(this::toImport).collect(Collectors.toList());
+		return wkpPubNew.findBySId(sID, date).stream().map(this::toImport).collect(Collectors.toList());
 	}
 
 	private WkpHistImport toImport(SWkpHistExport export) {

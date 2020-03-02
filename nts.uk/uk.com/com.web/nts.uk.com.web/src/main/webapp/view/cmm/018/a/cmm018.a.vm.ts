@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm018.a {
             selectTypeSet : KnockoutObservable<number> = ko.observable(0);
             //___________KCP009______________
             employeeInputList: KnockoutObservableArray<vmbase.EmployeeKcp009> = ko.observableArray([]);
-            systemReference: KnockoutObservable<number> = ko.observable(vmbase.SystemType.EMPLOYMENT);
+            systemReference: KnockoutObservable<number>;
             isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
             targetBtnText: string = getText("KCP009_3");
             listComponentOption: vmbase.ComponentOption;
@@ -108,6 +108,8 @@ module nts.uk.com.view.cmm018.a {
                 let url = $(location).attr('search');
                 let urlParam: number = url.split("=")[1];
                 self.systemAtr(urlParam || 0);
+                self.systemReference = self.systemAtr() == 1 ? ko.observable(vmbase.SystemType.PERSONNEL)
+                            : ko.observable(vmbase.SystemType.EMPLOYMENT);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
                     
@@ -433,7 +435,7 @@ module nts.uk.com.view.cmm018.a {
                 self.ccgcomponent = {
                
                 showEmployeeSelection: false, // 検索タイプ
-                systemType: 2, // システム区分
+                systemType: wkp ? 2 : 4, // システム区分
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: true, // 基準日利用
@@ -540,7 +542,7 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;    
                 self.employeeInputList([]);
                 _.each(dataList, function(item){
-                        self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.affiliationName,""));
+                        self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.affiliationName,item.affiliationName));
                 });
                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                 if(dataList.length == 0){
@@ -659,11 +661,12 @@ module nts.uk.com.view.cmm018.a {
                            _.each(lstUse, function(item){
                                if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
-                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(lstName, item.appType).localizedName,1));
+                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, 
+                                                self.findName(lstName, item.appType).localizedName,1, null));
                                }
                             });
-                            self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
-                            self.lstNameAppType.push(new vmbase.ApplicationType(1, getText('CMM018_108'),2));
+                            self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2, null));
+                            self.lstNameAppType.push(new vmbase.ApplicationType(1, getText('CMM018_108'),2, null));
                             if(self.systemAtr() == 0){
                                 __viewContext.viewModel.viewmodelSubB.lstNameAppType(self.lstNameAppType());
                             }
@@ -679,11 +682,13 @@ module nts.uk.com.view.cmm018.a {
 //                                BUS_EVENT(5);
                            _.each(lstNotice, function(notice){
                                self.lstNoticeDis.push(notice.reportClsId.toString());
-                               self.lstNameAppType.push(new vmbase.ApplicationType(notice.reportClsId.toString(), notice.reportName, 4));
+                               self.lstNameAppType.push(new vmbase.ApplicationType(notice.reportClsId.toString(),
+                                         notice.reportName, 4, notice.noRankOrder));
                             });
                             _.each(lstEvent, function(event){
                                 self.lstEventDis.push(event.programId);
-                               self.lstNameAppType.push(new vmbase.ApplicationType(event.programId, event.programName, 5));
+                               self.lstNameAppType.push(new vmbase.ApplicationType(event.programId,
+                                        event.programName, 5, event.noRankOrder == 1 ? true : false));
                             });
                             dfd.resolve(); 
                         });

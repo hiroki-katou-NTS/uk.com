@@ -16,10 +16,12 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
-import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
+import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguageRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,6 +44,9 @@ public class PersonCostCalculationFinder {
 	private AttendanceTypePrimiumAdapter atType;
 	@Inject
 	private AttendanceNamePriniumAdapter atName;
+	
+	@Inject
+	private PremiumItemLanguageRepository premiumItemLanguageRepository;
 	
 	/**
 	 * get all Person Cost Calculation by company ID
@@ -69,6 +74,15 @@ public class PersonCostCalculationFinder {
 						x.getName().v(), 
 						x.getUseAtr().value))
 				.collect(Collectors.toList());
+	}
+	
+	public List<PremiumItemDto> findWorkTypeLanguage(String langId) {
+		// company id
+		String companyId = AppContexts.user().companyId();
+		List<PremiumItemLanguage> listPremiumItem = premiumItemLanguageRepository.findByCIdAndLangId(companyId, langId);
+		return listPremiumItem.stream().map(x -> {
+			return PremiumItemDto.fromDomainPremiumItemLanguage(x);
+		}).collect(Collectors.toList());
 	}
 	
 	public PersonCostCalculationSettingDto findByHistoryID(String historyID){

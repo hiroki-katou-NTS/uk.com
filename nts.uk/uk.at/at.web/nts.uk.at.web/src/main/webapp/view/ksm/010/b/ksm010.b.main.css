@@ -1,0 +1,9 @@
+#multi-list_container {
+	float: left;
+	padding: 15px;
+}
+
+.swap-contents {
+	float: left;
+	padding-left: 20px;
+}

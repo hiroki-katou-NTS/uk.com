@@ -1,0 +1,43 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	margin-left: 20px;
+	/* margin-top: 20px; */
+	float: left;
+	max-height: 300px;
+}
+
+#right-content {
+	min-width: 900px;
+	margin-top: 20px;
+}
+
+#code_name {
+	margin-left: 30px;
+	display: inline-block;
+	vertical-align: bottom;
+	width: 280px;
+	position: absolute;
+}
+
+#license {
+	margin-left: 30px;
+	display: inline-block;
+	vertical-align: bottom;
+	width: 234px;
+	position: absolute;
+}
+
+#officeWorker{
+	margin-left: 25px;
+	display: inline-block;
+	vertical-align: bottom;
+	width: 220px;
+	position: absolute;
+	margin-top: 5px;
+}
+
+.label_left {
+	min-width: 200px;
+	position: relative;
+}
