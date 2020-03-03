@@ -32,10 +32,27 @@ public class GetUsableShiftMasterService {
 
 	public static interface Require {
 
+		/**
+		 * 	[R-1] 組織別シフトマスタを取得する	
+		 * @param companyId
+		 * @param targetOrg
+		 * @return
+		 */
 		Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
 
+		/**
+		 * [R-2] シフトマスタをすべて取得する
+		 * @param companyId
+		 * @return
+		 */
 		List<ShiftMasterDto> getAllByCid(String companyId);
 
+		/**
+		 * [R-3] シフトマスタを取得する	
+		 * @param companyId
+		 * @param listShiftMaterCode
+		 * @return
+		 */
 		List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
 	}
 }

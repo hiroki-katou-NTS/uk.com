@@ -28,7 +28,7 @@ public class ShiftMasterTest {
 	}
 
 	@Test
-	public void checkError_1() {
+	public void testCheckError_throw_Msg_1608() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
 		new Expectations() {
 			{
@@ -40,7 +40,7 @@ public class ShiftMasterTest {
 	}
 	
 	@Test
-	public void checkError_2() {
+	public void testCheckError_throw_Msg_1609() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
 		new Expectations() {
 			{
@@ -57,9 +57,9 @@ public class ShiftMasterTest {
 	}
 	
 	@Test
-	public void checkError_3() {
+	public void testCheckError_throw_Msg_435() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		shiftMater.setSiftCode(null);
+		shiftMater.setWorkTimeCode(null);
 		new Expectations() {
 			{
 				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
@@ -73,7 +73,7 @@ public class ShiftMasterTest {
 	}
 	
 	@Test
-	public void checkError_4() {
+	public void testCheckError_throw_Msg_434() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
 		new Expectations() {
 			{
@@ -89,9 +89,9 @@ public class ShiftMasterTest {
 	}
 
 	@Test
-	public void change() {
+	public void testChange() {
 		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		WorkInformation workInfor = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInfor =ShiftMasterInstanceHelper.getWorkInformationWorkTimeIsNull();
 		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(
 				new ShiftMasterName("name1"),//dummy
 				new ColorCodeChar6("color1"),//dummy 

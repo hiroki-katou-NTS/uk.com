@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -9,7 +14,9 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetUsableShiftMasterService.Require;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
 @RunWith(JMockit.class)
 public class GetUsableShiftMasterServiceTest {
@@ -41,8 +48,8 @@ public class GetUsableShiftMasterServiceTest {
 			}
 		};
 
-		GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty());
+		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
+				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty()).isEmpty()).isTrue();
 	}
 	
 	/*
@@ -52,14 +59,26 @@ public class GetUsableShiftMasterServiceTest {
 	@Test
 	public void testGetUsableShiftMaster_3() {
 		String companyId = "0001";
+		TargetOrgIdenInfor targetOrgIdenInfor =  new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+				"workplaceId",
+				"workplaceGroupId");
+		ShiftMasterOrganization shiftMasterOrg =  new ShiftMasterOrganization(
+				"companyId",
+				targetOrgIdenInfor,
+				Arrays.asList("123"));
+		List<ShiftMasterDto> results = new ArrayList<>();
+		results.add(new ShiftMasterDto());
 		new Expectations() {
 			{
 				require.getByTargetOrg(companyId, (TargetOrgIdenInfor) any);
-				result = Optional.of(ShiftMasterOrgHelper.getShiftMasterOrgEmpty());
+				result = Optional.of(shiftMasterOrg);
+				
+				require.getByListShiftMaterCd(companyId,shiftMasterOrg.getListShiftMaterCode());
+				result = results;
 			}
 		};
 
-		GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty());
+		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
+				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty())).isEqualTo(results);
 	}
 }

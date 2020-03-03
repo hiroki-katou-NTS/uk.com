@@ -72,7 +72,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 */
 	public void change(ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
 		this.displayInfor = displayInfor;
-		super.setSiftCode(workInformation.getWorkTimeCode());
+		super.setWorkTimeCode(workInformation.getWorkTimeCode());
 		super.setWorkTypeCode(workInformation.getWorkTypeCode());
 	}
 
