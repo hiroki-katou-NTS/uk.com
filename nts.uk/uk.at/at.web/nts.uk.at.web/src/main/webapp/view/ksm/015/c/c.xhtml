@@ -4,7 +4,7 @@
         <!-- Go back Style -->
         <!-- B5 -->
         <a class="goback"
-            data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
+            data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }, if: forAttendent">#{i18n.getText('KSM015_11')}</a>
         <!-- C1 -->
         <button tabindex="1" class="proceed" data-bind="click: registerOrd">#{i18n.getText('KSM015_8')}</button>
         <!-- C2 -->

@@ -1,4 +1,6 @@
 module nts.uk.at.view.ksm015.c.viewmodel {
+    import flat = nts.uk.util.flatArray;
+    
 	export class ScreenModel {
 		baseDate: KnockoutObservable<Date>;
 		selectedWorkplaceId: KnockoutObservable<string>;
@@ -122,6 +124,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 						self.selectedWorkplaceId.valueHasMutated();
 						nts.uk.ui.block.clear();
+						self.reloadComponent();
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
 					});
@@ -169,8 +172,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			*/
 		public openDialogCopy(): void {
 			let self = this,
-                lwps = $('#wkp-list').getDataList(),
-                rstd = $('#wkp-list').getRowSelected(),
+                lwps = $('#tree-grid').getDataList(),
+                rstd = $('#tree-grid').getRowSelected(),
                 flwps = flat(_.cloneDeep(lwps), "children"),
                 wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id),
                 param = {
@@ -199,6 +202,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let self = this;
 			service.getAlreadyConfigOrg()
 				.done((data) => {
+					self.alreadySettingList(data.workplaceIds);
 					self.treeGrid = {
 						isShowAlreadySet: true,
 						isMultipleUse: false,
@@ -209,14 +213,14 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						selectType: 3,
 						isShowSelectButton: true,
 						isDialog: false,
-						alreadySettingList: data.workplaceIds,
+						alreadySettingList: self.alreadySettingList,
 						maxRows: 15,
 						tabindex: 1,
 						systemType: 2
 					};
 					$('#tree-grid').ntsTreeComponent(self.treeGrid)
 					.done(() => {
-						$('#tree-grid').focusComponent();
+						// $('#tree-grid').focusComponent();
 					});
 				});
 		}
