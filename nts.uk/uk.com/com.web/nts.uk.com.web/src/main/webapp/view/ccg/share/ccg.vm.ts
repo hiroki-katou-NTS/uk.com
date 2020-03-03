@@ -1505,7 +1505,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 nts.uk.ui.block.grayout(); // block ui
                 let param = {
-                    baseDate: moment.utc("2018-06-30 00:00:00").toDate(),
+                    baseDate: moment.utc().toDate(),
                     systemType: self.systemType
                 };
                 service.searchEmployeeByLogin(param)

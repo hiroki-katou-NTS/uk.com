@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+			nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode
+			nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankSymbol
+			</com:ValidatorScript>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksm010.a.main.css" />
+			<com:scriptfile path="ksm010.a.start.js" />
+			<com:scriptfile path="ksm010.a.vm.js" />
+			<com:scriptfile path="ksm010.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div tabindex="-1" id="functions-area">
+				<button tabindex="1" data-bind="click: create">#{i18n.getText('KSM010_2')}</button>
+				<button tabindex="2" class="proceed"
+					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KSM010_3')}</button>
+				<button tabindex="3" class="danger"
+					data-bind="enable: !isCreate(), click: remove">#{i18n.getText('KSM010_4')}</button>
+				<button tabindex="4" data-bind="enable: !isCreate(), click: openB">#{i18n.getText('KSM010_8')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div id="list-data">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+							name: '#[KSM010_5]',
+							width: 220,							
+							height: 255,											
+							dataSource: rankItems,
+							primaryKey: 'rankCd',
+							columns: rankItemColumns,
+							multiple: false,								
+							value: currentCode
+						}"></table>
+					</div>
+				</div>
+				<div id="right-content">
+					<table class="table_content">
+						<colgroup>
+							<col width="150px" />
+							<col width="*" />
+						</colgroup>
+						<tr>
+							<td>
+								<div
+									data-bind="ntsFormLabel: { 
+									constraint: 'RankCode', 
+									required: true 
+								}">#{i18n.getText('KSM010_6')}</div>
+							</td>
+							<td><input id="rankCode" tabindex="5"
+								data-bind="ntsTextEditor: {
+									value: rankCd,
+									name: '#[KSM010_6]',
+									constraint: 'RankCode',
+									option: {
+										width: '25px',
+									},
+									required: true,
+									enable: isCreate()
+								}" />
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div
+									data-bind="ntsFormLabel: { 
+									constraint: 'RankSymbol', 
+									required: true 
+								}">#{i18n.getText('KSM010_7')}</div>
+							</td>
+							<td><input id="rankSymbol" tabindex="6"
+								data-bind="ntsTextEditor: {
+									value: rankSymbol,
+									name: '#[KSM010_7]',
+									constraint: 'RankSymbol',
+									option: {
+										width: '65px',
+									},
+									required: true
+								}" />
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

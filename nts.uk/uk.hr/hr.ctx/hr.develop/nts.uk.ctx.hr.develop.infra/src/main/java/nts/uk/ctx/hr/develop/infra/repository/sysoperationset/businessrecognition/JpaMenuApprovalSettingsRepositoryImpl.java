@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettings;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettingsRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.dto.BusinessApprovalSettingsDto;
 import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition.JcmmtMenuApr;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository implements MenuApprovalSettingsRepository {
@@ -25,11 +25,14 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 
 			+ "FROM JcmmtMenuApr ma JOIN CcgstStandardMenu sm "
 			+ "ON ma.pkJcmmtMenuApr.programId = sm.programId "
-			+ "AND ma.pkJcmmtMenuApr.screenId = sm.screenID " 
+			+ "AND ma.pkJcmmtMenuApr.screenId = sm.screenID "
+			+ "AND ma.pkJcmmtMenuApr.cId = sm.ccgmtStandardMenuPK.companyId " 
 			+ "LEFT OUTER JOIN JhnmtRptLayout l "
-			+ "ON ma.rptLayoutId = l.jhnmtRptLayoutPk.rptLayoutId  "
+			+ "ON ma.rptLayoutId = l.jhnmtRptLayoutPk.rptLayoutId "
+			+ "AND ma.pkJcmmtMenuApr.cId = l.jhnmtRptLayoutPk.cid "
 			+ "LEFT OUTER JOIN JcmctMenuOperation mo "
 			+ "ON ma.pkJcmmtMenuApr.programId = mo.jcmctMenuOperationPK.programId "
+			+ "AND ma.pkJcmmtMenuApr.cId = mo.jcmctMenuOperationPK.companyId "
 
 			+ "WHERE " + "ma.pkJcmmtMenuApr.cId = :cId ";
 	
@@ -57,8 +60,29 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 	}
 
 	@Override
-	public void update(List<MenuApprovalSettings> domain) {
-		List<JcmmtMenuApr> entity = domain.stream().map(c -> JcmmtMenuApr.toEntity(c)).collect(Collectors.toList());
-		this.commandProxy().updateAll(entity);
+	public void update(List<BusinessApprovalSettingsDto> domain) {
+		String cid = AppContexts.user().companyId();
+		String updateJcmctMenuOperation = "Update JcmctMenuOperation m "
+				+ "Set m.noRankOrder =:noRankOrder "
+				+ "Where m.jcmctMenuOperationPK.companyId = :cid "
+				+ "And m.jcmctMenuOperationPK.programId = :programId ";
+		String updateJhnmtRptLayout = "Update JhnmtRptLayout m "
+				+ "Set m.noRankOrder =:noRankOrder "
+				+ "Where m.jhnmtRptLayoutPk.cid = :cid "
+				+ "And m.jhnmtRptLayoutPk.rptLayoutId = :rptLayoutId ";
+		for (BusinessApprovalSettingsDto c : domain) {
+			this.commandProxy().update(JcmmtMenuApr.toEntity(c.getMenuApprovalSettings()));
+			this.getEntityManager().createQuery(updateJcmctMenuOperation)
+				.setParameter("noRankOrder", c.getNoRankOrder()?1:0)
+				.setParameter("cid", cid)
+				.setParameter("programId", c.getMenuApprovalSettings().getProgramId())
+				.executeUpdate();
+			this.getEntityManager().createQuery(updateJhnmtRptLayout)
+				.setParameter("noRankOrder", c.getNoRankOrder())
+				.setParameter("cid", cid)
+				.setParameter("rptLayoutId", c.getMenuApprovalSettings().getRptLayoutId())
+				.executeUpdate();
+		}
+		
 	}
 }

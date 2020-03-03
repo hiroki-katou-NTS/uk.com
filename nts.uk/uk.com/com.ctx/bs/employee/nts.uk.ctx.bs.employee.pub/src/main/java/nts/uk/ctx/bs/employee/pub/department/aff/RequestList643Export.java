@@ -11,7 +11,9 @@ import lombok.Setter;
 @Setter
 public class RequestList643Export {
 
+	//社員ID
 	public String employeeId;
+	//部門ID
 	public String departmentId;
 	
 }

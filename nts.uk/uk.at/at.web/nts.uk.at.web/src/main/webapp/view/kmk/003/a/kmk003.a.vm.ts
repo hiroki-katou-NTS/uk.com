@@ -28,25 +28,23 @@ module nts.uk.at.view.kmk003.a {
     
     import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
     import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
+    
     export module viewmodel {
 
         export class ScreenModel {
+            
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columnWorktimeSettings: KnockoutObservable<any>;
             selectedWorkTimeCode: KnockoutObservable<string>;
-
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
             tabMode: KnockoutObservable<number>;
-
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
             useHalfDay: KnockoutObservable<boolean>;
-
             //tabs
             tabs: KnockoutObservableArray<TabItem>;
             selectedTab: KnockoutObservable<string>;
-
             //data
             isClickSave: KnockoutObservable<boolean>;
             
@@ -67,9 +65,13 @@ module nts.uk.at.view.kmk003.a {
             
             flexWorkManaging: boolean;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
-            
             //update for storage tab 11
             backupCommonSetting: WorkTimezoneCommonSetDto
+            
+            langId: KnockoutObservable<string> = ko.observable('ja');
+            isJapanese: KnockoutObservable<boolean> = ko.observable(true);
+            lstWorkTimeLanguage: KnockoutObservableArray<IWorkTimeLanguage> = ko.observableArray([]);
+            
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -80,7 +82,7 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode = ko.observable(ScreenMode.NEW);
 
                 self.initComputedValue();
-                
+
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
                 self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDay);
                 self.selectedWorkTimeCode = ko.observable('');
@@ -96,11 +98,40 @@ module nts.uk.at.view.kmk003.a {
 
                 // initial subscribe
                 self.initSubscribe();
-                
+
                 //over time work frame options
                 self.overTimeWorkFrameOptions = ko.observableArray([]);
-                
+
                 self.backupCommonSetting = null;
+
+                self.langId.subscribe(() => {
+                    let lang: string = ko.toJS(self.langId);
+
+                    if (lang != 'ja') {
+                        $("#tab-panel").addClass("disabled-panel");
+                        self.isJapanese(false);
+                        self.findWorkTimeLanguage();
+                    } else {
+                        $("#tab-panel").removeClass("disabled-panel");
+                        self.isJapanese(true);
+                        
+                        $("#screen-content-left").css('width', '360');
+                        $("#single-list").igGrid("option", "width", "300px");
+                        //remove columns otherLanguageName
+                        let cols = $("#single-list").igGrid("option", "columns");
+                        cols.splice(2, 1);
+                        $("#single-list").igGrid("option", "columns", cols);
+                        self.selectedWorkTimeCode.valueHasMutated();
+                    }
+                });
+                // enable/disable button 「多言語切替」
+                self.isNewOrCopyMode.subscribe((value)=>{
+                    if(value){
+                        $('.ntsSwitchLanguage').attr('disabled', 'true');
+                    } else {
+                        $('.ntsSwitchLanguage').removeAttr("disabled");
+                    }
+                });
             }
            
             /**
@@ -110,6 +141,10 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 self.bindFunction();
+                // switch language
+                $("#switch-language")['ntsSwitchMasterLanguage']();
+                $("#switch-language").on("selectionChanged", (event: any) => self.langId(event['detail']['languageId']));
+                
                 service.findAllUsedOvertimeWorkFrame().done(v => {
                     self.overTimeWorkFrameOptions(v);
                     service.findSettingFlexWork().done(vl => {
@@ -157,26 +192,27 @@ module nts.uk.at.view.kmk003.a {
                 ]);
 
                 // tabs data source
-                self.tabs = ko.observableArray([]);
-                self.tabs.push(new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
-                self.tabs.push(new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
-                self.tabs.push(new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
-                self.tabs.push(new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
-                self.tabs.push(new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
-                self.tabs.push(new TabItem(TabID.TAB6, nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
-                self.tabs.push(new TabItem(TabID.TAB7, nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
-                self.tabs.push(new TabItem(TabID.TAB8, nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
-                self.tabs.push(new TabItem(TabID.TAB9, nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
-                self.tabs.push(new TabItem(TabID.TAB10, nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
-                self.tabs.push(new TabItem(TabID.TAB11, nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
-                self.tabs.push(new TabItem(TabID.TAB12, nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
-                self.tabs.push(new TabItem(TabID.TAB13, nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
-                self.tabs.push(new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
-                self.tabs.push(new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
-                self.tabs.push(new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
-                self.tabs.push(new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, true));
+                self.tabs = ko.observableArray([
+                    new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true),
+                    new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true),
+                    new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true),
+                    new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true),
+                    new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true),
+                    new TabItem(TabID.TAB6, nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true),
+                    new TabItem(TabID.TAB7, nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true),
+                    new TabItem(TabID.TAB8, nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true),
+                    new TabItem(TabID.TAB9, nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true),
+                    new TabItem(TabID.TAB10, nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true),
+                    new TabItem(TabID.TAB11, nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true),
+                    new TabItem(TabID.TAB12, nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true),
+                    new TabItem(TabID.TAB13, nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true),
+                    new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true),
+                    new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true),
+                    new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true),
+                    new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, true)
+                ]);
             }
-
+            
             /**
              * Initial subscribe & computed value
              */
@@ -210,9 +246,6 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
-//                    if (self.isUpdateMode()) {
-//                        self.reloadWorktimeSetting();
-//                    }
                 });
 
                 self.useHalfDay.subscribe(useHalfDay => {
@@ -272,6 +305,67 @@ module nts.uk.at.view.kmk003.a {
                     return self.tabMode() == TabMode.DETAIL;
                 });
             }
+            
+            /**
+            * find data WorkTypeLanguage
+            */
+            private findWorkTimeLanguage(): void {
+                let self = this,
+                    dfd = $.Deferred<void>();
+
+                service.findByLangId(self.langId()).done((data) => {
+                    self.lstWorkTimeLanguage(data);
+                    // set property nameNotJP of workTimeSettings
+                    _.each(self.workTimeSettings(), wtSet => {
+                        let wtLang = _.find(data, ["workTimeCode", wtSet.worktimeCode]);
+                        if (wtLang) {
+                            wtSet.nameNotJP = wtLang.name;
+                        }
+                    });
+                    
+                    $("#single-list").igGrid("option", "width", "400px");
+                    $("#screen-content-left").css('width', '480');
+                    let cols = $("#single-list").igGrid("option", "columns");
+
+                    if ($("#single-list").igGrid("option", "columns").length == 3) {
+                        //add columns otherLanguageName   
+                        let newColumn = { headerText: nts.uk.resource.getText('KMK003_313'), key: 'nameNotJP', width: 100, formatter: _.escape };
+                        cols.splice(2, 0, newColumn);
+                        $("#single-list").igGrid("option", "columns", cols);
+                    }
+
+                    self.selectedWorkTimeCode.valueHasMutated();
+                    
+                    dfd.resolve();                }).fail(() => {                    dfd.reject();                });
+                return dfd.promise();            }
+            
+            /**
+             * insert/update name and abbreviationName to WorkTimeLanguage
+             */
+            private insertWorkTimeLanguage(language: string): void {
+                let self = this,
+                    dfd = $.Deferred();
+
+                let obj = {
+                    langId: language,
+                    name: self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeName(),
+                    abName: self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeAbName(),
+                    workTimeCode: self.selectedWorkTimeCode()
+                };
+
+                service.insertWorkTimeLang(obj).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    // reload
+                    self.reloadAfterSave();
+                    dfd.resolve();
+                }).fail(() => {
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+                
+                dfd.promise();
+            }
 
             /**
              * Bind workTimeSetting loader function
@@ -293,8 +387,12 @@ module nts.uk.at.view.kmk003.a {
 
                 // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
+                    // sort by work time code
                     data = _.sortBy(data, item => item.worktimeCode);
-                    self.workTimeSettings(data); // sort by work time code
+                    self.workTimeSettings(data); 
+                    if(self.langId() != 'ja'){
+                        self.findWorkTimeLanguage();
+                    }             
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
@@ -342,8 +440,9 @@ module nts.uk.at.view.kmk003.a {
                         
             //get all enums
             private getAllEnums(): JQueryPromise<void> {
-                var self = this;
-                let dfd = $.Deferred<void>();
+                let self = this,
+                    dfd = $.Deferred<void>();
+                
                 service.getEnumWorktimeSeting().done(function(setting: any) {
                     self.settingEnum = setting;
                     self.workTimeSettingLoader.setEnums(setting);
@@ -380,7 +479,7 @@ module nts.uk.at.view.kmk003.a {
                 self.isLoading(false);
                 service.findWorktimeSetingInfoByCode(currentCode)
                     .done(worktimeSettingInfo => {
-
+                        
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
                             self.isLoading(false);
@@ -404,9 +503,10 @@ module nts.uk.at.view.kmk003.a {
                     _.defer(() => nts.uk.ui.block.invisible());
 
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-
+                        // search workTimeLanguage
+                        let workTimeLanguage = _.find(self.lstWorkTimeLanguage(), ["workTimeCode", self.selectedWorkTimeCode()]); 
                         // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
+                        self.mainSettingModel.updateData(worktimeSettingInfo, self.langId(), workTimeLanguage).done(()=>{
                             self.isLoading(false);
                             self.isLoading(true);
                             //convert 
@@ -571,37 +671,44 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
-                self.isClickSave(true);
-                //for dialog F mode simple
-                self.bindFDialogSimpleMode();
-                self.mainSettingModel.save()
-                    .done(() => {
-                        // recheck abolish condition of list worktime
-                        // self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
-                        self.workTimeSettingLoader.isAbolish(true);
-                        // reload
-                        self.reloadAfterSave();
-                        self.isClickSave(false);
-                        self.loadWorktimeSetting(self.selectedWorkTimeCode());
-                    }).fail((err) => {
-                        self.isClickSave(false);
-                        let errors = _.uniqBy(err.errors, (v: any) => {
-                            let key = v.messageId;
-                            for (let param of v.parameterIds) {
-                                key = key + ' ' + param;
+                
+                if (self.langId() == 'ja') {
+                    self.isClickSave(true);
+                    //for dialog F mode simple
+                    self.bindFDialogSimpleMode();
+                    
+                    self.mainSettingModel.save()
+                        .done(() => {
+                            // recheck abolish condition of list worktime
+                            // self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
+                            self.workTimeSettingLoader.isAbolish(true);
+                            // reload
+                            self.reloadAfterSave();
+                            self.isClickSave(false);
+                            self.loadWorktimeSetting(self.selectedWorkTimeCode());
+                        }).fail((err) => {
+                            self.isClickSave(false);
+                            let errors = _.uniqBy(err.errors, (v: any) => {
+                                let key = v.messageId;
+                                for (let param of v.parameterIds) {
+                                    key = key + ' ' + param;
+                                }
+                                return key;
+                            });
+
+                            // close current error dialog
+                            const buttonCloseDialog = $('#functions-area-bottom>.ntsClose');
+                            if (!nts.uk.util.isNullOrEmpty(buttonCloseDialog)) {
+                                buttonCloseDialog.click();
                             }
-                            return key;
+
+                            err.errors = errors;
+                            self.showMessageError(err);
                         });
-
-                        // close current error dialog
-                        const buttonCloseDialog = $('#functions-area-bottom>.ntsClose');
-                        if (!nts.uk.util.isNullOrEmpty(buttonCloseDialog)) {
-                            buttonCloseDialog.click();
-                        }
-
-                        err.errors = errors;
-                        self.showMessageError(err);
-                    });
+                    
+                } else {
+                    self.insertWorkTimeLanguage(self.langId());
+                }
             }
             
             /**
@@ -773,7 +880,7 @@ module nts.uk.at.view.kmk003.a {
                     // get selected code
                     let selectedCode = self.selectedWorkTimeCode();
 
-                    service.removeWorkTime(selectedCode).done(function() {
+                    service.removeWorkTime(selectedCode, self.langId()).done(function() {
                         let currentIndex = _.findIndex(self.workTimeSettings(), item => item.worktimeCode === selectedCode);
                         nts.uk.ui.dialog.info({ messageId: 'Msg_16' })
                             .then(() => self.loadListWorktime(null, currentIndex)); // reload list work time
@@ -800,7 +907,7 @@ module nts.uk.at.view.kmk003.a {
             private exportExcel(): void {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                service.saveAsExcel().done(function() {
+                service.saveAsExcel(self.langId()).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
@@ -1005,10 +1112,16 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, langId?: string, workTimeLanguage?: any): JQueryPromise<void> {
+                let self = this, dfd = $.Deferred<void>();
+                
+                if(langId != 'ja'){
+                    $('#inp-worktimename').focus();
+                    // set other language for name and abbreviationName
+                    worktimeSettingInfo.worktimeSetting.workTimeDisplayName.workTimeName = (workTimeLanguage ? workTimeLanguage.name : '');
+                    worktimeSettingInfo.worktimeSetting.workTimeDisplayName.workTimeAbName = (workTimeLanguage ? workTimeLanguage.abbreviationName : '');
+                }
+                
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);    
                 self.manageEntryExit.updateData(worktimeSettingInfo.manageEntryExit);                          
@@ -1331,6 +1444,28 @@ module nts.uk.at.view.kmk003.a {
             static TAB15 = "tab-15";
             static TAB16 = "tab-16";
             static TAB17 = "tab-17";
+        }
+        
+        interface IWorkTimeLanguage {
+            workTimeCode: string;
+            langId: string;
+            name: string;
+            abbreviationName: string
+        }
+
+        class WorkTimeLanguage {
+            workTimeCode: string;
+            langId: string;
+            name: string;
+            abbreviationName: string;
+
+            constructor(param: IWorkTimeLanguage) {
+                let self = this;
+                this.workTimeCode = param.workTimeCode;
+                this.langId = param.langId;
+                this.name = param.name;
+                this.abbreviationName = param.abbreviationName;
+            }
         }
     }
 }

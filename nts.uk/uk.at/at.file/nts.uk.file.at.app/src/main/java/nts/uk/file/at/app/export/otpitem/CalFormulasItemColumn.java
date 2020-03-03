@@ -25,6 +25,7 @@ public final class CalFormulasItemColumn {
 	public static final String KMK002_94 = "月別丸め";
 	public static final String KMK002_95 = "月別端数処理";
 	public static final String KMK002_96 = "マイナス区分";
+	public static final String KMK002_100 = "他言語名称";
 	
 	public static final String add_Operator = "+";
 	

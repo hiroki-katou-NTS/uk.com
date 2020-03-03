@@ -90,8 +90,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' }
-//            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' },
+            //{ code: 3, name: '記号' } de bat man Ja
+             { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -122,7 +123,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // 表示形式 ＝ 日付別(固定) = 0
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
-
+        //Workplace Code 
+        workplaceCode: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -1955,6 +1957,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceNameDisplay(_.isNil(wkp) ? null : wkp.wkpDisplayName);
+                self.workplaceCode(_.isNil(wkp) ? null : wkp.workplaceCode);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();

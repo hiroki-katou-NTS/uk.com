@@ -20,7 +20,9 @@ export module viewmodel {
             let param = nts.uk.ui.windows.getShared('CMM018N_PARAM');
             self.sysAtr = param.sysAtr || 0;
             _.each(param.lstName, function(app){
-                self.lstAppName.push({id: app.employRootAtr.toString() +  app.value, code: app.value, name: app.localizedName, empRoot: app.employRootAtr});
+                self.lstAppName.push({id: app.employRootAtr.toString() +  app.value,
+                    code: app.value, name: app.localizedName, empRoot: app.employRootAtr,
+                    lowerApprove: app.lowerApprove});
             });
             
             //Init right table.
@@ -40,7 +42,8 @@ export module viewmodel {
             }else{
                 self.lstAppDis.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
                 _.each(self.lstAppName, app => {
-                    self.lstAppDis.push({id: app.id, code: app.code, name: app.name, empRoot: app.empRoot});
+                    self.lstAppDis.push({id: app.id, code: app.code, name: app.name, 
+                        empRoot: app.empRoot, lowerApprove: app.lowerApprove});
                 });
                 self.loadGrid();
             }
@@ -141,11 +144,12 @@ export module viewmodel {
                 let a = self.findTypeSelected(code);
                 lstApp.push({code: a.code,
                              empRoot: a.empRoot,
-                             name: a.name});
+                             name: a.name,
+                             lowerApprove: a.lowerApprove});
             });
             
             //xuat file
-            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp);
+            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp, self.sysAtr);
             nts.uk.ui.block.invisible();
             service.saveAsExcel(data).done(()=>{
                  nts.uk.ui.block.clear();   
@@ -166,6 +170,7 @@ export module viewmodel {
             code: any;
             name: string;
             empRoot: number;
+            lowerApprove: number;
         }
     }
 }

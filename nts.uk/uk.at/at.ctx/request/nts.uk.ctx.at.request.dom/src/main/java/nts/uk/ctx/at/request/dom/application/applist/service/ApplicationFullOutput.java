@@ -23,4 +23,6 @@ public class ApplicationFullOutput {
 	private Integer	status;
 	private String agentId;
 	private String apprId;
+	@Setter
+	private PhaseFrameStatus statusA;
 }

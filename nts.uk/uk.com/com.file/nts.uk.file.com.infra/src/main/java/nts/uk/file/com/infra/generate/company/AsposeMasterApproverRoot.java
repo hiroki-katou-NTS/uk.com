@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
+import org.apache.logging.log4j.util.Strings;
+
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -22,8 +24,9 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
@@ -59,7 +62,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				if (dataSource.getMasterApproverRootOutput().getComRootInfor() != null) {
 					Worksheet worksheet = worksheets.get(0);
 					// set up page prepare print
-					this.printPage(worksheet, dataSource);
+					this.printPage(worksheet, dataSource, "");
 					this.printCompanyOfApproval(worksheets, dataSource);
 				}
 			} else {
@@ -70,8 +73,16 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				if (!dataSource.getMasterApproverRootOutput().getWkpRootOutput().getWorplaceRootInfor().isEmpty()) {
 
 					Worksheet workplaceSheet = worksheets.get(1);
-					this.printPage(workplaceSheet, dataSource);
-					this.printWorkplace(worksheets, dataSource.getMasterApproverRootOutput().getWkpRootOutput());
+					String text = "";
+					if(dataSource.getSysAtr() == 0) {
+						text = I18NText.getText("Com_Workplace");
+					}else {
+						text = I18NText.getText("Com_Department");
+					}
+					workplaceSheet.setName(text + "別");
+					this.printPage(workplaceSheet, dataSource, text + "の承認ルート");
+					this.printWorkplace(worksheets,
+							dataSource.getMasterApproverRootOutput().getWkpRootOutput(), dataSource.getSysAtr());
 				}
 			} else {
 				worksheets.get(1).setVisible(false);
@@ -81,7 +92,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				if (!dataSource.getMasterApproverRootOutput().getEmpRootOutput().getPersonRootInfor().isEmpty()) {
 					Worksheet personSheet = worksheets.get(2);
 					//header
-					this.printPage(personSheet, dataSource);
+					this.printPage(personSheet, dataSource, "");
 					//body
 					this.printPerson(worksheets, dataSource.getMasterApproverRootOutput().getEmpRootOutput());
 				}
@@ -106,12 +117,17 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printPage(Worksheet worksheet, MasterApproverRootOutputDataSource dataSource) {
+	private void printPage(Worksheet worksheet, MasterApproverRootOutputDataSource dataSource, String title) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
-		pageSetup.setHeader(0, "【会社】 " + dataSource.getHeader().getNameCompany());
+		pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + "【会社】 " + dataSource.getHeader().getNameCompany());
+		if(!Strings.isBlank(title)) {
+			
+			pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + title);
+		}
+		
 	}
 
 	/**
@@ -356,19 +372,19 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheets
 	 * @param dataSource
 	 */
-	private void printWorkplace(WorksheetCollection worksheets, MasterWkpOutput dataWkp) {
+	private void printWorkplace(WorksheetCollection worksheets, MasterWkpOutput dataWkp, int sysAtr) {
 		Worksheet worksheet = worksheets.get(1);
 		Cells cells = worksheet.getCells();
-		List<WorkplaceImport> lstWpInfor = dataWkp.getLstWpInfor();
+		List<WkpDepInfo> lstWpInfor = dataWkp.getLstWpInfor();
 		Map<String, WorkplaceApproverOutput> lstWorkplace = dataWkp.getWorplaceRootInfor();
 		if (lstWorkplace.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Workplace list is empty"));
 		}
 		int firstRow = 3;
 		//for by list work place sorted
-		for (WorkplaceImport wkp : lstWpInfor) {
-			WorkplaceApproverOutput workplace = lstWorkplace.get(wkp.getWkpId());
-			firstRow = this.printEachWorkplace(worksheets, cells, firstRow, workplace);
+		for (WkpDepInfo wkp : lstWpInfor) {
+			WorkplaceApproverOutput workplace = lstWorkplace.get(wkp.getId());
+			firstRow = this.printEachWorkplace(worksheets, cells, firstRow, workplace, sysAtr);
 		}
 	}
 
@@ -382,18 +398,24 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @return
 	 */
 	private int printEachWorkplace(WorksheetCollection worksheets, Cells cells, int firstRow,
-			WorkplaceApproverOutput workplace) {
+			WorkplaceApproverOutput workplace, int sysAtr) {
 
-		WorkplaceImport wpInfor = workplace.getWpInfor();
+		WkpDepInfo wpInfor = workplace.getWpInfor();
 		List<ApprovalForApplication> lstAppprove = workplace.getWpRootInfor();
 
 		// set "【職場】"
 		Cell workPlace = cells.get(firstRow, COLUMN_INDEX[1]);
-		workPlace.setValue("【職場】");
+		String text = "";
+		if(sysAtr == 0) {
+			text = I18NText.getText("Com_Workplace");
+		}else {
+			text = I18NText.getText("Com_Department");
+		}
+		workPlace.setValue("【"+ text +"】");
 
 		// set worplace Name, workplace Code
 		Cell workPlaceCode = cells.get(firstRow, COLUMN_INDEX[2]);
-		workPlaceCode.setValue(wpInfor.getWkpCode() + " " + wpInfor.getWkpName());
+		workPlaceCode.setValue(wpInfor.getCode() + " " + wpInfor.getName());
 
 		// tăng rowIndex lên 1
 		firstRow = firstRow + 1;
@@ -502,7 +524,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					int numberOfNotMerger = (sizeOfForm - numberOfRowMerge);
 					this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
-					firstRow = firstRow + 1;
+					firstRow = firstRow + sizeOfForm - numberOfRowMerge;
 
 				}
 

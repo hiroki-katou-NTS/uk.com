@@ -352,7 +352,7 @@ module nts.uk.at.view.kmk008.f {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
 

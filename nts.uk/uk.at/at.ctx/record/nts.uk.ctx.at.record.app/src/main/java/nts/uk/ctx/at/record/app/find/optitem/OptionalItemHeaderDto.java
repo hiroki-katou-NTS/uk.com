@@ -35,6 +35,8 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+	
+	private String nameNotJP;
 
 	/*
 	 * (non-Javadoc)

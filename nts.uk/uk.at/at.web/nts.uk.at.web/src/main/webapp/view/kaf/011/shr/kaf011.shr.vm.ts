@@ -358,8 +358,9 @@ module nts.uk.at.view.kaf011.shr {
                         }
                         vm.kaf000_a.start(vm.employeeID(), 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
                         });
-                    }).always((error) => {
+                    }).fail((error) => {
                         alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                    }).always(() => {
                         block.clear();
                     });;
                 });

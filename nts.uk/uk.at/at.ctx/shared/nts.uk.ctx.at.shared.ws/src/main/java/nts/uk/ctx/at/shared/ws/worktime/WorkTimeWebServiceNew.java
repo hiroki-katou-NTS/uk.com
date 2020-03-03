@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeLanguageDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
@@ -45,7 +46,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	/** The work time set finder. */
 	@Inject
 	private WorkTimeSettingFinder workTimeSetFinder;
-	
+
 	/** The fixed handler. */
 	@Inject
 	private FixedWorkSettingSaveCommandHandler fixedHandler;
@@ -69,8 +70,6 @@ public class WorkTimeWebServiceNew extends WebService {
 	/** The work time common delete command handler. */
 	@Inject
 	private WorkTimeCommonDeleteCommandHandler workTimeCommonDeleteCommandHandler;
-	
-	
 
 	/**
 	 * Find all by Cid.
@@ -95,7 +94,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	public List<WorkTimeDto> findByCodes(List<String> codes) {
 		return this.workTimeSetFinder.findByCodes(codes);
 	}
-	
+
 	/**
 	 * Find by codes.
 	 *
@@ -108,7 +107,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	public List<WorkTimeDto> getWorkTimeByCodes(getWorkTimeDto param) {
 		return this.workTimeSetFinder.findByCodes(param.getWkTimeCodes());
 	}
-	
+
 	/**
 	 * Find by codes.
 	 *
@@ -218,8 +217,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	 */
 	@POST
 	@Path("findInfo/{workTimeCode}")
-	public WorkTimeSettingInfoDto findInfoByWorkTimeCode(
-			@PathParam("workTimeCode") String workTimeCode) {
+	public WorkTimeSettingInfoDto findInfoByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode) {
 		return this.workTimeSettingInfoFinder.find(workTimeCode);
 	}
 
@@ -234,11 +232,12 @@ public class WorkTimeWebServiceNew extends WebService {
 	public void removeByWorkTimeCode(WorkTimeCommonDeleteCommand command) {
 		this.workTimeCommonDeleteCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * Find break by codes.
 	 *
-	 * @param workTimeCode the work time code
+	 * @param workTimeCode
+	 *            the work time code
 	 * @return the break time day dto
 	 */
 	@POST
@@ -246,8 +245,13 @@ public class WorkTimeWebServiceNew extends WebService {
 	public BreakTimeDayDto findBreakByCodes(@PathParam("workTimeCode") String workTimeCode) {
 		return this.workTimeSettingInfoFinder.findModeMethod(workTimeCode);
 	}
-	
-	
+
+	@POST
+	@Path("findWTLanguageByCidAndLangId/{langId}")
+	public List<WorkTimeLanguageDto> findWTLanguageByCidAndLangId(@PathParam("langId") String langId) {
+		return this.workTimeSettingInfoFinder.findWTLanguageByCidAndLangId(langId);
+	}
+
 }
 
 @Value
