@@ -25,6 +25,9 @@ public class ShiftPalletsOrgDto {
 		super();
 		this.workplaceId = workplaceId;
 		this.groupNo = org.getPage();
+		this.groupName = org.getShiftPallet().getDisplayInfor().getShiftPalletName().toString();
+		this.groupUsageAtr =org.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
+		this.note = org.getShiftPallet().getDisplayInfor().getRemarks().toString();
 		this.patternItem = org.getShiftPallet()
 					.getCombinations()
 					.stream()

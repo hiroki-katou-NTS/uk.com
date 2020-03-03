@@ -253,8 +253,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.each(self.source()[i].data, (dt) => {
                         listInsertWorkPairSetCommand.push({
                             pairNo: dt.index,
-                            //workTypeCode: dt.data.workTypeCode,
-                            //workTimeCode: dt.data.workTimeCode
+                            shiftCode: dt.data.shiftMasterCode
                         });
                     });
 

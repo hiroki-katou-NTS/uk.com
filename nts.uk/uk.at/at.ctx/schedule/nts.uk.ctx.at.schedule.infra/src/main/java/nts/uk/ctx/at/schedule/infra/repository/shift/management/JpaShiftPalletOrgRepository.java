@@ -4,12 +4,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
+import com.aspose.pdf.Collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,14 +22,18 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -59,6 +66,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	}
 	
+	private static final String FIND_BY_TARGETID = "SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE, b.POSITION, b.POSITION_NAME, c.POSITION_ORDER, c.SHIFT_MASTER_CD"
+			                                     + " FROM KSCMT_PALETTE_ORG a LEFT JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
+			                                     + " LEFT JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON a.TARGET_UNIT = c.TARGET_UNIT AND a.TARGET_ID = c.TARGET_ID AND a.PAGE = c.PAGE"
+			                                     + " WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId'";
+	
 	@AllArgsConstructor
 	@Getter
 	private class FullShiftPalletsOrg {
@@ -81,7 +93,9 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 		while (rs.next()) {
 			listFullData.add(new FullShiftPalletsOrg(rs.getString("CID"),Integer.valueOf(rs.getString("TARGET_UNIT")), rs.getString("TARGET_ID"),Integer.valueOf(rs.getString("PAGE")),
 					rs.getString("PAGE_NAME"), Integer.valueOf(rs.getString("USE_ATR")) == 1 ? true : false,
-					rs.getString("NOTE"), Integer.valueOf(rs.getString("POSITION")), rs.getString("POSITION_NAME"),
+					rs.getString("NOTE"), 
+					Integer.valueOf(rs.getString("POSITION")),
+					rs.getString("POSITION_NAME"),
 					Integer.valueOf(rs.getString("POSITION_ORDER")), rs.getString("SHIFT_MASTER_CD")));
 		}
 		return listFullData;
@@ -110,11 +124,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 													z.getValue().get(0).getPosition(),
 													z.getValue().get(0).getPositionOrder());
 											String shiftMasterCd = z.getValue().get(0).getShiftMasterCd();
-											return new KscmtPaletteOrgCombiDtl(cmpCombiDtlPk, shiftMasterCd);
+											return new KscmtPaletteOrgCombiDtl(cmpCombiDtlPk, shiftMasterCd, null);
 										}).collect(Collectors.toList());
-								return new KscmtPaletteOrgCombi(combiPk, positionName);
+								return new KscmtPaletteOrgCombi(combiPk, positionName, null, cmpCombiDtls);
 							}).collect(Collectors.toList());
-					return new KscmtPaletteOrg(pk, pageName, useAtr ? 1 : 0, note);
+					return new KscmtPaletteOrg(pk, pageName, useAtr ? 1 : 0, note, cmpCombis);
 				}).collect(Collectors.toList());
 	}
 
@@ -132,8 +146,17 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public void delete(ShiftPalletsOrg shiftPalletsOrg) {
-		// TODO Auto-generated method stub
-
+		String query = FIND_BY_PAGE;
+		query = query.replaceFirst("targetUnit", String.valueOf(shiftPalletsOrg.getTargeOrg().getUnit().value));
+		query = query.replaceFirst("targetId", shiftPalletsOrg.getTargeOrg().getWorkplaceId().get());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			KscmtPaletteOrg kscmtPaletteOrg = toEntity(createShiftPallets(rs)).get(0);
+			commandProxy().remove(KscmtPaletteOrg.class, kscmtPaletteOrg.pk);
+			this.getEntityManager().flush();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override
@@ -157,23 +180,18 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public List<ShiftPalletsOrg> findbyWorkPlaceId(String workplaceId) {
-		List<ShiftPalletsOrg> results = new ArrayList<>();
-		String query =  "SELECT PAGE, PAGE_NAME FROM KSCMT_PALETTE_ORG WHERE TARGET_ID = ?"; 
+	public List<ShiftPalletsOrg> findbyWorkPlaceId(int targetUnit, String workplaceId) {
+		String query =  FIND_BY_TARGETID; 
+		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
+		query = query.replaceFirst("targetId", workplaceId);
+
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
-			statement.setString(1, workplaceId);
-			results.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				ShiftPalletDisplayInfor shiftPalletsOrg = new ShiftPalletDisplayInfor(
-						new ShiftPalletName(rec.getString("PAGE_NAME")), null, null);
-				ShiftPallet shiftPallet = new ShiftPallet(shiftPalletsOrg, null);
-				ShiftPalletsOrg org = new ShiftPalletsOrg(null, rec.getInt("PAGE"), shiftPallet);
-				return org;
-			})); 
-			
+			ResultSet rs = statement.executeQuery();
+			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain()).collect(Collectors.toList());
+			return palletsOrgs;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	@Override
