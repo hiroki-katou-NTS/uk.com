@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.AppTypeName;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 
 public interface EmployeeUnregisterApprovalRoot {
@@ -13,5 +14,6 @@ public interface EmployeeUnregisterApprovalRoot {
 	 * @param sysAtr
 	 * @return
 	 */
-	List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr);
+	List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr,
+			List<Integer> lstNotice, List<String> lstEvent, List<AppTypeName> lstName);
 }

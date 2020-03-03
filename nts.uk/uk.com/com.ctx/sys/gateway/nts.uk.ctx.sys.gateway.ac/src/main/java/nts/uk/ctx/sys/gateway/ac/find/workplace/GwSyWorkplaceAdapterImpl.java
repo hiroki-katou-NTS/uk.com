@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.GwSyWorkplaceAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,15 +22,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class GwSyWorkplaceAdapterImpl implements GwSyWorkplaceAdapter{
 	
 	/** The sy workplace pub. */
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SyWorkplaceAdapter#findBySid(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public Optional<SWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
-		return this.syWorkplacePub.findBySidNew(companyId, employeeId, baseDate)
+		return this.workplacePub.findBySidNew(companyId, employeeId, baseDate)
 				.map(c -> new SWkpHistImport(c.getWorkplaceId(), c.getWorkplaceName()));
 	}
 	

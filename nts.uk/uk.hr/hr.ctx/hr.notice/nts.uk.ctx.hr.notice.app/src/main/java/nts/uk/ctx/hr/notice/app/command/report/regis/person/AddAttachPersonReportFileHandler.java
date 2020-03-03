@@ -5,14 +5,18 @@ package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachmentPersonReportFile;
@@ -24,13 +28,18 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusFor
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.DateRangeItemImport;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.AttachedFileName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
  * @author laitv
- *
+ * アルゴリズム「添付ファイル登録処理」を実行する(Thực hiện thuật toán "Xử lý đăng ký file đính kèm")
  */
 @Stateless
 public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<AddDocumentReportCommand, String> {
@@ -43,6 +52,12 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 	
 	@Inject
 	private ReportItemRepository reportItemRepo;
+	
+	@Inject
+	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private HumanItemPub humanItemPub;
 
 	
 	@Override
@@ -50,13 +65,18 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		AddDocumentReportCommand command = context.getCommand();
 		GeneralDateTime fileStorageDate = GeneralDateTime.now();
 		
-		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
+		try {
+			AttachedFileName validateFileName = new AttachedFileName(command.fileName);
+			validateFileName.validate();
+		} catch (Exception e) {
+			throw new BusinessException("MsgJ_JHN001_1");
+		}
 		
 		if (command.reportID == null) {
-			Integer reportIdNew = repoPersonReport.getMaxReportId(sid, cid) + 1;
+			Integer reportIdNew = repoPersonReport.getMaxReportId(cid) + 1;
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, reportIdNew,
-					command.docID, command.docName, command.fileId, command.fileName.length() > 49 ? command.fileName.substring(0, 48) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
@@ -67,14 +87,14 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			return reportIdNew.toString();
 		} else {
 			AttachmentPersonReportFile domain = AttachmentPersonReportFile.createFromJavaType(cid, Integer.valueOf(command.reportID),
-					command.docID, command.docName, command.fileId, command.fileName.length() > 49 ? command.fileName.substring(0, 48) : command.fileName ,
+					command.docID, command.docName, command.fileId, command.fileName ,
 					command.fileAttached == 1 ? true : false, fileStorageDate, command.mimeType, command.fileTypeName,
 							command.fileSize, command.delFlg == 1 ? true : false, command.sampleFileID, command.sampleFileName);
 			
 			repoReportFile.add(domain);
 			
 			updateMissingDocName(command);
-			
+			                           
 			return command.reportID;
 		}
 	}
@@ -83,12 +103,14 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		String cid = AppContexts.user().companyId();
 		this.repoPersonReport.updateMissingDocName(cid, Integer.valueOf(command.getReportID()), command.getMissingDocName());
 	}
+	
 
 	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName) {
-		String sid = AppContexts.user().employeeId();
-		String pid = AppContexts.user().personId();
-		String scd = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
+		
+		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
+		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
+		EmployeeInfo employeeInfo = this.getPersonInfo();
 		
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
@@ -103,22 +125,22 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(missingDocName)
-				.inputPid(pid)
-				.inputSid(sid)
-				.inputScd(scd)
-				.inputBussinessName("")
+				.inputPid(employeeInfo.inputPid)
+				.inputSid(employeeInfo.inputSid)
+				.inputScd(employeeInfo.inputScd)
+				.inputBussinessName(employeeInfo.inputBussinessName)
 				.inputDate(GeneralDateTime.now())
-				.appPid(pid)
-				.appSid(sid)
-				.appScd(scd)
-				.appBussinessName("")
+				.appPid(employeeInfo.appliPerId)
+				.appSid(employeeInfo.appliPerSid)
+				.appScd(employeeInfo.appliPerScd)
+				.appBussinessName(employeeInfo.appliPerBussinessName)
 				.appDate(GeneralDateTime.now())
-				.appDevId(sid)
-				.appDevCd(scd)
-				.appDevName("")
-				.appPosId(sid)
-				.appPosCd(scd)
-				.appPosName("")
+				.appDevId(employeeInfo.appDevId)
+				.appDevCd(employeeInfo.appDevCd)
+				.appDevName(employeeInfo.appDevName)
+				.appPosId(employeeInfo.appPosId)
+				.appPosCd(employeeInfo.appPosCd)
+				.appPosName(employeeInfo.appPosName)
 				.reportType(EnumAdaptor.valueOf(data.reportType, ReportType.class))
 				.sendBackSID(data.sendBackSID)
 				.sendBackComment(data.sendBackComment)
@@ -138,9 +160,38 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		String cid = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		
+		List<ItemsByCategory> listCategory = data.inputs;
+		List<String> categoryIds = listCategory.stream().map(ctg -> ctg.getCategoryId()).collect(Collectors.toList());
+		if (categoryIds.isEmpty()) {
+			return listReportItem;
+		}
+		
+		List<DateRangeItemImport> listDateRangeItem = humanItemPub.getDateRangeItemByListCtgId(categoryIds);
+		Map<String, DateRangeItemImport> mapCtgWithDateRangeItem = listDateRangeItem.stream().collect(Collectors.toMap(DateRangeItemImport :: getPersonInfoCtgId, x -> x));
+		
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
+			if (itemsByCtg.getCategoryType() == 3 || itemsByCtg.getCategoryType() == 6) {
+				// truong hop la CONTINUOUSHISTORY || CONTINUOUS_HISTORY_FOR_ENDDATE
+				DateRangeItemImport dateRangeItem = mapCtgWithDateRangeItem.get(itemsByCtg.getCategoryId());
+				String startDateItemId = dateRangeItem.getStartDateItemId();
+				String endDateItemId   = dateRangeItem.getEndDateItemId(); 
+				
+				// trương hợp startD được nhập thì set endDate là maxDate. còn case startD == null thì khong lam gì cả.
+				Optional<ItemValue> itemValueStartDate = items.stream().filter(item -> item.definitionId().equals(startDateItemId)).findFirst();
+				if (itemValueStartDate.isPresent()) {
+					if (itemValueStartDate.get().value() != null) {
+						Optional<ItemValue> itemValueEndDate = items.stream().filter(item -> item.definitionId().equals(endDateItemId)).findFirst();
+						if (itemValueEndDate.isPresent()) {
+							if (itemValueEndDate.get().value() == null) {
+								items.stream().filter(item -> item.definitionId().equals(endDateItemId)).findFirst().get().setValue(GeneralDate.max());
+							}
+						}
+					}
+				}
+			}
+			
 			for (int j = 0; j < items.size(); j++) { 
 				ItemValue itemValue = items.get(j);
 				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
@@ -185,6 +236,14 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			}
 		}
 		return listReportItem;
+	}
+	
+	private EmployeeInfo getPersonInfo(){
+		String sid = AppContexts.user().employeeId();
+		String cid = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		EmployeeInfo empInfo = empInfoAdaptor.getInfoEmp(sid, cid, baseDate);
+		return empInfo;
 	}
 
 }

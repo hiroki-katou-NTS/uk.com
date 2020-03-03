@@ -10,7 +10,8 @@ public enum ConfirmationRootType {
 	DAILY_CONFIRMATION(0,"日次確認"),
 	/** 月次確認*/
 	MONTHLY_CONFIRMATION(1,"月次確認");
-public Integer value;
+	
+	public Integer value;
 	
 	public String nameId;
 

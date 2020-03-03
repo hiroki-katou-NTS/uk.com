@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -113,6 +114,26 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 		} else {
 			return Optional.of(result.get(0));
 		}
+	}
+	
+	private static final String SELECT_SQL = "SELECT it "
+			+ " FROM BsymtAffiDepartmentHistItem it "
+			+ " INNER JOIN BsymtAffiDepartmentHist e ON it.hisId = e.hisId "
+			+ " WHERE it.depId IN :depIds AND e.strDate <= :baseDate AND e.endDate >= :baseDate ";
+
+	@Override
+	public List<AffDepartmentHistoryItem> getAffDepartmentHistoryItems(List<String> departmentIDs,
+			GeneralDate baseDate) {
+		List<AffDepartmentHistoryItem> listObj = new ArrayList<>();
+		CollectionUtil.split(departmentIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			List<AffDepartmentHistoryItem> entity = this.queryProxy().query(SELECT_SQL, BsymtAffiDepartmentHistItem.class)
+					.setParameter("depIds", departmentIDs)
+					.setParameter("baseDate", baseDate)
+					.getList(c->this.toDomain(c));
+			listObj.addAll(entity);
+		});
+		
+		return listObj;
 	}
 
 

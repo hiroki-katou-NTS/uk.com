@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.pubimp.person.info.item;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,12 +10,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -84,6 +83,21 @@ public class PersonInfoItemPubImpl implements PersonInfoItemPub{
 		return new DateRangeItemExport(dateRangeItem.getPersonInfoCtgId(), dateRangeItem.getStartDateItemId(),
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
+	
+	@Override
+	public List<DateRangeItemExport> getDateRangeItemByListCtgId(List<String> categoryIds) {
+		List<DateRangeItem> listDateRangeItem = perInfoCategoryRepo.getDateRangeItemByListCtgId(categoryIds);
+		if (listDateRangeItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<DateRangeItemExport> listDateRangeItemExport = listDateRangeItem.stream().map(dateRangeItem -> {
+			return new DateRangeItemExport(dateRangeItem.getPersonInfoCtgId(), dateRangeItem.getStartDateItemId(),
+					dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
+		}).collect(Collectors.toList());
+		
+		return listDateRangeItemExport;
+	}
 
 	@Override
 	public List<ComboBoxObject> getCombo(SelectionItemExport selectionItemDto,
@@ -142,4 +156,11 @@ public class PersonInfoItemPubImpl implements PersonInfoItemPub{
 		}
 		return comboboxItems;
 	}
+
+	@Override
+	public String getItemDfId(String ctgId, String itemCd) {
+		String itemDfID = pernfoItemDefRep.getItemDfId(ctgId, itemCd);
+		return itemDfID;
+	}
+
 }

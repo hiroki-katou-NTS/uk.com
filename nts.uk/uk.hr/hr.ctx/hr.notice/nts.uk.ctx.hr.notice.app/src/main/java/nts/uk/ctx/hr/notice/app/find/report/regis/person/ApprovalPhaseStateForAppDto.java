@@ -45,7 +45,7 @@ public class ApprovalPhaseStateForAppDto {
 				
 				approvalPhaseStateImport.getApprovalAtr(),
 				
-				status.name(),
+				status.nameId,
 				
 				framAppLst
 				);

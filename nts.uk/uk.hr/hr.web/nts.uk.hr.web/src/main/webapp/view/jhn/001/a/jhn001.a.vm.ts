@@ -45,8 +45,12 @@ module jhn001.a.viewmodel {
                 layout = self.layout(),
                 layouts = self.layouts;
             
-//            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
-//                Page.NORMAL);
+            $('#menu-header').addClass("notranslate");
+            
+            $('.input-wrapper').addClass("notranslate");
+            
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+            Page.NORMAL);
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
@@ -94,7 +98,8 @@ module jhn001.a.viewmodel {
                             }
 
                             // set sendBackComment header A222_2_1
-                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + objReport.sendBackComment);
+                            let sendBackCommentVar =  objReport.sendBackComment == null ? '' : objReport.sendBackComment;
+                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + sendBackCommentVar);
 
                             // set message header A222_1_1
                             layout.message(text('JHN001_A222_1_1') + ' : ' + data.message);
@@ -202,9 +207,9 @@ module jhn001.a.viewmodel {
                     sampleFileId: fileData.sampleFileId,
                     reportID: fileData.reportID,
                     fileId: fileData.fileId,
-                    fileSize: fileData.fileSize,
-                    
+                    fileSize: fileData.fileSize
                 }
+                
                 lstDoc.push(obj);
             }
             
@@ -553,7 +558,7 @@ module jhn001.a.viewmodel {
                 };
 
                 service.removeData(objRemove).done(() => {
-                    info({ messageId: "Msg_40" }).then(function() {
+                    info({ messageId: "MsgJ_40" }).then(function() {
                         self.reportClsId(null);
                         self.start(null , false);
                     });
@@ -566,7 +571,6 @@ module jhn001.a.viewmodel {
         public backTopScreenTopReport(): void {
             let self = this;
             window.history.back();
-            //nts.uk.request.jump("hr", "/view/jhn/003/a/index.xhtml");
         }
     }
 

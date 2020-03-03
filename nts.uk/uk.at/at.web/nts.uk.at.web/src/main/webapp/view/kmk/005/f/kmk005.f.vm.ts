@@ -252,6 +252,7 @@ module nts.uk.at.view.kmk005.f {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                         });
                     }).ifNo(() => {
+                        
                         nts.uk.ui.block.clear();
                     });
 

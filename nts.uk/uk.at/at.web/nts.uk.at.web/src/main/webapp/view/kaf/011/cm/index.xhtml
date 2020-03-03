@@ -23,7 +23,11 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td data-bind="text:remainDays() +'譌'"></td>
+								<td>
+									<div data-bind="if: remainDays">
+										<span data-bind="text:remainDays() +'譌'"></span>
+									</div>
+								</td>
 							</tr>
 						</tbody>
 					</table>

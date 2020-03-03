@@ -15,6 +15,8 @@ module nts.uk.at.view.kml001.a {
             textKML001_40 = nts.uk.resource.getText("KML001_40");
             isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
             standardDate: KnockoutObservable<string> =ko.observable(null);
+            langId: KnockoutObservable<string> = ko.observable('ja');
+           
             constructor() {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
@@ -286,6 +288,7 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.windows.setShared('isInsert', self.isInsert());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     nts.uk.ui.block.invisible();
+                    self.langId(nts.uk.ui.windows.getShared("KML001_B_LANGID"));
                     if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
                         nts.uk.ui.errors.clearAll();
                         var dfdPremiumItemSelect = servicebase.premiumItemSelect();
@@ -631,16 +634,20 @@ module nts.uk.at.view.kml001.a {
         }  
             
         public exportExcel(param): void {
-                var self = this;
-                nts.uk.ui.block.grayout();          
-                servicebase.saveAsExcel(param).done(function() {
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-                                        
-            }
+            var self = this;
+            let params = ({
+            baseDate:param,
+            languageId: _.isNil(self.langId())?"ja":self.langId()    
+            });
+                nts.uk.ui.block.grayout();
+            servicebase.saveAsExcel(params).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+
+        }
         }
     }
 }

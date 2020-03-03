@@ -10,6 +10,8 @@ module nts.uk.at.view.kml001.shr {
             premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
             getAttendanceItems: "at/schedule/budget/premium/attendancePremiumName",
             getAttendanceItemByType: "at/schedule/budget/premium/attendancePremiumItem",
+            findByLangId: "at/schedule/budget/premium/getByCIdAndLangId",
+            insertOrUpdatePremiumItemLanguage: "at/schedule/budget/premium/language/insert",
             //getAttendanceItemByType:  "at/share/attendanceType/getByType"
         }
 
@@ -48,14 +50,21 @@ module nts.uk.at.view.kml001.shr {
         export function getAttendanceItemByType(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAttendanceItemByType);
         }
-        export function saveAsExcel(param): JQueryPromise<any> {
+        export function saveAsExcel(params : any): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             let programName = program[1] != null ? program[1] : "";
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
-                    domainId: "PersonCostCalculation", domainType: "KML001" + programName, languageId: 'ja', baseDate: moment.utc(param).format()
+                    domainId: "PersonCostCalculation", domainType: "KML001" + programName, languageId: params.languageId , baseDate: moment.utc(params.baseDate).format()
                     , reportType: 0
                 });
         }
+        export function findByLangId(langId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.findByLangId + '/' + langId);
+        }
+        
+        export function insertPremiumItemLang(premiumItemLang: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.insertOrUpdatePremiumItemLanguage, premiumItemLang);
+    }
     }
 }

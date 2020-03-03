@@ -15,9 +15,13 @@ public interface PersonInfoItemPub {
 	
 	DateRangeItemExport getDateRangeItemByCtgId(String categoryId);
 	
+	List<DateRangeItemExport> getDateRangeItemByListCtgId(List<String> categoryIds);
+	
 	List<ComboBoxObject> getCombo(SelectionItemExport selectionItemDto,
 			Map<String, Map<Boolean, List<ComboBoxObject>>> combobox, String employeeId,
 			GeneralDate comboBoxStandardDate, boolean isRequired, int perEmplType, boolean isDataType6,
 			String categoryCode);
+	
+	String getItemDfId(String ctgId , String itemCd);
 
 }

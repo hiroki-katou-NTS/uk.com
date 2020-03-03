@@ -154,7 +154,7 @@ module nts.uk.at.view.kmf002.c {
                     _.forEach(data.listEmployee, function(value: any) {
                         _self.mapEmployeeCode.set(value.employeeCode, value.employeeId);
                         _self.mapEmployeeID.set(value.employeeId, value.employeeCode);
-                        tempArr.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName});  
+                        tempArr.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName});  
                     });
                     _self.employeeList(tempArr);
                     _self.findAllEmployeeRegister();
@@ -468,7 +468,7 @@ module nts.uk.at.view.kmf002.c {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
             

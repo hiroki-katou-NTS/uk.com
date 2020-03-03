@@ -227,7 +227,7 @@ module nts.uk.at.view.kmk005.i {
                                 name: item.employeeName,
                                 workplaceId: item.workplaceId,
                                 workplaceCode: item.workplaceCode,
-                                workplaceName: item.workplaceName
+                                affiliationName: item.affiliationName
                             };
                         }));
                         if (self.kcpcompoment.employeeInputList() && self.kcpcompoment.employeeInputList().length > 0){

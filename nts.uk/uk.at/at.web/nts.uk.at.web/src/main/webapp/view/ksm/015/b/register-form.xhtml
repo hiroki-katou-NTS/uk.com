@@ -1,0 +1,67 @@
+<div>
+    <!-- B7_1 -->
+    <div class="valign-center control-group">
+        <div data-bind="ntsFormLabel: { constraint: 'ShiftMasterCode', required: true, enable: true}">
+            #{i18n.getText('KSM015_13')}</div>
+
+        <input  tabindex="6" class="inputRequired" id="requiredCode" data-bind="ntsTextEditor: {	
+name: '#[KSM015_24]',
+constraint: 'ShiftMasterCode',
+value: registrationForm().selectedCode,
+option: { width: '50px', textalign: 'right' },
+enable: registrationForm().newMode(),
+required: true}" />
+    </div>
+    <!-- B7_2 -->
+    <div class="valign-center control-group">
+        <div data-bind="ntsFormLabel: { constraint: 'ShiftMasterName', required: true, enable: true}">
+            #{i18n.getText('KSM015_14')}</div>
+        <input tabindex="7" data-bind="ntsTextEditor: {	
+name: '#[KSM015_25]',
+value: registrationForm().shiftMasterName,
+constraint: 'ShiftMasterName',
+option: { width: '60px', textalign: 'right' },
+required: true}" />
+    </div>
+    <!-- B7_3 -->
+    <div class="valign-center control-group">
+        <div data-bind="ntsFormLabel: {required: true, enable: true}">
+            #{i18n.getText('KSM015_17')}</div>
+        <button tabindex="8" class="large" data-bind="click: openDialogKDL003">#{i18n.getText('KSM015_18')}</button>
+        <!-- B8_3_1 -->
+        <div class="b73-desc">
+            <!-- B8_3_2 -->
+            <div class="table" data-bind="show: registrationForm().workTypeDisplay()">
+                <div class="cell">
+                    <span>#{i18n.getText('KSM015_15')}</span>
+                    <span data-bind="text: registrationForm().workTypeDisplay()"></span>
+                </div>
+            </div>
+
+            <div class="table" data-bind="show: registrationForm().workTimeSetDisplay()">
+                <div class="cell">
+                    <span>#{i18n.getText('KSM015_16')}</span>
+                    <span data-bind="text: registrationForm().workTimeSetDisplay()"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- B9 -->
+    <div class="valign-center control-group">
+        <div data-bind="ntsFormLabel: { required: false, enable: true}">
+            色</div>
+        <div id="colorpicker" tabindex="9"
+            data-bind="ntsColorPicker: {value: registrationForm().color, enable: true, width: 50}" />
+    </div>
+    <!-- B10 -->
+    <div class="valign-center control-group">
+        <div data-bind="ntsFormLabel: {required: false, enable: true}">
+            #{i18n.getText('KSM015_16')}</div>
+            <input tabindex="10" data-bind="ntsTextEditor: {	
+                name: '#[KSM015_20]',
+                value: registrationForm().note,
+                option: { width: '300px', textalign: 'right' },
+                required: false}" />
+    </div>
+</div>

@@ -74,6 +74,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		//エラーフラグ　＝　False、人事承認状態　＝　Empty (Error flag = False, HR approval state = Empty)
 		boolean errorFlg = false;
 		ApprovalStateHrImport apprState = null;
+		//人事承認状況を取得する
 		Optional<ApprovalRootStateHr> opRoot = repoApprStateHr.getById(rootStateID);
 		if(!opRoot.isPresent()){
 			//エラーフラグ　＝　True (Error flag = True)
@@ -82,7 +83,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		}
 		ApprovalRootStateHr root = opRoot.get();
 		//人事承認状態を作成 (Tạo HR approval state)
-		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), 
+		apprState = new ApprovalStateHrImport(rootStateID, root.getAppDate(), root.getEmployeeID(), false,
 				root.getLstPhaseState().stream()
 					.map(ph -> new PhaseStateHrImport(ph.getPhaseOrder(), ph.getApprovalAtr().value, 
 						ph.getApprovalForm().value, ph.getLstApprovalFrame().stream()
@@ -94,6 +95,9 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 									).collect(Collectors.toList()))
 						).collect(Collectors.toList()))
 					).collect(Collectors.toList()));
+		//承認完了フラグ
+		boolean reflectFlag = this.isApprovedAllHr(apprState);
+		apprState.setReflectFlag(reflectFlag);
 		//エラーフラグ、人事承認状態　を渡す ( Truyền  HR approval state, Error flag)
 		return new ApprovalRootStateHrExport(errorFlg, apprState);
 	}
@@ -152,17 +156,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							//指定する社員が代行承認者かチェックする
 							if(apprAgent.getListAgent().contains(employeeID)){//true
 								//(ドメインモデル「人事承認枠」)承認区分=「承認済」、代行者=INPUT．社員ID
-								appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-								appr.setAgentID(employeeID);
-								appr.setApprovalDate(GeneralDate.today());
-								appr.setApprovalReason(comment);
+								this.setStateRQ632(appr, employeeID, comment);
 								continue;
 							}
 						}else{
-							appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-							appr.setAgentID("");
-							appr.setApprovalDate(GeneralDate.today());
-							appr.setApprovalReason(comment);
+							this.setStateRQ632(appr, "", comment);
 							continue;
 						}
 					} else {//「人事承認枠」．承認区分 ≠ 未承認
@@ -171,10 +169,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							continue;
 						}
 						//(ループ中の「人事承認枠」)承認区分=「承認済」、代行者=空
-						appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-						appr.setAgentID("");
-						appr.setApprovalDate(GeneralDate.today());
-						appr.setApprovalReason(comment);
+						this.setStateRQ632(appr, "", comment);
 						continue;
 					}
 				}
@@ -190,6 +185,12 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		}
 		repoApprStateHr.update(root);
 		return phaseOrder;
+	}
+	private void setStateRQ632(ApproverInforHr appr, String employeeID, String comment) {
+		appr.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+		appr.setAgentID(employeeID);
+		appr.setApprovalDate(GeneralDate.today());
+		appr.setApprovalReason(comment);
 	}
 	/**
 	 * [RQ633]申請書を否認する
@@ -245,11 +246,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							//指定する社員が代行承認者かチェックする
 	//						if文： 返す結果の承認代行者リスト. Contains(INPUT．社員ID)
 							if(apprAgent.getListAgent().contains(employeeID)){//true
-								appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-								appr.setAgentID(employeeID);
-								appr.setApprovalDate(GeneralDate.today());
-								appr.setApprovalReason(comment);
-								appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+								this.setStateRQ633(appr, employeeID, comment);
 								executedFlag = true;
 							}
 							continue;
@@ -259,11 +256,7 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 							continue;
 						}
 					}
-					appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-					appr.setAgentID("");
-					appr.setApprovalDate(GeneralDate.today());
-					appr.setApprovalReason(comment);
-					appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+					this.setStateRQ633(appr, "", comment);
 					executedFlag = true;
 				}
 			}
@@ -272,6 +265,13 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			return executedFlag;
 		}
 		return executedFlag;
+	}
+	private void setStateRQ633(ApproverInforHr appr, String employeeID, String comment) {
+		appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+		appr.setAgentID(employeeID);
+		appr.setApprovalDate(GeneralDate.today());
+		appr.setApprovalReason(comment);
+		appr.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 	}
 	/**
 	 * [RQ634]申請書を差し戻しする
@@ -345,8 +345,9 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootStateHr root = opRootState.get();
-		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
-		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
+		//109827 hoatt 2020.03.03
+		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder));
+		//ドメインモデル「人事承認フェーズインスタンス」．順序を1～5の順でループする
 		for(ApprovalPhaseStateHr phaseHr : root.getLstPhaseState()){
 			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
 			List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phaseHr));
@@ -397,8 +398,10 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	 */
 	@Override
 	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr) {
+		//エラーフラグ　＝　True
 		if(apprSttHr == null) return true;
 		try{
+			//convert data
 			ApprovalRootStateHr root = new ApprovalRootStateHr(apprSttHr.getRootStateID(),
 				apprSttHr.getAppDate(), apprSttHr.getEmployeeID(),
 				apprSttHr.getLstPhaseState().stream().map(ph -> ApprovalPhaseStateHr.convert(ph.getPhaseOrder(),
@@ -411,9 +414,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 								).collect(Collectors.toList()))
 						).collect(Collectors.toList())
 				);
+			//ドメインモデル「人事承認ルートインスタンス」を追加
 			repoApprStateHr.insert(root);
 			return false;
 		}catch(Exception ex){
+			//エラーフラグ　＝　True
 			return true;
 		}
 	}
@@ -678,5 +683,39 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			}
 		}
 		return Optional.empty();
+	}
+	/**
+	 * 2.承認全体が完了したか
+	 * @param 承認ルートインスタンス apprState
+	 * @return 承認完了フラグ(true, false)
+				　true：承認全体が完了
+				　false：承認全体がまだ未完了
+	 */
+	@Override
+	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState) {
+		//承認完了フラグ = false（初期化）
+		Boolean approveAllFlag = false;
+		apprState.getLstPhaseState().stream()
+				.sorted((a,b) -> a.getPhaseOrder().compareTo(b.getPhaseOrder()))
+				.collect(Collectors.toList());
+		for(PhaseStateHrImport phase : apprState.getLstPhaseState()){
+			//「承認フェーズインスタンス」．承認区分が承認済かチェックする
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtr.APPROVED.value){
+				approveAllFlag = true;
+				break;
+			}
+			//1.人事承認フェーズ毎の承認者を取得する
+			List<String> listApprover = this.getApproverFromPhaseHr(phase);
+			//承認者一覧(output)に承認者がいるかチェックする
+			if(CollectionUtil.isEmpty(listApprover)){
+				continue;
+			}
+			//承認代行情報の取得処理
+			ApprovalRepresenterOutput apprAgentOutput = collectApprAgentSv.getApprovalAgentInfor(AppContexts.user().companyId(), listApprover);
+			if(apprAgentOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+				break;
+			}
+		}
+		return approveAllFlag;
 	}
 }

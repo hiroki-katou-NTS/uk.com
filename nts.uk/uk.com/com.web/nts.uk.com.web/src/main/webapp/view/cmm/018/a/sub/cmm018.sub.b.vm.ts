@@ -185,7 +185,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     //list left
                     _.each(self.lstCompany(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate,
-                            item.company.endDate, item.company.employmentRootAtr == 2 ? item.company.confirmationRootType : item.company.applicationType, item.company.employmentRootAtr));
+                            item.company.endDate, item.company.applicationType, item.company.confirmationRootType, item.company.employmentRootAtr));
                     });
                     self.dataDisplay(self.convert(lstRoot));
                    let a:any = null;
@@ -255,7 +255,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     //list left
                     _.each(self.lstWorkplace(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
-                            item.workplace.endDate, item.workplace.employmentRootAtr == 2 ? item.workplace.confirmationRootType : item.workplace.applicationType, item.workplace.employmentRootAtr));
+                            item.workplace.endDate, item.workplace.applicationType, item.workplace.confirmationRootType, item.workplace.employmentRootAtr));
                     });
                     //list right
                      let com = self.findRootWpD(self.singleSelectedCode());
@@ -324,7 +324,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     //list left
                     _.each(self.lstPerson(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate,
-                            item.person.endDate, item.person.employmentRootAtr == 2 ? item.person.confirmationRootType : item.person.applicationType, item.person.employmentRootAtr));
+                            item.person.endDate, item.person.applicationType, item.person.confirmationRootType, item.person.employmentRootAtr));
                     });
                     //list right
                     let com = self.findRootWpD(self.singleSelectedCode());
@@ -518,7 +518,9 @@ module nts.uk.com.view.cmm018.a.sub {
                 _.each(self.lstNameAppType(), function(item: vmbase.ApplicationType){
                     let lstbyApp: Array<vmbase.Com> = [];
                     _.each(root, function(itemRoot){
-                        if(item.value != 14 && item.value == itemRoot.applicationType && item.employRootAtr == itemRoot.employmentRootAtr){
+                        if(item.employRootAtr == 2 && item.value == itemRoot.confirmationRootType){//confirm
+                            lstbyApp.push(new vmbase.Com(itemRoot.approvalId, itemRoot.startDate + '～' + itemRoot.endDate, itemRoot.employmentRootAtr));
+                        }else if(item.value != 14 && item.value == itemRoot.applicationType && item.employRootAtr == itemRoot.employmentRootAtr){
                             lstbyApp.push(new vmbase.Com(itemRoot.approvalId, itemRoot.startDate + '～' + itemRoot.endDate, itemRoot.employmentRootAtr));
                         }
                     });
@@ -564,7 +566,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.company.endDate;
                         startDate = history.company.startDate;
-                        listType.push(new vmbase.ApplicationType(history.company.applicationType,'', history.company.employmentRootAtr));
+                        let typeS = history.company.employmentRootAtr == 2 ? history.company.confirmationRootType : history.company.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS, '', history.company.employmentRootAtr));
                     }
                 }else if(self.tabSelectedB() == 1){
                     if(self.singleSelectedCode() == -1){
@@ -574,7 +577,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.workplace.endDate;
                         startDate = history.workplace.startDate;
-                        listType.push(new vmbase.ApplicationType(history.workplace.applicationType,'', history.workplace.employmentRootAtr));
+                        let typeS = history.workplace.employmentRootAtr == 2 ? history.workplace.confirmationRootType : history.workplace.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS, '', history.workplace.employmentRootAtr));
                     }
                 }else{
                     if(self.singleSelectedCode() == -1){
@@ -584,7 +588,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     }else{
                         endDate = history.person.endDate;
                         startDate = history.person.startDate;
-                        listType.push(new vmbase.ApplicationType(history.person.applicationType,'', history.person.employmentRootAtr));
+                        let typeS = history.person.employmentRootAtr == 2 ? history.person.confirmationRootType : history.person.applicationType;
+                        listType.push(new vmbase.ApplicationType(typeS,'', history.person.employmentRootAtr));
                     }
                 }
                 //QA#100601
@@ -723,16 +728,19 @@ module nts.uk.com.view.cmm018.a.sub {
                     let month =   __viewContext.viewModel.viewmodelA.checkDate(startDate.getMonth() + 1);
                     let day =  __viewContext.viewModel.viewmodelA.checkDate(startDate.getDate());
                     let endDateNew = startDate.getFullYear() + '/' + month +  '/' + day;
-                    let appTypeValue = data.lstAppType[0].value;
                     let employRootAtr = data.lstAppType[0].employRootAtr;
+                    let appTypeValue = employRootAtr == 1 ? data.lstAppType[0].value : null;
+                    let confirmValue = employRootAtr == 2 ? data.lstAppType[0].value : null;
+                    let typeS = employRootAtr == 2 ? confirmValue : appTypeValue;
                     if(!data.copyDataFlag){//create new
                         let app = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
                             self.comRoot(new vmbase.CompanyAppRootADto(false, employRootAtr, 
-                                appTypeValue, app == undefined ? getText('CMM018_109') : app.localizedName, '-1', '',
+                                typeS, app == undefined ? getText('CMM018_109') : app.localizedName, '-1', '',
                                 '',b,b,b,b,b));
+                        
                     }else{
-                        self.findHistoryLastofApp(appTypeValue,employRootAtr); //list right
+                        self.findHistoryLastofApp(typeS, employRootAtr); //list right
                     }
                     let histLast = self.findHistBestNew(appTypeValue, employRootAtr, self.tabSelectedB());
                     if(histLast != null){
@@ -743,79 +751,75 @@ module nts.uk.com.view.cmm018.a.sub {
                         _.each(self.lstCompany(), function(item){
                             if(item.company.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate, item.company.endDate, 
-                                            item.company.applicationType, item.company.employmentRootAtr));
+                                            item.company.applicationType, item.company.confirmationRootType, item.company.employmentRootAtr));
                             }else{
                                a = new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate, item.company.endDate, 
-                                            item.company.applicationType, item.company.employmentRootAtr);
+                                            item.company.applicationType, item.company.confirmationRootType, item.company.employmentRootAtr);
                             }
                         });
                         if(a == null){//loai don chua co lich su : them moi tu dau
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue,employRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue,confirmValue,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                         }else{
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,a.employmentRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,confirmValue,a.employmentRootAtr);
                             let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                                a.applicationType, a.employmentRootAtr);
+                                                a.applicationType, a.confirmationRootType, a.employmentRootAtr);
                             data2.push(add);
                             data2.push(old);
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-                        
-//                        self.singleSelectedCode('-1');
                     }else if(self.tabSelectedB() == 1){//workplace
                         let a = null;
                         _.each(self.lstWorkplace(), function(item){
                             if(item.workplace.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate, item.workplace.endDate, 
-                                            item.workplace.applicationType, item.workplace.employmentRootAtr));
+                                            item.workplace.applicationType, item.workplace.confirmationRootType, item.workplace.employmentRootAtr));
                             }else{
                                a = new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate, item.workplace.endDate, 
-                                            item.workplace.applicationType, item.workplace.employmentRootAtr);
+                                            item.workplace.applicationType, item.workplace.confirmationRootType, item.workplace.employmentRootAtr);
                             }
                         });
                         if(a == null){//loai don chua co lich su : them moi tu dau
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue,employRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue,confirmValue,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                         }else{
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,a.employmentRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,a.confirmationRootType,a.employmentRootAtr);
                             let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                                a.applicationType, a.employmentRootAtr);
+                                                a.applicationType, a.confirmationRootType, a.employmentRootAtr);
                             data2.push(add);
                             data2.push(old);
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-//                        self.singleSelectedCode('-1');
                     }else{//person
                         let a = null;
                         _.each(self.lstPerson(), function(item){
                             if(item.person.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate, item.person.endDate, 
-                                            item.person.applicationType, item.person.employmentRootAtr));
+                                            item.person.applicationType, item.person.confirmationRootType, item.person.employmentRootAtr));
                             }else{
                                a = new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate, item.person.endDate, 
-                                            item.person.applicationType, item.person.employmentRootAtr);
+                                            item.person.applicationType, item.person.confirmationRootType, item.person.employmentRootAtr);
                             }
                         });
                         if(a == null){//loai don chua co lich su : them moi tu dau
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue,employRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appTypeValue, confirmValue,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                         }else{
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,a.employmentRootAtr);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,a.applicationType,a.confirmationRootType, a.employmentRootAtr);
                             let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                                a.applicationType, a.employmentRootAtr);
+                                                a.applicationType, a.confirmationRootType,a.employmentRootAtr);
                             data2.push(add);
                             data2.push(old);
                             self.dataDisplay(self.convert(data2));
                             self.dataDisplay.valueHasMutated();
                         }
-//                        self.singleSelectedCode('-1');
                     }
-                    
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
             }
             /**
@@ -899,6 +903,10 @@ module nts.uk.com.view.cmm018.a.sub {
                 setShared('CMM018J_PARAM', paramJ);
                 modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
                     block.clear();
+                    let cancel = getShared('CMM018J_OUTPUT');
+                    if(cancel != undefined && cancel.cancel){
+                        return;
+                    }
                     if(self.tabSelectedB()==0){
                         self.getDataCompanyPr().done(function(){
                             let codeSelected = self.findRootByEndDate(self.ENDDATE_LATEST, appType,employRootAtr, vmbase.RootType.COMPANY);
@@ -984,7 +992,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         //list left
                         _.each(self.lstCompany(), function(item){
                             lstRoot.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate,
-                                item.company.endDate, item.company.applicationType, item.company.employmentRootAtr));
+                                item.company.endDate, item.company.applicationType, item.company.confirmationRootType,item.company.employmentRootAtr));
                         });
                         //list right
                         let com = self.findRootComB(self.singleSelectedCode());

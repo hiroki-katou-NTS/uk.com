@@ -71,6 +71,8 @@ public class CalFormulasItemExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_96, TextResource.localize("KMK002_96"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_100, TextResource.localize("KMK002_100"),
+				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 	}
@@ -79,7 +81,7 @@ public class CalFormulasItemExportImpl implements MasterListData {
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		datas = calFormulasItemRepository.getDataTableExport(companyId);
+		datas = calFormulasItemRepository.getDataTableExport(companyId, query.getLanguageId());
 		return datas;
 	}
 

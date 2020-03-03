@@ -262,6 +262,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
 			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.cid =:cid AND c.categoryCd =:categoryCd AND i.itemCd =:itemCd ");
 	
+	private final static String SELECT_ITEM_DF_ID_QUERY = String.join(" ",
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE i.perInfoCtgId =:categoryId AND i.itemCd =:itemCd ");
+	
 	private final static String SELECT_ITEM_CD_BY_ITEM_ID_QUERY = String.join(" ",
 			"SELECT distinct i.itemCd",
 			"FROM PpemtPerInfoItem i",
@@ -1062,6 +1069,15 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("itemCd", itemCode)
 				.getSingle().orElse("not itemName");
 	}
+	
+	@Override
+	public String getItemDfId(String categoryId, String itemCode) {
+		return this.queryProxy()
+				.query(SELECT_ITEM_DF_ID_QUERY, String.class)
+				.setParameter("categoryId", categoryId)
+				.setParameter("itemCd", itemCode)
+				.getSingle().orElse("not itemName");
+	}
 
 	@Override
 
@@ -1266,10 +1282,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return itemIds;
 
 	}
-	public List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId, int abolitionAtr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
 	 * Query get nameItem for CPS003F
@@ -1317,6 +1329,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId, int abolitionAtr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

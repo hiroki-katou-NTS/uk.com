@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
- *
+ * アルゴリズム「届出情報削除処理」を実行する(Thực hiện thuật toán "Xử lý delete thông tin report")
  */
 @Stateless
 public class DelRegisPersonReportHandler extends CommandHandler<RemoveReportCommand>{
@@ -33,6 +33,8 @@ public class DelRegisPersonReportHandler extends CommandHandler<RemoveReportComm
 			return;
 		}
 		
+		// 届出IDをキーとしたドメイン「人事届出の登録.削除済」=trueに設定する 
+		// (Cài Đặt tên miền "Đăng ký HR report. Đã xóa" = true với ID report làm khóa)
 		repo.remove(cid, command.reportId);
 	}
 	

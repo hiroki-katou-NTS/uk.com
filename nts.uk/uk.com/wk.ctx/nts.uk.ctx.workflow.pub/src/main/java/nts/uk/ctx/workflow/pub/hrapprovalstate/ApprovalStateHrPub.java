@@ -74,4 +74,12 @@ public interface ApprovalStateHrPub {
 	 * 		        エラーフラグ　＝　False OK場合 
 	 */
 	public boolean createApprStateHr(ApprovalStateHrImport apprSttHr);
+	/**
+	 * 2.承認全体が完了したか
+	 * @param 承認ルートインスタンス apprState
+	 * @return 承認完了フラグ(true, false)
+				　true：承認全体が完了
+				　false：承認全体がまだ未完了
+	 */
+	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState);
 }

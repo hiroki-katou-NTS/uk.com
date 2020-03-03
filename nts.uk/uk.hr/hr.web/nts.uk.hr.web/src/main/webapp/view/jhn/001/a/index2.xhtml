@@ -19,6 +19,7 @@
 								<th class="phase-app" style="width: 111px;"></th>
 								<th class="phase-app" style="width: 230px;">#{i18n.getText('KAF000_3')}</th>
 								<th class="phase-app" style="width: 111px;">#{i18n.getText('KAF000_29')}</th>
+								<th class="phase-app" style="width: 111px;">承認日</th>
 								<th class="phase-app" style="width: 111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
@@ -42,6 +43,11 @@
 										style="width: 111px;" 
 										data-bind="text: loopApprover.approvalAtrName"></span>
 									</td>
+									<td>
+										<span class="limited-label" 
+										style="width: 111px; text-align: left; padding-left: 5px;"
+										data-bind="text: loopApprover.approvalDate"></span>	
+									</td>									
 									<td>
 										<span class="limited-label" 
 										style="width: 111px; text-align: left; padding-left: 5px;"

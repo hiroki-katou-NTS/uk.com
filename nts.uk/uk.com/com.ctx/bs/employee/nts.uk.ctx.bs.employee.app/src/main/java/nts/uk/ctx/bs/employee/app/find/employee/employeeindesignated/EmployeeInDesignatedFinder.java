@@ -30,7 +30,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -63,7 +63,7 @@ public class EmployeeInDesignatedFinder {
 	
 	/** The workplace info repo. */
 	@Inject
-	private WorkplaceInfoRepository workplaceInfoRepo;
+	private WorkplaceInformationRepository workplaceInfoRepo;
 
 	/** The person repo. */
 	@Inject
@@ -119,8 +119,7 @@ public class EmployeeInDesignatedFinder {
 		}
 		
 		// List WorkplaceInfo
-		List<WorkplaceInfo> workplaceInfoList = this.workplaceInfoRepo.getByWkpIds(input.getWorkplaceIdList(),
-				input.getReferenceDate());
+		List<WorkplaceInfo> workplaceInfoList = this.workplaceInfoRepo.findByWkpIds(input.getWorkplaceIdList());
 		
 		Map<String, WorkplaceInfo> workplaceInfoMap = workplaceInfoList.parallelStream().collect(Collectors.toMap(WorkplaceInfo::getWorkplaceId, Function.identity()));
 					

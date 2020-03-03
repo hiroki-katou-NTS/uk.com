@@ -4,38 +4,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import nts.arc.time.ClockHourMinute;
-import nts.uk.ctx.at.record.dom.reservation.BentoInstanceHelper;
+import static nts.arc.time.ClockHourMinute.*;
+
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.reservation.Helper;
 
 public class ReservationClosingTimeTest {
 
 	@Test
 	public void canReserve_start_end() {
-		ClockHourMinute startTime = ClockHourMinute.hm(10, 0); // 10:00 
-		ClockHourMinute endTime = ClockHourMinute.hm(20, 0); // 20:00
-		ReservationClosingTime closingTime = BentoInstanceHelper.closingTime(startTime.valueAsMinutes(), endTime.valueAsMinutes());
+
+		ReservationClosingTime target = Helper.ClosingTime.startEnd(
+				hm(10, 0),  // start 10:00
+				hm(20, 0)); // end   20:00
 		
-		ClockHourMinute time1 = ClockHourMinute.hm(9, 59); // 9:59
-		ClockHourMinute time2 = ClockHourMinute.hm(10, 1); // 10:00
-		ClockHourMinute time3 = ClockHourMinute.hm(20, 0); // 20:00
-		ClockHourMinute time4 = ClockHourMinute.hm(20, 1); // 20:01
-		
-		assertThat(closingTime.canReserve(time1)).isFalse();
-		assertThat(closingTime.canReserve(time2)).isTrue();
-		assertThat(closingTime.canReserve(time3)).isTrue();
-		assertThat(closingTime.canReserve(time4)).isFalse();
+		assertThat(target.canReserve(hm(9, 59))).isFalse();
+		assertThat(target.canReserve(hm(10, 0))).isTrue();
+		assertThat(target.canReserve(hm(20, 0))).isTrue();
+		assertThat(target.canReserve(hm(20, 1))).isFalse();
 	}
 	
 	@Test
 	public void canReserve_end() {
-		ClockHourMinute endTime = ClockHourMinute.hm(20, 0); // 20:00
-		ReservationClosingTime closingTime = BentoInstanceHelper.closingTime(endTime.valueAsMinutes());
 		
-		ClockHourMinute time1 = ClockHourMinute.hm(20, 0); // 20:00
-		ClockHourMinute time2 = ClockHourMinute.hm(20, 1); // 20:01
+		ReservationClosingTime target = Helper.ClosingTime.endOnly(
+				hm(20, 0)); // end 20:00
 		
-		assertThat(closingTime.canReserve(time1)).isTrue();
-		assertThat(closingTime.canReserve(time2)).isFalse();
+		assertThat(target.canReserve(hm(20, 0))).isTrue();
+		assertThat(target.canReserve(hm(20, 1))).isFalse();
 	}
 
+	@Test
+	public void getters() {
+		ReservationClosingTime target = Helper.ClosingTime.endOnly(hm(20, 0));
+		NtsAssert.invokeGetters(target);
+	}
 }

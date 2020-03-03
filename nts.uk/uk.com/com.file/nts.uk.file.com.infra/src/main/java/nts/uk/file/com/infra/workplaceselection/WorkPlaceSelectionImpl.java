@@ -70,7 +70,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+"						INNER JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
 			+"						INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID "
 			+"						INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO "
-			+"						INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG) bwc ON wm.CID = wm.CID AND bwc.RN = 1 "
+			+"						INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG_2) bwc ON wm.CID = wm.CID AND bwc.RN = 1 "
 			+"					WHERE "
 			+" 						wi.START_DATE <=  ?baseDate AND"
 			+" 						wi.END_DATE   >=  ?baseDate AND wm.CID = ?cid"

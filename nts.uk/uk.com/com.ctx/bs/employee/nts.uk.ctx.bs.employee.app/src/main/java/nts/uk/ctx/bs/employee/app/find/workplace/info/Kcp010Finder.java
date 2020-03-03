@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.info;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,17 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.Kcp010WorkplaceSearchData;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,7 +28,7 @@ public class Kcp010Finder {
 
 	/** The wkp info repo. */
 	@Inject
-	private WorkplaceInfoRepository wkpInfoRepo;
+	private WorkplaceInformationRepository wkpInfoRepo;
 	
 	/** The workplace history repository. */
 	@Inject
@@ -43,12 +37,6 @@ public class Kcp010Finder {
 	/**AffWorkplaceHistoryItemRepository*/
 	@Inject
 	private AffWorkplaceHistoryItemRepository workplaceHistoryItemRepository;
-	
-	@Inject
-	private WorkplaceInformationRepository workplaceInforRepo;
-	
-	@Inject
-	private WorkplaceExportService workplaceExportService;
 
 	/**
 	 * Find wkp info by workplaceCode
@@ -58,36 +46,23 @@ public class Kcp010Finder {
 	public Optional<Kcp010WorkplaceSearchData> searchByWorkplaceCode(String workplaceCode, GeneralDate baseDate) {
 		
 		// find workplace info
-//		List<WorkplaceInfo> listWkpInfo = 
-//				wkpInfoRepo.findByWkpCd(AppContexts.user().companyId(), workplaceCode, baseDate);
-		
-		// [No.575]職場コードから職場IDを取得する
-		Optional<String> workplaceId = workplaceInforRepo.getWkpNewByCdDate(AppContexts.user().companyId(), workplaceCode, baseDate)
-				.map(c -> c.getWorkplaceId());
-	
-		if (!workplaceId.isPresent()) {
-			throw new BusinessException("Msg_7");
-		}
-		
-		// [No.560]職場IDから職場の情報をすべて取得する
-		List<String> workplaceIds = new ArrayList<>();
-		workplaceIds.add(workplaceId.get());
-		List<WorkplaceInforParam> listWkpInfo = workplaceExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), workplaceIds, baseDate);
+		Optional<WorkplaceInformation> listWkpInfo = 
+				wkpInfoRepo.getWkpNewByCdDate(AppContexts.user().companyId(), workplaceCode, baseDate);
 
 		// check null or empty
-		if (CollectionUtil.isEmpty(listWkpInfo)) {
+		if (!listWkpInfo.isPresent()) {
 			throw new BusinessException("Msg_7");
 		}
-		WorkplaceInforParam wkpInfo = listWkpInfo.get(0);
 		
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
-				.workplaceId(wkpInfo.getWorkplaceId())
-				.code(wkpInfo.getWorkplaceCode())
-				.name(wkpInfo.getDisplayName())
+				.workplaceId(listWkpInfo.get().getWorkplaceId())
+				.code(listWkpInfo.get().getWorkplaceCode().v())
+				.name(listWkpInfo.get().getWorkplaceDisplayName().v())
 				.build());
 	}
 	
 	public Optional<Kcp010WorkplaceSearchData> findBySid(String employeeId, GeneralDate baseDate) {
+		String companyID = AppContexts.user().companyId();
 		//get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = workplaceHistoryRepo.getByEmpIdAndStandDate(employeeId, baseDate);
 		if(!affWrkPlc.isPresent()) 
@@ -100,7 +75,7 @@ public class Kcp010Finder {
 			return Optional.empty();
 		
 		// Get workplace info.
-		Optional<WorkplaceInfo> optWorkplaceInfo = wkpInfoRepo.findByWkpId(affWrkPlcItem.get().getWorkplaceId(), baseDate);
+		Optional<WorkplaceInformation> optWorkplaceInfo = wkpInfoRepo.getWkpNewByIdDate(companyID, affWrkPlcItem.get().getWorkplaceId(), baseDate);
 
 		// Check exist
 		if (!optWorkplaceInfo.isPresent()) {
@@ -108,10 +83,10 @@ public class Kcp010Finder {
 		}
 
 		// Return workplace id
-		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
+		WorkplaceInformation wkpInfo = optWorkplaceInfo.get();
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
 				.workplaceId(wkpInfo.getWorkplaceId())
 				.code(wkpInfo.getWorkplaceCode().v())
-				.name(wkpInfo.getWkpDisplayName().v()).build());
+				.name(wkpInfo.getWorkplaceDisplayName().v()).build());
 	}
 }

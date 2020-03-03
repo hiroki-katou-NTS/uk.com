@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
@@ -17,6 +18,8 @@ import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepos
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
+import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.department.master.AffDpmHistItemExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
@@ -31,13 +34,16 @@ public class DepartmentPubImpl implements DepartmentPub {
 	private DepartmentInformationRepository depInforRepo;
 	
 	@Inject
-	private AffDepartmentHistoryItemRepository affDepartmentHistoryItemRepository;
+	private AffDepartmentHistoryItemRepository affDepHistItemRepo;
 	
 	@Inject
 	private DepartmentConfigurationRepository departmentConfigurationRepository;
 	
 	@Inject
 	private DepartmentInformationRepository departmentInformationRepository;
+	
+	@Inject
+	private SyCompanyPub syCompanyPub;
 
 	@Override
 	public List<DepartmentInforExport> getDepartmentInforByDepIds(String companyId, List<String> listDepartmentId,
@@ -103,7 +109,7 @@ public class DepartmentPubImpl implements DepartmentPub {
 
 	@Override
 	public AffDpmHistItemExport getDepartmentHistItemByEmpDate(String employeeID, GeneralDate date) {
-		Optional<AffDepartmentHistoryItem> item = affDepartmentHistoryItemRepository.findByEmpDate(employeeID, date);
+		Optional<AffDepartmentHistoryItem> item = affDepHistItemRepo.findByEmpDate(employeeID, date);
 		if(!item.isPresent()) {
 			return null;
 		} else {
@@ -154,6 +160,19 @@ public class DepartmentPubImpl implements DepartmentPub {
 		// 部門の上位部門を取得する
 		lstResult.addAll(this.getUpperDepartment(companyID, departmentID, date));
 		return lstResult;
+	}
+
+	@Override
+	public List<String> getlstSidByDepAndDate(List<String> lstDepId, DatePeriod period) {
+		//部門と基準日から所属部門履歴項目を取得する
+		List<AffDepartmentHistoryItem> lstItem = affDepHistItemRepo.getAffDepartmentHistoryItems(lstDepId, period.start());
+		//社員IDの重複は除く
+		List<String> lstSid = lstItem.stream().map(c -> c.getEmployeeId()).distinct().collect(Collectors.toList());
+		//ドメインモデル「所属会社履歴（社員別）」をすべて取得する(Lấy toàn bộ domain 「所属会社履歴（社員別）」)
+		List<AffCompanyHistExport>  lstR = syCompanyPub.GetAffCompanyHistByEmployee(lstSid, period);
+		//取得した「所属会社履歴項目」をすべて取得する
+		//取得できた「所属会社履歴（社員別）」の社員IDを返す
+		return lstR.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 	}
 
 }

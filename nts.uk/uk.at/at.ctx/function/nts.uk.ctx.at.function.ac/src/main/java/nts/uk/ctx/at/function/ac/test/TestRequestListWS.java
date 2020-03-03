@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ac.test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,11 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigExport;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
-import nts.uk.ctx.bs.employee.pub.workplace.config.WorkplaceConfigHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 

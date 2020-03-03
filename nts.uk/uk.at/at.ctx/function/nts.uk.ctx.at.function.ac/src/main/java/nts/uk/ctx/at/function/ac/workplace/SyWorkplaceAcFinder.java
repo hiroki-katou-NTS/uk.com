@@ -9,20 +9,22 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WkpConfigAtTimeAdapterDto;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 @Stateless
 public class SyWorkplaceAcFinder implements SyWorkplaceAdapter {
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 	
 	@Override
 	public List<WkpConfigAtTimeAdapterDto> findByWkpIdsAtTime(String companyId, GeneralDate baseDate,
 			List<String> wkpIds) {
-		List<WkpConfigAtTimeAdapterDto> data  = syWorkplacePub.findByWkpIdsAtTime(companyId, baseDate, wkpIds)
+		List<WkpConfigAtTimeAdapterDto> data  = workplacePub.findByWkpIdsAtTime(companyId, baseDate, wkpIds)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
-		
 		return data;
 	}
 	
