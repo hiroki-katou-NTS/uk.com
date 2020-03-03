@@ -44,6 +44,9 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                         self.selectedItem(_.find(self.listMaster(), function(o) { return o.commonMasterId == code; }));
                         self.commonMasterCode(self.selectedItem().commonMasterCode);
                         self.commonMasterName(self.selectedItem().commonMasterName);                        
+                    }else{
+                        self.commonMasterCode(null);
+                        self.commonMasterName(null);
                     }
 
                 });
@@ -81,8 +84,6 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 setTimeout(() => {
                     
                     $(window).resize(function() {
-                        
-                        console.log(window.innerHeight);
                         
                         $("#multi-list").igGrid("option", "height", (window.innerHeight - 175) + "px");
                         

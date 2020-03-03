@@ -67,6 +67,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         }).fail(function(err) {
                             
                             if(err.messageId == "Msg_1578"){
+                                self.listItems([]);
                                 self.checkData(false);
                             }
                             nts.uk.ui.dialog.error({ messageId: err.messageId });
@@ -74,6 +75,9 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         }).always(function() {
                             blockUI.clear();
                         });
+                    }else{
+                        self.title("");
+                        self.columnsItem([]);    
                     }
                     
                 });
@@ -81,9 +85,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 setTimeout(() => {
                     
                     $(window).resize(function() {
-                        
-                        console.log(window.innerHeight);
-                        
+                                                
                         $("#height-panel").height(window.innerHeight - 125);
                         
                         $("#multi-list").igGrid("option", "height", (window.innerHeight - 175) + "px");
