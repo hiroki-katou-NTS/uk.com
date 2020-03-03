@@ -1107,8 +1107,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });               
                 } 
             }
-            self.checkBoxValue(!overtimeDto.manualSendMailAtr);
-            self.enableSendMail(!overtimeDto.sendMailWhenRegisterFlg);
             self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);

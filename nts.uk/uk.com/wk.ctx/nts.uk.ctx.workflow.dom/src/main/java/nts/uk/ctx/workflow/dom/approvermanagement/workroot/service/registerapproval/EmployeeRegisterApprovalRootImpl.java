@@ -22,7 +22,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -64,7 +63,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	@Inject
 	private PersonAdapter psAdapter;
 	@Inject
-	private CollectApprovalRootService collectApprRootService;
+	private CollectApprovalRootService collectApprSv;
 	
 	/**
 	 * 01.申請者としての承認ルートを取得する
@@ -83,16 +82,16 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		// 選択する対象社員リストを先頭から最後までループする(loop list nhan vien da chon tu dau den cuoi)
 		for (String empId : lstEmpIds) {
 			List<ApprovalRootCommonOutput> appOfEmployee = new ArrayList<>();
-			
 			for (AppTypes app : lstApps) {
 				if(app.getEmpRoot() == 0){// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
 					//03.社員の共通の承認ルートを取得する
-					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
+					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId,
+							baseDate, sysAtr);
 					
 				}else {
 					//02.社員の対象申請の承認ルートを取得する
 					appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, app,
-							baseDate);
+							baseDate, sysAtr);
 					
 				}
 				Optional<ApprovalRootCommonOutput> appE = appOfEmployee.isEmpty() ? Optional.empty() : Optional.of(appOfEmployee.get(0));
@@ -109,7 +108,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	}
 
 	//check cho 1 don
-	private Map<String, WpApproverAsAppOutput> getData(int sysAtr, Optional<ApprovalRootCommonOutput> approvalRootOp,
+	private void getData(int sysAtr, Optional<ApprovalRootCommonOutput> approvalRootOp,
 			String companyID, String empId, GeneralDate baseDate, Map<String, WpApproverAsAppOutput> appOutput,
 			AppTypes apptype) {
 		// list phase cua employee
@@ -121,8 +120,11 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
 		if (approvalRootOp.isPresent()) {
 			List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(approvalRootOp.get().getApprovalId());
-			LevelOutput p = collectApprRootService.organizeApprovalRoute(companyID, empId, baseDate, phases, EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove());
-			err = EnumAdaptor.valueOf(p.getErrorFlag(), ErrorFlag.class);
+			//2.承認ルートを整理する（二次開発）
+			LevelOutput p = collectApprSv.organizeApprovalRoute(companyID, empId, baseDate, phases,
+					EnumAdaptor.valueOf(sysAtr, SystemAtr.class), apptype.getLowerApprove() == null ? Optional.empty() : Optional.of(apptype.getLowerApprove()));
+			//7.承認ルートの異常チェック
+			err = collectApprSv.checkApprovalRoot(p);
 
 			for(LevelInforOutput level : p.getLevelInforLst()) {
 				int phaseNumber = level.getLevelNo();
@@ -142,10 +144,10 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getSID(), ps.getEmployeeCode(), ps.getEmployeeName());
 		List<AppTypes> lstAppTypes = new ArrayList<>();	
 		EmpApproverAsApp infor = new EmpApproverAsApp(empInfor, mapAppType, lstAppTypes);
-		apptype.setErr(err);
-		lstAppTypes.add(apptype);
+		AppTypes ap = new AppTypes(apptype.getCode(), apptype.getId(), apptype.getEmpRoot(), err, apptype.getName(), null);
+		lstAppTypes.add(ap);
 		infor.setLstAppTypes(this.sortByAppTypeConfirm(lstAppTypes));
-		infor.getMapAppType().put(apptype, phaseInfors);
+		infor.getMapAppType().put(ap, phaseInfors);
 		//wkpDep info
 		String id = Strings.EMPTY;
 		Optional<WkpDepInfo> wkpDepO = Optional.empty();
@@ -156,7 +158,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			id = wpAdapter.getDepartmentIDByEmpDate(empId, GeneralDate.today());
 			wkpDepO = wpAdapter.findByDepIdNEW(companyID, id, baseDate);
 		}
-		if(!wkpDepO.isPresent()) return appOutput;
+		if(!wkpDepO.isPresent()) return;
 		WkpDepInfo wkpDep = wkpDepO.get();
 		if (!appOutput.isEmpty() && appOutput.containsKey(wkpDep.getId())) {
 			//TH da ton tai wpk 
@@ -165,9 +167,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			if(!mapEmAp.isEmpty() && mapEmAp.containsKey(empId)) {//TH da ton tai nhan vien
 				EmpApproverAsApp employ = mapEmAp.get(empId);
 				Map<AppTypes, List<ApproverAsAppInfor>> mapAppTypeAsApprover = employ.getMapAppType();
-				mapAppTypeAsApprover.put(apptype, phaseInfors);
+				mapAppTypeAsApprover.put(ap, phaseInfors);
 				lstAppTypes = new ArrayList<AppTypes>(employ.getLstAppTypes());
-				lstAppTypes.add(apptype);
+				lstAppTypes.add(ap);
 				employ.setLstAppTypes(this.sortByAppTypeConfirm(lstAppTypes));
 			}else {//TH chua ton tai nv
 				mapEmAp.put(empId, infor);
@@ -178,12 +180,10 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				wpRoot.setLstEmployeeInfo(lstEmp);
 			}
 		} else {//TH chua ton tai wpk
-			WorkplaceImport wkInfor = wpAdapter.findBySid(empId, baseDate);
 			mapEmpRootInfo.put(empId, infor);
 			WpApproverAsAppOutput output = new WpApproverAsAppOutput(wkpDep, mapEmpRootInfo, Arrays.asList(empInfor));
-			appOutput.put(wkInfor.getWkpId(), output);
+			appOutput.put(wkpDep.getId(), output);
 		}
-		return appOutput;
 	}
 	private List<EmpOrderApproverAsApp> convet(List<LevelApproverList> approverLst) {
 		List<EmpOrderApproverAsApp> lstResult = new ArrayList<>();

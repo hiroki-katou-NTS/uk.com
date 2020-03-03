@@ -25,12 +25,8 @@ public interface ApplicationOfEmployee {
 	 * @return 承認ルートのデータ
 	 */
 	List<ApprovalRootCommonOutput> appOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
-			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
-			List<PersonApprovalRoot> lstPersonRootInfor,
-			String companyID,
-			String sId,
-			AppTypes appType,
-			GeneralDate baseDate);
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
+			String companyID, String sId, AppTypes appType, GeneralDate baseDate, int sysAtr);
 	/**
 	 * 
 	 * 社員の対象申請の承認ルートを取得する( 就業ルート区分(共通)) 
@@ -44,9 +40,6 @@ public interface ApplicationOfEmployee {
 	 * @return 承認ルートのデータ
 	 */
 	List<ApprovalRootCommonOutput> commonOfEmployee(List<CompanyApprovalRoot> lstCompanyRootInfor,
-			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
-			List<PersonApprovalRoot> lstPersonRootInfor,
-			String companyID,
-			String sId,
-			GeneralDate baseDate);
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
+			String companyID, String sId, GeneralDate baseDate, int sysAtr);
 }

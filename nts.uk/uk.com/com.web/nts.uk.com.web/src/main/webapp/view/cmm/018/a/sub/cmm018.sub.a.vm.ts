@@ -57,14 +57,14 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
                         } else {
-                            width = screen.width - 190 > 950 ? 950 : screen.width - 190;
+                            width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
                     } else {
                         gridName = '#grid_matomeF';     
                         if(systemAtr == 0) {
                             width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                         } else {
-                            width = screen.width - 190 > 950 ? 950 : screen.width - 190;
+                            width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }   
                     }
                 }

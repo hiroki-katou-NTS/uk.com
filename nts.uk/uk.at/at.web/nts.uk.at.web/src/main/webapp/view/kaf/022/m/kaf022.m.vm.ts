@@ -104,8 +104,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             
             // get text KAF022_285
             self.textKAF022_285(nts.uk.resource.getText("KAF022_285") + "("
-                        + nts.uk.text.getCharType('Memo').viewName +
-                        + __viewContext.primitiveValueConstraints.Memo.maxLength/2
+                        + nts.uk.text.getCharType('AppUseSetRemark').viewName +
+                        + __viewContext.primitiveValueConstraints.AppUseSetRemark.maxLength/2
                         + "文字)");
 
             _.extend(self.kcp004WorkplaceListOption, {
@@ -158,7 +158,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this,
                 s27 = self.selectVer27(),
                 lwps = $('#wkp-list').getDataList(),
-                flwps = flat(_.cloneDeep(lwps), "childs");
+                flwps = flat(_.cloneDeep(lwps), "children");
 
             // clear all msg when reload data.
             clearError();
@@ -197,12 +197,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this,
                 lwps = $('#wkp-list').getDataList(),
                 rstd = $('#wkp-list').getRowSelected(),
-                flwps = flat(_.cloneDeep(lwps), "childs"),
-                wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId),
+                flwps = flat(_.cloneDeep(lwps), "children"),
+                wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id),
                 param = {
                     targetType: 4,
                     name: wkp ? wkp.name : '',
-                    code: wkp ? wkp.workplaceCode : '',
+                    code: wkp ? wkp.code : '',
                     baseDate: ko.toJS(self.baseDate),
                     itemListSetting: _.map(self.alreadySettingList(), m => m.workplaceId)
                 };
@@ -372,8 +372,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     if ($wkpl.getDataList && $wkpl.getRowSelected) {
                         let lwps = $wkpl.getDataList(),
                             rstd = $wkpl.getRowSelected(),
-                            flwps = flat(_.cloneDeep(lwps), "childs"),
-                            wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
+                            flwps = flat(_.cloneDeep(lwps), "children"),
+                            wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id);
     
                         self.wkpName(wkp ? wkp.name : '');
                     }
