@@ -3,7 +3,8 @@ module nts.uk.at.view.ksm015.c.service {
      *  Service paths
      */
     var paths: any = {
-        isForAttendent: 'ctx/at/shared/workrule/shiftmaster/isForAttendent',
+        startPage: 'ctx/at/shared/workrule/shiftmaster/startCPage',
+        getAlreadyConfigOrg: 'ctx/at/shared/workrule/shiftmaster/getAlreadyConfigOrg',
         getShiftMasterByWorkplace: 'ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace',
         register: 'ctx/at/shared/workrule/shiftmaster/register/shiftmaster/org',
         delete: 'ctx/at/shared/workrule/shiftmaster/delete/org'
@@ -21,10 +22,14 @@ module nts.uk.at.view.ksm015.c.service {
         return nts.uk.request.ajax("at", paths.delete, data);
     }
 
-    export function isForAttendent(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.isForAttendent);
+    export function startPage(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startPage);
     }
-    
+
+    export function getAlreadyConfigOrg(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAlreadyConfigOrg);
+    }
+
     /**
     * saveAsExcel
     **/

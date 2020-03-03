@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
@@ -46,7 +48,6 @@ public class ShiftMasterOrgFinder {
 
 	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
-		String companyId = AppContexts.user().companyId();
 		Require require = new  RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
 		
 		TargetOrgIdenInfor target = null;
@@ -55,8 +56,12 @@ public class ShiftMasterOrgFinder {
 			target = new TargetOrgIdenInfor(unit, targetId, targetId);
 		}
 		
+		if(target == null) {
+			return require.getAllByCid();
+		}
+		
 		@SuppressWarnings("static-access")
-		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
+		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, target);
 		
 		if(CollectionUtil.isEmpty(shiftMasters)) {
 			return Collections.emptyList();
@@ -67,14 +72,15 @@ public class ShiftMasterOrgFinder {
 		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
 		
 		shiftMasters.forEach(shiftMaster -> {
-			Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
-			
-			if(oWorkTime.isPresent()) {
-				WorkTimeDto worktime = oWorkTime.get();
-				shiftMaster.setWorkTime1(worktime.workTime1);
-				shiftMaster.setWorkTime2(worktime.workTime2);
+			if(!StringUtils.isEmpty(shiftMaster.getWorkTimeCd())) {
+				Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
+				
+				if(oWorkTime.isPresent()) {
+					WorkTimeDto worktime = oWorkTime.get();
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
+				}	
 			}
-			
 		});
 		
 		return shiftMasters;
@@ -86,10 +92,11 @@ public class ShiftMasterOrgFinder {
 		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId()));
 		return result;
 	}
-	
+		
 	@AllArgsConstructor
 	private static class RequireImpl implements GetUsableShiftMasterService.Require {
 		
+		private final String companyId = AppContexts.user().companyId();
 		@Inject
 		private ShiftMasterOrgRepository shiftMasterOrgRp;
 		
@@ -97,17 +104,17 @@ public class ShiftMasterOrgFinder {
 		private ShiftMasterRepository shiftMasterRepo;
 		
 		@Override
-		public Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg) {
+		public Optional<ShiftMasterOrganization> getByTargetOrg(TargetOrgIdenInfor targetOrg) {
 			return shiftMasterOrgRp.getByTargetOrg(companyId, targetOrg);
 		}
 
 		@Override
-		public List<ShiftMasterDto> getAllByCid(String companyId) {
+		public List<ShiftMasterDto> getAllByCid() {
 			return shiftMasterRepo.getAllByCid(companyId);
 		}
 
 		@Override
-		public List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
+		public List<ShiftMasterDto> getByListShiftMaterCd(List<String> listShiftMaterCode) {
 			return shiftMasterRepo.getByListShiftMaterCd(companyId, listShiftMaterCode);
 		}
 

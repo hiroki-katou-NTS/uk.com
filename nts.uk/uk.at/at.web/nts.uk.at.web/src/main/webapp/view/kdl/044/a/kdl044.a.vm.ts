@@ -15,10 +15,9 @@ module nts.uk.at.view.kdl044.a {
             isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
             placeHolders: string = "";
             dataTransfer: KnockoutObservable<any> = ko.observable();
-            gridFields: KnockoutObservableArray<String>;
+            gridFields: Array<String>;
             constructor() {
                 let self = this;
-                self.gridFields = ko.observableArray([]);
                 let holders = getText('KDL044_2') + '・'
                     + getText('KDL044_3') + '・'
                     + getText('KDL044_4') + '・'
@@ -38,19 +37,6 @@ module nts.uk.at.view.kdl044.a {
                     return;
                 self.dataTransfer(data);
                 self.isMultiSelect(data.isMultiSelect);
-                let shifutos: Array<Shifuto> = [];
-                //UI処理[1]
-                if (data.permission) {
-                    shifutos.push(new Shifuto(
-                        "",
-                        "",
-                        getText('KDL044_13'),
-                        "",
-                        "",
-                        "",
-                        ""
-                    ));
-                }
 
                 let paras: any;
                 switch (data.filter) {
@@ -70,9 +56,32 @@ module nts.uk.at.view.kdl044.a {
                 service.getShiftMaster(paras).done(function (result) {
                     service.isMultipleManagement()
                         .done((isUse) => {
-                            let isUseWorkMultiple = data && data.workMultiple == 1;
+                            let isUseWorkMultiple = isUse && isUse.workMultiple == 1;
                             self.createHeader(isUseWorkMultiple);
-                            self.listShifuto(result);
+                            //UI処理[1]
+                            if (data.permission) {
+                                if (isUseWorkMultiple) {
+                                    result.push(new Shifuto(
+                                        "  ",
+                                        getText('KDL044_13'),
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        ""
+                                    ));
+                                } else {
+                                    result.push(new Shifuto(
+                                        "  ",
+                                        getText('KDL044_13'),
+                                        "",
+                                        "",
+                                        "",
+                                        ""
+                                    ));
+                                }   
+                            }
+                            self.listShifuto();
                             self.listShifuto(_.sortBy(result, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
@@ -93,25 +102,24 @@ module nts.uk.at.view.kdl044.a {
                 if (!isUse) {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 100 },
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
                         { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
                     ]);
-                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"]);
-                }
-                else {
+                    self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"];
+                } else {
                     self.columns = ko.observableArray([
                         { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 100 },
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
                         { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 150 },
                         { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 150 },
                         { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
                     ]);
-                    self.gridFields(["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"]);
+                    self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"];
                 }
             }
 
@@ -163,9 +171,9 @@ module nts.uk.at.view.kdl044.a {
                 self.shiftMasterName = name;
                 self.workTypeName = workType;
                 self.workTimeName = workTime;
-                self.workTime1 = time1;
-                self.workTime2 = time2;
-                self.remark = remark;
+                self.workTime1 = time1 ? time1 : "";
+                self.workTime2 = time2 ? time2 : "";
+                self.remark = remark ? remark : "";
             }
         }
 

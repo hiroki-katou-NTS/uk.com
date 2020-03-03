@@ -34,7 +34,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isMultipleUse: false,
 				isMultiSelect: false,
 				treeType: 1,
-				selectedWorkplaceId: self.selectedWorkplaceId,
+				selectedId: self.selectedWorkplaceId,
 				baseDate: self.baseDate,
 				selectType: 3,
 				isShowSelectButton: true,
@@ -56,9 +56,18 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.invisible();
-			service.isForAttendent()
+			service.startPage()
 				.done((data) => {
 					self.forAttendent(data.forAttendent);
+					
+					if(data.alreadyConfigWorkplaces) {
+						let alreadySettings = [] 
+						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
+							alreadySettings.push({workplaceId: wp, isAlreadySetting: true});
+						});
+						self.alreadySettingList(alreadySettings);
+					}
+
 					dfd.resolve(data);
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -83,6 +92,14 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			service.registerOrg(param)
 				.done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) === -1;
+					if(isNew) {
+						// let currents = self.alreadySettingList();
+						// self.alreadySettingList.push;
+						// self.alreadySettingList.push({workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true});
+						// self.alreadySettingList(currents);
+						self.reloadComponent();
+					}
 					self.selectedWorkplaceId.valueHasMutated();
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -151,27 +168,21 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			* open dialog copy monthly pattern setting by on click button
 			*/
 		public openDialogCopy(): void {
-			var self = this;
-			if (!self.selectedShiftMaster()) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
-				return;
-			}
-
-			let dataSource = self.shiftItems();
-			let itemListSetting = _.map(self.alreadySettingList(), item => {
-				return _.find(dataSource, i => i.code == item.code).id;
-			});
-
-			let object: IObjectDuplication = {
-				code: self.selectedWorkplaceId(),
-				name: dataSource.filter(e => e.shiftMasterCode == self.selectedShiftMaster())[0].shiftMasterName,
-				targetType: TargetType.WORKPLACE,
-				itemListSetting: itemListSetting,
-				baseDate: self.baseDate()
-			};
+			let self = this,
+                lwps = $('#wkp-list').getDataList(),
+                rstd = $('#wkp-list').getRowSelected(),
+                flwps = flat(_.cloneDeep(lwps), "children"),
+                wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id),
+                param = {
+                    targetType: 4,
+                    name: wkp ? wkp.name : '',
+                    code: wkp ? wkp.code : '',
+                    baseDate: ko.toJS(self.baseDate),
+                    itemListSetting: _.map(self.alreadySettingList(), m => m.workplaceId)
+                };
 
 			// create object has data type IObjectDuplication and use:
-			nts.uk.ui.windows.setShared("CDL023Input", object);
+			nts.uk.ui.windows.setShared("CDL023Input", param);
 
 			// open dialog
 			nts.uk.ui.windows.sub.modal('com', '/view/cdl/023/a/index.xhtml').onClosed(() => {
@@ -182,6 +193,32 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					// self.copyMonthlyPatternSetting();
 				}
 			});
+		}
+
+		public reloadComponent() {
+			let self = this;
+			service.getAlreadyConfigOrg()
+				.done((data) => {
+					self.treeGrid = {
+						isShowAlreadySet: true,
+						isMultipleUse: false,
+						isMultiSelect: false,
+						treeType: 1,
+						selectedId: self.selectedWorkplaceId,
+						baseDate: self.baseDate,
+						selectType: 3,
+						isShowSelectButton: true,
+						isDialog: false,
+						alreadySettingList: data.workplaceIds,
+						maxRows: 15,
+						tabindex: 1,
+						systemType: 2
+					};
+					$('#tree-grid').ntsTreeComponent(self.treeGrid)
+					.done(() => {
+						$('#tree-grid').focusComponent();
+					});
+				});
 		}
 
 
