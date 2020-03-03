@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
@@ -25,5 +26,16 @@ public class ShiftMasterInstanceHelper {
 	public static boolean checkExist(boolean param){
 		return param;
 	}
+	
+	public static ShiftMaster getShiftMaterWorkTimeIsNull() {
+		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
+				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null), 
+				"workTypeCode", null);
+	}
+	
+	public static WorkInformation getWorkInformationWorkTimeIsNull() {
+		return new WorkInformation(null, "workTypeCode");
+	}
+
 
 }
