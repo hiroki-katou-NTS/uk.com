@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrganization;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author anhdt
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHMT_SHIFT_MASTER_ORG")
-public class KshmtShiftMaterOrg extends UkJpaEntity {
+public class KshmtShiftMaterOrg extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KshmtShiftMaterOrgPK kshmtShiftMaterOrgPK;
