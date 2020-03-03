@@ -1,0 +1,342 @@
+package nts.uk.ctx.at.record.dom.stamp.management;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Button;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Comment;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.StampScreen;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+/**
+ * 
+ * @author phongtq
+ *
+ */
+public class StampSettingPersonTest {
+
+	@Test
+	public void testGetButtonSet_false() {
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				new StampingScreenSet(
+						EnumAdaptor.valueOf(0, HistoryDisplayMethod.class), 
+						new CorrectionInterval(1), 
+						new ColorSetting(
+								new ColorCode("CODE1"), 
+								new ColorCode("CODE1")), 
+						new ResultDisplayTime(1)), 
+				Arrays.asList(new StampPageLayout(
+						new PageNo(1), 
+						new StampPageName("NAME1"), 
+						new StampPageComment(
+								new PageComment("COMMENT1"), 
+								new ColorCode("CODE1")), 
+						EnumAdaptor.valueOf(0, ButtonLayoutType.class),
+						Arrays.asList(new ButtonSettings(
+								new ButtonPositionNo(1), 
+								new ButtonDisSet(
+										new ButtonNameSet(
+												new ColorCode("CODE1"), 
+												Optional.of(new ButtonName("NAME1"))), 
+										new ColorCode("CODE1")), 
+								new ButtonType(
+										EnumAdaptor.valueOf(0, ReservationArt.class), 
+										new StampType(
+												true, 
+												Optional.of(EnumAdaptor.valueOf(0, GoingOutReason.class)), 
+												EnumAdaptor.valueOf(0, SetPreClockArt.class),
+												EnumAdaptor.valueOf(0, ChangeClockArt.class),
+												EnumAdaptor.valueOf(0, ChangeCalArt.class))), 
+								EnumAdaptor.valueOf(0, NotUseAtr.class),
+								EnumAdaptor.valueOf(0, AudioType.class))))));
+		
+		assertThat(settingPerson.getButtonSet(0, 0)).isNotPresent();
+	}
+
+	@Test
+	public void testGetButtonSet_filter() {
+		
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", //dummy
+				true, 				 //dummy
+				StampScreen.DUMMY,	 //dummy
+				Arrays.asList(new StampPageLayout(
+					new PageNo(1), 
+					new StampPageName("DUMMY"), 
+					Comment.DUMMY, 
+					EnumAdaptor.valueOf(0, ButtonLayoutType.class),
+					Arrays.asList(Button.DUMMY))));
+
+		assertThat(settingPerson.getLstStampPageLayout().get(0).getLstButtonSet())
+				.extracting(b -> b.getButtonPositionNo().v(),
+						b -> b.getButtonDisSet().getButtonNameSet().getButtonName().get().v(),
+						b -> b.getButtonDisSet().getButtonNameSet().getTextColor().v(),
+						b -> b.getButtonDisSet().getBackGroundColor().v(),
+						b -> b.getButtonType().getStampType().isChangeHalfDay(),
+						b -> b.getButtonType().getStampType().getChangeClockArt().value,
+						b -> b.getButtonType().getStampType().getChangeCalArt().value,
+						b -> b.getButtonType().getStampType().getGoOutArt().get().value,
+						b -> b.getButtonType().getStampType().getSetPreClockArt().value, b -> b.getUsrArt().value,
+						b -> b.getAudioType().value)
+				.containsExactly(tuple(1, "DUMMY", "DUMMY", "DUMMY", true, 0, 0, 0, 0, 0, 0)).first();
+	}
+
+	@Test
+	public void testGetButtonSet_succes() {
+
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				Arrays.asList(new StampPageLayout(
+						new PageNo(1), 				// dummy
+						new StampPageName("DUMMY"), // dummy
+						Comment.DUMMY,				// dummy
+						EnumAdaptor.valueOf(0, ButtonLayoutType.class),	// dummy 
+						Arrays.asList(new ButtonSettings(
+							new ButtonPositionNo(1), 
+							ButtonSet.DUMMY, 
+							Type.DUMMY, 
+							EnumAdaptor.valueOf(0, NotUseAtr.class),
+							EnumAdaptor.valueOf(0, AudioType.class))))));
+		assertThat(settingPerson.getButtonSet(1, 1)).isPresent();
+	}
+
+	@Test
+	public void insert() {
+		
+		List<StampPageLayout> lstStampPage = new ArrayList<>();
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		List<ButtonSettings> lstButtonSetAdd = new ArrayList<>();
+
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(1), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+
+		lstButtonSetAdd.add(new ButtonSettings(
+				new ButtonPositionNo(2), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lstStampPage);
+		
+		StampPageLayout pageLayout = new StampPageLayout(
+				new PageNo(2), 
+				new StampPageName("DUMMY2"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSetAdd);
+		settingPerson.insert(pageLayout);
+	}
+
+	@Test
+	public void update_succes() {
+		
+		List<StampPageLayout> lstStampPage = new ArrayList<>();
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		List<ButtonSettings> lstButtonSetAdd = new ArrayList<>();
+
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(1), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+		
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(2), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+		
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(4), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+
+		lstButtonSetAdd.add(new ButtonSettings(
+				new ButtonPositionNo(2), 
+				ButtonSet.DUMMY, Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lstStampPage);
+		StampPageLayout pageLayout = new StampPageLayout(
+				new PageNo(3), 
+				new StampPageName("DUMMY2"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSetAdd);
+
+		settingPerson.update(pageLayout);
+	}
+	
+
+	@Test
+	public void update_fasle() {
+		
+		List<StampPageLayout> lstStampPage = new ArrayList<>();
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		List<ButtonSettings> lstButtonSetAdd = new ArrayList<>();
+
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(2), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+
+		lstButtonSetAdd.add(new ButtonSettings(
+				new ButtonPositionNo(3), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lstStampPage);
+		
+		StampPageLayout pageLayout = new StampPageLayout(
+				new PageNo(1), 
+				new StampPageName("DUMMY2"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSetAdd);
+		settingPerson.update(pageLayout);
+	}
+	
+	@Test
+	public void delete() {
+		
+		List<StampPageLayout> lstStampPage = new ArrayList<>();
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		List<ButtonSettings> lstButtonSetAdd = new ArrayList<>();
+
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(1), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+		
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(2), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+		
+		lstStampPage.add(new StampPageLayout(
+				new PageNo(4), 
+				new StampPageName("DUMMY"),
+				new StampPageComment(
+						new PageComment("DUMMY"), 
+						new ColorCode("DUMMY")),
+				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
+				lstButtonSet));
+
+		lstButtonSetAdd.add(new ButtonSettings(
+				new ButtonPositionNo(2), 
+				ButtonSet.DUMMY, Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+
+		StampSettingPerson settingPerson = new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lstStampPage);
+
+
+		settingPerson.delete(1);
+	}
+
+	@Test
+	public void getters() {
+		StampSettingPerson settingPerson = StampSettingPersonHelper.DUMMY;
+		NtsAssert.invokeGetters(settingPerson);
+	}
+}
