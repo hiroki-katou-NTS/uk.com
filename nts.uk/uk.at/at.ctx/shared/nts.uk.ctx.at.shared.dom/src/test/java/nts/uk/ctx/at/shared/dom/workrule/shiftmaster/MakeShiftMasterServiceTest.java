@@ -65,7 +65,6 @@ public class MakeShiftMasterServiceTest {
 		new Expectations() {
 			{
 				requireWorkinfo.findByPK(anyString);
-				result = Optional.empty();
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
@@ -93,6 +92,8 @@ public class MakeShiftMasterServiceTest {
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
+				
+				requireWorkinfo.findByCode(workTimeCode.get());
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {

@@ -65,7 +65,6 @@ public class UpdateShiftMasterServiceTest {
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
 				requireWorkInfo.findByPK(workTypeCode);
-				result = Optional.empty();
 			}
 		};
 
@@ -93,6 +92,8 @@ public class UpdateShiftMasterServiceTest {
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
+				
+				requireWorkInfo.findByCode(workInformation.getWorkTimeCode().v());
 			}
 		};
 

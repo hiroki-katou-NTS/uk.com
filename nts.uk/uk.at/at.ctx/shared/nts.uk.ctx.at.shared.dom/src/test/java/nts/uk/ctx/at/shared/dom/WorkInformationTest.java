@@ -97,7 +97,6 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
-				result = Optional.empty();
 			}
 		};
 		assertThat(workInformation.checkNormalCondition(require)).isFalse();
@@ -110,7 +109,6 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
-				result = Optional.empty();
 			}
 		};
 		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
@@ -265,7 +263,6 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
-				result = Optional.empty();
 
 			}
 		};
@@ -299,7 +296,6 @@ public class WorkInformationTest {
 				result = Optional.of(new WorkType());
 
 				require.findByCode(anyString);
-				result = Optional.empty();
 
 			}
 		};

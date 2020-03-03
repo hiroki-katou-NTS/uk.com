@@ -23,38 +23,39 @@ public class GetUsableShiftMasterServiceTest {
 	@Injectable
 	private Require require;
 
-	/*
-	 * if targetOrg == null
-	 */
-	@Test
-	public void testGetUsableShiftMaster_1() {
-		String companyId = "0001";
-
-		GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				null);
-	}
 
 	/*
-	 * if targetOrg != null
-	 *  *get(会社ID, List<シフトマスタコード>).isPresent() ==true
+	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == false
+	 * 2: *getAll(会社ID)
+	 *  
 	 */
 	@Test
 	public void testGetUsableShiftMaster_2() {
 		String companyId = "0001";
+		TargetOrgIdenInfor targetOrgIdenInfor =  new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+				"workplaceId",
+				"workplaceGroupId");
+		List<ShiftMasterDto> results = new ArrayList<>();
+		results.add(new ShiftMasterDto());
 		new Expectations() {
 			{
 				require.getByTargetOrg(companyId, (TargetOrgIdenInfor) any);
-				result = Optional.empty();
+				
+				
+				require.getAllByCid(companyId);
+				result = results;
+				
 			}
 		};
 
 		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty()).isEmpty()).isTrue();
+				targetOrgIdenInfor)).isEqualTo(results);
 	}
 	
 	/*
-	 * if targetOrg != null
-	 *  *get(会社ID, List<シフトマスタコード>).isPresent() == false
+	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == true
+	 * 3: *get(会社ID, List<シフトマスタコード>)
+	 *  
 	 */
 	@Test
 	public void testGetUsableShiftMaster_3() {
@@ -79,6 +80,6 @@ public class GetUsableShiftMasterServiceTest {
 		};
 
 		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty())).isEqualTo(results);
+				targetOrgIdenInfor)).isEqualTo(results);
 	}
 }
