@@ -78,7 +78,7 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         displayName: string;
         screenID: string;
         useApproval: boolean;
-        noRankOrder: boolean;
+        noRankOrder: KnockoutObservable<boolean>;
         name: string;
         approverName1: KnockoutObservable<string>;
         approverName2: KnockoutObservable<string>;
@@ -90,10 +90,13 @@ module nts.uk.com.view.jmm018.z.viewmodel {
             self.displayName = param.displayName;
             self.screenID = param.screenID;
             self.useApproval = param.useApproval;
-            self.noRankOrder = param.noRankOrder;
+            self.noRankOrder = ko.observable(param.noRankOrder);
             self.name = param.menuApprovalSettings.programId+' '+param.displayName + (param.menuApprovalSettings.programId == 'JHN001'? ('('+param.rptLayoutCD+param.rptLayoutName+')'):'');
             self.approverName1 = ko.observable(param.menuApprovalSettings.apr1BusinessName == null? getText('JMM018_Z422_1_16_1'): param.menuApprovalSettings.apr1BusinessName);
             self.approverName2 = ko.observable(param.menuApprovalSettings.apr2BusinessName == null? getText('JMM018_Z422_1_18_1'): param.menuApprovalSettings.apr2BusinessName);
+            self.noRankOrder.subscribe(function(x){
+                self.menuApprovalSettings.useApproval(x);
+            });
         }
         
         selectApprover1(): void {

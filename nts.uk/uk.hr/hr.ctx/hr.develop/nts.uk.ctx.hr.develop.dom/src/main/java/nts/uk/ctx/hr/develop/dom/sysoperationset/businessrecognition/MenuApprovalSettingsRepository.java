@@ -8,5 +8,5 @@ public interface MenuApprovalSettingsRepository {
 
 	List<BusinessApprovalSettingsDto> getBusinessApprovalSettings(String cid);
 	
-	void update(List<MenuApprovalSettings> domain);
+	void update(List<BusinessApprovalSettingsDto> domain);
 }
