@@ -93,7 +93,7 @@ public class ShiftMasterOrgFinder {
 		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId()));
 		return result;
 	}
-	
+		
 	@AllArgsConstructor
 	private static class RequireImpl implements GetUsableShiftMasterService.Require {
 		
