@@ -19,4 +19,11 @@ public class StampLocationInfor implements DomainObject {
 	 * 打刻位置情報
 	 */
 	private final int positionInfor; //TODO:
+
+	public StampLocationInfor(boolean outsideAreaAtr, int positionInfor) {
+		super();
+		this.outsideAreaAtr = outsideAreaAtr;
+		this.positionInfor = positionInfor;
+	}
+	
 }

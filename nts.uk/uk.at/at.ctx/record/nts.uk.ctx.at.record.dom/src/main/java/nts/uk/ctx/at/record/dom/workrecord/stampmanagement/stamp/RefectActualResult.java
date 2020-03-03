@@ -18,7 +18,7 @@ public class RefectActualResult implements DomainObject {
 	/**
 	 * 応援カード番号
 	 */
-	private final Optional<Integer> cardNumberSupport;
+	private final Optional<String> cardNumberSupport;
 	
 	/**
 	 * 打刻場所コード
@@ -35,7 +35,7 @@ public class RefectActualResult implements DomainObject {
 	 */
 	private final Optional<OvertimeDeclaration> overtimeDeclaration;
 
-	public RefectActualResult(Integer cardNumberSupport, WorkLocationCD workLocationCD,
+	public RefectActualResult(String cardNumberSupport, WorkLocationCD workLocationCD,
 			WorkTimeCode workTimeCode,OvertimeDeclaration overtimeDeclaration) {
 		super();
 		this.cardNumberSupport = Optional.ofNullable(cardNumberSupport);

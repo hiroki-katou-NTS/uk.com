@@ -14,13 +14,17 @@ public class Relieve implements DomainObject {
 	/**
 	 * 認証方法
 	 */
-	private final int authcMethod;//
+	private final AuthcMethod authcMethod;//
 	
 	/**
 	 * 打刻手段
 	 */
-	private final int stampMeans;//
+	private final StampMeans stampMeans;//
 
-	
+	public Relieve(AuthcMethod authcMethod, StampMeans stampMeans) {
+		super();
+		this.authcMethod = authcMethod;
+		this.stampMeans = stampMeans;
+	}
 	
 }

@@ -14,17 +14,17 @@ public class OvertimeDeclaration implements DomainObject {
 	/**
 	 * 時間外時間
 	 */
-	private final AttendanceTime outsideTime;
+	private final AttendanceTime overTime;
 	
 	/**
 	 * 時間外深夜時間
 	 */
-	private final AttendanceTime outsideLateNightTime;
+	private final AttendanceTime overLateNightTime;
 
-	public OvertimeDeclaration(AttendanceTime outsideTime, AttendanceTime outsideLateNightTime) {
+	public OvertimeDeclaration(AttendanceTime overTime, AttendanceTime overLateNightTime) {
 		super();
-		this.outsideTime = outsideTime;
-		this.outsideLateNightTime = outsideLateNightTime;
+		this.overTime = overTime;
+		this.overLateNightTime = overLateNightTime;
 	}
 	
 	
