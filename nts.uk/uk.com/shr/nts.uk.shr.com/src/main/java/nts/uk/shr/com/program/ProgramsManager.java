@@ -2437,6 +2437,9 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 	public static final Program JMM018C = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_C",
 			"/view/jmm/018/c/index.xhtml");
 	
+	public static final Program JMM018Y = new Program(WebAppId.HR, ProgramIdConsts.JMM018Y, "JMM018_Y",
+			"/view/jmm/018/y/index.xhtml");
+	
 	/**
 	 * JHN001
 	 */

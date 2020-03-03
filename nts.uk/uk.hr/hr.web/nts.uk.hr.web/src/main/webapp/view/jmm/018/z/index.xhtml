@@ -14,7 +14,7 @@
 			<div class="contents-area tab3">
 				<div class="container cf">
 					<div class="table ui-iggrid">
-						<table id="fixed-table">
+						<table>
 							<colgroup>
 									<col width="300px" />
 									<col width="105px" />
@@ -27,29 +27,42 @@
 							</colgroup>
 							<thead>
 								<tr>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_1')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_2')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_3')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_4')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_5')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_6')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_7')}</th>
-									<th class="ui-widget-header" colspan="1">#{i18n.getText('JMM018_Z422_1_8')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_1')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_2')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_3')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_4')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_5')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_6')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_7')}</th>
+									<th class="ui-widget-header" >#{i18n.getText('JMM018_Z422_1_8')}</th>
 								</tr>
 							</thead>
+							<tbody></tbody>
+						</table>
+						<table id="fixed-table" class="scroll">
+							<colgroup>
+									<col width="300px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+									<col width="105px" />
+							</colgroup>
 							<tbody data-bind="foreach: menuApprovalSettingInforList()">
 								<tr>
-									<td data-bind="text: name"></td>
-									<td><div data-bind="ntsCheckBox: { checked: useApproval, enable: false }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.useApproval }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprRoot }"></div></td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork1 }"></div></td>
+									<td><span class="limited-label" data-bind="text: name"></span></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: useApproval, enable: false }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprRoot }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: noRankOrder }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork1 }"></div></td>
 									<td>
 										<com:ko-if bind="menuApprovalSettings.availableAprWork1()">
 											<a class="" href="#" data-bind = "click: selectApprover1, text: approverName1"></a>
 										</com:ko-if>
 									</td>
-									<td><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork2 }"></div></td>
+									<td class="center"><div data-bind="ntsCheckBox: { checked: menuApprovalSettings.availableAprWork2 }"></div></td>
 									<td>
 										<com:ko-if bind="menuApprovalSettings.availableAprWork2()">
 											<a class="" href="#" data-bind = "click: selectApprover2, text: approverName2"></a>
