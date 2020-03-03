@@ -34,9 +34,9 @@ public class ShiftPallet implements DomainValue {
 		
 		if(lstElement.size() < combinations.size()){
 			throw new BusinessException("Msg_1616");
-		}else {
-			combinations.sort((p1, p2)-> p1.getPositionNumber() - p2.getPositionNumber());
 		}
+		
+		combinations.sort((p1, p2)-> p1.getPositionNumber() - p2.getPositionNumber());
 		
 		this.displayInfor = displayInfor;
 		this.combinations = combinations;
