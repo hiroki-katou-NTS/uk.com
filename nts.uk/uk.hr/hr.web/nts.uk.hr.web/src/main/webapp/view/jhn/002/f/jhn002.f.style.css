@@ -1,0 +1,42 @@
+#contents-area {
+	height: auto !important;
+}
+
+.title {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+#functions-area button {
+	min-width: 65px;
+	float: right;
+	margin-right: 19px;
+}
+
+.nts-fileupload-container .browser-button {
+	float: left;
+	margin-left: 12px;
+	width: 70px;
+}
+
+#contents-area{
+	margin-left: 20px;
+}
+
+span.filenamelabel.hyperlink {
+	visibility: hidden;
+}
+
+#file-upload {
+	padding-left: 14px;
+}
+
+#delete-button {
+	margin-left: 10px;
+}
+
+.hyperlink {
+    color: #0066CC;
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,0 +1,168 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 645px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1260px) {
+	#functions-area, #contents-area {
+		
+	}
+}
+#master-wrapper{
+	overflow-y: hidden;
+}
+
+#contents-area {
+	overflow-x: auto;
+	overflow-y: auto;
+}
+.valign-center {
+	vertical-align: middle !important;
+}
+
+.divHeader {
+	margin: 5px;
+}
+
+#B1_5 {
+	margin-left: 45px !important;
+}
+
+#B221 {
+	margin-left: 10px;
+	margin-top: 12px;
+	padding: 20px;
+	float: left;
+	width: 400px !important;
+}
+
+#B221_3{
+	width: 100% !important;
+}
+
+#B221_2{
+	padding-left: 0px !important;
+	padding-bottom: 5px !important;
+}
+
+button.search-btn {
+	/* margin: 5px; */
+	margin-left: 23px;
+	width: 77px;
+}
+
+#B222 {
+	margin-left: -10px; 
+	margin-top: 14px;
+	float: left;
+	/* min-height: 600px; */
+	width: 880px;
+	position: relative;
+	box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 10px;
+}
+
+#B222_1_1{
+	width: 23px !important;
+}
+
+#B222_1_2, #B222_7_1,  #B222_3_1, #B222_4_1, #B222_5_1{
+	width: 215px !important;
+}
+#B222_2_1{
+	width: 236px !important;
+}
+.input_002 {
+	display: inline-block;
+}
+
+
+.nts-combo-item .nts-column{
+	width: 180px !important;
+}
+.sub_table {
+	width: 97px;
+	height: 376px;
+	background: #F3F3F3;
+	margin-top: 62px;
+	border: 5px solid white;
+	border-left: none;
+}
+
+.clear-btn {
+	visibility: hidden;
+}
+
+div#B221.relative.bg-green.caret-right.caret-background {
+	width: 450px;
+}
+
+div.drag-panel{
+	max-height: 365px ;
+    height: 365px;
+}
+
+.nosetarea {
+	width: 810px;
+	height: 320px;
+	display: flex;
+	position: absolute;
+	align-items: center;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+}
+
+.inline_2 {
+	display: inline-block;
+	margin: 10px;
+}
+
+.divHead {
+	margin-left: 10px;
+}
+
+#table-phase, #table-phase td, #table-phase th {
+	border: 1px solid black;
+	text-align: center;
+	height: 25px;
+}
+
+#table-phase td {
+	height: 25px;
+}
+
+#label-1 {
+	float: left;
+	margin-left: 14.5px;
+}
+
+#table-1 {
+	margin-top: 8px;
+	margin-left: 125px;
+}
+
+.label.warning {
+    padding: 15px 10px;
+    font-size: 1rem;
+    background-color: #F7EFD4;
+    color: #C12017;
+}
+
+#reportName {
+	margin-left: -5px;
+}
+
+.layout-control .drag-panel {
+    width: 857px !important;
+}
+
