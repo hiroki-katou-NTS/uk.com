@@ -18,7 +18,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register">#{i18n.getText('CMM022_B1_1')}</button>
+				<button class="proceed" data-bind="click: register, enable: checkData">#{i18n.getText('CMM022_B1_1')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('CMM022_B1_2')}</button>
 
 			</div>
@@ -27,8 +27,15 @@
 					<div class="panel-item" id = "height-panel"
 						data-bind="ntsPanel: {width: '410px', height: '430', direction: 'right', showIcon: true, visible: true}">
 						<div style="width: 350px"
-							data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'commonMasterCode', comId: 'multi-list', 
-							items: listMaster, selected: 'commonMasterId', selectedKey: 'commonMasterCode', fields: ['commonMasterName', 'commonMasterCode']}" />
+							data-bind="ntsSearchBox: {
+							searchMode: 'filter',
+							comId: 'multi-list', 
+							targetKey: 'commonMasterId', 
+							items: listMaster , 
+							selectedKey: 'commonMasterId', 
+							fields: ['commonMasterName', 'commonMasterCode'], 
+							mode: 'igGrid'}" />
+							
 						<table id="multi-list"
 							data-bind="ntsGridList: {
 								height: 390,

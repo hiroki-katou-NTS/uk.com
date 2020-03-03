@@ -33,8 +33,8 @@
 						<div class="panel-item" id = "height-panel"
 							data-bind="ntsPanel:{width: '410px', height: '430px', direction: 'right', showIcon: true, visible: true}">
 							<div style="width: 350px"
-								data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'commonMasterCode', comId: 'multi-list', 
-							items: listMaster, selected: 'commonMasterId', selectedKey: 'commonMasterCode', fields: ['commonMasterName', 'commonMasterCode']}" />
+								data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'commonMasterId', comId: 'multi-list', 
+							items: listMaster, selectedKey: 'commonMasterId', fields: ['commonMasterName', 'commonMasterCode'], mode: 'igGrid'}" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 								height: 390,
