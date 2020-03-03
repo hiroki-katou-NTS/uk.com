@@ -278,7 +278,9 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			//アルコール[承認情報の取得]を実行する
 			reportItemFinder.getInfoApprover(rootStateID, approvalStateHrImport, appPhaseLst);
 			
-			if(approvalStateHrImport.isErrorFlg()) {
+			boolean release = approvalStateHrImport == null?false: approvalStateHrImport.getApprState() == null? false: approvalStateHrImport.getApprState().isReflectFlag();
+			
+			if(release) {
 				
 				if(regisPersonReportOpt.isPresent()) {
 					
