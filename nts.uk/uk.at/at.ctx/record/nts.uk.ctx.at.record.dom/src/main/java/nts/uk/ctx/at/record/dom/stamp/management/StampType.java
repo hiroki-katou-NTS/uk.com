@@ -34,10 +34,12 @@ public class StampType {
 
 	public StampType(boolean changeHalfDay, Optional<GoingOutReason> goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
+		super();
 		this.changeHalfDay = changeHalfDay;
 		this.goOutArt = goOutArt;
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
 	}
+
 }
