@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.shiftpalletcom;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +16,10 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -38,10 +42,24 @@ public class InsertShiftPalletComCommand {
 				listInsertPatternItemCommand.stream()
 						.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
 								c.listInsertWorkPairSetCommand.stream()
-										.map(d -> new Combinations(d.pairNo, new ShiftPalletCode(d.workTimeCode)))
+										.map(d -> new Combinations(d.pairNo, new ShiftPalletCode(d.shiftCode)))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList())));
 
+	}
+	
+	public ShiftPalletsOrg toDom(){	
+		return new ShiftPalletsOrg(
+				new TargetOrgIdenInfor(EnumAdaptor.valueOf(0, TargetOrganizationUnit.class) , workplaceId, null),
+				groupNo, new ShiftPallet(
+						new ShiftPalletDisplayInfor(new ShiftPalletName(groupName),
+								EnumAdaptor.valueOf(groupUsageAtr, NotUseAtr.class), new ShiftRemarks(note)),
+						listInsertPatternItemCommand.stream()
+								.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
+										c.listInsertWorkPairSetCommand.stream()
+												.map(d -> new Combinations(d.pairNo, new ShiftPalletCode(d.shiftCode)))
+												.collect(Collectors.toList())))
+								.collect(Collectors.toList())));
 	}
 	
 }

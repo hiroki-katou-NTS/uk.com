@@ -12,7 +12,7 @@ public interface ShiftPalletsOrgRepository {
 
 	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page);
 	
-	public List<ShiftPalletsOrg> findbyWorkPlaceId(String workplaceId); 
+	public List<ShiftPalletsOrg> findbyWorkPlaceId(int targetUnit, String workplaceId); 
 	
 	public void deleteByWorkPlaceId(String workplaceId, int page);
 
