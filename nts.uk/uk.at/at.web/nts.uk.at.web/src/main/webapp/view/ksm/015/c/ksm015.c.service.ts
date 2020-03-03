@@ -26,6 +26,10 @@ module nts.uk.at.view.ksm015.c.service {
         return nts.uk.request.ajax("at", paths.startPage);
     }
 
+    export function getAlreadyConfigOrg(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAlreadyConfigOrg);
+    }
+
     /**
     * saveAsExcel
     **/

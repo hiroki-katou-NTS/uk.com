@@ -40,11 +40,13 @@ public class ShiftMasterDto {
 		this.shiftMasterName = shiftMasterName;
 		this.shiftMasterCode = shiftMaterCode;
 		this.color = color;
-		this.remark = remark;
+		this.remark = !StringUtils.isEmpty(remark) ? remark : "" ;
 		this.workTypeCd = workTypeCd;
 		this.workTypeName = workTypeName;
 		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "" ;
 		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "" ;
+		this.workTime1 = "";
+		this.workTime2 = "";
 	}
 	
 }

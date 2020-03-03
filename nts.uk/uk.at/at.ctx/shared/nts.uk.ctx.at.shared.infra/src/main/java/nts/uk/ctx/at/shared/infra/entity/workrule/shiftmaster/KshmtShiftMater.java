@@ -8,18 +8,18 @@ import javax.persistence.Table;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHMT_SHIFT_MASTER")
 @Builder
-public class KshmtShiftMater extends UkJpaEntity {
+public class KshmtShiftMater extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KshmtShiftMaterPK kshmtShiftMaterPK;
@@ -39,7 +39,6 @@ public class KshmtShiftMater extends UkJpaEntity {
 	@Column(name = "WORKTIME_CD")
 	public String workTimeCd;
 
-	@Override
 	protected Object getKey() {
 		return kshmtShiftMaterPK;
 	}

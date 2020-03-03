@@ -13,6 +13,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -46,6 +47,8 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
+	
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterShiftMasterCommand> context) {
@@ -58,7 +61,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			throw new BusinessException("Msg_1610");
 		}
 
-		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService);
+		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		ShiftMaster dom = cmd.toDomain();
 		dom.checkError(workRequired);
 
@@ -96,6 +99,9 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		
 		@Inject
 		private WorkTimeSettingService workTimeSettingService;
+		
+		@Inject
+		private BasicScheduleService basicScheduleService;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -116,6 +122,11 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
 				String workTypeCd, Integer workNo) {
 			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+		}
+
+		@Override
+		public WorkStyle checkWorkDay(String workTypeCode) {
+			return basicScheduleService.checkWorkDay(workTypeCode);
 		}
 	}
 

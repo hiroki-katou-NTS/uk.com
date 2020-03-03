@@ -57,6 +57,10 @@ public class ShiftMasterOrgFinder {
 			target = new TargetOrgIdenInfor(unit, targetId, targetId);
 		}
 		
+		if(target == null) {
+			return require.getAllByCid(companyId);
+		}
+		
 		@SuppressWarnings("static-access")
 		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
 		
@@ -89,7 +93,7 @@ public class ShiftMasterOrgFinder {
 		result.setWorkplaceIds(shiftMasterOrgRp.getAlreadySettingWorkplace(AppContexts.user().companyId()));
 		return result;
 	}
-	
+		
 	@AllArgsConstructor
 	private static class RequireImpl implements GetUsableShiftMasterService.Require {
 		

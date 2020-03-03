@@ -26,9 +26,9 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_1610() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode1");
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		WorkInformation workInformation =ShiftMasterInstanceHelper.getWorkInformationWorkTimeIsNull();
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
@@ -46,7 +46,7 @@ public class UpdateShiftMasterServiceTest {
 		};
 
 		NtsAssert.businessException("Msg_1610", () -> {
-			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getWorkTypeCode().v(),
+			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, workTypeCode,
 					displayInfor, workInformation);
 			persist.run();
 		});
@@ -54,8 +54,9 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_1608() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
@@ -63,13 +64,12 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.findByPK(shiftMaster.getWorkTypeCode().v());
-				result = Optional.empty();
+				requireWorkInfo.findByPK(workTypeCode);
 			}
 		};
 
 		NtsAssert.businessException("Msg_1608", () -> {
-			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getShiftMasterCode().v(),
+			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
 					displayInfor, workInformation);
 			persist.run();
 		});
@@ -77,25 +77,28 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_1609() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
 			{
-				require.getByShiftMaterCd(shiftMaster.getShiftMasterCode().v());
+				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.findByPK(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
+				
+				requireWorkInfo.findByCode(workInformation.getWorkTimeCode().v());
 			}
 		};
 
 		NtsAssert.businessException("Msg_1609", () -> {
-			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getShiftMasterCode().v(),
+			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
 					displayInfor, workInformation);
 			persist.run();
 		});
@@ -103,25 +106,25 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_435() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
 		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
-
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				require.getByShiftMaterCd(shiftMaster.getShiftMasterCode().v());
+				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.findByPK(workTypeCode);
 				result = Optional.of(new WorkType());
 
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 			}
 		};
 
 		NtsAssert.businessException("Msg_435", () -> {
-			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getShiftMasterCode().v(),
+			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
 					displayInfor, workInformation);
 			persist.run();
 		});
@@ -129,26 +132,27 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_434() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
 			{
-				require.getByShiftMaterCd(shiftMaster.getShiftMasterCode().v());
+				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.findByPK(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMaster.getWorkTypeCode().v());
+				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.NOT_REQUIRED;
 
 			}
 		};
 
 		NtsAssert.businessException("Msg_434", () -> {
-			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getShiftMasterCode().v(),
+			AtomTask persist = UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
 					displayInfor, workInformation);
 			persist.run();
 		});
@@ -156,10 +160,11 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater() {
-		ShiftMaster shiftMaster = ShiftMasterInstanceHelper.getShiftMaterEmpty();
-		ShiftMasterDisInfor displayInfor = shiftMaster.getDisplayInfor();
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
-
+		ShiftMaster shiftMaster = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
@@ -179,7 +184,7 @@ public class UpdateShiftMasterServiceTest {
 			}
 		};
 
-		NtsAssert.atomTask(() -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMaster.getShiftMasterCode().v(),
+		NtsAssert.atomTask(() -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
 				displayInfor, workInformation), any -> require.update(shiftMaster));
 	}
 }
