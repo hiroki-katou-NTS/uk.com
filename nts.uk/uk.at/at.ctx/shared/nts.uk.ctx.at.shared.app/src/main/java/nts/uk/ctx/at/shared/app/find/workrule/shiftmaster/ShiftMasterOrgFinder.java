@@ -48,7 +48,6 @@ public class ShiftMasterOrgFinder {
 
 	// 使用できるシフトマスタの勤務情報と補正済み所定時間帯を取得する
 	public List<ShiftMasterDto> getShiftMastersByWorkPlace(String targetId, Integer targetUnit) {
-		String companyId = AppContexts.user().companyId();
 		Require require = new  RequireImpl(shiftMasterOrgRp, shiftMasterRepo);
 		
 		TargetOrgIdenInfor target = null;
@@ -58,11 +57,11 @@ public class ShiftMasterOrgFinder {
 		}
 		
 		if(target == null) {
-			return require.getAllByCid(companyId);
+			return require.getAllByCid();
 		}
 		
 		@SuppressWarnings("static-access")
-		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
+		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, target);
 		
 		if(CollectionUtil.isEmpty(shiftMasters)) {
 			return Collections.emptyList();
@@ -97,6 +96,7 @@ public class ShiftMasterOrgFinder {
 	@AllArgsConstructor
 	private static class RequireImpl implements GetUsableShiftMasterService.Require {
 		
+		private final String companyId = AppContexts.user().companyId();
 		@Inject
 		private ShiftMasterOrgRepository shiftMasterOrgRp;
 		
@@ -104,17 +104,17 @@ public class ShiftMasterOrgFinder {
 		private ShiftMasterRepository shiftMasterRepo;
 		
 		@Override
-		public Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg) {
+		public Optional<ShiftMasterOrganization> getByTargetOrg(TargetOrgIdenInfor targetOrg) {
 			return shiftMasterOrgRp.getByTargetOrg(companyId, targetOrg);
 		}
 
 		@Override
-		public List<ShiftMasterDto> getAllByCid(String companyId) {
+		public List<ShiftMasterDto> getAllByCid() {
 			return shiftMasterRepo.getAllByCid(companyId);
 		}
 
 		@Override
-		public List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode) {
+		public List<ShiftMasterDto> getByListShiftMaterCd(List<String> listShiftMaterCode) {
 			return shiftMasterRepo.getByListShiftMaterCd(companyId, listShiftMaterCode);
 		}
 

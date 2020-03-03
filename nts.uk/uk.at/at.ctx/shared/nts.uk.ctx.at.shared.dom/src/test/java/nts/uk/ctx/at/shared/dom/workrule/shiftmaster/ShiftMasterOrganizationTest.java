@@ -63,15 +63,20 @@ public class ShiftMasterOrganizationTest {
 	public void testCopy() {
 		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
 				"workplaceGroupId");
+		List<String> listData = new ArrayList<>();
+		listData.add("123");
+		listData.add("abc");
 		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
-				Arrays.asList("123"));
+				listData);
 		TargetOrgIdenInfor targetOrgIdenInforNew = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, // dummy
 				"workplaceId", // dummy
 				"workplaceGroupId");// dummy
 		ShiftMasterOrganization newShiftMasterOrganization = shiftMasterOrg.copy(targetOrgIdenInforNew);
 		assertThat(newShiftMasterOrganization.getCompanyId()).isEqualTo(shiftMasterOrg.getCompanyId());
-		assertThat(newShiftMasterOrganization.getListShiftMaterCode())
-				.isEqualTo(shiftMasterOrg.getListShiftMaterCode());
+		
+		assertThat(newShiftMasterOrganization.getListShiftMaterCode().get(0)).isEqualTo(shiftMasterOrg.getListShiftMaterCode().get(0));
+		assertThat(newShiftMasterOrganization.getListShiftMaterCode().get(1)).isEqualTo(shiftMasterOrg.getListShiftMaterCode().get(1));
+		
 		assertThat(newShiftMasterOrganization.getTargetOrg()).isEqualTo(targetOrgIdenInforNew);
 	}
 
