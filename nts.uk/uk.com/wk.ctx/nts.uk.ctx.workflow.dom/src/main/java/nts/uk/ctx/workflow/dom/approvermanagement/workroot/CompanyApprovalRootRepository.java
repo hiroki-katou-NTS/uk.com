@@ -38,7 +38,8 @@ public interface CompanyApprovalRootRepository {
 	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType, int employmentRootAtr, String id);
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, 
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr);
 
 	/**
 	 * add Company Approval Root
@@ -111,7 +112,8 @@ public interface CompanyApprovalRootRepository {
 	 * @param employmentRootAtr
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType, int employmentRootAtr, String id);
+	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType,
+			int employmentRootAtr, String id, int sysAtr);
 	
 	/**
 	 * getComAppRootLast
@@ -119,7 +121,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate);
+	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate, int sysAtr);
 	
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);

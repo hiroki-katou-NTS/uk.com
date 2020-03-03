@@ -47,15 +47,15 @@
 				<!-- 一覧へ戻る -->
 				<a  id="C1_1" tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/jhn/003/a/index.xhtml' }, enable: enaGoBack ">#{i18n.getText('JHN001_C1_1')}</a>
 				<!-- 承認 -->
-				<button id="C1_2" tabindex="2" data-bind="click : approve , enable: true" class="proceed" >#{i18n.getText('JHN001_C1_2')}</button>
+				<button id="C1_2" tabindex="2" data-bind="click : approve , enable: layout().approve()" class="proceed" >#{i18n.getText('JHN001_C1_2')}</button>
 				<!-- 差し戻し  -->
-				<button id="C1_4" tabindex="3" data-bind="click : sendBack, visible: !layout().denyOraprrove()">#{i18n.getText('JHN001_C1_4')}</button>
+				<button id="C1_4" tabindex="3" data-bind="click : sendBack, visible: !layout().denyOraprrove(), enable: layout().approve()">#{i18n.getText('JHN001_C1_4')}</button>
 				<!-- 否認 -->
-				<button id="C1_4_1" tabindex="4" data-bind="click : deny, visible: layout().denyOraprrove()">#{i18n.getText('JHN001_C1_4_1')}</button>
+				<button id="C1_4_1" tabindex="4" data-bind="click : sendBack, visible: layout().denyOraprrove(), enable: layout().approve()">#{i18n.getText('JHN001_C1_4_1')}</button>
 				<!-- 解除 -->
-				<button id="C1_5" tabindex="5" data-bind="click : cancel , enable: true">#{i18n.getText('JHN001_C1_5')}</button>
+				<button id="C1_5" tabindex="5" data-bind="click : cancel , enable: layout().release()">#{i18n.getText('JHN001_C1_5')}</button>
 				<!-- 登録 -->
-				<button id="C1_6" tabindex="5" data-bind="click : register , enable: true">#{i18n.getText('JHN001_C1_6')}</button>
+				<!-- <button id="C1_6" tabindex="5" data-bind="click : register , enable: true">#{i18n.getText('JHN001_C1_6')}</button> -->
 			
 			</div>
 			
@@ -70,7 +70,7 @@
 							<div id="C222_2" class="label warning inlineCustom"  data-bind="text: backCommentContent,  visible: backComment"></div>
 
 
-						<div  style="margin-left: 2px; margin-bottom: 20px;" class="cell valign-center">
+						<div  style="margin-left: 2px; margin-bottom: 10px;" class="cell valign-center">
 
 							<div id="C222_3" style = "vertical-align: top"
 							
@@ -123,7 +123,7 @@
 					</div> -->
 
 					<!-- danh sach list list file Doc. -->
-					<div id="C222_6" style="margin-top: 10px;margin-left: 7px;">
+					<div id="C222_6" style="margin-left: 7px;">
 						<div class="contents-area cf" style="padding-top: 20px;">
 							<div id="label-1">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('JHN001_A222_6')}</div>
@@ -147,7 +147,7 @@
 						</div>
 					</div>
 
-					<div id = "appr" style="margin-top: 10px;margin-left: 7px;">
+					<div id = "appr" style="margin-left: 7px;">
 					
 						<ui:include src="../../001/a/index2.xhtml" />
 						

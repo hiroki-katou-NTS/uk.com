@@ -7,193 +7,76 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 670 };</script>
+			<script>var dialogSize = { width: 940, height:450 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
-				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
+				nts.uk.ctx.at.request.dom.setting.workplace.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.jb.main.css" />
+			<com:scriptfile path="ksu001.jb.service.js" />
 			<com:scriptfile path="ksu001.jb.vm.js" />
 			<com:scriptfile path="ksu001.jb.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed"
+					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_901')}</button>
+				<button class="danger"
+					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_902')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>
+			</div>
 			<div id="contents-area">
-				<div>
-					<div id="pairPatternName" class="mw-90"
-						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
+				<div id="h-50" data-bind="visible: isVisibleWkpName">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_926')}</div>
+					<span id = "workplaceCode" data-bind="text: workplaceCode"></span>
+					<span id = "workplaceName" data-bind="text: workplaceName"></span> <br />
+					<hr />
+				</div>
+				<div id="group-link-button-ja"
+					class="bg-green caret-background caret-bottom cf"
+					data-bind="foreach: textButtonArr">
+					<a class="hyperlink"
+						data-bind="click: $parent.clickLinkButton.bind($parent, $element, $index), text: name()"></a>
+				</div>
+				<div class="mt-10">
+					<div id="name"
+						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">#{i18n.getText('KSU001_904')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'WorkPairPatternName', name: '#[KSU001_908]'}" />
+						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName', name: '#[KSU001_904]'}" />
+					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
+					<div class="cf"
+						data-bind="ntsSwitchButton: {
+							options: groupUsageAtr,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedGroupUsageAtr,
+							enable: true }"></div>
 				</div>
-
-				<div id="set-work-type">
-					<div class="mw-90" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_909')}</div>
-					<div id="combo-box1"
-						data-bind="ntsComboBox: {
-								options: listWorkType,
-								optionsValue: 'workTypeCode',
-								visibleItemsCount: 15,
-								value: selectedWorkTypeCode,
-								editable:  false,
-								enable: true,
-								width: 300,
-								columns: [
-									{ prop: 'workTypeCode', length: 3 },
-									{ prop: 'symbolicName', length: 2 },
-									{ prop: 'name', length: 6 },
-									{ prop: 'memo', length: 10 }]}">
-					</div>
+				
+				<div class="mt-10">			
+					<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KSU001_906')}</div>
+					<input id="note" data-bind="ntsTextEditor: {value: note, constraint: 'Memo', name: '#[KSU001_906]'}" />
 				</div>
-
-				<div id="set-work-time">
-					<div>
-						<div class="mw-90" data-bind="ntsFormLabel: {enable: isEnableButton }">#{i18n.getText('KSU001_911')}</div>
-			 			<input id="time-edit1"
-							data-bind="ntsTimeWithDayEditor: {
-							name: '#{i18n.getText('KSU001_73')}',
-							value: time1,
-							constraint: 'TimeWithDayAttr',
-							enable: isEnableButton,
-							inputFormat: 'time',
-							mode: 'time',
-							option: {timeWithDay: false}
-							}" />
-			 			
-						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> 
-			 			
-			 			<input id="time-edit2"
-							data-bind="ntsTimeWithDayEditor: {
-							name: '#{i18n.getText('KSU001_74')}',
-							value: time2,
-							constraint: 'TimeWithDayAttr',
-							enable: isEnableButton,
-							inputFormat: 'time',
-							mode: 'time',
-							option: {timeWithDay: false}
-							}" />
-			 			
-						<button class="search"
-							data-bind="click:search, enable: isEnableButton">#{i18n.getText('KSU001_67')}</button>
-						<button class="clear-search"
-							data-bind="click:clearSearch, enable: isEnableClearSearchButton">#{i18n.getText('KSU001_68')}</button>
-					</div>
-					<div>
-						<div id="combo-box2"
-							data-bind="ntsComboBox: {
-										options: listWorkTimeComboBox,
-										optionsValue: 'codeName',
-										visibleItemsCount: 14,
-										value: selectedWorkTimeCode,
-										optionsText: 'labelDisplay', 
-										editable:  false,
-										enable: isEnableButton,
-										dropDownAttachedToBody: true,
-										columns: [
-											{ prop: 'workTimeCode', length: 3 },
-											{ prop: 'symbolName', length: 2 },
-											{ prop: 'name', length: 7 },
-											{ prop: 'timeZone1', length: 7 },
-											{ prop: 'timeZone2', length: 7 },
-											{ prop: 'note', length: 10 },]}">
+				<div class="mt-10">
+					<div class = "form-label" style = "display: inline-block;"
+						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_113')}</div>
+					<!--<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>-->	
+					<div id="popup-area" class="popup-area popup-panel">
+						<span>#{i18n.getText('KSU001_1701')}</span>
+						<div>
+							<input
+								data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true, name: '#[KSU001_1702]'}" />
+							<button class="proceed"
+								data-bind="enable: $root.errors.isEmpty, click: decision">#{i18n.getText('KSU001_1703')}</button>
+							<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>
 						</div>
 					</div>
-					<div>
-						<button id="clear" data-bind="click: clearData">#{i18n.getText('KSU001_918')}</button>
-					</div>
+					<div id="test2"
+						data-bind="ntsTableButton: {source: source, row: 2, column: 10, contextMenu: contextMenu, click: openDialogJC.bind($data), mode: 'master'}"></div>
 				</div>
-				<div id="table-date">
-					<table>
-						<tr>
-							<th>1</th>
-							<th>2</th>
-							<th>3</th>
-							<th>4</th>
-							<th>5</th>
-							<th>6</th>
-							<th>7</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<th>8</th>
-							<th>9</th>
-							<th>10</th>
-							<th>11</th>
-							<th>12</th>
-							<th>13</th>
-							<th>14</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<th>15</th>
-							<th>16</th>
-							<th>17</th>
-							<th>18</th>
-							<th>19</th>
-							<th>20</th>
-							<th>21</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<th>22</th>
-							<th>23</th>
-							<th>24</th>
-							<th>25</th>
-							<th>26</th>
-							<th>27</th>
-							<th>28</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<th>29</th>
-							<th>30</th>
-							<th>31</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-				</div>
-				<div id="color-red">#{i18n.getText('KSU001_919')}</div>
-			</div>
-			<div id="functions-area-bottom">
-				<button class="proceed x-large"
-					data-bind="enable: $root.errors.isEmpty, click: decision, text: textDecision"></button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_920')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

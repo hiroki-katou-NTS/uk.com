@@ -13,6 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.hr.notice.app.find.report.ReportItemFinder;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
@@ -23,6 +25,9 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItem;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalActivity;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatus;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
+import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyData;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyItem;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PreReflectAnyService;
@@ -50,6 +55,12 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	
 	@Inject
 	private PreReflectAnyService preReflectAnyService;
+	
+	@Inject
+	private ApproveRepository approveRepository;
+	
+	@Inject
+	private ReportItemFinder reportItemFinder;
 	
 	@Override
 	protected void handle(CommandHandlerContext<ApproveReportCommand> context) {
@@ -148,12 +159,15 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 	
 		this.approvalPersonReportRepo.updateAll(approvalPersonReports);
 		
-		//【パラメータ】
-		//ルートインスタンスID
-		//社員ID=ログイン社員ID
-		//承認ルートインスタンスを更新する([[RQ635]申請書を解除する]アルゴリズムを実行する)(Update approval route instance
-		//(Thực hiện thuật toán [[RQ635] Cancel application form] ))
-	
+		List<String> rootStateIDs = approvalPersonReports.stream().map(c -> c.getRootSatteId()).distinct()
+				.collect(Collectors.toList());
+
+		rootStateIDs.stream().forEach(rootStateID -> {
+			
+			//承認ルートインスタンスを更新する([[RQ635]申請書を解除する]アルゴリズムを実行する)(Update approval route instance
+			this.approveRepository.releaseHr(rootStateID, sid);
+
+		});
 	}
 	
 	/**
@@ -193,10 +207,14 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		//ドメイン「人事届出の承認」の各種属性を登録する
 		this.approvalPersonReportRepo.updateAll(approvalPersonReports);
 		
-		//【パラメータ】
-		//ルートインスタンスID
-		//社員ID=ログイン社員ID
-		//承認ルートインスタンスを更新する([[RQ633]申請書を否認する]アルゴリズムを実行する)
+		List<String> rootStateIDs = approvalPersonReports.stream().map(c -> c.getRootSatteId()).distinct().collect(Collectors.toList());
+		
+		rootStateIDs.stream().forEach(rootStateID ->{
+			
+			//承認ルートインスタンスを更新する([[RQ633]申請書を否認する]アルゴリズムを実行する)
+			this.approveRepository.denyHr(rootStateID, sid, cmd.getApproveComment());
+			
+		});
 	}
 	
 	/**
@@ -209,7 +227,10 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		
 		// 承認者社員ID、届出IDをキーにドメイン「人事届出の承認」情報を取得する
 		List<ApprovalPersonReport> approvalPersonReports = this.approvalPersonReportRepo
+				
 				.getListDomainByReportIdAndSid(cid, Integer.valueOf(cmd.getReportId()).intValue(), sid);
+		
+		if(CollectionUtil.isEmpty(approvalPersonReports)) return;
 		
 		GeneralDateTime approveDay = GeneralDateTime.now();
 		
@@ -236,29 +257,52 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 		//【パラメータ】
 		//ルートインスタンスID
 		//承認者社員ID=ログイン社員ID
-		//承認ルートインスタンスを更新する([[RQ632]申請書を承認する]アルゴリズムを実行する((Update approval route instance ( Thực hiện thuật toán ([[RQ632] Approve application)]))
+		//コメント
 		
-		
-		//アルゴリズム[[RQ631]申請書の承認者と状況を取得する。]を実行する(( Thực hiện thuật toán[[RQ631] Get status và approver of application.] )
-		
-		
-		//アルゴリズム[届出分析データのカウント処理]を実行する(Thực hiện thuật toán[Xử lý count data phân tích report] )
 		
 		Optional<RegistrationPersonReport> regisPersonReportOpt =  this.regisPersonReportRepo.getDomainByReportId(cid, Integer.valueOf(cmd.getReportId()));
 		
-		if(regisPersonReportOpt.isPresent()) {
-			
-			String[] monthSplit =  java.time.YearMonth.now().toString().split("-");
-			
-			int yearMonth  = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
-			
-			countData( cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 1, 1);
-			
-		}
-
-		//ドメイン[人事届出の登録]、[届出の項目]のリストを取得して、反映前データに届出情報を取り込む(アルゴリズム[届出データの追加]を実行する)(Lấy list của domain [人事届出の登録]、[届出の項目], import thông tin report vào data trước khi phản ánh (Thực hiện thuật toán [届出データの追加/thêm data report] ))
-		preprareReflectData(cid, Integer.valueOf(cmd.getReportId()));
+		List<String> rootStateIDs = approvalPersonReports.stream().map(c -> c.getRootSatteId()).distinct().collect(Collectors.toList());
 		
+		rootStateIDs.stream().forEach(rootStateID ->{
+			
+			//承認ルートインスタンスを更新する([[RQ632]申請書を承認する]アルゴリズムを実行する((Update approval route instance ( Thực hiện thuật toán ([[RQ632] Approve application)]))
+			
+			this.approveRepository.approveHr(rootStateID, sid, cmd.getApproveComment());
+			
+			//アルゴリズム[[RQ631]申請書の承認者と状況を取得する。]を実行する(( Thực hiện thuật toán[[RQ631] Get status và approver of application.] )
+			ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
+			
+			List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
+			
+			//アルコール[承認情報の取得]を実行する
+			reportItemFinder.getInfoApprover(rootStateID, approvalStateHrImport, appPhaseLst);
+			
+			boolean release = approvalStateHrImport == null?false: approvalStateHrImport.getApprState() == null? false: approvalStateHrImport.getApprState().isReflectFlag();
+			
+			if(release) {
+				
+				if(regisPersonReportOpt.isPresent()) {
+					
+					// [人事届出の登録．承認状況]=反映前承認待ち:7に設定する
+					regisPersonReportOpt.get().setAprStatus(ApprovalStatusForRegis.WaitingForApprovalBeforeReflec);
+
+					this.regisPersonReportRepo.update(regisPersonReportOpt.get());
+
+					// アルゴリズム[届出分析データのカウント処理]を実行する
+					String[] monthSplit = java.time.YearMonth.now().toString().split("-");
+
+					int yearMonth = Integer.valueOf(monthSplit[0] + monthSplit[1]).intValue();
+
+					countData(cid, yearMonth, regisPersonReportOpt.get().getReportLayoutID(), 1, 1);
+
+					// ドメイン[人事届出の登録]、[届出の項目]のリストを取得して、反映前データに届出情報を取り込む(アルゴリズム[届出データの追加]を実行する)
+					preprareReflectData(cid, Integer.valueOf(cmd.getReportId()));
+					
+				}
+			}
+			
+		});
 	}
 	
 	/**
@@ -281,6 +325,12 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			reportAnalysisOpt.get().setReportCount(reportCount);
 			
 			this.reportAnalysisRepo.update(reportAnalysisOpt.get());
+			
+		}else { 
+			
+			ReportAnalysis reportAnalysis = new ReportAnalysis(cid, reportDate, reportLayoutId, countClsBig, countClsSmall, 0);
+			
+			this.reportAnalysisRepo.insert(reportAnalysis);
 			
 		}
 		

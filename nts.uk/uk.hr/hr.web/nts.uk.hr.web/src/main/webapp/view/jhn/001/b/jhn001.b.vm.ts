@@ -1,6 +1,7 @@
 module jhn001.b.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
@@ -80,8 +81,10 @@ module jhn001.b.vm {
             let reportId = self.reportId();
             let listReportDraft = self.listReportDraft();
 
-            if (reportId == null || reportId == '' || reportId == undefined)
+            if (reportId == null || reportId == '' || reportId == undefined){
+                alertError({ messageId: "MsgJ_24" });
                 return;
+            }
             
             if(listReportDraft.length == 0){
                 reportId = null;
@@ -95,8 +98,10 @@ module jhn001.b.vm {
             let self = this;
             let reportId = self.reportId();
 
-            if (reportId == null || reportId == '' || reportId == undefined)
+            if (reportId == null || reportId == '' || reportId == undefined){
+                alertError({ messageId: "MsgJ_24" });
                 return;
+            }
 
             let objRemove = {
                 reportId: reportId
@@ -110,7 +115,7 @@ module jhn001.b.vm {
                 };
 
                 service.removeData(objRemove).done(() => {
-                    info({ messageId: "Msg_40" }).then(function() {
+                    info({ messageId: "MsgJ_40" }).then(function() {
                         self.hasRemove = true;
                         self.start();
                     });

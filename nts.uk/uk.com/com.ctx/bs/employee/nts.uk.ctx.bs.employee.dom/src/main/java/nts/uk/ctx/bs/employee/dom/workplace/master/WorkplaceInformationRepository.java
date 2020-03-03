@@ -1,9 +1,17 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.export.WkpDto;
+import nts.uk.ctx.bs.employee.dom.workplace.export.WkpInfoDto;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -43,6 +51,31 @@ public interface WorkplaceInformationRepository {
 	 * @return
 	 */
 	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate);
-	
+
+	public Map<DateHistoryItem, List<WorkplaceConfigInfo>> findAllParentByWkpId(String companyId, DatePeriod baseDate, List<String> wkpId);
+
+	public List<WorkplaceInformation> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> listWorkplaceId);
+
+	public List<WkpDto> findByBaseDateWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
+
+	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate);
+
+	public List<WorkplaceInfo> findByHistory(List<String> historyList);
+
 	public Optional<WorkplaceInformation> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
+
+	List<WorkplaceInfo> findByWkpId(String wkpId);
+
+	List<WorkplaceInformation> findByHistoryIds(String companyId, List<String> historyIds);
+
+	List<WorkplaceInfo> findByWkpIds(List<String> wkpIds);
+
+	List<WorkplaceInformation> findByWkpIds(String companyId, List<String> listWorkplaceId);
+
+	List<WorkplaceInformation> findByCompany(String companyId);
+
+	Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId, GeneralDate baseDate, String wkpId);
+
+	List<WorkplaceInformation> findByBaseDateWkpIds2(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate);
 }

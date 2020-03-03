@@ -1,11 +1,23 @@
 package nts.uk.ctx.bs.employee.pub.workplace.master;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface WorkplacePub {
 
@@ -94,6 +106,49 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
+	
+	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate);
+	
+	public Map<GeneralDate, Map<String, List<String>>> findWpkIdsBySids(String companyId, List<String> employeeId, DatePeriod date);
+
+	public List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate);
+
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period);
+
+	Map<String, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
+			List<String> wpkIds, List<GeneralDate> baseDates);
+
+	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+
+	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate);
+
+	List<String> getLstWorkplaceIdBySidAndPeriod(String employeeId, DatePeriod period);
+
+	List<ResultRequest597Export> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
+
+	List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(
+			String workplaceId, GeneralDate startDate, GeneralDate endDate);
+
+	List<String> getListWorkplaceIdByBaseDate(GeneralDate baseDate);
+
+	List<WorkPlaceHistExport> getWplByListSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
+
+	Optional<SWkpHistExport> findBySidNew(String companyId, String employeeId, GeneralDate baseDate);
+
+	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);
+
+	List<SWkpHistExport> findBySId(List<String> sids, GeneralDate baseDate);
+
+	Optional<SWkpHistExport> findByWkpIdNew(String companyId, String wkpId, GeneralDate baseDate);
+
+	List<AffWorkplaceHistoryExport> getWorkplaceBySidsAndBaseDate(List<String> employeeIds, GeneralDate baseDate);
+
+	List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
+
+	List<WorkplaceInforExport> findByWkpIds(List<String> wkpIds);
+
+	Optional<WkpCdNameExport> findByWkpId(String wkpId);
+
 	/**
 	 * [No.575]職場コードから職場IDを取得する
 	 * @param 会社ID companyId
@@ -102,4 +157,7 @@ public interface WorkplacePub {
 	 * @return
 	 */
 	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
+
+	List<SWkpHistExport> findBySId(List<String> sids);
+
 }

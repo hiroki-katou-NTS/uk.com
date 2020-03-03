@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm018.m {
             lstAppName: Array<any>;
             constructor() {
                 let self = this; 
-                let param = nts.uk.ui.windows.getShared('CMM018_SysAtr');
+                let param = nts.uk.ui.windows.getShared('CMM018M_PARAM');
                 self.sysAtr(param.sysAtr || 0);
                 self.lstAppName = param.lstName || [];
             }
@@ -29,7 +29,6 @@ module nts.uk.com.view.cmm018.m {
                 }
                 let master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), 
                         self.isWorkplace(), self.isPerson(), self.sysAtr(), self.lstAppName);
-                //service.searchModeEmployee(master);
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){
                     nts.uk.ui.block.clear();

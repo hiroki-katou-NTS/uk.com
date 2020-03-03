@@ -11,4 +11,6 @@ public interface ReportAnalysisRepository {
 	
 	void update(ReportAnalysis domain);
 	
+	void insert(ReportAnalysis domain);
+	
 }

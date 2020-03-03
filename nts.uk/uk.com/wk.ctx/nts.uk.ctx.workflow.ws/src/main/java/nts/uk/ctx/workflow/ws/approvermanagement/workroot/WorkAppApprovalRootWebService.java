@@ -27,8 +27,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRo
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.OutputCheckRegCmm053;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamCheckRegCmm053;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
@@ -41,11 +39,9 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.ApprovalRootCommonService;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.shr.com.context.AppContexts;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
@@ -55,8 +51,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private CommonApprovalRootFinder comFinder;
 	@Inject
 	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
-	@Inject
-	private EmployeeUnregisterFinder empUnregister;
 	@Inject
 	private RegisterAppApprovalRootCommandHandler updateRoot;
 	@Inject
@@ -88,7 +82,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("getEmployeesInfo")
 	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
-		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(), employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate());		
+		return employeeAdapter.findByWpkIdsWithParallel(AppContexts.user().companyId(),
+				employeeSearch.getWorkplaceIds(), employeeSearch.getBaseDate(), employeeSearch.getSysAtr());		
 	}
 	 @POST
 	 @Path("updateHistory")
@@ -107,12 +102,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 		return EnumAdaptor.convertToValueNameList(ApplicationType.class);
 	}
 	
-	@POST
-	@Path("testMasterDat")
-	public MasterApproverRootOutput masterInfor(MasterApproverRootDto dto) {
-		MasterApproverRootOutput data = empUnregister.masterInfors(dto);
-		return data;
-	}
 	@POST
 	@Path("updateRoot")
 	public void updateRoot(RegisterAppApprovalRootCommand command){
@@ -190,9 +179,15 @@ public class WorkAppApprovalRootWebService extends WebService{
 		this.deleteByManager.handle(command);
 	}
 	@POST
-	@Path("find-wpInfo-login")
-	public WorkplaceImport getWpInfoLogin(){
-		return comFinder.getWpInfoLogin();
+	@Path("find/wkpInfo-login")
+	public WkpDepInfo getWpInfoLogin(){
+		return appRootCm.getWkpDepInfoLogin(0);
+	}
+	
+	@POST
+	@Path("find/depInfo-login")
+	public WkpDepInfo getDepInfoLogin(){
+		return appRootCm.getWkpDepInfoLogin(1);
 	}
 	
 	@POST

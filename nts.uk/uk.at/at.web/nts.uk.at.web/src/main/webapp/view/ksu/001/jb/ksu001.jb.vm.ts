@@ -1,138 +1,153 @@
 module nts.uk.at.view.ksu001.jb.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import formatById = nts.uk.time.format.byId;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-        listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
-        listWorkTime: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkTime());
-        listTimeZoneForSearch: any[] = nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listTimeZoneForSearch;
-        selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
-        selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
-        time1: KnockoutObservable<string> = ko.observable('');
-        time2: KnockoutObservable<string> = ko.observable('');
-        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
-        nameWorkTimeType: KnockoutComputed<any>;
-        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
-        arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
-        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
-        dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
-        listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
-        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
-        nashi: string = getText("KSU001_98");
-        
+
+        selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
+        workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
+        workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode); 
+        selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
+        workplaceId: string = getShared('dataForJB').workplaceId;
+        listWorkType: any[] = getShared('dataForJB').listWorkType;
+        listWorkTime: any[] = getShared('dataForJB').listWorkTime;
+        listPattern: KnockoutObservableArray<any> = ko.observableArray([]);
+        isVisibleWkpName: KnockoutObservable<boolean> = ko.observable(false);
+        groupName: KnockoutObservable<string> = ko.observable('');
+        note: KnockoutObservable<string> = ko.observable('');
+        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(0);
+        contextMenu: Array<any>;
+        textName: KnockoutObservable<string> = ko.observable(null);
+        tooltip: KnockoutObservable<string> = ko.observable(null);
+        dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
+        source: KnockoutObservableArray<any> = ko.observableArray([]);
+        isDeleteEnable: KnockoutObservable<boolean> = ko.observable(true);
+        currentObject: KnockoutObservable<any> = ko.observable(null);
+        isAllowCheckChanged: boolean = false;
+        sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+        dataSource: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
+        groupUsageAtr: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: '使用区分' },
+            { code: 1, name: '使用しない' }
+        ]);
+        textButtonArr: KnockoutObservableArray<any> = ko.observableArray([
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
+            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+        ]);
+
         constructor() {
             let self = this;
-            self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
 
-            self.selectedWorkTypeCode.subscribe((newValue) => {
-                let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
-                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
-                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
-                    self.isEnableButton(false);
-                    self.isEnableClearSearchButton(false);
-                    self.selectedWorkTimeCode(self.nashi);
-                } else {
-                    self.isEnableButton(true);
-                }
-            });
+            self.contextMenu = [
+                { id: "openPopup", text: nts.uk.resource.getText("KSU001_1706"), action: self.openPopup.bind(self) },
+                { id: "delete", text: nts.uk.resource.getText("KSU001_1708"), action: self.remove }
+            ];
 
-            //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime, endTime, symbolName
-            self.nameWorkTimeType = ko.pureComputed(() => {
-                let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
-                let startTime, endTime: any;
-
-                let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
-                if (d) {
-                    workTypeName = d.abbreviationName;
-                    workTypeCode = d.workTypeCode;
-                } else {
-                    workTypeName = null;
-                    workTypeCode = null;
-                }
-
-                let workTimeCd: string = null;
-                if (self.selectedWorkTimeCode()) {
-                    workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
-                } else {
-                    workTimeCd = self.selectedWorkTimeCode()
-                }
-
-                // if workTypeCode is not required( state = 2) worktime is needless, something relate to workTime will be disable
-                // workTimeName, workTimeCode is null, startTime,endTime is ''
-                let stateWorkTypeCd = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', self.selectedWorkTypeCode()]);
-                if (stateWorkTypeCd && stateWorkTypeCd.state == 2) {
-                    workTimeName = null;
-                    workTimeCode = null;
-                    startTime = '';
-                    endTime = '';
-                } else {
-                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
-                    if (c) {
-                        workTimeName = c.abName;
-                        workTimeCode = _.isEmpty(c.workTimeCode) ? null : c.workTimeCode;
-                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
-                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
-                    } else {
-                        workTimeName = null;
-                        workTimeCode = null;
-                        startTime = '';
-                        endTime = '';
-                    }
-                }
-
-                return {
-                    workTypeCode: workTypeCode,
-                    workTypeName: workTypeName,
-                    workTimeCode: workTimeCode,
-                    workTimeName: workTimeName,
-                    startTime: startTime,
-                    endTime: endTime,
-                    symbolName: null
-                };
-            });
-
-            for (let i = 0; i < self.arrTooltip.length; i++) {
-                $($("#table-date td")[i]).html(self.arrTooltip[i]);
-                self.dataSource().push({ index: i + 1, value: self.arrTooltip[i], data: self.source()[i].data });
-            }
-
-            /**
-             * handle when click/ctr+click cell table
-             * get workTypeName/workTimeName paste to cell
-             * push data to dataSource
-             */
-            $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.nameWorkTimeType().workTimeName ?
-                    self.nameWorkTimeType().workTypeName + '/' + self.nameWorkTimeType().workTimeName : self.nameWorkTimeType().workTypeName;
-
-                if (event.ctrlKey) {
-                    $(this.parentElement.children).html(nameWTypeWTime);
-                    let arrDate = _.map($(this.parentElement).prev().children(), (x) => { return +x.innerHTML });
-                    _.each(arrDate, (date) => {
-                        _.remove(self.dataSource(), { index: date });
-                        self.dataSource().push({ index: date, value: nameWTypeWTime, data: self.nameWorkTimeType() });
-                    });
-                } else {
-                    $(this).html(nameWTypeWTime);
-                    let index = +$(this).parent().prev().children()[$(this).index()].innerHTML;
-                    _.remove(self.dataSource(), { index: index });
-                    self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.nameWorkTimeType() });
-                }
+            $("#test2").bind("getdatabutton", function(evt, data) {
+                self.textName(data.text);
+                self.tooltip(data.tooltip);
+                self.dataWorkPairSet(data.data);
             });
         }
 
         /**
-         * Clear data in table
+         * init
          */
-        clearData(): void {
+        init(): void {
             let self = this;
-            $("#table-date td").html('');
-            self.dataSource([]);
+
+            if (self.selectedTab() === 'company') {
+                self.isVisibleWkpName(true);
+                $.when(self.getDataComPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            } else {
+                self.isVisibleWkpName(true);
+                $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                    self.workplaceName();
+                    nts.uk.ui.windows.getSelf().setSize(400, 845);
+                });
+            }
+        }
+
+        /**
+         * set selectedLinkButton
+         * check changed of data to save or not
+         * handle click button
+         */
+        clickLinkButton(element?: any, param?: any): void {
+            $('input#textName').focus();
+            let self = this, index: number = param();
+
+            self.selectedLinkButton(index);
+            if (self.isAllowCheckChanged && self.isChanged()) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+                    $.when(self.saveData()).done(() => {
+                        self.handleClickButton(index);
+                    });
+                }).ifNo(() => {
+                    self.handleClickButton(index);
+                });
+            } else {
+                self.handleClickButton(index);
+            }
+
+            self.isAllowCheckChanged = true;
+        }
+
+        /**
+         * link button has color gray when clicked
+         * set data for screen
+         */
+        handleClickButton(index): void {
+            let self = this;
+            //set enable/disable delete button
+            self.isDeleteEnable(_.find(self.listPattern(), ['groupNo', index + 1]));
+            nts.uk.ui.errors.clearAll();
+            _.find($('#group-link-button-ja a.hyperlink.color-gray'), (a) => {
+                $(a).removeClass('color-gray');
+            });
+            $($('a.hyperlink')[index]).addClass('color-gray');
+            let pattern = _.find(self.listPattern(), ['groupNo', index + 1]);
+            self.groupName(pattern ? pattern.groupName : null);
+            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 0);
+            self.note(pattern ? pattern.note : null);
+            self.source(self.dataSource()[index] || self.sourceEmpty);
+            self.currentObject({
+                groupNo: index + 1,
+                groupName: self.groupName(),
+                selectedGroupUsageAtr: self.selectedGroupUsageAtr(),
+                note: self.note(),
+                source: self.source()
+            });
+        }
+
+        openPopup(button): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let positionButton = $(button).data().idx;
+            let dt = self.source()[positionButton];
+            $("#test2").trigger("getdatabutton", { text: dt.text, tooltip: dt.tooltip, data: dt.data });
+            $("#popup-area").css('visibility', 'visible');
+            let buttonWidth = button.outerWidth(true) - 30;
+            $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
+            $("#test2").bind("namechanged", function(evt, data) {
+                $("#test2").unbind("namechanged");
+                if (!nts.uk.util.isNullOrUndefined(data)) {
+                    dfd.resolve(data);
+                } else {
+                    dfd.resolve(button.parent().data("cell-data"));
+                }
+            });
+            return dfd.promise();
         }
 
         /**
@@ -140,99 +155,306 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
          */
         decision(): void {
             let self = this;
-            if (self.dataSource().length == 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_510" });
-                return;
-            }
-            // sort dataSoucre (tooltip) ASC
-            let dataSourceOrder = _.orderBy(self.dataSource(), ['index'], ['asc']);
-            let arrTooltip = _.map(dataSourceOrder, (data) => {
-                return '[' + data.value + ']';
-            });
-            let arrTooltipClone = _.clone(arrTooltip);
+            $("#popup-area").css('visibility', 'hidden');
+            $("#test2").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip(), data: self.dataWorkPairSet() });
+        }
 
-            for (let i = 7; i < arrTooltipClone.length; i += 7) {
-                arrTooltip.splice(i, 0, 'lb');
-                i++;
-            }
+        /**
+         * close popup
+         */
+        closePopup(): void {
+            nts.uk.ui.errors.clearAll()
+            $("#popup-area").css('visibility', 'hidden');
+            $("#test2").trigger("namechanged", undefined);
+        }
 
-            let tooltip: string = arrTooltip.join('→');
-            tooltip = tooltip.replace(/→lb/g, '\n');
-            // sap xep cho mang lien mach
-            let index = 0;
-            let arrData = _.map(dataSourceOrder, (dataS) => {
-                index++;
-                return {
-                    index: index,
-                    data: dataS.data
-                };
-            });
-
-            setShared("dataFromJB", {
-                text: self.textName(),
-                tooltip: tooltip,
-                data: arrData
-            });
-            nts.uk.ui.windows.close();
+        /**
+         * Clear all data of button table
+         */
+        clear() {
+            let self = this;
+            $("#test2").ntsButtonTable("dataSource", []);
+            self.source([]);
         }
 
         /**
          * Close dialog
          */
         closeDialog(): void {
+            let self = this;
+            setShared('dataFromJA', {
+                selectedLinkButton: self.selectedLinkButton()
+            });
             nts.uk.ui.windows.close();
         }
 
-        search(): void {
-            let self = this;
-            let listWorkTimeSearch: any[] = [];
-            let arrTmp: any[] = [];
-            self.isEnableClearSearchButton(true);
-            if (self.time1() === '' && self.time2() === '') {
-                alertError({ messageId: "Msg_53" });
-                self.isEnableClearSearchButton(false);
-                self.clearSearch();
-                return;
-            }
-            if (self.time2() !== '' && self.time1() > self.time2()) {
-                alertError({ messageId: "Msg_54" });
-                self.clearSearch();
-                return;
-            }
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            self.listWorkTimeComboBox([]);
-            
-            if(self.time2() === ''){
-               listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'startTime' : self.time1(), 'useAtr' : 1});
-            } else if(self.time1() === ''){
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'endTime' : self.time2(), 'useAtr' : 1});
-            } else {
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, { 'startTime': self.time1(), 'endTime': self.time2(), 'useAtr': 1});
-            }
-            
-            if (listWorkTimeSearch.length <= 0) {
-                return;
-            }
-            
-            _.each(listWorkTimeSearch, (x) => {
-                arrTmp.push(_.find(self.listWorkTime(), { 'workTimeCode': x.workTimeCode }));
+        /**
+         * open Dialog JC
+         */
+        openDialogJC(evt, data): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            self.textName(data ? data.text : null);
+            self.tooltip(data ? data.tooltip : null);
+            setShared("dataForJC", {
+                text: self.textName(),
+                tooltip: self.tooltip(),
+                data: data ? data.data : null,
+                textDecision: nts.uk.resource.getText("KSU001_923"),
+                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime,
+                selectedTab: getShared("dataForJB").selectedTab,
+                workplaceId: getShared('dataForJB').workplaceId
             });
             
-            self.listWorkTimeComboBox(arrTmp);
-            
-            $('#combo-box2').focus();
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/jc/index.xhtml").onClosed(() => {
+                let dataFromJB = getShared("dataFromJB");
+                if (dataFromJB) {
+                    self.textName(dataFromJB ? dataFromJB.text : self.textName());
+                    self.tooltip(dataFromJB ? dataFromJB.tooltip : self.tooltip());
+                    dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromJB.data });
+                }
+            });
+
+            return dfd.promise();
         }
 
-        clearSearch(): void {
+        /**
+         * saveData
+         */
+        saveData(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            //check soucre null or empty
+            let isArrEmpty: boolean = true;
+            _.map(self.source(), (item) => {
+                if (!_.isEmpty(item)) {
+                    isArrEmpty = false;
+                    return;
+                };
+            });
+
+            if (self.selectedGroupUsageAtr() == 0 && isArrEmpty) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_510" });
+                dfd.resolve();
+                return;
+            }
+            //if data is not changed, not save
+            if (!self.isChanged()) {
+                return;
+            }
+
+            nts.uk.ui.block.grayout();
+            let listInsertPatternItemCommand = [];
+            for (let i = 0; i < self.source().length; i++) {
+                if (!_.isEmpty(self.source()[i])) {
+                    let listInsertWorkPairSetCommand = [];
+                    _.each(self.source()[i].data, (dt) => {
+                        listInsertWorkPairSetCommand.push({
+                            pairNo: dt.index,
+                            workTypeCode: dt.data.workTypeCode,
+                            workTimeCode: dt.data.workTimeCode
+                        });
+                    });
+
+                    listInsertPatternItemCommand.push({
+                        patternNo: i + 1,
+                        patternName: self.source()[i].text,
+                        listInsertWorkPairSetCommand: listInsertWorkPairSetCommand
+                    });
+                }
+            }
+
+            let obj = {
+                workplaceId: self.workplaceId,
+                groupNo: self.currentObject().groupNo,
+                groupName: self.groupName(),
+                groupUsageAtr: self.selectedGroupUsageAtr(),
+                note: self.note(),
+                listInsertPatternItemCommand: listInsertPatternItemCommand
+            }
+
+            service.registerWorkPairPattern(obj).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.isAllowCheckChanged = false;
+                self.handleAfterChangeData();
+                self.isDeleteEnable(true);
+                dfd.resolve();
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                dfd.reject();
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * delete pattern
+         */
+        deletePatternItem(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let obj = {
+                    groupNo: self.selectedLinkButton() + 1,
+                    workplaceId: self.workplaceId
+                }
+
+                service.deleteWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(false);
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+            }).ifNo(() => {
+                dfd.resolve();
+                return;
+            });
+
+
+            return dfd.promise();
+        }
+
+        /**
+         * handle after delete pattern
+         */
+        handleAfterChangeData(): void {
             let self = this;
-            self.isEnableClearSearchButton(false);
-            self.listWorkTimeComboBox([]);
-            self.listWorkTimeComboBox(self.listWorkTime());
-            self.time1('');
-            self.time2('');
-            nts.uk.ui.errors.clearAll();
+
+            if (self.selectedTab() == 'company') {
+                $.when(self.getDataComPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            } else {
+                $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            }
+        }
+
+        /**
+         * remove data of button table
+         */
+        remove(): JQueryPromise<any> {
+            let dfd = $.Deferred();
+
+            setTimeout(function() {
+                dfd.resolve(undefined);
+            }, 10);
+
+            return dfd.promise();
+        }
+
+        /**
+         * check data is changed or not
+         * return true if data is changed
+         * return false if data is not changed
+         */
+        isChanged(): boolean {
+            let self = this;
+            if (self.currentObject().groupName == self.groupName()
+                && self.currentObject().selectedGroupUsageAtr == self.selectedGroupUsageAtr()
+                && self.currentObject().note == self.note()
+                && _.isEqual(self.currentObject().source, self.source())) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * get data form COM_PATTERN 
+         */
+        getDataComPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataComPattern().done((data) => {
+                self.listPattern(data);
+                self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /**
+         * get data form WKP_PATTERN 
+         */
+        getDataWkpPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataWkpPattern(self.workplaceId).done((data) => {
+                self.listPattern(data);
+                self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /**
+         * handle after get data
+         */
+        handleAfterGetData(listPattern: any[]): any {
+            let self = this;
+            // set default for dataSource and textButtonArr 
+            self.dataSource([null, null, null, null, null, null, null, null, null, null]);
+            self.textButtonArr([
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
+                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+            ]);
+
+            for (let i = 0; i < listPattern.length; i++) {
+                let source: any[] = _.clone(self.sourceEmpty);
+                //change text of linkbutton
+                self.textButtonArr()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+                //get data for dataSource
+                _.each(listPattern[i].patternItem, (pattItem) => {
+                    let text = pattItem.patternName;
+                    let arrPairShortName = [], arrPairObject = [];
+                    _.forEach(pattItem.workPairSet, (wPSet) => {
+                        let workType = null, workTime = null, pairShortName = null;
+                        workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
+                        let workTypeShortName = workType.abbreviationName;
+                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
+                        let workTimeShortName = workTime ? workTime.abName : null;
+                        pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
+                        arrPairShortName.push(pairShortName);
+                        arrPairObject.push({
+                            index: wPSet.pairNo,
+                            data: {
+                                workTypeCode: workType.workTypeCode,
+                                workTypeName: workType.name,
+                                workTimeCode: workTime ? workTime.workTimeCode : null,
+                                workTimeName: workTime ? workTime.name : null,
+                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.startTime : '',
+                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.endTime : '',
+                            }
+                        });
+                    });
+                    // screen JA must not set symbol for arrPairObject
+                    // set tooltip
+                    let arrTooltipClone = _.clone(arrPairShortName);
+                    for (let i = 7; i < arrTooltipClone.length; i += 7) {
+                        arrPairShortName.splice(i, 0, 'lb');
+                        i++;
+                    }
+                    let tooltip: string = arrPairShortName.join('→');
+                    tooltip = tooltip.replace(/→lb/g, '\n');
+                    //insert data to source
+                    source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
+                });
+                self.dataSource().splice(listPattern[i].groupNo - 1, 1, source);
+            }
         }
     }
 }

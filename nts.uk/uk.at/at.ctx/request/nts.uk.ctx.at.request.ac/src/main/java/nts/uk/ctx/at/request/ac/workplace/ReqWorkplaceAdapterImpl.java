@@ -21,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,9 +33,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
-	@Inject
-	private SyWorkplacePub wkpPub;
-
 	/** The emp pub. */
 	@Inject
 	private SyEmploymentPub empPub;
@@ -44,8 +40,8 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@Inject
 	private SyEmployeePub syEmpPub;
 	
-	@Inject
-	private SyWorkplacePub wpkPub;
+//	@Inject
+//	private SyWorkplacePub wpkPub;
 	
 	@Inject
 	private WorkplacePub wkpPubNew;
@@ -56,7 +52,8 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
-		Optional<SWkpHistExport> wkpExport = wkpPub.findBySidNew(AppContexts.user().companyId(), sID, date);
+		Optional<SWkpHistExport> wkpExport = wkpPubNew.findBySid(sID, date);
+
 		if (wkpExport.isPresent()) {
 			return toImport(wkpExport.get());
 		}
@@ -65,13 +62,13 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Override
 	public List<WkpHistImport> findWkpBySid(List<String> sID, GeneralDate date) {
-		List<SWkpHistExport> wkpExport = wkpPub.findBySId(sID);
+		List<SWkpHistExport> wkpExport = wkpPubNew.findBySId(sID);
 		return wkpExport.stream().filter(w -> w.getDateRange().contains(date)).map(w -> toImport(w)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<WkpHistImport> findWkpBySidAndBaseDate(List<String> sID, GeneralDate date) {
-		return wkpPub.findBySId(sID, date).stream().map(this::toImport).collect(Collectors.toList());
+		return wkpPubNew.findBySId(sID, date).stream().map(this::toImport).collect(Collectors.toList());
 	}
 
 	private WkpHistImport toImport(SWkpHistExport export) {
@@ -99,7 +96,7 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Override
 	public WorkPlaceHistBySIDImport findWpkBySIDandPeriod(String sID, DatePeriod datePeriod) {
-		WkpByEmpExport wkp = wkpPub.getLstHistByEmpAndPeriod(sID, datePeriod.start(), datePeriod.end());
+		WkpByEmpExport wkp = wkpPubNew.getLstHistByEmpAndPeriod(sID, datePeriod.start(), datePeriod.end());
 		List<WkpInfo> lstWkpInfo = wkp.getLstWkpInfo().stream()
 				.map(c-> new WkpInfo(c.getDatePeriod(), c.getWpkID(), c.getWpkCD(), c.getWpkName()))
 				.collect(Collectors.toList());
@@ -112,11 +109,16 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	 */
 	@Override
 	public List<String> findListWpkIDParent(String companyId, String workplaceId, GeneralDate date) {
-		return wpkPub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
+		return wkpPubNew.getWorkplaceIdAndChildren(companyId, date, workplaceId);
 	}
 
 	@Override
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date) {
-		return wpkPub.findParentWpkIdsByWkpIdDesc(companyId, workplaceId, date);
+		return wkpPubNew.getWorkplaceIdAndChildren(companyId, date, workplaceId);
+	}
+
+	@Override
+	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date) {
+		return wkpPubNew.getUpperWorkplace(companyId, workplaceId, date);
 	}
 }

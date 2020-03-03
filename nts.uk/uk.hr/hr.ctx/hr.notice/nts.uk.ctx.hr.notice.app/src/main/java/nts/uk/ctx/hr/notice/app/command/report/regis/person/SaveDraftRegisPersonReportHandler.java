@@ -5,7 +5,9 @@ package nts.uk.ctx.hr.notice.app.command.report.regis.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,8 +26,10 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusFor
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.LayoutItemType;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.RegistrationStatus;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ReportType;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.DateRangeItemImport;
+import nts.uk.ctx.hr.notice.dom.report.valueImported.HumanItemPub;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfo;
-import nts.uk.ctx.hr.shared.dom.approval.rootstate.IApprovalRootStateAdaptor;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalRootStateHrRepository;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -33,6 +37,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
  * @author laitv
+ * 下書き保存する (Lưu bản nháp)
  *
  */
 @Stateless
@@ -48,7 +53,10 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	private EmployeeInformationAdaptor empInfoAdaptor;
 	
 	@Inject
-	private IApprovalRootStateAdaptor approvalRootStateAdaptor;
+	private ApprovalRootStateHrRepository approvalRootStateAdaptor;
+	
+	@Inject
+	private HumanItemPub humanItemPub;
 	
 	/** The Constant TIME_DAY_START. */
 	public static final String TIME_DAY_START = " 00:00:00";
@@ -58,11 +66,12 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	
 	public static final String MAX_DATE = "9999/12/31";
 	public static final String MIN_DATE = "1900/01/01";
-
+	
+	
+	// アルゴリズム「届出情報を下書き保存」を実行する (Thực hiên thuật toán "Lưu bản nháp thông tin report")
 	@Override
 	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
-		ValidateDataCategoryHistory.validate(command);
 		if (command.reportID == null) {
 			// insert
 			insertData(command);
@@ -75,18 +84,13 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 	public void insertData(SaveReportInputContainer data) {
 		String sid = AppContexts.user().employeeId();
 		String cid = AppContexts.user().companyId();
-		String rootSateId = data.rootSateId;
-		Integer reportIDNew = repo.getMaxReportId(sid, cid) + 1;
-		
-		if (rootSateId == null) {
-			rootSateId = IdentifierUtil.randomUniqueId();
-		}
+		Integer reportIDNew = repo.getMaxReportId(cid) + 1;
 		
 		EmployeeInfo employeeInfo = this.getPersonInfo();
 		 
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
-				.rootSateId(data.isSaveDraft == 1 ? null : rootSateId)
+				.rootSateId(null)
 				.workId(data.workId)
 				.reportID(reportIDNew)
 				.reportLayoutID(data.reportLayoutID)
@@ -121,6 +125,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportIDNew);
 		
+		// 届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		//(Đăng ký nội dung đã nhập ở panel report với key là reportID vào 「人事届出の登録」、「届出の項目」)
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
 	}
@@ -132,9 +138,41 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		String cid = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		
+		List<ItemsByCategory> listCategory = data.inputs;
+
+		List<String> categoryIds = listCategory.stream().map(ctg -> ctg.getCategoryId()).collect(Collectors.toList());
+		if (categoryIds.isEmpty()) {
+			return listReportItem;
+		}
+
+		List<DateRangeItemImport> listDateRangeItem = humanItemPub.getDateRangeItemByListCtgId(categoryIds);
+		Map<String, DateRangeItemImport> mapCtgWithDateRangeItem = listDateRangeItem.stream().collect(Collectors.toMap(DateRangeItemImport::getPersonInfoCtgId, x -> x));	
+		
 		for (int i = 0; i < data.inputs.size(); i++) {
 			ItemsByCategory itemsByCtg = data.inputs.get(i);
 			List<ItemValue> items = itemsByCtg.getItems();
+			
+			if (itemsByCtg.getCategoryType() == 3 || itemsByCtg.getCategoryType() == 6) {
+				// truong hop la CONTINUOUSHISTORY || CONTINUOUS_HISTORY_FOR_ENDDATE
+				DateRangeItemImport dateRangeItem = mapCtgWithDateRangeItem.get(itemsByCtg.getCategoryId());
+				String startDateItemId = dateRangeItem.getStartDateItemId();
+				String endDateItemId   = dateRangeItem.getEndDateItemId(); 
+				
+				Optional<ItemValue> itemValueEndDate = items.stream().filter(item -> item.definitionId().equals(endDateItemId)).findFirst();
+				if (itemValueEndDate.isPresent()) {
+					if (itemValueEndDate.get().value() == null) {
+						items.stream().filter(item -> item.definitionId().equals(endDateItemId)).findFirst().get().setValue(GeneralDate.max());
+					}
+				}
+				
+				Optional<ItemValue> itemValueStartDate = items.stream().filter(item -> item.definitionId().equals(startDateItemId)).findFirst();
+				if (itemValueStartDate.isPresent()) {
+					if (itemValueStartDate.get().value() == null) {
+						items.stream().filter(item -> item.definitionId().equals(startDateItemId)).findFirst().get().setValue(GeneralDate.min());
+					}
+				}
+			}
+			
 			for (int j = 0; j < items.size(); j++) { 
 				ItemValue itemValue = items.get(j);
 				Optional<ItemDfCommand> itemDfCommandOpt = listItemDf.stream().filter(it -> it.itemDefId.equals(itemValue.definitionId())).findFirst();
@@ -232,6 +270,8 @@ public class SaveDraftRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		List<ReportItem> listReportItem = creatDataReportItem(data, reportId);
 		
+		// 届出IDをキーに届出パネルの入力内容を「人事届出の登録」、「届出の項目」に登録する
+		//(Đăng ký nội dung đã nhập ở panel report với key là reportID vào 「人事届出の登録」、「届出の項目」)
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
 	}

@@ -41,6 +41,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	private static String LANG_JA ="ja";
 	private static final String GET_EXPORT_EXCEL_ONE;
 	  static {
 	      StringBuilder exportSQL = new StringBuilder();
@@ -355,10 +356,16 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	     GET_EXPORT_EXCEL_ONE = exportSQL.toString();
 	  }
 	@Override
-	public List<MasterData> getDataTableExport(String companyId) {
+	public List<MasterData> getDataTableExport(String companyId, String langId) {
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
+		Query query = null;
+		if(langId.equals(LANG_JA)) {
+		   query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
 				companyId);
+		}else {
+			query = entityManager.createNativeQuery(CalFormulasItemLang.GET_EXPORT_EXCEL_LANG.toString()).setParameter("companyId",
+						companyId).setParameter("langId", langId);
+		}
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 			Integer optionalItemAtr = null;
@@ -371,13 +378,13 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 					optionalItemUse = ((BigDecimal) objects[4]).intValue();
 				}
 				if(ObjectUtils.anyNotNull(objects) == true && optionalItemUse == 1){
-					datas.add(dataContentTable(objects, optionalItemAtr));
+					datas.add(dataContentTable(objects, optionalItemAtr, langId));
 				}
 			}
 			return datas;
 	}
 
-	private MasterData dataContentTable(Object[] object, Integer optionalItemAtr) {
+	private MasterData dataContentTable(Object[] object, Integer optionalItemAtr, String langId) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(CalFormulasItemColumn.KMK002_76, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_76)
@@ -648,6 +655,19 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		}
 		
+		if(!langId.equals(LANG_JA)) {
+		    data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
+	                .columnId(CalFormulasItemColumn.KMK002_100)
+	                .value(object[25] != null ? object[25].toString(): "")
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+	                .build());
+		}else {
+			data.put(CalFormulasItemColumn.KMK002_100, MasterCellData.builder()
+	                .columnId(CalFormulasItemColumn.KMK002_100)
+	                .value("")
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+	                .build());
+		}
 		return MasterData.builder().rowData(data).build();
 	}
 

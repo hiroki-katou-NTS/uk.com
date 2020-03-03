@@ -16,8 +16,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalFrameForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.hr.notice.app.find.report.regis.person.ApproverStateForAppDto;
 import nts.uk.ctx.hr.notice.app.find.report.regis.person.AttachPersonReportFileFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassification;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
@@ -37,6 +37,7 @@ import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.HumanCategoryPub;
 import nts.uk.ctx.hr.notice.dom.report.valueImported.ctg.PerInfoCtgShowImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInfoQueryImport;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
+import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalBehaviorAtrHrExport;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
@@ -76,17 +77,22 @@ public class ReportItemFinder {
 	@Inject
 	private EmployeeInformationAdaptor employeeInforAdapter;
 	
+	private static boolean approve = true;
+	
 	/**
-	 * 
+	 * 反映前Flg = false の場合：活性
+　　　　 *　反映前Flg = true の場合：非活性
+	 * アルゴリズム「届出一覧選択処理」を実行する (Thực hiện thuật toán "Xử lý select report list")
 	 * @param reportClsId
 	 * @return
 	 */
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
-		
 
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
+		
+		approve = true;
 		
 		List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
 		
@@ -103,9 +109,7 @@ public class ReportItemFinder {
 			
 			if(registrationPersonReport.get().getRegStatus() == RegistrationStatus.Registration) {
 				
-				approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(registrationPersonReport.get().getRootSateId());
-				
-				appPhaseLst.addAll(convertData(approvalStateHrImport));
+				getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst);
 				
 			}
 			
@@ -153,10 +157,22 @@ public class ReportItemFinder {
 			}
 		}
 		
+		boolean release = approvalStateHrImport == null?false: approvalStateHrImport.getApprState() == null? false: approvalStateHrImport.getApprState().isReflectFlag();
+		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, appPhaseLst)
+						itemInter, documentSampleDtoLst, appPhaseLst, release, approve)
 				: new ReportLayoutDto();
+	}
+	
+	/*
+	 * 承認情報の取得
+	 */
+	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
+		
+		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		
+		convertData(approvalStateHrImport, appPhaseLst);
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {
@@ -560,11 +576,13 @@ public class ReportItemFinder {
 		}
 	}
 	
-	private List<ApprovalPhaseStateForAppDto> convertData(ApprRootStateHrImport apprRootState) {
+	private  void convertData(ApprRootStateHrImport apprRootState, List<ApprovalPhaseStateForAppDto> results) {
+		
+		String sid = AppContexts.user().employeeId();
 		
 		ApprStateHrImport apprState = apprRootState.getApprState();
 		
-		if(apprState == null) return new ArrayList<>();
+		if(apprState == null) return;
 		
 		List<PhaseSttHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
@@ -577,6 +595,7 @@ public class ReportItemFinder {
 				List<String> appIds = app.getLstApproverInfo().stream().map(id ->{
 					
 					return StringUtil.isNullOrEmpty(id.getAgentID(), true)== true? id.getApproverID(): id.getAgentID();
+					
 				}).collect(Collectors.toList());
 				
 				sids.addAll(appIds);			
@@ -622,6 +641,19 @@ public class ReportItemFinder {
 		
 		appDtoLst.sort(Comparator.comparing(ApprovalPhaseStateForAppDto::getPhaseOrder));
 		
-		return appDtoLst;
+		results.addAll(appDtoLst);
+		
+		results.stream().forEach(c ->{
+			
+			c.getListApprovalFrame().stream().forEach(f ->{
+				
+				Optional<ApproverStateForAppDto> appr = f.getListApprover().stream().filter(i -> i.getApproverID().equals(sid) && i.getApprovalAtrValue().equals(new Integer(ApprovalBehaviorAtrHrExport.APPROVED.value))).findFirst();
+				
+				if(appr.isPresent()) {
+					
+					this.approve = false;
+				}
+			});
+		});
 	}
 }

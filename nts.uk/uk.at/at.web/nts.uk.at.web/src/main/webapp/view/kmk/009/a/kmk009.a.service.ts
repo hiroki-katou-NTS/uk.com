@@ -14,7 +14,9 @@ module nts.uk.at.view.kmk009.a {
             findAlldWorkType: "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktimesetting/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
-            findAllAttendanceItem: "at/function/employmentfunction/findAll"
+            findAllAttendanceItem: "at/function/employmentfunction/findAll",
+            findByLangId: "at/shared/scherec/totaltimeslang/getdetail",
+            saveTotalLang: "at/shared/scherec/totaltimeslang/insert"
         }
 
         /**
@@ -39,6 +41,10 @@ module nts.uk.at.view.kmk009.a {
        */
         export function saveAllTotalTimes(command: model.TotalTimesDetailDto): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.saveAllTotalTimes, command);
+        }
+        
+         export function saveTotalLang(command: model.TotalTimesDetailLangDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveTotalLang, command);
         }
 
         /**
@@ -100,6 +106,10 @@ module nts.uk.at.view.kmk009.a {
             return nts.uk.request.ajax('at', paths.findAllAttendanceItem);
         }
         
+         export function findByLangId(langId: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findByLangId + '/' + langId);
+    }
+        
         //saveAsExcel
 
 
@@ -117,6 +127,7 @@ module nts.uk.at.view.kmk009.a {
                 summaryAtr: number;
                 useAtr: number;
                 totalTimesName: string;
+                totalTimesNameEn: string;
             }
             export interface TotalSubjectsDto{
                 workTypeCode: string;
@@ -132,6 +143,12 @@ module nts.uk.at.view.kmk009.a {
                 summaryAtr: number;
                 totalCondition: TotalConditionDto;
                 listTotalSubjects: TotalSubjectsDto[];
+            }
+            
+            export interface TotalTimesDetailLangDto {
+                totalCountNo: number;
+                langId : string;
+                totalTimesNameEn: string;
             }
             
             export interface TotalConditionDto {

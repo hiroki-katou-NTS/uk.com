@@ -2,12 +2,8 @@ module nts.uk.com.view.cmm018.m {
     export module service {
         // Service paths.
         var servicePath = {
-            searchModeEmployee: "workflow/approvermanagement/workroot/testMasterDat",
             saveAsExcel: "approval/report/masterData"
 
-        }
-        export function searchModeEmployee(data: MasterApproverRootQuery) {
-            return request.ajax('com', servicePath.searchModeEmployee, data);
         }
 
         export function saveAsExcel(data: MasterApproverRootQuery) {

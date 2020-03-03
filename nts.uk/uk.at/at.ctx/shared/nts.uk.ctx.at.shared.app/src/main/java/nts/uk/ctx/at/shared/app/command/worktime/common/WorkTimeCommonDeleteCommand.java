@@ -16,4 +16,6 @@ public class WorkTimeCommonDeleteCommand {
 	
 	/** The work time code. */
 	private String workTimeCode;
+	
+	private String langId;
 }

@@ -28,6 +28,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -51,6 +52,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringLength;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
@@ -96,10 +98,10 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentInfo;
@@ -156,14 +158,10 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsReportGenerator implements WorkScheduleOutputGenerator{
-
-	/** The workplace config repository. */
-	@Inject
-	private WorkplaceConfigInfoRepository workplaceConfigRepository;
 	
 	/** The workplace info repository. */
 	@Inject
-	private WorkplaceInfoRepository workplaceInfoRepository;
+	private WorkplaceInformationRepository workplaceInfoRepository;
 	
 	/** The error alarm repository. */
 	@Inject
@@ -624,7 +622,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				throw new BusinessException(new RawErrorMessage("Msg_1396"));
 		}
 		
-		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigRepository.findByWkpIdsAtTime(companyId, baseDate, lstWorkplaceId);
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.convertData(workplaceInfoRepository.findByBaseDateWkpIds2(companyId, lstWorkplaceId, baseDate));
 		queryData.setLstWorkplaceConfigInfo(lstWorkplaceConfigInfo);
 		
 		// Collect child workplace, automatically sort into tree map
@@ -1175,7 +1173,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		employeeData.lstDetailedPerformance = new ArrayList<>();
 		
 		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), query.getBaseDate(), lstWorkplaceImport, lstWorkplaceConfigInfo);
-		workplaceData.lstEmployeeReportData.add(employeeData);
+		if (workplaceData != null) {
+			workplaceData.lstEmployeeReportData.add(employeeData);
+		}	
 		
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getWorkingDate().compareTo(o2.getWorkingDate())).forEach(x -> {
 			GeneralDate workingDate = x.getWorkingDate();
@@ -1740,7 +1740,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
-				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId(), baseDate).get();
+				if (CollectionUtil.isEmpty(workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()))) {
+					continue;
+				}
+				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()).get(0);
 				lstWorkplace.put(hierarchy.getHierarchyCode().v(), workplace);
 				
 				// Recursive
@@ -3633,4 +3636,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         currentRow++;
         return currentRow;
     }
+    
+    private List<WorkplaceConfigInfo> convertData(List<WorkplaceInformation> wp) {
+		Map<Pair<String, String>, List<WorkplaceInformation>> map =
+				wp.stream().collect(Collectors.groupingBy(p -> Pair.of(p.getCompanyId(), p.getWorkplaceHistoryId())));
+		List<WorkplaceConfigInfo> returnList = new ArrayList<WorkplaceConfigInfo>();
+		for (Pair<String, String> key : map.keySet()) {
+			returnList.add(new WorkplaceConfigInfo(key.getLeft(), key.getRight(), 
+					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
+		}
+		return returnList;
+	}
 }

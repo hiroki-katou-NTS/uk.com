@@ -138,7 +138,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					int empRoot = rootInsert.get(0).getEmployRootAtr();
 					Integer typeI = empRoot != 0 && empRoot != 5 ? Integer.valueOf(type) : null;
 					String typeS = empRoot == 5 ? type : null;
-					List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, typeI, empRoot, typeS);
+					List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, typeI, empRoot, typeS, data.getSystemAtr());
 					if(!comOld.isEmpty()){
 						//update ls cu
 						CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
@@ -147,7 +147,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				}
 			}else{
 				// xử lí update phần chung
-				List<CompanyApprovalRoot> comOlds = repoCom.getComAppRootLast(companyId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+				List<CompanyApprovalRoot> comOlds = repoCom.getComAppRootLast(companyId, 
+						GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), data.getSystemAtr());
 					for(CompanyApprovalRoot comAppRoot : comOlds){
 						CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comAppRoot, endDateNew);
 						listComPre.add(comPre);
@@ -168,10 +169,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer value = type.getEmployRootAtr() != 5 && type.getEmployRootAtr() != 0 ? Integer.valueOf(type.getValue()) : 0;
 					String id = type.getEmployRootAtr() == 5 ? type.getValue() : "";
-					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, value, type.getEmployRootAtr(), id);
+					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, value,
+							type.getEmployRootAtr(), id, data.getSystemAtr());
 					if(!lstCom.isEmpty()){
 						CompanyApprovalRoot com = lstCom.get(0);
 						//==========
@@ -293,7 +295,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				String type = rootInsert.get(0).getAppTypeValue();
 				Integer value = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(type) : 0;
 				String id = employRootAtr == 5 ? type : "";
-				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, value, employRootAtr, id);
+				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId,
+						value, employRootAtr, id, data.getSystemAtr());
 				if(!psOld.isEmpty()){
 					//update ls cu
 					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(psOld.get(0), endDateNew);
@@ -301,7 +304,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				}
 			}else{
 				// xu li update phan chung
-				List<WorkplaceApprovalRoot> psOlds = repoWorkplace.getWpAppRootLast(companyId, workplaceId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+				List<WorkplaceApprovalRoot> psOlds = repoWorkplace.getWpAppRootLast(companyId, workplaceId,
+						GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), data.getSystemAtr());
 				for(WorkplaceApprovalRoot wpAppRoot : psOlds){
 					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(wpAppRoot, endDateNew);
 					listWpPre.add(psPre);
@@ -322,12 +326,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer employRootAtr = type.getEmployRootAtr();
 					String value = type.getValue();
 					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 					String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
-					List<WorkplaceApprovalRoot> lstWp = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDateUpdate, valueI, employRootAtr, id);
+					List<WorkplaceApprovalRoot> lstWp = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId,
+							endDateUpdate, valueI, employRootAtr, id, data.getSystemAtr());
 					if(!lstWp.isEmpty()){
 						WorkplaceApprovalRoot wp = lstWp.get(0);
 						//==========
@@ -439,7 +444,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				String value = rootInsert.get(0).getAppTypeValue();
 				Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 				String id = employRootAtr == 5 ? value : "";
-				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, valueI, employRootAtr, id);
+				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, valueI,
+						employRootAtr, id, data.getSystemAtr());
 				if(!psOld.isEmpty()){
 					//update ls cu
 					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psOld.get(0), endDateNew);
@@ -447,7 +453,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				}
 			}else{
 				// xu li phan chung 
-				List<PersonApprovalRoot> psOlds = repoPerson.getPsAppRootLastest(companyId, employeeId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+				List<PersonApprovalRoot> psOlds = repoPerson.getPsAppRootLastest(companyId, employeeId,
+						GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), data.getSystemAtr());
 				for(PersonApprovalRoot psAppRoot : psOlds){
 					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psAppRoot, endDateNew);
 					listPsPre.add(psPre);
@@ -469,12 +476,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			//delete root not display in screen
 			for (AppType type : lstAppTypeDb) {
-				if(!lstAppTypeUi.contains(type)){
+				if(!this.checkContain(lstAppTypeUi, type)){
 					Integer employRootAtr = type.getEmployRootAtr();
 					String value = type.getValue();
 					Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 					String id = employRootAtr == 5 ? value : "";
-					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDateUpdate, valueI, employRootAtr, id);
+					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId,
+							endDateUpdate, valueI, employRootAtr, id, data.getSystemAtr());
 					if(!lstPs.isEmpty()){
 						PersonApprovalRoot ps = lstPs.get(0);
 						//==========
@@ -684,5 +692,16 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			//delete All Approval Phase By approvalId
 			repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 		}
+	}
+	private boolean checkContain(List<AppType> lstType, AppType type) {
+		if(type.getEmployRootAtr() == 0) {
+			for(AppType appType : lstType) {
+				if(appType.getEmployRootAtr() == 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return lstType.contains(type);
 	}
 }

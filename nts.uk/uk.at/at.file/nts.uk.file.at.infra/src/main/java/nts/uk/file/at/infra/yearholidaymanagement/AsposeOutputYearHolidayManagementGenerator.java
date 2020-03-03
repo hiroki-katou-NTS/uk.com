@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
@@ -48,9 +49,11 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosi
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.file.at.app.export.yearholidaymanagement.BreakPageType;
 import nts.uk.file.at.app.export.yearholidaymanagement.ClosurePrintDto;
 import nts.uk.file.at.app.export.yearholidaymanagement.EmployeeHolidayInformationExport;
@@ -106,9 +109,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	@Inject
 	private ManagedParallelWithContext parallel;
 	@Inject
-	private WorkplaceConfigRepository wpConfigRepo;
+	private WorkplaceConfigurationRepository wpConfigRepo;
 	@Inject
-	private WorkplaceConfigInfoRepository wpConfigInfoRepo;
+	private WorkplaceInformationRepository wpConfigInfoRepo;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -314,12 +317,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			GeneralDate baseDate) {
 
 		List<String> historyIds = new ArrayList<String>();
-		this.wpConfigRepo.findByBaseDate(companyId, baseDate).ifPresent(config -> {
-			historyIds.addAll(config.getWkpConfigHistory().stream().map(x -> {
+		this.wpConfigRepo.findByDate(companyId, baseDate).ifPresent(config -> {
+			historyIds.addAll(config.items().stream().map(x -> {
 				return x.identifier();
 			}).collect(Collectors.toList()));
 		});
-		return this.wpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, historyIds, workplaceIds);
+		return this.convertData(this.wpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, historyIds, workplaceIds));
 
 	}
 
@@ -676,6 +679,17 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					+ dateString.substring(4, 6);
 		}
 		return result;
+	}
+	
+	private List<WorkplaceConfigInfo> convertData(List<WorkplaceInformation> wp) {
+		Map<Pair<String, String>, List<WorkplaceInformation>> map =
+				wp.stream().collect(Collectors.groupingBy(p -> Pair.of(p.getCompanyId(), p.getWorkplaceHistoryId())));
+		List<WorkplaceConfigInfo> returnList = new ArrayList<WorkplaceConfigInfo>();
+		for (Pair<String, String> key : map.keySet()) {
+			returnList.add(new WorkplaceConfigInfo(key.getLeft(), key.getRight(), 
+					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
+		}
+		return returnList;
 	}
 
 }

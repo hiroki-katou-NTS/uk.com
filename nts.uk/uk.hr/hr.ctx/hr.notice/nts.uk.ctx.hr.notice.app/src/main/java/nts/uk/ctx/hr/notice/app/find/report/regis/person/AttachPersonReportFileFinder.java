@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
+ * アルゴリズム「起動処理」を実行する (Thực hiện thuật toán "Xử lý khởi động")
  */
 
 @Stateless

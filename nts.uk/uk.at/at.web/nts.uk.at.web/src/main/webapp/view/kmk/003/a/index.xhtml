@@ -88,6 +88,13 @@
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
 			<com:scriptfile path="kmk003.a.service.js" />
+			
+			<com:scriptfile
+				path="/view/language/select/languagemasterselect-jquery-ext.js"
+				of="nts.uk.com.web" />
+			<com:stylefile path="/view/language/select/languagemasterselect.css"
+				of="nts.uk.com.web" />
+				
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName
@@ -101,13 +108,14 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="createButton" tabindex="1" data-bind="enable: !isNewMode(), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
-				<button id="saveButton" tabindex="2" class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
-				<button tabindex="3" data-bind="enable: isUpdateMode, click: enterCopyMode">
+				<button id="createButton" tabindex="1" data-bind="enable: (!isNewMode() &amp;&amp; isJapanese()), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
+				<button id="saveButton" tabindex="2" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KMK003_4')}</button>
+				<button tabindex="3" data-bind="enable: (isUpdateMode &amp;&amp; isJapanese()), click: enterCopyMode">
 					#{i18n.getText('KMK003_5')}</button>		
-				<button tabindex="4" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
+				<button tabindex="4" data-bind="click: exportExcel">#{i18n.getText('KMK003_312')}</button>	
+				<div tabindex="5"  id="switch-language"></div>
+				<button tabindex="6" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
-				<button tabindex="4" data-bind="click: exportExcel">#{i18n.getText('KMK003_1016')}</button>	
 			</div>
 			<div id="contents-area" style="display: none"
 				data-bind="visible: true">
@@ -119,7 +127,7 @@
 								<com:ko tag="with" bind="workTimeSettingLoader">
 								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-									<div tabindex="5" id="search-daily-atr"
+									<div tabindex="7" id="search-daily-atr"
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_7]',
 										options: workTimeAtrEnums,
@@ -135,7 +143,7 @@
 								</div>
 								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-									<span tabindex="6" id="combo-box" 
+									<span tabindex="8" id="combo-box" 
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_8]',
 										options: workTimeMethodEnums,
@@ -151,12 +159,12 @@
 								</div>
 								</com:ko>
 								<div style="clear: both">
-									<div style="width: 300px" tabindex="8"
+									<div style="width: 300px" tabindex="9"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
 									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
 									</div>
-									<table id="single-list" tabindex="9"
+									<table id="single-list" tabindex="10"
 										data-bind="ntsGridList: {
 										name: '#[KMK003_86]',
 										height: 320,
@@ -179,15 +187,15 @@
 									#{i18n.getText('KMK003_13')}
 								</div>
 
-								<input class="main-input" tabindex="10" id="inp-worktimecode" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="11" id="inp-worktimecode" data-bind="ntsTextEditor: {
 								    name: '#[KMK003_10]',
 									value: worktimeCode,
 									constraint: 'WorkTimeCode',
 									option: siftCodeOption,
 									required: true,
-									enable: $parent.isNewOrCopyMode()}">
+									enable: $parent.isNewOrCopyMode() &amp;&amp; $parent.isJapanese()}">
 								</input> 
-								<input class="main-input" tabindex="11" id="inp-worktimename" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="12" id="inp-worktimename" data-bind="ntsTextEditor: {
 									name: '#[KMK003_11]',
 									value: workTimeDisplayName.workTimeName,
 									constraint: 'WorkTimeName',
@@ -198,7 +206,7 @@
 								</input>
 								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
 								</div>
-								<input class="main-input" tabindex="12" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
@@ -208,23 +216,23 @@
 									}" />
 								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeSymbol'}">#{i18n.getText('KMK003_15')}
 								</div>
-								<input class="main-input" tabindex="13" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="14" data-bind="ntsTextEditor: {
 									name: '#[KMK003_15]',
 									value: workTimeDisplayName.workTimeSymbol,
 									constraint: 'WorkTimeSymbol',
 									option: siftSymbolNameOption,
 									required: false,
-									enable: true
+									enable: $parent.isJapanese()
 									}" />
-								<div tabindex="14" class="label_header" style="padding-top: 5px;" 
-									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
+								<div tabindex="15" class="label_header" style="padding-top: 5px;" 
+									data-bind="ntsCheckBox: { checked: isAbolish, enable: $parent.isJapanese() }">#{i18n.getText('KMK003_16')}
 								</div>
-								<div class="main-input" tabindex="15" id="colorpicker"
-									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50},visible: false" />
+								<div class="main-input" tabindex="16" id="colorpicker"
+									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: $parent.isJapanese(), width: 50},visible: false" />
 							</div>
 							<div class="setting_header_br">
 								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="16"
+								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="17"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
 									options: $parent.settingEnum.workTimeDailyAtr,
@@ -233,13 +241,13 @@
 									value: workTimeDivision.workTimeDailyAtr,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: $parent.isNewOrCopyMode(),
+									enable: $parent.isNewOrCopyMode() &amp;&amp; $parent.isJapanese(),
 									columns: [
 									{ prop: 'localizedName', length: 10 }]}">
 								</div>
 								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
 								</div>
-								<div id="cbb-worktime-method" tabindex="17"
+								<div id="cbb-worktime-method" tabindex="18"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_8]',
 									options: $parent.settingEnum.workTimeMethodSet,
@@ -248,7 +256,7 @@
 									value: workTimeDivision.workTimeMethodSet,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: $parent.isNewOrCopyMode() &amp;&amp; isRegularWork(),
+									enable: $parent.isNewOrCopyMode() &amp;&amp; isRegularWork() &amp;&amp; $parent.isJapanese(),
 									columns: [{ prop: 'localizedName', length: 6 }]}">
 								</div>
 							</div>
@@ -256,25 +264,25 @@
 								<div class="label_memo"
 									data-bind="ntsFormLabel: {constraint: 'WorkTimeNote'}">#{i18n.getText('KMK003_162')}
 								</div>
-								<textarea tabindex="18" class="memo-field"
+								<textarea tabindex="19" class="memo-field"
 									data-bind="ntsMultilineEditor: {
 									name: '#[KMK003_162]',
 									value: note,
 									constraint: 'WorkTimeNote',
 									option: siftRemarkOption,
 									required: false,
-									enable: true
+									enable: $parent.isJapanese()
 									}" />
 								<div class="label_memo label_header" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
 								</div>
-								<textarea tabindex="19" class="memo-field"
+								<textarea tabindex="20" class="memo-field"
 									data-bind="ntsMultilineEditor: {
 									name: '#[KMK003_206]',
 									value: memo,
 									constraint: 'Memo',
 									option: memoOption,
 									required: false,
-									enable: true
+									enable: $parent.isJapanese()
 									}" />
 							</div>
 							</com:ko>
@@ -282,14 +290,14 @@
 								
 								<tr style="height: 50px;">
 									<td class="td-cell" width="300px">
-										<div tabindex="20" class="cf"
+										<div tabindex="21" class="cf"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_207]',
 											options: tabModeOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: tabMode,
-											enable: true }">
+											enable: isJapanese() }">
 										</div>
 									</td>
 									<com:ko tag="if" bind ="isDetailMode">
@@ -298,14 +306,14 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
 									</td>
 									<td class="td-cell">
-										<div class="cf" tabindex="21"
+										<div class="cf" tabindex="22"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_165]',
 											options: useHalfDayOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: useHalfDay,
-											enable: true }">
+											enable: isJapanese() }">
 										</div>
 									</td>
 									</com:ko>
@@ -317,7 +325,7 @@
 										<div id="tab-panel"
 											data-bind="ntsTabPanel: {width:250, dataSource: tabs, 
 											active: selectedTab,direction: 'vertical' }">
-											<div tabindex="22" class="tab-a1">
+											<div tabindex="23" class="tab-a1">
 												<div data-bind="ntsKMK003A1: {
 													selectedTab: selectedTab,
 													isDetailMode: isDetailMode,

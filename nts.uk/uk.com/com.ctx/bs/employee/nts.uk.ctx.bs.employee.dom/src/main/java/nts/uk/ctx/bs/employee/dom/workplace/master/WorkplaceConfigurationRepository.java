@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -20,5 +22,11 @@ public interface WorkplaceConfigurationRepository {
 	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId);
 	
 	public Optional<WorkplaceConfiguration> findByDate(String companyID, GeneralDate date);
+
+	public List<WorkplaceConfiguration> findByCompanyIdAndPeriod(String companyId, DatePeriod period);
+
+	public Optional<WorkplaceConfiguration> findByHistId(String companyID, String histId);
+
+	public Optional<WorkplaceConfiguration> findByStartDate(String companyID, GeneralDate startDate);
 
 }

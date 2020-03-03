@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
-public class WorkTimeExportService extends ExportService<String> {
+public class WorkTimeExportService extends ExportService<WorkTimExportDto> {
 
 	private static final String COMPANY_ERROR = "Company is not found!!!!";
 
@@ -32,9 +32,11 @@ public class WorkTimeExportService extends ExportService<String> {
 	private CompanyAdapter company;
 
 	@Override
-	protected void handle(ExportServiceContext<String> context) {
+	protected void handle(ExportServiceContext<WorkTimExportDto> context) {
 		LoginUserContext user = AppContexts.user();
-		String programName = context.getQuery();
+		WorkTimExportDto workTimExportDto = context.getQuery();
+		String programName = workTimExportDto.getProgramName();
+		String langId = workTimExportDto.getLangId();
 		String cid = user.companyId();
 		String companyName = user.companyCode() + " "
 				+ company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR)).getCompanyName();
@@ -47,7 +49,7 @@ public class WorkTimeExportService extends ExportService<String> {
 
 		executorService.submit(() -> {
 			try {
-				normal.addAll(reportRepository.findWorkTimeNormal(cid));
+				normal.addAll(reportRepository.findWorkTimeNormal(cid, langId));
 			} finally {
 				countDownLatch.countDown();
 			}
@@ -55,7 +57,7 @@ public class WorkTimeExportService extends ExportService<String> {
 
 		executorService.submit(() -> {
 			try {
-				flow.addAll(reportRepository.findWorkTimeFlow(cid));
+				flow.addAll(reportRepository.findWorkTimeFlow(cid, langId));
 			} finally {
 				countDownLatch.countDown();
 			}
@@ -63,7 +65,7 @@ public class WorkTimeExportService extends ExportService<String> {
 
 		executorService.submit(() -> {
 			try {
-				flex.addAll(reportRepository.findWorkTimeFlex(cid));
+				flex.addAll(reportRepository.findWorkTimeFlex(cid, langId));
 			} finally {
 				countDownLatch.countDown();
 			}

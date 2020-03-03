@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoRQ18;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
@@ -11,7 +12,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ResultRequest596Import;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface EmployeeAdapter {
 
@@ -33,7 +33,8 @@ public interface EmployeeAdapter {
 	 * @param baseDate　基準日
 	 * @return 社員情報
 	 */
-	List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+	List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> lstWkpDepId,
+			GeneralDate baseDate, int sysAtr);
 	
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)
@@ -104,4 +105,13 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
+	
+	/**
+	 * [No.650]社員が所属している職場を取得する
+	 * 社員と基準日から所属職場履歴項目を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public Optional<String> getWkpBySidDate(String employeeID, GeneralDate date);
 }

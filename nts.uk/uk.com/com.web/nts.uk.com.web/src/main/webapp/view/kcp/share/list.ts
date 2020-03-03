@@ -573,7 +573,7 @@ module kcp.share.list {
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
-                    template: "<td class='list-component-name-col'>${workplaceName}</td>"
+                    template: "<td class='list-component-name-col'>${affiliationName}</td>"
                 });
             }
 
@@ -666,7 +666,7 @@ module kcp.share.list {
             // Init component.
             var fields: Array<string> = ['name', 'code'];
             if (data.isShowWorkPlaceName) {
-                fields.push('workplaceName');
+                fields.push('affiliationName');
             }
 
             const startComponent = () => {
@@ -1214,7 +1214,6 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
                                         optionsValue: 'id',
                                         visibleItemsCount: 5,
                                         value: selectedClosureId,
-                                        optionsText: 'name',
                                         enable: true,
                                         columns: [
                                             { prop: 'name', length: 4 },

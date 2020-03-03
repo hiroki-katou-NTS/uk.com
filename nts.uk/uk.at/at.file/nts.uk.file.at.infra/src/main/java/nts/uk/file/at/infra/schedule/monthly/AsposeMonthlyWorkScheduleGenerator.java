@@ -28,6 +28,7 @@ import javax.json.JsonArrayBuilder;
 
 import nts.uk.file.at.infra.schedule.WorkSheetInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -76,10 +77,10 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
 import nts.uk.file.at.app.export.dailyschedule.TotalWorkplaceHierachy;
@@ -108,6 +109,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -130,17 +132,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
 
-	/** The workplace config repository. */
-	@Inject
-	private WorkplaceConfigInfoRepository workplaceConfigRepository;
-
 	/** The employee adapter. */
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
 	
 	/** The workplace info repository. */
 	@Inject
-	private WorkplaceInfoRepository workplaceInfoRepository;
+	private WorkplaceInformationRepository workplaceInfoRepository;
 
 	/**  The employment adapter. */
 	@Inject
@@ -461,7 +459,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		optHierachyInfo.ifPresent(info -> {
 			List<WorkplaceHierarchy> lstHierarchy = info.getLstWkpHierarchy();
 			for (WorkplaceHierarchy hierarchy: lstHierarchy) {
-				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId(), baseDate).get();
+				if (CollectionUtil.isEmpty(workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()))) {
+					continue;
+				}
+				WorkplaceInfo workplace = workplaceInfoRepository.findByWkpId(hierarchy.getWorkplaceId()).get(0);
 				lstWorkplace.put(hierarchy.getHierarchyCode().v(), workplace);
 				
 				// Recursive
@@ -719,7 +720,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				throw new BusinessException(new RawErrorMessage("Msg_1396"));
 		}
 		
-		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigRepository.findByWkpIdsAtTime(companyId, finalDate, lstWorkplaceId);
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = this.convertData(workplaceInfoRepository.findByBaseDateWkpIds2(companyId, lstWorkplaceId, finalDate));
 		queryData.setLstWorkplaceConfigInfo(lstWorkplaceConfigInfo);
 		
 		// Collect child workplace, automatically sort into tree map
@@ -933,7 +934,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			employeeData.position = "";
 		
 		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
-		workplaceData.lstEmployeeReportData.add(employeeData);
+		if (workplaceData != null) {
+			workplaceData.lstEmployeeReportData.add(employeeData);
+		}
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getYearMonth().compareTo(o2.getYearMonth())).forEach(x -> {
 			YearMonth workingDate = x.getYearMonth();
 			
@@ -1015,7 +1018,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					detailedDate.actualValue.add(new ActualValue(item.getAttendanceDisplay(), "", ActualValue.STRING));
 				}
 				// Enable data presentation
-				workplaceData.setHasData(true);
+				if (workplaceData != null) {
+					workplaceData.setHasData(true);
+				}
 			});
 		});
 		return employeeData;
@@ -3037,5 +3042,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		workplaceTagCell.setValue(workplaceTitle);
 		currentRow++;
 		return currentRow;
+	}
+	
+	private List<WorkplaceConfigInfo> convertData(List<WorkplaceInformation> wp) {
+		Map<Pair<String, String>, List<WorkplaceInformation>> map =
+				wp.stream().collect(Collectors.groupingBy(p -> Pair.of(p.getCompanyId(), p.getWorkplaceHistoryId())));
+		List<WorkplaceConfigInfo> returnList = new ArrayList<WorkplaceConfigInfo>();
+		for (Pair<String, String> key : map.keySet()) {
+			returnList.add(new WorkplaceConfigInfo(key.getLeft(), key.getRight(), 
+					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
+		}
+		return returnList;
 	}
 }

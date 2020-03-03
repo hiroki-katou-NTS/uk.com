@@ -49,6 +49,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         lstSpec2: KnockoutObservableArray<any> = ko.observableArray([]);
         selectSpec1: KnockoutObservable<string> = ko.observable("");
         selectSpec2: KnockoutObservable<string> = ko.observable("");
+        systemAtr: number = 0;
         //==========
         
         
@@ -91,6 +92,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.itemListCbb.push(new vmbase.ApproverDtoK('','','指定しない',0,0));
             //設定対象: get param from main: approverInfor(id & approvalAtr)
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');
+            self.systemAtr = data.systemAtr || 0;
             self.treeGrid = {
                 treeType: 1,
                 selectType: data.typeSetting == 2 ? 1 : 3, 
@@ -101,7 +103,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 baseDate: ko.observable(this.standardDate()),
                 selectedId: data.typeSetting == 2 ? ko.observableArray([data.specWkpId]) : ko.observableArray([]),
                 alreadySettingList: ko.observableArray([]),
-                systemType : data.systemAtr == 1 ? 4 : 2,
+                systemType : self.systemAtr == 1 ? 4 : 2,
                 width: 310,
                 startMode: data.systemAtr
             };
@@ -115,7 +117,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 if(self.checkEmpty(newValue)) return;
                 self.bindData(newValue);
             });
-            let specLabel = data.systemAtr == 0 ? resource.getText('CMM018_100') : resource.getText('CMM018_101'); 
+            let specLabel = self.systemAtr == 0 ? resource.getText('CMM018_100') : resource.getText('CMM018_101'); 
             //承認者指定種類
             //０：会社、１：職場、２：個人
             if(data.tab == 2){
@@ -306,6 +308,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let dfd = $.Deferred();
             var employeeSearch = new service.model.EmployeeSearchInDto();
             employeeSearch.baseDate = self.standardDate();
+            employeeSearch.sysAtr = self.systemAtr;
             let lstWkp1 = [self.treeGrid.selectedId()];
             let lstA = [];
             let UNIT = 100;
@@ -348,7 +351,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 confirmSet = self.selectedCbbCode();
             }else if(self.selectTypeSet() == TypeSet.SPEC_WKP){//CHI DINH
                 if(self.checkEmpty(self.treeGrid.selectedId())) {
-                    error({messageId: 'Msg_1582', messageParams:[getText('Com_Workplace')]});
+                    if(self.systemAtr == 0){
+                        error({messageId: 'Msg_1582', messageParams:[getText('Com_Workplace')]});
+                    }else{
+                        error({messageId: 'Msg_1582', messageParams:[getText('Com_Department')]});
+                    }
                     return;
                 }
                 lstApprover = self.lstSpec2();

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.dom.budget.premium;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 /**
- * 
+ * 割増時間項目
  * @author Doan Duy Hung
  *
  */

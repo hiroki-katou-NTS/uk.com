@@ -15,5 +15,7 @@ public class EmployeeSearch  implements Serializable {
 	private List<String> workplaceIds;
 	/** The base date. */
 	private GeneralDate baseDate;
+	/**システム区分: 0 - 就業, 1 - 人事*/
+	private int sysAtr;
 
 }

@@ -251,7 +251,7 @@ module nts.uk.at.view.ksc001.b {
                     returnDataFromCcg001: function(data: any) {
                         const mappedEmployeeList = _.map(data.listEmployee, employeeSearch => {return {code: employeeSearch.employeeCode,
                                                 name: employeeSearch.employeeName,
-                                                workplaceName: employeeSearch.workplaceName}});
+                                                affiliationName: employeeSearch.affiliationName}});
                         self.employeeList(mappedEmployeeList);
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
@@ -292,7 +292,7 @@ module nts.uk.at.view.ksc001.b {
                     employeeSearchs.push({
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        affiliationName: employeeSearch.affiliationName
                     });
                     listSelectedEmpCode.push(employeeSearch.employeeCode);
                 });
@@ -1026,7 +1026,7 @@ module nts.uk.at.view.ksc001.b {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
 
