@@ -857,7 +857,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			workTimeCode = singleDaySchedule.get().getWorkTimeCode().isPresent() ? singleDaySchedule.get().getWorkTimeCode().get().v() : null;
 		}
 		//update workTime when work time change
-		workInfoOfDailyPerformanceOpt.get().getRecordInfo().setSiftCode(new WorkTimeCode(workTimeCode));
+		workInfoOfDailyPerformanceOpt.get().getRecordInfo().setWorkTimeCode(new WorkTimeCode(workTimeCode));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
 				workTimeCode, AbolishAtr.NOT_ABOLISH);
@@ -920,7 +920,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
 			}
 			//set worktime default  
-			workInfoOfDailyPerformanceOpt.get().getRecordInfo().setSiftCode(workTimeCodeDefault);
+			workInfoOfDailyPerformanceOpt.get().getRecordInfo().setWorkTimeCode(workTimeCodeDefault);
 			// 就業時間帯の休憩時間帯を日別実績に写す
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService

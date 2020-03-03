@@ -17,9 +17,9 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
+				<div class="label">#{i18n.getText('KDL044_1')}</div>
+				<!-- <span data-bind="text: gridFields"></span> -->
 				<div id="content">
-					<div class="label">#{i18n.getText('KDL044_1')}</div>
-					<!-- <span data-bind="text: gridFields"></span> -->
 					<div
 						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
 	                              items: listShifuto, selectedKey: 'shiftMasterCode', 

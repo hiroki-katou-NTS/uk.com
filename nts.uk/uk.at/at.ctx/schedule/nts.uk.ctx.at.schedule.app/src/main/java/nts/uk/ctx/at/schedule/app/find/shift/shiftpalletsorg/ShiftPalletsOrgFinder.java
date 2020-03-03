@@ -21,7 +21,8 @@ public class ShiftPalletsOrgFinder {
 	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
 	
 	public List<ShiftPalletsOrgDto>   getbyWorkPlaceId(String workplaceId){
-		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(workplaceId);
+		//0 = work place
+		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0 ,workplaceId);
 		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId) )
 				.collect(Collectors.toList());						
 		return result;

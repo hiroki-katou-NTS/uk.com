@@ -131,6 +131,6 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 				.setParameter("companyId", companyId)
 				.setParameter("targetUnit", TargetOrganizationUnit.WORKPLACE.value)
 				.getList();
-		return datas.stream().map(d -> d.kshmtShiftMaterOrgPK.targetId).collect(Collectors.toList());
+		return datas.stream().map(d -> d.kshmtShiftMaterOrgPK.targetId).distinct().collect(Collectors.toList());
 	}
 }

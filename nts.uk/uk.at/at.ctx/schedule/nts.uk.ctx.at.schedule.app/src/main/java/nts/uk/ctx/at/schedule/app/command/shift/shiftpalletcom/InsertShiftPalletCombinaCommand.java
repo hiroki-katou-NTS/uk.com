@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InsertShiftPalletCombinaCommand {
 	public int pairNo;
-	public String workTypeCode;
-	public String workTimeCode;
+	public String shiftCode;
 
-	public InsertShiftPalletCombinaCommand(int pairNo, String workTypeCode, String workTimeCode) {
+	public InsertShiftPalletCombinaCommand(int pairNo, String shiftCode) {
 		super();
 		this.pairNo = pairNo;
-		this.workTypeCode = workTypeCode;
-		this.workTimeCode = workTimeCode;
+		this.shiftCode = shiftCode;
 	}
 }

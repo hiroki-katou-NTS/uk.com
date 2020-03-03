@@ -6,7 +6,7 @@ module nts.uk.at.view.ksu001.jb.service {
         deleteWorkPairPattern: "at/schedule/shift/management/delete",
         getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
         //getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
-        getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern", 
+        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId", 
     }
 
     export function registerWorkPairPattern(obj): JQueryPromise<any> {
