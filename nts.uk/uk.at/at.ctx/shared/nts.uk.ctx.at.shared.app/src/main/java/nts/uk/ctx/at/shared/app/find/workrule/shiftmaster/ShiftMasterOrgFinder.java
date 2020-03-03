@@ -57,6 +57,10 @@ public class ShiftMasterOrgFinder {
 			target = new TargetOrgIdenInfor(unit, targetId, targetId);
 		}
 		
+		if(target == null) {
+			return require.getAllByCid(companyId);
+		}
+		
 		@SuppressWarnings("static-access")
 		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getUsableShiftMaster(require, companyId, target);
 		

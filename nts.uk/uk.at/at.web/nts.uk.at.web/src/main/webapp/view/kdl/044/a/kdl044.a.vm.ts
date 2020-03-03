@@ -62,7 +62,7 @@ module nts.uk.at.view.kdl044.a {
                             if (data.permission) {
                                 if (isUseWorkMultiple) {
                                     result.push(new Shifuto(
-                                        "",
+                                        "  ",
                                         getText('KDL044_13'),
                                         "",
                                         "",
@@ -72,7 +72,7 @@ module nts.uk.at.view.kdl044.a {
                                     ));
                                 } else {
                                     result.push(new Shifuto(
-                                        "",
+                                        "  ",
                                         getText('KDL044_13'),
                                         "",
                                         "",
@@ -171,9 +171,9 @@ module nts.uk.at.view.kdl044.a {
                 self.shiftMasterName = name;
                 self.workTypeName = workType;
                 self.workTimeName = workTime;
-                self.workTime1 = time1;
-                self.workTime2 = time2;
-                self.remark = remark;
+                self.workTime1 = time1 ? time1 : "";
+                self.workTime2 = time2 ? time2 : "";
+                self.remark = remark ? remark : "";
             }
         }
 
