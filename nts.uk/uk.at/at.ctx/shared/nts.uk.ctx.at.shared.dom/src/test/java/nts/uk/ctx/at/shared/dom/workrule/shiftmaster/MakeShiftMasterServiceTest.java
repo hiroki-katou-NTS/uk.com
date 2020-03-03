@@ -10,6 +10,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService.Require;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -166,8 +167,10 @@ public class MakeShiftMasterServiceTest {
 
 	@Test
 	public void testMakeShiftMater() {
-		ShiftMaster shiftMater = ShiftMasterInstanceHelper.getShiftMaterWorkTimeIsNull();
-
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
 				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
