@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stampmanagement;
+package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcctStampLayoutDetailPk implements Serializable {
+public class KrcctStampPageLayoutPk implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -32,8 +32,4 @@ public class KrcctStampLayoutDetailPk implements Serializable {
 	/** ページNO */
 	@Column(name = "PAGE_NO")
 	public int pageNo;
-	
-	/** ボタン位置NO */
-	@Column(name = "BUTTON_POSITION_NO")
-	public int buttonPositionNo;
 }

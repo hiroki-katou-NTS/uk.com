@@ -18,4 +18,9 @@ public class StampPageComment {
 	/** コメント色 */
 	@Getter
 	private ColorCode commentColor;
+
+	public StampPageComment(PageComment pageComment, ColorCode commentColor) {
+		this.pageComment = pageComment;
+		this.commentColor = commentColor;
+	}
 }

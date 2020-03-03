@@ -26,9 +26,18 @@ public class StampType {
 	
 	/** 時刻変更区分 */
 	@Getter
-	private ChangeClockArt cangeClockArt;
+	private ChangeClockArt changeClockArt;
 	
 	/** 計算区分変更対象 */
 	@Getter
 	private ChangeCalArt changeCalArt;
+
+	public StampType(boolean changeHalfDay, Optional<GoingOutReason> goOutArt, SetPreClockArt setPreClockArt,
+			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
+		this.changeHalfDay = changeHalfDay;
+		this.goOutArt = goOutArt;
+		this.setPreClockArt = setPreClockArt;
+		this.changeClockArt = changeClockArt;
+		this.changeCalArt = changeCalArt;
+	}
 }

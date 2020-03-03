@@ -18,4 +18,9 @@ public class ButtonDisSet {
 	/** 背景色 */
 	@Getter
 	private ColorCode backGroundColor;
+
+	public ButtonDisSet(ButtonNameSet buttonNameSet, ColorCode backGroundColor) {
+		this.buttonNameSet = buttonNameSet;
+		this.backGroundColor = backGroundColor;
+	}
 }

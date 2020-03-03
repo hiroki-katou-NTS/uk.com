@@ -20,10 +20,17 @@ public class StampingScreenSet {
 	
 	/** 打刻画面の日時の色設定 */
 	@Getter
-	private ColorSetting colerSetting;
+	private ColorSetting colorSetting;
 	
 	/** 打刻結果自動閉じる時間 */
 	@Getter
 	private ResultDisplayTime resultDisplayTime;
-	
+
+	public StampingScreenSet(HistoryDisplayMethod historyDisplayMethod, CorrectionInterval correctionInterval,
+			ColorSetting colorSetting, ResultDisplayTime resultDisplayTime) {
+		this.historyDisplayMethod = historyDisplayMethod;
+		this.correctionInterval = correctionInterval;
+		this.colorSetting = colorSetting;
+		this.resultDisplayTime = resultDisplayTime;
+	}
 }

@@ -13,7 +13,7 @@ public class ButtonSettings {
 
 	/** ボタン位置NO */
 	@Getter
-	private int buttonPositionNo;
+	private ButtonPositionNo buttonPositionNo;
 	
 	/** ボタンの表示設定 */
 	@Getter
@@ -30,4 +30,13 @@ public class ButtonSettings {
 	/** 音声使用方法 */
 	@Getter
 	private AudioType audioType;
+
+	public ButtonSettings(ButtonPositionNo buttonPositionNo, ButtonDisSet buttonDisSet, ButtonType buttonType, NotUseAtr usrArt,
+			AudioType audioType) {
+		this.buttonPositionNo = buttonPositionNo;
+		this.buttonDisSet = buttonDisSet;
+		this.buttonType = buttonType;
+		this.usrArt = usrArt;
+		this.audioType = audioType;
+	}
 }

@@ -17,5 +17,9 @@ public class ColorSetting {
 	/** 背景色 */
 	@Getter
 	private ColorCode backGroundColor;
-	
+
+	public ColorSetting(ColorCode textColor, ColorCode backGroundColor) {
+		this.textColor = textColor;
+		this.backGroundColor = backGroundColor;
+	}
 }

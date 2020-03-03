@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 /**
  * 打刻ページレイアウト
@@ -10,10 +12,11 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Value
+@Getter
 public class StampPageLayout implements DomainValue{
 	
 	/** ページNO */
-	private final int pageNo;
+	private final PageNo pageNo;
 	
 	/** ページ名 */
 	private StampPageName  stampPageName;
@@ -26,4 +29,19 @@ public class StampPageLayout implements DomainValue{
 	
 	/** ボタン詳細設定リスト */
 	private List<ButtonSettings> lstButtonSet;
+
+	public StampPageLayout(PageNo pageNo, StampPageName stampPageName, StampPageComment stampPageComment,
+			ButtonLayoutType buttonLayoutType, List<ButtonSettings> lstButtonSet) {
+		
+		if(lstButtonSet.size() <= 0){
+			throw new BusinessException("Msg_1627");
+		}
+		
+		this.pageNo = pageNo;
+		this.stampPageName = stampPageName;
+		this.stampPageComment = stampPageComment;
+		this.buttonLayoutType = buttonLayoutType;
+		this.lstButtonSet = lstButtonSet;
+	}
+	
 }
