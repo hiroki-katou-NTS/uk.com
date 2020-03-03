@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 会社別シフトパレット
@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP_COMBI")
-public class KscmtPaletteCmpCombi extends UkJpaEntity{
+public class KscmtPaletteCmpCombi extends ContractUkJpaEntity{
 	
 	
 	@EmbeddedId

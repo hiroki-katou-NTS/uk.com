@@ -419,7 +419,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = _.clone(self.sourceEmpty);
                 //change text of linkbutton
-                self.textButtonArr()[listPattern[i].groupNo ].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+                self.textButtonArr()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
                 //get data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 会社別シフトパレット
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP")
-public class KscmtPaletteCmp extends UkJpaEntity {
+public class KscmtPaletteCmp extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KscmtPaletteCmpPk pk;

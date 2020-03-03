@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -25,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 組織別シフトパレット
@@ -37,7 +36,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSCMT_PALETTE_ORG")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtPaletteOrg extends UkJpaEntity{
+public class KscmtPaletteOrg extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public KscmtPaletteOrgPk pk;

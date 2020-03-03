@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 組織別シフトパレットの組み合わせ
@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSCMT_PALETTE_ORG_COMBI")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtPaletteOrgCombi extends UkJpaEntity{
+public class KscmtPaletteOrgCombi extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public KscmtPaletteOrgCombiPk pk;
@@ -44,6 +44,8 @@ public class KscmtPaletteOrgCombi extends UkJpaEntity{
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+    	@PrimaryKeyJoinColumn(name = "TARGET_UNIT", referencedColumnName = "TARGET_UNIT"),
+    	@PrimaryKeyJoinColumn(name = "TARGET_ID", referencedColumnName = "TARGET_ID"),
     	@PrimaryKeyJoinColumn(name = "PAGE", referencedColumnName = "PAGE")
     })
 	public KscmtPaletteOrg kscmtPaletteOrg;

@@ -26,6 +26,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
@@ -95,8 +96,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 					rs.getString("NOTE"), 
 					Integer.valueOf(rs.getString("POSITION")),
 					rs.getString("POSITION_NAME"),
-					Integer.valueOf(rs.getString("POSITION_ORDER")),
-					rs.getString("SHIFT_MASTER_CD")));
+					Integer.valueOf(rs.getString("POSITION_ORDER")), rs.getString("SHIFT_MASTER_CD")));
 		}
 		return listFullData;
 	}
@@ -146,8 +146,17 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public void delete(ShiftPalletsOrg shiftPalletsOrg) {
-		// TODO Auto-generated method stub
-
+		String query = FIND_BY_PAGE;
+		query = query.replaceFirst("targetUnit", String.valueOf(shiftPalletsOrg.getTargeOrg().getUnit().value));
+		query = query.replaceFirst("targetId", shiftPalletsOrg.getTargeOrg().getWorkplaceId().get());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			KscmtPaletteOrg kscmtPaletteOrg = toEntity(createShiftPallets(rs)).get(0);
+			commandProxy().remove(KscmtPaletteOrg.class, kscmtPaletteOrg.pk);
+			this.getEntityManager().flush();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override
