@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
-				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
+				nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterName
+				nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterCode
 			</com:ValidatorScript>
 			<com:stylefile path="cmm022.a.style.css" />
 			<com:scriptfile path="cmm022.a.start.js" />
@@ -41,10 +41,10 @@
 				<div class="column-1 ">
 					<!-- A221_1 -->
 					<div id="common-master_arena"
-						data-bind="ntsPanel:{width: '320px', direction: 'right', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '280px', direction: 'right', showIcon: true, visible: true}">
 						<div class="div_line">
 							<!-- A221_2 -->
-							<div style="width: 320px"
+							<div style="width: 280px"
 								data-bind="ntsSearchBox: { searchMode: 'filter', targetKey: 'commonMasterId', comId: 'master-list', 
 							items: commonMasters , selectedKey: 'commonMasterId', fields: ['commonMasterCode', 'commonMasterName'], mode: 'igGrid'}" />
 						</div>
@@ -59,7 +59,7 @@
 								primaryKey: 'commonMasterId' ,
 								columns: [
 							                { headerText: '', key: 'commonMasterId', width: 0 , hidden: true },
-							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 300 }, 
+							                { headerText: '#{i18n.getText('CMM022_A221_6')}', key: 'commonMasterName', width: 260 }, 
 							            ] ,
 								multiple: false ,
 								value: commonMasterId ,
@@ -88,8 +88,8 @@
 								primaryKey: 'commonMasterItemId' ,
 								columns: [
 							                { headerText: 'コード', key: 'commonMasterItemId', width: 0 , hidden: true },
-							                { headerText: '#{i18n.getText('CMM022_A222_7')}', key: 'commonMasterItemCode', width: 100 }, 
-							                { headerText: '#{i18n.getText('CMM022_A222_8')}', key: 'commonMasterItemName', width: 200 }, 
+							                { headerText: '#{i18n.getText('CMM022_A222_7')}', key: 'commonMasterItemCode', width: 80 }, 
+							                { headerText: '#{i18n.getText('CMM022_A222_8')}', key: 'commonMasterItemName', width: 180 }, 
 							            ] ,
 								multiple: false ,
 								value: commonMasterItemId ,
@@ -104,7 +104,7 @@
 					<div class="div_line">
 					<!-- A223_1 -->
 						<div
-							data-bind="ntsFormLabel: {required: true ,constraint:['CategoryCode','CategoryName']}">#{i18n.getText('CMM022_A223_1')}</div>
+							data-bind="ntsFormLabel: {required: true ,constraint:['CommonMasterCode','CommonMasterName']}">#{i18n.getText('CMM022_A223_1')}</div>
 					</div>
 					<div class="div_line pl-15">
 						<!-- A223_2 -->
@@ -113,7 +113,7 @@
 											value: selectedCommonMasterItem().commonMasterItemCode ,
 											required: true,
 											name:['CMM022_A222_2'],
-											constraint:'CategoryCode',
+											constraint:'CommonMasterCode',
 											option:{ width:'20px'},
 											enable:commonMasters().length
 											}" />
@@ -123,7 +123,7 @@
 											value: selectedCommonMasterItem().commonMasterItemName ,
 											name:['CMM022_A222_3'],
 											required: true,
-											constraint:'CategoryName',
+											constraint:'CommonMasterName',
 											option:{ width: '150px' },
 											enable:commonMasters().length
 											}" />
