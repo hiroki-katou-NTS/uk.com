@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 @Stateless
 public class GetUsableShiftMasterService {
 
-	public static List<ShiftMasterDto> getUsableShiftMaster(Require require, String companyId,
+	public static List<ShiftMasterDto> getUsableShiftMaster(Require require,
 			TargetOrgIdenInfor targetOrg) {
 
         // 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 )
-        Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
+        Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg( targetOrg);
         // 2: *getAll(会社ID)
         if (!shiftMaterOrgOpt.isPresent()) {
-            return require.getAllByCid(companyId);
+            return require.getAllByCid();
         }
         // 3: *get(会社ID, List<シフトマスタコード>)
-        return require.getByListShiftMaterCd(companyId, shiftMaterOrgOpt.get().getListShiftMaterCode());
+        return require.getByListShiftMaterCd(shiftMaterOrgOpt.get().getListShiftMaterCode());
 	}
 
 	public static interface Require {
@@ -38,14 +38,14 @@ public class GetUsableShiftMasterService {
 		 * @param targetOrg
 		 * @return
 		 */
-		Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
+		Optional<ShiftMasterOrganization> getByTargetOrg(TargetOrgIdenInfor targetOrg);
 
 		/**
 		 * [R-2] シフトマスタをすべて取得する
 		 * @param companyId
 		 * @return
 		 */
-		List<ShiftMasterDto> getAllByCid(String companyId);
+		List<ShiftMasterDto> getAllByCid();
 
 		/**
 		 * [R-3] シフトマスタを取得する	
@@ -53,6 +53,6 @@ public class GetUsableShiftMasterService {
 		 * @param listShiftMaterCode
 		 * @return
 		 */
-		List<ShiftMasterDto> getByListShiftMaterCd(String companyId, List<String> listShiftMaterCode);
+		List<ShiftMasterDto> getByListShiftMaterCd(List<String> listShiftMaterCode);
 	}
 }

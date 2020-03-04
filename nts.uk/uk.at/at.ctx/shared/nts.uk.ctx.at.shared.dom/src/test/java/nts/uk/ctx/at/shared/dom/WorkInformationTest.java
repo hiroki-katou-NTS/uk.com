@@ -103,7 +103,7 @@ public class WorkInformationTest {
 	}
 
 	@Test
-	public void testCheckErrorCondition_throw_Msg_1608() {
+	public void testCheckErrorCondition_is_WORKTYPE_WAS_DELETE() {
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
@@ -114,8 +114,9 @@ public class WorkInformationTest {
 		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
 	}
 
+	//if SetupType = REQUIRED 
 	@Test
-	public void testCheckErrorCondition_throw_Msg_1609() {
+	public void testCheckErrorCondition_is_WORKTIME_WAS_DELETE() {
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
@@ -125,6 +126,28 @@ public class WorkInformationTest {
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
+				
+				require.findByCode(workInformation.getWorkTimeCode().v());
+			}
+		};
+
+		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
+	}
+	
+	//if SetupType = OPTIONAL 
+	@Test
+	public void testCheckErrorCondition_is_WORKTIME_WAS_DELETE_2() {
+		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+
+		new Expectations() {
+			{
+				require.findByPK(workInformation.getWorkTypeCode().v());
+				result = Optional.of(new WorkType());
+
+				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
+				result = SetupType.OPTIONAL;
+				
+				require.findByCode(workInformation.getWorkTimeCode().v());
 			}
 		};
 
@@ -132,7 +155,7 @@ public class WorkInformationTest {
 	}
 
 	@Test
-	public void testCheckErrorCondition_throw_Msg_435() {
+	public void testCheckErrorCondition_is_WORKTIME_ARE_REQUIRE_NOT_SET() {
 		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
 
 		new Expectations() {
@@ -151,7 +174,7 @@ public class WorkInformationTest {
 	}
 
 	@Test
-	public void testCheckErrorCondition_throw_Msg_434() {
+	public void testCheckErrorCondition_is_WORKTIME_ARE_SET_WHEN_UNNECESSARY() {
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		new Expectations() {
