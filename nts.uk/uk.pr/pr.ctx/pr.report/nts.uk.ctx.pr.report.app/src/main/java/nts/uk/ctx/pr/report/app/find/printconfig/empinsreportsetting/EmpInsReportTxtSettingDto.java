@@ -41,7 +41,7 @@ public class EmpInsReportTxtSettingDto {
                 domain.getUserId(),
                 domain.getOfficeAtr().value,
                 domain.getFdNumber().v(),
-                domain.getLineFeedCode().value
+                domain.getLineFeedCodeAtr().value
         );
     }
 }

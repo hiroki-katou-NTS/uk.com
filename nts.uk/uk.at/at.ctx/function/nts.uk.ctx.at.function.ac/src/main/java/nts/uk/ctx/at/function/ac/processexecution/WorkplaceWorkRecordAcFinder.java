@@ -17,7 +17,10 @@ import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+<<<<<<< HEAD
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+=======
+>>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

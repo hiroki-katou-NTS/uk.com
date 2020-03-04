@@ -3,6 +3,7 @@ module nts.uk.pr.view.qui002.b.viewmodel {
     import errors = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
+    import hasError = nts.uk.ui.errors.hasError;
 
 
     export class ScreenModel {
@@ -51,18 +52,24 @@ module nts.uk.pr.view.qui002.b.viewmodel {
         loadGird(){
             let self = this;
             $("#B_2").ntsGrid({
-                height: '319px',
+                height: '315px',
                 dataSource: self.listEmp(),
                 primaryKey: 'id',
                 virtualization: true,
+                showErrorsOnPage: true,
                 virtualizationMode: 'continuous',
+                errorColumns: [ 'changeDate' ],
                 columns: [
                     { headerText: 'id', key: 'id', dataType: 'number', width: '20' , hidden: true},
                     { headerText: 'employeeId', key: 'employeeId', dataType: 'string', width: '100' , hidden: true},
                     { headerText: getText('QUI002_B222_2'), key: 'employeeCode', dataType: 'string', width: '160' },
                     { headerText: getText('QUI002_B222_3'), key: 'employeeName', dataType: 'string', width: '170' },
                     { headerText: getText('QUI002_B222_4'), key: 'employeeNameBefore', dataType: 'string', width: '170' },
-                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'string',width: '113', ntsControl: 'TextEditor'}
+                    { headerText: getText('QUI002_B222_5'), key: 'changeDate', dataType: 'Date',width: '113', ntsControl: 'DatePicker',
+                        constraint: {
+                            cDisplayType: "Date",
+                            required: false
+                        } }
 
                 ],
                 features: [
@@ -76,68 +83,17 @@ module nts.uk.pr.view.qui002.b.viewmodel {
                     },
                     {name: 'Selection', mode: 'row', multipleSelection: false}],
                 ntsControls: [
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false } }
+                    { name: 'DatePicker', controlType: 'DatePicker', format: 'ymd', constraint: { required: false } }
                 ],
+                ntsFeatures: [{ name: "Sheet",
+                    initialDisplay: "sheet1",
+                    sheets: [
+                        { name: "sheet1", text: "Sheet 1", columns: ["id", "employeeId", "employeeCode", "employeeName", "employeeNameBefore", "changeDate"] },
+                    ]
+                }]
 
             });
             $("#B_2").setupSearchScroll("igGrid", true);
-
-        }
-
-        checkDate(yearMonthDate: any) {
-            if (yearMonthDate === undefined || yearMonthDate === null || yearMonthDate == "") {
-                return true;
-            }
-            if (!(yearMonthDate instanceof String)) {
-                yearMonthDate = yearMonthDate.toString();
-            }
-            if(yearMonthDate.length != 10) {
-                return false;
-            }
-            yearMonthDate = yearMonthDate.replace("/", "");
-            yearMonthDate = yearMonthDate.replace("/", "");
-            var checkNum = yearMonthDate.replace(/[0-9]/g, "");
-            if (checkNum) {
-                return false;
-            }
-            var year = parseInt(yearMonthDate.substring(0, 4));
-            if (year < 1900 || year > 9999) {
-                return false;
-            }
-            var month = parseInt(yearMonthDate.substring(4, 6));
-            if (month < 1 || month > 12) {
-               return false;
-            }
-
-            var date = parseInt(yearMonthDate.substring(6));
-            var maxDate = 30;
-            switch (month) {
-                case 2:
-                    if (year % 400 == 0) {
-                        maxDate = 29;
-                    } else if (year % 4 == 0 && year % 25 != 0) {
-                        maxDate = 29;
-                    } else {
-                        maxDate = 28;
-                    }
-                    break;
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12:
-                    maxDate = 31;
-                    break;
-                default:
-                    maxDate = 30;
-                    break;
-            }
-            if (date < 1 || date > maxDate) {
-                return false;
-            }
-            return true;
 
         }
 
@@ -148,23 +104,13 @@ module nts.uk.pr.view.qui002.b.viewmodel {
 
         register(){
             let self = this;
-            let validate = true;
-            _.each(self.listEmp(), (item) =>{
-                if(!self.checkDate(item.changeDate)) {
-                    validate = false;
-                }
-            });
-            if(!validate) {
-                dialog.alertError("変更年月日は 1900/01/01 ～ 9999/12/31 の日付を入力してください");
-                return;
-            }
             let listEmp = [];
                 _.each(self.listEmp(), (item) => {
                     let employee = new Employee();
                     employee.employeeId = item.employeeId;
                     employee.employeeCode = item.employeeCode;
                     employee.changeDate = item.changeDate;
-                listEmp.push(employee);
+                    listEmp.push(employee);
                 });
             setShared("QUI002_PARAMS_A", listEmp);
             nts.uk.ui.windows.close();

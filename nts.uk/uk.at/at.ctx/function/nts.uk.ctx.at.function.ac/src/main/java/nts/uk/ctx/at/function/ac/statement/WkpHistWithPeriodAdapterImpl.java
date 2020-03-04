@@ -14,7 +14,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
+<<<<<<< HEAD
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+=======
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+>>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 

@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddB
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
-import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
@@ -123,6 +122,15 @@ import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenc
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.DeleteAffWorkplaceHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.UpdateAffWorkplaceHistoryCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.AddEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.DeleteEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empcomofficehis.UpdateEmpCorpHealthOffHisCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.AddEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.DeleteEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.emphealinsurbeneinfo.UpdateEmpHealInsQualifiInfoCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.AddEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.DeleteEmpSocialInsGradeInforCommand;
+import nts.uk.ctx.pr.shared.app.command.socialinsurance.employeesociainsur.empsocialinsgradehis.UpdateEmpSocialInsGradeInforCommand;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -135,240 +143,381 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理
-			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>() {
+			},
 			//CS00002	個人基本情報
-			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>() {
+			},
 			//CS00003	所属会社履歴
-			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>() {
+			},
 			//CS00015	部門本務
-			new TypeLiteral<PeregAddCommandHandler<AddAffiliationDepartmentCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffiliationDepartmentCommand>>() {
+			},
 			//CS00004	分類１
-			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>() {
+			},
 			//CS00014	雇用
-			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmploymentHistoryCommand>>() {
+			},
 			//CS00016	職位本務
-			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffJobTitleMainCommand>>() {
+			},
 			//CS00017	職場
-			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>>() {
+			},
 			//CS00018	休職休業
-			new TypeLiteral<PeregAddCommandHandler<AddTemporaryAbsenceCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddTemporaryAbsenceCommand>>() {
+			},
 			//CS00019	短時間勤務
-			new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>() {
+			},
 			//CS00020	労働条件
-			new TypeLiteral<PeregAddCommandHandler<AddWorkingConditionCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddWorkingConditionCommand>>() {
+			},
 			//CS00021	勤務種別
-			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>() {
+			},
 			//CS00022	個人連絡先
-			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>() {
+			},
 			//CS00023	社員連絡先
-			new TypeLiteral<PeregAddCommandHandler<AddEmployeeInfoContactCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddEmployeeInfoContactCommand>>() {
+			},
 			//CS00024	年休情報
-			new TypeLiteral<PeregAddCommandHandler<AddAnnuaLeaveCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAnnuaLeaveCommand>>() {
+			},
 			//CS00025	特別休暇１情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave1informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave1informationCommand>>() {
+			},
 			//CS00026	特別休暇２情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave2informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave2informationCommand>>() {
+			},
 			//CS00027	特別休暇３情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave3informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave3informationCommand>>() {
+			},
 			//CS00028	特別休暇４情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave4informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave4informationCommand>>() {
+			},
 			//CS00029	特別休暇５情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave5informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave5informationCommand>>() {
+			},
 			//CS00030	特別休暇６情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave6informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave6informationCommand>>() {
+			},
 			//CS00031	特別休暇７情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave7informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave7informationCommand>>() {
+			},
 			//CS00032	特別休暇８情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave8informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave8informationCommand>>() {
+			},
 			//CS00033	特別休暇９情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave9informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave9informationCommand>>() {
+			},
 			//CS00034	特別休暇１０情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave10informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave10informationCommand>>() {
+			},
 			//CS00035	その他休暇情報
-			new TypeLiteral<PeregAddCommandHandler<AddOtherHolidayInfoCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddOtherHolidayInfoCommand>>() {
+			},
 			//CS00036	子の看護・介護休暇情報
-			new TypeLiteral<PeregAddCommandHandler<AddCareLeaveCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddCareLeaveCommand>>() {
+			},
 			//CS00037	年休付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>() {
+			},
 			//CS00038	積立年休付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddResvLeaRemainPeregCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddResvLeaRemainPeregCommand>>() {
+			},
 			//CS00039	特別休暇１付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant1Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant1Command>>() {
+			},
 			//CS00040	特別休暇２付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant2Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant2Command>>() {
+			},
 			//CS00041	特別休暇３付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant3Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant3Command>>() {
+			},
 			//CS00042	特別休暇４付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant4Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant4Command>>() {
+			},
 			//CS00043	特別休暇５付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant5Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant5Command>>() {
+			},
 			//CS00044	特別休暇６付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant6Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant6Command>>() {
+			},
 			//CS00045	特別休暇７付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant7Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant7Command>>() {
+			},
 			//CS00046	特別休暇８付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant8Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant8Command>>() {
+			},
 			//CS00047	特別休暇９付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant9Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant9Command>>() {
+			},
 			//CS00048	特別休暇１０付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant10Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant10Command>>() {
+			},
 			//CS00049	特別休暇１１情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave11informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave11informationCommand>>() {
+			},
 			//CS00050	特別休暇１２情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave12informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave12informationCommand>>() {
+			},
 			//CS00051	特別休暇１３情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave13informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave13informationCommand>>() {
+			},
 			//CS00052	特別休暇１４情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave14informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave14informationCommand>>() {
+			},
 			//CS00053	特別休暇１５情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave15informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave15informationCommand>>() {
+			},
 			//CS00054	特別休暇１６情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave16informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave16informationCommand>>() {
+			},
 			//CS00055	特別休暇１７情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave17informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave17informationCommand>>() {
+			},
 			//CS00056	特別休暇１８情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave18informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave18informationCommand>>() {
+			},
 			//CS00057	特別休暇１９情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave19informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave19informationCommand>>() {
+			},
 			//CS00058	特別休暇２０情報
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave20informationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave20informationCommand>>() {
+			},
 			//CS00059	特別休暇１１付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant11Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant11Command>>() {
+			},
 			//CS00060	特別休暇１２付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant12Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant12Command>>() {
+			},
 			//CS00061	特別休暇１３付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant13Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant13Command>>() {
+			},
 			//CS00062	特別休暇１４付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant14Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant14Command>>() {
+			},
 			//CS00063	特別休暇１５付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant15Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant15Command>>() {
+			},
 			//CS00064	特別休暇１６付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant16Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant16Command>>() {
+			},
 			//CS00065	特別休暇１７付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant17Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant17Command>>() {
+			},
 			//CS00066	特別休暇１８付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant18Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant18Command>>() {
+			},
 			//CS00067	特別休暇１９付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant19Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant19Command>>() {
+			},
 			//CS00068	特別休暇２０付与残数
-			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>() {
+			},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>(){});
+			new TypeLiteral<PeregAddCommandHandler<AddStampCardCommand>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregAddCommandHandler<AddEmpCorpHealthOffHisCommand>>() {
+			},
+			// CS00082
+			new TypeLiteral<PeregAddCommandHandler<AddEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregAddCommandHandler<AddEmpSocialInsGradeInforCommand>>() {
+			}
+	);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>() {
+			},
 			//CS00002	個人基本情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>() {
+			},
 			//CS00003	所属会社履歴
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>() {
+			},
 			//CS00004	分類１
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>() {
+			},
 			//CS00014	雇用
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>>() {
+			},
 			//CS00015	部門本務
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>() {
+			},
 			//CS00016	職位本務
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>>() {
+			},
 			//CS00017	職場
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>() {
+			},
 			//CS00018	休職休業
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>() {
+			},
 			//CS00019	短時間勤務
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>() {
+			},
 			//CS00020	労働条件
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingConditionCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingConditionCommand>>() {
+			},
 			//CS00021	勤務種別
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>() {
+			},
 			//CS00022	個人連絡先
-			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerContactCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerContactCommand>>() {
+			},
 			//CS00023	社員連絡先
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeInfoContactCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeInfoContactCommand>>() {
+			},
 			//CS00024	年休情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAnnuaLeaveCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAnnuaLeaveCommand>>() {
+			},
 			//CS00025	特別休暇１情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave1informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave1informationCommand>>() {
+			},
 			//CS00026	特別休暇２情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave2informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave2informationCommand>>() {
+			},
 			//CS00027	特別休暇３情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave3informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave3informationCommand>>() {
+			},
 			//CS00028	特別休暇４情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave4informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave4informationCommand>>() {
+			},
 			//CS00029	特別休暇５情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave5informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave5informationCommand>>() {
+			},
 			//CS00030	特別休暇６情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave6informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave6informationCommand>>() {
+			},
 			//CS00031	特別休暇７情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave7informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave7informationCommand>>() {
+			},
 			//CS00032	特別休暇８情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave8informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave8informationCommand>>() {
+			},
 			//CS00033	特別休暇９情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave9informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave9informationCommand>>() {
+			},
 			//CS00034	特別休暇１０情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave10informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave10informationCommand>>() {
+			},
 			//CS00035	その他休暇情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand>>() {
+			},
 			//CS00036	子の看護・介護休暇情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateCareLeaveCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateCareLeaveCommand>>() {
+			},
 			//CS00049	特別休暇１１情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave11informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave11informationCommand>>() {
+			},
 			//CS00050	特別休暇１２情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave12informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave12informationCommand>>() {
+			},
 			//CS00051	特別休暇１３情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave13informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave13informationCommand>>() {
+			},
 			//CS00052	特別休暇１４情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave14informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave14informationCommand>>() {
+			},
 			//CS00053	特別休暇１５情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave15informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave15informationCommand>>() {
+			},
 			//CS00054	特別休暇１６情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave16informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave16informationCommand>>() {
+			},
 			//CS00055	特別休暇１７情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave17informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave17informationCommand>>() {
+			},
 			//CS00056	特別休暇１８情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave18informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave18informationCommand>>() {
+			},
 			//CS00057	特別休暇１９情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave19informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave19informationCommand>>() {
+			},
 			//CS00058	特別休暇２０情報
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>() {
+			},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>() {
+			},
 			//CS00070  労働条件2
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
-			);
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpCorpHealthOffHisCommand>>() {
+			},
+			// CS00082
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand>>() {
+			}
+
+	);
 	
 	
 	/** Delete handlers */
 	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
 			//CS00003	所属会社履歴
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>() {
+			},
 			//CS00004	分類１
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>() {
+			},
 			//CS00014	雇用
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>() {
+			},
 			//CS00015	部門本務
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>>() {
+			},
 			//CS00016	職位本務
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffJobTitleMainCommand>>() {
+			},
 			//CS00017	職場
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>() {
+			},
 			//CS00018	休職休業
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>() {
+			},
 			//CS00019	短時間勤務
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>() {
+			},
 			//CS00020	労働条件
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>() {
+			},
 			//CS00021	勤務種別
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>() {
+			},
 			//CS00022	個人連絡先
-			new TypeLiteral<PeregDeleteCommandHandler<DeletePerContactCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeletePerContactCommand>>() {
+			},
 			//CS00023	社員連絡先
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmployeeInfoContactCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmployeeInfoContactCommand>>() {
+			},
 			//CS00024	年休情報
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAnnuaLeaveCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAnnuaLeaveCommand>>() {
+			},
 			//CS00035	その他休暇情報
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>(){},
-			//CS00069 打刻カード番号
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){});
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpCorpHealthOffHisCommand>>() {
+			},
+			// CS00082
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpHealInsQualifiInfoCommand>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand>>() {
+			}
+	);
 	
 	@Override
 	public Set<PeregAddCommandHandler<?>> collectAddHandlers() {

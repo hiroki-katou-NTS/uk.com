@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOfficeRepository;
 import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.empinsofficeinfo.QqsmtEmpInsEsmHist;
 import nts.uk.ctx.pr.shared.infra.entity.empinsqualifiinfo.empinsofficeinfo.QqsmtEmpInsEsmHistPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -17,42 +18,42 @@ import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEstabInsHistRepository, EmpInsOfficeRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsEsmHist f";
-    private static final String SELECT_BY_HIST_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.histId IN :histIds AND f.startDate <= :endDate AND f.endDate >= :endDate";
+    private static final String SELECT_BY_HIST_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.cid = :cid AND f.empInsEsmHistPk.histId IN :histIds AND f.startDate <= :endDate AND f.startDate >= :startDate";
+    private static final String SELECT_BY_HIST_IDS_AND_END_DATE_IN_PERIOD = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.cid = :cid AND f.empInsEsmHistPk.histId IN :histIds AND f.endDate <= :endDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_KEY = SELECT_ALL_QUERY_STRING + " WHERE f.empInsEsmHistPk.histId = :histId and f.empInsEsmHistPk.cid = :cid and f.empInsEsmHistPk.sid = :sid";
 
 
     @Override
-    public Optional<EmpEstabInsHist> getEmpInsHistById(String cid, String sid, String histId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<EmpEstabInsHist> getListEmpInsHistByDate(String cid, String sid, GeneralDate fillingDate) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<EmpInsOffice> getByHistIdsAndDate(List<String> histIds, GeneralDate endDate) {
+    public List<EmpInsOffice> getByHistIdsAndStartDateInPeriod(List<String> histIds, GeneralDate startDate, GeneralDate endDate) {
         List<EmpInsOffice> result = new ArrayList<>();
         CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
-            result.addAll(toEmpInsOfficeDomain(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
+            result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_DATE, QqsmtEmpInsEsmHist.class)
+                    .setParameter("cid", AppContexts.user().companyId())
                     .setParameter("histIds", histIds)
+                    .setParameter("startDate", startDate)
                     .setParameter("endDate", endDate)
-                    .getList()))
+                    .getList(e -> new EmpInsOffice(e.empInsEsmHistPk.histId, e.empInsEsmHistPk.laborInsCd)))
         );
          return result;
     }
 
-    private List<EmpInsOffice> toEmpInsOfficeDomain(List<QqsmtEmpInsEsmHist> listHist) {
-        List<EmpInsOffice> domains = new ArrayList<>();
-        listHist.stream().collect(Collectors.groupingBy(e -> e.empInsEsmHistPk.sid, Collectors.toList())).forEach((k, v) ->
-                domains.add(new EmpInsOffice(k, v.get(0).laborInsCd)));
-        return domains;
+    @Override
+    public List<EmpInsOffice> getByHistIdsAndEndDateInPeriod(List<String> hisIds, GeneralDate startDate, GeneralDate endDate){
+        List<EmpInsOffice> result = new ArrayList<>();
+        CollectionUtil.split(hisIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, histList ->
+                result.addAll(this.queryProxy().query(SELECT_BY_HIST_IDS_AND_END_DATE_IN_PERIOD, QqsmtEmpInsEsmHist.class)
+                        .setParameter("cid", AppContexts.user().companyId())
+                        .setParameter("histIds", hisIds)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .getList(e -> new EmpInsOffice(e.empInsEsmHistPk.histId, e.empInsEsmHistPk.laborInsCd)))
+        );
+        return result;
     }
 
     private EmpEstabInsHist toEmploymentHistory(List<QqsmtEmpInsEsmHist> listHist) {
@@ -66,14 +67,13 @@ public class JpaEmpInsEstabHistRepository extends JpaRepository implements EmpEs
         return empment;
     }
 
-    @Override
-    public List<EmpInsOffice> getAllEmpEmpmInsOffice() {
-        return null;
-    }
-
 	@Override
 	public Optional<EmpInsOffice> getEmpInsOfficeById(String cid, String sid, String histId) {
-		Optional<QqsmtEmpInsEsmHist> entity = this.queryProxy().find(new QqsmtEmpInsEsmHistPk(cid, sid, histId), QqsmtEmpInsEsmHist.class);
-		return entity.map(r -> new EmpInsOffice(r.empInsEsmHistPk.histId, r.laborInsCd));
+		Optional<QqsmtEmpInsEsmHist> entity = this.queryProxy().query(SELECT_BY_KEY, QqsmtEmpInsEsmHist.class)
+                .setParameter("cid", cid)
+		        .setParameter("sid", sid)
+                .setParameter("histId",histId).getSingle();
+		return entity.map(r -> new EmpInsOffice(r.empInsEsmHistPk.histId, r.empInsEsmHistPk.laborInsCd));
 	}
+
 }

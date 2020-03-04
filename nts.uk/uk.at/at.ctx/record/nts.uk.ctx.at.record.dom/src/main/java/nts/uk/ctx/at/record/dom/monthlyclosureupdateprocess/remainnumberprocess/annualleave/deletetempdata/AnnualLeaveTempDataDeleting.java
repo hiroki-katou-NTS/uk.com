@@ -3,7 +3,11 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+=======
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
+>>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

@@ -67,6 +67,10 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchy
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+<<<<<<< HEAD
+=======
+import nts.arc.time.calendar.period.DatePeriod;
+>>>>>>> pj/pr/develop
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

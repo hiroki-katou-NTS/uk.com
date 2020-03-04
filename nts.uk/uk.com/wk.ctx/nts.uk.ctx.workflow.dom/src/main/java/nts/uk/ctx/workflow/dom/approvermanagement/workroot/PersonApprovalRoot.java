@@ -9,6 +9,10 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+<<<<<<< HEAD
+=======
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
+>>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 個人別承認ルート
