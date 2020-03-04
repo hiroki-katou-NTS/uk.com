@@ -132,7 +132,9 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 workplaceGroupId: ''
             }
             if (self.selectedTab == 'company') {
-                taisho = null;
+                taisho.targetUnit = null;
+                taisho.workplaceId = null;
+                taisho.workplaceGroupId = null; 
             }
             if (self.selectedTab == 'workplace') {
                 taisho.workplaceId = self.workplaceId;

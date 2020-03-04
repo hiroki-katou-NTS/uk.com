@@ -55,13 +55,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		FIND_BY_PAGE = builderString.toString();
 
 	}
-	
+
 	private static final String FIND_BY_COMPANY = "SELECT a.CID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE,"
-												+ " b.POSITION, b.POSITION_NAME,"
-												+ " c.POSITION_ORDER, c.SHIFT_MASTER_CD"
-												+ " FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
-												+ " LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
-												+ " WHERE a.CID = 'companyId'";
+			+ " b.POSITION, b.POSITION_NAME," + " c.POSITION_ORDER, c.SHIFT_MASTER_CD"
+			+ " FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
+			+ " LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
+			+ " WHERE a.CID = 'companyId'";
 
 	@AllArgsConstructor
 	@Getter
@@ -81,10 +80,14 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	private List<FullShiftPallets> createShiftPallets(ResultSet rs) {
 		List<FullShiftPallets> listFullData = new ArrayList<>();
 		while (rs.next()) {
-			listFullData.add(new FullShiftPallets(rs.getString("CID"), Integer.valueOf(rs.getString("PAGE")),
-					rs.getString("PAGE_NAME"), Integer.valueOf(rs.getString("USE_ATR")) == 1 ? true : false,
-					rs.getString("NOTE"), Integer.valueOf(rs.getString("POSITION")), rs.getString("POSITION_NAME"),
-					Integer.valueOf(rs.getString("POSITION_ORDER")), rs.getString("SHIFT_MASTER_CD")));
+			listFullData
+					.add(new FullShiftPallets(rs.getString("CID"), Integer.valueOf(rs.getString("PAGE")),
+							rs.getString("PAGE_NAME"), Integer.valueOf(rs.getString("USE_ATR")) == 1 ? true : false,
+							rs.getString("NOTE"),
+							rs.getString("POSITION") != null ? Integer.valueOf(rs.getString("POSITION")) : null,
+							rs.getString("POSITION_NAME"), rs.getString("POSITION_ORDER") != null
+									? Integer.valueOf(rs.getString("POSITION_ORDER")) : null,
+							rs.getString("SHIFT_MASTER_CD")));
 		}
 		return listFullData;
 	}
@@ -166,7 +169,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	@Override
 	public List<ShiftPalletsCom> findShiftPallet(String companyId) {
 		String query = FIND_BY_COMPANY;
@@ -181,27 +184,26 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		}
 	}
 
-	
- @Override
-    public boolean isDuplicateRoleSetCd(String companyId, int page, int position) {
-	 KscmtPaletteCmpCombiPk pk = new KscmtPaletteCmpCombiPk(companyId, page, position);
-        return this.queryProxy().find(pk, KscmtPaletteCmpCombi.class).isPresent();
-    }
-
-@Override
-public void deleteByPage(String companyID,int page) {
-	String query = FIND_BY_PAGE;
-	query = query.replaceFirst("companyId", companyID);
-	query = query.replaceFirst("page", String.valueOf(page));
-	try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-		ResultSet rs = stmt.executeQuery();
-		KscmtPaletteCmp kscmtPaletteCmp = toEntity(createShiftPallets(rs)).get(0);
-		commandProxy().remove(KscmtPaletteCmp.class, kscmtPaletteCmp.pk);
-		this.getEntityManager().flush();
-	} catch (SQLException ex) {
-		throw new RuntimeException(ex);
+	@Override
+	public boolean isDuplicateRoleSetCd(String companyId, int page, int position) {
+		KscmtPaletteCmpCombiPk pk = new KscmtPaletteCmpCombiPk(companyId, page, position);
+		return this.queryProxy().find(pk, KscmtPaletteCmpCombi.class).isPresent();
 	}
-	
-}
+
+	@Override
+	public void deleteByPage(String companyID, int page) {
+		String query = FIND_BY_PAGE;
+		query = query.replaceFirst("companyId", companyID);
+		query = query.replaceFirst("page", String.valueOf(page));
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			KscmtPaletteCmp kscmtPaletteCmp = toEntity(createShiftPallets(rs)).get(0);
+			commandProxy().remove(KscmtPaletteCmp.class, kscmtPaletteCmp.pk);
+			this.getEntityManager().flush();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+
+	}
 
 }
