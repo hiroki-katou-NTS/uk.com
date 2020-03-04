@@ -80,14 +80,13 @@ public class ShiftMasterWs {
 	@POST
 	@Path("getlistByWorkPlace")
 	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
-		String targetId = null;
-		Integer targetUnit = null;
-		if (dto != null) {
-			targetId = dto.getWorkplaceId();
-			targetUnit = dto.getTargetUnit();
-		}
-			
-		return this.orgFinder.getShiftMastersByWorkPlace(targetId, targetUnit);
+		return this.orgFinder.optainShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
+	}
+	
+	@POST
+	@Path("optainlistByWorkPlace")
+	public List<ShiftMasterDto> optainlistByWorkPlace(FindShiftMasterDto dto){
+		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
 	}
 	
 	@POST
