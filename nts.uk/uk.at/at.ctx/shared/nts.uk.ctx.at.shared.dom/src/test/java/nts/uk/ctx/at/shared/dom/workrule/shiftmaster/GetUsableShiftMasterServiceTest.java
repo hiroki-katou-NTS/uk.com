@@ -23,63 +23,53 @@ public class GetUsableShiftMasterServiceTest {
 	@Injectable
 	private Require require;
 
-
 	/*
-	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == false
-	 * 2: *getAll(会社ID)
-	 *  
+	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == false 2:
+	 * *getAll(会社ID)
+	 * 
 	 */
 	@Test
 	public void testGetUsableShiftMaster_2() {
-		String companyId = "0001";
-		TargetOrgIdenInfor targetOrgIdenInfor =  new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
 				"workplaceGroupId");
 		List<ShiftMasterDto> results = new ArrayList<>();
 		results.add(new ShiftMasterDto());
 		new Expectations() {
 			{
-				require.getByTargetOrg(companyId, (TargetOrgIdenInfor) any);
-				
-				
-				require.getAllByCid(companyId);
+				require.getByTargetOrg((TargetOrgIdenInfor) any);
+
+				require.getAllByCid();
 				result = results;
-				
+
 			}
 		};
 
-		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				targetOrgIdenInfor)).isEqualTo(results);
+		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, targetOrgIdenInfor)).isEqualTo(results);
 	}
-	
+
 	/*
-	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == true
-	 * 3: *get(会社ID, List<シフトマスタコード>)
-	 *  
+	 * 1: 組織別シフトマスタ = require.組織別シフトマスタを取得する( 会社ID, 対象組織 ).ispresent == true 3:
+	 * *get(会社ID, List<シフトマスタコード>)
+	 * 
 	 */
 	@Test
 	public void testGetUsableShiftMaster_3() {
-		String companyId = "0001";
-		TargetOrgIdenInfor targetOrgIdenInfor =  new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
+		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
 				"workplaceGroupId");
-		ShiftMasterOrganization shiftMasterOrg =  new ShiftMasterOrganization(
-				"companyId",
-				targetOrgIdenInfor,
+		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
 				Arrays.asList("123"));
 		List<ShiftMasterDto> results = new ArrayList<>();
 		results.add(new ShiftMasterDto());
 		new Expectations() {
 			{
-				require.getByTargetOrg(companyId, (TargetOrgIdenInfor) any);
+				require.getByTargetOrg((TargetOrgIdenInfor) any);
 				result = Optional.of(shiftMasterOrg);
-				
-				require.getByListShiftMaterCd(companyId,shiftMasterOrg.getListShiftMaterCode());
+
+				require.getByListShiftMaterCd(shiftMasterOrg.getListShiftMaterCode());
 				result = results;
 			}
 		};
 
-		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, companyId,
-				targetOrgIdenInfor)).isEqualTo(results);
+		assertThat(GetUsableShiftMasterService.getUsableShiftMaster(require, targetOrgIdenInfor)).isEqualTo(results);
 	}
 }

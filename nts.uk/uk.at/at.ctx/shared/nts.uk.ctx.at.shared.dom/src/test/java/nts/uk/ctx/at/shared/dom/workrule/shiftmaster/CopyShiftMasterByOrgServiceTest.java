@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,16 +41,14 @@ public class CopyShiftMasterByOrgServiceTest {
 		new Expectations() {
 			{
 				require.exists(companyId, targetOrg);
-				result = ShiftMasterOrgHelper.checkExist(true);
+				result = true;
 			}
 		};
 
 		
 		
-		NtsAssert.systemError(() -> {
-			NtsAssert.atomTask(() -> CopyShiftMasterByOrgService
-					.copyShiftMasterByOrg(require, companyId, shiftMaterOrg, targetOrg, overwrite).get());
-		});
+		assertThat(CopyShiftMasterByOrgService
+					.copyShiftMasterByOrg(require, companyId, shiftMaterOrg, targetOrg, overwrite).isPresent()).isFalse();
 
 	}
 
