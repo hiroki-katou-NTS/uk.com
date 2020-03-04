@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -148,7 +149,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public ShiftPalletsCom findShiftPallet(String companyId, int page) {
+	public Optional<ShiftPalletsCom> findShiftPallet(String companyId, int page) {
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("companyId", companyId);
 		query = query.replaceFirst("page", String.valueOf(page));
@@ -157,7 +158,9 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			List<ShiftPalletsCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 
-			return palletsComs.get(0);
+			if (palletsComs.isEmpty())
+				return Optional.empty();
+			return Optional.of(palletsComs.get(0));
 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);

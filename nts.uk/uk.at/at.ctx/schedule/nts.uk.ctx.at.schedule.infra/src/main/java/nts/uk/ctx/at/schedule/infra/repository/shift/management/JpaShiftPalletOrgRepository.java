@@ -4,36 +4,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.aspose.pdf.Collection;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -160,20 +150,17 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	
-	
-	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page) {
-		
+	public Optional<ShiftPalletsOrg> findShiftPalletOrg(int targetUnit, String targetId, int page) {
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
 		query = query.replaceFirst("targetId", targetId);
 		query = query.replaceFirst("page", String.valueOf(page));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			ShiftPalletsOrg shiftPalletsOrg = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain()).collect(Collectors.toList()).get(0);
-
-		 return shiftPalletsOrg;
-
+			List<ShiftPalletsOrg> shiftPalletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain()).collect(Collectors.toList());
+			if (shiftPalletsOrgs.isEmpty())
+				return Optional.empty();
+			return Optional.of(shiftPalletsOrgs.get(0));
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
