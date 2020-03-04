@@ -237,6 +237,12 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				});
 		}
 
+		public reCalGridWidth() {
+			let panelWidthResize = window.innerWidth - 650;
+			$('#shift-list').igGrid("option", "width", panelWidthResize);
+			$('#form-title').css("width", panelWidthResize + "px");
+		}
+
 
 	}
 }

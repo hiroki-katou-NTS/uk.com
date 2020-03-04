@@ -18,7 +18,7 @@
             <div id="tree-grid"></div>
         </div>
         <div id="register-form">
-            <div class="form-title">
+            <div id="form-title">
                 <span>#{i18n.getText('Com_Workplace')} :</span> <span data-bind="text: workplaceName()"></span>
             </div>
            
@@ -31,6 +31,7 @@
             </div>
             <table id="shift-list" data-bind="ntsGridList: {
                 height: 350,
+                width: 800,
                 options: shiftItems,
                 optionsValue: 'shiftMasterCode',
                 columns: shiftColumns,
