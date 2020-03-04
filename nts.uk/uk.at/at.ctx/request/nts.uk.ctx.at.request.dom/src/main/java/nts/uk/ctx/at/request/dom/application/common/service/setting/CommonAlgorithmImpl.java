@@ -32,6 +32,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -216,6 +217,24 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput);
 		// OUTPUT「申請表示情報」を返す
 		return output;
+	}
+
+	@Override
+	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
+			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput) {
+		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
+		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
+			// 申請表示情報(申請対象日関係あり)を取得する
+			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
+					.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
+			return this.getAppDispInfoRelatedDate(
+					companyID, "", dateLst, appType, 
+					appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
+					appTypeSetting.getDisplayInitialSegment());
+		} else {
+			// 申請表示情報(基準日関係あり)を取得する
+			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);
+		}
 	}
 
 }

@@ -90,4 +90,15 @@ public interface CommonAlgorithm {
 	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType, List<String> applicantLst, 
 			List<GeneralDate> dateLst, boolean mode);
 	
+	/**
+	 * 申請日を変更する処理
+	 * @param companyID 会社ID
+	 * @param dateLst 申請対象日リスト
+	 * @param targetDate 基準日
+	 * @param appType 申請種類
+	 * @param appDispInfoNoDateOutput 申請表示情報(基準日関係なし)
+	 * @return
+	 */
+	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst, GeneralDate targetDate,
+			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput);
 }
