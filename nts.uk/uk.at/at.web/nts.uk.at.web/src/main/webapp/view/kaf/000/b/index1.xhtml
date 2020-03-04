@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 		<div class="contents-area cf" data-bind="if: approvalRootState().length != 0">
-			<div class="contents-area cf" style ="padding-top: 20px;">
+			<div class="contents-area cf" style ="padding-top: 20px;" data-bind="let: { $vm: $data }">
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
@@ -22,65 +22,34 @@
 								<th class="phase-app" style="width: 111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
-						<tbody data-bind="foreach: approvalRootState">
-							<com:ko bind="$data.listApprovalFrame" tag="foreach">
+						<tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
+							<com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
+								<com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
 								<tr>
-									<com:ko bind="$index() === 0" tag="if">
-										<td data-bind="attr: {rowspan: $parent.listApprovalFrame().length}, text: 'フェーズ'+$parent.phaseOrder()" style="width: 111px;" class="bg-green"></td>
+									<com:ko bind="$vm.getFrameIndex(loopPhase, loopFrame, loopApprover) == 0" tag="if">
+										<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }, 
+										text: 'フェーズ'+loopPhase.phaseOrder()" style="width: 111px;" class="bg-green"></td>
 									</com:ko>
-									<td data-bind="text: '承認者'+$data.frameOrder()" style="width: 111px; text-align: left; padding-left: 5px;" class="bg-green"></td>
+									<td data-bind="text: '承認者'+($vm.getFrameIndex(loopPhase, loopFrame, loopApprover)+1)" 
+										style="width: 111px; text-align: left; padding-left: 5px;" class="bg-green"></td>
 									<td>
 										<span class="limited-label" style="width: 230px; text-align: left; padding-left: 5px;"
-											data-bind="text: ko.pureComputed(function(){
-												if($data.approvalAtrName() !='未承認'){
-													if($data.approverName().length > 0){
-														if($data.approverMail().length > 0){
-															return $data.approverName() + '(@)';
-														} else {
-															return $data.approverName();
-														}
-													} else {
-														if($data.representerMail().length > 0){
-															return $data.representerName() + '(@)';
-														} else {
-															return $data.representerName();
-														}
-													}
-												} else {
-													var s = '';
-													_.forEach($data.listApprover(),function(data,index){
-														if(index != 0){
-															s = s + ',';
-														}
-														s = s + data.approverName();
-														if(data.approverMail().length > 0){
-															s = s + '(@)';
-														}
-														if(data.representerName().length > 0){
-															if(data.representerMail().length > 0){
-																s = s + '(' + data.representerName() + '(@))';
-															} else {
-																s = s + '(' + data.representerName() + ')';
-															}
-														}	
-													});
-													return s;
-												}
-											})">
+											data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
 										</span>
 									</td>
 									<td >
 										<span class="limited-label" 
 										style="width: 111px;" 
-										data-bind="text: $data.approvalAtrName"></span>
+										data-bind="text: loopApprover.approvalAtrName"></span>
 									</td>
 									<td>
 										<span class="limited-label" 
 										style="width: 111px; text-align: left; padding-left: 5px;"
-										data-bind="text: $data.approvalReason"></span>	
+										data-bind="text: loopApprover.approvalReason"></span>	
 									</td>
 								</tr>
-							</com:ko>
+								</com:ko-foreach>
+							</com:ko-foreach>
 						</tbody>
 					</table>
 				</div>

@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.model.classification.ClassificationModel;
+import nts.uk.query.model.department.DepartmentModel;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -39,16 +40,40 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName, wi.bsymtWorkplaceInfoPK.wkpid"
+	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.workplaceCode, wi.workplaceGeneric, wi.workplaceName, wi.pk.workplaceId"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId AND awh.cid =:cid"
-			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid AND wh.bsymtWorkplaceHistPK.cid =:cid"
-			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId AND wi.bsymtWorkplaceInfoPK.cid =:cid"
+			+ " LEFT JOIN BsymtWorkplaceInfor wi ON awhi.workPlaceId = wi.pk.workplaceId AND wi.pk.companyId =:cid"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
-			+ " AND awh.endDate >= :refDate"
-			+ " AND wh.strD <= :refDate"
-			+ " AND wh.endD >= :refDate";
+			+ " AND awh.endDate >= :refDate";
+	
+	// 社員の所属部門を取得する
+	private static final String DEPARTMENT_QUERY = 
+			"SELECT dph.sid,"
+			+ " di.pk.companyId,"
+			+ " di.deleteFlag,"
+			+ " di.pk.departmentHistoryId,"
+			+ " di.pk.departmentHistoryId,"
+			+ " di.pk.departmentId,"
+			+ " di.departmentCode,"
+			+ " di.departmentName,"
+			+ " di.departmentGeneric,"
+			+ " di.departmentDisplayName,"
+			+ " di.hierarchyCode,"
+			+ " di.departmentExternalCode"
+			+ " FROM BsymtAffiDepartmentHist dph"
+			+ " LEFT JOIN BsymtAffiDepartmentHistItem dphi"
+					+ " ON dphi.hisId = dph.hisId AND dph.cid = :cid"
+			+ " LEFT JOIN BsymtDepartmentHist dh"
+					+ " ON dphi.depId = dh.bsymtDepartmentHistPK.depId AND dh.bsymtDepartmentHistPK.cid =:cid"
+			+ " LEFT JOIN BsymtDepartmentInfor di"
+					+ " ON di.pk.departmentHistoryId = dh.bsymtDepartmentHistPK.histId AND di.pk.companyId =:cid"
+			+ " WHERE dph.sid IN :listSid"
+			+ " AND dph.strDate <= :refDate"
+			+ " AND dph.endDate >= :refDate"
+			+ " AND dh.strD <= :refDate"
+			+ " AND dh.endD >= :refDate";
 
 	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
@@ -110,6 +135,8 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					.employeeId(e.bsymtEmployeeDataMngInfoPk.sId)
 					.employeeCode(e.employeeCode)
 					.businessName(p.businessName)
+					.businessNameKana(p.businessNameKana)
+					.gender(p.gender)
 					.workplace(Optional.empty())
 					.classification(Optional.empty())
 					.department(Optional.empty())
@@ -162,6 +189,45 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 							.positionCode(jobCode)
 							.positionName(jobName)
 							.positionId(jobId)
+							.build()));
+				}
+			});
+		}
+	    // 社員の所属部門を取得する
+		// set department
+		if(param.isToGetDepartment()) {
+			List<Object[]> departments = this.getOptionalResult(param, DEPARTMENT_QUERY, false);
+			
+			employeeInfoList.keySet().forEach(empId -> {
+				Optional<Object[]> department = departments.stream().filter(wpl -> {
+					String id = (String) wpl[0];
+					return id.equals(empId);
+				}).findAny();
+
+				if (department.isPresent()) {
+					String companyId = (String) department.get()[1];
+					boolean deleteFlag = (boolean) department.get()[2];
+					String departmentHistoryId = (String) department.get()[3];
+					String departmentId = (String) department.get()[4];
+					String departmentCode = (String) department.get()[5];
+					String departmentName = (String) department.get()[6];
+					String departmentGeneric = (String) department.get()[7];
+					String departmentDisplayName = (String) department.get()[8];
+					String hierarchyCode = (String) department.get()[9];
+					String departmentExternalCode = (String) department.get()[10];
+					
+					employeeInfoList.get(empId)
+					.setDepartment(Optional.of(DepartmentModel.builder()
+							.companyId(companyId)
+							.deleteFlag(deleteFlag)
+							.departmentHistoryId(departmentHistoryId)
+							.departmentId(departmentId)
+							.departmentCode(departmentCode)
+							.departmentName(departmentName)
+							.departmentGeneric(departmentGeneric)
+							.departmentDisplayName(departmentDisplayName)
+							.hierarchyCode(hierarchyCode)
+							.departmentExternalCode(departmentExternalCode)
 							.build()));
 				}
 			});

@@ -17,7 +17,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,7 +29,7 @@ public class WorkplaceInfoFinder {
 
 	/** The wkp info repo. */
 	@Inject
-	private WorkplaceInfoRepository wkpInfoRepo;
+	private WorkplaceInformationRepository wkpInfoRepo;
 
 	/**
 	 * Find.
@@ -41,13 +42,13 @@ public class WorkplaceInfoFinder {
 	public WorkplaceInfoDto find(WkpInfoFindObject findObj) {
 		String companyId = AppContexts.user().companyId();
 		// find
-		Optional<WorkplaceInfo> opWkpInfo = wkpInfoRepo.find(companyId, findObj.getWorkplaceId(),
-				findObj.getHistoryId());
+		Optional<WorkplaceInformation> opWkpInfo = wkpInfoRepo.getWorkplaceByKey(companyId, findObj.getHistoryId(),
+			findObj.getWorkplaceId());
 		// convert to Dto
 		if (opWkpInfo.isPresent()) {
 			WorkplaceInfoDto dto = new WorkplaceInfoDto();
 			opWkpInfo.get().saveToMemento(dto);
-			return dto;
+			return new WorkplaceInfoDto();
 		}
 		return null;
 	}
@@ -86,8 +87,9 @@ public class WorkplaceInfoFinder {
 	 * @return the workplace info dto
 	 */
 	public WorkplaceInfoDto findByWkpIdAndBaseDate(WkpInfoFindObject findObj) {
+		String companyID = AppContexts.user().companyId();
 		// find
-		Optional<WorkplaceInfo> opWkpInfo = wkpInfoRepo.findByWkpId(findObj.getWorkplaceId(), findObj.getBaseDate());
+		Optional<WorkplaceInformation> opWkpInfo = wkpInfoRepo.getWkpNewByIdDate(companyID, findObj.getWorkplaceId(), findObj.getBaseDate());
 		// convert to Dto
 		if (opWkpInfo.isPresent()) {
 			WorkplaceInfoDto dto = new WorkplaceInfoDto();

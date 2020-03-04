@@ -22,22 +22,14 @@ public class RegulationInfoEmployeeDto {
 
 	/** The employee name. */
 	private String employeeName; // 氏名
-	/** The workplace code. */
-	
-	private String workplaceCode; // 職場の階層コード
-	/** The workplace id. */
-	private String workplaceId; // 職場の階層コード
-	 
-	/** The workplace name. */
-	private String workplaceName; // 職場の階層コード
 
-//	/** The affiliation code. */
-//	private String affiliationCode; // 所属コード
-//
-//	/** The affiliation id. */
-//	private String affiliationId; // 所属ID
-//
-//	/** The affiliation name. */
-//	private String affiliationName; // 所属名
+	/** The affiliation code. */
+	private String affiliationCode; // 所属コード
+
+	/** The affiliation id. */
+	private String affiliationId; // 所属ID
+
+	/** The affiliation name. */
+	private String affiliationName; // 所属名
 
 }

@@ -3,10 +3,7 @@ module kcp.share.list {
         id?: string;
         code: string;
         name?: string;
-        //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-        workplaceName?: string;
-//        affiliationName?: string;
-        //end
+        affiliationName?: string;
         isAlreadySetting?: boolean;
         optionalColumn?: any;
     }
@@ -504,7 +501,6 @@ module kcp.share.list {
                 if(!_.isEqual(self.selectedCodes(), selectedIds)){
                     self.selectedCodes(selectedIds);        
                 }
-                
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
@@ -576,11 +572,8 @@ module kcp.share.list {
             // workplace name column
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
-                    //start CDL008,KCP004,CCG001: revertCode (職場・部門対応)
-                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
-//                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
-                    //end
-                    template: "<td class='list-component-name-col'>${workplaceName}</td>"
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
+                    template: "<td class='list-component-name-col'>${affiliationName}</td>"
                 });
             }
 
@@ -673,7 +666,7 @@ module kcp.share.list {
             // Init component.
             var fields: Array<string> = ['name', 'code'];
             if (data.isShowWorkPlaceName) {
-                fields.push('workplaceName');
+                fields.push('affiliationName');
             }
 
             const startComponent = () => {
@@ -1221,7 +1214,6 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
                                         optionsValue: 'id',
                                         visibleItemsCount: 5,
                                         value: selectedClosureId,
-                                        optionsText: 'name',
                                         enable: true,
                                         columns: [
                                             { prop: 'name', length: 4 },

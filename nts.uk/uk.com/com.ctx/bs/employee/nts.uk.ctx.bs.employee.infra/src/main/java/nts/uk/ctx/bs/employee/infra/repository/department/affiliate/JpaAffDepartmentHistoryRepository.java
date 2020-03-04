@@ -123,4 +123,17 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public List<Object[]> getAffDeptHistByEmpIdAndBaseDate(List<String> sids, GeneralDate baseDate) {
+		String SELECT_BY_SID_AND_BASEDATE = "SELECT e.sid, it.depId "
+				+ " FROM BsymtAffiDepartmentHist e "
+				+ " INNER JOIN BsymtAffiDepartmentHistItem it ON e.hisId = it.hisId "
+				+ " WHERE e.sid IN :sids AND e.strDate <= :baseDate AND e.endDate >= :baseDate ";
+		
+		List<Object[]> listObj = queryProxy().query(SELECT_BY_SID_AND_BASEDATE, Object[].class)
+				.setParameter("sids", sids)
+		 .setParameter("baseDate", baseDate).getList();
+		return listObj;
+	}
 }

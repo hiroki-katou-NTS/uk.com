@@ -17,5 +17,7 @@ public class ApprovalPhaseStateImport_New {
 	
 	private ApprovalBehaviorAtrImport_New approvalAtr;
 	
+	private ApprovalFormImport approvalForm;
+	
 	private List<ApprovalFrameImport_New> listApprovalFrame;
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,6 +25,8 @@ import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.GroupCommonMasterImport;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterExportDto;
 
 /**
  * The Class EmploymentWebService.
@@ -129,5 +132,12 @@ public class EmploymentWebService extends WebService {
 		if (employmentCodes == null || employmentCodes.isEmpty()) return names;
 		names = this.finder.findByCodesWithNull(employmentCodes).stream().map(item -> item.getName()).collect(Collectors.toList());
 		return names;
+	}
+	
+	@POST
+	@Path("findGroupCommonMaster")
+	public GroupCommonMasterImport findGroupCommonMaster()
+	{
+		return finder.findGroupCommonMaster();
 	}
 }

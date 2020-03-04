@@ -1,107 +1,117 @@
-module qmm002.c.viewmodel {
+module nts.uk.pr.view.qmm002.c.viewmodel {
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
-        lst_001: any;
-        lst_002: any;
-        lst_003: any;
-        singleSelectedCode: any;
-        selectedCodes: KnockoutObservableArray<any>;;
-        selectedCodes2: any;
+        // tree grid variables
+        sourceBankBranchList: KnockoutObservableArray<Node>;
+        selectedSourceBranchCodes: KnockoutObservableArray<string>;
+        headers: any;
+        desBankBranchList: KnockoutObservableArray<Node>;
+        selectedDesBranchCode: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
-            self.lst_001 = ko.observableArray([]);
-            self.lst_002 = ko.observableArray([]);
-            self.lst_003 = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable();
-            self.selectedCodes = ko.observableArray([]);
-            self.selectedCodes2 = ko.observableArray([]);
+            self.headers = ko.observableArray(["Item Value Header"]);
+            self.sourceBankBranchList = ko.observableArray([]);
+            self.selectedSourceBranchCodes = ko.observableArray([]);
+            self.desBankBranchList = ko.observableArray([]);
+            self.selectedDesBranchCode = ko.observable("");
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.getAllBank().done((data: Array<any>) => {
+                if (_.isEmpty(data)) {
+                    dfd.resolve();
+                    alertError({messageId: "Msg_672"});
+                } else {
+                    block.invisible();
+                    service.getAllBankBranch(_.map(data, b => b.code)).done((branchData: Array<any>) => {
+                        if (_.isEmpty(branchData)) {
+                            let displayList = _.map(data, b => {
+                                return new Node(b.code, b.code, b.name, []);
+                            });
+                            self.sourceBankBranchList(displayList);
+                            self.desBankBranchList(displayList)
+                        } else {
+                            let displayList = _.map(data, b => {
+                                let lstBr = _.filter(branchData, br => { return br.bankCode == b.code; }).map(br => { return new Node(br.id, br.code, br.name, [])});
+                                return new Node(b.code, b.code, b.name, lstBr);
+                            });
+                            self.sourceBankBranchList(displayList);
+                            self.desBankBranchList(displayList)
+                        }
+                        dfd.resolve();
+                    }).fail(error => {
+                        alertError(error);
+                        dfd.reject();
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            }).fail(error => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
         }
 
-        startPage() {
-            var self = this;
-            var list = nts.uk.ui.windows.getShared('listItem');
-            self.lst_001(list);
-            self.lst_002(list);
-        }
-
-        closeDialog(): any {
+        close() {
             nts.uk.ui.windows.close();
         }
 
-        tranferBranch() {
-            var self = this;
-            var message = "*が選択されていません。";
-            if (!self.singleSelectedCode()) {
-                nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
-                return;
-            }
-            if (!self.selectedCodes().length) {
-                nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
-                return;
-            }
-            if (self.selectedCodes().length) {
-                _.forEach(self.selectedCodes(), function(item) {
-                    if (item == self.singleSelectedCode()) {
-                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
-                    } else {
-                        nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function() {
-                            var branchId = new Array();
-                            _.forEach(self.selectedCodes(), function(item) {
-                                var code = item.split('-');
-                                var bankCode = code[0];
-                                var branchIdNode = self.getNode(item, bankCode);
-                                branchId.push(branchIdNode);
-                            });
-                            var code = self.singleSelectedCode().split('-');
-                            var bankNewCode = code[0];
-                            var branchNewId = self.getNode(self.singleSelectedCode(), bankNewCode);
-                            var data =
-                                {
-                                    branchId: branchId,
-                                    branchNewId: branchNewId
-                                };
-
-                            service.tranferBranch(data).done(function() {
-                            });
-                        })
+        execute() {
+            let self = this;
+            block.invisible();
+            let sourceBranchIds = [];
+            self.selectedSourceBranchCodes().forEach(nodeId => {
+                if (nodeId.length > 4) 
+                    sourceBranchIds.push(nodeId);
+                else {
+                    let node = _.find(self.sourceBankBranchList(), n => n.id == nodeId);
+                    if (node) {
+                        node.children.forEach(c => {
+                            sourceBranchIds.push(c.id);
+                        });
                     }
-                });
-            }
-        }
-
-        getNode(codeNew, parentId): String {
-            var self = this;
-            self.lst_003(nts.uk.util.flatArray(self.lst_001(), "childs"))
-            var node = _.find(self.lst_003(), function(item: BankInfo) {
-                return item.treeCode == codeNew;
+                }
             });
-
-            return node.branchId;
+            let command = {sourceIds: sourceBranchIds, destinationId: self.selectedDesBranchCode()};
+            service.integration(command).done(() => {
+                nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
-
+        
     }
-
-    export class BankInfo {
-        treeCode: string;
+    
+    class Node {
+        id: string;
         code: string;
-        branchId: string;
         name: string;
-        displayName: string;
-        nameKata: string;
-        memo: string;
-        childs: Array<BankInfo>;
-        parentCode: string;
-
-        constructor(treeCode?: string, code?: string, branchId?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
+        nodeText: string;
+        children: any;
+        constructor(id: string, code: string, name: string, children: Array<Node>) {
             var self = this;
-            self.treeCode = treeCode;
+            self.id = id;
             self.code = code;
-            self.branchId = branchId;
             self.name = name;
-            self.displayName = self.code + "  " + self.name;
-            self.nameKata = nameKata;
-            self.memo = memo;
-            self.childs = childs;
-            self.parentCode = parentCode;
+            self.nodeText = _.escape(self.code + ' ' + self.name);
+            self.children = children;
         }
     }
-};
+    
+}

@@ -1,274 +1,241 @@
-module qmm023.a.viewmodel {
-    export class ScreenModel {
+module nts.uk.pr.view.qmm023.a.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
-        items: KnockoutObservableArray<TaxModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        currentTax: KnockoutObservable<TaxModel>;
-        isUpdate: KnockoutObservable<boolean>;
-        allowEditCode: KnockoutObservable<boolean>;
-        isEnableDeleteBtn: KnockoutObservable<boolean>;
-        currentTaxDirty: nts.uk.ui.DirtyChecker;
-        flatDirty: boolean;
+    export class ScreenModel {
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        enableCode: KnockoutObservable<boolean> = ko.observable(true);
+        lstTaxExemptLimit: KnockoutObservableArray<ITaxExemptLimit> = ko.observableArray([]);
+        currentCode: KnockoutObservable<string> = ko.observable('');
+
+        taxFreeamountCode: KnockoutObservable<string> = ko.observable('');
+        taxExemptionName: KnockoutObservable<string> = ko.observable('');
+        taxExemption: KnockoutObservable<number> = ko.observable(0);
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+
+
         constructor() {
             let self = this;
-            self._init();
-
-            self.currentCode.subscribe(function(codeChanged) {
-                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
-                    if (self.isUpdate() === true) {
-                        self.refreshLayout();
-                    }
-                    return;
-                }
-                let oldCode = ko.mapping.toJS(self.currentTax().code);
-                if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
-                    return;
-                }
-
-                if (self.flatDirty == true) {
-                    self.clearError();
-                    self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                    self.allowEditCode(false);
-                    self.isUpdate(true);
-                    self.isEnableDeleteBtn(true);
-                    self.currentTaxDirty.reset();
-                    self.flatDirty = false;
-                    return;
-                }
-                self.alertCheckDirty(oldCode, codeChanged);
-            });
-
-
-        }
-
-        _init(): void {
-            let self = this;
-            self.items = ko.observableArray([]);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 75 },
-                { headerText: '名称', prop: 'name', width: 175 },
-                { headerText: '限度額', prop: 'taxLimit', width: 115 }
+                {headerText: getText('QMM023_7'), key: 'taxFreeamountCode', width: 50, formatter: _.escape},
+                {headerText: getText('QMM023_8'), key: 'taxExemptionName', width: 180, formatter: _.escape},
+                {headerText: getText('QMM023_9'), key: 'taxExemptionDisp', width: 170, formatter: _.escape}
             ]);
-            self.currentTax = ko.observable(new TaxModel('', '', 0));
-            self.currentCode = ko.observable(null);
-            self.isUpdate = ko.observable(true);
-            self.allowEditCode = ko.observable(false);
-            self.isEnableDeleteBtn = ko.observable(true);
-            self.flatDirty = true;
-            self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax)
-            if (self.items.length <= 0) {
-                self.allowEditCode = ko.observable(true);
-                self.isUpdate = ko.observable(false);
-                self.isEnableDeleteBtn = ko.observable(false);
-            }
-
-        }
-
-        getTax(codeNew: string): TaxModel {
-            let self = this;
-            let tax: TaxModel = _.find(self.items(), function(item) {
-                return item.code === codeNew;
+            self.currentCode.subscribe((item) => {
+                if (item != '') {
+                    let itemModel = _.find(self.lstTaxExemptLimit(), function (x) {
+                        return x.taxFreeamountCode == item
+                    });
+                    self.taxFreeamountCode(itemModel.taxFreeamountCode);
+                    self.taxExemptionName(itemModel.taxExemptionName);
+                    self.taxExemption(itemModel.taxExemption);
+                    self.isNewMode(false);
+                    self.enableCode(true);
+                    $("#taxExemptionName").focus();
+                    nts.uk.ui.errors.clearAll();
+                }
             });
-            return tax;
+            block.invisible();
+            service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
+                if (data && data.length > 0) {
+                    let dataSort = _.sortBy(data, ["taxFreeamountCode"])
+                    dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
+                    self.lstTaxExemptLimit(dataSort);
+                    self.currentCode(self.lstTaxExemptLimit()[0].taxFreeamountCode);
+                    self.isNewMode(false);
+                }
+                else {
+                    self.createTaxExe();
+                }
+            }).fail(function (res) {
+                alertError({messageId: res.messageId});
+            });
+            block.clear();
         }
 
-        isError(): boolean {
+        createTaxExe() {
             let self = this;
-            $('#INP_002').ntsEditor("validate");
-            $('#INP_003').ntsEditor("validate");
-            if ($('.nts-editor').ntsError("hasError")) {
-                return true;
-            }
-            return false;
-        }
-        clearError(): void {
-            if ($('.nts-editor').ntsError("hasError")) {
-                $('.save-error').ntsError('clear');
-            }
-        }
+            nts.uk.ui.errors.clearAll();
+            self.taxFreeamountCode('');
+            self.taxExemptionName('');
+            self.taxExemption(null);
+            self.currentCode('');
+            self.isNewMode(true);
+            self.enableCode(false);
+            $("#taxFreeamountCode").focus();
+        };
 
-        alertCheckDirty(oldCode: string, codeChanged: string) {
+        saveTaxExe() {
             let self = this;
-            if (!self.currentTaxDirty.isDirty()) {
-                self.clearError();
-                self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                self.allowEditCode(false);
-                self.isUpdate(true);
-                self.isEnableDeleteBtn(true);
-                self.currentTaxDirty.reset();
-                self.flatDirty = false;
-            } else {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
-                    self.clearError();
-                    self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                    self.allowEditCode(false);
-                    self.isUpdate(true);
-                    self.isEnableDeleteBtn(true);
-                    self.currentTaxDirty.reset();
-                }).ifCancel(function() {
-                    self.currentCode(oldCode);
+            let data = {
+                taxFreeamountCode: self.taxFreeamountCode(),
+                taxExemptionName: self.taxExemptionName(),
+                taxExemption: self.taxExemption()
+            };
+            $("#taxFreeamountCode").trigger("validate");
+            $("#taxExemptionName").trigger("validate");
+            $("#taxExemption").trigger("validate");
+            if (errors.hasError() === false) {
+                block.invisible();
+                if (self.isNewMode()) {
+                    // create
+                    service.addTaxExemptLimit(ko.toJS(data)).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#taxExemptionName").focus();
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
+                                _.delay(() => {
+                                    self.currentCode(data.taxFreeamountCode);
+                                }, 100, 'later');
+                            });
+                        });
+                    }).fail(function (error) {
+                        alertError(error).then(() => {
+                            $("#taxFreeamountCode").focus();
+                        });
+                    }).always(function () {
+                        block.clear();
+                    });
+                } else {
+                    // update
+                    service.updateTaxExemptLimit(ko.toJS(data)).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#taxExemptionName").focus();
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
+                                self.currentCode(data.taxFreeamountCode);
+                            });
+                        });
+                    }).fail(function (error) {
+                        alertError(error);
+                    }).always(function () {
+                        $("#taxFreeamountCode").focus();
+                        block.clear();
+                    });
+                }
+            }
+        };
+
+        printPdf() {
+        };
+
+        exportExcel() {
+            block.invisible();
+            service.exportExcel()
+                .done(function () {
+                    block.clear();
+
                 })
-            }
-        }
-
-        refreshLayout(): void {
-            let self = this;
-            self.allowEditCode(true);
-            self.clearError();
-            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
-            self.currentCode(null);
-            self.isUpdate(false);
-            self.isEnableDeleteBtn(false);
-            self.currentTaxDirty.reset();
-        }
-
-        createButtonClick(): void {
-            let self = this;
-            if (self.currentTaxDirty.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
-                    self.refreshLayout();
-                }).ifCancel(function() {
-                    return;
+                .fail(function (error) {
+                    dialog.alertError({messageId: error.messageId});
+                    block.clear();
                 })
-            } else {
-                self.refreshLayout();
-            }
-        }
-
-        insertUpdateData(): void {
-            let self = this;
-            if (self.isError()) {
-                return;
-            }
-            let newCode = ko.mapping.toJS(self.currentTax().code);
-            let newName = ko.mapping.toJS(self.currentTax().name);
-            let newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-            let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
-            service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
-                self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
-                self.flatDirty = true;
-                self.currentTaxDirty.reset();
-                if (self.isUpdate() === false) {
-                    self.isUpdate(true);
-                    self.allowEditCode(false);
-                    return;
-                }
-            }).fail(function(error) {
-                if (error.message === '3') {
-                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
-                } else if (error.message === '4') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
-                }
-            });
-
-        }
-
-        deleteData(): void {
-            let self = this;
-            let deleteCode = ko.mapping.toJS(self.currentTax().code);
-            service.deleteData(new DeleteModel(deleteCode)).done(function() {
-                let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == deleteCode; });
-                $.when(self.reload(false)).done(function() {
-                    self.flatDirty = true;
-                    if (self.items().length === 0) {
-                        self.refreshLayout();
-                        return;
-                    }
-                    if (self.items().length == indexItemDelete) {
-                        self.currentCode(self.items()[indexItemDelete - 1].code);
-                        return;
-                    }
-
-                    if (self.items().length < indexItemDelete) {
-                        self.currentCode(self.items()[0].code);
-                        return;
-                    }
-
-                    if (self.items().length > indexItemDelete) {
-                        self.currentCode(self.items()[indexItemDelete].code);
-                        return;
-                    }
+                .always(function () {
+                    block.clear();
                 });
+            ;
 
-            }).fail(function(error) {
-                if (error.message === '1') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
+        };
+
+        deleteTaxExe() {
+            let self = this;
+            let data = {
+                taxFreeamountCode: self.taxFreeamountCode(),
+                taxExemptionName: self.taxExemptionName(),
+                taxExemption: self.taxExemption()
+            };
+            block.invisible();
+            dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+                if (data.taxFreeamountCode) {
+                    let index: number = _.findIndex(self.lstTaxExemptLimit(), function (x) {
+                        return x.taxFreeamountCode == data.taxFreeamountCode
+                    });
+                    service.removeTaxExemptLimit(ko.toJS(data)).done(function () {
+                        dialog.info({messageId: "Msg_16"}).then(() => {
+                            self.getAllData().done(() => {
+                                if (self.lstTaxExemptLimit().length == 0) {
+                                    self.createTaxExe();
+                                } else {
+                                    let code = "";
+                                    if (index == self.lstTaxExemptLimit().length) {
+                                        code = self.lstTaxExemptLimit()[index - 1].taxFreeamountCode;
+                                    } else {
+                                        code = self.lstTaxExemptLimit()[index].taxFreeamountCode;
+                                    }
+                                    _.delay(() => {
+                                        self.currentCode(code);
+                                    }, 100, 'later');
+                                }
+                            });
+                        });
+                    }).fail(function (error) {
+                        dialog.alertError({messageId: error.messageId});
+                        block.clear();
+                    }).always(function () {
+                        block.clear();
+                    });
+                } else {
+                    block.clear();
                 }
+            }).then(() => {
+                $('.nts-input').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
+                block.clear();
             });
-        }
-
-        alertDelete() {
-            let self = this;
-            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                self.deleteData();
-            })
+        };
+        correctionLog(){
 
         }
-
-        // startpage
-        startPage(): any {
-            let self = this;
-            return self.reload(true);
-        }
-
-        reload(isReload: boolean, reloadCode?: string) {
-            let self = this;
-            let dfd = $.Deferred();
-            service.getCommutelimitsByCompanyCode().done(function(data) {
-                self.items([]);
-                _.forEach(data, function(item) {
-                    self.items.push(new TaxModel(item.commuNoTaxLimitCode, item.commuNoTaxLimitName, item.commuNoTaxLimitValue));
-                });
-                self.flatDirty = true;
-                if (self.items().length <= 0) {
-                    self.refreshLayout();
-                    dfd.resolve();
-                    return;
+        getAllData(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            block.invisible();
+            self.lstTaxExemptLimit.removeAll();
+            nts.uk.pr.view.qmm023.a.service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
+                if (data && data.length > 0) {
+                    let dataSort = _.sortBy(data, ["taxFreeamountCode"])
+                    dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
+                    self.lstTaxExemptLimit(dataSort);
+                    self.isNewMode(false);
                 }
-                if (isReload) {
-                    self.currentCode(self.items()[0].code)
-                } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
-                    self.currentCode(reloadCode)
+                else {
+                    nts.uk.ui.errors.clearAll();
+                    self.taxFreeamountCode('');
+                    self.taxExemptionName('');
+                    self.taxExemption(null);
+                    self.isNewMode(true);
                 }
-                dfd.resolve(data);
-            })
+                block.clear();
+                dfd.resolve(self);
+            }).fail(function (res) {
+                alertError({messageId: res.messageId});
+                block.clear();
+                dfd.reject();
+            });
             return dfd.promise();
-        }
+        };
+
     }
 
-    class TaxModel {
-        code: string;
-        name: string;
-        taxLimit: number;
-        constructor(code: string, name: string, taxLimit: number) {
-            this.code = code;
-            this.name = name;
-            this.taxLimit = taxLimit;
-        }
+    export interface ITaxExemptLimit {
+        taxFreeamountCode: string;
+        taxExemptionName: string;
+        taxExemption: number;
     }
 
-    export class InsertUpdateModel {
-        commuNoTaxLimitCode: string;
-        commuNoTaxLimitName: string;
-        commuNoTaxLimitValue: number;
-        constructor(commuNoTaxLimitCode: string, commuNoTaxLimitName: string,
-            commuNoTaxLimitValue: number) {
-            this.commuNoTaxLimitCode = commuNoTaxLimitCode;
-            this.commuNoTaxLimitName = commuNoTaxLimitName;
-            this.commuNoTaxLimitValue = commuNoTaxLimitValue;
-        }
-    }
+    export class TaxExemptLimit {
+        taxFreeamountCode: KnockoutObservable<string> = ko.observable('');
+        taxExemptionName: KnockoutObservable<string> = ko.observable('');
+        taxExemption: KnockoutObservable<number> = ko.observable(0);
 
-    export class DeleteModel {
-        commuNoTaxLimitCode: string;
-        constructor(commuNoTaxLimitCode: string) {
-            this.commuNoTaxLimitCode = commuNoTaxLimitCode;
+        constructor(params: ITaxExemptLimit) {
+            let self = this;
+            self.taxFreeamountCode(params ? params.taxFreeamountCode : '');
+            self.taxExemptionName(params ? params.taxExemptionName : '');
+            self.taxExemption(params ? params.taxExemption : 0);
         }
     }
 }

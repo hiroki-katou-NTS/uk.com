@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+
+			<div class="sidebar-content-header">
+				<span class="title">#{i18n.getText('JMM018_B3_2')}</span>
+				<button class="proceed" tabindex="1" data-bind="click: update, enable:  isLatestHis() &amp;&amp; getRelatedMaster() &amp;&amp; $root.errors.isEmpty() ">#{i18n.getText('JMM018_B3_3')}</button>
+			</div>
+			<div class="contents-area tab2">
+				<div class="container cf">
+					<div style="height: 130px;">
+						<assy-com params="screenMode: screenMode, 
+										masterId: masterId, 
+										histList: histList, 
+										selectedHistId: selectedHistId,
+									 	servicePath: { get: pathGet, add: pathAdd, update: pathUpdate, delete: pathDelete },
+									 	getQueryResult: getQueryResult,
+									 	webAppId: 'hr',
+									 	getSelectedStartDate: getSelectedStartDate,
+									 	commandAdd: commandAdd,
+									 	commandUpdate: commandUpdate,
+									 	commandDelete: commandDelete,
+									 	delVisible: delVisible,
+									 	delChecked: delChecked,
+									 	afterRender: afterRender,
+									 	afterAdd: afterAdd,
+									 	afterUpdate: afterUpdate,
+									 	afterDelete: afterDelete"
+					 	></assy-com>
+					</div>
+					<div>
+						<a id = "href1" class="hyperlink " href="#B422_12" data-bind = "click: hidden('href1', 'B422_12')">#{i18n.getText('JMM018_B422_2')}</a>
+						<a id = "href2" class="hyperlink linkRetire" href="#B422_13" data-bind = "click: hidden('href2', 'B422_13')">#{i18n.getText('JMM018_B422_3')}</a>
+						<a id = "href3" class="hyperlink linkRetire" href="#B422_14" data-bind = "click: hidden('href3', 'B422_14')">#{i18n.getText('JMM018_B422_4')}</a>
+						<a id = "href4" class="hyperlink linkRetire" href="#B422_15" data-bind = "click: hidden('href4', 'B422_15')">#{i18n.getText('JMM018_B422_5')}</a>
+						<a id = "href5" class="hyperlink linkRetire" href="#B422_16" data-bind = "click: hidden('href5', 'B422_16')">#{i18n.getText('JMM018_B422_6')}</a>
+						<a id = "href6" class="hyperlink linkRetire" href="#B422_17" data-bind = "click: hidden('href6', 'B422_17')">#{i18n.getText('JMM018_B422_7')}</a>
+						<a id = "href7" class="hyperlink linkRetire" href="#B422_18" data-bind = "click: hidden('href7', 'B422_18')">#{i18n.getText('JMM018_B422_8')}</a>
+						<a id = "href8" class="hyperlink linkRetire" href="#B422_19" data-bind = "click: hidden('href8', 'B422_19')">#{i18n.getText('JMM018_B422_9')}</a>
+					</div>
+					<div>
+					<div class="panel panel-frame frameRetire panel-scroll" id="panel-scroll" >
+						<div class="eachType">
+							<a class="typeRetire" id="B422_12"> #{i18n.getText('JMM018_B422_12')} </a> <hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_13"> #{i18n.getText('JMM018_B422_13')} </a> <hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_14"> #{i18n.getText('JMM018_B422_14')} </a> <hr></hr>
+						</div>
+						
+						<!-- Retirement age area -->
+						<div class="eachType">
+							<a class="typeRetire" id="B422_15"> #{i18n.getText('JMM018_B422_15')} </a> <hr></hr>
+							<com:ko-if bind="getRelatedMaster">
+								<div>
+									<div data-bind="with: mandatoryRetirementRegulation">
+										<div class="linkRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_2')}</div>
+										<div class="radioRetire" data-bind="ntsRadioBoxGroup: {
+													options: $parent.reachedAgeTermList,
+													optionsValue: 'value',
+													optionsText: 'name',
+													enable: $parent.isLatestHis,
+													value: reachedAgeTerm}"> </div>
+									</div>
+									
+									<!-- publicTerm -->
+									<div data-bind="with: mandatoryRetirementRegulation().publicTerm" >
+										<div class="linkRetire frameRetire B422_15_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_4')}</div>
+										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+													options: $parent.dateRule,
+													optionsValue: 'value',
+													value: calculationTerm,
+													optionsText: 'name',
+													columns: [{ prop: 'name', length: 10 }],
+													enable: $parent.isLatestHis,
+													dropDownAttachedToBody: true,
+													visibleItemsCount: 10
+													 }"> </div>
+										<div class="retireDateEna margin-left" data-bind="visible: (calculationTerm() == 2 || calculationTerm() == 3)">
+											<span> 
+												<input class="nts-input judg" id="inpDate" data-bind="ntsNumberEditor:{
+														value: dateSettingNum,
+														required: dateSettingNumRequire,
+														readonly: false,
+														enable: $parent.isLatestHis,
+														constraint: 'Integer_0_99',
+														name: '#{i18n.getText('JMM018_B422_15_6')}'}" />
+											</span> 
+											<span class="label" data-bind="visible: calculationTerm() == 2" >#{i18n.getText('JMM018_B422_15_7_1')}</span>
+											<span class="label" data-bind="visible: calculationTerm() == 3" >#{i18n.getText('JMM018_B422_15_7_2')}</span>
+										</div>
+										<div class="retireDateEna margin-left" data-bind="visible: calculationTerm() == 6 ">
+											<div class="B422_15_2 " data-bind="ntsComboBox: {
+														options: $parent.dateSelectItem,
+														optionsValue: 'value',
+														value: dateSettingDate,
+														optionsText: 'name',
+														columns: [{ prop: 'name', length: 10 }],
+														enable: $parent.isLatestHis,
+														visibleItemsCount: 10,
+														width: 75
+														 }"> </div>
+										</div>
+									</div>
+									
+									<!-- retireDateTerm -->
+									<div data-bind="with: mandatoryRetirementRegulation().retireDateTerm">
+										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_9')}</div>
+										<div class="B422_15_2 comboRetire" data-bind="ntsComboBox: {
+													options: $parent.retireDateRule,
+													optionsValue: 'value',
+													value: retireDateTerm,
+													optionsText: 'name',
+													enable: $parent.isLatestHis,
+													visibleItemsCount: 10,
+													width: 300
+													 }"> </div>
+										<div class="retireDateEna margin-left" data-bind="visible: retireDateTerm() == 1">
+											<div class="B422_15_2 " data-bind="ntsComboBox: {
+														options: $parent.dateSelectItem,
+														optionsValue: 'value',
+														value: retireDateSettingDate,
+														optionsText: 'name',
+														columns: [{ prop: 'name', length: 10 }],
+														enable: $parent.isLatestHis,
+														visibleItemsCount: 10,
+														width: 75
+														 }"> </div>
+										</div>
+									</div>
+									
+									<div>
+										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_12')}</div>
+										<div class="linkRetire frameRetire" id="tableRetire">
+											<table>
+												<thead>
+													<tr>
+														<th class="ui-widget-header retireName">#{i18n.getText('JMM018_B422_15_16')}</th>
+														<th class="ui-widget-header course">#{i18n.getText('JMM018_B422_15_17')}</th>
+														<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_18')}</th>
+														<th class="ui-widget-header ">#{i18n.getText('JMM018_B422_15_19')}</th>
+													</tr>
+												</thead>
+												<tbody data-bind="foreach : mandatoryRetirementRegulation().referEvaluationTerm">
+													<tr>
+														<td class="column-row"><span class="label " data-bind="text: name"></span></td>
+														<td class="column-row">
+															<div id="check-box" data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis}"></div>
+														</td>
+														<td class="column-row">
+															<div style="margin-left: 22px;" class="buttonDialogC" data-bind="ntsComboBox: {
+																														options: $parent.displayNum,
+																														optionsValue: 'value',
+																														value: displayNum,
+																														optionsText: 'name',
+																														enable: $parent.isLatestHis() &amp;&amp; usageFlg,
+																														visibleItemsCount: 10,
+																														width: 60 }"></div>
+														</td>
+														<td class="column-row">
+															<div class="table">
+																<div class="cell" style="padding: 0 5px;">#{i18n.getText('JMM018_B422_15_25')}</div>
+																<div class="cell">
+																	<input class="nts-input judg" data-bind="ntsTextEditor:{
+																										value: passValue,
+																										required: $parent.isLatestHis() &amp;&amp; usageFlg,
+																										readonly: false,
+																										enable: $parent.isLatestHis() &amp;&amp; usageFlg,
+																										name: '#{i18n.getText('JMM018_B422_15_26')}',
+																										width: 60}" />
+																</div>
+																<div class="cell" style="padding: 0 5px;">#{i18n.getText('JMM018_B422_15_27')}</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div>
+										<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_28')}</div>
+										<div class="linkRetire frameRetire" id="retireCondition">
+											<table>
+												<thead>
+													<tr>
+														<th class="ui-widget-header employmenttype" data-bind="text: commonMasterName"></th>
+														<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_33')}</th>
+														<th class="ui-widget-header retireCourse">#{i18n.getText('JMM018_B422_15_34')}</th>
+													</tr>
+												</thead>
+												<tbody data-bind="foreach : commonMasterItems">
+													<tr>
+														<td class="column-row"><span class="label " data-bind="text: commonMasterItemName"></span></td>
+														<td class="column-row">
+															<div data-bind="ntsCheckBox: { checked: usageFlg, enable: $parent.isLatestHis }"></div>
+															<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_38')}</div>
+														</td>
+														<td class="column-row">
+															<button data-bind="click: $parent.openCDialog.bind($parent.retirePlanCourseList), enable: $parent.isLatestHis() &amp;&amp; usageFlg()" class="small buttonDialogC" > #{i18n.getText('JMM018_B422_15_39')} </button>
+															<div style="display: inline-block;">
+																<span class="label limited-label retireCourseTxt" data-bind="text: enableRetirePlanCourseText" ></span>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div>
+										<div>
+											<div class="linkRetire frameRetire" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JMM018_B422_15_41')}</div>
+											<div class="linkRetire frameRetire" id="applycationCondition">
+												<table>
+													<thead>
+														<tr>
+															<th class="ui-widget-header retirementAge">#{i18n.getText('JMM018_B422_15_44')}</th>
+															<th class="ui-widget-header appAgeCell">#{i18n.getText('JMM018_B422_15_45')}</th>
+															<th style="width: 235px;" class="ui-widget-header">#{i18n.getText('JMM018_B422_15_46')}</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr data-bind="with: mandatoryRetirementRegulation">
+															<td class="column-row">
+																<div class="appCon" data-bind="ntsCheckBox: { checked: planCourseApplyFlg, enable: $parent.isLatestHis }"></div>
+																<div style="display: inline-block;">#{i18n.getText('JMM018_B422_15_48')}</div>
+															</td>
+															<td class="column-row">
+																<div class="table buttonDialogC ">
+																	<input class="cell judg" data-bind="ntsNumberEditor: {
+																					constraint:'DesiredCourseApplicationAge',
+																					name:'#{i18n.getText('JMM018_B422_15_49')}',
+																					value: planCourseApplyTerm().applicationEnableStartAge,
+																					required: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					option:{width:'50', unitID:'AGE'}}" />
+																	<div class="cell">#{i18n.getText('JMM018_B422_15_50')}</div>
+																	<input class="cell judg" data-bind="ntsNumberEditor: {
+																					constraint:'DesiredCourseApplicationAge',
+																					name:'#{i18n.getText('JMM018_B422_15_51')}',
+																					value: planCourseApplyTerm().applicationEnableEndAge,
+																					required: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					option:{width:'50',unitID:'AGE'}}" />
+																</div>
+															</td>
+															<td class="column-row">
+																<div class="buttonDialogC" data-bind="ntsComboBox: {
+																					options: $parent.monthSelectItem,
+																					optionsValue: 'value',
+																					value: planCourseApplyTerm().endMonth,
+																					optionsText: 'name',
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					visibleItemsCount: 12,
+																					width: 100}"></div>
+																<div class="buttonDialogC" data-bind="ntsComboBox: {
+																					options: $parent.dateSelectItem,
+																					optionsValue: 'value',
+																					value: planCourseApplyTerm().endDate,
+																					optionsText: 'name',
+																					enable: $parent.isLatestHis() &amp;&amp; planCourseApplyFlg,
+																					visibleItemsCount: 10,
+																					width: 100}"></div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</com:ko-if>
+						</div>
+						
+						
+						<div class="eachType">
+							<a class="typeRetire" id="B422_16">#{i18n.getText('JMM018_B422_16')} </a><hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_17">#{i18n.getText('JMM018_B422_17')} </a><hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_18">#{i18n.getText('JMM018_B422_18')} </a><hr></hr>
+						</div>
+						<div class="eachType">
+							<a class="typeRetire" id="B422_19">#{i18n.getText('JMM018_B422_19')} </a><hr></hr>
+						</div>
+					</div>
+				</div>
+				</div>
+			</div>
+	</ui:composition>
+</body>
+</html>

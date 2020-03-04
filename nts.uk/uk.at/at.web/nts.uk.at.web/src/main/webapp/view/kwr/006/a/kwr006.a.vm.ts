@@ -192,7 +192,7 @@ module nts.uk.at.view.kwr006.a {
                                     id: item.employeeId,
                                     code: item.employeeCode,
                                     name: item.employeeName,
-                                    workplaceName: item.workplaceName
+                                    affiliationName: item.affiliationName
                                 };
                             });
                         self.employeeList(result);

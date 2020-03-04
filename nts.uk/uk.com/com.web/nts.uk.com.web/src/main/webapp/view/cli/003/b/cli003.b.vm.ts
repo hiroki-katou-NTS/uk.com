@@ -277,7 +277,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var employeeSearchs: UnitModel[] = [];
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 employeeSearchs.push(new UnitModel(item.employeeId, item.employeeCode,
-                    item.employeeName, item.workplaceName));
+                    item.employeeName, item.affiliationName));
             });
             self.employeeList(employeeSearchs);
         }
@@ -387,7 +387,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var employeeSearchs: UnitModel[] = [];
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 employeeSearchs.push(new UnitModel(item.employeeId, item.employeeCode,
-                    item.employeeName, item.workplaceName));
+                    item.employeeName, item.affiliationName));
             });
             self.employeeListOperator(employeeSearchs);
         }
@@ -2491,13 +2491,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
         id: string;
         code: string;
         name: string;
-        workplaceName: string;
+        affiliationName: string; 
 
-        constructor(id: string, code: string, name: string, workplaceName: string) {
+        constructor(id: string, code: string, name: string, affiliationName: string) {
             this.id = id;
             this.code = code;
             this.name = name;
-            this.workplaceName = workplaceName;
+            this.affiliationName = affiliationName;
         }
     }
 

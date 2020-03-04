@@ -60,4 +60,14 @@ public interface EmployeeRequestAdapter {
 	List<AffWorkplaceImport> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 	
 	List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(String companyId, List<String> employeeIds);
+
+	/**
+	 * [No.571]職場の上位職場を基準職場を含めて取得する
+	 *
+	 * @param companyId
+	 * @param baseDate
+	 * @param workplaceId
+	 * @return
+	 */
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 }

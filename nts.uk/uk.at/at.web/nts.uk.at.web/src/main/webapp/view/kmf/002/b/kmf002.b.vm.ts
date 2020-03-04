@@ -34,7 +34,7 @@ module nts.uk.at.view.kmf002.b {
                         isShowAlreadySet: true,
                         isMultiSelect: false,
                         treeType: TreeType.WORK_PLACE,
-                        selectedWorkplaceId: _self.multiSelectedWorkplaceId,
+                        selectedId: _self.multiSelectedWorkplaceId,
                         baseDate: _self.baseDate,
                         selectType: SelectionType.SELECT_FIRST_ITEM,
                         isShowSelectButton: true,

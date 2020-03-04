@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import java.util.List;
+import java.util.Optional;
 
 public interface ShiftPalletsOrgRepository {
 
@@ -10,8 +11,10 @@ public interface ShiftPalletsOrgRepository {
 
 	public void delete(ShiftPalletsOrg shiftPalletsOrg);
 
-	public ShiftPalletsOrg findShiftPalletOrg(int targetUnit, String targetId, int page);
+	public Optional<ShiftPalletsOrg> findShiftPalletOrg(int targetUnit, String targetId, int page);
 	
-	public ShiftPalletsOrg findByTargetAndPge(TargetOrgIdenInfor targetOrgIdenInfor , int page);
+	public List<ShiftPalletsOrg> findbyWorkPlaceId(int targetUnit, String workplaceId); 
+	
+	public void deleteByWorkPlaceId(String workplaceId, int page);
 
 }

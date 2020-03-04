@@ -52,7 +52,8 @@ public class EmployeeInformationAdapterImpl implements EmployeeInformationAdapte
 				f.getBusinessName(),
 				f.getWorkplace() == null? null : new WorkplaceImport(f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
 				f.getClassification() == null? null : new ClassificationImport(f.getClassification().getClassificationCode(), f.getClassification().getClassificationName()),
-				f.getDepartment() == null? null : new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), f.getDepartment().getDepartmentGenericName()),
+				f.getDepartment() == null? null : new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), 
+															"Fix tam de merge va upver pr, sau dung thi can viet lai DepartmentImport cho giong voi ben HR"),
 				f.getPosition() == null? null : new PositionImport(f.getPosition().getPositionId(), f.getPosition().getPositionCode(), f.getPosition().getPositionName()),
 				f.getEmployment() == null? null : new EmploymentImport(f.getEmployment().getEmploymentCode(), f.getEmployment().getEmploymentName()),
 				f.getEmploymentCls()

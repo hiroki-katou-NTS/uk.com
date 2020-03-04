@@ -33,4 +33,10 @@
         font-size: 90%;
         padding-top: 1px;
     }
+
+    .uk-approveds .row {
+        .col:not(:last-child):after {
+            content: '\F0D9';   
+        }
+    }
 }

@@ -25,7 +25,7 @@ public class DeleteShiftMasterCommandHandler extends CommandHandler<DeleteShiftM
 	protected void handle(CommandHandlerContext<DeleteShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		DeleteShiftMasterCommand cmd = context.getCommand();
-		String code = new ShiftMasterCode(cmd.getShiftMaterCode()).v();
+		String code = new ShiftMasterCode(cmd.getShiftMasterCode()).v();
 		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId, code);
 		if (existed.isPresent()) {
 			shiftMasterRepo.delete(companyId, code);

@@ -65,8 +65,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  END REF_METHOD_ATR,");
 	     exportSQL.append(" CONCAT(");
 	     // Workplace
-	     exportSQL.append("  CONCAT(IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'),RTRIM(wkp.WKPCD),''),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
-	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,?MasterUnregisted, NULL))),");
+	     exportSQL.append("  CONCAT(RTRIM(wkp.WKP_CD), wkp.WKP_NAME), ");
 	     // Employment
 	     exportSQL.append("  CONCAT(RTRIM(emp.CODE), emp.NAME), ");
 	     // Classification
@@ -320,11 +319,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND initsetitem.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID");
 	     exportSQL.append("		  AND initsetitem.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID");
 	     // -- DESIGNATED_MASTER");
-	     exportSQL.append("  LEFT JOIN (SELECT wkpt.WKPCD, wkpt.WKP_NAME, wkpt.CID, wkpt.WKPID, wkphist.END_DATE FROM BSYMT_WORKPLACE_INFO wkpt ");
-	     exportSQL.append("       INNER JOIN BSYMT_WORKPLACE_HIST wkphist ON wkpt.CID = wkphist.CID AND wkpt.HIST_ID = wkphist.HIST_ID ");
-	     exportSQL.append("       AND wkphist.END_DATE = (SELECT MAX(END_DATE) FROM BSYMT_WORKPLACE_HIST wrkhist where wkpt.CID = wrkhist.CID ");
-	     exportSQL.append("       AND wrkhist.WKPID = wkpt.WKPID )) wkp");
-	     exportSQL.append("     ON initsetitem.STRING_VAL = wkp.WKPID AND initset.CID  = wkp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00002'");
+	     exportSQL.append("  LEFT JOIN (SELECT wkp.WKP_CD, wkpt.WKP_NAME, wkp.CID, wkp.WKP_ID FROM BSYMT_WKP_INFO) wkp ");
+	     exportSQL.append("       ON initsetitem.STRING_VAL = wkp.WKP_ID AND initset.CID  = wkp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00002'");
 	     exportSQL.append("  LEFT JOIN BSYMT_EMPLOYMENT emp ON initsetitem.STRING_VAL = emp.CODE AND initset.CID= emp.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00003'");
 	     exportSQL.append("  LEFT JOIN BSYMT_CLASSIFICATION cls ON initsetitem.STRING_VAL = cls.CLSCD AND initset.CID = cls.CID ");

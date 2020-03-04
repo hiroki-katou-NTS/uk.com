@@ -1,19 +1,12 @@
-module qmm012.k {
-    export module service {
-        var paths: any = {
-            getListByCompanyCode: "core/commutelimit/find/bycompanycode"
-        }
-        export function getCommutelimitsByCompanyCode(): JQueryPromise<Array<qmm023.a.service.model.CommuteNoTaxLimitDto>> {
-            var dfd = $.Deferred<Array<any>>();
-            var _path = paths.getListByCompanyCode;
-            nts.uk.request.ajax(_path)
-                .done(function(res: Array<any>) {
-                    dfd.resolve(res);
-                }).fail(function(res) {
-                    dfd.reject(res.message);
-                })
-            return dfd.promise();
-        }
+module nts.uk.pr.view.qmm012.k.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
+    var paths = {
+        getAllTaxAmountByCompanyId: "ctx/pr/core/taxamount/getAllTaxAmountByCompanyId"
     }
 
+    export function getAllTaxAmountByCompanyId(): JQueryPromise<any> {
+        return ajax("pr", paths.getAllTaxAmountByCompanyId);
+    };
 }

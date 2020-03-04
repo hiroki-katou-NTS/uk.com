@@ -17,6 +17,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode
 				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName
+				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -31,11 +32,11 @@
 				<!-- B1 -->
 				<button class="proceed" tabindex="2" data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
 				<!-- B2 -->
-				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster">#{i18n.getText('KSM015_9')}</button>
+				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster, disable: registrationForm().newMode()">#{i18n.getText('KSM015_9')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
-					data-bind="ntsPanel:{width: '410px', height: '480px', direction: 'right', showIcon: false, visible: true}">
+					data-bind="ntsPanel:{width: '410px', height: '600px', direction: 'right', showIcon: false, visible: true}">
 					<div style="width: 380px" tabindex="5" data-bind="ntsSearchBox: {searchMode: 
 						'filter',targetKey: 'shiftMasterCode', 
 						comId: 'gridlist-tbl', 
@@ -48,7 +49,7 @@
 					<div id="gridlist-div">
 						<table id="gridlist-tbl" data-bind="ntsGridList: {
 								width: 380,
-								height: 370,
+								height: 560,
 								options: shiftMasters,
 								optionsValue: 'shiftMasterCode',
 								columns: ko.observableArray(searchOptions.gridColums),

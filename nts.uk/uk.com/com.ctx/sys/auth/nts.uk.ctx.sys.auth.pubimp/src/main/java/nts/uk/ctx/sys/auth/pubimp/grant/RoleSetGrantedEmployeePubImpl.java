@@ -1,15 +1,15 @@
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
@@ -21,7 +21,6 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub {
@@ -41,6 +40,9 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 	private EmpInfoAdapter empInfoAdapter;
 	@Inject
 	private RoleSetGrantedJobTitleRepository repoRoleJob;
+	@Inject
+	private DepartmentPub departmentPub;
+	
 	@Override
 	public List<String> findEmpGrantedInWorkplace(String workplaceId, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
@@ -72,10 +74,17 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 	}
 
 	@Override
-	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpId, GeneralDate baseDate) {
+	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpDepId, GeneralDate baseDate, int sysAtr) {
 		String companyId = AppContexts.user().companyId();
-		//アルゴリズム「職場から社員を取得する」を実行する-(Lấy employee từ Workplace") no.466
-		List<String> lst1 = empInfoAdapter.getListEmployeeId(lstWkpId, new DatePeriod(baseDate,baseDate));		
+		List<String> lst0 = new ArrayList<>();
+		if(sysAtr == 0) {//就業の場合
+			//アルゴリズム「職場から社員を取得する」を実行する-(Lấy employee từ Workplace") no.466
+			lst0 = empInfoAdapter.getListEmployeeId(lstWkpDepId, new DatePeriod(baseDate,baseDate));
+		}else {
+			//期間内に特定の部門（List）に所属している社員一覧を取得
+			lst0 = departmentPub.getlstSidByDepAndDate(lstWkpDepId, new DatePeriod(baseDate, baseDate));
+		}
+		List<String> lst1 = lst0;		
 		//ドメインモデル「ロールセット」を取得する-(Lấy domain [RoleSet])
 		//条件： 会社ID←ログイン会社ID; 承認権限＝true
 		List<String> roleSetCDLst = roleSetRepo.findByCompanyId(companyId).stream()

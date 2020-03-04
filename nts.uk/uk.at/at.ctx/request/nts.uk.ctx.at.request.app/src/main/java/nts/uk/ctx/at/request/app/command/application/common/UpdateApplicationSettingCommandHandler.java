@@ -37,7 +37,8 @@ public class UpdateApplicationSettingCommandHandler extends CommandHandler<Appli
 				data.getWarningDateDispAtr(), data.getAppReasonDispAtr(), 
 				data.getAppContentChangeFlg(), data.getScheReflectFlg(), 
 				data.getPriorityTimeReflectFlg(), data.getAttendentTimeReflectFlg(),
-				data.getClassScheAchi(), data.getReflecTimeofSche());
+				data.getClassScheAchi(), data.getReflecTimeofSche(),
+				data.getCompanyUnit(), data.getWorkplaceUnit(), data.getEmployeeUnit());
 		Optional<ApplicationSetting> appSet = appRep.getApplicationSettingByComID(companyId);
 		
 		AppReflectAfterConfirm ref = AppReflectAfterConfirm.toDomain(data.getScheduleConfirmedAtr(), data.getAchievementConfirmedAtr());

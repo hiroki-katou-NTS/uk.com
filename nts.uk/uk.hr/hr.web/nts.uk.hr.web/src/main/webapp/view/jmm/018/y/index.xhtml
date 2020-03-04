@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 1000, height: 700 };</script>
+			<com:stylefile path="jmm018.y.style.css" />
+			<com:scriptfile path="jmm018.y.service.js" />
+			<com:scriptfile path="jmm018.y.start.js" />
+			<com:scriptfile path="jmm018.y.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="cf">
+					<div>
+						<div style="width: 390px" data-bind="ntsSearchBox: {
+							targetKey: 'code', 
+							mode:'igTree', 
+							comId:'treegrid', 
+							items: items1, 
+							selected: selectedCodes2, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />
+						<div style="display: inline-block;">
+							<table id="treegrid"
+								data-bind="ntsTreeGridView:{
+								width: 1000, 
+								height: 250,
+								options: items1,
+								virtualization: true, 
+								virtualizationMode: 'continuous',
+								selectedValues: selectedCode,
+								optionsValue: 'code',
+								optionsChild: 'childs',
+								optionsText: 'nodeText',
+								multiple: false,
+								enable: true,
+								columns: columns2,
+								showCheckBox: false}">
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: decision">#{i18n.getText('JMM023_Y1_1')}</button>
+				<button data-bind="click: close" id="close">#{i18n.getText('JMM024_Y2_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

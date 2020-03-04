@@ -1,7 +1,10 @@
 module nts.uk.com.view.cmm018.shr {
+    import servicebase = cmm018.shr.servicebase;
     export module vmbase {
         //data register
         export class DataResigterDto{
+            /**システム区分*/
+            systemAtr: number;
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
             checkAddHist: boolean;//true: newHist, false: updateHist
@@ -13,11 +16,12 @@ module nts.uk.com.view.cmm018.shr {
             lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
             checkMode: number;//0: まとめて登録モード, 1: 申請個別登録モード
-            constructor(rootType: number, checkAddHist: boolean,
+            constructor(systemAtr: number, rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<ApplicationType>,
                 root: Array<CompanyAppRootADto>,checkMode: number){
+                    this.systemAtr = systemAtr;
                     this.rootType = rootType;
                     this.checkAddHist = checkAddHist;
                     this.workpplaceId = workpplaceId;
@@ -51,6 +55,7 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history (get from db)
         export class DataFullDto{
             workplaceId: string;
+            companyName: string;
             lstCompany: Array<DataDisplayComDto> ;
             lstWorkplace: Array<DataDisplayWpDto> ;
             lstPerson: Array<DataDisplayPsDto> ;
@@ -59,7 +64,6 @@ module nts.uk.com.view.cmm018.shr {
         export class DataDisplayComDto{
             id: number;
             overLap: boolean;
-            companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
         }
         //data after grouping history of work place
@@ -76,10 +80,10 @@ module nts.uk.com.view.cmm018.shr {
         }
         //app type
         export class ApplicationType{
-            value: number;
+            value: any;
             localizedName: string;
             employRootAtr: number;
-            constructor(value: number, localizedName: string, employRootAtr: number){
+            constructor(value: any, localizedName: string, employRootAtr: number){
                 this.value = value;
                 this.localizedName = localizedName;
                 this.employRootAtr = employRootAtr;
@@ -174,6 +178,7 @@ module nts.uk.com.view.cmm018.shr {
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
             checkMode: number;
+            sysAtr: number;
             constructor(startDate: string,
             endDate: string,
             workplaceId: string,
@@ -182,7 +187,8 @@ module nts.uk.com.view.cmm018.shr {
             editOrDelete: number,
             startDatePrevious: string,
             lstUpdate: Array<UpdateHistoryDto>,
-            checkMode: number){
+            checkMode: number,
+            sysAtr: number){
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.workplaceId = workplaceId;
@@ -192,6 +198,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.startDatePrevious = startDatePrevious;
                 this.lstUpdate = lstUpdate;
                 this.checkMode = checkMode;
+                this.sysAtr = sysAtr;
             }
         }
         //ScrenJ
@@ -214,6 +221,7 @@ module nts.uk.com.view.cmm018.shr {
             overlapFlag?: boolean;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
+            sysAtr: number;
         }
         //ScreenJ
         export class UpdateHistoryDto{
@@ -233,18 +241,21 @@ module nts.uk.com.view.cmm018.shr {
             }
         }
         //Param screen A,C,E
-        export class ParamDto {
+        export interface ParamDto {
+            /**システム区分*/
+            systemAtr: number;
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
             /**履歴ID*/
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            constructor(rootType: number, workplaceId: string, employeeId: string){
-                this.rootType = rootType;
-                this.workplaceId = workplaceId;
-                this.employeeId =  employeeId;
-            }
+            /**申請種類*/
+            lstAppType: Array<number>;
+            /**届出種類ID*/
+            lstNoticeID: Array<number>;
+            /**プログラムID(インベント)*/
+            lstEventID: Array<string>;
         }
         //data screen A,C,E
         export class CommonApprovalRootDto{
@@ -277,13 +288,15 @@ module nts.uk.com.view.cmm018.shr {
             startDate: string;
             endDate: string;
             applicationType: number;
+            confirmationRootType: number;
             employmentRootAtr: number;
             constructor(approvalId: string, startDate: string, endDate: string, 
-                applicationType: number, employmentRootAtr: number){
+                applicationType: number, confirmationRootType: number, employmentRootAtr: number){
                     this.approvalId = approvalId;
                     this.startDate = startDate;
                     this.endDate = endDate;
                     this.applicationType = applicationType;
+                    this.confirmationRootType = confirmationRootType;
                     this.employmentRootAtr = employmentRootAtr;
             }
         }
@@ -365,14 +378,14 @@ module nts.uk.com.view.cmm018.shr {
             approvalId: string;
             /**履歴ID*/
             historyId: string;
-            /**申請種類*/
-            applicationType: number;
+            /**種類*/
+            applicationType: any;
             /**就業ルート区分*/
             employmentRootAtr: number;
             branchId: string;
             lstAppPhase: Array<ApprovalPhaseDto>;
             constructor(approvalId: string, historyId: string,
-                        applicationType: number, employmentRootAtr: number, branchId: string,
+                        applicationType: any, employmentRootAtr: number, branchId: string,
                         lstAppPhase: Array<ApprovalPhaseDto>){
                 this.approvalId = approvalId;
                 this.historyId = historyId;
@@ -413,6 +426,10 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: any;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class WpApprovalRootDto{
             /**会社ID*/
@@ -437,6 +454,10 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: any;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class PsApprovalRootDto{
             /**会社ID*/
@@ -461,13 +482,15 @@ module nts.uk.com.view.cmm018.shr {
             confirmationRootType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            /**届出ID*/
+            noticeId: any;
+            /**各業務エベントID*/
+            busEventId: string;
         }
         export class ApprovalPhaseDto{
             approver: Array<ApproverDto>;
-            /**分岐ID*/
-            branchId: string;
-            /**承認フェーズID*/
-            approvalPhaseId: string;
+            /**承認ID*/
+            approvalId: string;
             /**承認形態*/
             approvalForm: number;
             /**承認形態 Name*/
@@ -475,46 +498,52 @@ module nts.uk.com.view.cmm018.shr {
             /**閲覧フェーズ*/
             browsingPhase: number;
             /**順序*/
-            orderNumber: number;
-            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, appFormName: string, browsingPhase: number, orderNumber: number){
+            phaseOrder: number;
+            /**承認者指定区分*/
+            approvalAtr: number;
+            constructor(approver: Array<ApproverDto>, approvalId: string, approvalForm: number,
+                appFormName: string, browsingPhase: number, phaseOrder: number, approvalAtr: number){
                 this.approver = approver;
-                this.branchId = branchId;
-                this.approvalPhaseId = approvalPhaseId;
+                this.approvalId = approvalId;
                 this.approvalForm = approvalForm;
                 this.appFormName = appFormName;
                 this.browsingPhase = browsingPhase;
-                this.orderNumber = orderNumber;
+                this.phaseOrder = phaseOrder;
+                this.approvalAtr = approvalAtr;
             }
         }
         export class ApproverDto{
-            /**承認者ID*/
-            approverId: string;
-            /**職位ID*/
-            jobTitleId: string;
+            /**承認者Gコード*/
+            jobGCD: string;
             /**社員ID*/
             employeeId: string;
-            /**社員Name*/
+            /**社員コード*/
+            empCode: string;
+            /**aapproverName*/
             name: string;
             /**順序*/
-            orderNumber: number;
+            approverOrder: number;
             /**区分*/
             approvalAtr: number;
             /**確定者*/
             confirmPerson: number;
             /**confirmPerson Name*/
             confirmName: string;
-            constructor(approverId: string, jobTitleId: string,
-                employeeId: string, name: string,orderNumber: number,
-                approvalAtr: number, confirmPerson: number, confirmName: string)
+            /**特定職場ID*/
+            specWkpId: string;
+            constructor(jobGCD: string,
+                employeeId: string, empCode: string, name: string, approverOrder: number, approvalAtr: number,
+                confirmPerson: number, confirmName: string, specWkpId: string)
             {
-                this.approverId = approverId;
-                this.jobTitleId = jobTitleId;
+                this.jobGCD = jobGCD;
                 this.employeeId = employeeId;
-                this.orderNumber = orderNumber;
+                this.approverOrder = approverOrder;
                 this.name = name;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
                 this.confirmName = confirmName;
+                this.specWkpId = specWkpId;
+                this.empCode = empCode;
             }
             
         }
@@ -545,6 +574,8 @@ module nts.uk.com.view.cmm018.shr {
                 let lstB: Array<vmbase.CompanyAppRootADto> = [];//application
                 let lstC: Array<vmbase.CompanyAppRootADto> = [];//confirmation
                 let lstD: Array<vmbase.CompanyAppRootADto> = [];//anyItem
+                let lstE: Array<vmbase.CompanyAppRootADto> = [];//notice
+                let lstF: Array<vmbase.CompanyAppRootADto> = [];//event
                 _.each(lstRoot, function(obj){
                     if(obj.employRootAtr == 0){//common
                         lstA.push(obj);
@@ -558,11 +589,19 @@ module nts.uk.com.view.cmm018.shr {
                     if(obj.employRootAtr == 3){//anyItem
                         lstD.push(obj);
                     }
+                    if(obj.employRootAtr == 4){//notice
+                        lstE.push(obj);
+                    }
+                    if(obj.employRootAtr == 5){//event
+                        lstF.push(obj);
+                    }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);
                 let sortByB =  _.orderBy(lstB, ["appTypeValue"], ["asc"]);
                 let sortByC =  _.orderBy(lstC, ["appTypeValue"], ["asc"]);
                 let sortByD =  _.orderBy(lstD, ["appTypeValue"], ["asc"]);
+                let sortByE =  _.orderBy(lstE, ["appTypeValue"], ["asc"]);
+                let sortByF =  _.orderBy(lstF, ["appTypeValue"], ["asc"]);
                 //push list A (common)
                 _.each(sortByA, function(obj){
                     result.push(obj);
@@ -577,6 +616,14 @@ module nts.uk.com.view.cmm018.shr {
                 });
                 //push list D (anyItem)
                 _.each(sortByD, function(obj){
+                    result.push(obj);
+                });
+                //push list E (notice)
+                _.each(sortByE, function(obj){
+                    result.push(obj);
+                });
+                //push list F (event)
+                _.each(sortByF, function(obj){
                     result.push(obj);
                 });
                 return result;
@@ -615,6 +662,157 @@ module nts.uk.com.view.cmm018.shr {
                 }
                 
             }
+            //承認単位の設定を取得
+            static getSettingApprovalUnit(sysAtr: number): JQueryPromise<any>{
+                let dfd = $.Deferred();
+                //会社単位の表示区分　＝　False、職場単位の表示区分　＝　False、社員単位の表示区分　＝False
+                let setUnit: ApprDisSet = {
+                    companyUnit: 0,
+                    workplaceUnit: 0,
+                    employeeUnit: 0
+                }
+                if(sysAtr == 0){//SHUUGYOU
+                    servicebase.settingCas005().done(function(cas005){
+                        //就業ロールを取得
+                        let empRoleSet = cas005;
+                        let result = null;
+                        servicebase.settingKaf022().done(function(kaf022){
+                            let appSet = kaf022;       
+                    
+                            let empAgent = empRoleSet.employeeRefSpecAgent;
+                    //       0: 全員(ALL)
+                    //       1: 社員参照範囲と同じ(ALL_EMPLOYEE_REF_RANGE)
+                            //取得した「承認者・代行者指定時社員参照」をチェック
+                            if(empAgent == 0){//「全社員」の場合
+                                dfd.resolve(appSet);
+                            } 
+                            //「社員参照範囲と同じ」の場合
+                            //取得した「社員参照範囲」をチェック
+                            let empRef = null;
+                            if(!_.isNull(empRoleSet.role)) {
+                                empRef = empRoleSet.role.employeeReferenceRange;     
+                            }
+                            //0: 全社員 ALL_EMPLOYEE
+                            //1: 部門（配下含む） DEPARTMENT_AND_CHILD
+                            //2: 部門（配下含まない） DEPARTMENT_ONLY
+                            //3: 自分のみ ONLY_MYSELF
+                            if(empRef == 0){//「全社員」の場合
+                                dfd.resolve(appSet);
+                            }else if(empRef == 3){//「自分のみ」の場合
+                                //社員単位の表示区分　＝　申請承認設定．承認者の登録設定．社員単位の表示区分
+                                setUnit.employeeUnit = appSet.employeeUnit;
+                            }else {
+                                //職場単位の表示区分　＝　申請承認設定．承認者の登録設定．職場単位の表示区分
+                                setUnit.workplaceUnit = appSet.workplaceUnit;
+                                //社員単位の表示区分　＝　申請承認設定．承認者の登録設定．社員単位の表示区分
+                                setUnit.employeeUnit = appSet.employeeUnit;
+                            }
+    //                        result = this.checkDis(setUnit);
+                            dfd.resolve(setUnit);
+                            
+                        });
+                        
+                    });
+                }else{//JINJI
+                    servicebase.setDisHR().done(function(disHr){
+                        //COM_MODE
+                        setUnit.companyUnit = disHr.comMode;
+                        //DEV_MODE
+                        setUnit.workplaceUnit = disHr.devMode;
+                        //EMP_MODE
+                        setUnit.employeeUnit = disHr.empMode;
+                        dfd.resolve(setUnit);
+                    });
+                }
+                return dfd.promise();
+            }
+            //単位の表示区分をチェック
+            static checkDis(setUnit): any{
+               if(setUnit.companyUnit==0 && setUnit.workplaceUnit==0 && setUnit.employeeUnit==0){
+                        //エラーメッセージ「Msg_1607」を表示
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1607" }).then(() => {
+                            //トップページを戻す
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        });
+                   return;
+                    }
+                return setUnit
+            }
+            
+            static resizeColumn(root, tabSelected, mode) {
+                let helpButtonSelect = undefined;
+                let listButtonHelp = document.getElementsByClassName('help-button-custom');
+                _.forEach(document.getElementsByClassName('help-button-custom'), item => {
+                    if(item.getBoundingClientRect().top > 0) {
+                        helpButtonSelect = item;                    
+                    }
+                });
+                document.onclick = function(e){
+                    if(!_.isUndefined(helpButtonSelect)) {
+                        let helpButton = helpButtonSelect.getBoundingClientRect();
+                        $('#help-content').css('top', (helpButton.top + window.pageYOffset) + 'px');
+                        $('#help-content').css('left', (helpButton.left + window.pageXOffset + 45) + 'px');    
+                    }
+                    if(!e.target.classList.contains('help-button-custom')){
+                        $('#help-content').css('display', 'none');
+                    } else {
+                        if($('#help-content').css('display')=='none') {
+                            $('#help-content').css('display', '');     
+                        } else {
+                            $('#help-content').css('display', 'none');    
+                        }
+                    }
+                };
+                try {
+                    ProcessHandler.resizeColumnIndex(1, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(2, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(3, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(4, root, tabSelected, mode);  
+                    ProcessHandler.resizeColumnIndex(5, root, tabSelected, mode);    
+                } catch(error) {
+                    
+                }
+            }
+            
+            static resizeColumnIndex(index, root, tabSelected, mode) {
+                let widthPhase = 100;
+                let gridName = '#grid_matome';
+                if(tabSelected == vmbase.RootType.COMPANY){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matome' : '#grid_matomeB';
+                }else if(tabSelected == vmbase.RootType.WORKPLACE){
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
+                }else{//PERSON
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                }
+                if(_.isEmpty(root)) {
+                    $(gridName).igGridResizing("resize", index, widthPhase);   
+                    return;          
+                }
+                
+                let sum = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index).length;
+                for(i = 0; i < sum; i++) {
+                    let compareWidth = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index + ':eq(' + i +') span').width();        
+                    if(compareWidth > widthPhase) {
+                        widthPhase = compareWidth;        
+                    } 
+                }
+                $(gridName).igGridResizing("resize", index, Math.ceil(widthPhase) + 12); 
+            }
+            
+            static cal(inputText) {
+                let font = "1rem, Meiryo UI"; 
+                let canvas = document.createElement("canvas"); 
+                let context = canvas.getContext("2d"); 
+                // context.font = font; 
+                let width = context.measureText(inputText).width; 
+                let textPixel = Math.ceil(width); 
+                let halfPixel = nts.uk.text.countHalf(inputText)* 10;
+                // console.log(inputText);
+                // console.log(textPixel);
+                // console.log(halfPixel);
+                // console.log((textPixel + halfPixel)/2);
+                return (textPixel + halfPixel)/2 + 8; 
+            } 
         }
         
         export class ApproverDtoK{
@@ -712,10 +910,58 @@ module nts.uk.com.view.cmm018.shr {
             
             workplaceName: string;
         }
+
+        export interface Root {
+            typeRoot: string;
+            appName:string;
+            phase1:string;
+            phase2:string;
+            phase3:string;
+            phase4:string;
+            phase5:string;
+            deleteRoot: string;    
+        }
+        export class CellState {
+            rowId: number;
+            columnKey: string;
+            state: Array<any>
+            constructor(rowId: any, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
+        }
         export enum RootType {
             COMPANY = 0,
             WORKPLACE = 1,
             PERSON = 2
+        }
+        export enum ApprovalForm {
+            /** 全員承認*/
+            EVERYONE_APPROVED = 1,
+            /** 誰か一人*/
+            SINGLE_APPROVED = 2
+        }
+        
+        export enum SystemAtr {
+             /**就業*/
+            WORK = 0,
+            /**人事*/
+            HUMAN_RESOURCES = 1
+        }
+        export enum MODE {
+            /** まとめて設定モード(0)*/
+            MATOME = 0,
+            /**申請個別設定モード(1)*/
+            SHINSEI = 1
+        }
+        export interface ApprDisSet{
+            //会社単位
+            companyUnit: number;
+            //職場単位
+            workplaceUnit: number;
+            //社員単位
+            employeeUnit: number; 
         }
     }
 }

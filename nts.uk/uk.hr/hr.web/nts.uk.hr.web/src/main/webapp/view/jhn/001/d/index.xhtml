@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 1000,
+					height : 450
+				};
+			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jhn001.d.style.css" />
+			<com:scriptfile path="jhn001.d.service.js" />
+			<com:scriptfile path="jhn001.d.vm.js" />
+			<com:scriptfile path="jhn001.d.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="let-select">
+					<label>#{i18n.getText('JHN001_D2_1')}</label>
+				</div>
+				<div>
+					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_2')}</div>
+					<div tabindex="1" style="margin-left: 40px" class="combobox-return"
+						data-bind="ntsComboBox: {
+														options: listReturn ,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: selectedReturn ,
+														optionsText: 'infoToDisplay',
+														width: 772,
+														enable: true,
+														columns: [  { prop: 'infoToDisplay', length: 8 }]}">
+					</div>
+				</div>
+				<div style="margin-top: 15px;">
+					<div class="return" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN001_D2_4')}</div>
+					<div tabindex="2" style="margin-left: 26px" class="combobox-return"
+						data-bind="ntsComboBox: {
+														options: listSendBackCls ,
+														optionsValue: 'id',
+														visibleItemsCount: 5,
+														value: selectedSendBackCls ,
+														optionsText: 'name',
+														width: 772,
+														enable: true,
+														columns: [ { prop: 'name', length: 8 }]}">
+					</div>
+				</div>
+
+				
+
+				<div class="line-height flex" style="margin-top: 35px;">
+					<div>
+						<div data-bind="ntsFormLabel: { required: false , constraint: ''}">#{i18n.getText('JHN001_D2_3')}</div>
+					</div>
+					<!-- A222_31 -->
+					<div style="margin-left: 19px">
+						<textarea id="sendBackComment" tabindex="14" 
+							data-bind="ntsMultilineEditor: {
+														value: sendBackComment ,
+														constraint: 'String_Any_400',
+														name: '#{i18n.getText('JHN001_D2_3_1')}' ,
+														option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+											                resizeable: false
+											            })),
+														enable : true ,
+														readonly: false,
+														immediate: false}" />
+					</div>
+				</div>
+			</div>
+
+
+			<div id="functions-area-bottom">
+				<button tabindex="4"  data-bind="click: sendBack , enable: $root.errors.isEmpty()"  class="proceed x-large">#{i18n.getText('JHN001_D1_1')}</button>
+				<button tabindex="5" data-bind="click: close" id="cancel">#{i18n.getText('JHN001_D1_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -7,95 +7,106 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1030, height: 750 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-   				</com:ValidatorScript>
-			<com:stylefile path="qmm006.c.main.css" />
-			<com:scriptfile path="qmm006.c.start.js" />
-			<com:scriptfile path="qmm006.c.viewmodel.js" />
-			<com:scriptfile path="qmm006.c.service.js" />
+			<script>var dialogSize = { width: 890, height: 630 };</script>
 			<com:scriptfile set="IGNITE" />
-
+			<com:scriptfile path="qmm006.c.service.js" />
+			<com:scriptfile path="qmm006.c.vm.js" />
+			<com:scriptfile path="qmm006.c.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="content-1">
-					<div>
-						<label id="lbl_navigationMessage1">個人情報の振込元銀行を置換えます。</label>
+				<div style="width: 880px">
+					<div class="valign-center control-group">
+						<!-- C1_1 -->
+						<span class="label">#{i18n.getText('QMM006_40')}</span><br/>
 					</div>
-					<br />
-					<div class="cf">
-						<div class="content-left">
-							<div>
-								<label id="lbl_navigationMessage2">【置換元情報】</label>
-							</div>
-							<br />
-							<div class="cf">
-								<div class="content-left">
-									<i id="icon1" class="icon icon-searchbox"></i>
-									<div class="searchBox"
-										data-bind="ntsSearchBox: {
-											comId: 'single-list',
-											items: items, 
-											selected: currentCode, 
-											selectedKey: 'lineBankCode', 
-											fields: ['lineBankName', 'lineBankCode']}" />
-									<table id="single-list"
-										data-bind="ntsGridList: {
-											width: 440,
-											height: 500,
-											dataSource: items,
-											primaryKey: 'lineBankCode',
-											columns: columns,
-											multiple: false,
-											value: currentCode
-									}"></table>
-								</div>
-							</div>
+					<div id="source" class="pull-left">
+						<div class="valign-center control-group">
+							<!-- C2_1 -->
+							<span class="label">#{i18n.getText('QMM006_41')}</span>
 						</div>
-						<hr id="hr-vertical" />
-						<span class="caret-right"></span>
-						<div class="content-right">
-							<div>
-								<label>【置換先情報】</label>
-							</div>
-							<br />
-							<div class="cf">
-								<div class="content-left">
-									<i id="icon2" class="icon icon-searchbox"></i>
-									<div class="searchBox"
-										data-bind="ntsSearchBox: {
-											comId: 'single-list',
-											items: items1, 		
-											selected: currentCode1, 
-											selectedKey: 'lineBankCode', 
-											fields: ['lineBankName', 'lineBankCode']}" />
-									<table id="single-list"
-										data-bind="ntsGridList: {
-											width: 440,
-											height: 500,
-											dataSource: items1,
-											primaryKey: 'lineBankCode',
-											columns: columns,
-											multiple: false,
-											value: currentCode1
-									}"></table>
-								</div>
-							</div>
+						<div class="valign-center control-group cf">
+							<!-- C2_2 -->
+							<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+							<!-- C2_3 -->
+							<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+								targetKey: 'code', mode:'igGrid', comId:'gridsource', items: listSourceBankLeft, 
+								selected: selectedCodeLeft, selectedKey: 'code', fields: ['name', 'code']}" />
 						</div>
+						<!-- C2_4 -->
+						<table id="gridsource" tabindex="2" data-bind="ntsGridList: {
+							rows: 15,
+							width: '400px',
+							name: '#[QMM006_42]', 
+							dataSource: listSourceBankLeft,
+							primaryKey: 'code', 
+							columns: [
+				                { headerText: '#{i18n.getText('QMM006_8')}', key: 'code', width: 50, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_9')}', key: 'name', width: 170, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_10')}', key: 'accountType', width: 80, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_11')}', key: 'accountNumber', width: 100, formatter: _.escape }
+				            ], 
+							multiple: false,
+							columnResize: true,
+							itemDraggable: true,
+							value: selectedCodeLeft
+						}"></table>
+					</div>
+					<div id="midsec" class="pull-left" style="width: 65px">
+						<!-- C3_1 -->
+						<hr width="1" size="430"/>
+						<!-- C3_2 -->
+						<span class="caret-right caret-inline"></span>
+					</div>
+					<div id="destination" class="pull-left">
+						<div class="valign-center control-group">
+							<!-- C4_1 -->
+							<span class="label">#{i18n.getText('QMM006_43')}</span>
+						</div>
+						<div class="valign-center control-group cf">
+							<!-- C4_2 -->
+							<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+							<!-- C4_3 -->
+							<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+								targetKey: 'code', mode:'igGrid', comId:'griddestination', items: listSourceBankRight, 
+								selected: selectedCodeRight, selectedKey: 'code', fields: ['name', 'code']}" />
+						</div>
+						<!-- C4_4 -->
+						<table id="griddestination" tabindex="4" data-bind="ntsGridList: {
+							rows: 15,
+							width: '400px',
+							name: '#[QMM006_44]', 
+							dataSource: listSourceBankRight,
+							primaryKey: 'code', 
+							columns: [
+				                { headerText: '#{i18n.getText('QMM006_8')}', key: 'code', width: 50, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_9')}', key: 'name', width: 170, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_10')}', key: 'accountType', width: 80, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM006_11')}', key: 'accountNumber', width: 100, formatter: _.escape }
+				            ], 
+							multiple: false,
+							columnResize: true,
+							itemDraggable: true,
+							value: selectedCodeRight
+						}"></table>
 					</div>
 				</div>
-				<hr id="hr-horizontal" />
-				<div>
-					<button class="x-large proceed" id="btn_execute"
-						data-bind="click: transfer">実行</button>
-					<button class="large" id="btn_close" data-bind="click: closeDialog">閉じる</button>
-					<br />
-				</div>
-
 			</div>
+			<div id="functions-area-bottom">
+				<!-- C5_2 -->
+				<button tabindex="5" class="x-large proceed" data-bind="click: execute, enable: selectedCodeLeft().length > 0 &amp;&amp; selectedCodeRight().length > 0">#{i18n.getText('QMM006_45')}</button>
+				<!-- C5_3 -->
+				<button tabindex="6" data-bind="click: close">#{i18n.getText('QMM006_39')}</button>
+			</div>
+			<style>
+				.caret-right.caret-inline:after {
+				    margin-left: 2.3em;
+ 				    margin-top: -33em; 
+				    border-left: 1.7em solid;
+				    border-top: 6.7em solid transparent;
+				    border-bottom: 6.7em solid transparent;
+				}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

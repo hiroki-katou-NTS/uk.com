@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -144,6 +145,14 @@ public class ClassificationPubImp implements SyClassificationPub {
 		return lstClassification.stream()
 				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
 						item -> item.getClassificationName().v()));
+	}
+
+	// for salary qmm016, 017
+	@Override
+	public List<ClassificationExport> getClassificationByCompanyId(String companyId) {
+		return classificationRepository.getAllManagementCategory(companyId).stream().map(item -> {
+			return new ClassificationExport(item.getCompanyId().v(), item.getClassificationCode().v(), item.getClassificationName().v(), item.getMemo().v());
+		}).collect(Collectors.toList());
 	}
 
 }

@@ -1,38 +1,9 @@
-﻿/*!@license
-* Infragistics.Web.ClientUI Pivot Grid localization resources 16.2.20162.2040
+/*!@license
+* Infragistics.Web.ClientUI Pivot Grid localization resources 19.1.20
 *
-* Copyright (c) 2011-2016 Infragistics Inc.
+* Copyright (c) 2011-2019 Infragistics Inc.
 *
 * http://www.infragistics.com/
 *
 */
-
-/*global define, jQuery */
-(function (factory) {
-	if (typeof define === "function" && define.amd) {
-		define( ["jquery"], factory );
-	} else {
-		factory(jQuery);
-	}
-}
-(function ($) {
-    $.ig = $.ig || {};
-
-    if (!$.ig.PivotGrid) {
-        $.ig.PivotGrid = {};
-
-        $.extend($.ig.PivotGrid, {
-            locale: {
-                filtersHeader: "Drop Filter Fields Here",
-                measuresHeader: "Drop Data Items Here",
-                rowsHeader: "Drop Row Fields Here",
-                columnsHeader: "Drop Column Fields Here",
-                disabledFiltersHeader: "Filter Fields",
-                disabledMeasuresHeader: "Data Items",
-                disabledRowsHeader: "Row Fields",
-                disabledColumnsHeader: "Column Fields",
-                noSuchAxis: "No such axis"
-            }
-        });
-    }
-}));// REMOVE_FROM_COMBINED_FILES
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery"],factory)}else{return factory(jQuery)}})(function($){$.ig=$.ig||{};$.ig.PivotGrid=$.ig.PivotGrid||{};$.ig.locale=$.ig.locale||{};$.ig.locale.en=$.ig.locale.en||{};$.ig.locale.en.PivotGrid={filtersHeader:"Drop Filter Fields Here",measuresHeader:"Drop Data Items Here",rowsHeader:"Drop Row Fields Here",columnsHeader:"Drop Column Fields Here",disabledFiltersHeader:"Filter Fields",disabledMeasuresHeader:"Data Items",disabledRowsHeader:"Row Fields",disabledColumnsHeader:"Column Fields",noSuchAxis:"No such axis"};$.ig.PivotGrid.locale=$.ig.PivotGrid.locale||$.ig.locale.en.PivotGrid;return $.ig.locale.en.PivotGrid});

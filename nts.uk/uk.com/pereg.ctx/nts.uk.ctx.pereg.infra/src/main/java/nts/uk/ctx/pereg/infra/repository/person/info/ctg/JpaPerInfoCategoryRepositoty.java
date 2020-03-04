@@ -199,6 +199,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SELECT_CTG_ID_BY_CTGCD = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
+	
+	private final static String SELECT_BY_CTG_ID ="SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca "
+			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.ppemtPerInfoCtgPK.perInfoCtgId IN :categoryId AND ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr,
@@ -727,4 +735,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private static Comparator<Object[]> SORT_BY_DISPORDER = (o1, o2) -> {
 		return ((int) o1[8]) - ((int) o2[8]); // index 8 for [disporder] 
 	};
+
+	@Override
+	public List<PersonInfoCategory> getAllByCtgId(String cid, List<String> ctgId) {
+		return this.queryProxy().query(SELECT_BY_CTG_ID, Object[].class)
+				.setParameter("categoryId", ctgId).setParameter("cid", cid)
+				.getList(c -> {
+					return createDomainPerInfoCtgFromEntity(c);
+				});
+	}
 }

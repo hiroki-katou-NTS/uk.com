@@ -6,44 +6,106 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
-	<ui:composition template="../../../../master/sidebar.xhtml">
+	<ui:composition template="/master/sidebarpage.xhtml">
 		<ui:define name="sidebar-head">
-			<com:scriptfile path="qmm012.j.start.js" />
-			<com:scriptfile path="qmm012.j.vm.js" />
-			<com:scriptfile path="qmm012.j.service.js" />
-			<com:stylefile path="main.css" />
+			<com:ValidatorScript>
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.EnglishName
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.OtherLanguageName
+            </com:ValidatorScript>
+			<script type='text/javascript'>
+	            var dialogSize = {
+	                width: 1030,
+	                height: 583
+	            };
+	        </script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qmm012.j.style.css" />
+			<com:scriptfile path="qmm012.j.service.js" />
+			<com:scriptfile path="qmm012.j.vm.js" />
+			<com:scriptfile path="qmm012.j.start.js" />
 		</ui:define>
+		<!-- J1_1 -->
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1"
-					data-bind="click:ChangeGroup.bind($data, 0)" class="active">支給項目</a></li>
-				<li><a href="#tabpanel-1"
-					data-bind="click:ChangeGroup.bind($data, 1)">控除項目</a></li>
-				<li><a href="#tabpanel-1"
-					data-bind="click:ChangeGroup.bind($data, 2)">勤怠項目</a></li>
-				<li><a href="#tabpanel-1"
-					data-bind="click:ChangeGroup.bind($data, 3)">記事項目</a></li>
-				<li><a href="#tabpanel-1"
-					data-bind="click:ChangeGroup.bind($data, 9)">その他</a></li>
+				<!-- J1_2 -->
+				<li data-bind="click: onSelectTabB"><a href="#tabpanel-1"
+					role="tab-navigator">#{i18n.getText('QMM012_3')}</a></li>
+				<!-- J1_3 -->
+				<li data-bind="click: onSelectTabC"><a href="#tabpanel-2"
+					role="tab-navigator">#{i18n.getText('QMM012_4')}</a></li>
+				<!-- J1_4 -->
+				<li data-bind="click: onSelectTabD"><a href="#tabpanel-3"
+					role="tab-navigator">#{i18n.getText('QMM012_5')}</a></li>
+				<!-- J1_5 -->
+				<li data-bind="click: onSelectTabE"><a href="#tabpanel-4"
+					role="tab-navigator">#{i18n.getText('QMM012_6')}</a></li>
+				<!-- J1_6 -->
+				<li data-bind="click: onSelectTabF"><a href="#tabpanel-5"
+					role="tab-navigator">#{i18n.getText('QMM012_7')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
-				<div id="functions-area" class="sidebar-content-header">
-					<span class="title">支給項目</span>
-					<button class="proceed" id="J_Btn_RegisterButton"
-						data-bind="click:updateData">登録</button>
-					<button id="J_Btn_CloseUp" data-bind="click:CloseDialog">閉じる</button>
-				</div>
-
-				<div class="contents-area">
-					<div id="content">
-						<table id="J_Lst_ItemList" data-name="名称"></table>
-					</div>
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_3')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
 				</div>
 			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_4')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_5')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-4" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_6')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-5" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_7')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<ui:include src="../j/contents.xhtml" />
 		</ui:define>
 	</ui:composition>
 </body>

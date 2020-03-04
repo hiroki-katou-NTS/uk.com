@@ -33,7 +33,7 @@ public class WorkTimeOfDailyService {
 		//就業時間帯の必須チェック
 		SetupType checkNeededOfWorkTime = basicService.checkNeededOfWorkTimeSetting(workType);
 		if(checkNeededOfWorkTime == SetupType.NOT_REQUIRED) {
-			working.getWorkInformation().getRecordInfo().setSiftCode(null);
+			working.getWorkInformation().getRecordInfo().setWorkTimeCode(null);
 		} else if(checkNeededOfWorkTime == SetupType.REQUIRED) {
 			if(working.getWorkInformation().getRecordInfo().getWorkTimeCode() == null) {
 				List<EditStateOfDailyPerformance> lstEditWorktime = working.getEditState().stream().filter(x -> x.getAttendanceItemId() == 29)
@@ -45,14 +45,14 @@ public class WorkTimeOfDailyService {
 						new DatePeriod(ymd,ymd)).stream().findFirst();
 				optWorkingCondition.ifPresent(x -> {
 					x.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(y -> {
-						working.getWorkInformation().getRecordInfo().setSiftCode(y);
+						working.getWorkInformation().getRecordInfo().setWorkTimeCode(y);
 						lstEditWorktime.stream().forEach(a -> a.setEditStateSetting(EditStateSetting.REFLECT_APPLICATION));
 						if(lstEditWorktime.isEmpty()) {
 							working.getEditState().add(new EditStateOfDailyPerformance(sid, 29, ymd, EditStateSetting.REFLECT_APPLICATION));
 						}
 						if(working.getWorkInformation().getScheduleInfo() != null
 								&& working.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null) {
-							working.getWorkInformation().getScheduleInfo().setSiftCode(y);
+							working.getWorkInformation().getScheduleInfo().setWorkTimeCode(y);
 							lstEditScheWorktime.stream().forEach(b -> b.setEditStateSetting(EditStateSetting.REFLECT_APPLICATION));
 							if(lstEditScheWorktime.isEmpty()) {
 								working.getEditState().add(new EditStateOfDailyPerformance(sid, 2, ymd, EditStateSetting.REFLECT_APPLICATION));

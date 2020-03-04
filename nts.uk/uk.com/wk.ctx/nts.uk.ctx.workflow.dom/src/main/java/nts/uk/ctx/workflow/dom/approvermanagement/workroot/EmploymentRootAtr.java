@@ -2,7 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 /**
- * 就業ルート区分
+ * 承認ルート区分
  * @author hoatt
  *
  */
@@ -15,6 +15,10 @@ public enum EmploymentRootAtr {
 	/** 確認*/
 	CONFIRMATION(2),
 	/** 任意項目*/
-	ANYITEM(3);
+	ANYITEM(3),
+	/**届出*/
+	NOTICE(4),
+	/**各業務エベント*/
+	BUS_EVENT(5);
 	public final int value;
 }

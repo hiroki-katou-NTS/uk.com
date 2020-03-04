@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.ac.executionlog;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +16,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.WorkplaceDto;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**
  * The Class ScWorkplaceAdapterImpl.
@@ -26,8 +29,11 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 
 	/** The workplace pub. */
+//	@Inject
+//	private SyWorkplacePub workplacePub;
+	
 	@Inject
-	private SyWorkplacePub workplacePub;
+	private WorkplacePub workplacePub;
 
 	/*
 	 * 
@@ -40,7 +46,12 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 	@Override
 	public List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate) {
 		GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
-		return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
+		Optional<String> workPlaceId = this.workplacePub.getWkpNewByCdDate(companyId, wpkCode, generalDate);
+		List<String> workplaceIds = new ArrayList<>();
+		if (workPlaceId.isPresent()) {
+			workplaceIds.add(workPlaceId.get());
+		}
+		return workplaceIds;
 	}
 
 	/*
@@ -64,7 +75,7 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 
 	@Override
 	public List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date) {
-		return this.workplacePub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
+		return this.workplacePub.getWorkplaceIdAndChildren(companyId, date, workplaceId);
 	}
 
 	@Override
@@ -72,6 +83,17 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 		return this.workplacePub.findWpkIdsBySid(companyId, employeeId, date);
 	}
 	
+	@Override
+	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
+
+		return this.workplacePub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId);
+	}
+
+	@Override
+	public AffWorkplaceHistoryItem getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		AffWorkplaceHistoryItemExport affWorkplace = this.workplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
+		return new AffWorkplaceHistoryItem(affWorkplace.getHistoryId(), affWorkplace.getWorkplaceId(), affWorkplace.getNormalWorkplaceId());
+	}
 	
 
 }

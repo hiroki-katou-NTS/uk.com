@@ -44,25 +44,16 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("   k.RAISING_CALC_ATR, ");
 		sql.append("   k.SPECIFIC_RAISING_CALC_ATR, ");
 		sql.append("   k.DIVERGENCE,  ");
-		sql.append("   k.WKPCD,  ");
+		sql.append("   k.WKP_CD,  ");
 		sql.append("   w.WKP_NAME,  ");
-		sql.append("      k.WKPID ,");
+		sql.append("   k.WKPID ,");
 		sql.append("   HIERARCHY_CD");
-		sql.append("     FROM (SELECT HIST_ID, WKPID, CID  ");
-		sql.append("     FROM BSYMT_WORKPLACE_HIST ");
-		sql.append("     WHERE END_DATE >= ?baseDate AND CID = ?cid  ");
-		sql.append("     ) h  ");
-		sql.append("  INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME  ");
-		sql.append("        FROM BSYMT_WORKPLACE_INFO  ");
-		sql.append("        ) w  ");
-		sql.append("     ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID  ");
-		sql.append("  INNER JOIN BSYMT_WKP_CONFIG wc ");
-		sql.append("        ON wc.CID = h.CID AND wc.END_DATE = ?baseDate");
-		sql.append("  INNER JOIN BSYMT_WKP_CONFIG_INFO wci ");
-		sql.append("     ON wci.WKPID = w.WKPID ");
-		sql.append("     AND wci.CID = wc.CID");
-		sql.append("     AND wci.HIST_ID = wc.HIST_ID");
-		sql.append("   RIGHT JOIN (SELECT a.LEGAL_OT_TIME_ATR, ");
+		sql.append("FROM ");
+		sql.append("  (SELECT WKP_HIST_ID, CID, WKP_ID, WKP_CD, WKP_NAME, HIERARCHY_CD  ");
+		sql.append("   FROM BSYMT_WKP_INFO) w  ");
+		sql.append("  INNER JOIN BSYMT_WKP_CONFIG_2 wc ");
+		sql.append("     ON wc.CID = w.CID AND wc.END_DATE = ?baseDate");
+		sql.append("  RIGHT JOIN (SELECT a.LEGAL_OT_TIME_ATR, ");
 		sql.append("          a.LEGAL_OT_TIME_LIMIT, ");
 		sql.append("          a.LEGAL_MID_OT_TIME_ATR, ");
 		sql.append("          a.LEGAL_MID_OT_TIME_LIMIT, ");
@@ -85,11 +76,11 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("          a.RAISING_CALC_ATR, ");
 		sql.append("          a.SPECIFIC_RAISING_CALC_ATR, ");
 		sql.append("          a.DIVERGENCE, ");
-		sql.append("          i.WKPCD, ");
+		sql.append("          i.WKP_CD, ");
 		sql.append("          a.WKPID, ");
 		sql.append("          a.CID ");
-		sql.append("      FROM (SELECT DISTINCT WKPCD , WKPID, CID ");
-		sql.append("          FROM BSYMT_WORKPLACE_INFO ");
+		sql.append("      FROM (SELECT DISTINCT WKP_CD , WKP_ID, CID ");
+		sql.append("          FROM BSYMT_WKP_INFO ");
 		sql.append("          WHERE CID = ?cid) i ");
 		sql.append("      RIGHT JOIN (SELECT  LEGAL_OT_TIME_ATR, ");
 		sql.append("                LEGAL_OT_TIME_LIMIT, ");
@@ -118,13 +109,14 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("                CID ");
 		sql.append("            FROM KSHMT_AUTO_WKP_CAL_SET ");
 		sql.append("            WHERE CID = ?cid)");
-		sql.append("            a ON a.CID = i.CID AND a.WKPID = i.WKPID) k ");
-		sql.append("       ON w.WKPID = k.WKPID AND w.CID = k.CID");
-		sql.append("   ORDER BY CASE WHEN wci.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
+		sql.append("            a ON a.CID = i.CID AND a.WKPID = i.WKP_ID) k ");
+		sql.append("      ON w.WKP_ID = k.WKPID AND w.CID = k.CID");
+		sql.append("ORDER BY CASE WHEN w.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
 		SELECT_ALL_WORKPLACE_BY_CID = sql.toString();
 }
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate) {
 		List<Object[]> resultQuery = null;

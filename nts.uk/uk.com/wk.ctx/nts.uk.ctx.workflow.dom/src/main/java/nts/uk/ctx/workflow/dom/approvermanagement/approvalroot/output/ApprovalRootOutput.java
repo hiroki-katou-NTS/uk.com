@@ -66,27 +66,27 @@ public class ApprovalRootOutput {
 	}
 
 	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRoot x) {
-		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), x.getEmployeeId(), x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getEmploymentAppHistoryItems().get(0).start(),
-				x.getEmploymentAppHistoryItems().get(0).end(), x.getBranchId(), x.getAnyItemApplicationId(),
-				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
-				x.getEmploymentRootAtr().value, null, null);
+		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), x.getEmployeeId(), x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
+				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
+				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
 
 	public static ApprovalRootOutput convertFromWkpData(WorkplaceApprovalRoot x) {
-		return new ApprovalRootOutput(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(), null, x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getEmploymentAppHistoryItems().get(0).start(),
-				x.getEmploymentAppHistoryItems().get(0).end(), x.getBranchId(), x.getAnyItemApplicationId(),
-				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
-				x.getEmploymentRootAtr().value, null, null);
+		return new ApprovalRootOutput(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(), null, x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
+				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
+				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
 
 	public static ApprovalRootOutput convertFromCompanyData(CompanyApprovalRoot x) {
-		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), null, x.getEmploymentAppHistoryItems().get(0).getHistoryId(),
-				x.getApplicationType() == null ? null : x.getApplicationType().value, x.getEmploymentAppHistoryItems().get(0).start(),
-				x.getEmploymentAppHistoryItems().get(0).end(), x.getBranchId(), x.getAnyItemApplicationId(),
-				x.getConfirmationRootType() == null ? null : x.getConfirmationRootType().value,
-				x.getEmploymentRootAtr().value, null, null);
+		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), null, x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
+				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
+				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
+				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
 
 	public void setAdjustedPhases(List<ApprovalPhaseOutput> phases) {

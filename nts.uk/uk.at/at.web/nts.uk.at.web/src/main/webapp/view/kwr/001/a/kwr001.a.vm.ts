@@ -198,7 +198,7 @@ module nts.uk.at.view.kwr001.a {
                                 id: value.employeeId,
                                 code: value.employeeCode,
                                 name: value.employeeName,
-                                workplaceName: value.workplaceName
+                                affiliationName: value.affiliationName
                             };
 //                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
                                 employeeSearchs.push(employee);    
@@ -766,7 +766,7 @@ module nts.uk.at.view.kwr001.a {
             id: string;
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
         }
 

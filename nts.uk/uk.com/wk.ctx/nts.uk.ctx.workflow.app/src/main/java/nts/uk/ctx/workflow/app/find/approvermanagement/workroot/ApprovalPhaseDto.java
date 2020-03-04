@@ -9,17 +9,16 @@ import lombok.Data;
 public class ApprovalPhaseDto {
 
 	private List<ApproverDto> approver;
-	/**分岐ID*/
-	private String branchId;
-	/**承認フェーズID*/
-	private String approvalPhaseId;
+	/**承認ID*/
+	private String approvalId;
+	/**承認フェーズ順序*/
+	private int phaseOrder;
 	/**承認形態*/
 	private Integer approvalForm;
 	/**承認形態 Name*/
 	private String appFormName;
 	/**閲覧フェーズ*/
 	private Integer browsingPhase;
-	/**順序*/
-	private Integer orderNumber;
-	
+	/**承認者指定区分*/
+	private int approvalAtr;
 }

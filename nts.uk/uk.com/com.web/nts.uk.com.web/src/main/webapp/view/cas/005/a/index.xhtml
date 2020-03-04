@@ -223,7 +223,7 @@
 						</tr>
 						<!-- row 9 -->
 						<!-- Hide for Version 4 -->
-						<tr style="display: none;">
+						<tr>
 							<td>
 								<div style="padding-right: 20px;"
 									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
@@ -231,6 +231,7 @@
 							<td>
 								<div id="combo-box" tabindex="16"
 									data-bind="ntsComboBox: {
+														name: '#{i18n.getText('CAS005_59')}',
 														options: listEmployeeRefRange,
 														optionsValue: 'value',
 														value: specifyingAgent,

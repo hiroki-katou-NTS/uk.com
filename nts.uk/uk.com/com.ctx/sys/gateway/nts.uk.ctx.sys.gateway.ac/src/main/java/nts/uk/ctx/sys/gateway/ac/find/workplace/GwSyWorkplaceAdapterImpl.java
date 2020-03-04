@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ac.find.workplace;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.GwSyWorkplaceAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SyWorkplaceAdapterImpl.
@@ -25,26 +22,19 @@ import nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SWkpHistImport;
 public class GwSyWorkplaceAdapterImpl implements GwSyWorkplaceAdapter{
 	
 	/** The sy workplace pub. */
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.adapter.syworkplace.SyWorkplaceAdapter#findBySid(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<SWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
-		List<AffAtWorkplaceExport> lstWkp = this.syWorkplacePub.findBySIdAndBaseDate(Arrays.asList(employeeId), baseDate);
-		List<String> listWkpId = lstWkp.stream().map(item->{
-			return item.getWorkplaceId();
-		}).collect(Collectors.toList());
-		List<WorkPlaceInfoExport> lstInfoExport = this.syWorkplacePub.findWkpByWkpIdRQ324Ver2(companyId,baseDate,listWkpId);
-		if (!lstInfoExport.isEmpty()) {
-			return lstInfoExport.stream().map(wkp -> {
-				return new SWkpHistImport(wkp.getWorkplaceId(), wkp.getWorkPlaceName());
-			}).collect(Collectors.toList());
-		} else {
-			return Arrays.asList();
-		}
+	public Optional<SWkpHistImport> findBySid(String companyId, String employeeId, GeneralDate baseDate) {
+		return this.workplacePub.findBySidNew(companyId, employeeId, baseDate)
+				.map(c -> new SWkpHistImport(c.getWorkplaceId(), c.getWorkplaceName()));
 	}
 	
 }

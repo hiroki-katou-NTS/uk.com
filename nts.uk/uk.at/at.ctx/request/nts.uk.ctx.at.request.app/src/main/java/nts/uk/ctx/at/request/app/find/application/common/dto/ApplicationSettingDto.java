@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -46,6 +48,12 @@ public class ApplicationSettingDto {
 	public Integer attendentTimeReflectFlg;
 	public int classScheAchi;
 	public int reflecTimeofSche;
+	/** 会社単位  */
+	public int companyUnit;
+	/** 職場単位  */
+	public int workplaceUnit;
+	/** 社員単位  */
+	public int employeeUnit;
 
 	public static ApplicationSettingDto convertToDto(ApplicationSetting appSetting) {
 		if(appSetting==null) return null;
@@ -74,7 +82,10 @@ public class ApplicationSettingDto {
 				appSetting.getPriorityTimeReflectFlg().value, 
 				appSetting.getAttendentTimeReflectFlg().value,
 				appSetting.getClassScheAchi().value,
-				appSetting.getReflecTimeofSche().value);
+				appSetting.getReflecTimeofSche().value,
+				appSetting.getApproverResSet().getCompanyUnit().value,
+				appSetting.getApproverResSet().getWorkplaceUnit().value,
+				appSetting.getApproverResSet().getEmployeeUnit().value);
 	}
 	
 	public ApplicationSetting toDomain() {
@@ -103,6 +114,10 @@ public class ApplicationSettingDto {
 				EnumAdaptor.valueOf(priorityTimeReflectFlg, PriorityFLg.class),
 				EnumAdaptor.valueOf(attendentTimeReflectFlg, ReflectionFlg.class),
 				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class),
-				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class),
+				new ApproverRegisterSet(EnumAdaptor.valueOf(companyUnit, DisplayAtr.class),
+						EnumAdaptor.valueOf(workplaceUnit, DisplayAtr.class),
+						EnumAdaptor.valueOf(employeeUnit, DisplayAtr.class))
+				);
 	}
 }
