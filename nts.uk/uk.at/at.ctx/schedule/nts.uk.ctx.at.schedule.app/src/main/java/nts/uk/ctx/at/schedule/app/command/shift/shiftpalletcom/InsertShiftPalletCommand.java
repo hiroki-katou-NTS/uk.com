@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+/**
+ * 
+ * @author hieult
+ *
+ */
 public class InsertShiftPalletCommand {
 	public int patternNo;
 	public String patternName;

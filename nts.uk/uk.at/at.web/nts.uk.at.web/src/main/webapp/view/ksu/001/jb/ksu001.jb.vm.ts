@@ -394,7 +394,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         arrPairShortName.push('[' + wPSet.shiftCode + ']');
                         arrPairObject.push({
-                            index: wPSet.order
+                            index: wPSet.order,
                             value: wPSet.shiftCode
                         });
                     });

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.shift.shiftpalletcom;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +25,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * 
+ * @author hieult
+ *
+ */
 public class InsertShiftPalletComCommand {
 	
 	public String workplaceId;
