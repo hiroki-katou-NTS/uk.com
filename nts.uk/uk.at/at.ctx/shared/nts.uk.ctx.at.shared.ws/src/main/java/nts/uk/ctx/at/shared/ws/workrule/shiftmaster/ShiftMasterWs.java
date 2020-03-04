@@ -11,6 +11,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommand;
@@ -53,6 +55,9 @@ public class ShiftMasterWs {
 	private RegisterShiftMasterOrgCommandHandler registerOrgCmd;
 	
 	@Inject
+	private CopyShiftMasterOrgCommandHandler copyOrgCmd;
+	
+	@Inject
 	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
 	
 	@POST
@@ -80,14 +85,13 @@ public class ShiftMasterWs {
 	@POST
 	@Path("getlistByWorkPlace")
 	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
-		String targetId = null;
-		Integer targetUnit = null;
-		if (dto != null) {
-			targetId = dto.getWorkplaceId();
-			targetUnit = dto.getTargetUnit();
-		}
-			
-		return this.orgFinder.getShiftMastersByWorkPlace(targetId, targetUnit);
+		return this.orgFinder.optainShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
+	}
+	
+	@POST
+	@Path("optainlistByWorkPlace")
+	public List<ShiftMasterDto> optainlistByWorkPlace(FindShiftMasterDto dto){
+		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
 	}
 	
 	@POST
@@ -101,6 +105,13 @@ public class ShiftMasterWs {
 	public void registerShiftMasterOrg(RegisterShiftMasterOrgCommand dto){
 		this.registerOrgCmd.handle(dto);;
 	}
+	
+	@POST
+	@Path("copy/shiftmaster/org")
+	public void copyShiftMasterOrg(CopyShiftMasterOrgCommand dto){
+		this.copyOrgCmd.handle(dto);;
+	}
+	
 	
 	@POST
 	@Path("register")
