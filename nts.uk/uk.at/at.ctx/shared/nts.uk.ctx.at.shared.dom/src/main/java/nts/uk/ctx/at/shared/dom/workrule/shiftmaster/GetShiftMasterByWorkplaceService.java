@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 職場用の組織別シフトマスタを取得する
@@ -18,8 +19,10 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 @Stateless
 public class GetShiftMasterByWorkplaceService {
 
-	public static List<ShiftMasterDto> getShiftMasterByWorkplaceService(Require require, String companyId,
+	public static List<ShiftMasterDto> getShiftMasterByWorkplaceService(Require require,
 			TargetOrgIdenInfor targetOrg) {
+		
+		String companyId = AppContexts.user().companyId();
 
         Optional<ShiftMasterOrganization> shiftMaterOrgOpt = require.getByTargetOrg(companyId, targetOrg);
         

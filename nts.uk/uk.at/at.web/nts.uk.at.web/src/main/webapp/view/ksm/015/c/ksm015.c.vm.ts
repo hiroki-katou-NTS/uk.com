@@ -11,12 +11,19 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
 		forAttendent: KnockoutObservable<String>;
+		workplaceName: KnockoutObservable<String>;
 		constructor() {
 			let self = this;
 			self.forAttendent = ko.observable('');
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
+			self.workplaceName = ko.observable('');
 			self.selectedWorkplaceId.subscribe((val) => {
+                let lwps = $('#tree-grid').getDataList();
+                let rstd = $('#tree-grid').getRowSelected();
+                let flwps = flat(_.cloneDeep(lwps), "children");
+				let wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id);
+				self.workplaceName(wkp ? wkp.name : '');
 				if (val) {
 					let param = {
 						workplaceId: val,
@@ -194,6 +201,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					// self.listDestSid(lstSelection);
 					// self.copyMonthlyPatternSetting();
+					console.log(lstSelection);
 				}
 			});
 		}
