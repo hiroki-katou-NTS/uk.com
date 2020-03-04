@@ -1,10 +1,7 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -561,11 +558,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-<<<<<<< HEAD
                         case 'TimePoint':
-=======
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
->>>>>>> pj/pr/develop
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2690,7 +2683,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6641,11 +6633,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -9415,7 +9405,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -16236,7 +16226,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -16267,7 +16256,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -16276,7 +16264,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -16296,7 +16283,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16595,7 +16581,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16608,7 +16593,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16625,7 +16609,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -18614,14 +18598,10 @@ var nts;
                                 }
                                 if (constraint) {
                                     var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                    if (primitive) { // if primitive is avaiable
+                                    if (primitive) {
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-<<<<<<< HEAD
                                             case 'String':
-=======
-                                            case 'String': // check length
->>>>>>> pj/pr/develop
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -18671,7 +18651,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -18713,7 +18693,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -18745,7 +18725,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -19298,7 +19278,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -26488,7 +26468,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -26521,7 +26501,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
+                                for (var i = 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28678,7 +28658,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28687,7 +28667,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -31670,7 +31650,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                    if (_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -35988,7 +35968,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -41991,7 +41971,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -42814,7 +42794,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -46829,7 +46809,6 @@ var NtsSortableBindingHandler = (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -46857,7 +46836,7 @@ var NtsSortableBindingHandler = (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
