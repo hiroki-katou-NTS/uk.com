@@ -77,7 +77,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         });
                     }else{
                         self.title("");
-                        self.columnsItem([]);    
+                        self.listItems([]);    
                     }
                     
                 });
