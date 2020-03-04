@@ -25,4 +25,11 @@ public class RegisterShiftMasterOrgCommand {
 		
 		return new ShiftMasterOrganization(companyId, target, shiftMasterCodes);
 	}
+	
+	public TargetOrgIdenInfor toTarget() {
+		TargetOrganizationUnit unit = TargetOrganizationUnit.valueOf(targetUnit);
+		TargetOrgIdenInfor target = new TargetOrgIdenInfor(unit, workplaceId, workplaceGroupId);
+		
+		return target;
+	}
 }
