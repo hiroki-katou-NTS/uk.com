@@ -172,7 +172,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
 		List<SiftType> result = new ArrayList<>();
 		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
+		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
+				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		
 		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 			List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);

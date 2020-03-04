@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
 
-/*import lombok.AllArgsConstructor;*/
-
 /**
- * 
+ * 事前事後区分初期値
  * @author Doan Duy Hung
  *
  */

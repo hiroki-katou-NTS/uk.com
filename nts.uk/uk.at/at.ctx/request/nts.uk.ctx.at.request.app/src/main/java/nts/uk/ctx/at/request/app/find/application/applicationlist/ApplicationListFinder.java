@@ -79,7 +79,7 @@ public class ApplicationListFinder {
 		Integer isDisPreP = null;
 		if(requestSet.isPresent()){
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value;
+			isDisPreP = requestSet.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value;
 		}
 		//URパラメータが存在する-(Check param)
 		if(StringUtil.isNullOrEmpty(condition.getStartDate(), false) || StringUtil.isNullOrEmpty(condition.getEndDate(), false)){

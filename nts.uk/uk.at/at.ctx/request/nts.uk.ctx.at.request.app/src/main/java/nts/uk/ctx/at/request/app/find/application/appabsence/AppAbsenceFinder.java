@@ -341,7 +341,8 @@ public class AppAbsenceFinder {
 		//アルゴリズム「職場別就業時間帯を取得」を実行する-[Lấy WorkTime cho từng workplace]
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID,
-				appAbsence.getApplication().getEmployeeID(), appAbsence.getApplication().getAppDate());
+				appAbsence.getApplication().getEmployeeID(), appAbsence.getApplication().getAppDate())
+				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		result.setWorkTimeCodes(listWorkTimeCodes);
 		if (result.getWorkTimeCode() != null) {
 			WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, result.getWorkTimeCode()).isPresent()
@@ -614,7 +615,7 @@ public class AppAbsenceFinder {
 			// 2.就業時間帯を取得する
 			// 1.職場別就業時間帯を取得
 			List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-					appCommonSettingOutput.generalDate);
+					appCommonSettingOutput.generalDate).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 			result.setWorkTimeCodes(listWorkTimeCodes);
 		}
 		return result;
@@ -670,7 +671,7 @@ public class AppAbsenceFinder {
 			// 2.就業時間帯を取得する
 			// 1.職場別就業時間帯を取得
 			List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-					appCommonSettingOutput.generalDate);
+					appCommonSettingOutput.generalDate).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 			result.setWorkTimeCodes(listWorkTimeCodes);
 		}
 		return result;
@@ -820,7 +821,8 @@ public class AppAbsenceFinder {
 		String companyID = AppContexts.user().companyId();
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-				startDate == null ? GeneralDate.today() : GeneralDate.fromString(startDate, DATE_FORMAT));
+				startDate == null ? GeneralDate.today() : GeneralDate.fromString(startDate, DATE_FORMAT))
+				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		return listWorkTimeCodes;
 	}
 

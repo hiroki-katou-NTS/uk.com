@@ -565,7 +565,8 @@ public class AppHolidayWorkFinder {
 				WorkTypeHolidayWork WorkTypes =  holidayService.getListWorkType(companyID, appHolidayWork.getApplication().getEmployeeID(), appEmploymentWorkType, appHolidayWork.getApplication().getAppDate(), personalLablorCodition);
 				appHolidayWorkDto.setWorkTypes(WorkTypes.getWorkTypeCodes());
 				// 5_a.就業時間帯を取得する（詳細）
-				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
+				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate())
+						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 				appHolidayWorkDto.setWorkTimes(listWorkTimeCodes);
 				 workTimeCD = appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v();
 				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID, workTimeCD).orElse(null);

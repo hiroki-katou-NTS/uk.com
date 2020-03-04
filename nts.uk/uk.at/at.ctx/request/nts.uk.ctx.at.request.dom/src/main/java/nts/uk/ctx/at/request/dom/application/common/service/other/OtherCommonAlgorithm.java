@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -19,10 +20,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface OtherCommonAlgorithm {
 	/**
@@ -31,7 +33,7 @@ public interface OtherCommonAlgorithm {
 	 * @param employeeID
 	 * @param referenceDate
 	 */
-	public List<String> getWorkingHoursByWorkplace(String companyID,String employeeID,GeneralDate referenceDate);
+	public List<WorkTimeSetting> getWorkingHoursByWorkplace(String companyID,String employeeID,GeneralDate referenceDate);
 	/**
 	 * 3.事前事後の判断処理(事前事後非表示する場合)
 	 * @param appType
@@ -144,7 +146,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType);
+	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType);
 	
 	/**
 	 * 01-06_申請理由を取得
