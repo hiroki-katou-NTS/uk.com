@@ -5,11 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-=======
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
->>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

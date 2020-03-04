@@ -39,11 +39,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErOtkAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
-<<<<<<< HEAD
 import nts.uk.shr.com.context.AppContexts;
-=======
-import nts.arc.time.calendar.period.DatePeriod;
->>>>>>> pj/pr/develop
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless

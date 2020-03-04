@@ -62,10 +62,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.calendar.period.DatePeriod;
-<<<<<<< HEAD
 import org.eclipse.persistence.exceptions.OptimisticLockException;
-=======
->>>>>>> pj/pr/develop
 
 @Stateless
 public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyResultEmployeeDomainService {

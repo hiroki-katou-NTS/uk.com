@@ -301,12 +301,8 @@ public class WkpDepFinder {
             		//ロールIDから参照可能な職場リストを取得する
 					List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
 							.findListWkpIdByRoleId(findObject.getSystemType(), findObject.getBaseDate()).getListWorkplaceIds();
-<<<<<<< HEAD
             		//[No.560]職場IDから職場の情報をすべて取得する
 					return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
-=======
-            		return wkpExportService.getWorkplaceInforFromWkpIds(companyId, workplaceIdsCanReference, findObject.getBaseDate())
->>>>>>> pj/pr/develop
 							.stream().map(InformationDto::new).collect(Collectors.toList());
 				} else {
 					return wkpExportService.getAllActiveWorkplace(companyId, findObject.getBaseDate())

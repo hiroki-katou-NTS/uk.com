@@ -9,12 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Map;
 import java.util.Optional;
-=======
-import java.util.Optional;import java.util.stream.Collector;
->>>>>>> pj/pr/develop
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -90,13 +86,8 @@ public class WorkplaceConfigInfoFinder {
 		if (object.getRestrictionOfReferenceRange()) {
 			List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
 					.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate()).getListWorkplaceIds();
-<<<<<<< HEAD
 			workplaceConfigInfos = this.convertData(this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, configHisIds,
 					workplaceIdsCanReference));
-=======
-			workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, configHisIds,
-					workplaceIdsCanReference);
->>>>>>> pj/pr/develop
 		} else {
 			workplaceConfigInfos = this.convertData(this.wkpConfigInfoRepo.findByHistoryIds(companyId, configHisIds));
 		}

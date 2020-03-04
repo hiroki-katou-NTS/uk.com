@@ -28,14 +28,6 @@ import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emph
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
-<<<<<<< HEAD
-
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-=======
->>>>>>> pj/pr/develop
 
 @Stateless
 public class JpaEmplHealInsurQualifiInforRepository extends JpaRepository implements EmplHealInsurQualifiInforRepository {

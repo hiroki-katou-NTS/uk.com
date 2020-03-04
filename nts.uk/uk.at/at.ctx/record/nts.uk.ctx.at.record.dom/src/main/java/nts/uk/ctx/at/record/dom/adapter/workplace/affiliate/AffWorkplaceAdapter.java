@@ -10,10 +10,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-<<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
-=======
->>>>>>> pj/pr/develop
 
 /**
  * The Interface AffWorkplaceAdapter.

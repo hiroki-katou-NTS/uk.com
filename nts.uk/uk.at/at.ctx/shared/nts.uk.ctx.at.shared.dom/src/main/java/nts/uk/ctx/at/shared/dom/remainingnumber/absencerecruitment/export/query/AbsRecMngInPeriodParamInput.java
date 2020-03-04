@@ -13,10 +13,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-<<<<<<< HEAD
-=======
-import nts.arc.time.calendar.period.DatePeriod;
->>>>>>> pj/pr/develop
 
 @Setter
 @Getter

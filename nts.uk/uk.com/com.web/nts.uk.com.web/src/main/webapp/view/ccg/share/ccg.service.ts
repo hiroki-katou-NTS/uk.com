@@ -137,18 +137,12 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * call service get employee by login
          */
-<<<<<<< HEAD
         
-=======
->>>>>>> pj/pr/develop
         export function searchEmployeeByLogin(query): JQueryPromise<model.EmployeeSearchDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, query);
         }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> pj/pr/develop
 
         /**
          * search WorkPlace of Employee

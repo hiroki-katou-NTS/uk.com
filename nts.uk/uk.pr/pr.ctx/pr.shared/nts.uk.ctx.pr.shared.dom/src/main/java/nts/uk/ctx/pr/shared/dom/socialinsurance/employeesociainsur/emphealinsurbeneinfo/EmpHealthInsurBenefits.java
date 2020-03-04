@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
-<<<<<<< HEAD
-=======
 import nts.uk.shr.com.history.HistoryItem;
->>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

@@ -14,11 +14,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
-<<<<<<< HEAD
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
-=======
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
->>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 
@@ -37,20 +33,6 @@ public class WkpHistWithPeriodAdapterImpl implements WkpHistWithPeriodAdapter{
 	 */
 	@Override
 	public List<WkpHistWithPeriodImport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period) {
-//		Set<String> setWkp = new HashSet<>();
-//		return syWorkplacePub.getLstHistByWkpsAndPeriod(wkpIds, period).stream().map(dto -> {
-//			if (setWkp.contains(dto.getWkpId())) return null;
-//			setWkp.add(dto.getWkpId());
-//			List<WkpInfoHistImport> lstWkpInfoHistImport = new ArrayList<WkpInfoHistImport>();
-//			
-//			dto.getWkpInfoHistLst().stream().forEach(dto2 -> {
-//				WkpInfoHistImport wkpInfoHistImport = new WkpInfoHistImport(dto2.getPeriod(), dto2.getWkpCode(), dto2.getWkpDisplayName());
-//				lstWkpInfoHistImport.add(wkpInfoHistImport);
-//			});
-//			
-//			WkpHistWithPeriodImport wkpHistWithPeriodImport = new WkpHistWithPeriodImport(dto.getWkpId(), lstWkpInfoHistImport);
-//			return wkpHistWithPeriodImport;
-//		}).filter(dto -> dto != null).collect(Collectors.toList());
 		List<WkpInfoHistImport> wkpInfoHistImport = new ArrayList<WkpInfoHistImport>();
 		return workplacePub.findByWkpIds(wkpIds).stream().map(x -> {
 			wkpInfoHistImport.add(new WkpInfoHistImport(null, x.getWorkplaceCode(), x.getWorkplaceName()));

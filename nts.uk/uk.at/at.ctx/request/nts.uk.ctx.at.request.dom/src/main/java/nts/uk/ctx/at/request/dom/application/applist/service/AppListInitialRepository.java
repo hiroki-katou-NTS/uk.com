@@ -14,10 +14,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.App
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-<<<<<<< HEAD
-=======
-import nts.arc.time.calendar.period.DatePeriod;
->>>>>>> pj/pr/develop
 /**
  * 
  * @author hoatt

@@ -21,13 +21,9 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 //import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-<<<<<<< HEAD
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
-=======
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
->>>>>>> pj/pr/develop
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

@@ -12,10 +12,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ResultRequest596Import;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
-<<<<<<< HEAD
-=======
-import nts.arc.time.calendar.period.DatePeriod;
->>>>>>> pj/pr/develop
 
 public interface EmployeeAdapter {
 

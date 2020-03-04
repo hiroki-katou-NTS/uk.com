@@ -55,10 +55,7 @@ public class RoleWorkplaceIDFinder {
 		String companyId = AppContexts.user().companyId();
 		if (systemType == SystemType.ADMINISTRATOR.value) {//システム＝管理者の場合
 			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
-<<<<<<< HEAD
 			//運用している職場の情報をすべて取得する
-=======
->>>>>>> pj/pr/develop
 			List<String> listWkpId = sysAuthWorkplaceAdapter.getAllActiveWorkplaceInfo(companyId, referenceDate)
 					.stream().map(WorkplaceInfoImport::getWorkplaceId).collect(Collectors.toList());
 			workplaceIdDto.setListWorkplaceIds(listWkpId);

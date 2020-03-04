@@ -573,11 +573,7 @@ module kcp.share.list {
             if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP005_4'), prop: 'affiliationName', width: self.gridStyle.workplaceColumnSize,
-<<<<<<< HEAD
                     template: "<td class='list-component-name-col'>${affiliationName}</td>"
-=======
-                    template: "<td class='list-component-name-col'>${workplaceName}</td>"
->>>>>>> pj/pr/develop
                 });
             }
 

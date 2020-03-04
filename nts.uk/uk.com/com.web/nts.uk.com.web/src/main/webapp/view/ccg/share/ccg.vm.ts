@@ -635,10 +635,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 return dfd.promise();
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> pj/pr/develop
             /**
              * Set advanced search param
              */
@@ -1232,7 +1229,6 @@ module nts.uk.com.view.ccg.share.ccg {
             private reloadAdvanceSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-<<<<<<< HEAD
                 if (!self.tab2HasLoaded) {
                     self.tab2HasLoaded = true;
                 }
@@ -1257,37 +1253,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.fixComponentWidth();
                     dfd.resolve();
                 });
-=======
-                if (self.showAdvancedSearchTab) {
-                    if (!self.tab2HasLoaded) {
-                        self.tab2HasLoaded = true;
-                    }
-                    // set advanced search param
-                    self.queryParam.retireStart = self.retireStart();
-                    self.queryParam.retireEnd = self.retireEnd();
-
-                    // reload advanced search tab.
-                    if (_.isEmpty($('.blockUI.blockOverlay'))) {
-                        nts.uk.ui.block.grayout();
-                    }
-
-                    self.setComponentOptions();
-                    $.when(self.loadEmploymentPart(),
-                        self.loadClassificationPart(),
-                        self.loadJobTitlePart(),
-                        self.loadDepartmentPart(),
-                        self.loadWorkplacePart(),
-                        self.loadWorktypePart()
-                    ).done(() => {
-                        nts.uk.ui.block.clear();// clear block UI
-                        self.fixComponentWidth();
-                        dfd.resolve();
-                    });
-                } else {
-                    dfd.resolve();
-                }
-
->>>>>>> pj/pr/develop
                 return dfd.promise();
             }
 
@@ -1539,14 +1504,8 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmployeeLogin(): void {
                 let self = this;
                 nts.uk.ui.block.grayout(); // block ui
-<<<<<<< HEAD
-                let param = {
-                    baseDate: moment.utc("2018-06-30 00:00:00").toDate(),
-=======
-                //HoaTT - NEW職場・部門
                 let param = {
                     baseDate: moment.utc().toDate(),
->>>>>>> pj/pr/develop
                     systemType: self.systemType
                 };
                 service.searchEmployeeByLogin(param)
@@ -2335,11 +2294,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartment -->
-<<<<<<< HEAD
                         <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-=======
-                        <div id="ccg001-btn-same-department" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
->>>>>>> pj/pr/develop
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_ONLY+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
@@ -2349,11 +2304,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                     <!-- ko if: showSameDepartmentAndChild -->
-<<<<<<< HEAD
                         <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
-=======
-                        <div id="ccg001-btn-same-department-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
->>>>>>> pj/pr/develop
                             <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
                                 data-bind="click: function(){searchEmployeeByReferenceRange(`+SearchReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES+`)}">
                                 <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
