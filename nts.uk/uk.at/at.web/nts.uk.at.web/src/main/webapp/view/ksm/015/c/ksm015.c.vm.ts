@@ -18,7 +18,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
 			self.workplaceName = ko.observable('');
-			
+
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
 				isShowAlreadySet: true,
@@ -40,7 +40,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.shiftItems = ko.observableArray([]);
 			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
 			self.selectedShiftMaster = ko.observableArray([]);
-            
+
 			$('#tree-grid').ntsTreeComponent(self.treeGrid)
 				.done(() => {
 					self.selectedWorkplaceId.subscribe((val) => {
@@ -63,7 +63,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 									});
 							}
 						}
-		
+
 					});
 					self.selectedWorkplaceId.valueHasMutated();
 				});
@@ -112,10 +112,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) === -1;
 					if (isNew) {
 						// let currents = self.alreadySettingList();
-						// self.alreadySettingList.push;
-						// self.alreadySettingList.push({workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true});
+						// currents.push({ workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true });
 						// self.alreadySettingList(currents);
-						self.reloadComponent();
+						self.reloadAlreadySetting();
 					}
 					self.selectedWorkplaceId.valueHasMutated();
 				}).fail(function (error) {
@@ -139,7 +138,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 						self.selectedWorkplaceId.valueHasMutated();
 						nts.uk.ui.block.clear();
-						self.reloadComponent();
+						self.reloadAlreadySetting();
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
 					});
@@ -209,7 +208,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					let wkps = [];
 					lstSelection.forEach((wp) => {
-						wkps.push({targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: []})
+						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] })
 					});
 					let param = {
 						targetUnit: TargetUnit.WORKPLACE,
@@ -220,36 +219,21 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					service.copyOrg(param)
 						.done(() => {
 							nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-							self.reloadComponent();
+							self.reloadAlreadySetting();
 						});
 				}
 			});
 		}
 
-		public reloadComponent() {
+		public reloadAlreadySetting() {
 			let self = this;
 			service.getAlreadyConfigOrg()
 				.done((data) => {
-					self.alreadySettingList(data.workplaceIds);
-					self.treeGrid = {
-						isShowAlreadySet: true,
-						isMultipleUse: false,
-						isMultiSelect: false,
-						treeType: 1,
-						selectedId: self.selectedWorkplaceId,
-						baseDate: self.baseDate,
-						selectType: 3,
-						isShowSelectButton: true,
-						isDialog: false,
-						alreadySettingList: self.alreadySettingList,
-						maxRows: 15,
-						tabindex: 1,
-						systemType: 2
-					};
-					$('#tree-grid').ntsTreeComponent(self.treeGrid)
-						.done(() => {
-							// $('#tree-grid').focusComponent();
-						});
+					let alreadySettings = []
+					_.forEach(data.workplaceIds, (wp) => {
+						alreadySettings.push({ workplaceId: wp, isAlreadySetting: true });
+					});
+					self.alreadySettingList(alreadySettings);
 				});
 		}
 
