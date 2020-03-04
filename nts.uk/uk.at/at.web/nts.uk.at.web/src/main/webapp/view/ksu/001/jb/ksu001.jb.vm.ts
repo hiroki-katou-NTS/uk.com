@@ -58,9 +58,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             });
         }
 
-        /**
-         * init
-         */
         init(): void {
             let self = this;
 
@@ -153,36 +150,25 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * decision
-         */
         decision(): void {
             let self = this;
             $("#popup-area").css('visibility', 'hidden');
             $("#test2").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip(), data: self.dataWorkPairSet() });
         }
 
-        /**
-         * close popup
-         */
         closePopup(): void {
             nts.uk.ui.errors.clearAll()
             $("#popup-area").css('visibility', 'hidden');
             $("#test2").trigger("namechanged", undefined);
         }
 
-        /**
-         * Clear all data of button table
-         */
+        /** Clear all data of button table */
         clear() {
             let self = this;
             $("#test2").ntsButtonTable("dataSource", []);
             self.source([]);
         }
 
-        /**
-         * Close dialog
-         */
         closeDialog(): void {
             let self = this;
             setShared('dataFromJA', {
@@ -191,16 +177,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        /**
-         * open Dialog JC
-         */
         openDialogJC(evt, data): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
+            
             setShared("dataForJC", {
                 text: self.textName(),
-                tooltip: self.tooltip(),
                 data: data ? data.data : null,
                 textDecision: nts.uk.resource.getText("KSU001_923"),
                 listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime,
@@ -221,9 +204,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * saveData
-         */
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             //check soucre null or empty
@@ -250,11 +230,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             for (let i = 0; i < self.source().length; i++) {
                 if (!_.isEmpty(self.source()[i])) {
                     let listInsertWorkPairSetCommand = [];
+                    let j = 1;
                     _.each(self.source()[i].data, (dt) => {
                         listInsertWorkPairSetCommand.push({
-                            pairNo: dt.index,
-                            shiftCode: dt.data.shiftMasterCode
+                            pairNo: j, 
+                            shiftCode: dt.value
                         });
+                        j++;
                     });
 
                     listInsertPatternItemCommand.push({
@@ -289,9 +271,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * delete pattern
-         */
         deletePatternItem(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
 
@@ -318,9 +297,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * handle after delete pattern
-         */
         handleAfterChangeData(): void {
             let self = this;
 
@@ -335,9 +311,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             }
         }
 
-        /**
-         * remove data of button table
-         */
+        /** remove data of button table */
         remove(): JQueryPromise<any> {
             let dfd = $.Deferred();
 
@@ -364,9 +338,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return true;
         }
 
-        /**
-         * get data form COM_PATTERN 
-         */
+        /** get data form COM_PATTERN */
         getDataComPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataComPattern().done((data) => {
@@ -380,9 +352,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * get data form WKP_PATTERN 
-         */
+        /** get data form WKP_PATTERN */
         getDataWkpPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataWkpPattern(self.workplaceId).done((data) => {
@@ -396,9 +366,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * handle after get data
-         */
         handleAfterGetData(listPattern: any[]): any {
             let self = this;
             // set default for dataSource and textButtonArr 
@@ -418,26 +385,20 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = _.clone(self.sourceEmpty);
-                //change text of linkbutton
+                // Change text of linkbutton
                 self.textButtonArr()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
-                //get data for dataSource
+                // Get data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
-                    let arrPairShortName = [], arrPairObject = [];
+                    let arrPairShortName = [], arrPairObject = [];                    
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        let workType = null, workTime = null, pairShortName = null;
-                          workType = _.find(self.listWorkType, { 'workTypeCode': wPSet.workTypeCode });
-                        //let workTypeShortName = workType.abbreviationName;
-                        let workTypeShortName = 'abc';
-                        workTime = _.find(self.listWorkTime, { 'workTimeCode': wPSet.workTimeCode });
-                        let workTimeShortName = workTime ? workTime.abName : null;
-                        pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
-                        arrPairShortName.push(pairShortName);
+                        arrPairShortName.push('[' + wPSet.shiftCode + ']');
                         arrPairObject.push({
-                            index: wPSet.pairNo
-                           
+                            index: wPSet.order
+                            value: wPSet.shiftCode
                         });
                     });
+                    
                     // screen JA must not set symbol for arrPairObject
                     // set tooltip
                     let arrTooltipClone = _.clone(arrPairShortName);
@@ -447,7 +408,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     }
                     let tooltip: string = arrPairShortName.join('→');
                     tooltip = tooltip.replace(/→lb/g, '\n');
-                    //insert data to source
+                    // Insert data to source
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
                 });
                 self.dataSource().splice(listPattern[i].groupNo - 1, 1, source);

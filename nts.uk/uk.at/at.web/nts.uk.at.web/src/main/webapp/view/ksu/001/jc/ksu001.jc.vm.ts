@@ -14,7 +14,8 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         selectedTab : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().selectedTab;
         workplaceId : KnockoutObservable<string> = ko.observable(getShared('dataForJC'))().workplaceId;
         textName: KnockoutObservable<string> = ko.observable(getShared('dataForJC').text || null);
-        arrTooltip: any[] = getShared('dataForJC').tooltip ? getShared('dataForJC').tooltip.match(/[^[\]]+(?=])/g) : [];
+        arrTooltip: any[] = [];
+        
         source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJC').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJC').textDecision);
@@ -30,11 +31,13 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             });
           
             // Binding Screen B Data to Table
+            let indexDitMeMay = 0;
             _.forEach(self.source(), (item) => {
-                $($("#table-date td")[item.index - 1]).html(item.data.shiftMasterName);
-                self.dataSource().push({ index: item.index, value: item.data.shiftMasterName, data: item.data });
-            })
-
+                $($("#table-date td")[indexDitMeMay]).html(item.value);
+                self.dataSource().push({ index: indexDitMeMay, value: item.value });
+                indexDitMeMay++;
+           })
+    
             /**
              * handle when click/ctr+click cell table
              * get workTypeName/workTimeName paste to cell
@@ -93,10 +96,21 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             let tooltip: string = arrTooltip.join('→');
             tooltip = tooltip.replace(/→lb/g, '\n');
             
+            // sap xep cho mang lien mach
+            let index = 0;
+            let arrData = _.map(dataSourceOrder, (dataS) => {
+                index++;
+                return {
+                    index: index,
+                    value: dataS.value,
+                    data: dataS.data
+                };
+            });
+
             setShared("dataFromJB", {
                 text: self.textName(),
                 tooltip: tooltip,
-                data: dataSourceOrder
+                data: arrData
             });
             nts.uk.ui.windows.close();
         }
