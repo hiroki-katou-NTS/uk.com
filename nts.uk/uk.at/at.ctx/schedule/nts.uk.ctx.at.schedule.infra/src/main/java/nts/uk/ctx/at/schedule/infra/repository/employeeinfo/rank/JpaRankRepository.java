@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.rank;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -123,10 +124,13 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 		List<KscmtRank> kscmtRanks = this.queryProxy().query(GET_LIST_RANK_BY_COMPANY, KscmtRank.class)
 				.setParameter("companyId", companyId).getList();
 		List<String> rankCds = rankPriority.getListRankCd().stream().map(x -> x.v()).collect(Collectors.toList());
-
-		kscmtRanks.stream().forEach(x -> {
-			x.priority = rankCds.indexOf(x.kscmtRankPk.rankCd) + 1;
-		});
+		
+		List<KscmtRank> ranks = kscmtRanks.stream().map(x -> {
+			KscmtRankPk pk = new KscmtRankPk(x.kscmtRankPk.companyId, x.kscmtRankPk.rankCd);
+			int priority = rankCds.indexOf(x.kscmtRankPk.rankCd) + 1;
+			KscmtRank entity = new KscmtRank(pk, x.rankSymbol, priority);
+			return entity;
+		}).collect(Collectors.toList());
 
 		String sqlDelete = "DELETE FROM KSCMT_RANK WHERE CID = ?";
 		String sqlInsert = "INSERT INTO KSCMT_RANK (CID, CD, SYNAME, PRIORITY) VALUES (?,?,?,?)";
@@ -137,19 +141,7 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-
-		try (PreparedStatement ps2 = this.connection().prepareStatement(JDBCUtil.toInsertWithCommonField(sqlInsert))) {
-			for (int i = 0; i < kscmtRanks.size(); i++) {
-				ps2.setString(1, companyId);
-				ps2.setString(2, kscmtRanks.get(i).kscmtRankPk.rankCd);
-				ps2.setString(3, kscmtRanks.get(i).rankSymbol);
-				ps2.setInt(4, kscmtRanks.get(i).priority);
-				ps2.addBatch();
-			}
-			ps2.executeBatch();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		this.commandProxy().insertAll(ranks);
 	}
 
 	/**
