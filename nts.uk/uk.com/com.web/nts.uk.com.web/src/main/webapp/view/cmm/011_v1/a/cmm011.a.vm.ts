@@ -376,7 +376,7 @@ module nts.uk.com.view.cmm011.a {
                 // share date range
                 nts.uk.ui.windows.setShared("DateRange", dateRange);
 
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/cmm/011_v1/b/index.xhtml').onClosed(() => {
 
                     // get respond data
                     let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
@@ -416,7 +416,7 @@ module nts.uk.com.view.cmm011.a {
                     // share data dialog.
                     nts.uk.ui.windows.setShared("ObjectTransfer", objTransfer);
 
-                    nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/011_v1/f/index.xhtml').onClosed(() => {
 
                         // get creation type
                         let creationType: CreationType = nts.uk.ui.windows.getShared("CreatedWorkplaceCondition");
@@ -850,7 +850,7 @@ module nts.uk.com.view.cmm011.a {
             public addWkpHistoryDialog() {
                 let self = this;
                 nts.uk.ui.windows.setShared("selectedWkpId", self.parentModel.treeWorkplace().selectedWpkId());
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/cmm/011_v1/d/index.xhtml').onClosed(() => {
                     let isModeAdd: boolean = nts.uk.ui.windows.getShared("ModeAddHistory");
 
                     // reload workplace history
@@ -878,7 +878,7 @@ module nts.uk.com.view.cmm011.a {
                 nts.uk.ui.windows.setShared("WokplaceHistoryInfor", objectTransfer);
 
                 // open dialog
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/cmm/011_v1/e/index.xhtml').onClosed(() => {
                     let isUpdateMode: boolean = nts.uk.ui.windows.getShared("ModeUpdateHistory");
 
                     // reload workplace history
