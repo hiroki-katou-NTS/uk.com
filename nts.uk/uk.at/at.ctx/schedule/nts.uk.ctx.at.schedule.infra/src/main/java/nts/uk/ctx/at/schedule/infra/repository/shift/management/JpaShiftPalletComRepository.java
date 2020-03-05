@@ -146,7 +146,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 //			result.cmpCombis.stream().forEach(e->{
 //				combinations.
 //			});
-			commandProxy().update(getEntity.get());
+			this.getEntityManager().merge(getEntity.get());
 		}
 
 	}
