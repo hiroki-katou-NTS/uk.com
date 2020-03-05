@@ -69,16 +69,20 @@ public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
 				shiftPalletCombinations.getCombinations().stream()
 						.map(x -> KscmtPaletteCmpCombiDtl.fromDomain(x, cmpCombiPk)).collect(Collectors.toList()));
 	}
+	
+	public static KscmtPaletteCmpCombi fromOneDomain(ShiftPalletCombinations shiftPalletCombinations,
+			KscmtPaletteCmpPk pk) {
+		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page,
+				shiftPalletCombinations.getPositionNumber());
+		return new KscmtPaletteCmpCombi(cmpCombiPk, shiftPalletCombinations.getCombinationName().v(), null,
+				null);
+	}
 
 	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
 		this.positionName = shiftPalletCombinations.getCombinationName().v();
-		shiftPalletCombinations.getCombinations().forEach(item->{
-			if(cmpCombiDtls.stream().filter(y-> this.pk.position == item.getOrder()).findFirst().isPresent()) {
-				cmpCombiDtls.stream().filter(y-> this.pk.position == item.getOrder()).findFirst().get().toEntity(item);
-			}
-			else {
-				cmpCombiDtls.add(KscmtPaletteCmpCombiDtl.fromDomain(item, pk));
-			}
+		cmpCombiDtls.stream().forEach(x -> {
+			x.toEntity(shiftPalletCombinations.getCombinations().stream()
+					.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().get());
 		});
 	}
 }

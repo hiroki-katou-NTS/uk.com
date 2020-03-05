@@ -72,19 +72,15 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 						.map(x -> KscmtPaletteCmpCombi.fromDomain(x, pk)).collect(Collectors.toList()));
 
 	}
-	
+
 	public void toEntity(ShiftPalletsCom shiftPalletsCom) {
 		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
 		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
 		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
-		
-		shiftPalletsCom.getShiftPallet().getCombinations().forEach(item->{
-			if(cmpCombis.stream().filter(y-> y.pk.position == item.getPositionNumber()).findFirst().isPresent()) {
-				cmpCombis.stream().filter(y-> y.pk.position == item.getPositionNumber()).findFirst().get().toEntity(item);
-			}
-			else {
-				cmpCombis.add(KscmtPaletteCmpCombi.fromDomain(item, pk));
-			}
+
+		cmpCombis.stream().forEach(x -> {
+			x.toEntity(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+					.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().get());
 		});
 
 	}
@@ -93,8 +89,8 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 		// TODO Auto-generated method stub
 		return new ShiftPalletsCom(AppContexts.user().companyId(), pk.page,
 				new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName), EnumAdaptor.valueOf(useAtr, NotUseAtr.class),
-								new ShiftRemarks(note)),
+						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName),
+								EnumAdaptor.valueOf(useAtr, NotUseAtr.class), new ShiftRemarks(note)),
 						cmpCombis.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 	}
 

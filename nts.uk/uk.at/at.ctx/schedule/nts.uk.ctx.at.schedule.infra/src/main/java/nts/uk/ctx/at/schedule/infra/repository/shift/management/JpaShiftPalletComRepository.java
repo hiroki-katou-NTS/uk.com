@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
@@ -139,14 +140,44 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 		if (getEntity.isPresent()) {
 			getEntity.get().toEntity(shiftPalletsCom);
-//			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations();
-//			KscmtPaletteCmp result = getEntity.get();
-//			result.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
-//			result.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value; 
-//			result.cmpCombis.stream().forEach(e->{
-//				combinations.
-//			});
-			this.getEntityManager().merge(getEntity.get());
+			List<Integer> position = getEntity.get().cmpCombis.stream().map(e -> e.pk.position)
+					.collect(Collectors.toList());
+			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations().stream()
+					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
+			List<Shifutoparetto> shifutoparettos = new ArrayList<>();
+			List<KscmtPaletteCmpCombi> combis = combinations.stream()
+					.map(i -> KscmtPaletteCmpCombi.fromOneDomain(i, getEntity.get().pk)).collect(Collectors.toList());
+			combinations.stream().forEach(i -> {
+				shifutoparettos
+						.addAll(i
+								.getCombinations().stream().map(o -> new Shifutoparetto(i.getPositionNumber(),
+										o.getOrder(), o.getShiftCode().v(), shiftPalletsCom.getPage()))
+								.collect(Collectors.toList()));
+				// shifutoparettos.add(index, element);
+			});
+
+			List<Combinations> combinationList = new ArrayList<>();
+			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
+				combinationList.addAll(i.getCombinations());
+			});
+			List<String> shipCodes = new ArrayList<>();
+			getEntity.get().cmpCombis.stream().forEach(i -> {
+				shipCodes.addAll(i.cmpCombiDtls.stream().map(e -> e.shiftMasterCd).collect(Collectors.toList()));
+			});
+			List<Shifutoparetto> combinationInsert = shifutoparettos.stream()
+					.filter(i -> !shipCodes.contains(i.getShiftCode())).collect(Collectors.toList());
+			this.commandProxy().update(getEntity.get());
+			if (!combis.isEmpty()) {
+				this.commandProxy().insertAll(combis);
+			}
+			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = combinationInsert.stream()
+					.map(i -> KscmtPaletteCmpCombiDtl.fromOneDomain(i.getPage(), i.getPositionNumber(),i.getOrder(),i.getShiftCode())).collect(Collectors.toList());
+			if (!combis.isEmpty()) {
+				this.commandProxy().insertAll(combis);
+			}
+			if (!cmpCombiDtls.isEmpty()) {
+				this.commandProxy().insertAll(cmpCombiDtls);
+			}
 		}
 
 	}

@@ -46,10 +46,10 @@ public class ShiftPalletCombinations implements DomainValue {
 
 		List<Integer> lstElement = combinations.stream().map(x -> x.getOrder()).distinct().collect(Collectors.toList());
 
-		/*if (lstElement.size() < combinations.size()) {
+		if (lstElement.size() < combinations.size()) {
 			// inv-3 @シフト組み合わせ.順番が重複しないこと
 			throw new BusinessException("Msg_1627");
-		}*/
+		}
 		// inv-4 @シフト組み合わせ: 昇順(シフトパレットのシフト.順番)
 		combinations.sort((p1, p2) -> p1.getOrder() - p2.getOrder());
 
