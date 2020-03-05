@@ -9,7 +9,11 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author hieult
+ *
+ */
 @Stateless
 public class DeleteShiftPalletCommandHandler extends CommandHandler<DeleteShiftPalletComCommand>{
 
@@ -22,14 +26,15 @@ public class DeleteShiftPalletCommandHandler extends CommandHandler<DeleteShiftP
 	@Override
 	
 	protected void handle(CommandHandlerContext<DeleteShiftPalletComCommand> context) {
+		//<<Command>> 会社別シフトパレットを削除する	
 		DeleteShiftPalletComCommand command = context.getCommand();
 		if (StringUtil.isNullOrEmpty(command.getWorkplaceId(), true)) {
 			String companyId = AppContexts.user().companyId();
 			//<<Command>> 会社別シフトパレットを削除する															
 			repocom.deleteByPage(companyId, command.getGroupNo());
 		} else {
+		//<<Command>> 職場で使うシフトパレットを削除する	
 			String workplaceId = command.getWorkplaceId();
-			//<<Command>> 職場で使うシフトパレットを削除する
 			repoOrg.deleteByWorkPlaceId(workplaceId, command.getGroupNo());
 		}
 		

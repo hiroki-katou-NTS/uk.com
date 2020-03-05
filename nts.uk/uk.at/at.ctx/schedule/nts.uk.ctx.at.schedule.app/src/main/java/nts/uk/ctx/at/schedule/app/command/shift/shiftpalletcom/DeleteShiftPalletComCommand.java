@@ -7,7 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+/**
+ * 
+ * @author hieult
+ *
+ */
 public class DeleteShiftPalletComCommand {
 	private String workplaceId;
 	private int groupNo;

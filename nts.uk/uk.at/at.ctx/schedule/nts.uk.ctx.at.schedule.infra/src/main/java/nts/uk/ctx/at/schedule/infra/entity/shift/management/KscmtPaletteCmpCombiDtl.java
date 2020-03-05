@@ -27,22 +27,20 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP_COMBI_DTL")
-public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity{
-	
+public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity {
+
 	@EmbeddedId
 	public KscmtPaletteCmpCombiDtlPk pk;
-	
+
 	/** シフトマスタコード */
 	@Column(name = "SHIFT_MASTER_CD")
 	public String shiftMasterCd;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-    	@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION")
-    })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION") })
 	public KscmtPaletteCmpCombi kscmtPaletteCmpCombi;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -50,8 +48,13 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity{
 
 	public static KscmtPaletteCmpCombiDtl fromDomain(Combinations combinations, KscmtPaletteCmpCombiPk cmpCombiPk) {
 		// TODO Auto-generated method stub
-		KscmtPaletteCmpCombiDtlPk combiDtlPk = new KscmtPaletteCmpCombiDtlPk(AppContexts.user().companyId(), cmpCombiPk.page, cmpCombiPk.position, combinations.getOrder());
+		KscmtPaletteCmpCombiDtlPk combiDtlPk = new KscmtPaletteCmpCombiDtlPk(AppContexts.user().companyId(),
+				cmpCombiPk.page, cmpCombiPk.position, combinations.getOrder());
 		return new KscmtPaletteCmpCombiDtl(combiDtlPk, combinations.getShiftCode().v(), null);
+	}
+
+	public void toEntity(Combinations combinations) {
+		this.shiftMasterCd = combinations.getShiftCode().v();
 	}
 
 	public Combinations toDomain() {
@@ -59,4 +62,3 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity{
 	}
 
 }
-									

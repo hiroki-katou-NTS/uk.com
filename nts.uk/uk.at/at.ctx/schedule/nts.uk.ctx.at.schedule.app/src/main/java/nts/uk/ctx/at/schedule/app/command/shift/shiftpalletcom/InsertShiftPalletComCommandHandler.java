@@ -13,6 +13,12 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * 
+ * @author hieult
+ *
+ */
 @Stateless
 public class InsertShiftPalletComCommandHandler extends CommandHandler<InsertShiftPalletComCommand> {
 
@@ -30,8 +36,10 @@ public class InsertShiftPalletComCommandHandler extends CommandHandler<InsertShi
 			ShiftPalletsCom newShiftPalletsCom = command.toDomain();
 
 			if (!existed.isPresent()) {
+				//<<Command>> 会社別シフトパレットを登録する
 				repo.add(newShiftPalletsCom);
 			} else {
+				//<<Command>> 会社別シフトパレットを更新する
 				repo.update(newShiftPalletsCom);
 			}
 		} else {
@@ -39,8 +47,10 @@ public class InsertShiftPalletComCommandHandler extends CommandHandler<InsertShi
 			ShiftPalletsOrg newShiftPalletsOrg = command.toDom();
 			
 			if (!existedOrg.isPresent())
+				//<<Command>> 会社別シフトパレットを更新する
 				orgRepository.add(newShiftPalletsOrg);
 			else
+				//<<Command>> 職場で使うシフトパレットを更新する
 				orgRepository.update(newShiftPalletsOrg);
 		}
 	}

@@ -5,6 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+/**
+ * 
+ * @author hieult
+ *
+ */
 public class InsertShiftPalletCombinaCommand {
 	public int pairNo;
 	public String shiftCode;

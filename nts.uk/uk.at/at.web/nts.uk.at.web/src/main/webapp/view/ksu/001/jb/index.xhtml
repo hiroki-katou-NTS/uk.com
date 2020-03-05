@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed"
-					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_901')}</button>
+					data-bind=" click: saveData">#{i18n.getText('KSU001_901')}</button>
 				<button class="danger"
 					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_902')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>

@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.aspose.pdf.PKCS1;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -68,6 +70,22 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 				shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v(),
 				shiftPalletsCom.getShiftPallet().getCombinations().stream()
 						.map(x -> KscmtPaletteCmpCombi.fromDomain(x, pk)).collect(Collectors.toList()));
+
+	}
+	
+	public void toEntity(ShiftPalletsCom shiftPalletsCom) {
+		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
+		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
+		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
+		
+		shiftPalletsCom.getShiftPallet().getCombinations().forEach(item->{
+			if(cmpCombis.stream().filter(y-> y.pk.position == item.getPositionNumber()).findFirst().isPresent()) {
+				cmpCombis.stream().filter(y-> y.pk.position == item.getPositionNumber()).findFirst().get().toEntity(item);
+			}
+			else {
+				cmpCombis.add(KscmtPaletteCmpCombi.fromDomain(item, pk));
+			}
+		});
 
 	}
 
