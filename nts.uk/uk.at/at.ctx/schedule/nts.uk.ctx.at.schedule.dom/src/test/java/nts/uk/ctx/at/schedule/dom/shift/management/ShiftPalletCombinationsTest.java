@@ -110,7 +110,8 @@ public class ShiftPalletCombinationsTest {
 		});
 	}
 
-	@Test
+
+	@Test 
 	public void create_shiftPalletsCombi_position1_success() {
 		ShiftPalletCombinations target = new ShiftPalletCombinations(
 				1, 

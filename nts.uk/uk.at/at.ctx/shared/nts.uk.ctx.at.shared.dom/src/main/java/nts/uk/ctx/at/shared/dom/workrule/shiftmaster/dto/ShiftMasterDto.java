@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 
@@ -42,9 +43,20 @@ public class ShiftMasterDto {
 		this.color = color;
 		this.remark = !StringUtils.isEmpty(remark) ? remark : "" ;
 		this.workTypeCd = workTypeCd;
-		this.workTypeName = workTypeName;
+		this.workTypeName =  workTypeName;
+		if(!StringUtils.isEmpty(workTypeCd)) {
+			if(StringUtils.isEmpty(workTypeName)) {
+				this.workTypeName = I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"));
+			} 
+		}
+		
 		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "" ;
 		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "" ;
+		if(!StringUtils.isEmpty(workTimeCd)) {
+			if(StringUtils.isEmpty(workTimeName)) {
+				this.workTimeName = I18NText.getText("KSM015_28", workTimeCd, I18NText.getText("KSM015_29"));
+			} 
+		}
 		this.workTime1 = "";
 		this.workTime2 = "";
 	}

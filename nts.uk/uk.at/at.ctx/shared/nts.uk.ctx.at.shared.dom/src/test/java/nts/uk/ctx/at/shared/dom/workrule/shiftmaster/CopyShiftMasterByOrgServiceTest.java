@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

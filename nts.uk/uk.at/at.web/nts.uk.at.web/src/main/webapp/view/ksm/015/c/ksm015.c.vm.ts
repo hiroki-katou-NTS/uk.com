@@ -162,7 +162,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.windows.setShared('kdl044Data', {
 				isMultiSelect: true,
 				filter: 0,
-				permission: true,
+				permission: false,
 				shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			}, true);
 

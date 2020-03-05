@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 public class ShiftMasterInstanceHelper {
 	public static ShiftMaster getShiftMaterEmpty() {
