@@ -13,4 +13,12 @@ public interface DetailAppCommonSetService {
 	
 	public List<ApplicationMetaOutput> getListDetailAppCommonSet(String companyID, List<String> listAppID);
 	
+	/**
+	 * 14-1.詳細画面起動前申請共通設定を取得する
+	 * @param companyID 会社ID
+	 * @param appID 申請ID
+	 * @return
+	 */
+	public AppDetailScreenInfo getCommonSetBeforeDetail(String companyID, String appID);
+	
 }

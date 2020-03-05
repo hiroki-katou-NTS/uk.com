@@ -49,9 +49,10 @@ public interface CommonAlgorithm {
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param date 基準日
+	 * @param targetApp 申請種類
 	 * @return
 	 */
-	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date);
+	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp);
 	
 	/**
 	 * 12_承認ルートを取得

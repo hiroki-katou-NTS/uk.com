@@ -114,41 +114,43 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst());
 		// 社員IDから申請承認設定情報の取得
-		ApprovalFunctionSetting approvalFunctionSet = this.getApprovalFunctionSet(companyID, "", baseDate);
+		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
+		ApprovalFunctionSetting approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
 		if (approvalFunctionSet.getAppUseSetting().getUserAtr()==UseAtr.NOTUSE) {
 			// エラーメッセージ(Msg_323)を返す
 			throw new BusinessException("Msg_323");
 		}
 		// 使用可能な就業時間帯を取得する
-		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, "", baseDate);
+		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
 		// 社員所属雇用履歴を取得する
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, "", baseDate);
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
 		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
 			// エラーメッセージ(Msg_426)を返す
 			throw new BusinessException("Msg_426");
 		}
 		// 雇用別申請承認設定を取得する
-		List<AppEmploymentSetting> lstEmploymentSet = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
+		AppEmploymentSetting employmentSet = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value)
+				.stream().findFirst().get();
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
 		if(mode) {
 			// 承認ルートを取得
-			approvalRootContentImport = this.getApprovalRoot(companyID, "", EmploymentRootAtr.APPLICATION, appType, baseDate);
+			approvalRootContentImport = this.getApprovalRoot(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, baseDate);
 		}
 		// 申請表示情報(申請対象日関係あり)を取得する
 		AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
 				.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoRelatedDate(
 				companyID, 
-				"", 
+				employeeID, 
 				dateLst, 
 				appType, 
 				appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
 				appTypeSetting.getDisplayInitialSegment());
 		// 取得したした情報をOUTPUT「申請表示情報(基準日関係あり)」にセットする
 		output.setApprovalFunctionSet(approvalFunctionSet);
-		output.setLstEmploymentSet(lstEmploymentSet);
+		output.setEmploymentSet(employmentSet);
 		output.setWorkTimeLst(workTimeLst);
 		output.setApprovalRootState(approvalRootContentImport.approvalRootState);
 		output.setErrorFlag(approvalRootContentImport.getErrorFlag());
@@ -156,12 +158,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		output.setBaseDate(baseDate);
 		output.setAchievementOutputLst(appDispInfoWithDateOutput.getAchievementOutputLst());
 		output.setAppDetailContentLst(appDispInfoWithDateOutput.getAppDetailContentLst());
+		// 「申請表示情報(基準日関係あり)」を返す
 		return output;
 	}
 
 	@Override
-	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date) {
-		ApplicationType targetApp = ApplicationType.ABSENCE_APPLICATION;
+	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp) {
 		// [No.571]職場の上位職場を基準職場を含めて取得する
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, date);
 		for(String workPlaceID : workPlaceIDs) {
@@ -214,7 +216,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
 		// OUTPUT「申請表示情報」にセットする
-		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput);
+		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
 		// OUTPUT「申請表示情報」を返す
 		return output;
 	}
