@@ -161,7 +161,7 @@ module nts.uk.at.view.ksm013.a {
                 $('#nurseClassificationName').ntsEditor('validate');
                 $('#license').ntsEditor('validate');
 
-                if ($('#nurseClassificationCode').ntsError("hasError") || $('#nurseClassificationCode').ntsError("hasError") || $('#license').ntsError("hasError")) {
+                if (nts.uk.ui.errors.hasError()) {
                     return true;
                 }
                 return false;
