@@ -31,6 +31,10 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :companyId"
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit"
 			+ " AND c.kshmtShiftMaterOrgPK.targetId = :targetId";
+	
+	private static final String DELETE_BY_SHIFTMASTER_CD = "DELETE from KshmtShiftMaterOrg c "
+			+ " WHERE c.kshmtShiftMaterOrgPK.shiftMaterCode = :shiftMaterCode";
+	
 	private static final String SELECT_ALREADY_SETTING_WORKPLACE = SELECT_ALL
 			+ " WHERE c.kshmtShiftMaterOrgPK.companyId = :companyId "
 			+ " AND c.kshmtShiftMaterOrgPK.targetUnit = :targetUnit ";
@@ -132,5 +136,12 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 				.setParameter("targetUnit", TargetOrganizationUnit.WORKPLACE.value)
 				.getList();
 		return datas.stream().map(d -> d.kshmtShiftMaterOrgPK.targetId).distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteByShiftMasterCd(String shiftMasterCd) {
+		this.getEntityManager().createQuery(DELETE_BY_SHIFTMASTER_CD)
+				.setParameter("shiftMaterCode", shiftMasterCd)
+				.executeUpdate();
 	}
 }
