@@ -260,8 +260,13 @@ module nts.uk.com.view.cmm022.a {
                 setShared('listMasterToB', self.commonMasters());
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogBToMaster');
-                    self.commonMasterItems(data.itemList);
-                    self.commonMasterItemId.valueHasMutated();
+
+                    if (self.commonMasterItemId() == data.commonMasterItemId) {
+                        self.commonMasterItemId.valueHasMutated();
+                        self.commonMasterItems(data.itemList);
+                    } else {
+                        self.commonMasterItemId(data.commonMasterItemId);
+                    }
                 });
             }
 
