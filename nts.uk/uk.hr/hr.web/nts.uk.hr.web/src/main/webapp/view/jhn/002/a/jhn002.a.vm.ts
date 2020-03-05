@@ -461,10 +461,10 @@ module jhn002.a.viewmodel {
                 command: command
             };
 
-            setShared("JHN002F_PARAMS", param);
+            setShared("JHN001F_PARAMS", param);
 
-            subModal('/view/jhn/002/f/index.xhtml', { title: '' }).onClosed(() => {
-                let reportId = getShared('JHN002F_DATA');
+            subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
+                let reportId = getShared('JHN001F_DATA');
                 let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; })
                 if (objReport && self.reportClsId() == objReport.id) {
                     let param = { layoutReportId: self.reportClsId(), reportId: reportId };
