@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -58,8 +60,8 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 	private static final String FIND_BY_COMPANY = "SELECT a.CID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE,"
 			+ " b.POSITION, b.POSITION_NAME," + " c.POSITION_ORDER, c.SHIFT_MASTER_CD"
-			+ " FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
-			+ " LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
+			+ " FROM KSCMT_PALETTE_CMP a JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE"
+			+ " JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON b.CID = c.CID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 			+ " WHERE a.CID = 'companyId'";
 
 	@AllArgsConstructor
@@ -130,7 +132,22 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public void update(ShiftPalletsCom shiftPalletsCom) {
-		commandProxy().update(KscmtPaletteCmp.fromDomain(shiftPalletsCom));
+
+		Optional<KscmtPaletteCmp> getEntity = this.queryProxy().find(
+				new KscmtPaletteCmpPk(AppContexts.user().companyId(), shiftPalletsCom.getPage()),
+				KscmtPaletteCmp.class);
+
+		if (getEntity.isPresent()) {
+			getEntity.get().toEntity(shiftPalletsCom);
+//			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations();
+//			KscmtPaletteCmp result = getEntity.get();
+//			result.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
+//			result.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value; 
+//			result.cmpCombis.stream().forEach(e->{
+//				combinations.
+//			});
+			commandProxy().update(getEntity.get());
+		}
 
 	}
 
