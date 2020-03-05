@@ -58,15 +58,23 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		}
 
 		public register() {
+			nts.uk.ui.errors.clearAll();
 
+			let self = this;
+			
 			$(".nts-input").trigger("validate");
+			
+			if (!self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() == '') {
+                let KSM015_17 = nts.uk.resource.getText('KSM015_17');
+                $('#worktype-chose').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_17]), "MsgB_2");
+			}
+
 			if (nts.uk.ui.errors.hasError()){
 				return;
 			}
 
-			let self = this;
-			let param = new RegisterShiftMasterDto(self.registrationForm());
 			nts.uk.ui.block.grayout();
+			let param = new RegisterShiftMasterDto(self.registrationForm());
 			service.register(param)
 				.done(() => {
 					service.getlist()
@@ -142,6 +150,9 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 					self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
 					self.registrationForm().workTimeSetName(childData.selectedWorkTimeName);
 					self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
+					if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
+						$('#worktype-chose').ntsError('clear');
+					}
 				}
 			});
 		}
