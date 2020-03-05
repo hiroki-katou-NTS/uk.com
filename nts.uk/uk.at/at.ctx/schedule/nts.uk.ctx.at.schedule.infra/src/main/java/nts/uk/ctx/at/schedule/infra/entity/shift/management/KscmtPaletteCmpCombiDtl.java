@@ -53,6 +53,13 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity {
 		return new KscmtPaletteCmpCombiDtl(combiDtlPk, combinations.getShiftCode().v(), null);
 	}
 
+	public static KscmtPaletteCmpCombiDtl fromOneDomain(int page, int position, int order, String code) {
+		// TODO Auto-generated method stub
+		KscmtPaletteCmpCombiDtlPk combiDtlPk = new KscmtPaletteCmpCombiDtlPk(AppContexts.user().companyId(),
+				page, position, order);
+		return new KscmtPaletteCmpCombiDtl(combiDtlPk, code, null);
+	}
+
 	public void toEntity(Combinations combinations) {
 		this.shiftMasterCd = combinations.getShiftCode().v();
 	}
