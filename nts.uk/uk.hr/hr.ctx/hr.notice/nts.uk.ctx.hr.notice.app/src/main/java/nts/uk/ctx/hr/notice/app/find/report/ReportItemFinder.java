@@ -89,7 +89,9 @@ public class ReportItemFinder {
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
-
+		String appSid = "";
+		String appBussinessName = "";
+		
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
 		approve = true;
@@ -103,6 +105,9 @@ public class ReportItemFinder {
 		Optional<PersonalReportClassification> reportClsOpt = Optional.empty();
 		
 		if(registrationPersonReport.isPresent()) {
+			
+			appSid = registrationPersonReport.get().getAppSid();
+			appBussinessName = registrationPersonReport.get().getAppBussinessName();
 			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
@@ -161,7 +166,7 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, appPhaseLst, release, approve)
+						itemInter, documentSampleDtoLst, appPhaseLst, release, approve, appSid, appBussinessName)
 				: new ReportLayoutDto();
 	}
 	

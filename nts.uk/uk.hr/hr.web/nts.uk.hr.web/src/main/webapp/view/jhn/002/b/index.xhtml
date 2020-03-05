@@ -5,54 +5,80 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script type='text/javascript'>
-				var dialogSize = {
-					width : 1000,
-					height : 600
-				};
-			</script>
-			<com:ValidatorScript>
-					nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 1000, height: 700 };</script>
 			<com:stylefile path="jhn002.b.style.css" />
 			<com:scriptfile path="jhn002.b.service.js" />
-			<com:scriptfile path="jhn002.b.vm.js" />
 			<com:scriptfile path="jhn002.b.start.js" />
+			<com:scriptfile path="jhn002.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
+
 			<div id="contents-area">
-				<div class="form-group">
-					<span class="text-inform">#{i18n.getText('JHN001_B2_1')}</span>
-				</div>
-				
-				<div class="form-group-2">
-					<div class="row1"
-						data-bind="ntsFormLabel: {required: true , enable: true}">#{i18n.getText('JHN001_B2_2')}</div>
-					<div>
-						<div tabindex="1">
-							<table id="B221_4"
-								data-bind="ntsGridList: {
-									options: listReportDraft,
-									optionsValue: 'id',
-									columns: reportColums,
+				<div class="cf">
+					<div style="width: 880px; margin: 20px auto;">
+						<div style="display: inline-block; width: 530px">
+							<div style="display: inline-block; width: 360px" data-bind="ntsSearchBox: {
+								targetKey: 'departmentId', 
+								mode:'igTree', 
+								searchMode : 'highlight',
+								comId:'treegrid', 
+								items: departmentList, 
+								selected: searchBoxSelected, 
+								selectedKey: 'codeName', 
+								childField: 'children', 
+								fields: ['codeName']}" />
+							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JHN002_B2_3')}</div>
+							<div style="display: inline-block;">
+								<table id="treegrid"
+									data-bind="ntsTreeGridView:{
+									width: 450, 
+									height: 450,
+									dataSource: departmentList,
+									value: departmentCode,
+									primaryKey: 'departmentId',
+									childDataKey: 'children',
+									primaryText: 'codeName',
 									multiple: false,
-									value: reportId ,
-									rows:15 }">
-							</table>
+									enable: true,
+									enable: true,
+									columns: columns,
+									showCheckBox: false}">
+								</table>
+							</div>
 						</div>
-						
-						
+						<div style="display: inline-block;  width: 320px">
+							<div style="display: inline-block; width: 390px" class="nts-searchbbox-wrapper">
+								<div class="input-wrapper">
+									<span class="ntsControl">
+										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" data-bind="value: key, attr: {placeholder: '#{i18n.getText('JHN002_B2_5')}'}" />
+									</span>
+								</div>
+								<div class="input-wrapper">
+									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">検索</button>
+								</div>
+							</div>
+							<div style="display: inline-block;">
+								<table id="single-list" data-bind="ntsGridList: {								
+									width: 314, 
+									height: 450,
+									dataSource: employeeList,
+									primaryKey: 'sid',
+									columns: columns2,
+									multiple: false,
+									value: selectedCode
+								}"></table>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="2" class="proceed large" data-bind="click: continueProcess">#{i18n.getText('JHN001_B1_1')}</button>
-				<button tabindex="3" class="large" data-bind="click: closeDialog">#{i18n.getText('JHN001_B1_2')}</button>
-				<button tabindex="4" class="danger large" data-bind="click: deleteSaveDraft">#{i18n.getText('JHN001_B1_3')}</button>
+				<button class="proceed x-large" data-bind="click: decision, enable: selectedCode()!=''">#{i18n.getText('JHN002_B1_1')}</button>
+				<button data-bind="click: close" id="close">#{i18n.getText('JHN002_B1_2')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

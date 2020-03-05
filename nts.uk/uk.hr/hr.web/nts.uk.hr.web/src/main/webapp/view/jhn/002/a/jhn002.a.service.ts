@@ -6,9 +6,7 @@ module jhn002.a.service {
         getListReport:          'hr/notice/report/regis/person/getAll',
         getListReportSaveDraft: 'hr/notice/report/regis/person/getAll-SaveDraft',
         getReportDetails:       'hr/notice/report/item/findOne',
-        remove:                 'hr/notice/report/regis/person/remove',
-        saveDraftData:          'hr/notice/report/regis/person/saveDraft',
-        saveData:               'hr/notice/report/regis/person/save',       
+        saveData:               'hr/notice/report/regis/report/agent/save',       
         getListDoc:             'hr/notice/report/regis/person/document/findAll',
         layout: {
             getAll:     'ctx/pereg/person/maintenance/findSimple/{0}',

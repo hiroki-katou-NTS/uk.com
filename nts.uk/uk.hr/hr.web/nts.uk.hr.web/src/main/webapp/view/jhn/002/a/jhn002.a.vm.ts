@@ -26,9 +26,8 @@ module jhn002.a.viewmodel {
 
         enaGoBack: KnockoutObservable<boolean> = ko.observable(false);
         enaSave: KnockoutObservable<boolean> = ko.observable(true);
-        enaSaveDraft: KnockoutObservable<boolean> = ko.observable(true);
         enaAttachedFile: KnockoutObservable<boolean> = ko.observable(true);
-        enaRemove: KnockoutObservable<boolean> = ko.observable(true);
+        enaGetEmployeeAgent: KnockoutObservable<boolean> = ko.observable(true);
 
         listItemDf = [];
         missingDocName = '';
@@ -36,8 +35,8 @@ module jhn002.a.viewmodel {
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 200, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 140, hidden: false, formatter: _.escape }
+            { headerText: text('JHN002_A221_4_1'), key: 'reportName', width: 190, hidden: false },
+            { headerText: text('JHN002_A221_4_2'), key: 'remark', width: 130, hidden: false, formatter: _.escape }
         ]);
 
         constructor(reportId) {
@@ -49,7 +48,7 @@ module jhn002.a.viewmodel {
             
             $('.input-wrapper').addClass("notranslate");
             
-            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN001', screenId: 'A' }] },
+            nts.uk.ui.guide.operateCurrent('guidance/guideOperate', { screenGuideParam: [{ programId: 'JHN002', screenId: 'A' }] },
             Page.NORMAL);
 
             if (reportId) {
@@ -61,26 +60,13 @@ module jhn002.a.viewmodel {
                 if (id) {
 
                     nts.uk.ui.errors.clearAll();
+                    self.enaGetEmployeeAgent(true);
 
                     block();
                     let objReport = _.find(self.layouts(), function(o) { return o.id == id; })
 
                     if (objReport == undefined || objReport == null) {
                         return;
-                    }
-
-                    // A1.3
-                    if (objReport.regStatus != null && objReport.regStatus == 2) {
-                        self.enaSaveDraft(false);
-                    } else {
-                        self.enaSaveDraft(true);
-                    }
-
-                    // A1.6
-                    if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
-                        self.enaRemove(false);
-                    } else {
-                        self.enaRemove(true);
                     }
 
                     let query = {
@@ -99,13 +85,16 @@ module jhn002.a.viewmodel {
 
                             // set sendBackComment header A222_2_1
                             let sendBackCommentVar =  objReport.sendBackComment == null ? '' : objReport.sendBackComment;
-                            layout.sendBackComment(text('JHN001_A222_2_1') + ' : ' + sendBackCommentVar);
+                            layout.sendBackComment(text('JHN002_A222_2_1') + ' : ' + sendBackCommentVar);
 
                             // set message header A222_1_1
-                            layout.message(text('JHN001_A222_1_1') + ' : ' + data.message);
+                            layout.message(text('JHN002_A222_1_1') + ' : ' + data.message);
                             
                             // set reportName
                             layout.reportNameLabel(data.reportName);
+                            
+                            layout.agentName(data.appBussinessName);
+                            layout.agentSid(data.appSid);
 
                             // set list file document
                             self.setListDocument(data.documentSampleDto);
@@ -118,6 +107,13 @@ module jhn002.a.viewmodel {
                             _.defer(() => {
                                 new vc(self.layout().listItemCls());
                             });
+                            
+                            if(data.appBussinessName == null || data.appBussinessName == ''){
+                                self.enaSave(false);    
+                            }else{
+                                 self.enaSave(true);
+                            }
+                            
                             unblock();
                         } else {
                             self.layout().listItemCls.removeAll();
@@ -128,6 +124,12 @@ module jhn002.a.viewmodel {
                         self.layout().listItemCls.removeAll();
                         unblock();
                     });
+                    
+                    self.setHightContent();
+                }else{
+                    self.newMode();
+                    self.enaSave(true);
+                    self.enaGetEmployeeAgent(false);
                 }
             });
 
@@ -247,38 +249,24 @@ module jhn002.a.viewmodel {
             }
         }
 
-        getListReportSaveDraft(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            var dfdGetData = service.getListReportSaveDraft();
-            block();
-            $.when(dfdGetData).done((listReportDarft: any) => {
-                nts.uk.ui.errors.clearAll();
-                if (listReportDarft.length > 0) {
-                    subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
-                        let dataShare = getShared('JHN001B_PARAMS');
-                        if (dataShare.hasRemove == true) {
-                            // get lai danh sach report
-                            let reportId = dataShare.reportId;
-                            self.start(reportId, false);
-                        } else {
-                            // khong phai get lai danh sach report , truong hop close thi khong lam gi ca.
-                            if (dataShare.isContinue == true) {
-                                let reportId = dataShare.reportId;
-                                let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
-                                if (objReport) {
-                                    self.reportClsId(objReport.id);
-                                } else {
-                                    self.start(reportId, false);
-                                }
-                            }
-                        }
-                    });
+        getEmployeeAgent() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            
+            subModal('/view/jmm/018/y/index.xhtml', { title: '' }).onClosed(() => {
+                let dataShare = getShared('shareToJMM018Z');
+                if (dataShare != undefined) {
+                    console.log(dataShare);
+                    self.layout().agentName(dataShare.employeeName);
+                    self.layout().agentSid(dataShare.sid);
                 }
-                unblock();
-                dfd.resolve();
+                
+                if(self.layout().agentName() == null || self.layout().agentName() == ''){
+                    self.enaSave(false);    
+                }else{
+                    self.enaSave(true);     
+                }
             });
-            return dfd.promise();
         }
 
         start(reportId , opendialogB): JQueryPromise<any> {
@@ -337,7 +325,7 @@ module jhn002.a.viewmodel {
                 }
                 
                 if(opendialogB == true){
-                    self.getListReportSaveDraft().done(() => {});    
+                    self.getEmployeeAgent();    
                 }
 
                 dfd.resolve();
@@ -349,12 +337,27 @@ module jhn002.a.viewmodel {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts;
-
+            self.layout().reportNameLabel('');
+            self.layout().agentName('');
+            self.layout().agentSid('');
+            
             self.layout().listItemCls.removeAll();
-            self.layout().sendBackComment('');
-            self.layout().message('');
+            self.layout().sendBackComment(text('JHN002_A222_2_1')  + ' : ' );
+            self.layout().message(text('JHN002_A222_1_1')  + ' : ' );
             self.layout().listDocument([]);
+            self.layout().approvalRootState([]);
 
+        }
+        
+        setHightContent() {
+            let self = this;
+            const $content = $('#contents-area');
+
+            if ($content.length) {
+                const bound = $content.get(0).getBoundingClientRect();
+
+                $content.css('height', `calc(100vh - ${bound.top + 20}px)`);
+            }
         }
 
         save() {
@@ -389,7 +392,8 @@ module jhn002.a.viewmodel {
                 workId: objReport.workId == null ? 0 : objReport.workId,
                 rootSateId: objReport.rootSateId,
                 isSaveDraft: 0,
-                missingDocName: self.missingDocName
+                missingDocName: self.missingDocName,
+                appSid: self.layout().agentSid()
             };
 
             // trigger change of all control in layout
@@ -405,7 +409,6 @@ module jhn002.a.viewmodel {
                 block();
                 service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.enaRemove(true);
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
@@ -413,63 +416,6 @@ module jhn002.a.viewmodel {
                 });
             }, 50);
 
-        }
-
-        saveDraft() {
-            let self = this,
-                layout = self.layout,
-                layouts = self.layouts,
-                controls = self.layout().listItemCls();
-
-            // refresh data from layout
-            self.layout().outData.refresh();
-            let inputs = self.layout().outData();
-
-            let reportLayoutId = self.reportClsId();
-            if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
-                return;
-
-            let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
-
-            if (objReport == undefined || objReport == null) {
-                return;
-            }
-
-            let command = {
-                inputs: inputs,
-                listItemDf: self.listItemDf,
-                reportID: objReport.reportId,
-                reportLayoutID: reportLayoutId,
-                reportCode: objReport.reportCode,
-                reportName: objReport.reportName,
-                reportType: objReport.reportType,
-                sendBackComment: objReport.sendBackComment,
-                workId: objReport.workId == null ? 0 : objReport.workId,
-                rootSateId: objReport.rootSateId,
-                isSaveDraft: 1,
-                missingDocName: self.missingDocName
-            };
-
-            // trigger change of all control in layout
-            lv.checkError(controls);
-
-            setTimeout(() => {
-                if (hasError()) {
-                    $('#func-notifier-errors').trigger('click');
-                    return;
-                }
-
-                // push data layout to webservice
-                block();
-                service.saveDraftData(command).done(() => {
-                    info({ messageId: "Msg_15" }).then(function() {
-                        self.enaRemove(true);
-                        self.start(null, false);
-                    });
-                }).fail((mes: any) => {
-                    unblock();
-                });
-            }, 50);
         }
 
         attachedFile() {
@@ -515,10 +461,10 @@ module jhn002.a.viewmodel {
                 command: command
             };
 
-            setShared("JHN001F_PARAMS", param);
+            setShared("JHN002F_PARAMS", param);
 
-            subModal('/view/jhn/001/f/index.xhtml', { title: '' }).onClosed(() => {
-                let reportId = getShared('JHN001F_DATA');
+            subModal('/view/jhn/002/f/index.xhtml', { title: '' }).onClosed(() => {
+                let reportId = getShared('JHN002F_DATA');
                 let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; })
                 if (objReport && self.reportClsId() == objReport.id) {
                     let param = { layoutReportId: self.reportClsId(), reportId: reportId };
@@ -532,45 +478,11 @@ module jhn002.a.viewmodel {
             });
         }
 
-        remove() {
-            let self = this,
-                layout = self.layout,
-                layouts = self.layouts;
-
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                block();
-                let reportLayoutId = self.reportClsId();
-                if (reportLayoutId == '' || reportLayoutId == null || reportLayoutId == undefined)
-                    return;
-
-                let objReport = _.find(self.layouts(), function(o) { return o.id == reportLayoutId; })
-
-                if (objReport == undefined || objReport == null) {
-                    return;
-                }
-
-                let objRemove = {
-                    reportId: string = objReport.reportId
-                };
-
-                service.removeData(objRemove).done(() => {
-                    info({ messageId: "MsgJ_40" }).then(function() {
-                        self.reportClsId(null);
-                        self.start(null , false);
-                    });
-                }).fail((mes: any) => {
-                    unblock();
-                });
-            }).ifNo(() => { });
-        }
 
         public backTopScreenTopReport(): void {
             let self = this;
-            window.history.back();
+            console.log('chua order lan nay');
+            //window.history.back();
         }
     }
 
@@ -586,6 +498,10 @@ module jhn002.a.viewmodel {
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
         reportNameLabel: KnockoutObservable<string> = ko.observable('');
+        agentName: KnockoutObservable<string> = ko.observable('');
+        agentSid: KnockoutObservable<string> = ko.observable('');
+        reportNameVisible: KnockoutObservable<boolean> = ko.observable(false);
+        agentNameVisible: KnockoutObservable<boolean> = ko.observable(false);
 
         listDocument: any = ko.observableArray([]);
         
@@ -594,6 +510,22 @@ module jhn002.a.viewmodel {
 
         constructor() {
             let self = this;
+            
+            self.reportNameLabel.subscribe(name => {
+                if (name == '' || name == null || name == undefined) {
+                    self.reportNameVisible(false);
+                } else {
+                    self.reportNameVisible(true);
+                }
+            });
+
+            self.agentName.subscribe(name => {
+                if (name == '' || name == null || name == undefined) {
+                    self.agentNameVisible(false);
+                } else {
+                    self.agentNameVisible(true);
+                }
+            });
         }
 
         clickSampleFileName() {

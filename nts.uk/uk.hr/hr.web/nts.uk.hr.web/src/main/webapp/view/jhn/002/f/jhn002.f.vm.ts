@@ -44,7 +44,7 @@ module jhn001.f.vm {
 
         constructor() {
             let self = this,
-                dto: any = getShared('CPS001F_PARAMS') || {};
+                dto: any = getShared('CPS002F_PARAMS') || {};
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
@@ -72,7 +72,7 @@ module jhn001.f.vm {
             let self = this,
                 dfd = $.Deferred();
             let listItem   = [];
-            let dataShare  = getShared('JHN001F_PARAMS');
+            let dataShare  = getShared('JHN002F_PARAMS');
             self.dataShare = dataShare;
             self.reportId  = dataShare.reportId;
             self.layoutReportId  = dataShare.layoutReportId;
@@ -284,7 +284,7 @@ module jhn001.f.vm {
 
         close() {
             let self = this;
-            setShared("JHN001F_DATA", self.reportId);
+            setShared("JHN002F_DATA", self.reportId);
             close();
         }
     }

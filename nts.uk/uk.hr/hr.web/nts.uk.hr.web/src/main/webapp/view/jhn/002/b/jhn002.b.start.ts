@@ -1,10 +1,8 @@
-module jhn002.b {
-    let __viewContext: any = window['__viewContext'] || {};
+module nts.uk.com.view.jhn002.b {
     __viewContext.ready(function() {
-        __viewContext['viewModel'] = new vm.ViewModel();
-        __viewContext.bind(__viewContext['viewModel']);
-        
-        // focus to first input textbox
-        $('#reason').focus();
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });
     });
 }
