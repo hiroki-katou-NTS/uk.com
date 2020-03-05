@@ -7,6 +7,8 @@ module nts.uk.at.view.ksu001.jb.service {
         getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
         //getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
         getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId", 
+        //Get data tooltip
+        getShiftMasterWorkInfo: "ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace"
     }
 
     export function registerWorkPairPattern(obj): JQueryPromise<any> {

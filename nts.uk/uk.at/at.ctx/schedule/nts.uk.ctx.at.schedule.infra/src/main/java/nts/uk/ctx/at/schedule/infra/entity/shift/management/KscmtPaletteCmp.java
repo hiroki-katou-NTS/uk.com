@@ -79,8 +79,11 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
 
 		cmpCombis.stream().forEach(x -> {
-			x.toEntity(shiftPalletsCom.getShiftPallet().getCombinations().stream()
-					.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().get());
+			if(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+					.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+						.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().get());
+			}
 		});
 
 	}

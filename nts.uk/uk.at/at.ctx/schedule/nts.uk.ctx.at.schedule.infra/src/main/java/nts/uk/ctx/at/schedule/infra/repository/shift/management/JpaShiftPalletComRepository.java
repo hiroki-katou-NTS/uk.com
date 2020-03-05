@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -147,7 +148,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			List<Shifutoparetto> shifutoparettos = new ArrayList<>();
 			List<KscmtPaletteCmpCombi> combis = combinations.stream()
 					.map(i -> KscmtPaletteCmpCombi.fromOneDomain(i, getEntity.get().pk)).collect(Collectors.toList());
-			combinations.stream().forEach(i -> {
+			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
 				shifutoparettos
 						.addAll(i
 								.getCombinations().stream().map(o -> new Shifutoparetto(i.getPositionNumber(),
@@ -156,21 +157,30 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 				// shifutoparettos.add(index, element);
 			});
 
-			List<Combinations> combinationList = new ArrayList<>();
-			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
-				combinationList.addAll(i.getCombinations());
+//			List<Combinations> combinationList = new ArrayList<>();
+//			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
+//				combinationList.addAll(i.getCombinations());
+//			});
+//			//List<String> shipCodes = new ArrayList<>();
+			List<Shifutoparetto> shifutoparettoss = new ArrayList<>();
+			Map<Integer, List<Shifutoparetto>> mapShifutoparetto = shifutoparettos.stream().collect(Collectors.groupingBy(Shifutoparetto::getPositionNumber));
+						getEntity.get().cmpCombis.stream().forEach(i -> {
+				if(mapShifutoparetto.containsKey(i.pk.position))
+				{
+					List<Shifutoparetto> shifutoparettoMap = mapShifutoparetto.get(i.pk.position);
+					List<Integer> shipCodeFilter = i.cmpCombiDtls.stream().map(e -> e.pk.positionOrder).collect(Collectors.toList());
+					shifutoparettoss.addAll(shifutoparettoMap.stream().filter(o-> !shipCodeFilter.contains(o.order)).collect(Collectors.toList()));
+				}
 			});
-			List<String> shipCodes = new ArrayList<>();
-			getEntity.get().cmpCombis.stream().forEach(i -> {
-				shipCodes.addAll(i.cmpCombiDtls.stream().map(e -> e.shiftMasterCd).collect(Collectors.toList()));
-			});
-			List<Shifutoparetto> combinationInsert = shifutoparettos.stream()
-					.filter(i -> !shipCodes.contains(i.getShiftCode())).collect(Collectors.toList());
+			List<Integer> positions = getEntity.get().cmpCombis.stream().map(i->i.pk.position).collect(Collectors.toList());
+			shifutoparettoss.addAll(shifutoparettos.stream().filter(i-> !positions.contains(i.positionNumber)).collect(Collectors.toList()));
+//			List<Shifutoparetto> combinationInsert = shifutoparettos.stream()
+//					.filter(i -> !shipCodes.contains(i.getShiftCode())).collect(Collectors.toList());
 			this.commandProxy().update(getEntity.get());
-			if (!combis.isEmpty()) {
-				this.commandProxy().insertAll(combis);
-			}
-			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = combinationInsert.stream()
+//			if (!combis.isEmpty()) {
+//				this.commandProxy().insertAll(combis);
+//			}
+			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = shifutoparettoss.stream()
 					.map(i -> KscmtPaletteCmpCombiDtl.fromOneDomain(i.getPage(), i.getPositionNumber(),i.getOrder(),i.getShiftCode())).collect(Collectors.toList());
 			if (!combis.isEmpty()) {
 				this.commandProxy().insertAll(combis);

@@ -81,8 +81,11 @@ public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
 	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
 		this.positionName = shiftPalletCombinations.getCombinationName().v();
 		cmpCombiDtls.stream().forEach(x -> {
-			x.toEntity(shiftPalletCombinations.getCombinations().stream()
-					.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().get());
+			if(shiftPalletCombinations.getCombinations().stream()
+					.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletCombinations.getCombinations().stream()
+						.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().get());
+			}
 		});
 	}
 }

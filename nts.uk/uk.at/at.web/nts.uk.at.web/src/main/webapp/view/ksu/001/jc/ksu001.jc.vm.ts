@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
              * push data to dataSource
              */
             $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterName;
+                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterCode;
 
                 if (event.ctrlKey) {
                     $(this.parentElement.children).html(nameWTypeWTime);
@@ -56,7 +56,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 } else {
                     $(this).html(nameWTypeWTime);
                     let index = +$(this).parent().prev().children()[$(this).index()].innerHTML;
-                    _.remove(self.dataSource(), { index: index });
+                    _.remove(self.dataSource(), { index: index - 1 });
                     self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.selectedShiftMaster() });
                 }
             });

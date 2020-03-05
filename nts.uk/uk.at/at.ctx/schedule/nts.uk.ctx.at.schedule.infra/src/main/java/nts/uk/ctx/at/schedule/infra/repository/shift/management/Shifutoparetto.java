@@ -2,14 +2,16 @@ package nts.uk.ctx.at.schedule.infra.repository.shift.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+
 
 @AllArgsConstructor
 @Data
 public class Shifutoparetto {
 	
-	private int positionNumber;
-	private int order;
-	private String shiftCode;
-	private int page;
+	public int positionNumber;
+	public int order;
+	public String shiftCode;
+	public int page;
 
 }

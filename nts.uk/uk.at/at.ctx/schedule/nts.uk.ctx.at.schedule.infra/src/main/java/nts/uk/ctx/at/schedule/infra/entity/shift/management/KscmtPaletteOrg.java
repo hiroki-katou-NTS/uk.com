@@ -18,6 +18,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
+import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -71,6 +72,21 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 				shiftPalletsOrg.getShiftPallet().getDisplayInfor().getRemarks().v(),
 				shiftPalletsOrg.getShiftPallet().getCombinations().stream()
 				.map(x -> KscmtPaletteOrgCombi.fromDomain(x, pk)).collect(Collectors.toList()));
+	}
+
+	public void toEntity(ShiftPalletsOrg shiftPalletsCom) {
+		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
+		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
+		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
+
+		orgCombis.stream().forEach(x -> {
+			if(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+					.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+						.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().get());
+			}
+		});
+
 	}
 	//new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class)
 	public ShiftPalletsOrg toDomain() {

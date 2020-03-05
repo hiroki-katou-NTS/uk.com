@@ -69,5 +69,23 @@ public class KscmtPaletteOrgCombi extends ContractUkJpaEntity{
 				shiftPalletCombinations.getCombinationName().v(), null, 
 				shiftPalletCombinations.getCombinations().stream().map(x-> KscmtPaletteOrgCombiDtl.fromDomain(x,orgCombiPk)).collect(Collectors.toList()));
 	}
+	public static KscmtPaletteOrgCombi fromOneDomain(ShiftPalletCombinations shiftPalletCombinations,
+			KscmtPaletteOrgPk pk) {
+		KscmtPaletteOrgCombiPk cmpCombiPk = new KscmtPaletteOrgCombiPk(AppContexts.user().companyId(), pk.targetUnit, pk.targetId, pk.page,
+				shiftPalletCombinations.getPositionNumber());
+		return new KscmtPaletteOrgCombi(cmpCombiPk, shiftPalletCombinations.getCombinationName().v(), null,
+				null);
+	}
+
+	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
+		this.positionName = shiftPalletCombinations.getCombinationName().v();
+		orgCombiDtls.stream().forEach(x -> {
+			if(shiftPalletCombinations.getCombinations().stream()
+					.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletCombinations.getCombinations().stream()
+						.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().get());
+			}
+		});
+	}
 
 }

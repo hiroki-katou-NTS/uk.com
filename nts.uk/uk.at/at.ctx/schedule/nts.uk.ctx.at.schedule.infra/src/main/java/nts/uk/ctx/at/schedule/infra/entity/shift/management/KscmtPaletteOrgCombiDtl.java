@@ -57,4 +57,15 @@ public class KscmtPaletteOrgCombiDtl extends ContractUkJpaEntity{
 	public Combinations toDomain() {
 		return new Combinations(pk.positionOrder, new ShiftPalletCode(shiftMasterCd));
 	}
+
+	public static KscmtPaletteOrgCombiDtl fromOneDomain(int targetUnit, String targetId, int page, int position, int positionOrder, String shiftMasterCd) {
+		// TODO Auto-generated method stub
+		KscmtPaletteOrgCombiDtlPk combiDtlPk = new KscmtPaletteOrgCombiDtlPk(AppContexts.user().companyId(),
+				targetUnit, targetId, page, position, positionOrder);
+		return new KscmtPaletteOrgCombiDtl(combiDtlPk, shiftMasterCd, null);
+	}
+
+	public void toEntity(Combinations combinations) {
+		this.shiftMasterCd = combinations.getShiftCode().v();
+	}
 }
