@@ -16,8 +16,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.searchValue = ko.observable("");
 			self.registrationForm = ko.observable(new RegistrationForm());
 			self.selectedShiftMaster.subscribe((value) => {
-				nts.uk.ui.errors.clearAll();
-				self.bindShiftMasterInfoToForm(value);
+				if(!value) {
+					self.createNew();
+				} else {
+					nts.uk.ui.errors.clearAll();
+					self.bindShiftMasterInfoToForm(value);
+				}
 			});
 		}
 
@@ -48,6 +52,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			nts.uk.ui.errors.clearAll();
 			self.selectedShiftMaster("");
 			self.registrationForm().clearData();
+			$('#requiredCode').focus();
 		}
 
 		public bindShiftMasterInfoToForm(code: String) {

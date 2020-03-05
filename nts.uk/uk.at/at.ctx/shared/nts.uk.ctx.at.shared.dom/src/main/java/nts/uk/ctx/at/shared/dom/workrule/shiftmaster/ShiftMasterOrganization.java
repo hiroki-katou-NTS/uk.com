@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
@@ -36,12 +37,12 @@ public class ShiftMasterOrganization implements DomainAggregate {
 	public ShiftMasterOrganization(String companyId, TargetOrgIdenInfor targetOrg, List<String> listShiftMaterCode) {
 		//inv-1	@シフトマスタリスト.size > 0	
 		if(listShiftMaterCode.isEmpty()) {
-			throw new RuntimeException("シフトマスタリスト.size > 0");
+			throw new BusinessException("シフトマスタリスト.size > 0");
 		}
 		//inv-2	@シフトマスタリスト の内容が重複しない	
 		List<String> listCode =  listShiftMaterCode.stream().distinct().collect(Collectors.toList());
 		if(listCode.size() != listShiftMaterCode.size()) {
-			throw new RuntimeException("シフトマスタリスト.size > 0");
+			throw new BusinessException("シフトマスタリスト.size > 0");
 		}
 		
 		this.companyId = companyId;
@@ -56,12 +57,12 @@ public class ShiftMasterOrganization implements DomainAggregate {
 	public void change(List<String> listShiftMaterCode) {
 		//inv-1	@シフトマスタリスト.size > 0	
 		if(listShiftMaterCode.isEmpty()) {
-			throw new RuntimeException("シフトマスタリスト.size > 0");
+			throw new BusinessException("シフトマスタリスト.size > 0");
 		}
 		//inv-2	@シフトマスタリスト の内容が重複しない	
 		List<String> listCode =  listShiftMaterCode.stream().distinct().collect(Collectors.toList());
 		if(listCode.size() != listShiftMaterCode.size()) {
-			throw new RuntimeException("シフトマスタリスト.size > 0");
+			throw new BusinessException("シフトマスタリスト.size > 0");
 		}
 		
 		this.listShiftMaterCode = listCode;

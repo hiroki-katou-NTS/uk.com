@@ -96,10 +96,10 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
-			if (self.shiftItems().length === 0) {
-				nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-				return;
-			}
+			// if (self.shiftItems().length === 0) {
+			// 	nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+			// 	return;
+			// }
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE,
 				workplaceId: self.selectedWorkplaceId(),
