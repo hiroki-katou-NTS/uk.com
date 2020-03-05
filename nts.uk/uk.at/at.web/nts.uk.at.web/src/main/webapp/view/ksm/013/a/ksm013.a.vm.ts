@@ -124,11 +124,11 @@ module nts.uk.at.view.ksm013.a {
             public remove() {
                 let self = this,
                     dfd = $.Deferred();
-                nts.uk.ui.block.grayout();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let param = {
                         nurseClassificationCode: self.nurseClModel.nurseClassificationCode()
                     }
+                    nts.uk.ui.block.grayout();
                     service.remove(param).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         if (self.lstNurseCl().length == 1) {
@@ -149,7 +149,6 @@ module nts.uk.at.view.ksm013.a {
                         dfd.resolve();
                     });
                 }).ifNo(function() {
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                     return;
                 });
