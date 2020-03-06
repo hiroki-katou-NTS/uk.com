@@ -49,7 +49,7 @@ class RegistrationForm {
               self.workTypeDisplay = ko.observable('');
               self.workTypeCd.subscribe((val) => {
                      console.log(val);
-                     self.workTypeDisplay(val + '   ' + self.shiftMasterName());
+                     self.workTypeDisplay(val + '   ' + self.workTypeName());
               });
               self.workTimeSetCd = ko.observable('');
               self.workTimeSetName = ko.observable('');

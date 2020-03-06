@@ -58,7 +58,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId,
 				new ShiftMasterCode(cmd.getShiftMasterCode()).v());
 		if (cmd.getNewMode() && existed.isPresent()) {
-			throw new BusinessException("Msg_1610");
+			throw new BusinessException("Msg_3");
 		}
 
 		WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
