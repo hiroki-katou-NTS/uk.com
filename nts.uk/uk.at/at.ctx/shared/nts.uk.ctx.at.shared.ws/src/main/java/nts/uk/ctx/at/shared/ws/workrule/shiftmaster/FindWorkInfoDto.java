@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.workrule.shiftmaster;
+package nts.uk.ctx.at.shared.ws.workrule.shiftmaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkInfoDto {
-	private WorkTimeSettingDto workTime;
-	private WorkTypeDto workType;
+public class FindWorkInfoDto {
+	private String workTypeCd;
+	private String workTimeCd;
 }

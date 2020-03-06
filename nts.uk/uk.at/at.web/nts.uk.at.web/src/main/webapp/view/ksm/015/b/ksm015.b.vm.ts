@@ -16,7 +16,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.searchValue = ko.observable("");
 			self.registrationForm = ko.observable(new RegistrationForm());
 			self.selectedShiftMaster.subscribe((value) => {
-				if(!value) {
+				if (!value) {
 					self.createNew();
 				} else {
 					nts.uk.ui.errors.clearAll();
@@ -31,7 +31,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			nts.uk.ui.block.grayout();
 			service.startPage().done((data) => {
 				let sorted = _.sortBy(data.shiftMasters, 'shiftMasterCode');
-				self.shiftMasters( sorted);
+				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
 				} else {
@@ -67,15 +67,15 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			nts.uk.ui.errors.clearAll();
 
 			let self = this;
-			
+
 			$(".nts-input").trigger("validate");
-			
+
 			if (!self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() == '') {
-                let KSM015_17 = nts.uk.resource.getText('KSM015_17');
-                $('#worktype-chose').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_17]), "MsgB_2");
+				let KSM015_17 = nts.uk.resource.getText('KSM015_17');
+				$('#worktype-chose').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_17]), "MsgB_2");
 			}
 
-			if (nts.uk.ui.errors.hasError()){
+			if (nts.uk.ui.errors.hasError()) {
 				return;
 			}
 
@@ -105,11 +105,11 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 					// 削除後のB5_a1[シフトリスト]選択処理									
 					let i = _.findIndex(self.shiftMasters(), x => { return x.shiftMasterCode == self.selectedShiftMaster() });
 					let nextSelectedCode;
-					if(self.shiftMasters().length == 1) {
+					if (self.shiftMasters().length == 1) {
 						nextSelectedCode = '';
 					} else if (i === 0) {
 						nextSelectedCode = self.shiftMasters()[1].shiftMasterCode;
-					} else if (i === (self.shiftMasters().length -1 )) {
+					} else if (i === (self.shiftMasters().length - 1)) {
 						nextSelectedCode = self.shiftMasters()[self.shiftMasters().length - 2].shiftMasterCode;
 					} else {
 						nextSelectedCode = self.shiftMasters()[i + 1].shiftMasterCode;
@@ -153,13 +153,20 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				var childData = nts.uk.ui.windows.getShared('childData');
 				if (childData) {
 					console.log(childData);
-					self.registrationForm().workTypeName(childData.selectedWorkTypeName);
-					self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
-					self.registrationForm().workTimeSetName(childData.selectedWorkTimeName);
-					self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
-					if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
-						$('#worktype-chose').ntsError('clear');
+					let param = {
+						workTypeCd: childData.selectedWorkTypeCode,
+						workTimeCd: childData.selectedWorkTimeCode
 					}
+					service.getWorkInfo(param)
+						.done((res) => {
+							self.registrationForm().workTypeName( res.workType ? res.workType.name : childData.selectedWorkTypeName);
+							self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
+							self.registrationForm().workTimeSetName(res.workTime ? res.workType.name :  childData.selectedWorkTimeName);
+							self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
+							if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
+								$('#worktype-chose').ntsError('clear');
+							}
+						});
 				}
 			});
 		}

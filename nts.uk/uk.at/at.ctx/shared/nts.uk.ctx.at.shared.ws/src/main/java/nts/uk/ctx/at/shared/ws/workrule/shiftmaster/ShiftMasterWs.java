@@ -134,8 +134,8 @@ public class ShiftMasterWs {
 	
 	@POST
 	@Path("workinfo/get")
-	public WorkInfoDto getWorkInfo(String workTypeCd, String workTimeCd){
-		return this.finder.getWorkInfo(workTypeCd, workTimeCd);
+	public WorkInfoDto getWorkInfo(FindWorkInfoDto dto){
+		return this.finder.getWorkInfo(dto.getWorkTypeCd(), dto.getWorkTimeCd());
 	}
 	
 }

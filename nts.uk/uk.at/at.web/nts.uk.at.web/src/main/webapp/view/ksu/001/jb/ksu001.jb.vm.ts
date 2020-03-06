@@ -392,10 +392,11 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject = [];                    
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        arrPairShortName.push('[' + wPSet.shiftCode + ']');
+                        self.selectedTab() === 'company'? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                                                        : arrPairShortName.push('[' + wPSet.workTypeCode + ']');
                         arrPairObject.push({
-                            index: wPSet.order,
-                            value: wPSet.shiftCode
+                            index: self.selectedTab() === 'company'? wPSet.order : wPSet.pairNo,
+                            value: self.selectedTab() === 'company'? wPSet.shiftCode : wPSet.workTypeCode
                         });
                     });
                     
