@@ -26,6 +26,9 @@ module nts.uk.com.view.cmm022.c.viewmodel {
             // list item can phai update xuong database
             changeList: KnockoutObservableArray<any> = ko.observableArray([]);
             
+            // data gui ve man A
+            setData: KnockoutObservable<any> = ko.observable();
+            
             constructor() {
                 
                 let self = this;
@@ -146,6 +149,15 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                     service.getListMaster().done(function(data: any){
                         self.listMaster(data);
                         self.changeList([]);
+
+                        self.setData({
+                            commonMasterItemId: self.masterSelected(),
+                            masterList: self.listMaster(),
+                            itemList: []
+                        })
+
+                        setShared('DialogCToMaster', self.setData());
+                        
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
                     
@@ -162,13 +174,15 @@ module nts.uk.com.view.cmm022.c.viewmodel {
             closeDialog() {
                 
                 let self = this;
-                
-                let param = {
-                    masterList: self.listMaster(),
-                    itemList: []
+                if (!!self.setData()) {
+                    self.setData({
+                        commonMasterItemId: self.masterSelected(),
+                        masterList: [],
+                        itemList: []
+                    })
                 }
                 
-                setShared('DialogCToMaster', param);
+                setShared('DialogCToMaster', self.setData());
                 nts.uk.ui.windows.close();
             }
 

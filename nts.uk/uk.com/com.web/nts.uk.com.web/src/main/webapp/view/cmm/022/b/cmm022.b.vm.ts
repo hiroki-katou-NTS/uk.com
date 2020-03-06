@@ -29,6 +29,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             // check enable/disable nut dang ky
             checkData: KnockoutObservable<> = ko.observable(true);
             
+            // data gui ve man A
+            setData: KnockoutObservable<> = ko.observable();
             constructor() {
                 let self = this;
                 
@@ -63,6 +65,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                             listTemp = _.sortBy(listTemp, [function(o) { return o.displayNumber; }]);
                             self.listItems(listTemp);
                             self.selected(self.listItems()[0].commonMasterItemId);
+                            self.checkData(true);
                             
                         }).fail(function(err) {
                             
@@ -70,6 +73,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                                 self.listItems([]);
                                 self.checkData(false);
                             }
+                            
                             nts.uk.ui.dialog.error({ messageId: err.messageId });
                             
                         }).always(function() {
@@ -77,7 +81,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         });
                     }else{
                         self.title("");
-                        self.columnsItem([]);    
+                        self.listItems([]);    
                     }
                     
                 });
@@ -153,6 +157,13 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 blockUI.grayout();
                 
                 service.update(param).done(function(data: any) {
+                    self.setData({
+                        commonMasterItemId: self.masterSelected,
+                        masterList: [],
+                        itemList: self.listItems()
+                        }
+                    )
+                    setShared('DialogBToMaster', self.setData());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     
                 }).fail(function(err) {
@@ -168,12 +179,15 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             closeDialog() {
                 let self = this;
                 
-                let param = {
-                    masterList: [],
-                    itemList: self.listItems()
+                if (!!self.setData()) {
+                    self.setData({
+                        commonMasterItemId: self.masterSelected(),
+                        masterList: [],
+                        itemList: []
+                    })
                 }
-                
-                setShared('DialogBToMaster', param);
+
+                setShared('DialogBToMaster', self.setData());
                 nts.uk.ui.windows.close();
             }
 
