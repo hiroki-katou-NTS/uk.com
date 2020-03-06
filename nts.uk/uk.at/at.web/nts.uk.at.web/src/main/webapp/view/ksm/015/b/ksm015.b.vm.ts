@@ -16,8 +16,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.searchValue = ko.observable("");
 			self.registrationForm = ko.observable(new RegistrationForm());
 			self.selectedShiftMaster.subscribe((value) => {
-				nts.uk.ui.errors.clearAll();
-				self.bindShiftMasterInfoToForm(value);
+				if(!value) {
+					self.createNew();
+				} else {
+					nts.uk.ui.errors.clearAll();
+					self.bindShiftMasterInfoToForm(value);
+				}
 			});
 		}
 
@@ -26,9 +30,10 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			let dfd = $.Deferred();
 			nts.uk.ui.block.grayout();
 			service.startPage().done((data) => {
-				self.shiftMasters( _.sortBy(data.shiftMasters, 'shiftMasterCode'));
+				let sorted = _.sortBy(data.shiftMasters, 'shiftMasterCode');
+				self.shiftMasters( sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
-					self.selectedShiftMaster(data.shiftMasters[0].shiftMasterCode);
+					self.selectedShiftMaster(sorted[0].shiftMasterCode);
 				} else {
 					self.registrationForm().newMode(true);
 				}
@@ -47,6 +52,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			nts.uk.ui.errors.clearAll();
 			self.selectedShiftMaster("");
 			self.registrationForm().clearData();
+			$('#requiredCode').focus();
 		}
 
 		public bindShiftMasterInfoToForm(code: String) {
