@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
              * push data to dataSource
              */
             $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterCode;
+                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterName;
 
                 if (event.ctrlKey) {
                     $(this.parentElement.children).html(nameWTypeWTime);
@@ -145,7 +145,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             }
             
             service.getShiftMasterWorkInfo(taisho).done((data) => {
-                self.listWorkType(data); 
+                self.listWorkType(_.sortBy(data, ['shiftMasterCode']);
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
             });
