@@ -31,16 +31,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             { code: 0, name: 'しない' }
         ]);
         textButtonArr: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+            { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 },
+            { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1 },
+            { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2 },
+            { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3 },
+            { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4 },
+            { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5 },
+            { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6 },
+            { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7 },
+            { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8 },
+            { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9 },
         ]);
 
         constructor() {
@@ -211,6 +211,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                  return;
               }
             //check soucre null or empty
+             if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             let isArrEmpty: boolean = true;
             _.map(self.source(), (item) => {
                 if (!_.isEmpty(item)) {
@@ -375,16 +378,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             // set default for dataSource and textButtonArr 
             self.dataSource([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArr([
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9 , formatter: _.escape},
             ]);
 
             for (let i = 0; i < listPattern.length; i++) {
