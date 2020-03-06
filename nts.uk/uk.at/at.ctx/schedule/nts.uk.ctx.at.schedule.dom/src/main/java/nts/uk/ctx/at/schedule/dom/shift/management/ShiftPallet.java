@@ -18,11 +18,11 @@ public class ShiftPallet implements DomainValue {
 
 	/** 表示情報 */
 	@Getter
-	private ShiftPalletDisplayInfor displayInfor;
+	private final ShiftPalletDisplayInfor displayInfor;
 
 	/** 組み合わせ */
 	@Getter
-	private List<ShiftPalletCombinations> combinations;
+	private final List<ShiftPalletCombinations> combinations;
 
 	public ShiftPallet(ShiftPalletDisplayInfor displayInfor, List<ShiftPalletCombinations> combinations) {
 		// 会社別シフトパレット(最大20個)を修正する。
