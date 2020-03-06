@@ -161,7 +161,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 						.done((res) => {
 							self.registrationForm().workTypeName( res.workType ? res.workType.name : childData.selectedWorkTypeName);
 							self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
-							self.registrationForm().workTimeSetName(res.workTime ? res.workType.name :  childData.selectedWorkTimeName);
+							self.registrationForm().workTimeSetName(res.workTime ? res.workTime.workTimeName :  childData.selectedWorkTimeName);
 							self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
 							if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
 								$('#worktype-chose').ntsError('clear');
