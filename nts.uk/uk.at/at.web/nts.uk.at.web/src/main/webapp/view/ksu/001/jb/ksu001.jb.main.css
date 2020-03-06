@@ -2,19 +2,24 @@
 	margin-left: 30px !important;
 	margin-right: 15px !important
 }
-span#workplaceCode{
+
+span#workplaceCode {
 	margin-left: 50px;
 	margin-right: 50px;
 }
+
 hr {
-    width: 780px;
-    position: absolute;
-    margin: 0px 30px 0px 30px;
+	width: 920px;
+	position: absolute;
+	margin: 0px 30px 0px 30px;
 }
 
 #group-link-button-ja {
 	height: 30px;
 	width: 850px;
+	margin-top: 10px;
+	margin-left: 50px;
+
 }
 
 #group-link-button-ja a {
@@ -51,7 +56,8 @@ hr {
 }
 
 .mt-10 {
-	margin-top: 10px
+	margin-top: 10px;
+	margin-left: 50px;
 }
 
 #bt-clear {
@@ -66,12 +72,14 @@ hr {
 	margin-left: 150px
 }
 
-#multiline-textbox{
+#multiline-textbox {
 	margin-top: 15px;
 }
-#textName{
+
+#textName {
 	margin-left: 8px;
 }
+
 #name {
 	vertical-align: middle;
 	margin-right: 8px
@@ -82,7 +90,7 @@ hr {
 }
 
 #h-50 {
-	height: 50px
+	height: 20px
 }
 
 #popup-area {
@@ -93,8 +101,18 @@ hr {
 	background-color: #F8EFD4 !important;
 	visibility: hidden;
 	z-index: 1000
-	}
+}
 
 #popup-area>div {
 	margin-top: 10px;
+}
+
+.color-gray {
+	cursor: default;
+}
+.valign-center.control-group{
+	margin-left: 50px;
+}
+.nts-switch-button.unselectable{
+	width: 100px;
 }

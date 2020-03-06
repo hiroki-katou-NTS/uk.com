@@ -27,8 +27,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         dataSource: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         groupUsageAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: '使用区分' },
-            { code: 1, name: '使用しない' }
+            { code: 1, name: 'する' },
+            { code: 0, name: 'しない' }
         ]);
         textButtonArr: KnockoutObservableArray<any> = ko.observableArray([
             { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 },
@@ -62,7 +62,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this;
 
             if (self.selectedTab() === 'company') {
-                self.isVisibleWkpName(true);
+                self.isVisibleWkpName(false);
                 $.when(self.getDataComPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                  var test = _.map(data, "groupName")
@@ -395,10 +395,11 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject = [];                    
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        arrPairShortName.push('[' + wPSet.shiftCode + ']');
+                        self.selectedTab() === 'company'? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                                                        : arrPairShortName.push('[' + wPSet.workTypeCode + ']');
                         arrPairObject.push({
-                            index: wPSet.order,
-                            value: wPSet.shiftCode
+                            index: self.selectedTab() === 'company'? wPSet.order : wPSet.pairNo,
+                            value: self.selectedTab() === 'company'? wPSet.shiftCode : wPSet.workTypeCode
                         });
                     });
                     

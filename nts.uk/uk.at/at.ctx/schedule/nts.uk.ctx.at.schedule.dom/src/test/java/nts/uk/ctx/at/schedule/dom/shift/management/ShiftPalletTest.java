@@ -159,7 +159,7 @@ public class ShiftPalletTest {
 					d->d.getCombinations().size()) // check size
 			.containsExactly(
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					1,
 					"ShiftComNam1",
@@ -196,7 +196,7 @@ public class ShiftPalletTest {
 					d->d.getCombinations().size()) // check size
 			.containsExactly(
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					1,
 					"shComName1",

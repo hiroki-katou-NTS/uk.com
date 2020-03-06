@@ -49,8 +49,8 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		builderString.append("b.POSITION, b.POSITION_NAME,");
 		builderString.append("c.POSITION_ORDER, c.SHIFT_MASTER_CD");
 		builderString.append(
-				" FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
-		builderString.append("LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
+				" FROM KSCMT_PALETTE_CMP a  JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
+		builderString.append(" JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
 		SELECT = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -248,19 +248,26 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		return this.queryProxy().find(pk, KscmtPaletteCmpCombi.class).isPresent();
 	}
 
+	@SneakyThrows
 	@Override
-	public void deleteByPage(String companyID, int page) {
-		String query = FIND_BY_PAGE;
-		query = query.replaceFirst("companyId", companyID);
-		query = query.replaceFirst("page", String.valueOf(page));
-		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-			ResultSet rs = stmt.executeQuery();
-			KscmtPaletteCmp kscmtPaletteCmp = toEntity(createShiftPallets(rs)).get(0);
-			commandProxy().remove(KscmtPaletteCmp.class, kscmtPaletteCmp.pk);
-			this.getEntityManager().flush();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		}
+	public void deleteByPage(String companyID, int page) {				
+		String cmpDelete = "DELETE FROM KSCMT_PALETTE_CMP WHERE CID = ? AND PAGE = ?";
+		String combiDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI WHERE CID = ? AND PAGE = ?";
+		String dtlDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI_DTL WHERE CID = ? AND PAGE = ?";
+		PreparedStatement ps1 = this.connection().prepareStatement(cmpDelete);
+		ps1.setString(1, companyID);
+		ps1.setInt(2, page);
+		ps1.executeUpdate();
+		
+		PreparedStatement ps2 = this.connection().prepareStatement(combiDelete);
+		ps2.setString(1, companyID);
+		ps2.setInt(2, page);
+		ps2.executeUpdate();
+		
+		PreparedStatement ps3 = this.connection().prepareStatement(dtlDelete);
+		ps3.setString(1, companyID);
+		ps3.setInt(2, page);
+		ps3.executeUpdate();
 
 	}
 
