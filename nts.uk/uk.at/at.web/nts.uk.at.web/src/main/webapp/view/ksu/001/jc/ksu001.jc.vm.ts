@@ -56,7 +56,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 } else {
                     $(this).html(nameWTypeWTime);
                     let index = +$(this).parent().prev().children()[$(this).index()].innerHTML;
-                    _.remove(self.dataSource(), { index: index - 1 });
+                    _.remove(self.dataSource(), { index: index });
                     self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.selectedShiftMaster() });
                 }
             });
