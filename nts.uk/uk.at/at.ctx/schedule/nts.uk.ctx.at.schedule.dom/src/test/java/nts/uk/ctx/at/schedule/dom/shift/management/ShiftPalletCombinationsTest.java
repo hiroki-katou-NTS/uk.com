@@ -44,7 +44,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_size0_fail() {
-		NtsAssert.businessException("Msg_1627", () -> {
+		NtsAssert.businessException("Msg_1626", () -> {
 			new ShiftPalletCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
@@ -54,7 +54,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_size32_fail() {
-		NtsAssert.businessException("Msg_1627", () -> {
+		NtsAssert.businessException("Msg_1626", () -> {
 			new ShiftPalletCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
@@ -96,7 +96,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_duplicate() {
-		NtsAssert.businessException("Msg_1627", () -> {
+		NtsAssert.businessException("Msg_1626", () -> {
 			new ShiftPalletCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
@@ -238,19 +238,19 @@ public class ShiftPalletCombinationsTest {
 				Arrays.asList(
 						new Combinations(
 								15, 
-								new ShiftPalletCode("0000015")), 
+								new ShiftPalletCode("0000012")), 
 						new Combinations(
 								10, 
-								new ShiftPalletCode("0000010")), 
+								new ShiftPalletCode("0000095")), 
 						new Combinations(
 								30, 
-								new ShiftPalletCode("0000030"))));
+								new ShiftPalletCode("0000037"))));
 		
-		target.sortCombinations();
+		target.sortCombinationsConsecutiveNumbersFrom1();
 		
 		assertThat(target.getCombinations())
 			.extracting(d -> d.getOrder(), d -> d.getShiftCode().v())
-			.containsExactly(tuple(1, "0000010"), tuple(2, "0000015"), tuple(3, "0000030"));
+			.containsExactly(tuple(1, "0000095"), tuple(2, "0000012"), tuple(3, "0000037"));
 	}
 	
 	@Test

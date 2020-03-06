@@ -132,7 +132,7 @@ public class ShiftPalletsComTest {
 					"000000000000-0001",
 					1,
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					2,
 					"combiName",
@@ -174,7 +174,7 @@ public class ShiftPalletsComTest {
 					"000000000000-0001",
 					10,
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					2,
 					"combiName",
@@ -225,9 +225,9 @@ public class ShiftPalletsComTest {
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftPalletCode("0000001"))))));
-
+		
 		shiftPalletsCom.modifyShiftPallets(shiftPallet);
-
+		
 		assertThat(shiftPalletsCom.getShiftPallet().getCombinations())
 			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
 			.containsExactly(tuple(4,"name04") , tuple(5,"name05"), tuple(7,"name07"));
