@@ -3,8 +3,8 @@ package nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -29,14 +29,9 @@ public class BsymtGpMasterCategory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// 契約コード
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
-
-	@Id
-	// 共通マスタID
-	@Column(name = "COMMON_MASTER_ID")
-	private String commonMasterId;
+	// グループ会社共通マスタ PK
+	@EmbeddedId
+	private BsymtGpMasterCategoryPK pk;
 
 	// 共通マスタコード
 	@Column(name = "COMMON_MASTER_CD")
@@ -52,7 +47,7 @@ public class BsymtGpMasterCategory extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return commonMasterId;
+		return pk;
 	}
 
 }

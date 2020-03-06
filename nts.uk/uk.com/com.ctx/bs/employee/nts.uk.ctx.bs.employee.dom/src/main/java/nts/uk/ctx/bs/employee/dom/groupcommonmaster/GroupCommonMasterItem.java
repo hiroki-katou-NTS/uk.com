@@ -46,4 +46,11 @@ public class GroupCommonMasterItem {
 		this.usageStartDate = usageStartDate;
 		this.usageEndDate = usageEndDate;
 	}
+	
+	public static GroupCommonMasterItem creatFromJavaType(String commonMasterItemId, String commonMasterItemCode,
+			String commonMasterItemName, int displayNumber, GeneralDate usageStartDate,
+			GeneralDate usageEndDate) {
+		return new GroupCommonMasterItem(commonMasterItemId, new CommonMasterItemCode(commonMasterItemCode), 
+											new CommonMasterItemName(commonMasterItemName), displayNumber, usageStartDate, usageEndDate);
+	}
 }
