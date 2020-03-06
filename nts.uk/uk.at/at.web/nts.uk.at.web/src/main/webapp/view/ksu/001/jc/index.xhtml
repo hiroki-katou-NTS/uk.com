@@ -7,9 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 680 };</script>
+			<script>var dialogSize = { width: 1100, height: 680 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
+				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName
 				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -24,13 +25,13 @@
 				<div>
 					<div class = "label"><span >#{i18n.getText('KSU001_114')}</span> </div>
 					<div id="pairPatternName" class="mw-90"
-						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
+						data-bind="ntsFormLabel: {required: true, constraint: 'ShiftMasterName'}">#{i18n.getText('KSU001_908')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'WorkPairPatternName', name: '#[KSU001_908]'}" />
+						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'ShiftMasterName', name: '#[KSU001_908]'}" />
 				</div>
 
 				<div id="set-work-type">
-					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_909')}</div>
+					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_116')}</div>
 					<div id="combo-box1"
 						data-bind="ntsComboBox: {
 								options: listWorkType,
@@ -47,12 +48,11 @@
 									{ prop: 'remark', length: 10 }]}">
 					</div>
 				</div>
-
-				<div id="set-work-time">
-					<div>
+				<div style='clear: both'></div>				
+				<div data-bind="ntsFormLabel: {required: true}"><span >#{i18n.getText('KSU001_117')}</span> </div>
+				<div>
 						<button id="clear" data-bind="click: clearData">#{i18n.getText('KSU001_918')}</button>
 					</div>
-				</div>
 				<div id="table-date">
 					<table>
 						<tr>

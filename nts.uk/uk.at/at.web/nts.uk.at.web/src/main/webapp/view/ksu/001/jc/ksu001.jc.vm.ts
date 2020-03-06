@@ -77,7 +77,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         decision(): void {
             let self = this;
             if (self.dataSource().length == 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_510" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
                 return;
             }
             
