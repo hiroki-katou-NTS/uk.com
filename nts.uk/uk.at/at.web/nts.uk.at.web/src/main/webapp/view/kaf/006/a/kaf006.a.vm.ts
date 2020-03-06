@@ -139,6 +139,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.appDate(transferData.appDate);
                 self.employeeIDs(transferData.employeeIDs);
                 self.employeeID(transferData.employeeID); 
+                if(!_.isEmpty(self.employeeIDs())) {
+                    self.employeeFlag(true);                
+                }
                 if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
                     self.targetDate = transferData.appDate;        
                 }
@@ -646,7 +649,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.multilContent(data.application.applicationReason);
             }
             if(!nts.uk.util.isNullOrEmpty(data.employees)){
-                self.employeeFlag(true);
                 for(let i= 0; i < data.employees.length; i++){
                     self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
                 }

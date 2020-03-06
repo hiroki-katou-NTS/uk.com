@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,13 +99,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public List<EmployeeInfoImport> getEmployeeInfoLst(List<String> applicantLst) {
+		List<String> queryLst = new ArrayList<>();
 		// Input．申請者リストをチェック
 		if(CollectionUtil.isEmpty(applicantLst)) {
 			// Input．申請者リストにログイン者IDを追加
-			applicantLst.add(AppContexts.user().employeeId());
+			queryLst.add(AppContexts.user().employeeId());
+		} else {
+			queryLst = applicantLst;
 		}
 		// 申請者情報を取得
-		return atEmployeeAdapter.getByListSID(applicantLst);
+		return atEmployeeAdapter.getByListSID(queryLst);
 	}
 
 	@Override

@@ -32,9 +32,9 @@ public interface AbsenceServiceProcess {
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
-	 * @param companyID
-	 * @param sID
-	 * @param baseDate
+	 * @param companyID 会社ID
+	 * @param sID 社員ID
+	 * @param baseDate 基準日
 	 * @return
 	 */
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate);
@@ -67,13 +67,34 @@ public interface AbsenceServiceProcess {
 	public void checkPriorityHoliday(AppliedDate pridigCheck,
 			boolean isSubVacaManage, boolean subVacaTypeUseFlg, boolean isSubHdManage, boolean subHdTypeUseFlg,
 			int numberSubHd, int numberSubVaca);
+	
 	/**
-	 * @author hoatt
 	 * 残数取得する
-	 * @param companyID - 会社ID
-	 * @param employeeID - 社員ID　＝申請者社員ID
-	 * @param baseDate - 基準日
-	 * @return 年休残数-代休残数-振休残数-ストック休暇残数
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param baseDate 基準日
+	 * @param yearManage 年休管理区分
+	 * @param subHdManage 代休管理区分
+	 * @param subVacaManage 積休管理区分
+	 * @param retentionManage 振休管理区分
+	 * @return
 	 */
-	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate);
+	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
+			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage);
+	
+	/**
+	 * 休暇申請設定を取得する
+	 * @param companyID 会社ID
+	 * @return
+	 */
+	public HolidayRequestSetOutput getHolidayRequestSet(String companyID);
+	
+	/**
+	 * 休暇残数情報を取得する
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param date 基準日
+	 * @return
+	 */
+	public RemainVacationInfo getRemainVacationInfo(String companyID, String employeeID, GeneralDate date);
 }
