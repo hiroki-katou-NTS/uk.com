@@ -1,6 +1,6 @@
 .danger {
-	margin-left: 100px !important;
-	margin-right: 5px !important
+	margin-left: 30px !important;
+	margin-right: 15px !important
 }
 span#workplaceCode{
 	margin-left: 50px;
@@ -28,7 +28,8 @@ hr {
 	background-color: #FBE5D6;
 	width: 810px;
 	padding: 3px;
-	float: right;
+	display: inline-block;
+	margin-left: 8px;
 }
 
 #test2 button {
@@ -57,7 +58,7 @@ hr {
 	margin-left: 765px
 }
 
-#note {
+#multiline-textbox {
 	width: 650px !important;
 }
 
@@ -65,6 +66,12 @@ hr {
 	margin-left: 150px
 }
 
+#multiline-textbox{
+	margin-top: 15px;
+}
+#textName{
+	margin-left: 8px;
+}
 #name {
 	vertical-align: middle;
 	margin-right: 8px
