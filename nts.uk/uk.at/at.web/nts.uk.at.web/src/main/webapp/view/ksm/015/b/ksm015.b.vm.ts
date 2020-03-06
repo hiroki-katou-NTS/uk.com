@@ -112,7 +112,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 					} else if (i === (self.shiftMasters().length -1 )) {
 						nextSelectedCode = self.shiftMasters()[self.shiftMasters().length - 2].shiftMasterCode;
 					} else {
-						nextSelectedCode = self.shiftMasters()[i -1].shiftMasterCode;
+						nextSelectedCode = self.shiftMasters()[i + 1].shiftMasterCode;
 					}
 					service.deleteShiftMaster(param).done((data) => {
 						service.getlist()
@@ -152,6 +152,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				//view all code of selected item 
 				var childData = nts.uk.ui.windows.getShared('childData');
 				if (childData) {
+					console.log(childData);
 					self.registrationForm().workTypeName(childData.selectedWorkTypeName);
 					self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
 					self.registrationForm().workTimeSetName(childData.selectedWorkTimeName);
