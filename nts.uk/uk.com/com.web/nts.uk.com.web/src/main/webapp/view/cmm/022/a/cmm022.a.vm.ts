@@ -6,6 +6,7 @@ module nts.uk.com.view.cmm022.a {
     import alert = nts.uk.ui.dialog.alert;
     import info = nts.uk.ui.dialog.info;
     import confirm = nts.uk.ui.dialog.confirm;
+    import dialog = nts.uk.ui.dialog;
 
     export module viewmodel {
         export class ScreenModel {
@@ -36,7 +37,7 @@ module nts.uk.com.view.cmm022.a {
                     if (!id) {
                         self.commonMasterItems([]);
                         self.commonMasterItemId("");
-                        self.selectedCommonMasterItem(new MasterItem(this.defaultItem));
+                        self.selectedCommonMasterItem().updateData(self.defaultItem);
                         return;
                     }
 
@@ -47,7 +48,7 @@ module nts.uk.com.view.cmm022.a {
                         self.commonMasterItems(data);
                         self.commonMasterItemId(data.length ? data[0].commonMasterItemId : null);
                         if (!data.length) {
-                            self.selectedCommonMasterItem(new MasterItem(this.defaultItem));
+                            self.selectedCommonMasterItem().updateData(self.defaultItem);
                         }
                     }).fail(function(res) {
                         
@@ -181,10 +182,6 @@ module nts.uk.com.view.cmm022.a {
 
                 let self = this
                     , param = ko.mapping.toJS(self);
-
-
-                self.checkData();
-                
                 param.selectedCommonMasterItem.usageStartDate =
                     moment(param.selectedCommonMasterItem.usageStartDate).format("YYYY/MM/DD");
                 
@@ -213,27 +210,12 @@ module nts.uk.com.view.cmm022.a {
 
 
                 }).fail(function(res) {
-
-                    alert(res);
+                    dialog.bundledErrors(res);
 
                 }).always(() => {
 
                     block.clear();
                 });
-            }
-            
-            private checkData() {
-                let self = this;
-                if (!self.newMode()) {
-                    
-                    let selectedItem = _.filter(self.commonMasterItems(), ['commonMasterItemId', self.commonMasterItemId()])[0],
-                    codeChanged = selectedItem.commonMasterItemCode != self.selectedCommonMasterItem().commonMasterItemCode(),
-                    codeDuplicate = !(_.filter(self.commonMasterItems(), ['commonMasterItemCode', self.selectedCommonMasterItem().commonMasterItemCode()])[0]);
-                    
-                    if (codeChanged && codeDuplicate) {
-                       // if(self.selectedCommonMasterItem().commonMasterItemCode()){}
-                    }
-                }
             }
             
             public newItem() {

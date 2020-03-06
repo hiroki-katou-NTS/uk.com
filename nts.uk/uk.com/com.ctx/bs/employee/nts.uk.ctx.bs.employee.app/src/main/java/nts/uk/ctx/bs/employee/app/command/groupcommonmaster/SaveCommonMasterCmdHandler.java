@@ -8,6 +8,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode;
@@ -48,16 +50,86 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 				new CommonMasterItemCode(updateItem.getCommonMasterItemCode()),
 				new CommonMasterItemName(updateItem.getCommonMasterItemName()), displayNumber,
 				updateItem.getUsageStartDate(), updateItem.getUsageEndDate()));
+		
+		List<GroupCommonMasterItem> items = services.getGroupCommonMasterItem(contractCd, commonMasterId);
 
 		if (cmd.isNewMode()) {
+			
+			checkAddNew(items, domains.get(0));
 			// 画面モード = 新規モード (Screen mode = New mode)
 			this.services.addCommonMasterItem(contractCd, commonMasterId, domains);
 		} else {
+			
+			checkChanged(CommonMasterItemId, items, domains.get(0));
+			
 			// bước kiểm tra data đã thay đổi chưa được làm ở dưới client
 			// 画面モード = 更新モード (Screen mode = Update mode)
 			this.services.updateCommonMasterItem(contractCd, commonMasterId, domains);
 		}
 		// phần get data để trả về làm dưới client
+	}
+
+	private void checkAddNew(List<GroupCommonMasterItem> items, GroupCommonMasterItem updateItem) {
+		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+
+		String itemCode = updateItem.getCommonMasterItemCode().v();
+
+		boolean isDuplicateCode = items.stream().filter(x -> x.getCommonMasterItemCode().v().equals(itemCode))
+				.findFirst().isPresent();
+
+		if (isDuplicateCode) {
+			bundleExeption.addMessage(new BusinessException("Msg_3"));
+		}
+
+		String itemName = updateItem.getCommonMasterItemName().v();
+
+		boolean isDuplicateName = items.stream().filter(x -> x.getCommonMasterItemName().v().equals(itemName))
+				.findFirst().isPresent();
+
+		if (isDuplicateName) {
+			bundleExeption.addMessage(new BusinessException("Msg_1603"));
+		}
+
+		if (!bundleExeption.getMessageId().isEmpty()) {
+			throw bundleExeption;
+		}
+	}
+
+	private void checkChanged(String commonMasterItemId, List<GroupCommonMasterItem> items,
+			GroupCommonMasterItem updateItem) {
+
+	
+		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+		
+		GroupCommonMasterItem oldItem = items.stream().filter(x -> x.getCommonMasterItemId().equals(commonMasterItemId))
+				.findFirst().get();
+
+		String itemCode = updateItem.getCommonMasterItemCode().v();
+
+		boolean isCodeChanged = !itemCode.equals(oldItem.getCommonMasterItemCode().v());
+
+		boolean isDuplicateCode = items.stream().filter(x -> x.getCommonMasterItemCode().v().equals(itemCode))
+				.findFirst().isPresent();
+
+		if (isCodeChanged && isDuplicateCode) {
+			bundleExeption.addMessage(new BusinessException("Msg_3"));
+		}
+
+		String itemName = updateItem.getCommonMasterItemName().v();
+
+		boolean isNameChanged = !itemName.equals(oldItem.getCommonMasterItemName().v());
+
+		boolean isDuplicateName = items.stream().filter(x -> x.getCommonMasterItemName().v().equals(itemName))
+				.findFirst().isPresent();
+
+		if (isNameChanged && isDuplicateName) {
+			bundleExeption.addMessage(new BusinessException("Msg_1603"));
+		}
+
+		if (!bundleExeption.getMessageId().isEmpty()) {
+			throw bundleExeption;
+		}
+
 	}
 
 }
