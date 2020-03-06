@@ -167,7 +167,7 @@ module nts.uk.com.view.cmm011.v2.d.viewmodel {
                         listDuplicate: checkResult.listDuplicatePast
                     };
                     setShared("CMM011DParams", params);
-                    modal("/view/cmm/011_v2/c/index.xhtml").onClosed(() => {
+                    modal("/view/cmm/011/c/index.xhtml").onClosed(() => {
                         let result = getShared("CMM011CParams");
                         if (result) {
                             if (result.targetId && result.historyId) {
