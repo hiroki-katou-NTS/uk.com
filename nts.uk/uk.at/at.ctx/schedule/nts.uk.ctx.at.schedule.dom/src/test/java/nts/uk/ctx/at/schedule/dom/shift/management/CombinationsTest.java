@@ -16,7 +16,7 @@ public class CombinationsTest {
 
 	@Test
 	public void create_combinations_order0_fail() {
-		NtsAssert.businessException("Msg_1627", () -> {
+		NtsAssert.businessException("Msg_1626", () -> {
 			new Combinations(
 					0, 
 					new ShiftPalletCode("0000001")); // dummy
@@ -25,7 +25,7 @@ public class CombinationsTest {
 	 
 	@Test
 	public void create_combinations_order32_fail() {
-		NtsAssert.businessException("Msg_1627", () -> {
+		NtsAssert.businessException("Msg_1626", () -> {
 			new Combinations(
 					32, 
 					new ShiftPalletCode("0000001")); // dummy

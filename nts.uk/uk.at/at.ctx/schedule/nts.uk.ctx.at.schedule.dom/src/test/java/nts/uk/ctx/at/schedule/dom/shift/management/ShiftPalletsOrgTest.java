@@ -84,26 +84,26 @@ public class ShiftPalletsOrgTest {
 							Arrays.asList(
 								new ShiftPalletCombinations(
 										3, 
-										new ShiftCombinationName("combiNam3"), // dummy
+										new ShiftCombinationName("combiNa30"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001")))), // dummy
+												new ShiftPalletCode("0000010")))), // dummy
 								new ShiftPalletCombinations(
 										5, 
-										new ShiftCombinationName("combiNam5"), // dummy
+										new ShiftCombinationName("combiNa05"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001")))), // dummy
+												new ShiftPalletCode("0000032")))), // dummy
 								new ShiftPalletCombinations(
 										1, 
-										new ShiftCombinationName("combiNam1"), // dummy
+										new ShiftCombinationName("combiNa10"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001"))))))); // dummy
+												new ShiftPalletCode("0000011"))))))); // dummy
 		
 		assertThat(target.getShiftPallet().getCombinations())
 			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
-			.containsExactly(tuple(1,"combiNam1") , tuple(3, "combiNam3"), tuple(5,"combiNam5"));
+			.containsExactly(tuple(1,"combiNa10") , tuple(3, "combiNa30"), tuple(5,"combiNa05"));
 	}
 	
 	@Test
@@ -147,7 +147,7 @@ public class ShiftPalletsOrgTest {
 					"e6fea7af-0365-4332-9943-e2c17f65bea6",
 					1,
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					2,
 					"combiName",
@@ -196,7 +196,7 @@ public class ShiftPalletsOrgTest {
 					"e6fea7af-0365-4332-9943-e2c17f65bea6",
 					10,
 					"shpaName",
-					1,
+					NotUseAtr.USE.value,
 					"shRemar",
 					2,
 					"combiName",
@@ -234,13 +234,13 @@ public class ShiftPalletsOrgTest {
 				Arrays.asList(
 						new ShiftPalletCombinations(
 								7, 
-								new ShiftCombinationName("name07"), 
+								new ShiftCombinationName("name71"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftPalletCode("0000001")))),
 						new ShiftPalletCombinations(
 								4, 
-								new ShiftCombinationName("name04"), 
+								new ShiftCombinationName("name40"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftPalletCode("0000001")))),
@@ -255,7 +255,7 @@ public class ShiftPalletsOrgTest {
 
 		assertThat(shiftPalletsOrg.getShiftPallet().getCombinations())
 			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
-			.containsExactly(tuple(4,"name04") , tuple(5,"name05"), tuple(7,"name07"));
+			.containsExactly(tuple(4,"name40") , tuple(5,"name05"), tuple(7,"name71"));
 	}
 
 	@Test
