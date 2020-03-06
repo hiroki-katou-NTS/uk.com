@@ -77,7 +77,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         decision(): void {
             let self = this;
             if (self.dataSource().length == 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1591" });
                 return;
             }
             
@@ -145,7 +145,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             }
             
             service.getShiftMasterWorkInfo(taisho).done((data) => {
-                self.listWorkType(_.sortBy(data, ['shiftMasterCode']);
+                self.listWorkType(_.sortBy(data, ['shiftMasterCode']));
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
             });

@@ -46,6 +46,8 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	private static final String FIND_BY_PAGE;
 
+	private static final String FIND_TO_DELETE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE,");
@@ -61,6 +63,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 		builderString.append(SELECT);
 		builderString.append("WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId' AND a.PAGE = page");
 		FIND_BY_PAGE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append(" WHERE a.TARGET_ID = 'workplaceId' AND a.PAGE = page");
+		FIND_TO_DELETE = builderString.toString();
 
 	}
 
@@ -261,7 +268,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 	@Override
 	public void deleteByWorkPlaceId(String workplaceId, int page) {
-		String query = FIND_BY_PAGE;
+		String query = FIND_TO_DELETE;
 		query = query.replaceFirst("workplaceId", String.valueOf(workplaceId));
 		query = query.replaceFirst("page", String.valueOf(page));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {

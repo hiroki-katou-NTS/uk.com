@@ -106,6 +106,10 @@ hr {
 	margin-top: 10px;
 }
 
+#contents-area{
+    overflow-y: hidden !important;
+}
+
 .color-gray {
 	cursor: default;
 }
