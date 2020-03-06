@@ -36,29 +36,28 @@ public class ShiftMasterDto {
 		this.remark = info.getRemarks().isPresent() ? info.getRemarks().get().v() : null;
 	}
 
-	public ShiftMasterDto (String companyId, String shiftMasterName, String shiftMaterCode, String color, String remark, String workTypeCd, String workTypeName, String workTimeCd, String workTimeName) {
+	public ShiftMasterDto(String companyId, String shiftMasterName, String shiftMaterCode, String color, String remark,
+			String workTypeCd, String workTypeName, String wtypecid, String workTimeCd, String workTimeName,
+			String wtimecid) {
 		this.companyId = companyId;
 		this.shiftMasterName = shiftMasterName;
 		this.shiftMasterCode = shiftMaterCode;
 		this.color = color;
-		this.remark = !StringUtils.isEmpty(remark) ? remark : "" ;
+		this.remark = !StringUtils.isEmpty(remark) ? remark : "";
 		this.workTypeCd = workTypeCd;
-		this.workTypeName =  workTypeName;
-		if(!StringUtils.isEmpty(workTypeCd)) {
-			if(StringUtils.isEmpty(workTypeName)) {
-				this.workTypeName = I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"));
-			} 
+		this.workTypeName = !StringUtils.isEmpty(workTypeName) ? workTypeName : "";
+		if (StringUtils.isEmpty(wtypecid)) {
+			this.workTypeName = I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"));
+		}
+
+		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "";
+		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "";
+		if (StringUtils.isEmpty(wtimecid) && !StringUtils.isEmpty(workTimeCd)) {
+			this.workTimeName = I18NText.getText("KSM015_28", workTimeCd, I18NText.getText("KSM015_29"));
 		}
 		
-		this.workTimeCd = !StringUtils.isEmpty(workTimeCd) ? workTimeCd : "" ;
-		this.workTimeName = !StringUtils.isEmpty(workTimeName) ? workTimeName : "" ;
-		if(!StringUtils.isEmpty(workTimeCd)) {
-			if(StringUtils.isEmpty(workTimeName)) {
-				this.workTimeName = I18NText.getText("KSM015_28", workTimeCd, I18NText.getText("KSM015_29"));
-			} 
-		}
 		this.workTime1 = "";
 		this.workTime2 = "";
 	}
-	
+
 }

@@ -25,6 +25,7 @@ module nts.uk.at.view.ksm013.a {
                 self.selectedCode.subscribe(function(codeChanged: string) {
                     let dfd = $.Deferred();
                     if (_.isEmpty(codeChanged)) {
+                        self.newCreate();
                         dfd.resolve();
                     } else {
                         service.findDetail(codeChanged).done((dataDetail: NurseDetailClassification) => {

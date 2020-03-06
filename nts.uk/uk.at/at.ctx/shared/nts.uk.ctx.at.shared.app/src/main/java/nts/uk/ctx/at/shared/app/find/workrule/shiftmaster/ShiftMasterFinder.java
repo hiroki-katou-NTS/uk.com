@@ -46,5 +46,9 @@ public class ShiftMasterFinder {
 		return shiftMasters;
 
 	}
+	
+	public WorkInfoDto getWorkInfo(String workTypeCd, String workTimeCd) {
+		return null;
+	}
 
 }

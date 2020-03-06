@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.AlreadySettingWorkplac
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015StartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -129,6 +130,12 @@ public class ShiftMasterWs {
 	@Path("delete/org")
 	public void deleteOrg(DeleteShiftMasterOrgCommand command){
 		this.deleteOrgCmd.handle(command);
+	}
+	
+	@POST
+	@Path("workinfo/get")
+	public WorkInfoDto getWorkInfo(String workTypeCd, String workTimeCd){
+		return this.finder.getWorkInfo(workTypeCd, workTimeCd);
 	}
 	
 }
