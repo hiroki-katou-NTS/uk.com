@@ -206,6 +206,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                 return;
+              }
             //check soucre null or empty
             let isArrEmpty: boolean = true;
             _.map(self.source(), (item) => {
