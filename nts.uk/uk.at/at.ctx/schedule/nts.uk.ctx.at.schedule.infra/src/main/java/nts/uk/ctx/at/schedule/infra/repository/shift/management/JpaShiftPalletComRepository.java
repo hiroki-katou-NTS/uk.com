@@ -49,8 +49,8 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		builderString.append("b.POSITION, b.POSITION_NAME,");
 		builderString.append("c.POSITION_ORDER, c.SHIFT_MASTER_CD");
 		builderString.append(
-				" FROM KSCMT_PALETTE_CMP a LEFT JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
-		builderString.append("LEFT JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
+				" FROM KSCMT_PALETTE_CMP a JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
+		builderString.append("  JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
 		SELECT = builderString.toString();
 
 		builderString = new StringBuilder();
