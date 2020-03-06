@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
              * push data to dataSource
              */
             $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterName;
+                let nameWTypeWTime: string = self.selectedShiftMaster().shiftMasterCode;
 
                 if (event.ctrlKey) {
                     $(this.parentElement.children).html(nameWTypeWTime);
@@ -76,6 +76,10 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
          */
         decision(): void {
             let self = this;
+            $("#test2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             if (self.dataSource().length == 0) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1591" });
                 return;
@@ -145,6 +149,12 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             }
             
             service.getShiftMasterWorkInfo(taisho).done((data) => {
+                data.unshift({shiftMasterName: nts.uk.resource.getText("KSU001_98"), shiftMasterCode : "", workTime1 : "",workTime2 : "", remark : ""});
+                 if (data) {
+                    for (let i= 0; i < data.length; i++){
+                    data[i].workTime1 = data[i].workTime1 + " " + data[i].workTime2;
+                    }
+                   }
                 self.listWorkType(_.sortBy(data, ['shiftMasterCode']));
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
