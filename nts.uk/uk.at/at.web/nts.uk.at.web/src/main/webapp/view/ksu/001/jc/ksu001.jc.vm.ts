@@ -34,7 +34,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             let indexDitMeMay = 0;
             _.forEach(self.source(), (item) => {
                 $($("#table-date td")[indexDitMeMay]).html(item.value);
-                self.dataSource().push({ index: indexDitMeMay, value: item.value });
+                self.dataSource().push({ index: item.index, value: item.value });
                 indexDitMeMay++;
            })
     
