@@ -151,7 +151,7 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                         self.changeList([]);
 
                         self.setData({
-                            commonMasterItemId: self.masterSelected(),
+                            commonMasterId: self.masterSelected(),
                             masterList: self.listMaster(),
                             itemList: []
                         })
@@ -174,9 +174,9 @@ module nts.uk.com.view.cmm022.c.viewmodel {
             closeDialog() {
                 
                 let self = this;
-                if (!!self.setData()) {
+                if (!self.setData()) {
                     self.setData({
-                        commonMasterItemId: self.masterSelected(),
+                        commonMasterId: self.masterSelected(),
                         masterList: [],
                         itemList: []
                     })

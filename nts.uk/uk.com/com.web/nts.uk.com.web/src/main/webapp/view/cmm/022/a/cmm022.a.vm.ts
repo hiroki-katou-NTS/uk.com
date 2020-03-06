@@ -188,6 +188,10 @@ module nts.uk.com.view.cmm022.a {
                 param.selectedCommonMasterItem.usageEndDate =
                     moment(param.selectedCommonMasterItem.usageEndDate).format("YYYY/MM/DD");
 
+                
+                if (!param.newMode && !param.selectedCommonMasterItem.commonMasterItemId) {
+                    return;
+                }
                 block.grayout();
 
                 service.saveItems(param).done(() => {
@@ -243,11 +247,11 @@ module nts.uk.com.view.cmm022.a {
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogBToMaster');
 
-                    if (self.commonMasterItemId() == data.commonMasterItemId) {
-                        self.commonMasterItemId.valueHasMutated();
+                    if (self.commonMasterId() == data.commonMasterId) {
+                        self.commonMasterId.valueHasMutated();
                         self.commonMasterItems(data.itemList);
                     } else {
-                        self.commonMasterItemId(data.commonMasterItemId);
+                        self.commonMasterId(data.commonMasterId);
                     }
                 });
             }
@@ -258,7 +262,11 @@ module nts.uk.com.view.cmm022.a {
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogCToMaster');
                     self.commonMasters(data.masterList);
-                    self.commonMasterId.valueHasMutated();
+                    if (self.commonMasterId() == data.commonMasterId) {
+                        self.commonMasterId.valueHasMutated();
+                    } else {
+                        self.commonMasterId(data.commonMasterId);
+                    }
                 });
             }
 
@@ -269,7 +277,7 @@ module nts.uk.com.view.cmm022.a {
     
     
     export interface IDialogToMaster {
-        commonMasterItemId: string;
+        commonMasterId: string;
         masterList: Array<ICommonMaster>;
         itemList: Array<IMasterItem>;
     }

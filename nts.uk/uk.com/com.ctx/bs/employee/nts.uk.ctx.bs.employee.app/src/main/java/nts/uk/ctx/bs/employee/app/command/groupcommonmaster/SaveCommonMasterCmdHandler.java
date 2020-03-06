@@ -41,9 +41,7 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 				: null;
 		//・ List <Add common master item>. Display order = MAX (List <common master item>. displayNumber) ++ 1
 		int displayNumber = updateItem.getDisplayNumber() != null ? updateItem.getDisplayNumber()
-				: (Collections
-						.max(cmd.getCommonMasterItems(), Comparator.comparing(UpdateMasterItemCommand::getDisplayNumber))
-						.getDisplayNumber() + 1);
+				: genDisplayNumber(cmd.getCommonMasterItems()) ;
 
 		// vì add và update đều tạo domain nên viết chung cho gọn
 		domains.add(new GroupCommonMasterItem(CommonMasterItemId,
@@ -54,14 +52,16 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 		List<GroupCommonMasterItem> items = services.getGroupCommonMasterItem(contractCd, commonMasterId);
 
 		if (cmd.isNewMode()) {
+		
+				checkAddNew(items, domains.get(0));
 			
-			checkAddNew(items, domains.get(0));
 			// 画面モード = 新規モード (Screen mode = New mode)
 			this.services.addCommonMasterItem(contractCd, commonMasterId, domains);
 		} else {
 			
-			checkChanged(CommonMasterItemId, items, domains.get(0));
-			
+			if (!items.isEmpty()) {
+				checkChanged(CommonMasterItemId, items, domains.get(0));
+			}
 			// bước kiểm tra data đã thay đổi chưa được làm ở dưới client
 			// 画面モード = 更新モード (Screen mode = Update mode)
 			this.services.updateCommonMasterItem(contractCd, commonMasterId, domains);
@@ -69,7 +69,21 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 		// phần get data để trả về làm dưới client
 	}
 
+	private Integer genDisplayNumber(List<UpdateMasterItemCommand> commonMasterItems) {
+
+		if (commonMasterItems.isEmpty()) {
+			return 1;
+		}
+
+		return Collections.max(commonMasterItems, Comparator.comparing(UpdateMasterItemCommand::getDisplayNumber))
+				.getDisplayNumber() + 1;
+	}
+
 	private void checkAddNew(List<GroupCommonMasterItem> items, GroupCommonMasterItem updateItem) {
+		
+		if (items.isEmpty()) {
+			return;
+		}
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
 
 		String itemCode = updateItem.getCommonMasterItemCode().v();
@@ -98,6 +112,9 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 	private void checkChanged(String commonMasterItemId, List<GroupCommonMasterItem> items,
 			GroupCommonMasterItem updateItem) {
 
+		if (items.isEmpty()) {
+			return;
+		}
 	
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
 		
