@@ -47,8 +47,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this;
 
             self.contextMenu = [
-                { id: "openPopup", text: nts.uk.resource.getText("KSU001_1706"), action: self.openPopup.bind(self) },
-                { id: "delete", text: nts.uk.resource.getText("KSU001_1708"), action: self.remove }
+                { id: "openPopup", text: nts.uk.resource.getText("シフト組み合わせ選択"), action: self.openPopup.bind(self) },
+                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove }
             ];
 
             $("#test2").bind("getdatabutton", function(evt, data) {
