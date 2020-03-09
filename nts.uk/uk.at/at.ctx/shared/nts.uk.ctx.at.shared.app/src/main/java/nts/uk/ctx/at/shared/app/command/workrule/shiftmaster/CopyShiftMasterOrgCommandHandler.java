@@ -43,6 +43,14 @@ public class CopyShiftMasterOrgCommandHandler extends CommandHandlerWithResult<C
 		Optional<ShiftMasterOrganization> copyFrom = shiftMasterOrgRepo.getByTargetOrg(companyId, cmd.toTarget());
 		
 		List<CopyShiftMasterResultDto> results = new ArrayList<>();
+		
+		if(!copyFrom.isPresent()) {
+			for(RegisterShiftMasterOrgCommand target : targets) { 
+				results.add(new CopyShiftMasterResultDto(target.getWorkplaceId(), false));
+			}
+			return results;
+		}
+		
 		if(!CollectionUtil.isEmpty(targets) && copyFrom.isPresent()) {
 			ShiftMasterOrganization fromDomain = copyFrom.get();
 			for(RegisterShiftMasterOrgCommand target : targets) {
