@@ -36,8 +36,8 @@ module jhn001.a.viewmodel {
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 200, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 140, hidden: false, formatter: _.escape }
+            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 190, hidden: false },
+            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 130, hidden: false, formatter: _.escape }
         ]);
 
         constructor(reportId) {
@@ -128,6 +128,9 @@ module jhn001.a.viewmodel {
                         self.layout().listItemCls.removeAll();
                         unblock();
                     });
+                    self.setHightContent();
+                }else{
+                    self.newMode();
                 }
             });
 
@@ -351,10 +354,23 @@ module jhn001.a.viewmodel {
                 layouts = self.layouts;
 
             self.layout().listItemCls.removeAll();
-            self.layout().sendBackComment('');
-            self.layout().message('');
+            self.layout().sendBackComment(text('JHN002_A222_2_1')  + ' : ' );
+            self.layout().message(text('JHN002_A222_1_1')  + ' : ' );
+            self.layout().reportNameLabel('');
             self.layout().listDocument([]);
+            self.layout().approvalRootState([]);
 
+        }
+        
+        setHightContent() {
+            let self = this;
+            const $content = $('#contents-area');
+
+            if ($content.length) {
+                const bound = $content.get(0).getBoundingClientRect();
+
+                $content.css('height', `calc(100vh - ${bound.top + 20}px)`);
+            }
         }
 
         save() {
@@ -586,7 +602,8 @@ module jhn001.a.viewmodel {
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
         reportNameLabel: KnockoutObservable<string> = ko.observable('');
-
+        reportNameVisible: KnockoutObservable<boolean> = ko.observable(false);
+        
         listDocument: any = ko.observableArray([]);
         
         approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -594,6 +611,14 @@ module jhn001.a.viewmodel {
 
         constructor() {
             let self = this;
+            
+            self.reportNameLabel.subscribe(name => {
+                if (name == '' || name == null || name == undefined) {
+                    self.reportNameVisible(false);
+                } else {
+                    self.reportNameVisible(true);
+                }
+            });
         }
 
         clickSampleFileName() {

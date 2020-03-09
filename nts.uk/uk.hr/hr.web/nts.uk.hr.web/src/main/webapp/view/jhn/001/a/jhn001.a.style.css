@@ -40,7 +40,7 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	width: 400px !important;
+	width: 380px !important;
 }
 
 #B221_3{
@@ -59,11 +59,11 @@ button.search-btn {
 }
 
 #B222 {
-	margin-left: -10px; 
+	margin-left: -20px; 
 	margin-top: 14px;
 	float: left;
 	/* min-height: 600px; */
-	width: 880px;
+	width: 815px;
 	position: relative;
 	box-sizing: border-box;
     border: 1px solid #ccc;
@@ -163,6 +163,9 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-    width: 857px !important;
+    width: 792px !important;
 }
 
+#B221_3 > div:nth-child(1) > span > input {
+	width: 245px !important;
+}
