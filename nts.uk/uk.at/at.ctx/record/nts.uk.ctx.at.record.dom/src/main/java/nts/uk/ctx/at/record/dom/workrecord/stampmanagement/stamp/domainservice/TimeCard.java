@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 import java.util.List;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 
 /**
@@ -12,7 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Value
-public class TimeCard implements DomainObject {
+public class TimeCard implements DomainValue {
 	
 	private final String employeeID;
 	

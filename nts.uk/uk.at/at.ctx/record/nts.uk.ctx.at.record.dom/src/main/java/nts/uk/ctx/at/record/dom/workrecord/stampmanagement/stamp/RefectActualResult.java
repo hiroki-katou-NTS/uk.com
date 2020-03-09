@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 import java.util.Optional;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  *
  */
 @Value
-public class RefectActualResult implements DomainObject {
+public class RefectActualResult implements DomainValue {
 
 	/**
 	 * 応援カード番号

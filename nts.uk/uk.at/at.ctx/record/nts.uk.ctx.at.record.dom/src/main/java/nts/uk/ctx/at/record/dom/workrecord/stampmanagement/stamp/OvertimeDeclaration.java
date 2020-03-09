@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Value
-public class OvertimeDeclaration implements DomainObject {
+public class OvertimeDeclaration implements DomainValue {
 	/**
 	 * 時間外時間
 	 */
