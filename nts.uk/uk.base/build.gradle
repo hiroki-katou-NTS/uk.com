@@ -69,7 +69,10 @@ project (':base.web:nts.uk.com.js.web') {
 	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
+		exclude '**/*.ts'
+		exclude '**/*.js.map'
 		baseName= "nts.uk.com.js.web"
+		includeEmptyDirs false
 	}		
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
