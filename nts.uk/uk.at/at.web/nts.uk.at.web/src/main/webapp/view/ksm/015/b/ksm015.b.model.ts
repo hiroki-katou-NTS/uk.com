@@ -48,19 +48,22 @@ class RegistrationForm {
               self.workTypeName = ko.observable('');
               self.workTypeDisplay = ko.observable('');
               self.workTypeCd.subscribe((val) => {
-                     // test lai doan code fix nay cho a cai nhe son be. tuong tu vs worktime
-                     // if(self.workTypeName().endsWith(nts.uk.resource.getText('KSM015_29'))) {
-                     //        self.workTypeDisplay(self.workTypeName());
-                     // } else {
-                     //        self.workTypeDisplay(val + '   ' + self.workTypeName());
-                     // }
-                     self.workTypeDisplay(val + '   ' + self.workTypeName());
+                      if(self.workTypeName().endsWith(nts.uk.resource.getText('KSM015_29'))) {
+                             self.workTypeDisplay(self.workTypeName());
+                      } else {
+                             self.workTypeDisplay(val + '   ' + self.workTypeName());
+                      }
               });
+           
               self.workTimeSetCd = ko.observable('');
               self.workTimeSetName = ko.observable('');
               self.workTimeSetDisplay = ko.observable('');
               self.workTimeSetCd.subscribe((val) => {
-                     self.workTimeSetDisplay(val + '   ' + self.workTimeSetName());
+                  if(self.workTimeSetName().endsWith(nts.uk.resource.getText('KSM015_29'))) {
+                             self.workTimeSetDisplay(self.workTimeSetName());
+                      } else {
+                             self.workTimeSetDisplay(val + '   ' + self.workTimeSetName());
+                      }
               });
        }
 

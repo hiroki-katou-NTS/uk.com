@@ -21,6 +21,8 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJC').textDecision);
         listCheckNeededOfWorkTime: any[] = getShared('dataForJC').listCheckNeededOfWorkTime;
         nashi: string = getText("KSU001_98");
+        clearedData: any[] = [];
+        isCleared: boolean = false;
            
         constructor() {
             let self = this;
@@ -68,6 +70,8 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         clearData(): void {
             let self = this;
             $("#table-date td").html('');
+            self.clearedData.push(self.dataSource());
+            self.isCleared = true;
             self.dataSource([]);
         }
 
@@ -116,6 +120,12 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                 tooltip: tooltip,
                 data: arrData
             });
+
+            setShared("clearedDataFromJB", {
+                isCleared: self.isCleared,
+                clearedData: self.clearedData
+            });
+            
             nts.uk.ui.windows.close();
         }
 
@@ -155,7 +165,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
                     data[i].workTime1 = data[i].workTime1 + " " + data[i].workTime2;
                     }
                    }
-                self.listWorkType(data); 
+                self.listWorkType(_.sortBy(data, ['shiftMasterCode'])); 
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
             });
