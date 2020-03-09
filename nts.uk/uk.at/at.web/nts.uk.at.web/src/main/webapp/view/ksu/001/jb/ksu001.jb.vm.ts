@@ -15,7 +15,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         isVisibleWkpName: KnockoutObservable<boolean> = ko.observable(false);
         groupName: KnockoutObservable<string> = ko.observable('');
         note: KnockoutObservable<string> = ko.observable('');
-        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(0);
+        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(1);
         contextMenu: Array<any>;
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
@@ -206,6 +206,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                 return;
+              }
             //check soucre null or empty
              if (nts.uk.ui.errors.hasError()) {
                 return;

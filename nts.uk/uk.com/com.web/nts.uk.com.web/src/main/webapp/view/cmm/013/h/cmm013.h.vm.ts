@@ -232,9 +232,9 @@ module nts.uk.com.view.cmm013.h.viewmodel {
                 }    
             });
             nts.uk.ui.block.invisible();
-            dialog.confirm({ messageId: "Msg_1591" }).ifYes(() => {
+            dialog.confirm({ messageId: "Msg_1637" }).ifYes(() => {
                 service.multiInsert(commandLst).done((data) => {
-                    dialog.info({ messageId: "Msg_1592" }).then(function() {
+                    dialog.info({ messageId: "Msg_1638" }).then(function() {
                         self.reload();
                         nts.uk.ui.block.clear();        
                     });        

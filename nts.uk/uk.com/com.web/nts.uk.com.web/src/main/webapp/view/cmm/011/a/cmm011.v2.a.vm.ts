@@ -258,7 +258,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     historyId: self.configuration() ? self.configuration().historyId() : null
                 };
             setShared("CMM011AParams", params);
-            modal("/view/cmm/011_v2/b/index.xhtml").onClosed(() => {
+            modal("/view/cmm/011/b/index.xhtml").onClosed(() => {
                 let params = getShared("CMM011BParams");
                 if (params) {
                     self.configuration().historyId(params.historyId);
@@ -292,7 +292,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
                     listHierarchyChange: self.listHierarchyChange
                 };
                 setShared("CMM011AParams", params);
-                modal("/view/cmm/011_v2/d/index.xhtml").onClosed(() => {
+                modal("/view/cmm/011/d/index.xhtml").onClosed(() => {
                     let result = getShared("CreatedWorkplace");
                     if (result) {
                         block.invisible();
