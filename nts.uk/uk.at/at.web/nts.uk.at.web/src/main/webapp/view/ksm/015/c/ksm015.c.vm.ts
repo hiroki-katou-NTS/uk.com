@@ -208,13 +208,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				let lstSelection: any = nts.uk.ui.windows.getShared("CDL023Output");
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					let wkps = [];
-					let msg = '';
 					lstSelection.forEach((wp) => {
-						let dataWkp = _.find(flwps, wkp => wkp.id == wp);
 						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] });
-						if(dataWkp) {
-							msg += dataWkp.code + ' ' + dataWkp.name + ' ' + nts.uk.resource.getText('KSM015_26') + '<br>';
-						}
 					});
 					let param = {
 						targetUnit: TargetUnit.WORKPLACE,
@@ -223,7 +218,15 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						toWkps: wkps
 					}
 					service.copyOrg(param)
-						.done(() => {
+						.done((results) => {
+							let msg = '';
+							results.forEach((result) => {
+								let dataWkp = _.find(flwps, wkp => wkp.id == result.workplaceId);
+								if(dataWkp) {
+									let status = result.status ? nts.uk.resource.getText('KSM015_26') : nts.uk.resource.getText('KSM015_27');
+									msg += dataWkp.code + ' ' + dataWkp.name + ' ' + status + '<br>';
+								}
+							});
 							nts.uk.ui.dialog.info(msg);
 							self.reloadAlreadySetting();
 						});
