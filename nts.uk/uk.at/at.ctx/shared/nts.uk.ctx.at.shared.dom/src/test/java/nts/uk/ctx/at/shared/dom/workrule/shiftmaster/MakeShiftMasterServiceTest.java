@@ -163,6 +163,34 @@ public class MakeShiftMasterServiceTest {
 			persist.run();
 		});
 	}
+	
+	
+	@Test
+	public void testMakeShiftMater_throw_Msg_3() {
+		String companyId = "companyId";
+		String shiftMasterCode = "shiftMasterCode";
+		String workTypeCode = "workTypeCode";	
+		String workTimeCode = "workTypeCode";
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+
+		new Expectations() {
+			{
+				require.checkExists(companyId, workTypeCode, workTimeCode);
+				result = true;
+				
+			}
+		};
+
+		NtsAssert.businessException("Msg_3", () -> {
+			AtomTask persist = MakeShiftMasterService.makeShiftMater(
+					requireWorkinfo, require, 
+					companyId,//dummy
+					shiftMasterCode, //dummy
+					workTypeCode, //dummy
+					Optional.of(workTimeCode), shiftMasterDisInfor);//dummy
+			persist.run();
+		});
+	}
 
 	@Test
 	public void testMakeShiftMater() {
