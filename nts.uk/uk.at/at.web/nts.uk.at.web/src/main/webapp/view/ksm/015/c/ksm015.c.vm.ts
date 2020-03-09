@@ -152,8 +152,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			if (this.selectedShiftMaster().length > 0) {
 				self.shiftItems(_.filter(self.shiftItems(), (val) => { return self.selectedShiftMaster().indexOf(val.shiftMasterCode) === -1 }));
 				self.selectedShiftMaster([]);
+			} else {
+				nts.uk.ui.dialog.info({ messageId: "Msg_85" });
 			}
-
 		}
 
 		public openDialogKDL044(): void {

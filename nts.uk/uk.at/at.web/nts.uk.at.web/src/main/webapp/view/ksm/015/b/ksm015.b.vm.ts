@@ -65,7 +65,6 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 
 		public register() {
 			nts.uk.ui.errors.clearAll();
-
 			let self = this;
 
 			$(".nts-input").trigger("validate");

@@ -95,9 +95,7 @@ class RegistrationForm {
               self.workTimeSetName('');
               self.workTimeSetCd('');
        }
-
-
-
+       
 }
 
 interface ShiftMaster {
