@@ -276,7 +276,7 @@ public class AppAbsenceFinder {
 		//アルゴリズム「勤務種類を取得する（詳細）」を実行する-[Lấy WorkType(detail)]
 		//2.勤務種類を取得する（詳細）
 		List<WorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeDetails(
-				appCommonSet.appEmploymentWorkType, companyID, appAbsence.getApplication().getEmployeeID(),
+				appCommonSet.appEmploymentWorkType.stream().findFirst().orElse(null), companyID,
 				appAbsence.getHolidayAppType().value, appAbsence.getAllDayHalfDayLeaveAtr().value,
 				appAbsence.isHalfDayFlg());
 		//取得した勤務種類リストに「ドメインモデル「休暇申請」．勤務種類コード」が存在するかチェックする-(Check WorkTypeCode có tồn tại k?)
@@ -632,7 +632,7 @@ public class AppAbsenceFinder {
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
 		// 2.勤務種類を取得する（詳細）
 		List<WorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeDetails(
-				appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
+				appCommonSettingOutput.appEmploymentWorkType.stream().findFirst().orElse(null), companyID, holidayType, alldayHalfDay,
 				displayHalfDayValue);
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		for (WorkType workType : workTypes) {

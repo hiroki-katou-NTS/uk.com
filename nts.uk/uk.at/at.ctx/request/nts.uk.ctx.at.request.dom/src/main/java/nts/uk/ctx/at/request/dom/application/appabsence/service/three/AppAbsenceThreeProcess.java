@@ -29,13 +29,16 @@ public interface AppAbsenceThreeProcess {
 													int alldayHalfDay,
 													boolean displayHalfDayValue,
 													Optional<HdAppSet> hdAppSet);
+
 	/**
 	 * 2.勤務種類を取得する（詳細）
 	 * @param appEmploymentWorkType
-	 * @param companyID
-	 * @param employeeID
-	 * @return list workType
+	 * @param companyID 会社ID
+	 * @param holidayType 選択する休暇種類
+	 * @param alldayHalfDay 終日休暇半日休暇区分
+	 * @param displayHalfDayValue 勤務種類組み合わせ全表示チェック
+	 * @return
 	 */
-	public List<WorkType> getWorkTypeDetails(List<AppEmploymentSetting> appEmploymentWorkType,String companyID,String employeeID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue);
+	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType,String companyID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue);
 
 }
