@@ -119,7 +119,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             $($('a.hyperlink')[index]).addClass('color-gray');
             let pattern = _.find(self.listPattern(), ['groupNo', index + 1]);
             self.groupName(pattern ? pattern.groupName : null);
-            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 0);
+            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 1);
             self.note(pattern ? pattern.note : null);
             self.source(self.dataSource()[index] || self.sourceEmpty);
             self.currentObject({
