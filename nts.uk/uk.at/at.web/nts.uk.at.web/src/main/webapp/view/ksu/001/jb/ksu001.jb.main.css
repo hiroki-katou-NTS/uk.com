@@ -113,10 +113,15 @@ hr {
 
 .color-gray {
 	cursor: default;
+	text-decoration: none;
 }
 .valign-center.control-group{
 	margin-left: 50px;
 }
 .nts-switch-button.unselectable{
 	width: 100px;
+}
+#test2 button{
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

@@ -6,7 +6,8 @@ module nts.uk.at.view.ksu001.jb.service {
         deleteWorkPairPattern: "at/schedule/shift/management/delete",
         getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
         //getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
-        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId", 
+        //getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId", 
+        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/optainlistByWorkPlace", 
         //Get data tooltip
         getShiftMasterWorkInfo: "ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace"
     }
@@ -25,6 +26,10 @@ module nts.uk.at.view.ksu001.jb.service {
 
     export function getDataWkpPattern(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
+    }
+
+    export function getShiftMasterWorkInfo(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getShiftMasterWorkInfo, obj);
     }
     
 }

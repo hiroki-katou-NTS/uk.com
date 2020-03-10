@@ -12,6 +12,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		selectedShiftMaster: KnockoutObservableArray<any>;
 		forAttendent: KnockoutObservable<String>;
 		workplaceName: KnockoutObservable<String>;
+		isWorkplaceAlreadySetting: KnockoutObservable<Boolean>;
+
 		constructor() {
 			let self = this;
 			self.forAttendent = ko.observable('');
@@ -40,6 +42,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.shiftItems = ko.observableArray([]);
 			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
 			self.selectedShiftMaster = ko.observableArray([]);
+			self.isWorkplaceAlreadySetting = ko.observable(false);
 
 			$('#tree-grid').ntsTreeComponent(self.treeGrid)
 				.done(() => {
@@ -60,6 +63,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 										data = _.sortBy(data, 'shiftMasterCode');
 										self.shiftItems(data);
 										self.selectedShiftMaster([]);
+										self.isWorkplaceAlreadySetting(data && data.length > 0);
 									});
 							}
 						}
@@ -96,24 +100,19 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
-			// if (self.shiftItems().length === 0) {
-			// 	nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-			// 	return;
-			// }
+
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE,
 				workplaceId: self.selectedWorkplaceId(),
 				shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			};
+
 			nts.uk.ui.block.grayout();
 			service.registerOrg(param)
 				.done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) === -1;
 					if (isNew) {
-						// let currents = self.alreadySettingList();
-						// currents.push({ workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true });
-						// self.alreadySettingList(currents);
 						self.reloadAlreadySetting();
 					}
 					self.selectedWorkplaceId.valueHasMutated();
@@ -135,7 +134,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
 					service.deleteOrg(param).done((data) => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 						self.selectedWorkplaceId.valueHasMutated();
 						nts.uk.ui.block.clear();
 						self.reloadAlreadySetting();

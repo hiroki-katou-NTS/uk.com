@@ -95,6 +95,12 @@ class RegistrationForm {
               self.workTimeSetName('');
               self.workTimeSetCd('');
        }
+
+       public trimData() {
+              let self = this;
+              self.selectedCode(self.selectedCode().trim());
+              self.shiftMasterName(self.shiftMasterName().trim());
+       }
        
 }
 
