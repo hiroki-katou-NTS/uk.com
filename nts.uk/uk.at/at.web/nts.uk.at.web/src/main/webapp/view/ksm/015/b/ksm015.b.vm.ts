@@ -67,6 +67,8 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			nts.uk.ui.errors.clearAll();
 			let self = this;
 
+			self.registrationForm().trimData();
+
 			$(".nts-input").trigger("validate");
 
 			if (!self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() == '') {

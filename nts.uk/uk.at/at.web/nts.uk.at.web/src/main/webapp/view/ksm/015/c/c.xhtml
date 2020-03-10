@@ -8,9 +8,9 @@
         <!-- C1 -->
         <button tabindex="1" class="proceed" data-bind="click: registerOrd">#{i18n.getText('KSM015_8')}</button>
         <!-- C2 -->
-        <button class="danger" tabindex="3" data-bind="click: deleteShiftMaster">#{i18n.getText('KSM015_9')}</button>
+        <button class="danger" tabindex="3" data-bind="click: deleteShiftMaster, disable: !isWorkplaceAlreadySetting()">#{i18n.getText('KSM015_9')}</button>
         <!-- C3 -->
-        <button tabindex="2" data-bind="click: openDialogCopy">#{i18n.getText('KSM015_21')}</button>
+        <button tabindex="2" data-bind="click: openDialogCopy, disable: !isWorkplaceAlreadySetting()">#{i18n.getText('KSM015_21')}</button>
 
     </div>
     <div class="contents-area cf">
