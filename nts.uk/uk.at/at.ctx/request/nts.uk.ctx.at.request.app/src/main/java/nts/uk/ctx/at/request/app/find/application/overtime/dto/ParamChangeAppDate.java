@@ -13,7 +13,7 @@ public class ParamChangeAppDate {
 	/**
 	 * appDate
 	 */
-	private String appDate;
+	private List<String> appDate;
 	/**
 	 * prePostAtr
 	 */

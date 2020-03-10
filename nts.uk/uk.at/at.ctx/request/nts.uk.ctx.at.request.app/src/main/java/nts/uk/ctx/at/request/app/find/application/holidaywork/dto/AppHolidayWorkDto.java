@@ -14,6 +14,9 @@ import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationRe
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -247,6 +250,12 @@ public class AppHolidayWorkDto {
 	private int preExcessDisplaySetting;
 	private List<CaculationTime> caculationTimes;
 	
+	private AppHolidayWorkDataNoDate appHolidayWorkDataNoDate;
+	private AppHolidayWorkDataHasDate appHolidayWorkDataHasDate;
+	private DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput;
+	private DetailScreenInitModeOutput detailScreenInitModeOutput;
+	private PreActualColorResult preActualColorResult;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -303,7 +312,12 @@ public class AppHolidayWorkDto {
 				false,
 				0,
 				0,
-				Collections.emptyList());
+				Collections.emptyList(),
+				null,
+				null,
+				null,
+				null,
+				null);
 	}
 	
 }

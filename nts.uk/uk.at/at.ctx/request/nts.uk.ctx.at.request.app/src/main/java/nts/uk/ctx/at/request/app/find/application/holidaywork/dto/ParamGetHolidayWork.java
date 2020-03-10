@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ParamGetHolidayWork {
-	private String appDate;
+	private List<String> appDate;
 	private int uiType;
 	private List<String> lstEmployee;
 	private Integer payoutType;

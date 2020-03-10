@@ -189,9 +189,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            var appDateInput: Array<String> = [];
+            appDateInput.push(nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT));
             nts.uk.ui.block.invisible();
             service.getHolidayWorkByUI({
-                appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                appDate: self.appDateInput,
                 lstEmployee: self.ltsEmployee(),
                 payoutType: self.payoutType(),
                 uiType: self.uiType(),
@@ -202,6 +204,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
+                    var appDateInput: Array<String> = [];
+                    appDateInput.push(moment(value).format(self.DATE_FORMAT));
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
@@ -210,7 +214,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         }
                         nts.uk.ui.block.invisible();
                         service.findByChangeAppDate({
-                            appDate: moment(value).format(self.DATE_FORMAT),
+                        	appDate: appDateInput,
                             prePostAtr: self.prePostSelected(),
                             siftCD: self.siftCD(),
                             overtimeHours: ko.toJS(self.overtimeHours),
@@ -314,15 +318,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
             }
             self.workTypecodes(data.workTypes);
-            self.workTimecodes(data.workTimes);
+            self.workTimecodes(data.appHolidayWorkDataHasDate.listWorkTimeCodes);
             self.timeStart1(data.workClockStart1);
             self.timeEnd1(data.workClockEnd1);
             self.timeStart2(data.workClockStart2);
             self.timeEnd2(data.workClockEnd2);
-            if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
-                let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+            if(data.appHolidayWorkDataNoDate.applicationReasonDtos != null && data.appHolidayWorkDataNoDate.applicationReasonDtos.length > 0){
+                let lstReasonCombo = _.map(data.appHolidayWorkDataNoDate.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
-                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                let reasonID = _.find(data.appHolidayWorkDataNoDate.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
                 self.selectedReason(reasonID);
                 
                 self.multilContent(data.application.applicationReason);
@@ -806,17 +810,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
-                    let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
-                    service.getBreakTimes(param).done((data) => {
-                        self.setTimeZones(data);
-                    });
                     service.getRecordWork(
                         {
                             employeeID: self.employeeID(), 
                             appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                             siftCD: self.siftCD(),
                             prePostAtr: self.prePostSelected(),
-                            overtimeHours: ko.toJS(self.breakTimes())
+                            overtimeHours: ko.toJS(self.breakTimes()),
+                            workTypeCD: childData.selectedWorkTypeCode,
                         }
                     ).done(data => {
                         self.timeStart1(data.startTime1 == null ? null : data.startTime1);
@@ -824,6 +825,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         self.timeStart2(data.startTime2 == null ? null : data.startTime2);
                         self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
                         self.convertAppOvertimeReferDto(data);
+                        self.setTimeZones(data.timezones);
                     });
                 }
             })
