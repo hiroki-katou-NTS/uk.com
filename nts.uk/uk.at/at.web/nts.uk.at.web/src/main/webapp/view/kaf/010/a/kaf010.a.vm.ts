@@ -189,8 +189,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var appDateInput: Array<String> = [];
-            appDateInput.push(nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT));
+            var appDateInput = null;
+            appDateInput = nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT));
             nts.uk.ui.block.invisible();
             service.getHolidayWorkByUI({
                 appDate: self.appDateInput,

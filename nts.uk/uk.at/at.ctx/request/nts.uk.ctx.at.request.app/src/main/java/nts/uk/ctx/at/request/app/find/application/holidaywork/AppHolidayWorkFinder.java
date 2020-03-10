@@ -184,7 +184,7 @@ public class AppHolidayWorkFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHolidayWorkDto getAppHolidayWork(List<String> appDateInput,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
+	public AppHolidayWorkDto getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
 		String companyID = AppContexts.user().companyId();
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
@@ -201,7 +201,7 @@ public class AppHolidayWorkFinder {
 		result.setAppHolidayWorkDataNoDate(appHolidayWorkDataNoDate);
 		
 		// 申請表示情報(基準日関係あり)を取得する
-		AppHolidayWorkDataHasDate appHolidayWorkDataHasDate = this.getAppDisplayInfoHasBaseDate(appDateInput, result, companyID, appHolidayWorkDataNoDate, overtimeRestAppCommonSet, uiType);
+		AppHolidayWorkDataHasDate appHolidayWorkDataHasDate = this.getAppDisplayInfoHasBaseDate(appDate, result, companyID, appHolidayWorkDataNoDate, overtimeRestAppCommonSet, uiType);
 		result.setAppHolidayWorkDataHasDate(appHolidayWorkDataHasDate);
 		
 		// 01-02_時間外労働を取得
@@ -212,17 +212,13 @@ public class AppHolidayWorkFinder {
 		}
 		
 		// 1-1.休日出勤申請（新規）起動時初期データを取得する
-		String appDate = null;
-		if (!CollectionUtil.isEmpty(appDateInput)) {
-			appDate = appDateInput.get(0);
-		}
 		
 		appHolidayWorkDataNoDate.getAppCommonSettingOutput().appEmploymentWorkType = appHolidayWorkDataHasDate.getLstEmploymentWt();
 
 		this.getData(companyID, appHolidayWorkDataNoDate.getEmployeeOTs().get(0).getEmployeeIDs(), appDate, appHolidayWorkDataNoDate.getAppCommonSettingOutput(), result, uiType, payoutType, null, null, overtimeRestAppCommonSet);
 		
 		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		if (!CollectionUtil.isEmpty(appDateInput)) {
+		if (appDate != null) {
 			// 07-02_実績取得・状態チェック
 			// アルゴリズム「残業申請設定を取得する」を実行する
 			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID,
@@ -294,7 +290,7 @@ public class AppHolidayWorkFinder {
 	 * @param breakTime
 	 * @return
 	 */
-	public AppHolidayWorkDto findChangeAppDate(List<String> appDateInput,int prePostAtr,String siftCD, List<CaculationTime> breakTime, String changeEmployee, Integer startTime, Integer endTime, 
+	public AppHolidayWorkDto findChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> breakTime, String changeEmployee, Integer startTime, Integer endTime, 
 			AppHolidayWorkDataNoDate appHolidayWorkDataNoDate){
 		String companyID = AppContexts.user().companyId();
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
@@ -310,18 +306,13 @@ public class AppHolidayWorkFinder {
 		// 申請日を変更する
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if (appHolidayWorkDataNoDate.getAppCommonSettingOutput().getApplicationSetting().getBaseDateFlg().value == BaseDateFlg.SYSTEM_DATE.value) {
-			appDateInput = new ArrayList<String>();
-			appDateInput.add(GeneralDate.today().toString(DATE_FORMAT));
+			appDate = GeneralDate.today().toString(DATE_FORMAT);
 		}
-		appHolidayWorkDataHasDate = this.getAppDisplayInfoHasBaseDate(appDateInput, result, companyID, appHolidayWorkDataNoDate, overtimeRestAppCommonSet, 0);
+		appHolidayWorkDataHasDate = this.getAppDisplayInfoHasBaseDate(appDate, result, companyID, appHolidayWorkDataNoDate, overtimeRestAppCommonSet, 0);
 		result.setAppHolidayWorkDataNoDate(appHolidayWorkDataNoDate);
 		result.setAppHolidayWorkDataHasDate(appHolidayWorkDataHasDate);
 		
 		// 1-1.休日出勤申請（新規）起動時初期データを取得する
-		String appDate = null;
-		if (!CollectionUtil.isEmpty(appDateInput)) {
-			appDate = appDateInput.get(0);
-		}
 
 		appHolidayWorkDataNoDate.getAppCommonSettingOutput().appEmploymentWorkType = appHolidayWorkDataHasDate
 				.getLstEmploymentWt();
@@ -331,7 +322,7 @@ public class AppHolidayWorkFinder {
 		// 07-02_実績取得・状態チェック
 		// アルゴリズム「残業申請設定を取得する」を実行する
 		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		if (!CollectionUtil.isEmpty(appDateInput)) {
+		if (appDate != null) {
 			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID,
 					result.getAppHolidayWorkDataNoDate().getEmployeeOTs().get(0).getEmployeeIDs(), GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION,
 					result.getWorkType().getWorkTypeCode(), result.getWorkTime().getSiftCode(),
@@ -581,11 +572,10 @@ public class AppHolidayWorkFinder {
 			throw new BusinessException("Msg_198");
 		}
 		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
-		List<String> appDateInput = new ArrayList<String>();
-		appDateInput.add(!appHolidayWork.getApplication().getStartDate().isPresent() ? null : appHolidayWork.getApplication().getStartDate().get().toString(DATE_FORMAT));
+		String appDate = !appHolidayWork.getApplication().getStartDate().isPresent() ? null : appHolidayWork.getApplication().getStartDate().get().toString(DATE_FORMAT);
 		AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);
 		// 起動時の申請表示情報を取得する
-		getAppHolidayWork(appDateInput, 0, new ArrayList<String>() , null , appHolidayWork.getApplication().getEmployeeID(), appHolidayWorkDto);		
+		getAppHolidayWork(appDate, 0, new ArrayList<String>() , null , appHolidayWork.getApplication().getEmployeeID(), appHolidayWorkDto);		
 		
 		// 詳細画面の利用者とステータスを取得する
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWork.getApplication().getEmployeeID(), appID, appHolidayWorkDto.getAppHolidayWorkDataNoDate().getAppCommonSettingOutput().generalDate);
@@ -1001,17 +991,13 @@ public class AppHolidayWorkFinder {
 	 * @param 申請表示情報(基準日関係なし) = 取得した「申請表示情報(基準日関係なし)」
 	 * @param 新規詳細モード = INPUT．「新規詳細モード」
 	 */
-	public AppHolidayWorkDataHasDate getAppDisplayInfoHasBaseDate(List<String> appDateInput, AppHolidayWorkDto result, String companyID, AppHolidayWorkDataNoDate appHolidayWorkDataNoDate, 
+	public AppHolidayWorkDataHasDate getAppDisplayInfoHasBaseDate(String appDate, AppHolidayWorkDto result, String companyID, AppHolidayWorkDataNoDate appHolidayWorkDataNoDate, 
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, int uiType) {
 		AppHolidayWorkDataHasDate appHolidayWorkDataHasDate = new AppHolidayWorkDataHasDate();
 		int prePostAtr = 0;
 		String employeeID = appHolidayWorkDataNoDate.getEmployeeOTs().get(0).getEmployeeIDs();
 		AppCommonSettingOutput appCommonSettingOutput = appHolidayWorkDataNoDate.getAppCommonSettingOutput();
 		// 基準日として扱う日の取得
-		String appDate = null;
-		if (!CollectionUtil.isEmpty(appDateInput)) {
-			appDate = appDateInput.get(0);			
-		}
 		GeneralDate baseDate = getBaseDate.getBaseDate(appDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(appDate, DATE_FORMAT)));
 		
 		appHolidayWorkDataHasDate.setBaseDate(baseDate);
