@@ -272,20 +272,21 @@ module jcm007.a {
                         headerText: getText('JCM007_A221_6') , key: 'scd', dataType: 'string', width: '70px'
                     },
                     {
-                        headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '120px'
+                        headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '140px'
                     },
                     {
-                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
+                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
-                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
+                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
                         headerText: getText('JCM007_A221_10') , key: 'notificationCategory', dataType: 'string', width: '80px'
-                    },
-                    {
-                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
                     }
+//                    ,
+//                    {
+//                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
+//                    }
                 ],
                 dataSource: self.employeeListTab2,
                 dataSourceType: 'json',

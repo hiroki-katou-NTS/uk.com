@@ -7,10 +7,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 
 @Stateless
 public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
-
+	// 事前チェック
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 
@@ -22,8 +23,13 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 		GeneralDate retirementDate = GeneralDate.fromString(command.retirementDate, "yyyy/MM/dd"); // A222_12
 		GeneralDate releaseDate = GeneralDate.fromString(command.releaseDate, "yyyy/MM/dd"); // A222_14
 		
+		// 社員が選択されているかのチェック(check xem employee có đang được chọn hay không)
+		if (StringUtil.isNullOrEmpty(command.getSId(), false)) {
+			throw new BusinessException("MsgJ_JCM007_12");
+		}
 
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+
 		int index = 0;
 
 		if (retirementDate.before(releaseDate)) {
