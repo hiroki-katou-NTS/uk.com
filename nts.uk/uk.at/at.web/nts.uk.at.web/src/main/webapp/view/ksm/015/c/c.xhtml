@@ -1,10 +1,10 @@
 <div>
     <div class="sidebar-content-header">
-        <span class="title">の間</span>
+        <span class="title">#{i18n.getText('Com_Workplace')}</span>
         <!-- Go back Style -->
         <!-- B5 -->
         <a class="goback"
-            data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
+            data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }, if: forAttendent">#{i18n.getText('KSM015_11')}</a>
         <!-- C1 -->
         <button tabindex="1" class="proceed" data-bind="click: registerOrd">#{i18n.getText('KSM015_8')}</button>
         <!-- C2 -->
@@ -18,11 +18,11 @@
             <div id="tree-grid"></div>
         </div>
         <div id="register-form">
-            <div class="form-title">
-                <span>項目移送 :</span> <span>項目移送</span>
+            <div id="form-title">
+                <span>#{i18n.getText('Com_Workplace')} :</span> <span data-bind="text: workplaceName()"></span>
             </div>
            
-            <div class="valign-center control-group">
+            <div class="valign-center control-group">													
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM015_23',["#Com_Workplace"])}</div>
             </div>
             <div class="valign-center control-group">
@@ -31,6 +31,7 @@
             </div>
             <table id="shift-list" data-bind="ntsGridList: {
                 height: 350,
+                width: 800,
                 options: shiftItems,
                 optionsValue: 'shiftMasterCode',
                 columns: shiftColumns,

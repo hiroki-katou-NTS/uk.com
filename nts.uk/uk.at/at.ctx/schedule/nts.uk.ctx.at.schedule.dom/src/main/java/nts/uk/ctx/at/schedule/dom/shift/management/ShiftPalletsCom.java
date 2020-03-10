@@ -31,7 +31,7 @@ public class ShiftPalletsCom implements DomainAggregate {
 			throw new BusinessException("Msg_1615");
 		}
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
-//		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
+		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 		
 		this.companyId = companyId;
 		this.page = page;

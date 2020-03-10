@@ -18,6 +18,10 @@ public class MakeShiftMasterService {
 			Require require, String companyId, String shiftMaterCode, String workTypeCd, Optional<String> workTimeCd,
 			ShiftMasterDisInfor displayInfor) {
 		String workTimeCdNew = workTimeCd.isPresent() ? workTimeCd.get() : null;
+		
+		if(require.checkExists(companyId, workTypeCd, workTypeCd)) {
+			throw new BusinessException("Msg_3");
+		}
 		// 1:作る(会社ID, シフトマスタコード, シフトマスタの表示情報, 勤務種類コード, 就業時間帯コード)
 		ShiftMaster shiftMater = new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, workTypeCd,
 				workTimeCdNew);

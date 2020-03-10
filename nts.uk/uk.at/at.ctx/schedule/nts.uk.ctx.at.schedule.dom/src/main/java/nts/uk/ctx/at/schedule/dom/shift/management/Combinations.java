@@ -25,7 +25,7 @@ public class Combinations implements DomainValue {
 
 		// inv-1 1 <= 順番 <= 31
 		if (!(1 <= order && order <= 31)) {
-			throw new BusinessException("Msg_1627");
+			throw new BusinessException("Msg_1626");
 		}
 		this.order = order;
 		this.shiftCode = shiftCode;

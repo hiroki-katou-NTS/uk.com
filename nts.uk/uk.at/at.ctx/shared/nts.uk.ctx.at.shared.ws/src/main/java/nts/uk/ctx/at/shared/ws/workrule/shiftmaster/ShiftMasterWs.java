@@ -11,6 +11,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommand;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommand;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.AlreadySettingWorkplac
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.Ksm015StartPageDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -53,12 +56,19 @@ public class ShiftMasterWs {
 	private RegisterShiftMasterOrgCommandHandler registerOrgCmd;
 	
 	@Inject
+	private CopyShiftMasterOrgCommandHandler copyOrgCmd;
+	
+	@Inject
 	private DeleteShiftMasterOrgCommandHandler deleteOrgCmd; 
 	
 	@POST
-	@Path("isForAttendent")
+	@Path("startCPage")
 	public Ksm015StartPageDto isForAttendent(){
-		return Ksm015StartPageDto.builder().forAttendent(AppContexts.user().roles().forAttendance()).build() ;
+		AlreadySettingWorkplaceDto configWorkplace = this.orgFinder.getAlreadySetting();
+		return Ksm015StartPageDto.builder()
+				.forAttendent(AppContexts.user().roles().forAttendance())
+				.alreadyConfigWorkplaces(configWorkplace.getWorkplaceIds())
+				.build() ;
 	}
 	
 	@POST
@@ -76,12 +86,18 @@ public class ShiftMasterWs {
 	@POST
 	@Path("getlistByWorkPlace")
 	public List<ShiftMasterDto> getlist(FindShiftMasterDto dto){
+		return this.orgFinder.optainShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
+	}
+	
+	@POST
+	@Path("optainlistByWorkPlace")
+	public List<ShiftMasterDto> optainlistByWorkPlace(FindShiftMasterDto dto){
 		return this.orgFinder.getShiftMastersByWorkPlace(dto.getWorkplaceId(), dto.getTargetUnit());
 	}
 	
 	@POST
 	@Path("getAlreadyConfigOrg")
-	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(FindShiftMasterDto dto){
+	public AlreadySettingWorkplaceDto getAlreadyConfigOrg(){
 		return this.orgFinder.getAlreadySetting();
 	}
 	
@@ -90,6 +106,13 @@ public class ShiftMasterWs {
 	public void registerShiftMasterOrg(RegisterShiftMasterOrgCommand dto){
 		this.registerOrgCmd.handle(dto);;
 	}
+	
+	@POST
+	@Path("copy/shiftmaster/org")
+	public void copyShiftMasterOrg(CopyShiftMasterOrgCommand dto){
+		this.copyOrgCmd.handle(dto);;
+	}
+	
 	
 	@POST
 	@Path("register")
@@ -107,6 +130,12 @@ public class ShiftMasterWs {
 	@Path("delete/org")
 	public void deleteOrg(DeleteShiftMasterOrgCommand command){
 		this.deleteOrgCmd.handle(command);
+	}
+	
+	@POST
+	@Path("workinfo/get")
+	public WorkInfoDto getWorkInfo(FindWorkInfoDto dto){
+		return this.finder.getWorkInfo(dto.getWorkTypeCd(), dto.getWorkTimeCd());
 	}
 	
 }

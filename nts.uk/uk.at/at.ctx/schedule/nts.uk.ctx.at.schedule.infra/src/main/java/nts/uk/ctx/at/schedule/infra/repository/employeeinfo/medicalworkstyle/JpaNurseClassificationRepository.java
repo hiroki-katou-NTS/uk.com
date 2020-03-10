@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.medicalworkstyle;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificat
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicense;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicensePK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**
  * @author ThanhNX
@@ -47,7 +50,19 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 	//[4] update(看護区分）
 	@Override
 	public void update(NurseClassification nurseClassification) {
-		this.commandProxy().update(toEntity(nurseClassification));
+		String sqlQuery = "UPDATE KSCMT_NURSE_LICENSE SET NAME = ? , LICENSE_ATR = ?, IS_OFFICE_WORK = ?  WHERE CID = ? AND CD = ? ";
+		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
+			ps.setString(1, nurseClassification.getNurseClassifiName().v());
+			ps.setInt(2, nurseClassification.getLicense().value);
+			ps.setInt(3, nurseClassification.isOfficeWorker() ? 1 : 0);
+
+			ps.setString(4, nurseClassification.getCompanyId().v());
+			ps.setString(5, nurseClassification.getNurseClassifiCode().v());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		//this.commandProxy().update(toEntity(nurseClassification));
 	}
 
 	//[5] delete(会社ID，看護区分コード）

@@ -1,47 +1,17 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	display: flex;
-	flex-direction: row;
-}
-
-#left-content {
-	width: 386px;
-	float: left;
-	margin: 10px 30px;
-}
-
-#left-content-top {
-	width: 100%;
-	padding: 10px 15px;
-	margin-bottom: 45px;
+.fixed-flex-layout-right .form-label {
+	width: 135px;
 }
 
 .caret-background.caret-bottom:after {
-	left: 160px !important;
+    left: 180px;
 }
 
-#left-content-bottom {
-	width: 100%;
-	height: 570px;
-	padding: 15px;
-	border-radius: 5px;
+.panel.ntsPanel.direction-bottom {
+    margin-bottom: 30px;
 }
 
-#right-content {
-	/* width: 720px;
-	float: left; */
-	margin-left: 56px;
-	margin-top: 10px;
-	/* float:  right; */
-}
-
-
-/* #table-detail-setting {
-	margin-top: -10px;
-} */
-
-.td-detail {
-	padding-top: 10px;
-	padding-bottom: 10px;
+div.valign-center.control-group {
+	width: 750px;
 }
