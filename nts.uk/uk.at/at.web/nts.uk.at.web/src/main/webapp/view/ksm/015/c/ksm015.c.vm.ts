@@ -10,13 +10,13 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		shiftColumns: Array<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
-		forAttendent: KnockoutObservable<String>;
+		forAttendent: KnockoutObservable<Boolean>;
 		workplaceName: KnockoutObservable<String>;
 		isWorkplaceAlreadySetting: KnockoutObservable<Boolean>;
 
 		constructor() {
 			let self = this;
-			self.forAttendent = ko.observable('');
+			self.forAttendent = ko.observable(true);
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
 			self.workplaceName = ko.observable('');
@@ -79,8 +79,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.block.invisible();
 			service.startPage()
 				.done((data) => {
-					self.forAttendent(data.forAttendent);
-
+					self.forAttendent(!_.isNull(data.forAttendent));
 					if (data.alreadyConfigWorkplaces) {
 						let alreadySettings = []
 						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
