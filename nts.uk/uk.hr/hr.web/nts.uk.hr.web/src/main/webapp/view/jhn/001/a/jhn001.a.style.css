@@ -169,3 +169,9 @@ div.drag-panel{
 #B221_3 > div:nth-child(1) > span > input {
 	width: 245px !important;
 }
+
+.goBackDisable {
+	pointer-events: none;
+    cursor: default;
+    color: #888888;
+}
