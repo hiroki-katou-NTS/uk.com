@@ -159,7 +159,8 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 }
             });
             if (self.selectedTab() === 'company') {
-                self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
+                //self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
+                self.handleInit(self.listWkpPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
             }
             if (self.selectedTab() === 'workplace') {
                 self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, ko.observable(0));

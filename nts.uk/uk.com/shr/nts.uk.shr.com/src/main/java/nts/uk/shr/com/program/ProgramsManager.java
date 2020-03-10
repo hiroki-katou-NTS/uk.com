@@ -711,15 +711,15 @@ public class ProgramsManager {
     public static final Program KSU001D = new Program(WebAppId.AT, ProgramIdConsts.KSU001D, "",
             "/view/ksu/001/d/index.xhtml");
     /**
-     * KSU001JA
-     */
-    public static final Program KSU001JA = new Program(WebAppId.AT, ProgramIdConsts.KSU001JA, "KSU001_926",
-            "/view/ksu/001/ja/index.xhtml");
-    /**
      * KSU001JB
      */
-    public static final Program KSU001JB = new Program(WebAppId.AT, ProgramIdConsts.KSU001JB, "KSU001_927",
+    public static final Program KSU001JB = new Program(WebAppId.AT, ProgramIdConsts.KSU001JB, "KSU001_147",
             "/view/ksu/001/jb/index.xhtml");
+    /**
+     * KSU001JC
+     */
+    public static final Program KSU001JC = new Program(WebAppId.AT, ProgramIdConsts.KSU001JC, "KSU001_148",
+            "/view/ksu/001/jc/index.xhtml");
     /**
      * KSU001L
      */
