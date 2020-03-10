@@ -167,7 +167,7 @@ public class HolidayShipmentScreenAFinder {
 		
         // 1.職場別就業時間帯を取得
         List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-                appCommonSettingOutput.generalDate);
+                appCommonSettingOutput.generalDate).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
         result.setWorkTimeCDs(listWorkTimeCodes);
 
 

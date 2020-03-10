@@ -137,7 +137,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		}
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-				GeneralDate.today());
+				GeneralDate.today()).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(listWorkTimeCodes)) {
 			List<WorkTimeSetting> workTimes = workTimeSettingRepository.findByCodes(companyID, listWorkTimeCodes);

@@ -171,7 +171,8 @@ public class HolidayServiceImpl implements HolidayService {
 			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate) {
 		WorkTimeHolidayWork workTimeHolidayWork = new WorkTimeHolidayWork();
 		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
+		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
+				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		List<String> workTimes = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 			listWorkTimeCodes.forEach(x -> workTimes.add(x));

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -77,13 +79,13 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
@@ -204,22 +206,23 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 * 1.職場別就業時間帯を取得
 	 */
 	@Override
-	public List<String> getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
-		List<String> listEmployeeAdaptor = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
-		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		List<String> listWorkTimeCodes = new ArrayList<>();
-		for(String employeeAdaptor : listEmployeeAdaptor) {
-			listWorkTimeCodes = workTimeWorkplaceRepo
-					.getWorkTimeWorkplaceById(companyID, employeeAdaptor);
-			if(listWorkTimeCodes.size()>0) {
-				Collections.sort(listWorkTimeCodes);
-				break;
+	public List<WorkTimeSetting> getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
+		// 申請本人の所属職場を含める上位職場を取得する
+		List<String> wkpIDLst = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
+		// 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+		// Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
+		for(String wkpID : wkpIDLst) {
+			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
+			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+			if(listWorkTime.size()>0) {
+				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				return listWorkTime;
 			}
-			
 		}
-		listWorkTimeCodes = workTimeSettingRepository.findByCompanyId(companyID).stream()
-			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH).map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-		return listWorkTimeCodes;
+		// アルゴリズム「廃止区分によって就業時間帯を取得する」を実行する
+		return workTimeSettingRepository.findByCompanyId(companyID).stream()
+			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH)
+			.sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
 	}
 
 	@Override
@@ -602,9 +605,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
 		// Input．定型理由の表示区分をチェック
-		if (typicalReasonDisplayFlg == AppDisplayAtr.DISPLAY) {
+		if (typicalReasonDisplayFlg == DisplayAtr.DISPLAY) {
 			// ドメインモデル「申請定型理由」を取得
 			List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
 			return applicationReasons;

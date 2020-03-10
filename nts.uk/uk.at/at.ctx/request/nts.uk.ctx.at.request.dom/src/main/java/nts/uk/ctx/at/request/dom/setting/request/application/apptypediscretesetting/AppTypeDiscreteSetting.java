@@ -5,6 +5,7 @@ import javax.enterprise.inject.Model;
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
@@ -41,7 +42,7 @@ public class AppTypeDiscreteSetting {
 	/**
 	 * 定型理由の表示
 	 */
-	private AppDisplayAtr typicalReasonDisplayFlg;
+	private DisplayAtr typicalReasonDisplayFlg;
 	/**
 	 * 承認処理時に自動でメールを送信する
 	 */
@@ -80,7 +81,7 @@ public class AppTypeDiscreteSetting {
 	private AllowAtr retrictPostAllowFutureFlg;
 
 	public AppTypeDiscreteSetting(String companyID, ApplicationType appType, InitValueAtr prePostInitFlg,
-			AppCanAtr prePostCanChangeFlg, AppDisplayAtr typicalReasonDisplayFlg, AppCanAtr sendMailWhenApprovalFlg,
+			AppCanAtr prePostCanChangeFlg, DisplayAtr typicalReasonDisplayFlg, AppCanAtr sendMailWhenApprovalFlg,
 			AppCanAtr sendMailWhenRegisterFlg, AppDisplayAtr displayReasonFlg, CheckMethod retrictPreMethodFlg,
 			UseAtr retrictPreUseFlg, RetrictDay retrictPreDay, RetrictPreTimeDay retrictPreTimeDay,
 			PossibleAtr retrictPreCanAceeptFlg, AllowAtr retrictPostAllowFutureFlg) {

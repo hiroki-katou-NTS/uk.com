@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,6 +11,11 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
@@ -41,6 +49,12 @@ public class CollectAchievementImpl implements CollectAchievement {
 	
 	@Inject
 	private WorkTimeSettingRepository WorkTimeRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
+	@Inject
+	private AppAbsenceRepository appAbsenceRepository;
 	
 	@Override
 	public AchievementOutput getAchievement(String companyID, String applicantID, GeneralDate appDate) {
@@ -91,6 +105,47 @@ public class CollectAchievementImpl implements CollectAchievement {
                 .orElse(new WorkTimeOutput(workTimeOutput.getWorkTimeCD() != null ? workTimeOutput.getWorkTimeCD() : "",
                         ""));
 		return new AchievementOutput(appDate, workTypeOutput, workTimeOutput, startTime1, endTime1, startTime2, endTime2);
+	}
+
+	@Override
+	public List<AchievementOutput> getAchievementContents(String companyID, String employeeID,
+			List<GeneralDate> dateLst, ApplicationType appType) {
+		List<AchievementOutput> result = new ArrayList<>();
+		// INPUT．申請対象日リストをチェックする
+		if(CollectionUtil.isEmpty(dateLst)) {
+			return Collections.emptyList();
+		}
+		// INPUT．申請対象日リストを先頭から最後へループする
+		for(GeneralDate loopDate : dateLst) {
+			// INPUT．申請種類をチェックする
+			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.BREAK_TIME_APPLICATION) {
+				continue;
+			}
+			// 実績の取得
+			AchievementOutput achievementOutput = this.getAchievement(companyID, employeeID, loopDate);
+			// 取得した実績をOutput「表示する実績内容」に追加する
+			result.add(achievementOutput);
+		}
+		return result;
+	}
+
+	@Override
+	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst,
+			ApplicationType appType) {
+		List<AppDetailContent> result = new ArrayList<>();
+		// INPUT．申請対象日リストをチェックする
+		if(CollectionUtil.isEmpty(dateLst)) {
+			return Collections.emptyList();
+		}
+		// INPUT．申請対象日リストを先頭から最後へループする
+		for(GeneralDate loopDate : dateLst) {
+			// ドメインモデル「申請」を取得
+			if(appType == ApplicationType.ABSENCE_APPLICATION) {
+				AppAbsence appAbsence = appAbsenceRepository.getAbsenceById(companyID, "").get();
+				result.add(appAbsence);
+			}
+		}
+		return result;
 	}
 
 }
