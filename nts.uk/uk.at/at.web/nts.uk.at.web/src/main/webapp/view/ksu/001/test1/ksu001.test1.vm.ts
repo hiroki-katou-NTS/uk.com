@@ -353,7 +353,8 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 let selectedLB: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
                 if (self.selectedTab() == 'company') {
                     $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
-                        self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
+                        //self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
+                        self.handleInit(self.listWkpPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
                     });
                 }
                 if (self.selectedTab() == 'workplace') {
