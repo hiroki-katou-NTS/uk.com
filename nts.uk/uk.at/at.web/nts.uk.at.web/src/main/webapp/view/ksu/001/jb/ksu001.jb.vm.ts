@@ -49,7 +49,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
             self.contextMenu = [
                 { id: "openPopup", text: nts.uk.resource.getText("シフト組み合わせ選択"), action: self.openDialogJC.bind(self) },
-                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove }
+                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove.bind(self, event) }
             ];
 
             $("#test2").bind("getdatabutton", function(evt, data) {
@@ -350,12 +350,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         }
 
         /** remove data of button table */
-        remove(): JQueryPromise<any> {
+        remove(data: any, event: any): JQueryPromise<any> {
+            let self = this;
             let dfd = $.Deferred();
 
-            setTimeout(function() {
-                dfd.resolve(undefined);
-            }, 10);
+            //get page
+            //self.selectedLinkButton();
+            //get row-colum
+            //Number($(event)[0].dataset.idx);
+            self.dataSource()[self.selectedLinkButton()].splice(Number($(event)[0].dataset.idx), 1);
+            dfd.resolve();
 
             return dfd.promise();
         }

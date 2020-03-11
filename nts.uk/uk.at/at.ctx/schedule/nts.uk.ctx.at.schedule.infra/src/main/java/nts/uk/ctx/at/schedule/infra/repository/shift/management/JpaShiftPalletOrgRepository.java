@@ -165,6 +165,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			getEntity.get().toEntity(shiftPalletsOrg);
 			List<Integer> position = getEntity.get().orgCombis.stream().map(e -> e.pk.position)
 					.collect(Collectors.toList());
+			// delete position when right click choose 'delete'
+			List<Integer> positionToDelete = getEntity.get().orgCombis.stream().map(e -> e.pk.position)
+					.filter(item -> !shiftPalletsOrg.getShiftPallet().getCombinations().stream()
+							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
+					.collect(Collectors.toList());
 			List<ShiftPalletCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
 			List<ShifutoparettoWorkPlace> shifutoparettos = new ArrayList<>();
@@ -205,6 +210,30 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 					.collect(Collectors.toList());
 			shifutoparettoss.addAll(
 					shifutoparettos.stream().filter(i -> !positions.contains(i.position)).collect(Collectors.toList()));
+			positionToDelete.stream().forEach(i -> {
+				String combiDelete = "DELETE FROM KSCMT_PALETTE_ORG_COMBI WHERE CID = ? AND TARGET_UNIT = ? AND TARGET_ID = ? AND PAGE = ? AND POSITION = ? ";
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_ORG_COMBI_DTL WHERE CID = ? AND TARGET_UNIT = ? AND TARGET_ID = ? AND PAGE = ? AND POSITION = ? ";
+
+				try {
+					PreparedStatement ps1 = this.connection().prepareStatement(combiDelete);
+					ps1.setString(1, getEntity.get().pk.companyId);
+					ps1.setInt(2, getEntity.get().pk.targetUnit);
+					ps1.setString(3, getEntity.get().pk.targetId);
+					ps1.setInt(4, shiftPalletsOrg.getPage());
+					ps1.setInt(5, i);
+					ps1.executeUpdate();
+
+					PreparedStatement ps2 = this.connection().prepareStatement(dtlDelete);
+					ps2.setString(1, getEntity.get().pk.companyId);
+					ps2.setInt(2, getEntity.get().pk.targetUnit);
+					ps2.setString(3, getEntity.get().pk.targetId);
+					ps2.setInt(4, shiftPalletsOrg.getPage());
+					ps2.setInt(5, i);
+					ps2.executeUpdate();
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+			});
 			this.commandProxy().update(getEntity.get());
 			List<KscmtPaletteOrgCombiDtl> cmpCombiDtls = shifutoparettoss
 					.stream().map(i -> KscmtPaletteOrgCombiDtl.fromOneDomain(i.getTargetUnit(), i.getTargetId(),
