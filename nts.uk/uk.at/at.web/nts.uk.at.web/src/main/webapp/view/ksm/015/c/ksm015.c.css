@@ -9,3 +9,8 @@
     width: 200px;
     float: left;
 }
+#form-title {
+    border-bottom: 1px solid black;
+    padding: 0px 0px 10px 0px;
+    margin: 0px 0px 14px 0px;
+}

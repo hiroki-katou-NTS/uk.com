@@ -54,6 +54,8 @@ subprojects {
 	
 	jar {
 		// contains source code
+		exclude '**/*.java'
+		includeEmptyDirs false
     	from sourceSets.main.allSource
  	}
  	
@@ -610,7 +612,10 @@ project (':pr.web:nts.uk.pr.web') {
 	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
+		exclude '**/*.ts'
+		exclude '**/*.js.map'
 		baseName= "nts.uk.pr.web"
+		includeEmptyDirs false
 	}
 	
 	dependencies {

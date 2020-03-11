@@ -5,19 +5,21 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHMT_SHIFT_MASTER")
-public class KshmtShiftMater extends UkJpaEntity {
+@Builder
+public class KshmtShiftMater extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KshmtShiftMaterPK kshmtShiftMaterPK;
@@ -37,7 +39,6 @@ public class KshmtShiftMater extends UkJpaEntity {
 	@Column(name = "WORKTIME_CD")
 	public String workTimeCd;
 
-	@Override
 	protected Object getKey() {
 		return kshmtShiftMaterPK;
 	}
@@ -61,10 +62,16 @@ public class KshmtShiftMater extends UkJpaEntity {
 	}
 
 	public static KshmtShiftMater toEntity(ShiftMaster domain) {
-		return new KshmtShiftMater(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMasterCode().v()),
-				domain.getDisplayInfor().getName().v(), domain.getDisplayInfor().getColor().v(),
-				domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v()
-						: null,
-						domain.getWorkTypeCode().v(),domain.getWorkTimeCode()==null?null:domain.getWorkTimeCode().v());
+		
+		KshmtShiftMater entity = KshmtShiftMater.builder()
+								.kshmtShiftMaterPK(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMasterCode().v()))
+								.name(domain.getDisplayInfor().getName().v())
+								.color(domain.getDisplayInfor().getColor().v())
+								.remarks(domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v() : null)
+								.workTypeCd(domain.getWorkTypeCode().v())
+								.workTimeCd(domain.getWorkTimeCode() == null ? null:domain.getWorkTimeCode().v())
+								.build();
+								
+		return entity;
 	}
 }

@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,7 +27,11 @@ public class CopyShiftMasterByOrgServiceTest {
 	@Test
 	public void testCopyShiftMasterByOrg_1() {
 		String companyId = "companyID"; // dummy
-		ShiftMasterOrganization shiftMaterOrg = ShiftMasterOrgHelper.getShiftMasterOrgEmpty();
+		 
+		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+				"workplaceId",
+				"workplaceGroupId");
+		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
 				"workplaceId1", // dummy
 				"workplaceGroupId1"); // dummy
@@ -32,16 +40,14 @@ public class CopyShiftMasterByOrgServiceTest {
 		new Expectations() {
 			{
 				require.exists(companyId, targetOrg);
-				result = ShiftMasterOrgHelper.checkExist(true);
+				result = true;
 			}
 		};
 
 		
 		
-		NtsAssert.systemError(() -> {
-			NtsAssert.atomTask(() -> CopyShiftMasterByOrgService
-					.copyShiftMasterByOrg(require, companyId, shiftMaterOrg, targetOrg, overwrite).get());
-		});
+		assertThat(CopyShiftMasterByOrgService
+					.copyShiftMasterByOrg(require, companyId, shiftMaterOrg, targetOrg, overwrite).isPresent()).isFalse();
 
 	}
 
@@ -51,7 +57,10 @@ public class CopyShiftMasterByOrgServiceTest {
 	@Test
 	public void testCopyShiftMasterByOrg_2() {
 		String companyId = "companyID"; // dummy
-		ShiftMasterOrganization shiftMaterOrg = ShiftMasterOrgHelper.getShiftMasterOrgEmpty();
+		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+				"workplaceId",
+				"workplaceGroupId");
+		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
 				"workplaceId1", // dummy
 				"workplaceGroupId1"); // dummy
@@ -60,7 +69,7 @@ public class CopyShiftMasterByOrgServiceTest {
 		new Expectations() {
 			{
 				require.exists(companyId, targetOrg);
-				result = ShiftMasterOrgHelper.checkExist(true);
+				result = true;
 
 			}
 		};
@@ -79,7 +88,10 @@ public class CopyShiftMasterByOrgServiceTest {
 	@Test
 	public void testCopyShiftMasterByOrg_3() {
 		String companyId = "companyID"; // dummy
-		ShiftMasterOrganization shiftMaterOrg = ShiftMasterOrgHelper.getShiftMasterOrgEmpty();
+		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
+				"workplaceId",
+				"workplaceGroupId");
+		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
 				"workplaceId1", // dummy
 				"workplaceGroupId1"); // dummy
@@ -88,7 +100,7 @@ public class CopyShiftMasterByOrgServiceTest {
 		new Expectations() {
 			{
 				require.exists(companyId, targetOrg);
-				result = ShiftMasterOrgHelper.checkExist(false);
+				result = false;
 
 			}
 		};
