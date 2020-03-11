@@ -47,24 +47,11 @@ public class ShiftPalletsOrg implements DomainAggregate {
 	 * @param require
 	 * @param shiftPallet
 	 */
-	public void modifyShiftPallets(Require require, ShiftPallet shiftPallet) {
-
-		// case inv-1: Msg_1615
-		if (!(1 <= page && page <= 10)) {
-			throw new BusinessException("Msg_1615");
-		}
-		// 会社別シフトパレット(最大20個)を修正する。
-		if (shiftPallet.getCombinations().size() > 20) {
-			throw new BusinessException("Msg_1615");
-		}
-
+	public void modifyShiftPallets(ShiftPallet shiftPallet) {
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
-	}
 
-	public ShiftPalletsOrg creAndCancelShiftPallet(TargetOrgIdenInfor targeOrg) {
-		// 自分から、パラメータでもらう組織用の<組織別シフトパレット>を作って返す。
-		return new ShiftPalletsOrg(targeOrg, page, shiftPallet);
+		this.shiftPallet = shiftPallet;
 	}
 
 	public static interface Require {

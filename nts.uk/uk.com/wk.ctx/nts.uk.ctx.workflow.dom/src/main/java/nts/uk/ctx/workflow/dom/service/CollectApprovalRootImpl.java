@@ -98,7 +98,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		Optional<PersonApprovalRoot> opPerAppRoot = perApprovalRootRepository.findByBaseDate(companyID, employeeID, standardDate, rootAtr, targetType, sysAtr.value);
 		if(opPerAppRoot.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRoot.get().getApprovalId());
+			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = null;
@@ -123,7 +125,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		Optional<PersonApprovalRoot> opPerAppRootsOfCommon = perApprovalRootRepository.findByBaseDateOfCommon(companyID, employeeID, standardDate, sysAtr.value);
 		if(opPerAppRootsOfCommon.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opPerAppRootsOfCommon.get().getApprovalId());
+			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = null;
@@ -151,7 +155,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			Optional<WorkplaceApprovalRoot> opWkpAppRoot = wkpApprovalRootRepository.findByBaseDate(companyID, paramID, standardDate, rootAtr, targetType, sysAtr.value);
 			if(opWkpAppRoot.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRoot.get().getApprovalId());
+				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
 				ApprovalRootState approvalRootState = null;
@@ -176,7 +182,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, paramID, standardDate, sysAtr.value);
 			if(opWkpAppRootsOfCom.isPresent()){
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opWkpAppRootsOfCom.get().getApprovalId());
+				// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 				LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+				// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 				ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 				levelOutput.setErrorFlag(errorFlag.value);
 				ApprovalRootState approvalRootState = null;
@@ -202,7 +210,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		Optional<CompanyApprovalRoot> opComAppRoot = comApprovalRootRepository.findByBaseDate(companyID, standardDate, rootAtr, targetType, sysAtr.value);
 		if(opComAppRoot.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opComAppRoot.get().getApprovalId());
+			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = null;
@@ -227,7 +237,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		Optional<CompanyApprovalRoot> opCompanyAppRootsOfCom = comApprovalRootRepository.findByBaseDateOfCommon(companyID, standardDate, sysAtr.value);
 		if(opCompanyAppRootsOfCom.isPresent()){
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(opCompanyAppRootsOfCom.get().getApprovalId());
+			// 共通アルゴリズム「承認ルートを整理する」を実行する (Thực hiện thuật toán “điều chinhr/organize Approve route" )
 			LevelOutput levelOutput = this.organizeApprovalRoute(companyID, employeeID, standardDate, listApprovalPhaseBefore, sysAtr, lowerApprove);
+			// 共通アルゴリズム「承認ルートの異常チェック」を実行する (Thực hiện common algorithm "Check Approval Route bất thường"
 			ErrorFlag errorFlag = this.checkApprovalRoot(levelOutput);
 			levelOutput.setErrorFlag(errorFlag.value);
 			ApprovalRootState approvalRootState = null;
@@ -257,6 +269,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr) {
 		// アルゴリズム「指定職位の本務兼務社員を取得」を実行する
 		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId, baseDate);
+		if(CollectionUtil.isEmpty(employeeList)) {
+			return Collections.emptyList();
+		}
 		// ドメインモデル「職位指定の設定」を取得する
 		Optional<JobAssignSetting> assignSet = jobAssignSetRepository.findById();
 		if (assignSet.get().getIsConcurrently()) {
@@ -389,6 +404,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					approvalPhase.getApprovalForm().value, 
 					approvalPhase.getApprovalAtr().value, 
 					new ArrayList<>());
+			Optional<Integer> opDispOrder = Optional.empty();
 			// ドメインモデル「承認フェーズ」．承認者１～５ループする(loop tu Approval phase1denApproval phase5)
 			approvalPhase.getApprovers().sort((a,b) -> a.getApproverOrder() - b.getApproverOrder());
 			for(Approver approver : approvalPhase.getApprovers()) {
@@ -411,7 +427,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					// 社員IDと基準日から職位情報を取得(Lấy thông tin position từ EmployeeID và BaseDate)
 					JobTitleImport jobOfEmp = syJobTitleAdapter.findJobTitleBySid(employeeID, baseDate);
 					// 職位IDから序列の並び順を取得(Lấy thứ tự sắp xếp theo cấp bậc từ postionID)
-					Optional<Integer> opDispOrder = this.getDisOrderFromJobID(jobOfEmp.getPositionId(), companyID, baseDate);
+					opDispOrder = this.getDisOrderFromJobID(jobOfEmp.getPositionId(), companyID, baseDate);
 					String paramID = this.getIDBySystemType(systemAtr, employeeID, baseDate);
 					// 承認者グループから承認者を取得(Lấy approver từ ApproverGroup)
 					approverInfoLst = getApproverFromGroup(
@@ -424,25 +440,28 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							baseDate, 
 							systemAtr, 
 							lowerApprove);
-					if(CollectionUtil.isEmpty(approverInfoLst)) {
-						approverInfoLst = this.getUpperApproval(
-								companyID, 
-								approver.getJobGCD(), 
-								opDispOrder, 
-								employeeID, 
-								baseDate, 
-								systemAtr, 
-								lowerApprove, 
-								approvalPhase.getApprovalAtr());
-					}
-					if(!CollectionUtil.isEmpty(approverInfoLst)) {
-						levelApproverList.setApproverInfoLst(this.adjustApprover(approverInfoLst, baseDate, companyID, employeeID));
-						levelInforOutput.getApproverLst().add(levelApproverList);
-						break;
-					}
 				}
+				// 承認者を整理(Điều chỉnh Approver)
 				levelApproverList.setApproverInfoLst(this.adjustApprover(approverInfoLst, baseDate, companyID, employeeID));
 				levelInforOutput.getApproverLst().add(levelApproverList);
+				if(approvalPhase.getApprovalAtr()!=ApprovalAtr.PERSON && !CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())) {
+					break;
+				}
+			}
+			Integer approverCount = levelInforOutput.getApproverLst().stream()
+					.collect(Collectors.summingInt(x -> x.getApproverInfoLst().size()));
+			if(approverCount <= 0) {
+				// 上位職場・部門の承認者を探す(Tìm kiếm Approver của UpperWorkplace)
+				List<LevelApproverInfo> upperLevelApproverInfo = this.getUpperApproval(
+						companyID, 
+						approvalPhase.getApprovers().stream().map(x -> x.getJobGCD()).collect(Collectors.toList()), 
+						opDispOrder, 
+						employeeID, 
+						baseDate, 
+						systemAtr, 
+						lowerApprove, 
+						approvalPhase.getApprovalAtr());
+				levelInforOutput.setApproverLst(Arrays.asList(new LevelApproverList(1, "", false, upperLevelApproverInfo)));
 			}
 			result.getLevelInforLst().add(levelInforOutput);
 		}
@@ -497,7 +516,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// Input．システム区分をチェック(Check Input. SystemType)
 		if(systemAtr==SystemAtr.HUMAN_RESOURCES) {
 			// Input．下位序列承認無をチェック(Check ''ko approve cấp bậc thấp hơn'')
-			if(!lowerApprove.get()) {
+			if(!(lowerApprove.isPresent() && lowerApprove.get())) {
 				return result;
 			}
 		}
@@ -577,21 +596,36 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, Optional<Integer> opDispOrder, 
+	public List<LevelApproverInfo> getUpperApproval(String companyID, List<String> approverGroupCDLst, Optional<Integer> opDispOrder, 
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr) {
 		// Input．承認者指定区分をチェック(Check Input . ApproverSettingAtr)
 		if(approvalAtr!=ApprovalAtr.APPROVER_GROUP) {
 			return Collections.emptyList();
 		}
+		// Input．承認者一覧をチェック(Check Input. ApproverList)
+		if(CollectionUtil.isEmpty(approverGroupCDLst)) {
+			return Collections.emptyList();
+		}
 		// 上位職場・部門を探す
 		List<String> upperIDLst = this.getUpperID(companyID, employeeID, baseDate, systemAtr);
+		List<ApproverInfo> approverInfoLst = new ArrayList<>();
 		for(String loopID : upperIDLst) {
-			// 承認者グループから承認者を取得(Lấy Approver từ ApproverGroup)
-			List<ApproverInfo> approverInfoLst = this.getApproverFromGroup(companyID, approverGroupCD, "", loopID, opDispOrder, employeeID, baseDate, systemAtr, lowerApprove);
-			// 取得した承認者リストをチェック(Check ApproverList đã  lấy)
-			if(!CollectionUtil.isEmpty(approverInfoLst)) {
-				return approverInfoLst;
+			for(String approverGroupCD : approverGroupCDLst) {
+				// 承認者グループから承認者を取得(Lấy Approver từ ApproverGroup)
+				approverInfoLst = this.getApproverFromGroup(companyID, approverGroupCD, "", loopID, opDispOrder, employeeID, baseDate, systemAtr, lowerApprove);
+				// 取得した承認者リストをチェック(Check ApproverList đã  lấy)
+				if(!CollectionUtil.isEmpty(approverInfoLst)) {
+					break;
+				}
 			}
+			if(!CollectionUtil.isEmpty(approverInfoLst)) {
+				break;
+			}
+		}
+		// 取得した承認者リストをチェック(Check ApproverList đã lấy)
+		if(!CollectionUtil.isEmpty(approverInfoLst)) {
+			// 承認者を整理(Điều chỉnh Approver)
+			return this.adjustApprover(approverInfoLst, baseDate, companyID, employeeID);
 		}
 		return Collections.emptyList();
 	}
@@ -603,17 +637,21 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			return ErrorFlag.NO_APPROVER;
 		}
 		for(LevelInforOutput levelInforOutput : levelInforLst) {
+			// check số lượng người approve
 			Integer approverCount = levelInforOutput.getApproverLst().stream()
 					.collect(Collectors.summingInt(x -> x.getApproverInfoLst().size()));
+			// trên 10 người
 			if(approverCount > 10) {
 				return ErrorFlag.APPROVER_UP_10;
 			} 
+			// dưới 1 người
 			if(approverCount <= 0) {
 				return ErrorFlag.NO_APPROVER;
 			}
 			if(levelInforOutput.getApprovalForm() == ApprovalForm.EVERYONE_APPROVED.value){
 				continue;
 			}
+			// check frame confirm không có người
 			for(LevelApproverList levelApproverList : levelInforOutput.getApproverLst()){
 				if(!levelApproverList.isComfirmAtr()){
 					continue;

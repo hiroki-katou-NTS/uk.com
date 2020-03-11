@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author tutk
  *
  */
+@Stateless
 public class CopyShiftMasterByOrgService {
 	public static Optional<AtomTask> copyShiftMasterByOrg(Require require, String companyId,
 			ShiftMasterOrganization shiftMaterOrg, TargetOrgIdenInfor targetOrg, boolean overwrite) {
