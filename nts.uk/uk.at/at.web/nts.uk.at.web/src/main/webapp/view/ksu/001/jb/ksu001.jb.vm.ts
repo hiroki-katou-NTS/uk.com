@@ -293,19 +293,23 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 note: self.note(),
                 listInsertPatternItemCommand: listInsertPatternItemCommand
             }
-
-            service.registerWorkPairPattern(obj).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.isAllowCheckChanged = false;
-                self.handleAfterChangeData();
-                self.isDeleteEnable(true);
-                dfd.resolve();
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                dfd.reject();
-            }).always(() => {
+            if (obj.listInsertPatternItemCommand.length == 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
                 nts.uk.ui.block.clear();
-            });
+            } else {
+                service.registerWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.isAllowCheckChanged = false;
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(true);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
             return dfd.promise();
         }
 
@@ -436,8 +440,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
                         //                            : arrPairSt.workTypeCode + ']');
-                        
-                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null? wPSet.shiftCode : wPSet.workTypeCode]);
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedTab() === 'company') {
                             let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
