@@ -1,15 +1,25 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
+import java.util.List;
+import java.util.Optional;
+/**
+ * 
+ * @author hieult
+ *
+ */
 public interface ShiftPalletsComRepository {
-	
+	//Add ShiftPalletsCom
 	public void add(ShiftPalletsCom shiftPalletsCom);
-	
+	//Update ShiftPalletsCom
 	public void update(ShiftPalletsCom shiftPalletsCom);
-	
+	//Delete ShiftPalletsCom 
 	public void delete(ShiftPalletsCom shiftPalletsCom);
-	
-	public ShiftPalletsCom findShiftPallet(String companyId, int page);
-
+	//Find by key ShiftPalletsCom
+	public Optional<ShiftPalletsCom> findShiftPallet(String companyId, int page);
+	//Find by ID
+	public List<ShiftPalletsCom> findShiftPallet(String companyId);
+	//Check exist
 	boolean isDuplicateRoleSetCd(String companyId, int page, int position);
-
+	//Delete 
+	public void deleteByPage(String companyID,int page);
 }

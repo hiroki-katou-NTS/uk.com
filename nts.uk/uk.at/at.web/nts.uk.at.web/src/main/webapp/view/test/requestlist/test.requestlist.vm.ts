@@ -46,7 +46,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run560({
             		companyId: self.companyId(),
             		baseDate: self.baseDate(),
-            		listWorkplaceId: self.listWorkplaceId().split(",");
+            		listWorkplaceId: self.listWorkplaceId().split(",")
                 }).done((data) => {
                 	self.data560(data);
                 	nts.uk.ui.block.clear();
@@ -58,7 +58,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run561({
             		companyId: self.companyId(),
             		historyId: self.historyId(),
-            		listWorkplaceId: self.listWorkplaceId().split(",");
+            		listWorkplaceId: self.listWorkplaceId().split(",")
                 }).done((data) => {
                 	self.data561(data);
                 	nts.uk.ui.block.clear();
@@ -70,7 +70,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run567({
             		companyId: self.companyId(),
             		baseDate: self.baseDate(),
-            		parentWorkplaceId: self.parentWorkplaceId();
+            		parentWorkplaceId: self.parentWorkplaceId()
                 }).done((data) => {
                 	self.data567(data);
                 	nts.uk.ui.block.clear();
@@ -82,7 +82,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run569({
             		companyId: self.companyId(),
             		baseDate: self.baseDate(),
-            		workplaceId: self.workplaceId();
+            		workplaceId: self.workplaceId()
                 }).done((data) => {
                 	self.data569(data);
                 	nts.uk.ui.block.clear();
@@ -94,7 +94,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run571({
             		companyId: self.companyId(),
             		baseDate: self.baseDate(),
-            		workplaceId: self.workplaceId();
+            		workplaceId: self.workplaceId()
                 }).done((data) => {
                 	self.data571(data);
                 	nts.uk.ui.block.clear();
@@ -106,7 +106,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run573({
             		companyId: self.companyId(),
             		baseDate: self.baseDate(),
-            		workplaceId: self.workplaceId();
+            		workplaceId: self.workplaceId()
                 }).done((data) => {
                 	self.data573(data);
                 	nts.uk.ui.block.clear();
@@ -118,7 +118,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
             	service.run647({
             		companyId: self.companyId(),
             		start: self.startDate(),
-            		end: self.endDate();
+            		end: self.endDate()
                 }).done((data) => {
                 	self.data647(data);
                 	nts.uk.ui.block.clear();
@@ -135,7 +135,7 @@ module nts.uk.at.view.test.requestlist.viewmodel {
         	workplaceGenericName: string;
         	workplaceExternalCode: string;
 	}
-}
+
 		export class WorkPlaceConfigDto {
 			companyId: string;
 			historyId: string;

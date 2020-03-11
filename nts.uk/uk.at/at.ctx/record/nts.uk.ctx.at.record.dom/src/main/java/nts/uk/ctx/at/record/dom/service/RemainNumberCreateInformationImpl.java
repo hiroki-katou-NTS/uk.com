@@ -67,8 +67,8 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 		outputInfor.setYmd(workInfor.getYmd());
 		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "" 
 				: workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "" 
-				: workInfor.getRecordInfo().getSiftCode().v()));
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getWorkTimeCode() == null ? "" 
+				: workInfor.getRecordInfo().getWorkTimeCode().v()));
 		return outputInfor;
 	}
 	/**

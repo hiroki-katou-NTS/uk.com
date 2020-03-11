@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.aspose.pdf.PKCS1;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -22,7 +24,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 会社別シフトパレット
@@ -35,7 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP")
-public class KscmtPaletteCmp extends UkJpaEntity {
+public class KscmtPaletteCmp extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KscmtPaletteCmpPk pk;
@@ -71,12 +73,27 @@ public class KscmtPaletteCmp extends UkJpaEntity {
 
 	}
 
+	public void toEntity(ShiftPalletsCom shiftPalletsCom) {
+		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
+		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
+		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
+
+		cmpCombis.stream().forEach(x -> {
+			if(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+					.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletsCom.getShiftPallet().getCombinations().stream()
+						.filter(y -> x.pk.position == y.getPositionNumber()).findFirst().get());
+			}
+		});
+
+	}
+
 	public ShiftPalletsCom toDomain() {
 		// TODO Auto-generated method stub
 		return new ShiftPalletsCom(AppContexts.user().companyId(), pk.page,
 				new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName), EnumAdaptor.valueOf(useAtr, NotUseAtr.class),
-								new ShiftRemarks(note)),
+						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName),
+								EnumAdaptor.valueOf(useAtr, NotUseAtr.class), new ShiftRemarks(note)),
 						cmpCombis.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 	}
 
