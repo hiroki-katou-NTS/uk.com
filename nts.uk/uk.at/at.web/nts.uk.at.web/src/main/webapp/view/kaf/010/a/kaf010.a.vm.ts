@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             var appDateInput = null;
-            appDateInput = nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT));
+            appDateInput = nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT);
             nts.uk.ui.block.invisible();
             service.getHolidayWorkByUI({
                 appDate: self.appDateInput,
@@ -204,8 +204,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
-                    var appDateInput: Array<String> = [];
-                    appDateInput.push(moment(value).format(self.DATE_FORMAT));
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.errors.clearAll();
                         $("#inputdate").trigger("validate");
@@ -214,7 +212,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         }
                         nts.uk.ui.block.invisible();
                         service.findByChangeAppDate({
-                        	appDate: appDateInput,
+                        	appDate: moment(value).format(self.DATE_FORMAT),
                             prePostAtr: self.prePostSelected(),
                             siftCD: self.siftCD(),
                             overtimeHours: ko.toJS(self.overtimeHours),
