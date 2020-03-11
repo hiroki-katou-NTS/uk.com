@@ -14,18 +14,19 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SettingNo65;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -51,16 +52,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
@@ -143,7 +140,8 @@ public class AppAbsenceFinder {
 	 * @param employeeIDs
 	 * @return
 	 */
-	public AppAbsenceDto getAppForLeave(String appDate, String employeeID,List<String> employeeIDs) {
+	public AppAbsenceStartInfoDto getAppForLeave(String appDate, String employeeID,List<String> employeeIDs) {
+		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = new ArrayList<>();
 		if(appDate != null) {
@@ -156,79 +154,26 @@ public class AppAbsenceFinder {
 				employeeIDs, 
 				dateLst, 
 				true);
+		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
 		// 休暇申請設定を取得する
 		HolidayRequestSetOutput holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
+		result.hdAppSet = HdAppSetDto.convertToDto(holidayRequestSetOutput.getHdAppSet());
+		result.displayReasonLst = holidayRequestSetOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		// 休暇残数情報を取得する
 		RemainVacationInfo remainVacationInfo = absenseProcess.getRemainVacationInfo(
 				companyID, 
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+		result.remainVacationInfo = remainVacationInfo;
 		// 取得した情報もとに「休暇残数情報」にセットして返す
-		AppAbsenceDto result = new AppAbsenceDto();
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appDispInfoStartupOutput.getAppDispInfoNoDateOutput();
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = appDispInfoStartupOutput.getAppDispInfoWithDateOutput();
-		result.setEmployees(appDispInfoNoDateOutput.getEmployeeInfoLst()
-				.stream().map(x -> new EmployeeOvertimeDto(x.getSid(), x.getBussinessName())).collect(Collectors.toList()));
-		ApplicationDto_New applicationDto = new ApplicationDto_New();
-		// show and hide A3_3 -> A3_6
-		boolean displayPrePostFlg = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
-				.getAppDisplaySetting().getPrePostAtrDisp() == DisplayAtr.DISPLAY;
-		result.setPrePostFlg(displayPrePostFlg);
-		PrePostAtr prePostAtr = appDispInfoWithDateOutput.getPrePostAtr();
-		applicationDto.setPrePostAtr(prePostAtr.value);
-		result.setApplication(applicationDto);
-		result.setApplicationReasonDtos(appDispInfoNoDateOutput.getAppReasonLst()
-				.stream().map(x -> new ApplicationReasonDto(x.getReasonID(), x.getReasonTemp().v(), x.getDefaultFlg().value)).collect(Collectors.toList()));
-		result.setNumberRemain(new NumberOfRemainOutput(
-				remainVacationInfo.getYearRemain(), 
-				remainVacationInfo.getSubHdRemain(), 
-				remainVacationInfo.getSubVacaRemain(), 
-				remainVacationInfo.getStockRemain()));
-		result.setManualSendMailFlg(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
-				.getAppDisplaySetting().getManualSendMailAtr().value == 1 ? true : false);
-		AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
-				.getListAppTypeSetting().stream().filter(x -> x.getAppType()==ApplicationType.ABSENCE_APPLICATION).findAny().get();
-		result.setSendMailWhenApprovalFlg(appTypeSetting.getSendMailWhenApproval());
-		result.setSendMailWhenRegisterFlg(appTypeSetting.getSendMailWhenRegister());
-		result.setCheckDis(new CheckDispHolidayType(
-				remainVacationInfo.isYearManage(), 
-				remainVacationInfo.isSubHdManage(), 
-				remainVacationInfo.isSubVacaManage(), 
-				remainVacationInfo.isRetentionManage()));
-		result.setMailFlg(appTypeSetting.getSendMailWhenRegister());
 		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
 		holidayAppTypes = this.getHolidayAppTypeName(
 				Optional.of(holidayRequestSetOutput.getHdAppSet()),
 				holidayAppTypes,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
 		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
-		result.setHolidayAppTypeName(holidayAppTypes);
-		result.setEmployeeID(appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid());
-		result.setEmployeeName(appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getBussinessName());
-		result.setAppReasonRequire(appDispInfoNoDateOutput.getRequestSetting()
-				.getApplicationSetting().getAppLimitSetting().getRequiredAppReason());
-		result.setPrPostChange(appTypeSetting.getCanClassificationChange());
-		result.setDisplayReasonDtoLst(holidayRequestSetOutput.getDisplayReasonLst().stream()
-				.map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
-		AppEmploymentSetting appEmpSet = appDispInfoWithDateOutput.getEmploymentSet();
-		boolean subVacaTypeUseFlg = false;
-		boolean subHdTypeUseFlg = false;
-		if(appEmpSet.getHolidayOrPauseType() == 7){//振休
-			subVacaTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
-		}
-		if(appEmpSet.getHolidayOrPauseType() == 1){//代休
-			subHdTypeUseFlg = appEmpSet.getHolidayTypeUseFlg();
-		}
-		result.setSetingNo65(new SettingNo65(
-				holidayRequestSetOutput.getHdAppSet().getPridigCheck().value,//休暇申請設定．年休より優先消化チェック区分
-				remainVacationInfo.isSubVacaManage(),//振休管理設定．管理区分
-				subVacaTypeUseFlg,//休暇申請対象勤務種類．休暇種類を利用しない（振休）
-				remainVacationInfo.isSubHdManage(),//代休管理設定．管理区分
-				subHdTypeUseFlg//休暇申請対象勤務種類．休暇種類を利用しない（代休）
-				));
-		result.setListApprovalPhaseStateDto(appDispInfoWithDateOutput.getApprovalRootState()
-				.getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()));
-		result.setErrorFlag(appDispInfoWithDateOutput.getErrorFlag().value);
+		result.holidayAppTypeName = holidayAppTypes;
+		
 		return result;
 	}
 

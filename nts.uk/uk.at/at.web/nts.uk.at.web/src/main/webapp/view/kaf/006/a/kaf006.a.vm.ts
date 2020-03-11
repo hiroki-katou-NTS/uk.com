@@ -222,28 +222,44 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((data) => {
                 $("#inputdate").focus();
                 //No.65
-                if(data.setingNo65 != null){
-                    self.settingNo65(new common.SettingNo65(data.setingNo65.hdType,data.setingNo65.screenMode, data.setingNo65.pridigCheck,
-                        data.setingNo65.subVacaManage, data.setingNo65.subVacaTypeUseFlg, data.setingNo65.subHdManage, data.setingNo65.subHdTypeUseFlg));
+                let appEmpSet = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.employmentSet;
+                let subVacaTypeUseFlg = false;
+                let subHdTypeUseFlg = false;
+                let numberRemain = data.remainVacationInfo;
+                if(appEmpSet.holidayOrPauseType == 7){//振休
+                    subVacaTypeUseFlg = appEmpSet.holidayTypeUseFlg;
                 }
+                if(appEmpSet.holidayOrPauseType == 1){//代休
+                    subHdTypeUseFlg = appEmpSet.holidayTypeUseFlg;
+                }
+                self.settingNo65(
+                    new common.SettingNo65(
+                    undefined,
+                    undefined, 
+                    data.hdAppSet.pridigCheck,
+                    numberRemain.subVacaManage, 
+                    subVacaTypeUseFlg, 
+                    numberRemain.subHdManage, 
+                    subHdTypeUseFlg));
+                
                 //No.376
-                if(data.numberRemain != null){
-                    if(data.numberRemain.yearRemain != null){//年休残数
-                        self.yearRemain(data.numberRemain.yearRemain + '日');
+                if(numberRemain != null){
+                    if(numberRemain.yearRemain != null){//年休残数
+                        self.yearRemain(numberRemain.yearRemain + '日');
                         self.yearDis(true);
                     }
-                    if(data.numberRemain.subHdRemain != null){//代休残数
-                        self.subHdRemain(data.numberRemain.subHdRemain + '日');
-                        self.numberSubHd(data.numberRemain.subHdRemain);
+                    if(numberRemain.subHdRemain != null){//代休残数
+                        self.subHdRemain(numberRemain.subHdRemain + '日');
+                        self.numberSubHd(numberRemain.subHdRemain);
                         self.subHdDis(true);
                     }
-                    if(data.numberRemain.subVacaRemain != null){//振休残数
-                        self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
-                        self.numberSubVaca(data.numberRemain.subVacaRemain);
+                    if(numberRemain.subVacaRemain != null){//振休残数
+                        self.subVacaRemain(numberRemain.subVacaRemain + '日');
+                        self.numberSubVaca(numberRemain.subVacaRemain);
                         self.subVacaDis(true);
                     }
-                    if(data.numberRemain.stockRemain != null){//ストック休暇残数
-                        self.stockRemain(data.numberRemain.stockRemain + '日');
+                    if(numberRemain.stockRemain != null){//ストック休暇残数
+                        self.stockRemain(numberRemain.stockRemain + '日');
                         self.stockDis(true);
                     }
                 }
@@ -252,7 +268,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 self.initData(data);
                 //ver16
-                self.prePostEnable(data.prPostChange);
+                let listAppTypeSet = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
+                let appTypeSet = _.find(listAppTypeSet, o => o.appType == 1);
+                self.prePostEnable(appTypeSet.canClassificationChange);
                 self.holidayTypeCode.subscribe(function(value) {
                     let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==value);
                     if(nts.uk.util.isNullOrUndefined(currentDisplay)){
@@ -626,33 +644,37 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         initData(data: any) {
             let self = this;
-            _.forEach(data.displayReasonDtoLst, (o) => {
+            let listAppTypeSet = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
+            let appTypeSet = _.find(listAppTypeSet, o => o.appType == 1);
+            _.forEach(data.displayReasonLst, (o) => {
                 self.displayReasonLst.push(new common.DisplayReason(o.typeOfLeaveApp, o.displayFixedReason==1?true:false, o.displayAppReason==1?true:false));     
             });
-            self.checkBoxValue(data.manualSendMailFlg);
-            self.enableSendMail(!data.sendMailWhenRegisterFlg);
-            self.employeeName(data.employeeName);
-            self.employeeID(data.employeeID);
-            self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypeName, data.checkDis);
+            self.checkBoxValue(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
+            self.enableSendMail(!appTypeSet.sendMailWhenRegister);
+            self.employeeName(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+            self.employeeID(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid);
+            self.prePostSelected(data.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr);
+            self.convertListHolidayType(data.holidayAppTypeName, data.remainVacationInfo);
             self.holidayTypeCode(null);
-            self.displayPrePostFlg(data.prePostFlg);
+            self.displayPrePostFlg(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
-            self.mailFlag(data.mailFlg);
-            self.requiredReason(data.appReasonRequire);
-            if (data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0) {
-                let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+            self.mailFlag(appTypeSet.sendMailWhenRegister);
+            self.requiredReason(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
+            let appReasonLst = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.appReasonLst;
+            if (appReasonLst != null && appReasonLst.length > 0) {
+                let lstReasonCombo = _.map(appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
-                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                let reasonID = _.find(appReasonLst, o => { return o.defaultFlg == 1 }).reasonID;
                 self.selectedReason(reasonID);
 
-                self.multilContent(data.application.applicationReason);
+                // self.multilContent(data.application.applicationReason);
             }
-            if(!nts.uk.util.isNullOrEmpty(data.employees)){
-                for(let i= 0; i < data.employees.length; i++){
-                    self.employeeList.push(new common.EmployeeOT(data.employees[i].employeeIDs,data.employees[i].employeeName));
+            let employeeInfoLst = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst;
+            if(!nts.uk.util.isNullOrEmpty(employeeInfoLst)){
+                for(let i= 0; i < employeeInfoLst.length; i++){
+                    self.employeeList.push(new common.EmployeeOT(employeeInfoLst[i].sid,employeeInfoLst[i].bussinessName));
                 }
-                let total = data.employees.length;
+                let total = employeeInfoLst.length;
                 self.totalEmployee(nts.uk.resource.getText("KAF006_65",total.toString()));
             }
         }
