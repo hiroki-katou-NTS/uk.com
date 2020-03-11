@@ -106,6 +106,7 @@ module jcm007.a {
                             self.initHeaderInfo();
                             self.initRetirementInfo();
                         }
+                        
                     });
                 } else if (value == 'tab-1') {
                     self.enable_btnRemove(false);
@@ -188,6 +189,7 @@ module jcm007.a {
                 if(data1.length != 0){
                     self.enable_tab2(true);
                     self.visible_tab2(true);
+                    
                     let listParam = [];
                     _.forEach(data1, function(value) {
                         listParam.push({
@@ -203,14 +205,21 @@ module jcm007.a {
                     nts.uk.request.ajax("com", "query/ccg029employee/getEmpInfo", paramCcg029).done(function(data2) {
                        
                         self.empInfoHeaderList = data2;
+                        self.employeeListTab2 = data1;
                         
-                        if(self.selectedTab() == 'tab-1'){
+                        if (self.selectedTab() == 'tab-1') {
                             self.enable_btnRemove(false);
-                        }else if(self.selectedTab() == 'tab-2'){
+                        } else if (self.selectedTab() == 'tab-2') {
+                            //set selected fist
+                           
+                            if (!self.itemSelectedTab2()) {
+                                $('#gridListEmployeesJcm007').igGridSelection('selectRow', 0);
+                                self.itemSelectedTab2(data1[0]);
+                            }
                             self.enable_btnRemove(true);
                         }
                         
-                        self.employeeListTab2 = data1;
+                       
                         
                         $("#gridListEmployeesJcm007").igGrid('option','dataSource',self.employeeListTab2);
                         
