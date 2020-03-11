@@ -38,7 +38,8 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION") })
+			@PrimaryKeyJoinColumn(name = "PAGE", referencedColumnName = "PAGE"),
+			@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION")})
 	public KscmtPaletteCmpCombi kscmtPaletteCmpCombi;
 
 	@Override
@@ -55,8 +56,8 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity {
 
 	public static KscmtPaletteCmpCombiDtl fromOneDomain(int page, int position, int order, String code) {
 		// TODO Auto-generated method stub
-		KscmtPaletteCmpCombiDtlPk combiDtlPk = new KscmtPaletteCmpCombiDtlPk(AppContexts.user().companyId(),
-				page, position, order);
+		KscmtPaletteCmpCombiDtlPk combiDtlPk = new KscmtPaletteCmpCombiDtlPk(AppContexts.user().companyId(), page,
+				position, order);
 		return new KscmtPaletteCmpCombiDtl(combiDtlPk, code, null);
 	}
 

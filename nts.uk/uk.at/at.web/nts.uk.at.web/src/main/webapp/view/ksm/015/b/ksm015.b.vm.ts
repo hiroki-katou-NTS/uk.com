@@ -35,7 +35,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
 				} else {
-					self.registrationForm().newMode(true);
+					self.createNew();
 				}
 
 			}).fail(function (error) {
@@ -65,8 +65,9 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 
 		public register() {
 			nts.uk.ui.errors.clearAll();
-
 			let self = this;
+
+			self.registrationForm().trimData();
 
 			$(".nts-input").trigger("validate");
 

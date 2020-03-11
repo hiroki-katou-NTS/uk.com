@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterOrgCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.CopyShiftMasterResultDto;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.shiftmaster.DeleteShiftMasterOrgCommand;
@@ -109,8 +110,8 @@ public class ShiftMasterWs {
 	
 	@POST
 	@Path("copy/shiftmaster/org")
-	public void copyShiftMasterOrg(CopyShiftMasterOrgCommand dto){
-		this.copyOrgCmd.handle(dto);;
+	public List<CopyShiftMasterResultDto> copyShiftMasterOrg(CopyShiftMasterOrgCommand dto){
+		return this.copyOrgCmd.handle(dto);
 	}
 	
 	

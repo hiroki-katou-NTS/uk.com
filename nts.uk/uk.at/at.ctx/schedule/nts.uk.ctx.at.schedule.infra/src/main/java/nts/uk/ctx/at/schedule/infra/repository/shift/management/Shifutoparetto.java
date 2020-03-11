@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.infra.repository.shift.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 
 @AllArgsConstructor
