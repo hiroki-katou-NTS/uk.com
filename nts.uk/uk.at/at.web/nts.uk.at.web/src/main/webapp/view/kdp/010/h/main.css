@@ -1,0 +1,31 @@
+#combobox1 {
+	margin-left: -249px;
+}
+
+#first-color-picker,#second-color-picker, #date-time-label, #correc-label1, #combobox1, #stamping-his-label, #stamping-his-radio {
+	margin-top: 10px;
+}
+
+#stamping-his-label{
+	margin-left:30px;
+}
+
+#combobox1, #correc-text{
+    width: 120px;
+}
+
+#correc-text{
+	margin-left: 20px;
+}
+
+#highlight-radio{
+	margin-left: 8px;
+}
+
+#first-color-picker{
+	margin-left: 24px;
+}
+
+#second-color-picker{
+	margin-left: 37px;
+}

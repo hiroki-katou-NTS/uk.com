@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
@@ -20,7 +18,11 @@ import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-
+/**
+ * ボタン詳細設定
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class ButtonSettingsCommand {
@@ -43,16 +45,14 @@ public class ButtonSettingsCommand {
 		ButtonPositionNo buttonPositionNos = new ButtonPositionNo(x.getButtonPositionNo());
 
 		ColorCode textColors = new ColorCode(x.getButtonDisSet().getButtonNameSet().getTextColor());
-		Optional<ButtonName> buttonNames = Optional
-				.of(new ButtonName(x.getButtonDisSet().getButtonNameSet().getButtonName().get()));
+		ButtonName buttonNames = new ButtonName(x.getButtonDisSet().getButtonNameSet().getButtonName());
 		ButtonNameSet buttonNameSet = new ButtonNameSet(textColors, buttonNames);
 
 		ColorCode backGroundColors = new ColorCode(x.getButtonDisSet().getBackGroundColor());
 		ButtonDisSet buttonDisSets = new ButtonDisSet(buttonNameSet, backGroundColors);
 
 		ReservationArt reservationArt = EnumAdaptor.valueOf(x.getButtonType().getReservationArt(), ReservationArt.class);
-		Optional<GoingOutReason> goOutArt = Optional
-				.of(EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt().get(), GoingOutReason.class));
+		GoingOutReason goOutArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
 		SetPreClockArt setPreClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
 				SetPreClockArt.class);
 		ChangeClockArt changeClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),

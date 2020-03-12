@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<head>
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"/>
+	</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 530, height: 580 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kdp/010/g/main.css" />
+			<com:scriptfile path="kdp010.g.vm.js" />
+			<com:scriptfile path="kdp010.g.start.js" />
+			<com:scriptfile path="kdp010.g.service.js" />
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType
+			</com:EnumScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="button-add" class="proceed" data-bind = "click:registration">#{i18n.getText('KDP010_95')}</button>
+				<button id="button-del" class="danger">#{i18n.getText('KDP010_96')}</button>
+				<button id="button-cancel" data-bind = "click:closeDialog">#{i18n.getText('KDP010_128')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-area">
+					<table>
+						<tr>
+						
+							<td><label class="basic-label">#{i18n.getText('KDP010_97')}</label>
+							</td>
+						</tr>
+						<tr>
+							<td><div id="combobox" tabindex="19" class="cbx-days"
+									data-bind="ntsComboBox: {
+											options: optionPage,
+											optionsValue: 'code',
+											value: selectedPage,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 5 },
+											]}"></div></td>
+						</tr>
+					</table>
+				</div>
+				<div id="right-area" data-bind="with: currentItem">
+					<table class="basic-items">
+						<tr>
+							<td>
+								<!-- G3_1 -->
+								<div id="correc-label"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_101')}
+								</div>
+								<!-- G3_2 -->
+								<input id="correc-text" data-bind="ntsTextEditor: {value: $parent.pageName}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- G4_1 -->
+								<div id="correc-label1"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_102')}
+								</div>
+							</td>
+							<td>
+								<!-- G4_2 -->
+								<div id="combobox1" class="cbx-days"
+									data-bind="ntsComboBox: {
+											options: $parent.optionLayout,
+											optionsValue: 'value',
+											value: $parent.selectedLayout,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 2 },
+											]}">
+								</div>
+							</td>
+
+						</tr>
+						<tr>
+							<td><div id="comment"
+									data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_103')}</div>
+							</td>
+							<td><textarea id="comment-text" tabindex="4"
+									data-bind="ntsMultilineEditor: { name: '#[KDW006_62]',value: $parent.commentDaily }" />
+							</td>
+						</tr>
+						<tr>
+							<td><div id="color"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_104')}</div>
+								<div id="first-color-picker" class="colorpicker"
+									data-bind="ntsColorPicker: {value: $parent.letterColors, enable: true, width: 50, name:'#[KDP010_24]' }" />
+							</td>
+						</tr>
+
+					</table>
+				</div>
+				<div id="item-panel" class="panel panel-frame item-panel">
+				<com:ko-if bind="selectedLayout()==0">
+				<table>
+						<tr>
+							<td>
+							<i class="fa fa-building-o" aria-hidden="true"></i>
+								<button id="button1" class="fa-building-o">#{i18n.getText('KSM011_73')}</button>
+								<i class="fa fa-car" style="font-size:48px;"></i>
+							</td>
+							<td>
+								<button id="button2" data-bind="click: openHDialog">#{i18n.getText('KSM011_73')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button id="button3">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="button4">#{i18n.getText('KSM011_73')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button id="button5">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="button6">#{i18n.getText('KSM011_73')}</button>
+							</td>
+						</tr>
+					</table>
+					
+				</com:ko-if>
+				
+				<com:ko-if bind="selectedLayout()!=0">
+				<table>
+						<tr>
+							<td>
+								<button id="buttonx1">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button id="buttonxxx1">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonxxx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonxxx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+							<td>
+								<button id="buttonxxx">#{i18n.getText('KSM011_73')}</button>
+							</td>
+						</tr>
+					</table>
+					
+				</com:ko-if>
+					
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

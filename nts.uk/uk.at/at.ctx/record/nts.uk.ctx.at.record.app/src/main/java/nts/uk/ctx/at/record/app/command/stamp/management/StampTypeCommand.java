@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,7 +10,7 @@ public class StampTypeCommand {
 	private boolean changeHalfDay;
 
 	/** 外出区分 */
-	private Optional<Integer> goOutArt;
+	private Integer goOutArt;
 	
 	/** 所定時刻セット区分 */
 	private int setPreClockArt;

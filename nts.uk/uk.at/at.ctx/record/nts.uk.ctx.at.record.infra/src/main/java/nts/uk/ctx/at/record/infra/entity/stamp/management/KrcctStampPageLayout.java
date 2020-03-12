@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampPageComment;
 import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
 import nts.uk.ctx.at.record.dom.stamp.management.StampPageName;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 打刻ページレイアウト
@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KRCCT_STAMP_PAGE_LAYOUT")
-public class KrcctStampPageLayout extends UkJpaEntity{
+public class KrcctStampPageLayout extends ContractUkJpaEntity{
 	
 	@EmbeddedId
     public KrcctStampPageLayoutPk pk;

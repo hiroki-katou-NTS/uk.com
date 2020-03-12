@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -28,7 +27,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 打刻ボタン詳細設定
@@ -39,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KRCCT_STAMP_LAYOUT_DETAIL")
-public class KrcctStampLayoutDetail extends UkJpaEntity implements Serializable{
+public class KrcctStampLayoutDetail extends ContractUkJpaEntity implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
@@ -143,13 +142,13 @@ private static final long serialVersionUID = 1L;
 				new ButtonDisSet(
 						new ButtonNameSet(
 								new ColorCode(this.textColor), 
-								Optional.of(new ButtonName(this.buttonName))), 
+								new ButtonName(this.buttonName)), 
 						new ColorCode(this.backGroundColor)), 
 				new ButtonType(
 						EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), 
 						new StampType(
 								this.changeHalfDay, 
-								Optional.of(EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class)), 
+								EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
 								EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
 								EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
 								EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),

@@ -63,7 +63,7 @@ public class StampSettingPersonHelper {
 		
 		public static class ButtonNameSetting {
 			public static ButtonNameSet DUMMY = new ButtonNameSet(
-					new ColorCode("DUMMY"), Optional.of(new ButtonName("DUMMY")));
+					new ColorCode("DUMMY"), new ButtonName("DUMMY"));
 		}
 		
 		public static class Type {
@@ -75,7 +75,7 @@ public class StampSettingPersonHelper {
 		public static class Stamp {
 			public static StampType DUMMY = new StampType(
 					true, 
-					Optional.of(EnumAdaptor.valueOf(0, GoingOutReason.class)), 
+					EnumAdaptor.valueOf(0, GoingOutReason.class), 
 					EnumAdaptor.valueOf(0, SetPreClockArt.class),
 					EnumAdaptor.valueOf(0, ChangeClockArt.class),
 					EnumAdaptor.valueOf(0, ChangeCalArt.class));

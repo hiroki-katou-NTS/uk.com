@@ -18,7 +18,7 @@ public class StampType {
 
 	/** 外出区分 */
 	@Getter
-	private Optional<GoingOutReason> goOutArt;
+	private GoingOutReason goOutArt;
 	
 	/** 所定時刻セット区分 */
 	@Getter
@@ -32,11 +32,11 @@ public class StampType {
 	@Getter
 	private ChangeCalArt changeCalArt;
 
-	public StampType(boolean changeHalfDay, Optional<GoingOutReason> goOutArt, SetPreClockArt setPreClockArt,
+	public StampType(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		super();
 		this.changeHalfDay = changeHalfDay;
-		this.goOutArt = goOutArt;
+		this.goOutArt = Optional.of(goOutArt).get() ;
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
