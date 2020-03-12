@@ -6,10 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
@@ -33,7 +32,7 @@ public class AppHolidayWorkDataHasDate {
 	// 基準日
 	GeneralDate baseDate;
 	// 表示する実績内容
-	ActualStatusCheckResult actualStatusCheckResult;
+	List<AchievementOutput> achievementOutputLst;
 	// 表示する事前申請内容
-	PreAppCheckResult preAppCheckResult;
+	List<AppDetailContent> appDetailContentLst;
 }
