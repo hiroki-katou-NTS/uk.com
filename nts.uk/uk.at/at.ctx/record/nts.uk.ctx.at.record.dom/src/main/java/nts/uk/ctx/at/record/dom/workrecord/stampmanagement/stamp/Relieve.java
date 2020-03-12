@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * VO : 打刻する方法
@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Value
-public class Relieve implements DomainObject {
+public class Relieve implements DomainValue {
 
 	/**
 	 * 認証方法

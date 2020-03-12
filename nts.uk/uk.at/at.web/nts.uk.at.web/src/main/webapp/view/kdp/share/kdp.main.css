@@ -1,0 +1,22 @@
+.img-link {
+	position: absolute;
+	top: 5%;
+	width: 100% !important;
+	left: 0%;
+}
+
+.text-button {
+	position: absolute;
+	bottom: -5%;
+	width: 100%;
+	left: 0%;
+}
+
+.td-button {
+	padding-left: 3px;
+	padding-top: 5px;
+}
+
+.button {
+	border-radius: 5px;
+}

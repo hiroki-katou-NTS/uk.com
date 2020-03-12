@@ -59,7 +59,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
 		
-		if(dailyInfo.getRecordInfo().getSiftCode() == null
+		if(dailyInfo.getRecordInfo().getWorkTimeCode() == null
 				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
 				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
 				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){

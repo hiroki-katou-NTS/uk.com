@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * VO : 打刻場所情報
@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Value
-public class StampLocationInfor implements DomainObject {
+public class StampLocationInfor implements DomainValue {
 	/**
 	 * エリア外の打刻区分
 	 */

@@ -345,8 +345,9 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootStateHr root = opRootState.get();
-		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder).reversed());
-		//ドメインモデル「人事承認フェーズインスタンス」．順序を5～1の順でループする
+		//109827 hoatt 2020.03.03
+		root.getLstPhaseState().sort(Comparator.comparing(ApprovalPhaseStateHr::getPhaseOrder));
+		//ドメインモデル「人事承認フェーズインスタンス」．順序を1～5の順でループする
 		for(ApprovalPhaseStateHr phaseHr : root.getLstPhaseState()){
 			//1.人事承認フェーズ毎の承認者を取得する(getApproverFromPhaseHr)
 			List<String> listApprover = this.getApproverFromPhaseHr(this.convertToImport(phaseHr));
