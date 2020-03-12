@@ -462,6 +462,7 @@ module cmm045.a.viewmodel {
 
             var self = this;
             let widthAuto = isHidden == false ? 1110 : 1045;
+            widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
 
             let columns = [
                 { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
@@ -481,11 +482,11 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
                 { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"}
             ];
-
+            let heightAuto = screen.height - 360 >= 500 ? 500 : screen.height - 360;
             this.setupGrid({
                 withCcg001: true,
                 width: widthAuto,
-                height: 500,
+                height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
             });
             
@@ -670,6 +671,7 @@ module cmm045.a.viewmodel {
 
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
+            widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
 
             let columns = [
                 { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
@@ -694,11 +696,11 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_57'), key: 'appStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'displayAppStatus', width: '95px' },
             ]
-
+            let heightAuto = screen.height - 435 >= 530 ? 530 : screen.height - 435;
             this.setupGrid({
                 withCcg001: false,
                 width: widthAuto,
-                height: 530,
+                height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
             });
 /*
