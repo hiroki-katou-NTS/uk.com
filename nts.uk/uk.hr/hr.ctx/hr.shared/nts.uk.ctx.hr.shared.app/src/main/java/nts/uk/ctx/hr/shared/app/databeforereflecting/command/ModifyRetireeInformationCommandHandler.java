@@ -14,7 +14,7 @@ import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformati
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
+public class ModifyRetireeInformationCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
 
 	@Inject
 	private RetirementInformationService retirementInformationService;
@@ -24,7 +24,7 @@ public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeRe
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	
 	
-	// 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
+	// 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		

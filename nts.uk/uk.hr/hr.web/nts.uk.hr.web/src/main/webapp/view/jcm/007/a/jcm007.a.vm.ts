@@ -483,7 +483,7 @@ module jcm007.a {
                 command.scd = itemSelectedTab2.scd;
                 command.employeeName = itemSelectedTab2.employeeName;
                 command.status = 1;
-                self.preCheckAndUpdateEmp(command).done(() => {
+                self.preCheckAndModifyRetireeInformation(command).done(() => {
                     self.enable_disableInput(false);
                 });
             }
@@ -524,30 +524,30 @@ module jcm007.a {
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.addRetireeInformation(command).done(() => {
+                                this.registerNewEmployee(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.addRetireeInformation(command).done(() => {
+                            this.registerNewEmployee(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     } else {
                         if (dayDifference < 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.addRetireeInformation(command).done(() => {
+                                this.registerNewEmployee(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.addRetireeInformation(command).done(() => {
+                            this.registerNewEmployee(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     }
                 } else {
-                    this.addRetireeInformation(command).done(() => {
+                    this.registerNewEmployee(command).done(() => {
                         dfd.resolve();    
                     });
                 }
@@ -561,11 +561,11 @@ module jcm007.a {
         }
         
         // 2.アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
-        addRetireeInformation(command: any) {
+        registerNewEmployee(command: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.addRetireeInformation(command).done(() => {
+            service.registerNewEmployee(command).done(() => {
                 console.log('REGISTER DONE!!');
                 self.newMode();
                 self.start(null);
@@ -615,30 +615,30 @@ module jcm007.a {
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.registerNewEmpApproved(command).done(() => {
+                                this.registerNewRetireesApproved(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.registerNewEmpApproved(command).done(() => {
+                            this.registerNewRetireesApproved(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     } else {
                         if (dayDifference < 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.registerNewEmpApproved(command).done(() => {
+                                this.registerNewRetireesApproved(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.registerNewEmpApproved(command).done(() => {
+                            this.registerNewRetireesApproved(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     }
                 } else {
-                    this.registerNewEmpApproved(command).done(() => {
+                    this.registerNewRetireesApproved(command).done(() => {
                         dfd.resolve();    
                     });
                 }
@@ -652,11 +652,11 @@ module jcm007.a {
         
         }
         
-        registerNewEmpApproved(command : any){
+        registerNewRetireesApproved(command : any){
              let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.updateRetireeInformation(command).done(() => {
+            service.registerNewRetireesApproved(command).done(() => {
                 console.log('UPDATE DONE!!');
                 self.start(command.historyId).done(() => {
                     self.enable_btnRegister(true);
@@ -675,7 +675,7 @@ module jcm007.a {
         }
         
         // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
-        preCheckAndUpdateEmp(command : any) : JQueryPromise<any>{
+        preCheckAndModifyRetireeInformation(command : any) : JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred<any>();
             let empCurrent = ko.toJS(self.currentEmployee());
@@ -709,30 +709,30 @@ module jcm007.a {
                     if (empCurrent.dismissalNoticeDateAllow) {
                         if (dayDifference >= 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.updateRetireeInformation(command).done(() => {
+                                this.modifyRetireeInformation(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.updateRetireeInformation(command).done(() => {
+                            this.modifyRetireeInformation(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     } else {
                         if (dayDifference < 30) {
                             nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.updateRetireeInformation(command).done(() => {
+                                this.modifyRetireeInformation(command).done(() => {
                                     dfd.resolve();
                                 });
                             }).ifNo(() => { });
                         } else {
-                            this.updateRetireeInformation(command).done(() => {
+                            this.modifyRetireeInformation(command).done(() => {
                                 dfd.resolve();
                             });
                         }
                     }
                 } else {
-                    this.updateRetireeInformation(command).done(() => {
+                    this.modifyRetireeInformation(command).done(() => {
                         dfd.resolve();    
                     });
                 }
@@ -745,11 +745,11 @@ module jcm007.a {
             return dfd.promise();
         }
         
-        updateRetireeInformation(command : any) : JQueryPromise<any>{
+        modifyRetireeInformation(command : any) : JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.updateRetireeInformation(command).done(() => {
+            service.modifyRetireeInformation(command).done(() => {
                 console.log('UPDATE DONE!!');
                 self.start(command.historyId).done(() => {
                     self.enable_btnRegister(false);

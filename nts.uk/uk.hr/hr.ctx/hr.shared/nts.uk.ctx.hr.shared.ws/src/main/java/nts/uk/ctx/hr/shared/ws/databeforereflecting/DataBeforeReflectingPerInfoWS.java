@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.hr.shared.ws.databeforereflecting;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,13 +11,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.DataBeforeReflectCommand;
+import nts.uk.ctx.hr.shared.app.databeforereflecting.command.ModifyRetireeInformationCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.PreCheckCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RemoveCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.find.CheckStatusRegistration;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.find.DataBeforeReflectResultDto;
-import nts.uk.ctx.hr.shared.app.databeforereflecting.find.RetiredEmployeeInfoResult;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.find.DatabeforereflectingFinder;
 
 @Path("databeforereflecting")
@@ -37,6 +35,9 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@Inject
 	private UpdateEmpApprovedCommandHandler updateCommnad;
+	
+	@Inject
+	private  ModifyRetireeInformationCommandHandler modifyRetireeInfo;
 	
 	@Inject
 	private  RemoveCommandHandler removeCommnad;
@@ -64,15 +65,21 @@ public class DataBeforeReflectingPerInfoWS {
 	}
 	
 	@POST
-	@Path("/add")
-	public void add(DataBeforeReflectCommand command) {
+	@Path("/register-new-employee")
+	public void registerNewEmployee(DataBeforeReflectCommand command) {
 		this.addCommand.handle(command);
 	}
 
 	@POST
-	@Path("/update")
-	public void update(DataBeforeReflectCommand command) {
+	@Path("/register-new-retirees-approved")
+	public void registerNewRetireesApproved(DataBeforeReflectCommand command) {
 		this.updateCommnad.handle(command);
+	}
+	
+	@POST
+	@Path("/modify-retiree-information")
+	public void modifyRetireeInformation(DataBeforeReflectCommand command) {
+		this.modifyRetireeInfo.handle(command);
 	}
 
 	@POST

@@ -7,8 +7,9 @@ module jcm007.a.service {
         'findEmployeeInfo': 'employee-info/find',
         'checkStatusRegistration': 'databeforereflecting/checkStatusRegistration/{0}',
         'preCheck': 'databeforereflecting/register/preCheck',
-        'add': 'databeforereflecting/add',
-        'update': 'databeforereflecting/update',
+        'registerNewEmployee': 'databeforereflecting/register-new-employee',
+        'registerNewRetireesApproved': 'databeforereflecting/register-new-retirees-approved',
+        'modifyRetireeInformation': 'databeforereflecting/modify-retiree-information',
         'remove': 'databeforereflecting/remove/{0}',
         'exportExcel': 'file/hr/report/retirementinformation/export',
     }
@@ -29,12 +30,16 @@ module jcm007.a.service {
         return ajax(paths.preCheck, command);
     }
 
-    export function addRetireeInformation(command: any): JQueryPromise<any> {
-        return ajax(paths.add, command);
+    export function registerNewEmployee(command: any): JQueryPromise<any> {
+        return ajax(paths.registerNewEmployee, command);
     }
 
-    export function updateRetireeInformation(command: any): JQueryPromise<any> {
-        return ajax(paths.update, command);
+    export function registerNewRetireesApproved(command: any): JQueryPromise<any> {
+        return ajax(paths.registerNewRetireesApproved, command);
+    }
+    
+        export function modifyRetireeInformation(command: any): JQueryPromise<any> {
+        return ajax(paths.modifyRetireeInformation, command);
     }
 
     export function remove(hisId: any): JQueryPromise<any> {
