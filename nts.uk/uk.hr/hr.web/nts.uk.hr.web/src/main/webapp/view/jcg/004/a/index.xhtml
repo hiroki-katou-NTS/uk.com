@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
+			<com:stylefile path="jcg004.a.style.css" />
+			<com:scriptfile path="jcg004.a.service.js" />
+			<com:scriptfile path="jcg004.a.start.js" />
+			<com:scriptfile path="jcg004.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="widget-table first">
+					<tr>
+						<td>#{i18n.getText('JCG004_A1_4')}</td>
+						<td>
+							<com:ko-if bind="data1()">
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_6')}'"></a>
+							</com:ko-if>
+							<com:ko-if bind="!data1()">
+								#{i18n.getText('JCG004_A1_6')}
+							</com:ko-if>
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('JCG004_A1_8')}</td>
+						<td></td>
+					</tr>
+					<tr data-bind="">
+						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
+						<td>
+							<com:ko-if bind="data1()">
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_6')}'"></a>
+							</com:ko-if>
+							<com:ko-if bind="!data1()">
+								#{i18n.getText('JCG004_A1_6')}
+							</com:ko-if>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
