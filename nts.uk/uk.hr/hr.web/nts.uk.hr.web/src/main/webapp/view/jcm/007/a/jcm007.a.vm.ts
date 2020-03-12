@@ -117,6 +117,7 @@ module jcm007.a {
                             self.initHeaderInfo();
                             self.initRetirementInfo();
                         }
+                        
                     });
                 } else if (value == 'tab-1') {
                     self.enable_btnRemove(false);
