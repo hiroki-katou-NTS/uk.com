@@ -91,9 +91,20 @@ module jcm007.a {
                                 self.enable_btnRemove(false);
                                 self.enable_disableInput(false);
                             }
-                            let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
-                            if (dataHeader) {
-                                self.setDataHeader(dataHeader);
+                            
+                            let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
+                            if (objHeader) {
+                                let param = {
+                                    employeeId: objHeader.employeeId,
+                                    personId: objHeader.personID,
+                                    baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                                    getDepartment: true,
+                                    getPosition: true,
+                                    getEmployment: true
+                                };
+
+                                self.setDataHeader(param);
+                                
                             }
 
                             let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == itemSelectedTab2.sid; });
@@ -112,8 +123,18 @@ module jcm007.a {
                     self.enable_btnRemove(false);
                     self.enable_btnRegister(true);
                     if (self.itemSelectedTab1()) {
-                        let dataHeader = self.itemSelectedTab1();
-                        self.setDataHeader(dataHeader);
+                        let itemSelectedTab1 = self.itemSelectedTab1();
+                        let param = {
+                            employeeId: itemSelectedTab1.employeeId,
+                            personId: itemSelectedTab1.personalId,
+                            baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                            getDepartment: true,
+                            getPosition: true,
+                            getEmployment: true
+                        };
+
+                        self.setDataHeader(param);
+                        
                         self.initRetirementInfo();
                     } else {
                         self.initHeaderInfo();
@@ -135,8 +156,20 @@ module jcm007.a {
                     self.enable_btnRemove(false);
                     self.enable_disableInput(false);
                 }
-                let dataHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == value.sid; });
-                self.setDataHeader(dataHeader);
+                let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == value.sid; });
+                if (objHeader) {
+                    let param = {
+                        employeeId: objHeader.employeeId,
+                        personId: objHeader.personID,
+                        baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                        getDepartment: true,
+                        getPosition: true,
+                        getEmployment: true
+                    };
+
+                    self.setDataHeader(param);
+
+                }
 
                 let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == value.sid; });
                 self.setDataDetail(dataDetail);
@@ -156,9 +189,9 @@ module jcm007.a {
         }
         
         // select emp ben tab-1
-        public seletedEmployee(data): void {            
+        public seletedEmployee(data): void {
             let self = this;
-            self.itemSelectedTab1(data); 
+            self.itemSelectedTab1(data);
             if (self.isNewMode) {
                 // アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "Check tình trạng đăng ký ")
                 block.grayout();
@@ -194,77 +227,51 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.getData().done((data1) => {
+            service.getData().done((result) => {
                 // goi service アルゴリズム[社員情報リストを取得]を実行する
                 // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
-                if(data1.length != 0){
+                if (result.retiredEmployees.length != 0) {
                     self.enable_tab2(true);
                     self.visible_tab2(true);
-                    
-                    let listParam = [];
-                    _.forEach(data1, function(value) {
-                        listParam.push({
-                            sid: value.sId,
-                            pid: value.pId
-                        });
-                    });
 
-                    let paramCcg029 = {
-                        listParam: listParam
-                    };
+                    self.empInfoHeaderList = result.employeeImports;
                     
-                    nts.uk.request.ajax("com", "query/ccg029employee/getEmpInfo", paramCcg029).done(function(data2) {
-                       
-                        self.empInfoHeaderList = data2;
-                        self.employeeListTab2 = data1;
-                        
-                        if (self.selectedTab() == 'tab-1') {
-                            self.enable_btnRemove(false);
-                        } else if (self.selectedTab() == 'tab-2') {
-                            //set selected fist
-                           
-                            if (!self.itemSelectedTab2()) {
-                                $('#gridListEmployeesJcm007').igGridSelection('selectRow', 0);
-                                self.itemSelectedTab2(data1[0]);
-                            }
-                            self.enable_btnRemove(true);
-                        }
-                        
-                       
-                        
-                        $("#gridListEmployeesJcm007").igGrid('option','dataSource',self.employeeListTab2);
-                        
-                        if(historyId){
-                            let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                            self.itemSelectedTab2(itemSelected);
-                            self.setDataDetail(itemSelected);    
-                        }
-                        
-                        if(historyId && isAfterRemove){
-                            let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                            let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                            self.itemSelectedTab2(itemSelected);
-                            self.setDataDetail(itemSelected);
-                            $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);    
-                        }
-                        dfd.resolve();
-                        block.clear();
+                    if (self.selectedTab() == 'tab-1') {
+                        self.enable_btnRemove(false);
+                    } else if (self.selectedTab() == 'tab-2') {
+                        self.enable_btnRemove(true);
+                    }
 
-                    }).fail((error) => {
-                        dfd.reject();
-                        nts.uk.ui.dialog.info(error);
-                    }).always(() => {
-                        block.clear();
-                    });
+                    self.employeeListTab2 = result.retiredEmployees;
+
+                    $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
+
+                    if (historyId) {
+                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                        self.itemSelectedTab2(itemSelected);
+                        self.setDataDetail(itemSelected);
+                    }
+
+                    if (historyId && isAfterRemove) {
+                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                        let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                        self.itemSelectedTab2(itemSelected);
+                        self.setDataDetail(itemSelected);
+                        $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);
+                    }
+
                 } else {
-                    
+
                     self.enable_tab2(false);
                     self.visible_tab2(false);
-                    
+
                     self.initHeaderInfo();
                     self.initRetirementInfo();
                     dfd.resolve();
                 }
+                
+                dfd.resolve();
+                block.clear();
                 
             }).fail((error) => {
                 console.log('Get Data Tab-2 Fail');
@@ -469,7 +476,7 @@ module jcm007.a {
                 command.pId = itemSelectedTab2.pid;
                 command.scd = itemSelectedTab2.scd;
                 command.employeeName = itemSelectedTab2.employeeName;
-                command.status = 2;
+                command.status = 1;
                 self.preCheckAndUpdateEmp(command).done(() => {
                     self.enable_disableInput(false);
                 });
@@ -801,19 +808,25 @@ module jcm007.a {
             }
         }
 
-        setDataHeader(data){
+        setDataHeader(param) {
             let self = this;
-            let departmentCode = data.departmentCode == null ? '' : data.departmentCode;
-            let departmentName = data.departmentName == null ? '' : data.departmentName;
-            let positionName   = data.positionName == null ? '' : data.positionName;
-            let employmentName  = data.employmentName == null ? '' : data.employmentName;
-                
-            self.currentEmployee().avatarPerson( data.avartaFileId ? liveView(data.avartaFileId) : 'images/avatar.png');
-            self.currentEmployee().codeNameEmp( data.employeeCode + ' ' + data.businessName);
-            self.currentEmployee().department( departmentCode + ' ' + departmentName );
-            self.currentEmployee().position( positionName );
-            self.currentEmployee().employmentCls( employmentName);
-            self.currentEmployee().sid = data.employeeId;
+            service.findEmployeeInfo(param).done((data) => {
+                if (!data) {
+                    return;
+                }
+                let departmentCode = data.department ? data.department.departmentCode : '';
+                let departmentName = data.department ? data.department.departmentName : '';
+                let positionName = data.position ? data.position.positionName : '';;
+                let employmentName = data.employment ? data.employment.employmentName : '';
+
+                self.currentEmployee().avatarPerson(data.avatarFile && data.avatarFile.facePhotoFileID ? liveView(data.avatarFile.facePhotoFileID) : 'images/avatar.png');
+                self.currentEmployee().codeNameEmp(data.employeeCode + ' ' + data.businessName);
+                self.currentEmployee().department(departmentCode + ' ' + departmentName);
+                self.currentEmployee().position(positionName);
+                self.currentEmployee().employmentCls(employmentName);
+                self.currentEmployee().sid = data.employeeId;
+            });
+
         }
         
         setDataDetail(dataDetail : any){

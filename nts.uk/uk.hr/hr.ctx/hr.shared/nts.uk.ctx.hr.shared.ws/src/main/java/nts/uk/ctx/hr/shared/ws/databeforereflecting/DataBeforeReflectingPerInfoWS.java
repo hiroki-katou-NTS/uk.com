@@ -18,7 +18,8 @@ import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RegisterNewEmpComma
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RemoveCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.find.CheckStatusRegistration;
-import nts.uk.ctx.hr.shared.app.databeforereflecting.find.DataBeforeReflectDto;
+import nts.uk.ctx.hr.shared.app.databeforereflecting.find.DataBeforeReflectResultDto;
+import nts.uk.ctx.hr.shared.app.databeforereflecting.find.RetiredEmployeeInfoResult;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.find.DatabeforereflectingFinder;
 
 @Path("databeforereflecting")
@@ -45,8 +46,8 @@ public class DataBeforeReflectingPerInfoWS {
 
 	@POST
 	@Path("/getData")
-	public List<DataBeforeReflectDto> getData() {
-		List<DataBeforeReflectDto> result = finder.getDataBeforeReflect();
+	public DataBeforeReflectResultDto getData() {
+		DataBeforeReflectResultDto result = finder.getDataBeforeReflect();
 		return result;
 	}
 	

@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -19,13 +22,12 @@ public class DatabeforereflectingFinder {
 	@Inject
 	private RetirementInformationService retirementInfoService;
 	
-	public List<DataBeforeReflectDto> getDataBeforeReflect() {
-
-		// アルゴリズム[退職者登録一覧の取得]を実行する
-		// (Thực hiện thuật toán "Get list đăng ký người nghỉ hưu")
-
-		// アルゴリズム[退職者情報の取得]を実行する(Thực hiện thuật toán[Get thông tin người nghỉ
-		// hưu/Retired information] )
+	@Inject
+	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	public DataBeforeReflectResultDto getDataBeforeReflect() {
+		
+		DataBeforeReflectResultDto resultDto = new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
 
 		String cid = AppContexts.user().companyId();
 		Integer workId = 1;
@@ -34,20 +36,38 @@ public class DatabeforereflectingFinder {
 		Optional<String> sortByColumnName = Optional.of("date_01");
 		Optional<String> orderType = Optional.of("asc");
 
+		// アルゴリズム[退職者登録一覧の取得]を実行する (Thực hiện thuật toán "Get list đăng ký người nghỉ hưu")
 		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, workId, listPid,
 				includReflected, sortByColumnName, orderType);
-
-		if (listRetirementInfo.size() > 0) {
-			return convertToDto(listRetirementInfo);
+		
+		if (listRetirementInfo.isEmpty()) {
+			return new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
 		}
+		
+		// 取得した退職者情報を[A221_4 退職者登録一覧]に移送する(Transfer  retiree information đã get vào  [A221_4 Retired employee registration list])
+		List<RetiredEmployeeInfoResult> listRetiredEmployeeInfoResult= convertToDto(listRetirementInfo);
+		
+		resultDto.setRetiredEmployees(listRetiredEmployeeInfoResult);
+		
+		// アルゴリズム[社員情報リストの取得]を実行する(Thực hiện thuật toán [lấy list thông tin nhân viên])
+		List<String> sIDs = listRetirementInfo.stream().map(x -> x.getSId()).collect(Collectors.toList());
+		List<String> pIDs = listRetirementInfo.stream().map(x -> x.getPId()).collect(Collectors.toList());
+		GeneralDate baseDate = GeneralDate.today();
+		
+		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor.getEmployeeInfos(
+				Optional.of(pIDs), sIDs, baseDate, Optional.ofNullable(true),
+				Optional.ofNullable(true), Optional.ofNullable(true));
+		
+		resultDto.setEmployeeImports(employeeImports);
+		
+		return resultDto;
 
-		return new ArrayList<>();
 	}
 
-	private List<DataBeforeReflectDto> convertToDto(List<RetirementInformation> listRetirementInfo) {
+	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo ) {
 
-		List<DataBeforeReflectDto> result = listRetirementInfo.stream().map(i -> {
-			DataBeforeReflectDto obj = new DataBeforeReflectDto();
+		List<RetiredEmployeeInfoResult> result = listRetirementInfo.stream().map(i -> {
+			RetiredEmployeeInfoResult obj = new RetiredEmployeeInfoResult();
 			obj.historyId = i.historyId;
 			obj.contractCode = i.contractCode;
 			obj.companyId = i.companyId;
