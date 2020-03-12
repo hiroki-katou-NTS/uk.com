@@ -25,6 +25,7 @@ public class DatabeforereflectingFinder {
 	@Inject
 	private EmployeeInformationAdaptor empInfoAdaptor;
 	
+	// 1.起動する(Khời động)
 	public DataBeforeReflectResultDto getDataBeforeReflect() {
 		
 		DataBeforeReflectResultDto resultDto = new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());

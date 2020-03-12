@@ -24,6 +24,8 @@ public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeRefle
 	
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	
+	
+	// 2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		DataBeforeReflectCommand command = context.getCommand();

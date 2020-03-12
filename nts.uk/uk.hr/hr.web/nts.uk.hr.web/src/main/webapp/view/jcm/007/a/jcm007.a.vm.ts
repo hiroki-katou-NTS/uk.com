@@ -207,8 +207,17 @@ module jcm007.a {
                 });
                 this.initRetirementInfo();
             }
-            // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
-            this.setDataHeader(data);
+            
+            let param = {
+                employeeId: data.employeeId,
+                personId: data.personalId,
+                baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                getDepartment: true,
+                getPosition: true,
+                getEmployment: true
+            };
+
+            self.setDataHeader(param);
         }
         
         /** start page */
@@ -441,10 +450,8 @@ module jcm007.a {
             }
 
             if ((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) {
-                // アルゴリズム[退職者情報の新規登録」を実行する (Thực hiện thuật toán [đăng ký mới thông tin người nghỉ hưu」)
-
-                // アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
                 
+                //2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
                 command.sId = itemSelectedTab1.employeeId;
                 command.pId = itemSelectedTab1.personalId;
                 command.scd = itemSelectedTab1.employeeCode;
@@ -454,9 +461,8 @@ module jcm007.a {
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.notificationCategory == "" 
                        && itemSelectedTab2.status == self.status_Unregistered) {
-                        // 3.届出承認済みの退職者を新規登録する 
-                        //(Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
-               
+                
+                // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
                 command.historyId = itemSelectedTab2.historyId;
                 command.sId = itemSelectedTab2.sid;
                 command.pId = itemSelectedTab2.pid;
@@ -469,8 +475,8 @@ module jcm007.a {
 
             } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
                        && itemSelectedTab2.status != self.status_Unregistered) {
-                       // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
                 
+                // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
                 command.historyId = itemSelectedTab2.historyId;
                 command.sId = itemSelectedTab2.sid;
                 command.pId = itemSelectedTab2.pid;
@@ -554,6 +560,26 @@ module jcm007.a {
             return dfd.promise();
         }
         
+        // 2.アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
+        addRetireeInformation(command: any) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
+            service.addRetireeInformation(command).done(() => {
+                console.log('REGISTER DONE!!');
+                self.newMode();
+                self.start(null);
+                block.clear();
+                dialog.info({ messageId: "Msg_15" });
+                dfd.resolve();
+            }).fail((mes) => {
+                console.log('REGISTER FAIL!!');
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
         // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
         preCheckAndRegisterNewEmpApproved(command : any) {
             let self = this;
@@ -741,26 +767,6 @@ module jcm007.a {
             return dfd.promise();
         }
         
-        // 2.アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
-        addRetireeInformation(command : any) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            block.grayout();
-            service.addRetireeInformation(command).done(() => {
-                console.log('REGISTER DONE!!');
-                self.newMode();
-                self.start(null);
-                block.clear();
-                dialog.info({ messageId: "Msg_15" });
-                dfd.resolve();
-            }).fail((mes) => {
-                console.log('REGISTER FAIL!!');
-                block.clear();
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
         remove() {
             let self = this;
             
@@ -810,6 +816,7 @@ module jcm007.a {
 
         setDataHeader(param) {
             let self = this;
+            debugger;
             service.findEmployeeInfo(param).done((data) => {
                 if (!data) {
                     return;
