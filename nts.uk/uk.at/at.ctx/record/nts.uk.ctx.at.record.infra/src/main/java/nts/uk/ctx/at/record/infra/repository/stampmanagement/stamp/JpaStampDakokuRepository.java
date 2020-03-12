@@ -14,9 +14,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+
 import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
@@ -131,7 +132,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
 				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
-				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
+				stamp.getType().getGoOutArt().value,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()
 						? stamp.getRefActualResults().getCardNumberSupport().get()
@@ -158,7 +159,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
-						entity.goOutArt == null ? null : GoingOutReason.corvert(entity.goOutArt),
+						GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 

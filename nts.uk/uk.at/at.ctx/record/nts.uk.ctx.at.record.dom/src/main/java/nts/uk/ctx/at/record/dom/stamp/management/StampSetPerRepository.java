@@ -28,8 +28,10 @@ public interface StampSetPerRepository {
 
 	public void updatePage(StampPageLayout layout);
 
-	public Optional<StampPageLayout> getStampSetPage(String companyId);
+	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo);
 
 	List<StampPageLayout> getAllStampSetPage(String companyId);
+
+	Optional<StampPageLayout> getStampSetPageByCid(String companyId);
 
 }

@@ -6,7 +6,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
         workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
-        workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode); 
+        workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode);
         selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
         workplaceId: string = getShared('dataForJB').workplaceId;
         listWorkType: any[] = getShared('dataForJB').listWorkType;
@@ -15,7 +15,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         isVisibleWkpName: KnockoutObservable<boolean> = ko.observable(false);
         groupName: KnockoutObservable<string> = ko.observable('');
         note: KnockoutObservable<string> = ko.observable('');
-        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(0);
+        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(1);
         contextMenu: Array<any>;
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
@@ -42,13 +42,14 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8 },
             { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9 },
         ]);
+        listShiftWork: any[] = ko.observableArray([]);
 
         constructor() {
             let self = this;
 
             self.contextMenu = [
-                { id: "openPopup", text: nts.uk.resource.getText("KSU001_1706"), action: self.openPopup.bind(self) },
-                { id: "delete", text: nts.uk.resource.getText("KSU001_1708"), action: self.remove }
+                { id: "openPopup", text: nts.uk.resource.getText("シフト組み合わせ選択"), action: self.openDialogJC.bind(self) },
+                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove.bind(self, event) }
             ];
 
             $("#test2").bind("getdatabutton", function(evt, data) {
@@ -56,6 +57,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 self.tooltip(data.tooltip);
                 self.dataWorkPairSet(data.data);
             });
+            self.initShiftWork();
         }
 
         init(): void {
@@ -65,18 +67,47 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 self.isVisibleWkpName(false);
                 $.when(self.getDataComPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
-                 var test = _.map(data, "groupName")
+                    var test = _.map(data, "groupName")
 
-                    
+
                 });
             } else {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                     self.workplaceName();
-                   // nts.uk.ui.windows.getSelf().setSize(400, 845);
+                    // nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             }
+        }
+
+        /* lay Shift Code master tuwf sever */
+        initShiftWork() {
+            let self = this;
+
+            let taisho = {
+                targetUnit: 0,
+                workplaceId: '',
+                workplaceGroupId: ''
+            }
+            if (self.selectedTab == 'company') {
+                taisho.targetUnit = null;
+                taisho.workplaceId = null;
+                taisho.workplaceGroupId = null;
+            }
+            if (self.selectedTab == 'workplace') {
+                taisho.workplaceId = self.workplaceId;
+                taisho.targetUnit = 0
+            }
+            if (self.selectedTab == 'groupworkplace') {
+                taisho.workplaceId = '';
+            }
+
+            service.getShiftMasterWorkInfo(taisho).done((data) => {
+                self.listShiftWork = data;
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
+            });
         }
 
         /**
@@ -89,18 +120,18 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this, index: number = param();
 
             self.selectedLinkButton(index);
-           /* if (self.isAllowCheckChanged && self.isChanged()) {
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-                    $.when(self.saveData()).done(() => {
-                        self.handleClickButton(index);
-                    });
-                }).ifNo(() => {
-                    self.handleClickButton(index);
-                });
-            } else {
-                self.handleClickButton(index);
-           } */
-             self.handleClickButton(index);
+            //             if (self.isAllowCheckChanged && self.isChanged()) {
+            //                 nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+            //                     $.when(self.saveData()).done(() => {
+            //                         self.handleClickButton(index);
+            //                     });
+            //                 }).ifNo(() => {
+            //                     self.handleClickButton(index);
+            //                 });
+            //             } else {
+            //                 self.handleClickButton(index);
+            //            } 
+            self.handleClickButton(index);
             self.isAllowCheckChanged = true;
         }
 
@@ -119,7 +150,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             $($('a.hyperlink')[index]).addClass('color-gray');
             let pattern = _.find(self.listPattern(), ['groupNo', index + 1]);
             self.groupName(pattern ? pattern.groupName : null);
-            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 0);
+            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 1);
             self.note(pattern ? pattern.note : null);
             self.source(self.dataSource()[index] || self.sourceEmpty);
             self.currentObject({
@@ -181,7 +212,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this, dfd = $.Deferred();
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
-            
+
             setShared("dataForJC", {
                 text: self.textName(),
                 data: data ? data.data : null,
@@ -190,13 +221,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 selectedTab: getShared("dataForJB").selectedTab,
                 workplaceId: getShared('dataForJB').workplaceId
             });
-            
+
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jc/index.xhtml").onClosed(() => {
                 let dataFromJB = getShared("dataFromJB");
                 if (dataFromJB) {
                     self.textName(dataFromJB ? dataFromJB.text : self.textName());
                     self.tooltip(dataFromJB ? dataFromJB.tooltip : self.tooltip());
-                    
+
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromJB.data });
                 }
             });
@@ -206,12 +237,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            
+
             if (nts.uk.ui.errors.hasError()) {
-                 return;
-              }
+                return;
+            }
             //check soucre null or empty
-             if (nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             let isArrEmpty: boolean = true;
@@ -240,8 +271,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let j = 1;
                     _.each(self.source()[i].data, (dt) => {
                         listInsertWorkPairSetCommand.push({
-                            pairNo: j, 
-                            shiftCode: dt.value
+                            pairNo: j,
+                            shiftCode: dt.shiftMasterCode == null ? dt.data.shiftMasterCode : dt.shiftMasterCode
                         });
                         j++;
                     });
@@ -262,19 +293,23 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 note: self.note(),
                 listInsertPatternItemCommand: listInsertPatternItemCommand
             }
-
-            service.registerWorkPairPattern(obj).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.isAllowCheckChanged = false;
-                self.handleAfterChangeData();
-                self.isDeleteEnable(true);
-                dfd.resolve();
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                dfd.reject();
-            }).always(() => {
+            if (obj.listInsertPatternItemCommand.length == 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
                 nts.uk.ui.block.clear();
-            });
+            } else {
+                service.registerWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.isAllowCheckChanged = false;
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(true);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
             return dfd.promise();
         }
 
@@ -319,12 +354,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         }
 
         /** remove data of button table */
-        remove(): JQueryPromise<any> {
+        remove(data: any, event: any): JQueryPromise<any> {
+            let self = this;
             let dfd = $.Deferred();
 
-            setTimeout(function() {
-                dfd.resolve(undefined);
-            }, 10);
+            //get page
+            //self.selectedLinkButton();
+            //get row-colum
+            //Number($(event)[0].dataset.idx);
+            self.dataSource()[self.selectedLinkButton()].splice(Number($(event)[0].dataset.idx), 1);
+            dfd.resolve();
 
             return dfd.promise();
         }
@@ -378,16 +417,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             // set default for dataSource and textButtonArr 
             self.dataSource([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArr([
-                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8 , formatter: _.escape},
-                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9 , formatter: _.escape},
+                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
             ]);
 
             for (let i = 0; i < listPattern.length; i++) {
@@ -397,16 +436,29 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 // Get data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
-                    let arrPairShortName = [], arrPairObject = [];                    
+                    let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        self.selectedTab() === 'company'? arrPairShortName.push('[' + wPSet.shiftCode + ']')
-                                                        : arrPairShortName.push('[' + wPSet.workTypeCode + ']');
+                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                        //                            : arrPairSt.workTypeCode + ']');
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
+                        let value = "";
+                        if (self.selectedTab() === 'company') {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        } else {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        }
                         arrPairObject.push({
-                            index: self.selectedTab() === 'company'? wPSet.order : wPSet.pairNo,
-                            value: self.selectedTab() === 'company'? wPSet.shiftCode : wPSet.workTypeCode
+                            index: self.selectedTab() === 'company' ? wPSet.order : wPSet.pairNo,
+                            value: value,
+                            shiftMasterCode: self.selectedTab() === 'company' ? wPSet.shiftCode : wPSet.workTypeCode
                         });
                     });
-                    
+
                     // screen JA must not set symbol for arrPairObject
                     // set tooltip
                     let arrTooltipClone = _.clone(arrPairShortName);

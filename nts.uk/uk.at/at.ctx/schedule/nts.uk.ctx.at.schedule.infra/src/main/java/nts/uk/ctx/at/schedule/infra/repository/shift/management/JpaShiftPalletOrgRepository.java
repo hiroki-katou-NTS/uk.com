@@ -20,10 +20,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiDtl;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
@@ -72,8 +68,8 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	private static final String FIND_BY_TARGETID = "SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE, b.POSITION, b.POSITION_NAME, c.POSITION_ORDER, c.SHIFT_MASTER_CD"
-			+ " FROM KSCMT_PALETTE_ORG a LEFT JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
-			+ " LEFT JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON a.TARGET_UNIT = c.TARGET_UNIT AND a.TARGET_ID = c.TARGET_ID AND a.PAGE = c.PAGE"
+			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
+			+ " JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 			+ " WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId'";
 
 	@AllArgsConstructor
@@ -155,16 +151,24 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	@Override
 	public void update(ShiftPalletsOrg shiftPalletsOrg) {
 
-		Optional<KscmtPaletteOrg> getEntity = this.queryProxy().find(
-				new KscmtPaletteOrgPk(AppContexts.user().companyId(), shiftPalletsOrg.getTargeOrg().getUnit().value,
-						shiftPalletsOrg.getTargeOrg().getWorkplaceId().isPresent()?
-								shiftPalletsOrg.getTargeOrg().getWorkplaceId().get():shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(),
+		Optional<KscmtPaletteOrg> getEntity = this
+				.queryProxy().find(
+						new KscmtPaletteOrgPk(AppContexts.user().companyId(),
+								shiftPalletsOrg.getTargeOrg().getUnit().value,
+								shiftPalletsOrg.getTargeOrg().getWorkplaceId().isPresent()
+										? shiftPalletsOrg.getTargeOrg().getWorkplaceId().get()
+										: shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(),
 								shiftPalletsOrg.getPage()),
-				KscmtPaletteOrg.class);
+						KscmtPaletteOrg.class);
 
 		if (getEntity.isPresent()) {
 			getEntity.get().toEntity(shiftPalletsOrg);
 			List<Integer> position = getEntity.get().orgCombis.stream().map(e -> e.pk.position)
+					.collect(Collectors.toList());
+			// delete position when right click choose 'delete'
+			List<Integer> positionToDelete = getEntity.get().orgCombis.stream().map(e -> e.pk.position)
+					.filter(item -> !shiftPalletsOrg.getShiftPallet().getCombinations().stream()
+							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
 					.collect(Collectors.toList());
 			List<ShiftPalletCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
@@ -172,41 +176,84 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			List<KscmtPaletteOrgCombi> combis = combinations.stream()
 					.map(i -> KscmtPaletteOrgCombi.fromOneDomain(i, getEntity.get().pk)).collect(Collectors.toList());
 			shiftPalletsOrg.getShiftPallet().getCombinations().stream().forEach(i -> {
-				shifutoparettos
-						.addAll(i
-								.getCombinations().stream().map(o -> new ShifutoparettoWorkPlace(
-										shiftPalletsOrg.getTargeOrg().getUnit().value,
-										shiftPalletsOrg.getTargeOrg().getWorkplaceId().isPresent()?
-												shiftPalletsOrg.getTargeOrg().getWorkplaceId().get():shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(),
-												shiftPalletsOrg.getPage(),
-										i.getPositionNumber(), o.getOrder(), o.getShiftCode().v()))
-								.collect(Collectors.toList()));
-				// shifutoparettos.add(index, element);
+				shifutoparettos.addAll(i.getCombinations().stream()
+						.map(o -> new ShifutoparettoWorkPlace(shiftPalletsOrg.getTargeOrg().getUnit().value,
+								shiftPalletsOrg.getTargeOrg().getWorkplaceId().isPresent()
+										? shiftPalletsOrg.getTargeOrg().getWorkplaceId().get()
+										: shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(),
+								shiftPalletsOrg.getPage(), i.getPositionNumber(), o.getOrder(), o.getShiftCode().v()))
+						.collect(Collectors.toList()));
 			});
 
-//			List<Combinations> combinationList = new ArrayList<>();
-//			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
-//				combinationList.addAll(i.getCombinations());
-//			});
-//			//List<String> shipCodes = new ArrayList<>();
 			List<ShifutoparettoWorkPlace> shifutoparettoss = new ArrayList<>();
-			Map<Integer, List<ShifutoparettoWorkPlace>> mapShifutoparetto = shifutoparettos.stream().collect(Collectors.groupingBy(ShifutoparettoWorkPlace::getPosition));
-						getEntity.get().orgCombis.stream().forEach(i -> {
-				if(mapShifutoparetto.containsKey(i.pk.position))
-				{
+			List<ShifutoparettoWorkPlace> shifutoparettoToDelete = new ArrayList<>();
+			Map<Integer, List<ShifutoparettoWorkPlace>> mapShifutoparetto = shifutoparettos.stream()
+					.collect(Collectors.groupingBy(ShifutoparettoWorkPlace::getPosition));
+			getEntity.get().orgCombis.stream().forEach(i -> {
+				if (mapShifutoparetto.containsKey(i.pk.position)) {
 					List<ShifutoparettoWorkPlace> shifutoparettoMap = mapShifutoparetto.get(i.pk.position);
-					List<Integer> shipCodeFilter = i.orgCombiDtls.stream().map(e -> e.pk.positionOrder).collect(Collectors.toList());
-					shifutoparettoss.addAll(shifutoparettoMap.stream().filter(o-> !shipCodeFilter.contains(o.positionOrder)).collect(Collectors.toList()));
+					List<Integer> shipCodeFilter = i.orgCombiDtls.stream().map(e -> e.pk.positionOrder)
+							.collect(Collectors.toList());
+					shifutoparettoss.addAll(shifutoparettoMap.stream()
+							.filter(o -> !shipCodeFilter.contains(o.positionOrder)).collect(Collectors.toList()));
+					// when click 'clear' button, check to delete
+					List<Integer> shipCodeFilterToDelete = shifutoparettoMap.stream().map(y -> y.positionOrder)
+							.collect(Collectors.toList());
+					shifutoparettoToDelete.addAll(
+							i.orgCombiDtls.stream().filter(x -> !shipCodeFilterToDelete.contains(x.pk.positionOrder))
+									.map(item -> new ShifutoparettoWorkPlace(i.pk.targetUnit, i.pk.targetId, i.pk.page,
+											i.pk.position, item.pk.positionOrder, null))
+									.collect(Collectors.toList()));
 				}
 			});
-			List<Integer> positions = getEntity.get().orgCombis.stream().map(i->i.pk.position).collect(Collectors.toList());
-			shifutoparettoss.addAll(shifutoparettos.stream().filter(i-> !positions.contains(i.position)).collect(Collectors.toList()));
-//			List<Shifutoparetto> combinationInsert = shifutoparettos.stream()
-//					.filter(i -> !shipCodes.contains(i.getShiftCode())).collect(Collectors.toList());
+			List<Integer> positions = getEntity.get().orgCombis.stream().map(i -> i.pk.position)
+					.collect(Collectors.toList());
+			shifutoparettoss.addAll(
+					shifutoparettos.stream().filter(i -> !positions.contains(i.position)).collect(Collectors.toList()));
+			positionToDelete.stream().forEach(i -> {
+				String combiDelete = "DELETE FROM KSCMT_PALETTE_ORG_COMBI WHERE CID = ? AND TARGET_UNIT = ? AND TARGET_ID = ? AND PAGE = ? AND POSITION = ? ";
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_ORG_COMBI_DTL WHERE CID = ? AND TARGET_UNIT = ? AND TARGET_ID = ? AND PAGE = ? AND POSITION = ? ";
+
+				try {
+					PreparedStatement ps1 = this.connection().prepareStatement(combiDelete);
+					ps1.setString(1, getEntity.get().pk.companyId);
+					ps1.setInt(2, getEntity.get().pk.targetUnit);
+					ps1.setString(3, getEntity.get().pk.targetId);
+					ps1.setInt(4, shiftPalletsOrg.getPage());
+					ps1.setInt(5, i);
+					ps1.executeUpdate();
+
+					PreparedStatement ps2 = this.connection().prepareStatement(dtlDelete);
+					ps2.setString(1, getEntity.get().pk.companyId);
+					ps2.setInt(2, getEntity.get().pk.targetUnit);
+					ps2.setString(3, getEntity.get().pk.targetId);
+					ps2.setInt(4, shiftPalletsOrg.getPage());
+					ps2.setInt(5, i);
+					ps2.executeUpdate();
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+			});
 			this.commandProxy().update(getEntity.get());
-			List<KscmtPaletteOrgCombiDtl> cmpCombiDtls = shifutoparettoss.stream()
-					.map(i -> KscmtPaletteOrgCombiDtl.fromOneDomain(i.getTargetUnit(), i.getTargetId(),i.getPage(),i.getPosition()
-							, i.getPositionOrder(), i.getShiftMasterCd())).collect(Collectors.toList());
+			List<KscmtPaletteOrgCombiDtl> cmpCombiDtls = shifutoparettoss
+					.stream().map(i -> KscmtPaletteOrgCombiDtl.fromOneDomain(i.getTargetUnit(), i.getTargetId(),
+							i.getPage(), i.getPosition(), i.getPositionOrder(), i.getShiftMasterCd()))
+					.collect(Collectors.toList());
+			if (!shifutoparettoToDelete.isEmpty()) {
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_ORG_COMBI_DTL WHERE TARGET_UNIT = ? AND TARGET_ID = ? AND PAGE = ? AND POSITION = ? AND POSITION_ORDER = ?";
+				shifutoparettoToDelete.stream().forEach(e -> {
+					try {
+						PreparedStatement ps = this.connection().prepareStatement(dtlDelete);
+						ps.setInt(1, e.getTargetUnit());
+						ps.setString(2, e.getTargetId());
+						ps.setInt(3, e.getPage());
+						ps.setInt(4, e.getPosition());
+						ps.setInt(5, e.getPositionOrder());
+						ps.executeUpdate();
+					} catch (Exception ex) {
+					}
+				});
+			}
 			if (!combis.isEmpty()) {
 				this.commandProxy().insertAll(combis);
 			}

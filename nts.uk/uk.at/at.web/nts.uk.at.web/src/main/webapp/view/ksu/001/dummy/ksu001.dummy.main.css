@@ -20,6 +20,9 @@
 #extable td, #extable td>* {
 	font-size: 10.5px;
 }
+div[aria-describedby^="ntsErrorDialog_"] {
+	z-index: 10005000;
+}
 
 .xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
 	{

@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
@@ -72,7 +74,9 @@ public class ShiftMasterFinder {
 			result.setWorkType(new WorkTypeDto(workTypeCd, I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"))));
 		}
 		
-		if(worktime.isPresent()) {
+		if(StringUtils.isEmpty(workTimeCd)) {
+			result.setWorkTime(new WorkTimeSettingDto("", ""));
+		} else if(worktime.isPresent()) {
 			result.setWorkTime(new WorkTimeSettingDto(worktime.get()));
 		} else {
 			result.setWorkTime(new WorkTimeSettingDto(workTimeCd, I18NText.getText("KSM015_28", workTimeCd, I18NText.getText("KSM015_29"))));

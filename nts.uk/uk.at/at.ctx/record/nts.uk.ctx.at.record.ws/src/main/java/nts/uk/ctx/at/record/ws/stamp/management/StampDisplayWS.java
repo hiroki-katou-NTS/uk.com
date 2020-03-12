@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.record.ws.stamp.management;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -15,9 +14,15 @@ import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.UpdateStampPageLayoutCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.management.UpdateStampSettingPersonCommandHandler;
 import nts.uk.ctx.at.record.app.find.stamp.management.StamDisplayFinder;
+import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampSettingPersonDto;
 
-@Path("at/record/stamp")
+/**
+ * 
+ * @author phongtq
+ *
+ */
+@Path("at/record/stamp/management")
 @Produces("application/json")
 public class StampDisplayWS extends WebService {
 	
@@ -38,10 +43,10 @@ public class StampDisplayWS extends WebService {
 	
 	@POST
 	@Path("getStampSetting")
-	public Optional<StampSettingPersonDto> getStampNumber() {
+	public StampSettingPersonDto getStampSetting() {
 		return this.finder.getStampSet();
 	}
-
+	
 	@POST
 	@Path("saveStampSetting")
 	public void save(AddStampSettingPersonCommand command) {
@@ -55,14 +60,26 @@ public class StampDisplayWS extends WebService {
 	}
 	
 	@POST
+	@Path("getStampPage/{pageNo}")
+	public StampPageLayoutDto getStampPage(@PathParam("pageNo") int pageNo) {
+		return this.finder.getStampPage(pageNo);
+	}
+	
+	@POST
+	@Path("getStampPageByCid")
+	public StampSettingPersonDto getStampPageByCid() {
+		return this.finder.getStampSet();
+	}
+	
+	@POST
 	@Path("saveStampPage")
-	public void save(StampPageLayoutCommand command) {
+	public void saveStampPage(StampPageLayoutCommand command) {
 		this.addStampPageHandler.handle(command);
 	}
 	
 	@POST
 	@Path("updateStampPage")
-	public void update(StampPageLayoutCommand command) {
+	public void updateStampPage(StampPageLayoutCommand command) {
 		this.updateStampPageHandler.handle(command);
 	}
 }

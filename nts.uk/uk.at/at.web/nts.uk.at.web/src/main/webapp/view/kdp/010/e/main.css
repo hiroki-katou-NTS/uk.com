@@ -1,0 +1,33 @@
+#basic-label, #imprint-leakage-label, #holiday-label, #overtime-label,
+	#basic-label-2, #highlight-label {
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+#highlight-radio-1 {
+	margin-left: 250px;
+}
+
+#basic-label-3 {
+	margin-left: 370px;
+}
+
+#imprint-leakage-radio-e {
+	margin-left: 2px;
+}
+
+#message-3, #message-2, #message-1 {
+	margin-left: 20px;
+}
+
+#third-color-picker {
+	margin-left: 10px;
+}
+
+#message-text-1, #message-text-2, #message-text-3 {
+	width: 300px;
+}
+
+.text-end{
+	margin-left: 257px;
+}

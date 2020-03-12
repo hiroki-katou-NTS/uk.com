@@ -86,7 +86,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	@AllArgsConstructor
 	private static class WorkInfoRequireImpl implements WorkInformation.Require {
 		
-		private static final String companyId = AppContexts.user().companyId();
+		private final String companyId = AppContexts.user().companyId();
 		
 		@Inject
 		private BasicScheduleService service;
@@ -151,7 +151,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	@AllArgsConstructor
 	private static class UpdateShiftMasterRequireImpl implements UpdateShiftMasterService.Require {
 
-		private static final String companyId = AppContexts.user().companyId();
+		private final String companyId = AppContexts.user().companyId();
 		
 		@Inject
 		private ShiftMasterRepository shiftMasterRepo;

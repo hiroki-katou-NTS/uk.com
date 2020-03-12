@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 
 /**
  * 打刻種類
@@ -20,7 +20,7 @@ public class StampType {
 	/** 外出区分 */
 	//外出理由 old
 	@Getter
-	private Optional<GoingOutReason> goOutArt;
+	private GoingOutReason goOutArt;
 	
 	/** 所定時刻セット区分 */
 	//勤務種類を半休に変更する 2 old
@@ -37,11 +37,11 @@ public class StampType {
 	@Getter
 	private ChangeCalArt changeCalArt;
 
-	public StampType(boolean changeHalfDay, Optional<GoingOutReason> goOutArt, SetPreClockArt setPreClockArt,
+	public StampType(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		super();
 		this.changeHalfDay = changeHalfDay;
-		this.goOutArt = goOutArt;
+		this.goOutArt = Optional.of(goOutArt).get() ;
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;

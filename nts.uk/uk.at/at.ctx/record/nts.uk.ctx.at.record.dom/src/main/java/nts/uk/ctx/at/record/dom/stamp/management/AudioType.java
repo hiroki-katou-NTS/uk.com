@@ -8,16 +8,22 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 public enum AudioType {
 	
 	/** なし */
-	NONE(0),
+	NONE(0, "なし", "AudioType_NONE"),
 
 	/** おはようございます */
-	GOOD_MORNIN(1),
+	GOOD_MORNING(1, "おはようございます", "AudioType_GOOD_MORNING"),
 
 	/** お疲れ様でした */
-	GOOD_JOB(2);
+	GOOD_JOB(2, "お疲れ様でした", "AudioType_GOOD_JOB");
 
 	/** The value. */
 	public int value;
+	
+	/** The name id. */
+	public  String nameId;
+
+	/** The description. */
+	public  String description;
 
 	/** The Constant values. */
 	private final static AudioType[] values = AudioType.values();
@@ -30,8 +36,10 @@ public enum AudioType {
 	 * @param description
 	 *            the description
 	 */
-	private AudioType(int value) {
+	private AudioType (int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
+		this.description = description;
 	}
 
 	/**

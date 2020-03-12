@@ -10,11 +10,14 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.stamp.management.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class AddStampSettingPersonCommand {
 	
-	private String companyId;
 
 	/** 打刻ボタンを抑制する */
 	private boolean buttonEmphasisArt;

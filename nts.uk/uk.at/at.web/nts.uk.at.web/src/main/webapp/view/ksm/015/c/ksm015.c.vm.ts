@@ -10,11 +10,13 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		shiftColumns: Array<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
-		forAttendent: KnockoutObservable<String>;
+		forAttendent: KnockoutObservable<Boolean>;
 		workplaceName: KnockoutObservable<String>;
+		isWorkplaceAlreadySetting: KnockoutObservable<Boolean>;
+
 		constructor() {
 			let self = this;
-			self.forAttendent = ko.observable('');
+			self.forAttendent = ko.observable(true);
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
 			self.workplaceName = ko.observable('');
@@ -40,6 +42,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.shiftItems = ko.observableArray([]);
 			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
 			self.selectedShiftMaster = ko.observableArray([]);
+			self.isWorkplaceAlreadySetting = ko.observable(false);
 
 			$('#tree-grid').ntsTreeComponent(self.treeGrid)
 				.done(() => {
@@ -60,6 +63,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 										data = _.sortBy(data, 'shiftMasterCode');
 										self.shiftItems(data);
 										self.selectedShiftMaster([]);
+										self.isWorkplaceAlreadySetting(data && data.length > 0);
 									});
 							}
 						}
@@ -75,8 +79,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.block.invisible();
 			service.startPage()
 				.done((data) => {
-					self.forAttendent(data.forAttendent);
-
+					self.forAttendent(!_.isNull(data.forAttendent));
 					if (data.alreadyConfigWorkplaces) {
 						let alreadySettings = []
 						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
@@ -96,24 +99,19 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
-			// if (self.shiftItems().length === 0) {
-			// 	nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-			// 	return;
-			// }
+
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE,
 				workplaceId: self.selectedWorkplaceId(),
 				shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			};
+
 			nts.uk.ui.block.grayout();
 			service.registerOrg(param)
 				.done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) === -1;
 					if (isNew) {
-						// let currents = self.alreadySettingList();
-						// currents.push({ workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true });
-						// self.alreadySettingList(currents);
 						self.reloadAlreadySetting();
 					}
 					self.selectedWorkplaceId.valueHasMutated();
@@ -135,7 +133,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
 					service.deleteOrg(param).done((data) => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 						self.selectedWorkplaceId.valueHasMutated();
 						nts.uk.ui.block.clear();
 						self.reloadAlreadySetting();
@@ -152,8 +150,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			if (this.selectedShiftMaster().length > 0) {
 				self.shiftItems(_.filter(self.shiftItems(), (val) => { return self.selectedShiftMaster().indexOf(val.shiftMasterCode) === -1 }));
 				self.selectedShiftMaster([]);
+			} else {
+				nts.uk.ui.dialog.info({ messageId: "Msg_85" });
 			}
-
 		}
 
 		public openDialogKDL044(): void {
@@ -207,13 +206,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				let lstSelection: any = nts.uk.ui.windows.getShared("CDL023Output");
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					let wkps = [];
-					let msg = '';
 					lstSelection.forEach((wp) => {
-						let dataWkp = _.find(flwps, wkp => wkp.id == wp);
 						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] });
-						if(dataWkp) {
-							msg += dataWkp.code + ' ' + dataWkp.name + ' ' + nts.uk.resource.getText('KSM015_26') + '<br>';
-						}
 					});
 					let param = {
 						targetUnit: TargetUnit.WORKPLACE,
@@ -222,7 +216,15 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						toWkps: wkps
 					}
 					service.copyOrg(param)
-						.done(() => {
+						.done((results) => {
+							let msg = '';
+							results.forEach((result) => {
+								let dataWkp = _.find(flwps, wkp => wkp.id == result.workplaceId);
+								if(dataWkp) {
+									let status = result.status ? nts.uk.resource.getText('KSM015_26') : nts.uk.resource.getText('KSM015_27');
+									msg += dataWkp.code + ' ' + dataWkp.name + ' ' + status + '<br>';
+								}
+							});
 							nts.uk.ui.dialog.info(msg);
 							self.reloadAlreadySetting();
 						});

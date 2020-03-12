@@ -1,0 +1,100 @@
+#button-del {
+	margin-left: 10px !important;
+}
+
+#button-cancel {
+	margin-left: -20px !important;
+}
+
+#combobox, #combobox1 {
+	margin-top: 2px;
+}
+
+#correc-label1 {
+	margin-top: 7px;
+}
+
+#combobox1 {
+	margin-left: -93px;
+	width: 124px;
+}
+
+#correc-text {
+	margin-left: 50px;
+	width: 70px;
+}
+
+#comment-text {
+	margin-left: -92px;
+}
+
+#right-area {
+	float: right;
+	margin-top: -60px;
+}
+
+#combobox {
+	width: 90px;
+}
+
+#first-color-picker {
+	margin-left: 5px;
+}
+
+#item-panel {
+	height:260px;
+	margin-top: 119px;
+}
+
+#button1, #button2 {
+	height: 120px;
+	width: 230px;
+}
+
+#button3, #button4, #button5, #button6 {
+	height: 60px;
+	width: 230px;
+	margin-top: 5px;
+}
+
+#button2, #button4, #button6 {
+	margin-left: 10px;
+	background-color: orange;
+}
+
+#button5, #button3, #button1 {
+	margin-left: 9px;
+	background-color: green;
+}
+
+#buttonx {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 5px;
+	background-color: green;
+}
+
+#buttonxxx {
+	width: 100px;
+	height: 100px;
+	margin-top: 20px;
+	margin-left: 5px;
+	background-color: burlywood;
+}
+
+#buttonx1 {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+	background-color: green;
+}
+
+#buttonxxx1 {
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+	margin-top: 20px;
+	background-color: burlywood;
+}

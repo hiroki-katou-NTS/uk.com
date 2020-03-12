@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.find.stamp.management;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -36,11 +35,11 @@ public class StampPageLayoutDto {
 	public static StampPageLayoutDto fromDomain(StampPageLayout pageLayout) {
 		StampPageCommentCommand stampPageComments = new StampPageCommentCommand(pageLayout.getStampPageComment().getPageComment().v(), pageLayout.getStampPageComment().getCommentColor().v());
 		List<ButtonSettingsCommand> lstButtonSets = pageLayout.getLstButtonSet().stream().map(x->{
-			ButtonNameSetCommand buttonNameSet = new ButtonNameSetCommand(x.getButtonDisSet().getButtonNameSet().getTextColor().v(), Optional.of(x.getButtonDisSet().getButtonNameSet().getButtonName().get().v()));
+			ButtonNameSetCommand buttonNameSet = new ButtonNameSetCommand(x.getButtonDisSet().getButtonNameSet().getTextColor().v(), x.getButtonDisSet().getButtonNameSet().getButtonName().v());
 			ButtonDisSetCommand buttonDisSet = new ButtonDisSetCommand(buttonNameSet, x.getButtonDisSet().getBackGroundColor().v());
 			
 			StampTypeCommand stampType = new StampTypeCommand(x.getButtonType().getStampType().isChangeHalfDay(),
-					Optional.of(x.getButtonType().getStampType().getGoOutArt().get().value),
+					x.getButtonType().getStampType().getGoOutArt().value,
 					x.getButtonType().getStampType().getSetPreClockArt().value,
 					x.getButtonType().getStampType().getChangeClockArt().value,
 					x.getButtonType().getStampType().getChangeCalArt().value);

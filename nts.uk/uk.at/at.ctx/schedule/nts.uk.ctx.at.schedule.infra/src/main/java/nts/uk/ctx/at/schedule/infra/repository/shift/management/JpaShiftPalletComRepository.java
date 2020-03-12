@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
@@ -49,8 +48,8 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		builderString.append("b.POSITION, b.POSITION_NAME,");
 		builderString.append("c.POSITION_ORDER, c.SHIFT_MASTER_CD");
 		builderString.append(
-				" FROM KSCMT_PALETTE_CMP a  JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
-		builderString.append(" JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
+				" FROM KSCMT_PALETTE_CMP a JOIN KSCMT_PALETTE_CMP_COMBI b ON a.CID = b.CID AND a.PAGE = b.PAGE ");
+		builderString.append("  JOIN KSCMT_PALETTE_CMP_COMBI_DTL c ON a.CID = c.CID AND a.PAGE = c.PAGE ");
 		SELECT = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -143,6 +142,11 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			getEntity.get().toEntity(shiftPalletsCom);
 			List<Integer> position = getEntity.get().cmpCombis.stream().map(e -> e.pk.position)
 					.collect(Collectors.toList());
+			// delete position when right click choose 'delete'
+			List<Integer> positionToDelete = getEntity.get().cmpCombis.stream().map(e -> e.pk.position)
+					.filter(item -> !shiftPalletsCom.getShiftPallet().getCombinations().stream()
+							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
+					.collect(Collectors.toList());
 			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
 			List<Shifutoparetto> shifutoparettos = new ArrayList<>();
@@ -154,34 +158,69 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 								.getCombinations().stream().map(o -> new Shifutoparetto(i.getPositionNumber(),
 										o.getOrder(), o.getShiftCode().v(), shiftPalletsCom.getPage()))
 								.collect(Collectors.toList()));
-				// shifutoparettos.add(index, element);
 			});
-
-//			List<Combinations> combinationList = new ArrayList<>();
-//			shiftPalletsCom.getShiftPallet().getCombinations().stream().forEach(i -> {
-//				combinationList.addAll(i.getCombinations());
-//			});
-//			//List<String> shipCodes = new ArrayList<>();
 			List<Shifutoparetto> shifutoparettoss = new ArrayList<>();
-			Map<Integer, List<Shifutoparetto>> mapShifutoparetto = shifutoparettos.stream().collect(Collectors.groupingBy(Shifutoparetto::getPositionNumber));
-						getEntity.get().cmpCombis.stream().forEach(i -> {
-				if(mapShifutoparetto.containsKey(i.pk.position))
-				{
+			List<Shifutoparetto> shifutoparettoToDelete = new ArrayList<>();
+			Map<Integer, List<Shifutoparetto>> mapShifutoparetto = shifutoparettos.stream()
+					.collect(Collectors.groupingBy(Shifutoparetto::getPositionNumber));
+			getEntity.get().cmpCombis.stream().forEach(i -> {
+				if (mapShifutoparetto.containsKey(i.pk.position)) {
 					List<Shifutoparetto> shifutoparettoMap = mapShifutoparetto.get(i.pk.position);
-					List<Integer> shipCodeFilter = i.cmpCombiDtls.stream().map(e -> e.pk.positionOrder).collect(Collectors.toList());
-					shifutoparettoss.addAll(shifutoparettoMap.stream().filter(o-> !shipCodeFilter.contains(o.order)).collect(Collectors.toList()));
+					List<Integer> shipCodeFilter = i.cmpCombiDtls.stream().map(e -> e.pk.positionOrder)
+							.collect(Collectors.toList());
+					shifutoparettoss.addAll(shifutoparettoMap.stream().filter(o -> !shipCodeFilter.contains(o.order))
+							.collect(Collectors.toList()));
+					// when click 'clear' button, check to delete
+					List<Integer> shipCodeFilterToDelete = shifutoparettoMap.stream().map(y -> y.order)
+							.collect(Collectors.toList());
+					shifutoparettoToDelete.addAll(i.cmpCombiDtls.stream()
+							.filter(x -> !shipCodeFilterToDelete.contains(x.pk.positionOrder))
+							.map(item -> new Shifutoparetto(i.pk.position, item.pk.positionOrder, null, i.pk.page))
+							.collect(Collectors.toList()));
 				}
 			});
-			List<Integer> positions = getEntity.get().cmpCombis.stream().map(i->i.pk.position).collect(Collectors.toList());
-			shifutoparettoss.addAll(shifutoparettos.stream().filter(i-> !positions.contains(i.positionNumber)).collect(Collectors.toList()));
-//			List<Shifutoparetto> combinationInsert = shifutoparettos.stream()
-//					.filter(i -> !shipCodes.contains(i.getShiftCode())).collect(Collectors.toList());
+
+			List<Integer> positions = getEntity.get().cmpCombis.stream().map(i -> i.pk.position)
+					.collect(Collectors.toList());
+			shifutoparettoss.addAll(shifutoparettos.stream().filter(i -> !positions.contains(i.positionNumber))
+					.collect(Collectors.toList()));
+			positionToDelete.stream().forEach(i -> {
+				String combiDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI WHERE CID = ? AND PAGE = ? AND POSITION = ? ";
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI_DTL WHERE CID = ? AND PAGE = ? AND POSITION = ? ";
+
+				try {
+					PreparedStatement ps1 = this.connection().prepareStatement(combiDelete);
+					ps1.setString(1, shiftPalletsCom.getCompanyId());
+					ps1.setInt(2, shiftPalletsCom.getPage());
+					ps1.setInt(3, i);
+					ps1.executeUpdate();
+
+					PreparedStatement ps2 = this.connection().prepareStatement(dtlDelete);
+					ps2.setString(1, shiftPalletsCom.getCompanyId());
+					ps2.setInt(2, shiftPalletsCom.getPage());
+					ps2.setInt(3, i);
+					ps2.executeUpdate();
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+			});
 			this.commandProxy().update(getEntity.get());
-//			if (!combis.isEmpty()) {
-//				this.commandProxy().insertAll(combis);
-//			}
-			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = shifutoparettoss.stream()
-					.map(i -> KscmtPaletteCmpCombiDtl.fromOneDomain(i.getPage(), i.getPositionNumber(),i.getOrder(),i.getShiftCode())).collect(Collectors.toList());
+			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = shifutoparettoss.stream().map(i -> KscmtPaletteCmpCombiDtl
+					.fromOneDomain(i.getPage(), i.getPositionNumber(), i.getOrder(), i.getShiftCode()))
+					.collect(Collectors.toList());
+			if (!shifutoparettoToDelete.isEmpty()) {
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI_DTL WHERE PAGE = ? AND POSITION = ? AND POSITION_ORDER = ?";
+				shifutoparettoToDelete.stream().forEach(e -> {
+					try {
+						PreparedStatement ps = this.connection().prepareStatement(dtlDelete);
+						ps.setInt(1, e.getPage());
+						ps.setInt(2, e.getPositionNumber());
+						ps.setInt(3, e.getOrder());
+						ps.executeUpdate();
+					} catch (Exception ex) {
+					}
+				});
+			}
 			if (!combis.isEmpty()) {
 				this.commandProxy().insertAll(combis);
 			}
@@ -250,7 +289,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 
 	@SneakyThrows
 	@Override
-	public void deleteByPage(String companyID, int page) {				
+	public void deleteByPage(String companyID, int page) {
 		String cmpDelete = "DELETE FROM KSCMT_PALETTE_CMP WHERE CID = ? AND PAGE = ?";
 		String combiDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI WHERE CID = ? AND PAGE = ?";
 		String dtlDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI_DTL WHERE CID = ? AND PAGE = ?";
@@ -258,12 +297,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 		ps1.setString(1, companyID);
 		ps1.setInt(2, page);
 		ps1.executeUpdate();
-		
+
 		PreparedStatement ps2 = this.connection().prepareStatement(combiDelete);
 		ps2.setString(1, companyID);
 		ps2.setInt(2, page);
 		ps2.executeUpdate();
-		
+
 		PreparedStatement ps3 = this.connection().prepareStatement(dtlDelete);
 		ps3.setString(1, companyID);
 		ps3.setInt(2, page);

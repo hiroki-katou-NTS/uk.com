@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.stamp.management.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 打刻画面の表示設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KRCCT_STAMP_DISPLAY")
-public class KrcctStampDisplay extends UkJpaEntity{
+public class KrcctStampDisplay extends ContractUkJpaEntity{
 
 	@EmbeddedId
     public KrcctStampDisplayPk pk;
