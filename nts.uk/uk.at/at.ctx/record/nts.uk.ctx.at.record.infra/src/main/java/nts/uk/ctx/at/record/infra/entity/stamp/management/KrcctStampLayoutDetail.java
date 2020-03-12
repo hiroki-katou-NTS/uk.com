@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;

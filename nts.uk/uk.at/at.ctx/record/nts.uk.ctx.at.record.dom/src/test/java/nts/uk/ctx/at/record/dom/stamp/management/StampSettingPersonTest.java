@@ -6,13 +6,11 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Button;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Comment;

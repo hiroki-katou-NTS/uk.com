@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.dom.stamp.management;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 
 /**
  * 

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.stamp.management;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;

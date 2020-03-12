@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 
 /**
  * 打刻種類
