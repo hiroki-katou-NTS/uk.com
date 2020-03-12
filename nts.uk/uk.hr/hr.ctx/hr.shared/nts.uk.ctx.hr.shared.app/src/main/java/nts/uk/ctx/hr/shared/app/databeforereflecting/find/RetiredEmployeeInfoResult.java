@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 @Setter
 @Getter
-public class DataBeforeReflectDto {
+public class RetiredEmployeeInfoResult {
 
 	// 履歴ID
 	public String historyId;
