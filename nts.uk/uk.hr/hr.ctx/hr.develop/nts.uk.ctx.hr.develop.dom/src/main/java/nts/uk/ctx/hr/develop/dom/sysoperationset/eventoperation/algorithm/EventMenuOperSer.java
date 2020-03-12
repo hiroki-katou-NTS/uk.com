@@ -126,4 +126,8 @@ public class EventMenuOperSer {
 		}
 		return new EventOprationSettingDto(true, listEventOper, listMenuOper);
 	}
+	
+	List<MenuOperation> getEventTypeUsesApproval(String cid){
+		return new ArrayList<>();
+	}
 }
