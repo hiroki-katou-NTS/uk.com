@@ -2,6 +2,7 @@ package nts.uk.ctx.hr.develop.app.sysoperationset.eventoperation.commandhandler;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,8 +47,11 @@ public class UpdateEventMenuOperation extends CommandHandler<JMM018Cmd>{
 		}
 		for(MenuOperationCmd cmd: listMenu){
 			// ドメインモデル[メニュー管理]を更新する - update domain menu operation
-			eventMenuOperSer.updateMenu(MenuOperation.createFromJavaType(cmd.getProgramId(), cmd.getUseMenu(), 
-															companyId, cmd.getUseApproval(), cmd.getUseNotice(), null, ccd));
+			Optional<MenuOperation> menuOperation = eventMenuOperSer.findMenuByKey(companyId, cmd.getProgramId());
+			if(menuOperation.isPresent()) {
+				eventMenuOperSer.updateMenu(MenuOperation.createFromJavaType(cmd.getProgramId(), cmd.getUseMenu(), 
+															companyId, cmd.getUseApproval(), cmd.getUseNotice(), menuOperation.get().isNoRankOrder()?1:0, ccd));
+			}
 		}
 	}
 
