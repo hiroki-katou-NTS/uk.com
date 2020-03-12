@@ -18,29 +18,51 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<table class="widget-table first">
-					<tr>
-						<td>#{i18n.getText('JCG004_A1_4')}</td>
+					<tr class="BgColor1">
+						<td >#{i18n.getText('JCG004_A1_4')}</td>
 						<td>
 							<com:ko-if bind="data1()">
-								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_6')}'"></a>
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_5')}'"></a>
 							</com:ko-if>
 							<com:ko-if bind="!data1()">
 								#{i18n.getText('JCG004_A1_6')}
 							</com:ko-if>
 						</td>
 					</tr>
-					<tr>
+					<tr class="BgColor2 tab2">
 						<td>#{i18n.getText('JCG004_A1_8')}</td>
 						<td></td>
 					</tr>
-					<tr data-bind="">
+					<tr class="BgColor2">
 						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
 						<td>
 							<com:ko-if bind="data1()">
-								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_6')}'"></a>
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
 							</com:ko-if>
 							<com:ko-if bind="!data1()">
-								#{i18n.getText('JCG004_A1_6')}
+								#{i18n.getText('JCG004_A1_13')}
+							</com:ko-if>
+						</td>
+					</tr>
+					<tr class="BgColor2">
+						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
+						<td>
+							<com:ko-if bind="data1()">
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
+							</com:ko-if>
+							<com:ko-if bind="!data1()">
+								#{i18n.getText('JCG004_A1_13')}
+							</com:ko-if>
+						</td>
+					</tr>
+					<tr class="BgColor2">
+						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
+						<td>
+							<com:ko-if bind="data1()">
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
+							</com:ko-if>
+							<com:ko-if bind="!data1()">
+								#{i18n.getText('JCG004_A1_13')}
 							</com:ko-if>
 						</td>
 					</tr>
