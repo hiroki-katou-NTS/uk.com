@@ -155,7 +155,7 @@ module nts.uk.at.view.kmk004.d {
                     treeType: 1, // workplace tree.
                     selectType: 3, // select first item.
                     maxRows: 12, // maximum rows can be displayed.
-                    selectedWorkplaceId: self.selectedWorkplaceId,
+                    selectedId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingWorkplaces,
@@ -303,8 +303,8 @@ module nts.uk.at.view.kmk004.d {
                     }
                     
                     // Continue to find in childs.
-                    if (data.childs.length > 0) {
-                        this.setWorkplaceCodeName(data.childs, workPlaceId);
+                    if (data.children.length > 0) {
+                        this.setWorkplaceCodeName(data.children, workPlaceId);
                     }
                 }
             }

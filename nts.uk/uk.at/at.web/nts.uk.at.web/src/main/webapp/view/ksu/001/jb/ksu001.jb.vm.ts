@@ -1,238 +1,478 @@
 module nts.uk.at.view.ksu001.jb.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import formatById = nts.uk.time.format.byId;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-        listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
-        listWorkTime: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkTime());
-        listTimeZoneForSearch: any[] = nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listTimeZoneForSearch;
-        selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
-        selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
-        time1: KnockoutObservable<string> = ko.observable('');
-        time2: KnockoutObservable<string> = ko.observable('');
-        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
-        nameWorkTimeType: KnockoutComputed<any>;
-        textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
-        arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
-        source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
-        dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
-        listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
-        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
-        nashi: string = getText("KSU001_98");
-        
+
+        selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
+        workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
+        workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode);
+        selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
+        workplaceId: string = getShared('dataForJB').workplaceId;
+        listWorkType: any[] = getShared('dataForJB').listWorkType;
+        listWorkTime: any[] = getShared('dataForJB').listWorkTime;
+        listPattern: KnockoutObservableArray<any> = ko.observableArray([]);
+        isVisibleWkpName: KnockoutObservable<boolean> = ko.observable(false);
+        groupName: KnockoutObservable<string> = ko.observable('');
+        note: KnockoutObservable<string> = ko.observable('');
+        selectedGroupUsageAtr: KnockoutObservable<number> = ko.observable(1);
+        contextMenu: Array<any>;
+        textName: KnockoutObservable<string> = ko.observable(null);
+        tooltip: KnockoutObservable<string> = ko.observable(null);
+        dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
+        source: KnockoutObservableArray<any> = ko.observableArray([]);
+        isDeleteEnable: KnockoutObservable<boolean> = ko.observable(true);
+        currentObject: KnockoutObservable<any> = ko.observable(null);
+        isAllowCheckChanged: boolean = false;
+        sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+        dataSource: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
+        groupUsageAtr: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 1, name: 'する' },
+            { code: 0, name: 'しない' }
+        ]);
+        textButtonArr: KnockoutObservableArray<any> = ko.observableArray([
+            { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0 },
+            { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1 },
+            { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2 },
+            { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3 },
+            { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4 },
+            { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5 },
+            { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6 },
+            { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7 },
+            { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8 },
+            { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9 },
+        ]);
+        listShiftWork: any[] = ko.observableArray([]);
+
         constructor() {
             let self = this;
-            self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
 
-            self.selectedWorkTypeCode.subscribe((newValue) => {
-                let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
-                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
-                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
-                    self.isEnableButton(false);
-                    self.isEnableClearSearchButton(false);
-                    self.selectedWorkTimeCode(self.nashi);
-                } else {
-                    self.isEnableButton(true);
-                }
+            self.contextMenu = [
+                { id: "openPopup", text: nts.uk.resource.getText("シフト組み合わせ選択"), action: self.openDialogJC.bind(self) },
+                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove.bind(self, event) }
+            ];
+
+            $("#test2").bind("getdatabutton", function(evt, data) {
+                self.textName(data.text);
+                self.tooltip(data.tooltip);
+                self.dataWorkPairSet(data.data);
             });
+            self.initShiftWork();
+        }
 
-            //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime, endTime, symbolName
-            self.nameWorkTimeType = ko.pureComputed(() => {
-                let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
-                let startTime, endTime: any;
+        init(): void {
+            let self = this;
 
-                let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
-                if (d) {
-                    workTypeName = d.abbreviationName;
-                    workTypeCode = d.workTypeCode;
-                } else {
-                    workTypeName = null;
-                    workTypeCode = null;
-                }
+            if (self.selectedTab() === 'company') {
+                self.isVisibleWkpName(false);
+                $.when(self.getDataComPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                    var test = _.map(data, "groupName")
 
-                let workTimeCd: string = null;
-                if (self.selectedWorkTimeCode()) {
-                    workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
-                } else {
-                    workTimeCd = self.selectedWorkTimeCode()
-                }
 
-                // if workTypeCode is not required( state = 2) worktime is needless, something relate to workTime will be disable
-                // workTimeName, workTimeCode is null, startTime,endTime is ''
-                let stateWorkTypeCd = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', self.selectedWorkTypeCode()]);
-                if (stateWorkTypeCd && stateWorkTypeCd.state == 2) {
-                    workTimeName = null;
-                    workTimeCode = null;
-                    startTime = '';
-                    endTime = '';
-                } else {
-                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
-                    if (c) {
-                        workTimeName = c.abName;
-                        workTimeCode = _.isEmpty(c.workTimeCode) ? null : c.workTimeCode;
-                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
-                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
-                    } else {
-                        workTimeName = null;
-                        workTimeCode = null;
-                        startTime = '';
-                        endTime = '';
-                    }
-                }
+                });
+            } else {
+                self.isVisibleWkpName(true);
+                $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                    self.workplaceName();
+                    // nts.uk.ui.windows.getSelf().setSize(400, 845);
+                });
+            }
+        }
 
-                return {
-                    workTypeCode: workTypeCode,
-                    workTypeName: workTypeName,
-                    workTimeCode: workTimeCode,
-                    workTimeName: workTimeName,
-                    startTime: startTime,
-                    endTime: endTime,
-                    symbolName: null
-                };
-            });
+        /* lay Shift Code master tuwf sever */
+        initShiftWork() {
+            let self = this;
 
-            for (let i = 0; i < self.arrTooltip.length; i++) {
-                $($("#table-date td")[i]).html(self.arrTooltip[i]);
-                self.dataSource().push({ index: i + 1, value: self.arrTooltip[i], data: self.source()[i].data });
+            let taisho = {
+                targetUnit: 0,
+                workplaceId: '',
+                workplaceGroupId: ''
+            }
+            if (self.selectedTab == 'company') {
+                taisho.targetUnit = null;
+                taisho.workplaceId = null;
+                taisho.workplaceGroupId = null;
+            }
+            if (self.selectedTab == 'workplace') {
+                taisho.workplaceId = self.workplaceId;
+                taisho.targetUnit = 0
+            }
+            if (self.selectedTab == 'groupworkplace') {
+                taisho.workplaceId = '';
             }
 
-            /**
-             * handle when click/ctr+click cell table
-             * get workTypeName/workTimeName paste to cell
-             * push data to dataSource
-             */
-            $("#table-date td").on('click', function(event) {
-                let nameWTypeWTime: string = self.nameWorkTimeType().workTimeName ?
-                    self.nameWorkTimeType().workTypeName + '/' + self.nameWorkTimeType().workTimeName : self.nameWorkTimeType().workTypeName;
-
-                if (event.ctrlKey) {
-                    $(this.parentElement.children).html(nameWTypeWTime);
-                    let arrDate = _.map($(this.parentElement).prev().children(), (x) => { return +x.innerHTML });
-                    _.each(arrDate, (date) => {
-                        _.remove(self.dataSource(), { index: date });
-                        self.dataSource().push({ index: date, value: nameWTypeWTime, data: self.nameWorkTimeType() });
-                    });
-                } else {
-                    $(this).html(nameWTypeWTime);
-                    let index = +$(this).parent().prev().children()[$(this).index()].innerHTML;
-                    _.remove(self.dataSource(), { index: index });
-                    self.dataSource().push({ index: index, value: nameWTypeWTime, data: self.nameWorkTimeType() });
-                }
+            service.getShiftMasterWorkInfo(taisho).done((data) => {
+                self.listShiftWork = data;
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
             });
         }
 
         /**
-         * Clear data in table
+         * set selectedLinkButton
+         * check changed of data to save or not
+         * handle click button
          */
-        clearData(): void {
-            let self = this;
-            $("#table-date td").html('');
-            self.dataSource([]);
+        clickLinkButton(element?: any, param?: any): void {
+            $('input#textName').focus();
+            let self = this, index: number = param();
+
+            self.selectedLinkButton(index);
+            //             if (self.isAllowCheckChanged && self.isChanged()) {
+            //                 nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+            //                     $.when(self.saveData()).done(() => {
+            //                         self.handleClickButton(index);
+            //                     });
+            //                 }).ifNo(() => {
+            //                     self.handleClickButton(index);
+            //                 });
+            //             } else {
+            //                 self.handleClickButton(index);
+            //            } 
+            self.handleClickButton(index);
+            self.isAllowCheckChanged = true;
         }
 
         /**
-         * decision
+         * link button has color gray when clicked
+         * set data for screen
          */
+        handleClickButton(index): void {
+            let self = this;
+            //set enable/disable delete button
+            self.isDeleteEnable(_.find(self.listPattern(), ['groupNo', index + 1]));
+            nts.uk.ui.errors.clearAll();
+            _.find($('#group-link-button-ja a.hyperlink.color-gray'), (a) => {
+                $(a).removeClass('color-gray');
+            });
+            $($('a.hyperlink')[index]).addClass('color-gray');
+            let pattern = _.find(self.listPattern(), ['groupNo', index + 1]);
+            self.groupName(pattern ? pattern.groupName : null);
+            self.selectedGroupUsageAtr(pattern ? pattern.groupUsageAtr : 1);
+            self.note(pattern ? pattern.note : null);
+            self.source(self.dataSource()[index] || self.sourceEmpty);
+            self.currentObject({
+                groupNo: index + 1,
+                groupName: self.groupName(),
+                selectedGroupUsageAtr: self.selectedGroupUsageAtr(),
+                note: self.note(),
+                source: self.source()
+            });
+        }
+
+        openPopup(button): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let positionButton = $(button).data().idx;
+            let dt = self.source()[positionButton];
+            $("#test2").trigger("getdatabutton", { text: dt.text, tooltip: dt.tooltip, data: dt.data });
+            $("#popup-area").css('visibility', 'visible');
+            let buttonWidth = button.outerWidth(true) - 30;
+            $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
+            $("#test2").bind("namechanged", function(evt, data) {
+                $("#test2").unbind("namechanged");
+                if (!nts.uk.util.isNullOrUndefined(data)) {
+                    dfd.resolve(data);
+                } else {
+                    dfd.resolve(button.parent().data("cell-data"));
+                }
+            });
+            return dfd.promise();
+        }
+
         decision(): void {
             let self = this;
-            if (self.dataSource().length == 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_510" });
-                return;
-            }
-            // sort dataSoucre (tooltip) ASC
-            let dataSourceOrder = _.orderBy(self.dataSource(), ['index'], ['asc']);
-            let arrTooltip = _.map(dataSourceOrder, (data) => {
-                return '[' + data.value + ']';
-            });
-            let arrTooltipClone = _.clone(arrTooltip);
-
-            for (let i = 7; i < arrTooltipClone.length; i += 7) {
-                arrTooltip.splice(i, 0, 'lb');
-                i++;
-            }
-
-            let tooltip: string = arrTooltip.join('→');
-            tooltip = tooltip.replace(/→lb/g, '\n');
-            // sap xep cho mang lien mach
-            let index = 0;
-            let arrData = _.map(dataSourceOrder, (dataS) => {
-                index++;
-                return {
-                    index: index,
-                    data: dataS.data
-                };
-            });
-
-            setShared("dataFromJB", {
-                text: self.textName(),
-                tooltip: tooltip,
-                data: arrData
-            });
-            nts.uk.ui.windows.close();
+            $("#popup-area").css('visibility', 'hidden');
+            $("#test2").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip(), data: self.dataWorkPairSet() });
         }
 
-        /**
-         * Close dialog
-         */
-        closeDialog(): void {
-            nts.uk.ui.windows.close();
+        closePopup(): void {
+            nts.uk.ui.errors.clearAll()
+            $("#popup-area").css('visibility', 'hidden');
+            $("#test2").trigger("namechanged", undefined);
         }
 
-        search(): void {
+        /** Clear all data of button table */
+        clear() {
             let self = this;
-            let listWorkTimeSearch: any[] = [];
-            let arrTmp: any[] = [];
-            self.isEnableClearSearchButton(true);
-            if (self.time1() === '' && self.time2() === '') {
-                alertError({ messageId: "Msg_53" });
-                self.isEnableClearSearchButton(false);
-                self.clearSearch();
-                return;
-            }
-            if (self.time2() !== '' && self.time1() > self.time2()) {
-                alertError({ messageId: "Msg_54" });
-                self.clearSearch();
-                return;
-            }
+            $("#test2").ntsButtonTable("dataSource", []);
+            self.source([]);
+        }
+
+        closeDialog(): void {
+            let self = this;
+            setShared('dataFromJA', {
+                selectedLinkButton: self.selectedLinkButton()
+            });
+            nts.uk.ui.windows.close();
+        }
+
+        openDialogJC(evt, data): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            self.textName(data ? data.text : null);
+            self.tooltip(data ? data.tooltip : null);
+
+            setShared("dataForJC", {
+                text: self.textName(),
+                data: data ? data.data : null,
+                textDecision: nts.uk.resource.getText("KSU001_923"),
+                listCheckNeededOfWorkTime: getShared("dataForJB").listCheckNeededOfWorkTime,
+                selectedTab: getShared("dataForJB").selectedTab,
+                workplaceId: getShared('dataForJB').workplaceId
+            });
+
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/jc/index.xhtml").onClosed(() => {
+                let dataFromJB = getShared("dataFromJB");
+                if (dataFromJB) {
+                    self.textName(dataFromJB ? dataFromJB.text : self.textName());
+                    self.tooltip(dataFromJB ? dataFromJB.tooltip : self.tooltip());
+
+                    dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromJB.data });
+                }
+            });
+
+            return dfd.promise();
+        }
+
+        saveData(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            self.listWorkTimeComboBox([]);
-            
-            if(self.time2() === ''){
-               listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'startTime' : self.time1(), 'useAtr' : 1});
-            } else if(self.time1() === ''){
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'endTime' : self.time2(), 'useAtr' : 1});
-            } else {
-                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, { 'startTime': self.time1(), 'endTime': self.time2(), 'useAtr': 1});
-            }
-            
-            if (listWorkTimeSearch.length <= 0) {
+            //check soucre null or empty
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
-            _.each(listWorkTimeSearch, (x) => {
-                arrTmp.push(_.find(self.listWorkTime(), { 'workTimeCode': x.workTimeCode }));
+            let isArrEmpty: boolean = true;
+            _.map(self.source(), (item) => {
+                if (!_.isEmpty(item)) {
+                    isArrEmpty = false;
+                    return;
+                };
             });
-            
-            self.listWorkTimeComboBox(arrTmp);
-            
-            $('#combo-box2').focus();
+
+            if (self.selectedGroupUsageAtr() == 0 && isArrEmpty) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
+                dfd.resolve();
+                return;
+            }
+            //if data is not changed, not save
+            if (!self.isChanged()) {
+                return;
+            }
+
+            nts.uk.ui.block.grayout();
+            let listInsertPatternItemCommand = [];
+            for (let i = 0; i < self.source().length; i++) {
+                if (!_.isEmpty(self.source()[i])) {
+                    let listInsertWorkPairSetCommand = [];
+                    let j = 1;
+                    _.each(self.source()[i].data, (dt) => {
+                        listInsertWorkPairSetCommand.push({
+                            pairNo: j,
+                            shiftCode: dt.shiftMasterCode == null ? dt.data.shiftMasterCode : dt.shiftMasterCode
+                        });
+                        j++;
+                    });
+
+                    listInsertPatternItemCommand.push({
+                        patternNo: i + 1,
+                        patternName: self.source()[i].text,
+                        listInsertWorkPairSetCommand: listInsertWorkPairSetCommand
+                    });
+                }
+            }
+
+            let obj = {
+                workplaceId: self.workplaceId,
+                groupNo: self.currentObject().groupNo,
+                groupName: self.groupName(),
+                groupUsageAtr: self.selectedGroupUsageAtr(),
+                note: self.note(),
+                listInsertPatternItemCommand: listInsertPatternItemCommand
+            }
+            if (obj.listInsertPatternItemCommand.length == 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
+                nts.uk.ui.block.clear();
+            } else {
+                service.registerWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.isAllowCheckChanged = false;
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(true);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            return dfd.promise();
         }
 
-        clearSearch(): void {
+        deletePatternItem(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let obj = {
+                    groupNo: self.selectedLinkButton() + 1,
+                    workplaceId: self.workplaceId
+                }
+
+                service.deleteWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(false);
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+            }).ifNo(() => {
+                dfd.resolve();
+                return;
+            });
+
+
+            return dfd.promise();
+        }
+
+        handleAfterChangeData(): void {
             let self = this;
-            self.isEnableClearSearchButton(false);
-            self.listWorkTimeComboBox([]);
-            self.listWorkTimeComboBox(self.listWorkTime());
-            self.time1('');
-            self.time2('');
-            nts.uk.ui.errors.clearAll();
+
+            if (self.selectedTab() == 'company') {
+                $.when(self.getDataComPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            } else {
+                $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            }
+        }
+
+        /** remove data of button table */
+        remove(data: any, event: any): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+
+            //get page
+            //self.selectedLinkButton();
+            //get row-colum
+            //Number($(event)[0].dataset.idx);
+            self.dataSource()[self.selectedLinkButton()].splice(Number($(event)[0].dataset.idx), 1);
+            dfd.resolve();
+
+            return dfd.promise();
+        }
+
+        /**
+         * check data is changed or not
+         * return true if data is changed
+         * return false if data is not changed
+         */
+        isChanged(): boolean {
+            let self = this;
+            if (self.currentObject().groupName == self.groupName()
+                && self.currentObject().selectedGroupUsageAtr == self.selectedGroupUsageAtr()
+                && self.currentObject().note == self.note()
+                && _.isEqual(self.currentObject().source, self.source())) {
+                return false;
+            }
+            return true;
+        }
+
+        /** get data form COM_PATTERN */
+        getDataComPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataComPattern().done((data) => {
+                self.listPattern(data);
+                self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /** get data form WKP_PATTERN */
+        getDataWkpPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataWkpPattern(self.workplaceId).done((data) => {
+                self.listPattern(data);
+                self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        handleAfterGetData(listPattern: any[]): any {
+            let self = this;
+            // set default for dataSource and textButtonArr 
+            self.dataSource([null, null, null, null, null, null, null, null, null, null]);
+            self.textButtonArr([
+                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
+            ]);
+
+            for (let i = 0; i < listPattern.length; i++) {
+                let source: any[] = _.clone(self.sourceEmpty);
+                // Change text of linkbutton
+                self.textButtonArr()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+                // Get data for dataSource
+                _.each(listPattern[i].patternItem, (pattItem) => {
+                    let text = pattItem.patternName;
+                    let arrPairShortName = [], arrPairObject = [];
+                    _.forEach(pattItem.workPairSet, (wPSet) => {
+                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                        //                            : arrPairSt.workTypeCode + ']');
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
+                        let value = "";
+                        if (self.selectedTab() === 'company') {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        } else {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        }
+                        arrPairObject.push({
+                            index: self.selectedTab() === 'company' ? wPSet.order : wPSet.pairNo,
+                            value: value,
+                            shiftMasterCode: self.selectedTab() === 'company' ? wPSet.shiftCode : wPSet.workTypeCode
+                        });
+                    });
+
+                    // screen JA must not set symbol for arrPairObject
+                    // set tooltip
+                    let arrTooltipClone = _.clone(arrPairShortName);
+                    for (let i = 7; i < arrTooltipClone.length; i += 7) {
+                        arrPairShortName.splice(i, 0, 'lb');
+                        i++;
+                    }
+                    let tooltip: string = arrPairShortName.join('→');
+                    tooltip = tooltip.replace(/→lb/g, '\n');
+                    // Insert data to source
+                    source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
+                });
+                self.dataSource().splice(listPattern[i].groupNo - 1, 1, source);
+            }
         }
     }
 }

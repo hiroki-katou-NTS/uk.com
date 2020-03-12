@@ -8,6 +8,7 @@ module jhn001.f.vm {
     import showDialog = nts.uk.ui.dialog;
     import permision = service.getCurrentEmpPermision;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -115,21 +116,21 @@ module jhn001.f.vm {
             }
 
             if(row[0].fileId){
-                console.log("đã có file rồi.Không upload được nữa");
+                console.log("Đã có file rồi, không upload được nữa, xóa file để upload nhé.");
                 return;
             }
 
             // check file size.
             var maxSize = 10;
             if (maxSize && fileInfo.originalSize > (maxSize * 1048576)) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Msgj_28', messageParams: [maxSize] });
+                nts.uk.ui.dialog.alertError({ messageId: 'MsgJ_70', messageParams: [maxSize] });
                 return;
             }
 
             // check tổng size
             let totalSize = self.totalFileSize + fileInfo.originalSize;
             if (totalSize > (maxSize * 1048576)) {
-                nts.uk.ui.dialog.alertError({ messageId: 'Msgj_28', messageParams: [maxSize] });
+                nts.uk.ui.dialog.alertError({ messageId: 'MsgJ_28', messageParams: [maxSize] });
                 return;
             }
             
@@ -170,8 +171,9 @@ module jhn001.f.vm {
                     unblock();
                     dfd.resolve();
                 });
-            }).fail((mes) => {
+            }).fail((err) => {
                 console.log('Add file fail');
+                error({ messageId: err.messageId });
                 dfd.reject();
                 unblock();
             });
@@ -250,7 +252,7 @@ module jhn001.f.vm {
                         };
                         
                         service.deleteDocument(command).done(() => {
-                            info({ messageId: "Msgj_40" }).then(function() {
+                            info({ messageId: "MsgJ_40" }).then(function() {
                                 __viewContext['viewModel'].getDataAfterPushOrRemoveFile(self.reportId).done(() => {
                                     console.log('Xoa file done');
                                     unblock();

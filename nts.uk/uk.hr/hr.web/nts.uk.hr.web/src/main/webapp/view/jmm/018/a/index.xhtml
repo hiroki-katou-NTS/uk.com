@@ -24,6 +24,12 @@
 			<com:stylefile path="../b-b/jmm018.b-b.style.css" />
 			<com:scriptfile path="../b-b/jmm018.b-b.service.js" />
 			<com:scriptfile path="../b-b/jmm018.b-b.vm.js" />
+			
+			<!-- Tab 3 -->
+			<com:stylefile path="../z/jmm018.z.style.css" />
+			<com:scriptfile path="../z/jmm018.z.service.js" />
+			<com:scriptfile path="../z/jmm018.z.vm.js" />
+			
 			<com:EnumScript>
 				nts.uk.ctx.hr.develop.dom.announcement.mandatoryretirement.enums.ReachedAgeTerm
 				nts.uk.ctx.hr.shared.dom.enumeration.DateRule
@@ -46,8 +52,10 @@
 			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabB"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('JMM018_A1_2')}</a></li>
-				<li data-bind="click: onSelectTab2"><a tabindex="3"
+				<li data-bind="click: onSelectTab2"><a tabindex="2"
 					href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('JMM018_A1_3')}</a></li>
+				<li data-bind="click: onSelectTab3"><a tabindex="3"
+					href="#tabpanel-3" role="tab-navigator" >#{i18n.getText('JMM018_Z')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -58,7 +66,9 @@
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenModelTab2()">
 				<ui:include src="../b-b/index.xhtml" />
 			</div>
-			
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenModelTab3()">
+				<ui:include src="../z/index.xhtml" />
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

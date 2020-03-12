@@ -86,6 +86,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		String startDatePrevious = objUpdateItem.getStartDatePrevious();
 		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous
+		int sysAtr = objUpdateItem.getSysAtr();
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and EmployRootAtr
 			Integer employRootAtr = updateItem.getEmployRootAtr();
@@ -93,7 +94,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
 			
-			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id);
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id, sysAtr);
 			Optional<CompanyApprovalRoot> comAppRootDb = repoCom.getComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 			if(!comAppRootDb.isPresent()){
 				continue;
@@ -148,12 +149,12 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		}
 		if(objUpdateItem.getCheckMode() == 0){
 			// xu li mode chung
-			List<CompanyApprovalRoot> lstComByApp = repoCom.getComAppRootLast(companyId, eDatePrevious);
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComAppRootLast(companyId, eDatePrevious, sysAtr);
 			
 				if(objUpdateItem.getEditOrDelete( )== EDIT){
 					for(CompanyApprovalRoot appRoot : lstComByApp){
 						//history previous 
-						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(appRoot, EndDateDelete);
+						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(appRoot, endDateUpdate);
 						//update history previous
 						repoCom.updateComApprovalRoot(comAppRootUpdate);
 					}
@@ -171,7 +172,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			String value = lstHist.get(0).getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
-			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id);
+			List<CompanyApprovalRoot> lstComByApp = repoCom.getComApprovalRootByType(companyId, valueI, employRootAtr, id, sysAtr);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstComByApp.isEmpty() && lstComByApp.size() > 1){
 					//history previous 
@@ -211,13 +212,15 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		String startDatePrevious = objUpdateItem.getStartDatePrevious();
 		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous
+		int sysAtr = objUpdateItem.getSysAtr();
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//find history by type and 
 			Integer employRootAtr = updateItem.getEmployRootAtr();
 			String value = updateItem.getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 ? value : "";
-			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id);
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, 
+					objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id, sysAtr);
 			//find history current
 			Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
 			if(!wpAppRootDb.isPresent()){
@@ -276,7 +279,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		}
 		if(objUpdateItem.getCheckMode() == 0){
 			// xu li mode chung
-			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpAppRootLast(companyId, objUpdateItem.getWorkplaceId(), eDatePrevious);
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpAppRootLast(companyId,
+					objUpdateItem.getWorkplaceId(), eDatePrevious, sysAtr);
 			
 				if(objUpdateItem.getEditOrDelete( )== EDIT){
 					for(WorkplaceApprovalRoot appRoot : lstWpByApp){
@@ -299,7 +303,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			String value = lstHist.get(0).getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
-			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId, objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id);
+			List<WorkplaceApprovalRoot> lstWpByApp = repoWorkplace.getWpApprovalRootByType(companyId,
+					objUpdateItem.getWorkplaceId(), valueI, employRootAtr, id, sysAtr);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstWpByApp.isEmpty() && lstWpByApp.size() > 1){
 					//history previous 
@@ -340,6 +345,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous
 		String employeeId = objUpdateItem.getEmployeeId();
 		GeneralDate dateLastest = null;
+		int sysAtr = objUpdateItem.getSysAtr();
 		//ドメインモデル「就業承認ルート履歴」を取得する
 		if(objUpdateItem.getEditOrDelete() == EDIT && objUpdateItem.getCheckMode() == COMMON){//07.履歴編集を実行する(まとめて設定モード)
 			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestCom(companyId, employeeId);
@@ -350,7 +356,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			String value = objUpdateItem.getLstUpdate().get(0).getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 ? value : "";
-			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employRootAtr, valueI, id);
+			Optional<PersonApprovalRoot> histL = repoPerson.getHistLastestPri(companyId, employeeId, employRootAtr, valueI, id, sysAtr);
 			if(histL.isPresent()) dateLastest = histL.get().getApprRoot().getHistoryItems().get(0).getDatePeriod().start();
 		}
 		for (UpdateHistoryDto updateItem : lstHist) {
@@ -359,7 +365,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			String value = updateItem.getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 ? value : "";
-			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), valueI, employRootAtr, id);
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(),
+					valueI, employRootAtr, id, sysAtr);
 			//find history current
 			Optional<PersonApprovalRoot> psAppRootDb = repoPerson.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());
 			if(!psAppRootDb.isPresent()){
@@ -420,7 +427,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		//xu li update hist old
 		if(objUpdateItem.getCheckMode() == 0){
 			// xu li mode chung
-			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsAppRootLastest(companyId,  objUpdateItem.getEmployeeId(), eDatePrevious);
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsAppRootLastest(companyId,
+					objUpdateItem.getEmployeeId(), eDatePrevious, sysAtr);
 			
 				if(objUpdateItem.getEditOrDelete( )== EDIT){
 					for(PersonApprovalRoot appRoot : lstPsByApp){
@@ -442,7 +450,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			String value = lstHist.get(0).getApplicationType();
 			Integer valueI = employRootAtr != 5 && employRootAtr != 0 ? Integer.valueOf(value) : 0;
 			String id = employRootAtr == 5 || employRootAtr == 4 ? value : "";
-			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(), valueI, employRootAtr, id);
+			List<PersonApprovalRoot> lstPsByApp = repoPerson.getPsApprovalRootByType(companyId, objUpdateItem.getEmployeeId(),
+					valueI, employRootAtr, id, sysAtr);
 			if(objUpdateItem.getEditOrDelete( )== EDIT){
 				if(!lstPsByApp.isEmpty() && lstPsByApp.size() > 1){
 					//history previous 

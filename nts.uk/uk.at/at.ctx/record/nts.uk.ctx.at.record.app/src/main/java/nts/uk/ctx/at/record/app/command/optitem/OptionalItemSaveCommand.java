@@ -55,6 +55,8 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
 	/** The unit. */
 	private String unit;
+	
+	private String langId;
 
 	/*
 	 * (non-Javadoc)

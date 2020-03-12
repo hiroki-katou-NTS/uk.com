@@ -1,0 +1,387 @@
+#tab-1, #tab-2 {
+	height: 525px;
+}
+
+#top-area *, #contain-view * {
+	font-size: 11.5px !important;
+	vertical-align: middle;
+}
+
+#master-wrapper {
+	overflow-x: hidden;
+}
+
+/* #extable {
+	float: left;
+	top: 2px;
+	left: 80px;
+} */
+
+#extable td, #extable td>* {
+	font-size: 10.5px;
+}
+div[aria-describedby^="ntsErrorDialog_"] {
+	z-index: 10005000;
+}
+
+.xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
+	{
+	text-align: center;
+}
+
+.ex-header-vert-sum tr:NTH-CHILD(2) {
+	font-size: 90%;
+}
+
+.ml-2 {
+	margin-left: 2px;
+}
+
+table th, table td {
+	padding: 5px 5px;
+	/** border: 1px solid #ccc; */
+}
+
+#functions-area>button {
+	margin-left: 5px;
+}
+
+.setting {
+	margin-left: 215px !important;
+}
+
+.hope {
+	margin-left: 145px !important;
+}
+
+.generally, .simulation, .capture {
+	width: 95px;
+}
+
+.simulation, .capture {
+	margin-top: 15px;
+}
+
+.execution-popup3 {
+	margin-right: 7px;
+	float: right;
+	margin-top: 23px;
+	width: 80px;
+}
+
+.substitute-holiday, .pause, .annual-holiday, .yearly-reserved {
+	width: 75px;
+}
+
+.break {
+	margin-left: 80px;
+}
+
+#work-setting, #company-setting {
+	margin-left: 10px;
+}
+
+#work-setting button, #company-setting button {
+	width: 109px;
+	margin-bottom: 10px;
+}
+
+#top-area {
+	float: left;
+	width: 100%;
+	border-bottom: 1px solid #B1B1B1;
+	margin-left: 80px;
+	margin-top: 3px;
+	padding-bottom: 2px;
+	border-bottom: 1px solid #B1B1B1;
+	padding-bottom: 3px;
+}
+
+#oViewModel, #qViewModel {
+	float: left;
+	width: 94%
+}
+
+#qViewModel {
+	margin-top: 3px;
+	height: 120px
+}
+
+#group-bt {
+	float: left;
+	width: 6%;
+}
+
+.setting-button {
+	background: url(../image/image008.png) no-repeat center;
+}
+
+.color-button {
+	background: url(../image/image099.png) no-repeat center;
+}
+
+.size-image-button1 {
+	background-size: 20px 20px !important;
+	height: 24px !important;
+	width: 24px;
+}
+
+.size-image-button2 {
+	background-size: 24px 24px !important;
+	height: 27px !important;;
+	width: 27px;
+}
+
+.icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
+	width: 12px !important;
+}
+
+#button-top {
+	margin-left: 22px;
+}
+
+#button-bot {
+	margin: 15px;
+	margin-left: 22px;
+}
+
+#multi-list_container {
+	margin-left: 7px !important;
+	margin-top: 16px !important;
+}
+
+#popup-area4 {
+	width: 307px !important;
+}
+
+#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
+	#popup-area7, #popup-area8, #popup-area9 {
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+}
+
+#popup-area8 {
+	z-index: 100;
+	top: 100px !important;
+}
+
+#multi-list {
+	height: initial !important;
+}
+
+#generally-created, #simulation-explanation,
+	#capture-explanationgenerally-created {
+	margin-left: 10px;
+}
+
+#alarm-check-explanation {
+	margin-left: 7px;
+}
+
+#popup-area6 {
+	width: 390px
+}
+
+#popup6-radioBox {
+	width: 120px;
+}
+
+#popup6-radioBox>.ntsRadioBox, .div-popup {
+	margin-bottom: 10px
+}
+
+#popup-area7>div {
+	margin-top: 15px
+}
+
+#popup-area7>div>button {
+	margin-left: 70px
+}
+
+#popup-area9 {
+	width: 470px
+}
+
+.square {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+.popup-div {
+	width: 140px;
+	display: inline-block;
+	margin-bottom: 10px
+}
+
+.ml-20 {
+	margin-left: 20px
+}
+
+#color-7 {
+	background-color: #0000ff
+}
+
+#color-8 {
+	background-color: #ff0000
+}
+
+#color-9 {
+	background-color: #FF7F27
+}
+
+#paste {
+	background: url(../image/image102.png) no-repeat center;
+}
+
+#copy {
+	background: url(../image/image104.png) no-repeat center;
+}
+
+#undo {
+	margin: 2px 0 0 31px;
+	background: url(../image/image030.png) no-repeat center;
+}
+
+#prevMonth {
+	background: url(../image/image050.png) no-repeat center;
+}
+
+#nextMonth {
+	background: url(../image/image053.png) no-repeat center;
+}
+
+#contain-view {
+	float: left;
+	margin-top: 3px;
+	width: 100%;
+	/** margin-left: 80px; */
+}
+
+.right-content button {
+	height: 27px;
+}
+
+#top-area-left {
+	float: left;
+	width: 30%;
+}
+
+#top-area-left * {
+	font-size: 21px !important;
+}
+
+#top-area-right {
+	float: left;
+	width: 70%;
+}
+
+#date-time-prev, #date-time-after {
+	font-size: 12.5px !important
+}
+
+#set-work-time {
+	margin-top: 2px
+}
+
+.ex-editor input {
+	width: 100% !important;
+	height: 100% !important;
+	display: block !important;
+	vertical-align: top;
+	font-size: 0.8em;
+	box-sizing: border-box;
+	line-height: 0px
+}
+
+.h-90 {
+	height: 90px
+}
+
+#input-heightExtable {
+	width: 65px
+}
+
+.icon-leftmost {
+	background-image: url(../image/7.png);
+	height: 20px;
+	width: 20px;
+	left: 2px !important;
+	margin-top: -2px !important
+}
+
+.mb-5 {
+	margin-bottom: 5px
+}
+
+.ml-15 {
+	margin-left: 15px
+}
+
+tbody a.x-link {
+	color: black !important;
+	text-decoration: none !important;
+	cursor: unset !important;
+}
+
+#oViewModel>div:FIRST-CHILD {
+	position: relative;
+}
+
+.extable .xheader td.bg-daily-alter-other {
+	background-color: #CEE6FF;
+}
+
+.extable .xheader td.bg-daily-alter-self {
+	background-color: #94B7FE;
+}
+
+.extable .xheader td.bg-daily-reflect-application {
+	background-color: #BFEA60;
+}
+
+.extable .xheader td.color-schedule-performance {
+	color: #92D050;
+}
+
+.extable .xheader td.color-attendance {
+	color: #0000ff;
+}
+
+.extable .xheader td.color-holiday {
+	color: #ff0000;
+}
+
+.extable .xheader td.color-half-day-work {
+	color: #FF7F27;
+}
+
+.extable .xheader td.color-schedule-sunday {
+	color: #FF0000;
+}
+
+.extable .xheader td.color-schedule-saturday {
+	color: #0000FF;
+}
+
+.extable .xheader td.color-weekdays {
+	color: #404040;
+}
+
+.right-content {
+	height: calc(100vh - 141px);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+#top-area , #contain-view {
+	min-width: 1022px;
+	width: calc(100vw - 80px);
+}
+html {
+	overflow: hidden;
+}

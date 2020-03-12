@@ -29,7 +29,7 @@ module jhn001.d.viewmodel {
             self.listSendBackCls = ko.observableArray([
                 new ItemModel(2, ''),
                 new ItemModel(0, '記載不備'),
-                new ItemModel(1, '添付書類不')
+                new ItemModel(1, '添付書類不備')
             ]);
             self.selectedSendBackCls = ko.observable(0);
             self.start();
@@ -90,12 +90,15 @@ module jhn001.d.viewmodel {
                 return;
             }
 
-            nts.uk.ui.dialog.confirm({ messageId: "Msgj_8" }).ifYes(() => {
-                block();
+            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_8" }).ifYes(() => {
                 let selectedReturn = self.selectedReturn();
                 let selectedSendBackCls = self.selectedSendBackCls();
                 let  obj = _.find(self.listReturn(), function(o) { return o.id == selectedReturn; })
 
+                if(selectedReturn == null || obj == undefined || selectedSendBackCls == 2){
+                    return;    
+                }
+                
                 let command = {
                     reportID: obj.reportID,
                     phaseNum: selectedReturn == 1 ? 0 : obj.phaseNum,
@@ -108,9 +111,10 @@ module jhn001.d.viewmodel {
                     sendBackSID: selectedReturn == 1 ? obj.appSid : obj.aprSid,
                     selectedReturn : selectedReturn
                 };
-
+                
+                block();
                 service.saveData(command).done(() => {
-                    info({ messageId: "Msg_15" }).then(function() {
+                    info({ messageId: "MsgJ_10" }).then(function() {
                         unblock();
                         close();
                     });

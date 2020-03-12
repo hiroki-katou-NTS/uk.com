@@ -83,10 +83,12 @@ module nts.uk.com.view.cmm018.shr {
             value: any;
             localizedName: string;
             employRootAtr: number;
-            constructor(value: any, localizedName: string, employRootAtr: number){
+            lowerApprove: Boolean;
+            constructor(value: any, localizedName: string, employRootAtr: number, lowerApprove: Boolean){
                 this.value = value;
                 this.localizedName = localizedName;
                 this.employRootAtr = employRootAtr;
+                this.lowerApprove = lowerApprove;
             }
         }
         //screenA
@@ -288,13 +290,15 @@ module nts.uk.com.view.cmm018.shr {
             startDate: string;
             endDate: string;
             applicationType: number;
+            confirmationRootType: number;
             employmentRootAtr: number;
             constructor(approvalId: string, startDate: string, endDate: string, 
-                applicationType: number, employmentRootAtr: number){
+                applicationType: number, confirmationRootType: number, employmentRootAtr: number){
                     this.approvalId = approvalId;
                     this.startDate = startDate;
                     this.endDate = endDate;
                     this.applicationType = applicationType;
+                    this.confirmationRootType = confirmationRootType;
                     this.employmentRootAtr = employmentRootAtr;
             }
         }
@@ -738,20 +742,19 @@ module nts.uk.com.view.cmm018.shr {
             }
             
             static resizeColumn(root, tabSelected, mode) {
-                let helpButtonSelect = null;
-                if(tabSelected == vmbase.RootType.COMPANY){
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[0];
-                }else if(tabSelected == vmbase.RootType.WORKPLACE){
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[1];
-                }else{//PERSON
-                    helpButtonSelect = document.getElementsByClassName('help-button-custom')[2];
-                }
-                if(!_.isUndefined(helpButtonSelect)) {
-                    let helpButton = helpButtonSelect.getBoundingClientRect();
-                    $('#help-content').css('top', helpButton.top + 'px');
-                    $('#help-content').css('left', (helpButton.left + 45) + 'px');    
-                }
+                let helpButtonSelect = undefined;
+                let listButtonHelp = document.getElementsByClassName('help-button-custom');
+                _.forEach(document.getElementsByClassName('help-button-custom'), item => {
+                    if(item.getBoundingClientRect().top > 0) {
+                        helpButtonSelect = item;                    
+                    }
+                });
                 document.onclick = function(e){
+                    if(!_.isUndefined(helpButtonSelect)) {
+                        let helpButton = helpButtonSelect.getBoundingClientRect();
+                        $('#help-content').css('top', (helpButton.top + window.pageYOffset) + 'px');
+                        $('#help-content').css('left', (helpButton.left + window.pageXOffset + 45) + 'px');    
+                    }
                     if(!e.target.classList.contains('help-button-custom')){
                         $('#help-content').css('display', 'none');
                     } else {
@@ -781,37 +784,36 @@ module nts.uk.com.view.cmm018.shr {
                 }else if(tabSelected == vmbase.RootType.WORKPLACE){
                     gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
                 }else{//PERSON
-                    gridName = tabSelected == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                    gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
                 }
                 if(_.isEmpty(root)) {
                     $(gridName).igGridResizing("resize", index, widthPhase);   
                     return;          
                 }
-                let listApprover = _.map(root, x => x['appPhase'+index].approver);
-                _.forEach(listApprover, listByType => {
-                    _.forEach(listByType, approver => {
-                        let approverLength = ProcessHandler.cal(approver.name);
-                        if(approverLength > widthPhase) {
-                            widthPhase = approverLength;        
-                        }      
-                    });        
-                });
-                $(gridName).igGridResizing("resize", index, widthPhase); 
+                
+                let sum = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index).length;
+                for(i = 0; i < sum; i++) {
+                    let compareWidth = $(gridName + ' .hyperlink.approver-line.openK_Phase' + index + ':eq(' + i +') span').width();        
+                    if(compareWidth > widthPhase) {
+                        widthPhase = compareWidth;        
+                    } 
+                }
+                $(gridName).igGridResizing("resize", index, Math.ceil(widthPhase) + 12); 
             }
             
             static cal(inputText) {
-                let font = "14px DroidSansMono, Meiryo"; 
+                let font = "1rem, Meiryo UI"; 
                 let canvas = document.createElement("canvas"); 
                 let context = canvas.getContext("2d"); 
                 // context.font = font; 
                 let width = context.measureText(inputText).width; 
                 let textPixel = Math.ceil(width); 
-                let halfPixel = nts.uk.text.countHalf(inputText)* 8
+                let halfPixel = nts.uk.text.countHalf(inputText)* 10;
                 // console.log(inputText);
                 // console.log(textPixel);
                 // console.log(halfPixel);
                 // console.log((textPixel + halfPixel)/2);
-                return (textPixel + halfPixel)/2 + 5; 
+                return (textPixel + halfPixel)/2 + 8; 
             } 
         }
         

@@ -72,7 +72,8 @@ public class PersonalReportClassificationWebService  extends WebService {
 		return this.repoPsReport.getAllByCid(AppContexts.user().companyId(), false)
 				.stream().map(c -> new PsReportEx(c.getPReportClsId(), c.getPReportCode().v(), c.getPReportName().v(),
 						c.getPReportNameYomi() == null? null: c.getPReportNameYomi().v(),
-						c.getDisplayOrder(), c.isAbolition() ? 1 : 0, c.getRemark() == null? null: c.getRemark().v()))
+						c.getDisplayOrder(), c.isAbolition() ? 1 : 0, c.getRemark() == null? null: c.getRemark().v(),
+						c.isNoRankOrder()))
 				.collect(Collectors.toList());
 	}
 }

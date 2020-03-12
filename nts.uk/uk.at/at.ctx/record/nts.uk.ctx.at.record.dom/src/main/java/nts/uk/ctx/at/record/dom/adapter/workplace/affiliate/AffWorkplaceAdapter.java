@@ -49,16 +49,6 @@ public interface AffWorkplaceAdapter {
 	List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate);
 	
 	/**
-	 * 職場IDと基準日から上位職場を取得する
-	 * For KIF001 - update response
-	 * @param companyId
-	 * @param workPlaceId
-	 * @param baseDate
-	 * @return
-	 */
-	List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate);
-	
-	/**
 	 * KIF 001 - update response reqList 485
 	 * @param companyId
 	 * @param period

@@ -12,4 +12,6 @@ public class MenuInfoEx {
 	private String programName;
 	//承認機能を使用する
 	private int useApproval;
+	//下位序列承認無
+	private Integer noRankOrder;
 }

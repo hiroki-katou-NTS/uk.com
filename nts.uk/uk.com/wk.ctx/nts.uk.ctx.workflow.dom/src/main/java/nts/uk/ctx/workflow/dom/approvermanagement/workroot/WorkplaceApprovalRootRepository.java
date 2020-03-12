@@ -40,7 +40,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate,
-			Integer applicationType, int employmentRootAtr, String id);
+			Integer applicationType, int employmentRootAtr, String id, int sysAtr);
 
 	/**
 	 * 職場別承認ルート
@@ -115,7 +115,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType,
-			int employmentRootAtr, String id);
+			int employmentRootAtr, String id, int sysAtr);
 	/**
 	 * getWpAppRootLast
 	 * @param companyId
@@ -123,7 +123,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId,GeneralDate endDate);
+	List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId, GeneralDate endDate, int sysAtr);
 	
 	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);

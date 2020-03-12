@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
+import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -27,13 +27,13 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			+ "Where c.pk.cid = :cid "
 			+ "ORDER BY c.reportName ASC";
 	
-	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c "
+	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c " 
 			+ " Where c.pk.cid = :cid "
-			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.reportName ASC ";
+			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.draftSaveDate ASC ";
 	
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
-	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
+	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid ";
 	
 
 	private static final String SEL = "select DISTINCT r FROM  JhndtReportRegis r";
@@ -47,9 +47,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public int getMaxReportId(String sid, String cid) {
+	public int getMaxReportId(String cid) {
 		Object max = this.queryProxy().query(GET_MAX_REPORT_ID, Object.class).setParameter("cid", cid)
-				.setParameter("sid", sid).getSingleOrNull();
+				.getSingleOrNull();
 		if (max.equals(null)) {
 			return 0;
 		} else {
@@ -64,8 +64,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<RegistrationPersonReport> getListReportSaveDraft(String sid) {
-		String cid =  AppContexts.user().companyId();
+	public List<RegistrationPersonReport> getListReportSaveDraft(String cid) {
 		return this.queryProxy().query(getListReportSaveDraft, JhndtReportRegis.class)
 				.setParameter("cid", cid).getList(c -> toDomain(c));
 	}
@@ -157,8 +156,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				.setParameter("cid", cid)
 				.setParameter("reportId", reportId).getSingle();
 		JhndtReportRegis entity = entityOpt.get();
+		// 届出IDをキーとしたドメイン「人事届出の登録.削除済」=trueに設定する 
+		// (Cài Đặt tên miền "Đăng ký HR report. Đã xóa" = true với ID report làm khóa)
 		entity.setDelFlg(1);
-		//entity.setDraftSaveDate(GeneralDateTime.now());
 		this.commandProxy().update(entity);
 	}
 
@@ -217,5 +217,22 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			this.commandProxy().update(entity);
 		}
 	}
+
+	@Override
+	public void updateAfterSendBack(String cid, Integer reportId, String sendBackSid, String comment) {
+		Optional<JhndtReportRegis> entityOpt = this.queryProxy().query(getDomainByReportId, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("reportId", reportId).getSingle();
+		if (entityOpt.isPresent()) {
+			JhndtReportRegis entity = entityOpt.get();
+			entity.sendBackSID = sendBackSid;
+			entity.sendBackComment = comment;
+			entity.aprStatus = ApprovalStatusForRegis.Send_Back.value;
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	
+	
 
 }

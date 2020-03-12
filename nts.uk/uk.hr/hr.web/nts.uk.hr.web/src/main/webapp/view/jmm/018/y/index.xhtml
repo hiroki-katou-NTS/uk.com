@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 1000, height: 700 };</script>
+			<com:stylefile path="jmm018.y.style.css" />
+			<com:scriptfile path="jmm018.y.service.js" />
+			<com:scriptfile path="jmm018.y.start.js" />
+			<com:scriptfile path="jmm018.y.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="cf">
+					<div style="width: 880px; margin: 20px auto;">
+						<div style="display: inline-block; width: 530px">
+							<div style="display: inline-block; width: 360px" data-bind="ntsSearchBox: {
+								targetKey: 'departmentId', 
+								mode:'igTree', 
+								searchMode : 'highlight',
+								comId:'treegrid', 
+								items: departmentList, 
+								selected: searchBoxSelected, 
+								selectedKey: 'codeName', 
+								childField: 'children', 
+								fields: ['codeName']}" />
+							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM018_Y2_3')}</div>
+							<div style="display: inline-block;">
+								<table id="treegrid"
+									data-bind="ntsTreeGridView:{
+									width: 450, 
+									height: 450,
+									dataSource: departmentList,
+									value: departmentCode,
+									primaryKey: 'departmentId',
+									childDataKey: 'children',
+									primaryText: 'codeName',
+									multiple: false,
+									enable: true,
+									enable: true,
+									columns: columns,
+									showCheckBox: false}">
+								</table>
+							</div>
+						</div>
+						<div style="display: inline-block;  width: 320px">
+							<div style="display: inline-block; width: 390px" class="nts-searchbbox-wrapper">
+								<div class="input-wrapper">
+									<span class="ntsControl">
+										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" data-bind="value: key, attr: {placeholder: '#{i18n.getText('JMM018_Y2_5')}'}" />
+									</span>
+								</div>
+								<div class="input-wrapper">
+									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">#{i18n.getText('JMM018_Y2_5_1')}</button>
+								</div>
+							</div>
+							<div style="display: inline-block;">
+								<table id="single-list" data-bind="ntsGridList: {								
+									width: 314, 
+									height: 450,
+									dataSource: employeeList,
+									primaryKey: 'sid',
+									columns: columns2,
+									multiple: false,
+									value: selectedCode
+								}"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: decision, enable: selectedCode()!=''">#{i18n.getText('JMM018_Y1_1')}</button>
+				<button data-bind="click: close" id="close">#{i18n.getText('JMM018_Y1_2')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

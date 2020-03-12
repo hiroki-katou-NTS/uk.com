@@ -16,20 +16,23 @@ import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 
+//	@Inject
+//	private SyWorkplacePub syWorkplacePub;
+	
 	@Inject
-	private SyWorkplacePub syWorkplacePub;
+	private WorkplacePub workplacePub;
 
 	@Override
 	public List<WorkPlaceHistImport> getWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 		List<WorkPlaceHistImport> importList =
-				this.syWorkplacePub.GetWplByListSidAndPeriod(sids, datePeriod)
+				this.workplacePub.getWplByListSidAndPeriod(sids, datePeriod)
 					.stream()
 						.map(x->convertToImport(x))
 							.collect(Collectors.toList());
@@ -47,7 +50,7 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 
 	@Override
 	public List<String> findListWorkplaceIdByBaseDate(GeneralDate baseDate) {
-		List<String> listWorkplaceId = syWorkplacePub.findListWorkplaceIdByBaseDate(baseDate);
+		List<String> listWorkplaceId = workplacePub.getListWorkplaceIdByBaseDate(baseDate);
 		if(listWorkplaceId.isEmpty())
 			return Collections.emptyList();
 		return listWorkplaceId;
@@ -55,7 +58,7 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 
 	@Override
 	public List<AffWorkplaceHistoryImport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate) {
-		List<AffWorkplaceHistoryExport> listAffWorkplaceHistoryExport  = syWorkplacePub.getWorkplaceBySidsAndBaseDate(sids,baseDate);
+		List<AffWorkplaceHistoryExport> listAffWorkplaceHistoryExport  = workplacePub.getWorkplaceBySidsAndBaseDate(sids,baseDate);
 		try {
 			return listAffWorkplaceHistoryExport
 			.stream().filter(x->x!=null)

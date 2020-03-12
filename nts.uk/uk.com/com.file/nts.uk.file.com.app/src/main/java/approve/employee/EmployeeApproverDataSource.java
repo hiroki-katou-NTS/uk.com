@@ -5,7 +5,7 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 import nts.uk.file.com.app.HeaderEmployeeUnregisterOutput;
 
@@ -16,6 +16,7 @@ public class EmployeeApproverDataSource {
 	private HeaderEmployeeUnregisterOutput headerEmployee;
 	//key: wpkID, values: WpApprover
 	private Map<String, WpApproverAsAppOutput> wpApprover;
-	//職場情報 List
-	private List<WorkplaceImport> lstWpInfor;
+	//職場・部門情報 List
+	private List<WkpDepInfo> lstWpInfor;
+	private int sysAtr;
 }

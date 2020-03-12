@@ -40,6 +40,7 @@ module nts.uk.at.view.kmk003.a {
                     worktimeCode: string;
                     workTimeName: string;
                     isAbolish: boolean;
+                    nameNotJP: string;
                 }
 
                 export interface EnumConstantDto {

@@ -12,6 +12,12 @@ public interface AffDepartmentPub {
 	 * @param baseDate
 	 */
 	public List<RequestList643Export> getAffDeptHistByEmpIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	/** [RQ644]部門ID(List)と基準日から社員ID(List)を取得する 
+	 * @param departmentIDs 部門ID(List)
+	 * @param baseDate 基準日
+	 */
+	public List<RequestList643Export> getAffDepartmentHistoryItems(List<String> departmentIDs, GeneralDate baseDate);
 
 
 }

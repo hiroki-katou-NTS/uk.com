@@ -177,7 +177,7 @@ module nts.uk.at.view.kdp003.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         let arrEmployeelst: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
-                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName, id: value.employeeId });
+                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId });
                         });
                         self.employeeList(arrEmployeelst);
                     }
@@ -409,7 +409,7 @@ module nts.uk.at.view.kdp003.a {
         export interface UnitModel {
             code: string;
             name?: string;
-            workplaceName?: string;
+            affiliationName?: string;
             id?: string;
             isAlreadySetting?: boolean;
         }

@@ -5,12 +5,12 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 @Data
 @AllArgsConstructor
 public class WpApproverAsAppOutput {
-	//職場情報
-	private WorkplaceImport wpInfor;
+	//職場・部門情報
+	private WkpDepInfo wpInfor;
 	//Thong tin nhan vien
 	/** key: sID, values: lstApp */
 	private Map<String, EmpApproverAsApp> mapEmpRootInfo;

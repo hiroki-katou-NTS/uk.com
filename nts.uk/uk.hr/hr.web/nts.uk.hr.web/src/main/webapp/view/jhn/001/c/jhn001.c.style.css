@@ -6,7 +6,7 @@
 	margin-left: 645px;
 }
 
-#functions-area, #contents-area {
+/* #functions-area, #contents-area {
 	min-width: 1260px;
 }
 
@@ -14,7 +14,7 @@
 	#functions-area, #contents-area {
 		
 	}
-}
+} */
 
 #master-wrapper{
 	overflow-y: hidden;
@@ -54,7 +54,7 @@
 .divHead {
 	margin-left: 10px;
 	padding: 10px;
-	overflow-y: auto;
+
 }
 
 #C222_1, #C222_2{

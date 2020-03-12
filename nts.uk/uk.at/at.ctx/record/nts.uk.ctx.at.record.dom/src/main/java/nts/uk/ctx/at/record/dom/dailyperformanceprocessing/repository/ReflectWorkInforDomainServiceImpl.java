@@ -330,12 +330,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// start --
 		//「再作成フラグ」を作成する : 再作成フラグ　=　しない 
 //		RecreateFlag recreateFlag = RecreateFlag.DO_NOT;
-        
-		//処理を行うかどうか判断する
-        if(optDaily.isPresent() && recreateFlag == RecreateFlag.DO_NOT) {
-            return;
-        }
-		
 		// パラメータ「再作成区分」を確認する - rerun
 //		if (reCreateAttr == ExecutionType.RERUN) {
 //			//「再作成フラグ」を更新する : 再作成フラグ　=　する（日別作成）
@@ -372,21 +366,23 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					
                     WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
 							employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-							mapDateHistoryItem, periodInMasterList, timeLeaving.isPresent() ? timeLeaving.get() : null,recreateFlag);
+							mapDateHistoryItem, periodInMasterList, timeLeaving.isPresent() ? timeLeaving.get() : null,recreateFlag,optDaily);
 //				} else {
 //					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 //							.find(employeeId, day).get();
 					NewReflectStampOutput stampOutput = new NewReflectStampOutput();
-					WorkStyle workStyle = basicScheduleService
-							.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
-					if (workStyle != WorkStyle.ONE_DAY_REST) {
-						 stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
-		                         employeeId, day,workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-		                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
-					}else {
-						 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
-		                         employeeId, day, Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID, 
-		                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
+					if(workInfoOfDailyPerformance != null || workInfoOfDailyPerformance.getRecordInfo() !=null){
+						WorkStyle workStyle = basicScheduleService
+								.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+						if (workStyle != WorkStyle.ONE_DAY_REST) {
+							 stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+			                         employeeId, day,workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
+			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
+						}else {
+							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
+			                         employeeId, day, Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID, 
+			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
+						}
 					}
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
 					// this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId,
@@ -413,10 +409,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	public void reflectWorkInformationWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
         	boolean reCreateWorkPlace, Optional<StampReflectionManagement> stampReflectionManagement,RecreateFlag recreateFlag,Optional<WorkInfoOfDailyPerformance> optDaily) {
-        //処理を行うかどうか判断する
-        if(optDaily.isPresent() && recreateFlag == RecreateFlag.DO_NOT) {
-            return;
-        }
 //		RecreateFlag recreateFlag = RecreateFlag.DO_NOT;
 		// pharse 2
 		// start --
@@ -474,7 +466,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					
                     WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
 							reCreateWorkType, stampReflectionManagement,
-							timeLeaving.isPresent() ? timeLeaving.get() : null,recreateFlag);
+							timeLeaving.isPresent() ? timeLeaving.get() : null,recreateFlag,optDaily);
 //				} else {
 //					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 //							.find(employeeId, day).get();
@@ -483,7 +475,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					stampOutput.setErrMesInfos(new ArrayList<>());
 					stampOutput.setReflectStampOutput(new ReflectStampOutput());
 					
-					if(workInfoOfDailyPerformance != null){
+					if(workInfoOfDailyPerformance != null || workInfoOfDailyPerformance.getRecordInfo() !=null){
 						WorkStyle workStyle = basicScheduleService
 								.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 						
@@ -524,7 +516,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
 			TimeLeavingOfDailyPerformance timeLeavingOptional,
-			RecreateFlag recreateFlag) {
+			RecreateFlag recreateFlag,Optional<WorkInfoOfDailyPerformance> optDaily) {
+		//処理を行うかどうか判断する
+        if(optDaily.isPresent() && recreateFlag == RecreateFlag.DO_NOT) {
+            return optDaily.get();
+        }
         WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance();
 		// 勤務種別を反映する
 		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
@@ -545,7 +541,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
                 workInfoOfDailyPerformance = this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
 						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, mapDateHistoryItem,
-						mapWorkingConditionItem, periodInMasterList, timeLeavingOptional,recreateFlag);
+						mapWorkingConditionItem, periodInMasterList, timeLeavingOptional,recreateFlag,optDaily);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -561,7 +557,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			TimeLeavingOfDailyPerformance timeLeavingPerformance,
-			RecreateFlag recreateFlag) {
+			RecreateFlag recreateFlag,Optional<WorkInfoOfDailyPerformance> optDaily) {
+		//処理を行うかどうか判断する
+        if(optDaily.isPresent() && recreateFlag == RecreateFlag.DO_NOT) {
+            return optDaily.get();
+        }
         WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance();
 		// 勤務種別を反映する
 		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
@@ -581,7 +581,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
                 workInfoOfDailyPerformance = this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
 						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null, null,
-						timeLeavingPerformance,recreateFlag);
+						timeLeavingPerformance,recreateFlag,optDaily);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -944,7 +944,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			PeriodInMasterList periodInMasterList, TimeLeavingOfDailyPerformance timeLeavingPerformance,RecreateFlag recreateFlag) {
+			PeriodInMasterList periodInMasterList, TimeLeavingOfDailyPerformance timeLeavingPerformance,RecreateFlag recreateFlag,Optional<WorkInfoOfDailyPerformance> optDaily) {
 
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
@@ -2033,7 +2033,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
 					affiliationInforOfDailyPerfor.getWplID(), day);
 
 			// 加給設定を取得する

@@ -23,6 +23,7 @@ public class ApproveImplRepository implements ApproveRepository {
 
 	@Inject
 	private ApprovalStateHrPub approvalStateHrPub;
+	
 
 	/**
 	 * [RQ631]申請書の承認者と状況を取得する
@@ -79,6 +80,8 @@ public class ApproveImplRepository implements ApproveRepository {
 								approvalStateHr.getAppDate(),
 
 								approvalStateHr.getEmployeeID(),
+								
+								approvalStateHr.isReflectFlag(),
 
 								lstPhaseStateResult));
 
@@ -128,6 +131,32 @@ public class ApproveImplRepository implements ApproveRepository {
 	public Boolean releaseHr(String rootStateID, String employeeID) {
 		
 		return this.approvalStateHrPub.releaseHr(rootStateID, employeeID);
+		
+	}
+
+	/**
+	 * [RQ634]申請書を差し戻しする
+	 * 申請書を差し戻しする（承認者まで）
+	 * @author laitv
+	 * @param インスタンスID rootStateID
+	 * @param 「人事承認フェーズインスタンス」．順序 phaseOrder
+	 * trả đơn về cho người đã phê duyệt
+	 */
+	@Override
+	public void remandForApproverHr(String rootStateID, Integer phaseOrder) {
+		this.approvalStateHrPub.remandForApproverHr(rootStateID, phaseOrder);
+	}
+
+	/**
+	 * [RQ634]申請書を差し戻しする
+	 * 申請書を差し戻しする（申請本人まで）
+	 * @author laitv
+	 * @param インスタンスID rootStateID
+	 * trả đơn về cho người làm đơn
+	 */
+	@Override
+	public void remandForApplicantHr(String rootStateID) {
+		this.approvalStateHrPub.remandForApplicantHr(rootStateID);
 		
 	}
 

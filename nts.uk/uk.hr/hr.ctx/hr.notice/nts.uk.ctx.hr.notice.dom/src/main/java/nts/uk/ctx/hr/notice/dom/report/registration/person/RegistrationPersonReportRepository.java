@@ -28,9 +28,11 @@ public interface RegistrationPersonReportRepository {
 
 	void remove(String cid, Integer reportId);
 	
+	void updateAfterSendBack(String cid, Integer reportId, String sendBackSid, String comment);
+	
 	void updateMissingDocName(String cid, int reportID, String missingDocName);
 
-	int getMaxReportId(String sid, String cid);
+	int getMaxReportId(String cid);
 
 	public List<RegistrationPersonReport> findByJHN003(String cId, String sId, GeneralDateTime startDate,
 			GeneralDateTime endDate, Integer reportId, Integer approvalStatus, String inputName,

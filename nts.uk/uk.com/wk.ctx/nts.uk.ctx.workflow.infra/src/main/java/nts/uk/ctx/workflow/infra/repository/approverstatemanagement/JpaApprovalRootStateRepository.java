@@ -32,23 +32,11 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.Wwfd
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalRootState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApproverState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtFullJoinState;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApprovalFrameDayPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApprovalPhaseDayPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApprovalRootDayPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApproverDayPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtAppRootDaySimple;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtApprovalFrameDay;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtApprovalPhaseDay;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtApprovalRootDay;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtApproverDay;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalFrameMonthPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalPhaseMonthPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalRootMonthPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApproverMonthPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalFrameMonth;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalPhaseMonth;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalRootMonth;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApproverMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -64,22 +52,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String BASIC_SELECT;
 
 	private static final String SELECT_APP_BY_ID;
-	private static final String SELECT_CF_DAY_BY_ID;
-	private static final String SELECT_CF_MONTH_BY_ID;
-
-	// private static final String SELECT_APP_BY_IDS;
-	// private static final String SELECT_CF_DAY_BY_IDS;
-	// private static final String SELECT_CF_MONTH_BY_IDS;
-	//
-	// private static final String SELECT_APPS_BY_ID;
 
 	private static final String SELECT_APP_BY_DATE;
 	private static final String SELECT_CF_DAY_BY_DATE;
 	private static final String SELECT_CF_MONTH_BY_DATE;
 
 	private static final String SELECT_SIMPLE_APP_BY_DATE;
-	// private static final String SELECT_SIMPLE_CF_DAY_BY_DATE;
-	// private static final String SELECT_SIMPLE_CF_MONTH_BY_DATE;
 
 	private static final String SELECT_APP_BY_EMP_DATE;
 	private static final String SELECT_CF_DAY_BY_EMP_DATE;
@@ -101,20 +79,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			+ " AND a.approvalAtr = 1 ORDER BY a.wwfdpApprovalPhaseStatePK.phaseOrder ASC";
 	static {
 		StringBuilder builderString = new StringBuilder();
-		/*builderString.append("SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE,");
-		builderString.append("phase.PHASE_ORDER, phase.APP_PHASE_ATR, phase.APPROVAL_FORM,");
-		builderString.append(
-				"frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON,");
-		builderString.append("approver.APPROVER_CHILD_ID, approver.CID FROM WWFDT_APPROVAL_ROOT_STATE root ");
-		builderString.append("LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ");
-		builderString.append("ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID ");
-		builderString.append("LEFT JOIN WWFDT_APPROVAL_FRAME frame ");
-		builderString.append("ON phase.ROOT_STATE_ID = frame.ROOT_STATE_ID ");
-		builderString.append("AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
-		builderString.append("LEFT JOIN WWFDT_APPROVER_STATE approver ");
-		builderString.append("ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID ");
-		builderString.append("AND frame.PHASE_ORDER = approver.PHASE_ORDER ");
-		builderString.append("AND frame.FRAME_ORDER = approver.FRAME_ORDER");*/
 		
 		builderString.append("SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, ");
 		builderString.append("phase.PHASE_ORDER, phase.APP_PHASE_ATR, phase.APPROVAL_FORM, ");
@@ -134,59 +98,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" FROM WwfdtApprovalRootState e");
 		builderString.append(" WHERE e.rootStateID = :rootStateID");
 		SELECT_APP_BY_ID = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootDay e");
-		builderString.append(" WHERE e.rootStateID = :rootStateID");
-		SELECT_CF_DAY_BY_ID = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootMonth e");
-		builderString.append(" WHERE e.rootStateID = :rootStateID");
-		SELECT_CF_MONTH_BY_ID = builderString.toString();
-
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT e");
-		// builderString.append(" FROM WwfdtApprovalRootState e");
-		// builderString.append(" WHERE e.wwfdpApprovalRootStatePK.rootStateID
-		// IN :rootStateIDs");
-		// SELECT_APP_BY_IDS = builderString.toString();
-		//
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT e");
-		// builderString.append(" FROM WwfdtApprovalRootDay e");
-		// builderString.append(" WHERE e.wwfdpApprovalRootDayPK.rootStateID IN
-		// :rootStateIDs");
-		// SELECT_CF_DAY_BY_IDS = builderString.toString();
-		//
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT e");
-		// builderString.append(" FROM WwfdtApprovalRootMonth e");
-		// builderString.append(" WHERE e.wwfdpApprovalRootMonthPK.rootStateID
-		// IN :rootStateIDs");
-		// SELECT_CF_MONTH_BY_IDS = builderString.toString();
-		//
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT c");
-		// builderString.append(" FROM WwfdtApprovalRootState c");
-		// builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID
-		// IN ");
-		// builderString.append("(SELECT DISTINCT
-		// a.wwfdpApprovalRootStatePK.rootStateID");
-		// builderString.append(" FROM WwfdtAppRootStateSimple a");
-		// builderString.append(" JOIN WwfdtAppStateSimple b ");
-		// builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID =
-		// b.wwfdpApproverStatePK.rootStateID");
-		// builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID =
-		// :approverID");
-		// builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
-		// builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM
-		// CmmmtAgent d WHERE d.agentSid1 = :approverID))");
-		// builderString.append(" AND a.wwfdpApprovalRootStatePK.rootStateID IN
-		// :rootStateIDs)");
-		// SELECT_APPS_BY_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -215,20 +126,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" WHERE e.recordDate >= :startDate");
 		builderString.append(" AND e.recordDate <= :endDate");
 		SELECT_SIMPLE_APP_BY_DATE = builderString.toString();
-
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT e");
-		// builderString.append(" FROM WwfdtAppRootDaySimple e");
-		// builderString.append(" WHERE e.recordDate >= :startDate");
-		// builderString.append(" AND e.recordDate <= :endDate");
-		// SELECT_SIMPLE_CF_DAY_BY_DATE = builderString.toString();
-		//
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT e");
-		// builderString.append(" FROM WwfdtAppRootMonthSimple e");
-		// builderString.append(" WHERE e.recordDate >= :startDate");
-		// builderString.append(" AND e.recordDate <= :endDate");
-		// SELECT_SIMPLE_CF_MONTH_BY_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -489,102 +386,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			lstEntityApprover.add(entityApprover);
 		}
 		return lstEntityApprover;
-	}
-
-	private WwfdtApprovalPhaseDay updateEntityWwfdtApprovalPhaseDay(String rootId, ApprovalPhaseState phase) {
-		WwfdtApprovalPhaseDay wwfdtApprovalPhaseDay = this.queryProxy().find(
-				new WwfdpApprovalPhaseDayPK(rootId, phase.getPhaseOrder()),
-				WwfdtApprovalPhaseDay.class).get();
-		wwfdtApprovalPhaseDay.approvalAtr = phase.getApprovalAtr().value;
-		wwfdtApprovalPhaseDay.approvalForm = phase.getApprovalForm().value;
-		wwfdtApprovalPhaseDay.listWwfdtApprovalFrameDay = phase.getListApprovalFrame().stream()
-				.map(x -> updateEntityWwfdtApprovalFrameDay(rootId, phase.getPhaseOrder(), x)).collect(Collectors.toList());
-		return wwfdtApprovalPhaseDay;
-	}
-
-	private WwfdtApprovalFrameDay updateEntityWwfdtApprovalFrameDay(String rootId, int phaseOrder, ApprovalFrame frame) {
-		WwfdtApprovalFrameDay entityFrame = this
-				.queryProxy().find(new WwfdpApprovalFrameDayPK(rootId,
-						phaseOrder, frame.getFrameOrder()), WwfdtApprovalFrameDay.class)
-				.get();
-		entityFrame.confirmAtr = frame.getConfirmAtr().value;
-		
-		
-		
-//		entityFrame.approverID = frame.getApproverID();
-//		entityFrame.representerID = frame.getRepresenterID();
-//		entityFrame.approvalDate = frame.getApprovalDate();
-//		entityFrame.approvalReason = frame.getApprovalReason();
-//		
-//		
-//		entityFrame.approvalAtr = frame.getApprovalAtr().value;
-//		List<ApproverInfor> lstApprover = frame.getLstApproverInfo();
-//		List<WwfdtApproverDay> lstEntityApprover = new ArrayList<>();
-//		for (ApproverInfor approver : lstApprover) {
-//			
-//			
-//			
-//			
-//			
-//			
-//			
-//			entityApprover.approvalAtr = approver.getApprovalAtr().value;
-//			entityApprover.confirmAtr = frame.getConfirmAtr().value;
-//			entityApprover.wwfdpApprovrStatePK.approverId = approver.getApproverID();
-//			entityApprover.agentID = approver.getAgentID();
-//			entityApprover.approvalDate = approver.getApprovalDate();
-//			entityApprover.approvalReason = approver.getApprovalReason();
-//			lstEntityApprover.add(entityApprover);
-//		}
-//		
-//		
-//		
-//		entityFrame.listWwfdtApproverDay = frame.getListApproverState().stream()
-//				.map(x -> updateEntityWwfdtApproverDay(x)).collect(Collectors.toList());
-		return entityFrame;
-	}
-
-	private WwfdtApproverDay updateEntityWwfdtApproverDay(String rootId, int phaseOrder, int frameOrder, ApproverInfor approverState) {
-		WwfdtApproverDay wwfdtApproverDay = this.queryProxy()
-				.find(new WwfdpApproverDayPK(rootId, phaseOrder,
-						frameOrder, approverState.getApproverID()), WwfdtApproverDay.class)
-				.get();
-		return wwfdtApproverDay;
-	}
-
-	private WwfdtApprovalPhaseMonth updateEntityWwfdtApprovalPhaseMonth(String rootId, ApprovalPhaseState phase) {
-		WwfdtApprovalPhaseMonth wwfdtApprovalPhaseMonth = this.queryProxy().find(
-				new WwfdpApprovalPhaseMonthPK(rootId, phase.getPhaseOrder()),
-				WwfdtApprovalPhaseMonth.class).get();
-		wwfdtApprovalPhaseMonth.approvalAtr = phase.getApprovalAtr().value;
-		wwfdtApprovalPhaseMonth.approvalForm = phase.getApprovalForm().value;
-		wwfdtApprovalPhaseMonth.listWwfdtApprovalFrameMonth = phase.getListApprovalFrame().stream()
-				.map(x -> updateEntityWwfdtApprovalFrameMonth(rootId, phase.getPhaseOrder(), x)).collect(Collectors.toList());
-		return wwfdtApprovalPhaseMonth;
-	}
-
-	private WwfdtApprovalFrameMonth updateEntityWwfdtApprovalFrameMonth(String rootId, int phaseOrder, ApprovalFrame frame) {
-		WwfdtApprovalFrameMonth entityFrame = this
-				.queryProxy().find(new WwfdpApprovalFrameMonthPK(rootId,
-						phaseOrder, frame.getFrameOrder()), WwfdtApprovalFrameMonth.class)
-				.get();
-//		entityFrame.approvalAtr = frame.getApprovalAtr().value;
-		entityFrame.confirmAtr = frame.getConfirmAtr().value;
-//		entityFrame.approverID = frame.getApproverID();
-//		entityFrame.representerID = frame.getRepresenterID();
-//		entityFrame.approvalDate = frame.getApprovalDate();
-//		entityFrame.approvalReason = frame.getApprovalReason();
-		entityFrame.listWwfdtApproverMonth = frame.getLstApproverInfo().stream()
-				.map(x -> updateEntityWwfdtApproverMonth(rootId, phaseOrder,frame.getFrameOrder(), x)).collect(Collectors.toList());
-		return entityFrame;
-	}
-
-	private WwfdtApproverMonth updateEntityWwfdtApproverMonth(String rootId, int phaseOrder, int frameOrder, ApproverInfor approverState) {
-		WwfdtApproverMonth wwfdtApproverMonth = this.queryProxy()
-				.find(new WwfdpApproverMonthPK(rootId, phaseOrder,
-						frameOrder, approverState.getApproverID()), WwfdtApproverMonth.class)
-				.get();
-		return wwfdtApproverMonth;
 	}
 
 	@Override
@@ -913,35 +714,29 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		GeneralDate baseDate = GeneralDate.today();
 		List<String> data = new ArrayList<>();
 		String SELECT = "SELECT SYONIN.ROOT_STATE_ID FROM ( "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN " + "WWFDT_APPROVAL_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
-				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "
-				+ "AND APS.APPROVAL_RECORD_DATE <= ? " + "UNION ALL "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APPROVER_STATE APS " + "INNER JOIN WWFDT_APPROVAL_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "INNER JOIN CMMMT_AGENT AG "
-				+ "ON APS.APPROVER_CHILD_ID = AG.SID " + "WHERE APS.CID = ? " + "AND AF.APP_FRAME_ATR = '0' "
-				+ "AND APS.APPROVAL_RECORD_DATE >= ? " + "AND APS.APPROVAL_RECORD_DATE <= ? "
-				+ "AND AG.START_DATE <= ? " + "AND AG.END_DATE >= ? " + "AND AG.AGENT_APP_TYPE1 = '0' "
-				+ "AND AG.AGENT_SID1 = ? ) " + "AS SYONIN " + "INNER JOIN ( "
-				+ "SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
-				+ "FROM WWFDT_APPROVAL_PHASE_ST AP " + "WHERE AP.APP_PHASE_ATR IN ('0','3') "
-				+ "GROUP BY AP.ROOT_STATE_ID )" + "AS NOWFAS " + "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
-				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER ";
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS WHERE APS.APPROVER_ID = ? "
+				+ "AND APS.APPROVAL_ATR = '0' AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? UNION ALL "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER "
+				+ "FROM WWFDT_APPROVER_STATE APS INNER JOIN CMMMT_AGENT AG "
+				+ "ON APS.APPROVER_ID = AG.SID WHERE APS.APPROVAL_ATR = '0' "
+				+ "AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? "
+				+ "AND AG.START_DATE <= ? AND AG.END_DATE >= ? AND AG.AGENT_APP_TYPE1 = '0' "
+				+ "AND AG.AGENT_SID1 = ? ) AS SYONIN "
+				+ "INNER JOIN ( SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MAX(PHASE_ORDER) AS NOW_PHASE_ORDER "
+				+ "FROM WWFDT_APPROVAL_PHASE_ST AP WHERE AP.APP_PHASE_ATR IN ('0','3') "
+				+ "GROUP BY AP.ROOT_STATE_ID ) AS NOWFAS "
+				+ "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER";
 		try (PreparedStatement stmt = this.connection().prepareStatement(SELECT)) {
-			stmt.setString(1, companyID);
-			stmt.setString(2, loginSID);
-			stmt.setDate(3, Date.valueOf(startDate.localDate()));
-			stmt.setDate(4, Date.valueOf(endDate.localDate()));
-			stmt.setString(5, companyID);
-			stmt.setDate(6, Date.valueOf(startDate.localDate()));
-			stmt.setDate(7, Date.valueOf(endDate.localDate()));
-			stmt.setDate(8, Date.valueOf(baseDate.localDate()));
-			stmt.setDate(9, Date.valueOf(baseDate.localDate()));
-			stmt.setString(10, loginSID);
+			stmt.setString(1, loginSID);
+			stmt.setDate(2, Date.valueOf(startDate.localDate()));
+			stmt.setDate(3, Date.valueOf(endDate.localDate()));
+			stmt.setDate(4, Date.valueOf(startDate.localDate()));
+			stmt.setDate(5, Date.valueOf(endDate.localDate()));
+			stmt.setDate(6, Date.valueOf(baseDate.localDate()));
+			stmt.setDate(7, Date.valueOf(baseDate.localDate()));
+			stmt.setString(8, loginSID);
 			ResultSet result = stmt.executeQuery();
 			while (result.next()) {
 				// result.getString(SELECT);

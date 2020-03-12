@@ -30,8 +30,8 @@ public class ApprovalInfoWebsevice {
 	//HOATT - CMM018_2
 	@POST
 	@Path("app-useAtr")
-	public List<AppUseAtrDto> appUseAtr(String workplaceID){
-		return appUseAtrFinder.getAppUseAtr(workplaceID);
+	public List<AppUseAtrDto> appUseAtr(AppUserAtrParam param){
+		return appUseAtrFinder.getAppUseAtr(param.getTab(), param.getWorkplaceID(), param.getEmployeeId());
 	}
 	@POST
 	@Path("appSet")
