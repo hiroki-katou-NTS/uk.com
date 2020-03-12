@@ -176,7 +176,18 @@ module jcm007.a {
                 $('#retirementDateId').focus();
             });
         }
+        
+        public exportExcel(): void {
 
+            let self = this,
+                param = _.map(self.employeeListTab2, item => { return { sid: item.sId, pid: item.pId } });
+
+            block.grayout();
+            service.exportExcel({ listParam: param }).done(() => {
+                block.clear();
+            });
+        }
+        
         // select emp ben tab-1
         public seletedEmployee(data): void {
             let self = this;
