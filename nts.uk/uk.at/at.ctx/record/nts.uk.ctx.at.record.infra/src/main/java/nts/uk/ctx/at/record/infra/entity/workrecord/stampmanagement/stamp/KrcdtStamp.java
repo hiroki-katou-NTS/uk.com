@@ -182,8 +182,8 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.lateNightOverTime = stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 				? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 				: null; // lateNightOverTime
-		this.locationLon = new BigDecimal(0); // TODO
-		this.locationLat = new BigDecimal(0); // TODO
+		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null;
+		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null;
 		this.outsideAreaArt = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr()
 				: null;
 		return this;

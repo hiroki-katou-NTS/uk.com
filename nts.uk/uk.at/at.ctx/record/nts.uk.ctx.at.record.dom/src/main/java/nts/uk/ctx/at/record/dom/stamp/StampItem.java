@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class StampItem extends AggregateRoot {
 	/**
 	 * カード番号
-	 * 打刻カード番号
 	 */
 	private CardNumber cardNumber;
 	/**
@@ -47,7 +46,6 @@ public class StampItem extends AggregateRoot {
 	private StampAtr stampAtr;
 	/**
 	 * 勤務場所コード
-	 * 打刻場所コード
 	 */
 	private WorkLocationCD workLocationCd;
 	//null

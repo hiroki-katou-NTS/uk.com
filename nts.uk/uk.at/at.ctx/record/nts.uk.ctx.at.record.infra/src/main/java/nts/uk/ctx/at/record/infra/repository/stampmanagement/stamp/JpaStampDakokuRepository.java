@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.stampmanagement.stamp;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -8,9 +10,12 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
@@ -18,6 +23,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.OvertimeDeclaration;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -26,6 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -48,6 +55,27 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
+	private static final String GET_STAMP_BY_LIST_CARD = "select s from KrcdtStamp s "
+			+ " where s.pk.cardNumber in  :cardNumbers ";
+	
+	private static final String GET_STAMP_BY_DATEPERIOD = "select d.workLocationName, s from KrcdtStamp s "
+			+ " LEFT JOIN KwlmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
+			+ " where s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " and s.cid = :cid"
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+	
+	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS = "select  e.sid, d.workLocationName, from KrcdtStamp s "
+			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
+			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " where s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " and s.cid = :cid"
+			+ " and s.pk.cardNumber in :listCard"
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+	
 	// [1] insert(打刻)
 	@Override
 	public void insert(Stamp stamp) {
@@ -120,12 +148,13 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				new BigDecimal(0), // TODO
-				new BigDecimal(0), // TODO
+				new BigDecimal(stamp.getLocationInfor().isPresent()?stamp.getLocationInfor().get().getPositionInfor().getLongitude():null), 
+				new BigDecimal(stamp.getLocationInfor().isPresent()?stamp.getLocationInfor().get().getPositionInfor().getLatitude():null), 
 				stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
+		
 		return new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
@@ -141,8 +170,105 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 										new AttendanceTime(entity.lateNightOverTime))),
 
 				entity.reflectedAtr,
-				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, 0)// TODO location
+				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
 		);
+	}
+	
+private Stamp toDomainVer2(Object[] object) {
+	String workLocationName = (String) object[0];
+	KrcdtStamp entity = (KrcdtStamp) object[1];
+	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
+				new StampType(entity.changeHalfDay,
+						entity.goOutArt == null ? null : GoingOutReason.corvert(entity.goOutArt),
+						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+						ChangeCalArt.valueOf(entity.changeCalArt)),
+
+				new RefectActualResult(entity.suportCard,
+						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+						entity.overTime == null ? null
+								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+										new AttendanceTime(entity.lateNightOverTime))),
+
+				entity.reflectedAtr,
+				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
+		);
+	stamp.setWorkLocationName(new WorkLocationName(workLocationName));
+	return stamp;
+	}
+private Stamp toDomainVer3(Object[] object) {
+	String personId = (String) object[0];
+	String workLocationName = (String) object[1];
+	KrcdtStamp entity = (KrcdtStamp) object[2];
+	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
+				new StampType(entity.changeHalfDay,
+						entity.goOutArt == null ? null : GoingOutReason.corvert(entity.goOutArt),
+						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+						ChangeCalArt.valueOf(entity.changeCalArt)),
+
+				new RefectActualResult(entity.suportCard,
+						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+						entity.overTime == null ? null
+								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+										new AttendanceTime(entity.lateNightOverTime))),
+
+				entity.reflectedAtr,
+				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
+		);
+	stamp.setWorkLocationName(new WorkLocationName(workLocationName));
+	stamp.setEmployeeId(personId);
+	return stamp;
+	}
+
+	@Override
+	public List<Stamp> getByListCard(List<String> stampNumbers) {
+		if(stampNumbers.isEmpty())
+			return Collections.emptyList();
+		List<Stamp> data = this.queryProxy().query(GET_STAMP_BY_LIST_CARD, KrcdtStamp.class).setParameter("cardNumbers", stampNumbers)
+				.getList(x -> toDomain(x));
+		
+		return data;
+	}
+
+	@Override
+	public List<Stamp> getByDateperiod(String companyId, DatePeriod period) {
+		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
+				period.start().day(), 0, 0, 0);
+
+		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
+				59, 59);
+
+		return this.queryProxy().query(GET_STAMP_BY_DATEPERIOD, Object[].class)
+				.setParameter("startStampDate", start)
+				.setParameter("endStampDate", end)
+				.setParameter("cid", companyId)
+				.getList(x -> toDomainVer2(x));
+
+	}
+
+	@Override
+	public List<Stamp> getByCardAndPeriod(String companyId, List<String> listCard, DatePeriod period) {
+		if (CollectionUtil.isEmpty(listCard)) {
+			return Collections.emptyList();
+		}
+		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
+				period.start().day(), 0, 0, 0);
+
+		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
+				59, 59);
+		List<Stamp> data = new ArrayList<>();
+		CollectionUtil.split(listCard, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			data.addAll(this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS, Object[].class)
+				.setParameter("startStampDate", start)
+				.setParameter("endStampDate", end)
+				.setParameter("cid", companyId)
+				.setParameter("listCard", listCard)
+				.getList(x -> toDomainVer3(x)));
+		});
+		return data;
 	}
 
 }

@@ -31,14 +31,14 @@ public class StampInfoDisp implements DomainValue {
 	/**
 	 * 打刻区分
 	 */
-	private final int stampAtr;
+	private final String stampAtr;
 
 	/**
 	 * 打刻
 	 */
 	private final Optional<Stamp> stamp;
 
-	public StampInfoDisp(StampNumber stampNumber, GeneralDateTime stampDatetime, int stampAtr, Stamp stamp) {
+	public StampInfoDisp(StampNumber stampNumber, GeneralDateTime stampDatetime, String stampAtr, Stamp stamp) {
 		super();
 		this.stampNumber = stampNumber;
 		this.stampDatetime = stampDatetime;
