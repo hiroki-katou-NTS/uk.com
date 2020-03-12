@@ -64,6 +64,25 @@ public class DatabeforereflectingFinder {
 		return resultDto;
 
 	}
+	
+	// 退職日変更時処理(xử lý khi ngày nghỉ hưu thay đổi)
+	public RetirementRelartedDto ProcessRetirementDateChanges(GeneralDate resignmentDate) {
+		if (resignmentDate == null) {
+			return RetirementRelartedDto.builder().build();
+		}
+
+		// アルゴリズム[退職関連情報の取得]を実行する(Thực hiện thuật toán [lấy thông tin liên quan
+		// đến nghỉ hưu])
+
+		return getRetirementRelatedInfor();
+
+	}
+
+	private RetirementRelartedDto getRetirementRelatedInfor() {
+		return null;
+		// TODO Auto-generated method stub
+
+	}
 
 	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo ) {
 
