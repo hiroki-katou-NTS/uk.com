@@ -105,11 +105,7 @@ module jhn003.a.vm {
             block.grayout();
 
             let param  = ko.toJS(self.searchInfo());
-            
-            //set start date la dau ngay
-            param.appDate.startDate.setHours(0, 0, 0, 0);
-            //set end date la cuoi ngay
-            param.appDate.endDate.setHours(23, 59, 59, 999);
+
             service.findPersonReport(param).done((data) => {
 
                 self.reportList(_.map(data, x => new PersonReport(x)));
@@ -228,7 +224,7 @@ module jhn003.a.vm {
     }
 
     class SearchInfo {
-        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment(new Date()).add(-1, 'M').toDate(), endDate: moment(new Date()).add(1, 'M').toDate() });
+        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment.utc(new Date()).add(-1, 'M').toDate(), endDate: moment.utc(new Date()).add(1, 'M').toDate() });
         inputName: KnockoutObservable<string> = ko.observable('');
         approvalReport: KnockoutObservable<boolean> = ko.observable(false);
         reportItems: KnockoutObservableArray<ItemModel> = ko.observableArray([

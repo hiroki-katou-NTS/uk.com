@@ -200,7 +200,6 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				query = String.format(query, inputName, inputName);
 			}
 		}
-		
 
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
