@@ -7,6 +7,8 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * AR : 打刻
@@ -18,12 +20,15 @@ public class Stamp implements DomainAggregate {
 	
 	/**
 	 * 打刻カード番号
+	 * カード番号(old)
 	 */
 	@Getter
 	private final StampNumber cardNumber;
 
 	/**
 	 * 打刻日時
+	 * 年月日 (old) + 勤怠時刻 (old)
+	 * 
 	 */
 	@Getter
 	private final GeneralDateTime stampDateTime;
@@ -58,6 +63,16 @@ public class Stamp implements DomainAggregate {
 	 */
 	@Getter
 	private final Optional<StampLocationInfor> locationInfor;
+	
+	//tạo tạm để lưu biến TimeWithDayAttr
+	@Getter
+	private Optional<AttendanceTime> attendanceTime = Optional.empty();
+	
+	@Getter
+	private String employeeId;
+	
+	@Getter
+	private WorkLocationName workLocationName;
 
 	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
 			RefectActualResult refActualResults, boolean reflectedCategory,
@@ -70,5 +85,19 @@ public class Stamp implements DomainAggregate {
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = reflectedCategory;
 		this.locationInfor = Optional.of(locationInfor);
+	}
+	
+	public void setAttendanceTime(AttendanceTime attendanceTime) {
+		this.attendanceTime = Optional.ofNullable(attendanceTime);
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public void setWorkLocationName(WorkLocationName workLocationName) {
+		this.workLocationName = workLocationName;
 	} 
+	
+	
 }

@@ -30,7 +30,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOn
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
-import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
@@ -47,11 +46,11 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.PClogOnOffLack
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrectOrderAlgorithm;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubleStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
@@ -242,18 +241,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// - end
 
 		// 打刻を反映する - Dung code
-        List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput,
+        List<Stamp> lstStamp =this.stampDomainService.handleData(stampReflectRangeOutput,
                 empCalAndSumExecLogID, processingDate, employeeID, companyID,recreateFlag);
-		if (lstStampItem == null) {
+		if (lstStamp == null) {
 			reflectStamp = null;
 		}
 
-		// lstStampItem is null -> has error
-		if (lstStampItem != null) {
+		// lstStamp is null -> has error
+		if (lstStamp != null) {
 
-			if (!lstStampItem.isEmpty()) {
+			if (!lstStamp.isEmpty()) {
 				reflectStamp = this.reflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
-						timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate,
+						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeID, companyID);
 			} else {
 				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
@@ -903,18 +902,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// - end
 
 		// 打刻を反映する - Dung code
-        List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput,
+        List<Stamp> lstStamp = this.stampDomainService.handleData(stampReflectRangeOutput,
                 empCalAndSumExecLogID, processingDate, employeeId, companyId,recreateFlag);
-		if (lstStampItem == null) {
+		if (lstStamp == null) {
 			reflectStamp = null;
 		}
 
 		// lstStampItem is null -> has error
-		if (lstStampItem != null) {
+		if (lstStamp != null) {
 
-			if (!lstStampItem.isEmpty()) {
+			if (!lstStamp.isEmpty()) {
 				reflectStamp = this.reflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformanceOpt.get(),
-						timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate,
+						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeId, companyId);
 			} else {
 				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);

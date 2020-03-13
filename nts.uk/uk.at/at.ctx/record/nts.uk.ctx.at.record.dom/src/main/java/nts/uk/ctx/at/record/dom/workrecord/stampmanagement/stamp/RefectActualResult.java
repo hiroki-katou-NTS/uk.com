@@ -22,6 +22,7 @@ public class RefectActualResult implements DomainValue {
 	
 	/**
 	 * 打刻場所コード
+	 * 勤務場所コード old
 	 */
 	private final Optional<WorkLocationCD> workLocationCD;
 	

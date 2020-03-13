@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class OvertimeDeclaration implements DomainValue {
 	/**
 	 * 時間外時間
+	 * 就業時間帯コード old
 	 */
 	private final AttendanceTime overTime;
 	

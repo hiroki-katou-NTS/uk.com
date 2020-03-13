@@ -17,4 +17,10 @@ public interface StampDakokuRepository {
 	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDateTime stampDateTime);
 
 	public List<Stamp> getStempRcNotResgistNumber(DatePeriod period);
+	
+	public List<Stamp> getByListCard(List<String> stampNumbers);
+	
+	public List<Stamp> getByDateperiod(String companyId,DatePeriod period);
+	
+	public List<Stamp> getByCardAndPeriod(String companyId,List<String> listCard,DatePeriod period);
 }
