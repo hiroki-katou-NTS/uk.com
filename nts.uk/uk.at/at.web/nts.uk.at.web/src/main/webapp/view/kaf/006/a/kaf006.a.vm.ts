@@ -127,6 +127,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
         hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
         dataMax: KnockoutObservable<boolean> = ko.observable(false);
+        
+        appAbsenceStartInfoDto: any;
         constructor(transferData :any) {
 
             let self = this;
@@ -220,6 +222,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: null,
                 employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
+                self.appAbsenceStartInfoDto = data; 
                 $("#inputdate").focus();
                 //No.65
                 let appEmpSet = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.employmentSet;
@@ -524,9 +527,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 displayHalfDayValue: self.displayHalfDayValue(),
                 holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                alldayHalfDay: value
+                alldayHalfDay: value,
+                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
             }).done((result) => {
-                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.workHoursDisp);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                     self.workTypecodes([]);

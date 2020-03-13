@@ -19,7 +19,6 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeave
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SettingNo65;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
@@ -42,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.HolidayRequestSe
 import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
@@ -509,8 +509,16 @@ public class AppAbsenceFinder {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public AppAbsenceDto getChangeByAllDayOrHalfDay(String startAppDate, boolean displayHalfDayValue, String employeeID,
-			Integer holidayType, int alldayHalfDay) {
+	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDay(AppAbsenceStartInfoDto appAbsenceStartInfoDto, 
+			boolean displayHalfDayValue, Integer alldayHalfDay, Integer holidayType) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		if(holidayType!=null) {
+			appAbsenceStartInfoOutput = absenseProcess
+					.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput, displayHalfDayValue, alldayHalfDay, holidayType);
+		}
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		/*
 		AppAbsenceDto result = new AppAbsenceDto();
 		if (employeeID == null) {
 			employeeID = AppContexts.user().employeeId();
@@ -546,6 +554,7 @@ public class AppAbsenceFinder {
 			result.setWorkTimeCodes(listWorkTimeCodes);
 		}
 		return result;
+		*/
 	}
 
 	/**

@@ -3,17 +3,33 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDivisionDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
+import nts.uk.shr.com.primitive.Memo;
 
 public class AppDispInfoWithDateDto {
 	/**
@@ -49,7 +65,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 基準日
 	 */
-	public GeneralDate baseDate;
+	public String baseDate;
 	
 	/**
 	 * 表示する実績内容
@@ -71,7 +87,7 @@ public class AppDispInfoWithDateDto {
 				.getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.errorFlag = appDispInfoWithDateOutput.getErrorFlag().value;
 		appDispInfoWithDateDto.prePostAtr = appDispInfoWithDateOutput.getPrePostAtr().value;
-		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate();
+		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate().toString("yyyy/MM/dd");
 		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst();
 		appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
 		return appDispInfoWithDateDto;
@@ -95,5 +111,37 @@ public class AppDispInfoWithDateDto {
 		workTimeSettingDto.memo = workTimeSetting.getMemo().v();
 		workTimeSettingDto.note = workTimeSetting.getNote().v();
 		return workTimeSettingDto;
+	}
+	
+	public AppDispInfoWithDateOutput toDomain() {
+		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
+		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
+		output.setEmploymentSet(employmentSet.toDomain());
+		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
+		output.setApprovalRootState(new ApprovalRootStateImport_New(
+				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		output.setErrorFlag(EnumAdaptor.valueOf(errorFlag, ErrorFlagImport.class));
+		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
+		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+		output.setAchievementOutputLst(achievementOutputLst);
+		output.setAppDetailContentLst(appDetailContentLst);
+		return output;
+	}
+	
+	public static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
+		return new WorkTimeSetting(
+				workTimeSetting.companyId, 
+				new WorkTimeCode(workTimeSetting.worktimeCode), 
+				new WorkTimeDivision(
+						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeDailyAtr, WorkTimeDailyAtr.class), 
+						EnumAdaptor.valueOf(workTimeSetting.workTimeDivision.workTimeMethodSet, WorkTimeMethodSet.class)),
+				AbolishAtr.valueOf(workTimeSetting.isAbolish ? 0 : 1),
+				new ColorCode(workTimeSetting.colorCode), 
+				new WorkTimeDisplayName(
+						new WorkTimeName(workTimeSetting.workTimeDisplayName.workTimeName), 
+						new WorkTimeAbName(workTimeSetting.workTimeDisplayName.workTimeAbName), 
+						new WorkTimeSymbol(workTimeSetting.workTimeDisplayName.workTimeSymbol)), 
+				new Memo(workTimeSetting.memo), 
+				new WorkTimeNote(workTimeSetting.note));
 	}
 }

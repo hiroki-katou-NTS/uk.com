@@ -2,7 +2,11 @@ package nts.uk.ctx.at.request.app.find.setting.company.request.applicationsettin
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,5 +56,16 @@ public class AppTypeSettingDto {
 		appTypeSettingDto.displayAppReason = appTypeSetting.getDisplayAppReason().value;
 		appTypeSettingDto.appType = appTypeSetting.getAppType().value;
 		return appTypeSettingDto;
+	}
+	
+	public AppTypeSetting toDomain() {
+		return new AppTypeSetting(
+				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitialAtr.class), 
+				canClassificationChange, 
+				EnumAdaptor.valueOf(displayFixedReason, DisplayAtr.class), 
+				sendMailWhenApproval, 
+				sendMailWhenRegister, 
+				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType.class));
 	}
 }

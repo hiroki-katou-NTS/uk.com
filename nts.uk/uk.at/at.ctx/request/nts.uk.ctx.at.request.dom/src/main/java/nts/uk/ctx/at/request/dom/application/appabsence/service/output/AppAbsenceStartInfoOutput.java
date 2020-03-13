@@ -48,7 +48,7 @@ public class AppAbsenceStartInfoOutput {
 	/**
 	 * 就業時間帯表示フラグ
 	 */
-	private boolean workTimeDisp;
+	private boolean workHoursDisp;
 	
 	/**
 	 * 勤務種類一覧

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.app.find.setting.company.request.applicationsettin
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 
 @AllArgsConstructor
@@ -29,5 +31,12 @@ public class ReceptionRestrictionSettingDto {
 		receptionRestrictionSettingDto.beforehandRestriction = BeforehandRestrictionDto.fromDomain(receptionRestrictionSetting.getBeforehandRestriction());
 		receptionRestrictionSettingDto.afterhandRestriction = AfterhandRestrictionDto.fromDomain(receptionRestrictionSetting.getAfterhandRestriction());
 		return receptionRestrictionSettingDto;
+	}
+	
+	public ReceptionRestrictionSetting toDomain() {
+		return new ReceptionRestrictionSetting(
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				beforehandRestriction.toDomain(), 
+				afterhandRestriction.toDomain());
 	}
 }

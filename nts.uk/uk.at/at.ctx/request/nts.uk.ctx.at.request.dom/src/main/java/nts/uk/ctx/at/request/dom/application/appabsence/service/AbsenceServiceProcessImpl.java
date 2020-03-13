@@ -516,7 +516,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				Optional.of(appAbsenceStartInfoOutput.getHdAppSet()), 
 				companyID);
 		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
-		appAbsenceStartInfoOutput.setWorkTimeDisp(controlDispWorkingHours);
+		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
 		// INPUT．「休暇種類」をチェックする
 		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY.value) {
 			// 特別休暇の上限情報取得する

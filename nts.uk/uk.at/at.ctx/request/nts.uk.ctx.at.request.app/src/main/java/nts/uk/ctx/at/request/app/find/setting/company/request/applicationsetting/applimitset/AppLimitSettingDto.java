@@ -43,4 +43,14 @@ public class AppLimitSettingDto {
 		appLimitSettingDto.requiredAppReason = appLimitSetting.getRequiredAppReason();
 		return appLimitSettingDto;
 	}
+	
+	public AppLimitSetting toDomain() {
+		return new AppLimitSetting(
+				canAppAchievementLock, 
+				canAppFinishWork, 
+				canAppAchievementConfirm, 
+				canAppOTNight, 
+				canAppAchievementMonthConfirm, 
+				requiredAppReason);
+	}
 }

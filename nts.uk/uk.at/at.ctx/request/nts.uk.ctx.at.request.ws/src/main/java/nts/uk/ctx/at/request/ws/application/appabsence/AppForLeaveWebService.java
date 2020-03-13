@@ -50,8 +50,12 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getChangeAllDayHalfDay")
-	public AppAbsenceDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+	public AppAbsenceStartInfoDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(
+				param.getAppAbsenceStartInfoDto(),
+				param.isDisplayHalfDayValue(),
+				param.getAlldayHalfDay(),
+				param.getHolidayType());
 	}
 	@POST
 	@Path("getChangeAllDayHalfDayForDetail")
