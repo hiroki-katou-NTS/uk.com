@@ -84,16 +84,6 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 			}
 			displayReason += command.getApplicationReason();
 		}
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(companyId);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
-			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-					&& Strings.isBlank(typicalReason+displayReason)) {
-				throw new BusinessException("Msg_115");
-			}
-		}
 		appReason = typicalReason + displayReason;
 
 		// Create Application
