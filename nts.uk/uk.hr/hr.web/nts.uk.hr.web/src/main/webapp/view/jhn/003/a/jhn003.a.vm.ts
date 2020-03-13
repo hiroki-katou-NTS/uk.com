@@ -110,7 +110,7 @@ module jhn003.a.vm {
             param.appDate.startDate.setHours(0, 0, 0, 0);
             //set end date la cuoi ngay
             param.appDate.endDate.setHours(23, 59, 59, 999);
-            service.findPersonReport(ko.toJS(self.searchInfo())).done((data) => {
+            service.findPersonReport(param).done((data) => {
 
                 self.reportList(_.map(data, x => new PersonReport(x)));
                 self.bindReportList();
