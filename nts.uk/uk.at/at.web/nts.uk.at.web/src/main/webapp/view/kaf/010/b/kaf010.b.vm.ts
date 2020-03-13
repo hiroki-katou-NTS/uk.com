@@ -178,7 +178,8 @@ module nts.uk.at.view.kaf010.b {
                     self.checkRequiredBreakTimes();
                     //Check work content Changed
                     self.checkWorkContentChanged();
-                    dfd.resolve(); 
+                    dfd.resolve();
+                    $("#inpStartTime1").focus();
                 })
                 .fail(function(res) {
                     if(res.messageId == 'Msg_423'){

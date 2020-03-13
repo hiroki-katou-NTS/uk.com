@@ -255,6 +255,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 
                 dfd.resolve(data);
                 nts.uk.ui.block.clear();
+                $("#inputdate").focus();
             }).fail((res) => {
                 if(res.messageId == 'Msg_426'){
                     dialog.alertError({messageId : res.messageId}).then(function(){
