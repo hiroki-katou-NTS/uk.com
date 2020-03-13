@@ -485,7 +485,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 holidayType: self.holidayTypeCode(),
                 prePostAtr: self.prePostSelected(),
                 workTypeCode: self.selectedTypeOfDuty(),
-                alldayHalfDay: self.selectedAllDayHalfDayValue()
+                alldayHalfDay: self.selectedAllDayHalfDayValue(),
+                appAbsenceStartInfoDto:  self.appAbsenceStartInfoDto
             }).done((result) => {
                 if (!nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     let a = [];
@@ -500,13 +501,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.selectedTypeOfDuty('');
                     }
                 }
-                self.prePostSelected(result.application.prePostAtr);
-                self.displayPrePostFlg(result.prePostFlg);
+                // self.prePostSelected(result.application.prePostAtr);
+                // self.displayPrePostFlg(result.prePostFlg);
                 if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
                     self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
                 }
                 //ver13 hoatt - 2018.07.31
-                self.convertListHolidayType(result.holidayAppTypeName, result.checkDis);
+                // self.convertListHolidayType(result.holidayAppTypeName, result.checkDis);
+                self.convertListHolidayType(result.holidayAppTypeName, result.remainVacationInfo);
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);

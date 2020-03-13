@@ -141,8 +141,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 		for(GeneralDate loopDate : dateLst) {
 			// ドメインモデル「申請」を取得
 			if(appType == ApplicationType.ABSENCE_APPLICATION) {
-				AppAbsence appAbsence = appAbsenceRepository.getAbsenceById(companyID, "").get();
-				result.add(appAbsence);
+				// AppAbsence appAbsence = appAbsenceRepository.getAbsenceById(companyID, "").get();
+				// result.add(appAbsence);
 			}
 		}
 		return result;
