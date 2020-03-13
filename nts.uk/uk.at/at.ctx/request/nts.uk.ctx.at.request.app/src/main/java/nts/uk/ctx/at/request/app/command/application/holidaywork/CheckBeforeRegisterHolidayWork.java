@@ -13,7 +13,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
@@ -47,6 +50,13 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -88,11 +98,43 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
+	@Inject
+	ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
+		
+		// check input 申請理由
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+				companyId, 
+				ApplicationType.BREAK_TIME_APPLICATION.value).get();
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
+			typicalReason += command.getAppReasonID();
+		}
+		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.getApplicationReason();
+		}
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(companyId);
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)
+			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+					&& Strings.isBlank(typicalReason+displayReason)) {
+				throw new BusinessException("Msg_115");
+			}
+		}
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
