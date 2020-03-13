@@ -4,27 +4,23 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 
 @Stateless
-public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
-	// 事前チェック
-	@Override
-	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
+public class AlgorithmPreCheck {
+	// ten thuat toan : 事前チェック
+	// thua toan goi den : アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
+	public void preCheck(DataBeforeReflectCommand input) {
 
 		// [A222_12 退職日] と[A222_14 公開日]をチェックする ( Check [A222_14 Release date] và
 		// [A222_12 Retirement date]
-
-		DataBeforeReflectCommand command = context.getCommand();
 		
-		GeneralDate retirementDate = GeneralDate.fromString(command.retirementDate, "yyyy/MM/dd"); // A222_12
-		GeneralDate releaseDate = GeneralDate.fromString(command.releaseDate, "yyyy/MM/dd"); // A222_14
+		GeneralDate retirementDate = GeneralDate.fromString(input.retirementDate, "yyyy/MM/dd"); // A222_12
+		GeneralDate releaseDate = GeneralDate.fromString(input.releaseDate, "yyyy/MM/dd"); // A222_14
 		
 		// 社員が選択されているかのチェック(check xem employee có đang được chọn hay không)
-		if (StringUtil.isNullOrEmpty(command.getSId(), false)) {
+		if (StringUtil.isNullOrEmpty(input.getSId(), false)) {
 			throw new BusinessException("MsgJ_JCM007_12");
 		}
 
@@ -34,15 +30,15 @@ public class PreCheckCommandHandler extends CommandHandler<DataBeforeReflectComm
 
 		if (retirementDate.before(releaseDate)) {
 			index++;
-			bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_2")); //  // 
+			bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_2"));
 		}
 		/**
 		 * { value: 1, text: '退職' }, { value: 2, text: '転籍' }, { value: 3, text:
 		 * '解雇' }, { value: 4, text: '定年' }
 		 */
-		int retirementType = command.retirementType;
+		int retirementType = input.retirementType;
 		if (retirementType == 3) {
-			GeneralDate dismissalNoticeDate = GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd"); // A222_35
+			GeneralDate dismissalNoticeDate = GeneralDate.fromString(input.dismissalNoticeDate, "yyyy/MM/dd"); // A222_35
 			if (retirementDate.before(dismissalNoticeDate)) {
 				index++;
 				bundleExeption.addMessage(new BusinessException("MsgJ_JCM007_3"));

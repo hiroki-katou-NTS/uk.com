@@ -10,9 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.hr.shared.app.databeforereflecting.command.AlgorithmDateCheck;
+import nts.uk.ctx.hr.shared.app.databeforereflecting.command.AlgorithmPreCheck;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.DataBeforeReflectCommand;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.ModifyRetireeInformationCommandHandler;
-import nts.uk.ctx.hr.shared.app.databeforereflecting.command.PreCheckCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.RemoveCommandHandler;
 import nts.uk.ctx.hr.shared.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
@@ -43,7 +44,10 @@ public class DataBeforeReflectingPerInfoWS {
 	private  RemoveCommandHandler removeCommnad;
 	
 	@Inject
-	private PreCheckCommandHandler preCheck;
+	private AlgorithmPreCheck preCheck;
+	
+	@Inject
+	private AlgorithmDateCheck dateCheck;
 
 	@POST
 	@Path("/getData")
@@ -60,8 +64,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/register/preCheck")
-	public void preCheck(DataBeforeReflectCommand command) {
-		 this.preCheck.handle(command);
+	public void preCheck(DataBeforeReflectCommand input) {
+		 this.preCheck.preCheck(input);
 	}
 	
 	@POST

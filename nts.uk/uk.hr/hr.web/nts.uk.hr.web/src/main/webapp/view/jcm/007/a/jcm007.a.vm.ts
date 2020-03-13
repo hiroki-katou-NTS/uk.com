@@ -8,73 +8,73 @@ module jcm007.a {
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import dialog = nts.uk.ui.dialog;
-    
+
     var block = nts.uk.ui.block;
     export class ViewModel {
 
         currentEmployee: KnockoutObservable<EmployeeModel>;
-        
-        tabs       : KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        enable_btnRemove   : KnockoutObservable<boolean>;
-        enable_btnRegister : KnockoutObservable<boolean>;
+        enable_btnRemove: KnockoutObservable<boolean>;
+        enable_btnRegister: KnockoutObservable<boolean>;
 
         // tab 2
-        employeeListTab2  : [];
-        enable_tab2 : KnockoutObservable<boolean>;
-        visible_tab2 : KnockoutObservable<boolean>;
-        
-        itemSelectedTab1  : KnockoutObservable<any>;
-        itemSelectedTab2  : KnockoutObservable<any>;
-        empInfoHeaderList : KnockoutObservableArray<IEmpInfoHeader>;
-        
+        employeeListTab2: [];
+        enable_tab2: KnockoutObservable<boolean>;
+        visible_tab2: KnockoutObservable<boolean>;
+
+        itemSelectedTab1: KnockoutObservable<any>;
+        itemSelectedTab2: KnockoutObservable<any>;
+        empInfoHeaderList: KnockoutObservableArray<IEmpInfoHeader>;
+
         // ccg029
         input: Input;
-        
-        isNewMode : boolean;
-        
-        status_Unregistered : string;
-        status_ApprovalPending : string;
-        status_WaitingReflection : string;
-        
+
+        isNewMode: boolean;
+
+        status_Unregistered: string;
+        status_ApprovalPending: string;
+        status_WaitingReflection: string;
+
         notify_Ctg_Normal: string;
-        notify_Ctg_Report : string;
-        
+        notify_Ctg_Report: string;
+
         constructor() {
             let self = this;
-            
-            self.enable_tab2  = ko.observable(true);
-            self.visible_tab2  = ko.observable(true);
-            
+
+            self.enable_tab2 = ko.observable(true);
+            self.visible_tab2 = ko.observable(true);
+
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: getText('JCM007_A221_1_1') , content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: getText('JCM007_A221_1_3') , content: '.tab-content-2', enable: self.enable_tab2, visible: self.visible_tab2 }
+                { id: 'tab-1', title: getText('JCM007_A221_1_1'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: getText('JCM007_A221_1_3'), content: '.tab-content-2', enable: self.enable_tab2, visible: self.visible_tab2 }
             ]);
-            
-            self.employeeListTab2   = [];
+
+            self.employeeListTab2 = [];
             self.bindData();
-            
-            self.selectedTab        = ko.observable('tab-1');
 
-            self.currentEmployee    = ko.observable(new EmployeeModel(''));
-            
+            self.selectedTab = ko.observable('tab-1');
+
+            self.currentEmployee = ko.observable(new EmployeeModel(''));
+
             self.enable_btnRegister = ko.observable(true);
-            self.enable_btnRemove   = ko.observable(false);
+            self.enable_btnRemove = ko.observable(false);
 
-            self.itemSelectedTab1   = ko.observable(null);
-            self.itemSelectedTab2   = ko.observable(null);
-            self.empInfoHeaderList  = ko.observableArray([]);
+            self.itemSelectedTab1 = ko.observable(null);
+            self.itemSelectedTab2 = ko.observable(null);
+            self.empInfoHeaderList = ko.observableArray([]);
 
-            self.input              = new Input(undefined);
-            self.isNewMode          = false;
-            
-            self.status_Unregistered      = ''; // 0
-            self.status_ApprovalPending   = getText('JCM007_A3_2'); // 1
+            self.input = new Input(undefined);
+            self.isNewMode = false;
+
+            self.status_Unregistered = ''; // 0
+            self.status_ApprovalPending = getText('JCM007_A3_2'); // 1
             self.status_WaitingReflection = getText('JCM007_A3_3'); // 2
-        
-            self.notify_Ctg_Normal        = '';  // 0
-            self.notify_Ctg_Report        = getText('JCM007_A3_1'); // 1
-            
+
+            self.notify_Ctg_Normal = '';  // 0
+            self.notify_Ctg_Report = getText('JCM007_A3_1'); // 1
+
             self.selectedTab.subscribe((value) => {
                 if (value == 'tab-2') {
                     self.isNewMode = false;
@@ -91,7 +91,7 @@ module jcm007.a {
                                 self.enable_btnRemove(false);
                                 self.enable_disableInput(false);
                             }
-                            
+
                             let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == itemSelectedTab2.sid; });
                             if (objHeader) {
                                 let param = {
@@ -104,20 +104,20 @@ module jcm007.a {
                                 };
 
                                 self.setDataHeader(param);
-                                
+
                             }
 
                             let dataDetail = _.find(self.employeeListTab2, function(o) { return o.sid == itemSelectedTab2.sid; });
                             if (dataDetail) {
                                 self.setDataDetail(dataDetail);
                             }
-                            
+
                             $('#retirementDateId').focus();
                         } else {
                             self.initHeaderInfo();
                             self.initRetirementInfo();
                         }
-                        
+
                     });
                 } else if (value == 'tab-1') {
                     self.enable_btnRemove(false);
@@ -134,7 +134,7 @@ module jcm007.a {
                         };
 
                         self.setDataHeader(param);
-                        
+
                         self.initRetirementInfo();
                     } else {
                         self.initHeaderInfo();
@@ -145,7 +145,7 @@ module jcm007.a {
             });
 
             self.itemSelectedTab2.subscribe((value) => {
-                if(value == null) return;
+                if (value == null) return;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
                     // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
                     self.enable_btnRegister(true);
@@ -175,8 +175,10 @@ module jcm007.a {
                 self.setDataDetail(dataDetail);
                 $('#retirementDateId').focus();
             });
+
+
         }
-        
+
         public exportExcel(): void {
 
             let self = this,
@@ -187,8 +189,9 @@ module jcm007.a {
                 block.clear();
             });
         }
-        
+
         // select emp ben tab-1
+        // 共通部品「社員検索」から社員を選択 (Select employee từ common componen「searrch employee」  )
         public seletedEmployee(data): void {
             let self = this;
             self.itemSelectedTab1(data);
@@ -197,6 +200,22 @@ module jcm007.a {
                 block.grayout();
                 service.CheckStatusRegistration(data.employeeId).done(() => {
                     console.log('CheckStatusRegis DONE');
+
+                    // アルゴリズム[新規画面の表示]を実行する(Thực hiện thuật toán [hiển thị màn hình mới])
+                    this.initRetirementInfo();
+
+                    let param = {
+                        employeeId: data.employeeId,
+                        personId: data.personalId,
+                        baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                        getDepartment: true,
+                        getPosition: true,
+                        getEmployment: true
+                    };
+
+                    // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
+                    self.setDataHeader(param);
+
                 }).fail((error) => {
                     console.log('CheckStatusRegis FAIL');
                     block.clear();
@@ -205,23 +224,12 @@ module jcm007.a {
                 }).always(() => {
                     block.clear();
                 });
-                this.initRetirementInfo();
-            }
-            
-            let param = {
-                employeeId: data.employeeId,
-                personId: data.personalId,
-                baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                getDepartment: true,
-                getPosition: true,
-                getEmployment: true
-            };
 
-            self.setDataHeader(param);
+            }
         }
-        
+
         /** start page */
-        start(historyId : any) {
+        start(historyId: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             self.getListData(historyId).done(() => {
@@ -231,8 +239,8 @@ module jcm007.a {
             });
             return dfd.promise();
         }
-        
-        getListData(historyId : any, isAfterRemove : boolean) {
+
+        getListData(historyId: any, isAfterRemove: boolean) {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
@@ -244,7 +252,7 @@ module jcm007.a {
                     self.visible_tab2(true);
 
                     self.empInfoHeaderList = result.employeeImports;
-                    
+
                     if (self.selectedTab() == 'tab-1') {
                         self.enable_btnRemove(false);
                     } else if (self.selectedTab() == 'tab-2') {
@@ -255,20 +263,30 @@ module jcm007.a {
 
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
 
-                    if (historyId) {
-                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                        self.itemSelectedTab2(itemSelected);
-                        self.setDataDetail(itemSelected);
-                    }
 
                     if (historyId && isAfterRemove) {
                         let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                        let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                        self.itemSelectedTab2(itemSelected);
-                        self.setDataDetail(itemSelected);
-                        $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);
+                        if (itemSelected){
+                            let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                            self.itemSelectedTab2(itemSelected);
+                            self.setDataDetail(itemSelected);
+                            $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);
+                        } else {
+                            self.initHeaderInfo();
+                            self.initRetirementInfo();
+                            self.itemSelectedTab2(null);
+                        }
+                    } else if (historyId) {
+                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
+                        if (itemSelected) {
+                            self.itemSelectedTab2(itemSelected);
+                            self.setDataDetail(itemSelected);
+                        } else {
+                            self.initHeaderInfo();
+                            self.initRetirementInfo();
+                            self.itemSelectedTab2(null);
+                        }
                     }
-
                 } else {
 
                     self.enable_tab2(false);
@@ -278,20 +296,20 @@ module jcm007.a {
                     self.initRetirementInfo();
                     dfd.resolve();
                 }
-                
+
                 dfd.resolve();
                 block.clear();
-                
+
             }).fail((error) => {
                 console.log('Get Data Tab-2 Fail');
                 dfd.reject();
                 nts.uk.ui.dialog.info(error);
             }).always(() => {
                 block.clear();
-            }); 
+            });
             return dfd.promise();
         }
-        
+
         public bindData(): void {
             var self = this;
             $("#gridListEmployeesJcm007").igGrid({
@@ -302,27 +320,27 @@ module jcm007.a {
                         headerText: 'historyId', key: 'historyId', hidden: true
                     },
                     {
-                        headerText: getText('JCM007_A221_5') , key: 'status', dataType: 'string', width: '70px'
+                        headerText: getText('JCM007_A221_5'), key: 'status', dataType: 'string', width: '70px'
                     },
                     {
-                        headerText: getText('JCM007_A221_6') , key: 'scd', dataType: 'string', width: '70px'
+                        headerText: getText('JCM007_A221_6'), key: 'scd', dataType: 'string', width: '70px'
                     },
                     {
-                        headerText: getText('JCM007_A221_7') , key: 'employeeName', dataType: 'string', width: '140px'
+                        headerText: getText('JCM007_A221_7'), key: 'employeeName', dataType: 'string', width: '140px'
                     },
                     {
-                        headerText: getText('JCM007_A221_8') , key: 'retirementDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
+                        headerText: getText('JCM007_A221_8'), key: 'retirementDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
-                        headerText: getText('JCM007_A221_9') , key: 'releaseDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
+                        headerText: getText('JCM007_A221_9'), key: 'releaseDate', dataType: 'date', width: '120px', dateInputFormat: 'yyyy/MM/dd'
                     },
                     {
-                        headerText: getText('JCM007_A221_10') , key: 'notificationCategory', dataType: 'string', width: '80px'
+                        headerText: getText('JCM007_A221_10'), key: 'notificationCategory', dataType: 'string', width: '80px'
                     }
-//                    ,
-//                    {
-//                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
-//                    }
+                    //                    ,
+                    //                    {
+                    //                        headerText: getText('JCM007_A221_11') , key: 'inputDate', dataType: 'date', width: '100px', dateInputFormat: 'yyyy/MM/dd'
+                    //                    }
                 ],
                 dataSource: self.employeeListTab2,
                 dataSourceType: 'json',
@@ -338,7 +356,7 @@ module jcm007.a {
                         rowSelectionChanged: function(evt, ui) {
                             let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == ui.row.id; });
                             if (itemSelected) {
-                                 self.itemSelectedTab2(itemSelected);
+                                self.itemSelectedTab2(itemSelected);
                             }
                         }
                     },
@@ -346,8 +364,8 @@ module jcm007.a {
                         name: 'Filtering',
                         type: 'local',
                         mode: 'simple',
-                        dataFiltered: function (evt, ui) {
-                           $('#gridListEmployeesJcm007_scroll').css('height', '425px');
+                        dataFiltered: function(evt, ui) {
+                            $('#gridListEmployeesJcm007_scroll').css('height', '425px');
                         }
                     },
                     {
@@ -363,14 +381,14 @@ module jcm007.a {
                 ]
             });
         }
-        
+
         /** event when click register */
         register() {
             let self = this;
             let emp = ko.toJS(self.currentEmployee());
             let itemSelectedTab1 = self.itemSelectedTab1();
             let itemSelectedTab2 = self.itemSelectedTab2();
-            
+
             // validate
             if (((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) || (self.selectedTab() == 'tab-2')) {
                 $("#retirementDateId").trigger("validate");
@@ -380,13 +398,13 @@ module jcm007.a {
 
                 if (emp.selectedCode_Retiment == 3) {
                     $("#dismissalNoticeDateId").trigger("validate");
-                } 
+                }
             }
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             let command = {
                 historyId: '',
                 histId_Refer: '',
@@ -429,39 +447,40 @@ module jcm007.a {
                 other_6: emp.other_6 == false ? 0 : 1,
                 other_6Val: emp.other_6Val
             }
-            
-            if(command.naturalUnaReasons_1 == 1 && command.naturalUnaReasons_1Val == ''){
+
+            if (command.naturalUnaReasons_1 == 1 && command.naturalUnaReasons_1Val == '') {
                 command.naturalUnaReasons_1 = 0;
             }
-            if(command.businessReduction_2 == 1 && command.businessReduction_2Val == ''){
+            if (command.businessReduction_2 == 1 && command.businessReduction_2Val == '') {
                 command.businessReduction_2 = 0;
             }
-            if(command.seriousViolationsOrder_3 == 1 && command.seriousViolationsOrder_3Val == ''){
+            if (command.seriousViolationsOrder_3 == 1 && command.seriousViolationsOrder_3Val == '') {
                 command.seriousViolationsOrder_3 = 0;
             }
-            if(command.unauthorizedConduct_4 == 1 && command.unauthorizedConduct_4Val == ''){
+            if (command.unauthorizedConduct_4 == 1 && command.unauthorizedConduct_4Val == '') {
                 command.unauthorizedConduct_4 = 0;
             }
-            if(command.leaveConsiderableTime_5 == 1 && command.leaveConsiderableTime_5Val == ''){
+            if (command.leaveConsiderableTime_5 == 1 && command.leaveConsiderableTime_5Val == '') {
                 command.leaveConsiderableTime_5 = 0;
             }
-            if(command.other_6 == 1 && command.other_6Val == ''){
+            if (command.other_6 == 1 && command.other_6Val == '') {
                 command.other_6 = 0;
             }
 
             if ((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) {
-                
+
                 //2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
                 command.sId = itemSelectedTab1.employeeId;
                 command.pId = itemSelectedTab1.personalId;
                 command.scd = itemSelectedTab1.employeeCode;
                 command.employeeName = itemSelectedTab1.businessName;
+                // アルゴリズム[退職者情報の新規登録」を実行する (Thực hiện thuật toán [đăng ký mới thông tin người nghỉ hưu」)
                 self.preCheckAndRegisterNewEmp(command);
-                
-            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
-                       && itemSelectedTab2.notificationCategory == "" 
-                       && itemSelectedTab2.status == self.status_Unregistered) {
-                
+
+            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
+                && itemSelectedTab2.notificationCategory == ""
+                && itemSelectedTab2.status == self.status_Unregistered) {
+
                 // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
                 command.historyId = itemSelectedTab2.historyId;
                 command.sId = itemSelectedTab2.sid;
@@ -473,9 +492,9 @@ module jcm007.a {
                     self.enable_disableInput(true);
                 });
 
-            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null 
-                       && itemSelectedTab2.status != self.status_Unregistered) {
-                
+            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
+                && itemSelectedTab2.status != self.status_Unregistered) {
+
                 // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
                 command.historyId = itemSelectedTab2.historyId;
                 command.sId = itemSelectedTab2.sid;
@@ -488,8 +507,9 @@ module jcm007.a {
                 });
             }
         }
-        
+
         //2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
+        //  アルゴリズム[退職者情報の新規登録」を実行する (Thực hiện thuật toán [đăng ký mới thông tin người nghỉ hưu」)
         preCheckAndRegisterNewEmp(command) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -499,58 +519,25 @@ module jcm007.a {
             let retirementDate = new Date(empCurrent.retirementDate);
             command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
-            
+
             if (self.currentEmployee().dismissalNoticeDate()) {
                 let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
                 command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
-            if (self.currentEmployee().dismissalNoticeDateAllow()){
+
+            if (self.currentEmployee().dismissalNoticeDateAllow()) {
                 let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
                 command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
+
             block.grayout();
+            // アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
             service.preCheck(command).done(() => {
                 block.clear();
                 console.log('PRECHECK DONE!!');
-                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (empCurrent.selectedCode_Retiment == 3) {
-                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
-                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
-                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
-                    
-                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference >= 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.registerNewEmployee(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.registerNewEmployee(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    } else {
-                        if (dayDifference < 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.registerNewEmployee(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.registerNewEmployee(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    }
-                } else {
-                    this.registerNewEmployee(command).done(() => {
-                        dfd.resolve();    
-                    });
-                }
+                
+                self.algorithmPreCheck(2, command);
+                
             }).fail((mes) => {
                 self.enable_disableInput(true);
                 block.clear();
@@ -559,7 +546,7 @@ module jcm007.a {
             });
             return dfd.promise();
         }
-        
+
         // 2.アルゴリズム[退職者情報の追加]を実行する (Thực hiện thuật toán [Thêm thông tin người nghỉ hưu])
         registerNewEmployee(command: any) {
             let self = this;
@@ -581,7 +568,7 @@ module jcm007.a {
         }
 
         // 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
-        preCheckAndRegisterNewEmpApproved(command : any) {
+        preCheckAndRegisterNewEmpApproved(command: any) {
             let self = this;
             let dfd = $.Deferred<any>();
             let empCurrent = ko.toJS(self.currentEmployee());
@@ -590,58 +577,24 @@ module jcm007.a {
             let retirementDate = new Date(empCurrent.retirementDate);
             command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
-            
+
             if (self.currentEmployee().dismissalNoticeDate()) {
                 let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
                 command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
-            if (self.currentEmployee().dismissalNoticeDateAllow()){
+
+            if (self.currentEmployee().dismissalNoticeDateAllow()) {
                 let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
                 command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
+
             block.grayout();
             service.preCheck(command).done(() => {
                 block.clear();
                 console.log('PRECHECK DONE!!');
-                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (empCurrent.selectedCode_Retiment == 3) {
-                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
-                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
-                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
-                    
-                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference >= 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.registerNewRetireesApproved(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.registerNewRetireesApproved(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    } else {
-                        if (dayDifference < 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.registerNewRetireesApproved(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.registerNewRetireesApproved(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    }
-                } else {
-                    this.registerNewRetireesApproved(command).done(() => {
-                        dfd.resolve();    
-                    });
-                }
+                
+                self.algorithmPreCheck(3, command);
+                
             }).fail((mes) => {
                 self.enable_disableInput(true);
                 block.clear();
@@ -649,11 +602,11 @@ module jcm007.a {
                 dfd.reject();
             });
             return dfd.promise();
-        
+
         }
-        
-        registerNewRetireesApproved(command : any){
-             let self = this;
+
+        registerNewRetireesApproved(command: any) {
+            let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
             service.registerNewRetireesApproved(command).done(() => {
@@ -661,7 +614,7 @@ module jcm007.a {
                 self.start(command.historyId).done(() => {
                     self.enable_btnRegister(true);
                     self.enable_btnRemove(true);
-                    
+
                 });
                 block.clear();
                 dialog.info({ messageId: "Msg_15" });
@@ -673,69 +626,37 @@ module jcm007.a {
             });
             return dfd.promise();
         }
-        
+
         // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
-        preCheckAndModifyRetireeInformation(command : any) : JQueryPromise<any>{
+        preCheckAndModifyRetireeInformation(command: any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
+
             let empCurrent = ko.toJS(self.currentEmployee());
             // format lại date
             let releaseDate = new Date(empCurrent.releaseDate);
             let retirementDate = new Date(empCurrent.retirementDate);
             command.releaseDate = releaseDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             command.retirementDate = retirementDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
-            
+
             if (self.currentEmployee().dismissalNoticeDate()) {
                 let dismissalNoticeDate = new Date(self.currentEmployee().dismissalNoticeDate());
                 command.dismissalNoticeDate = dismissalNoticeDate.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
-            if (self.currentEmployee().dismissalNoticeDateAllow()){
+
+            if (self.currentEmployee().dismissalNoticeDateAllow()) {
                 let dismissalNoticeDateAllow = new Date(self.currentEmployee().dismissalNoticeDateAllow());
                 command.dismissalNoticeDateAllow = dismissalNoticeDateAllow.toISOString().substring(0, 10).replace("-", "/").replace("-", "/");
             }
-            
+
             block.grayout();
+            //アルゴリズム[事前チェック]を実行する (THực hiện thuật toán [Check trước ] )
             service.preCheck(command).done(() => {
                 block.clear();
                 console.log('PRECHECK DONE!!');
-                // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )
-                if (empCurrent.selectedCode_Retiment == 3) {
-                    // アルゴリズム[警告チェック]を実行する(Thực hiện thuật toán [Warning check] )  
-                    let retirementDate = moment.utc(self.currentEmployee().retirementDate(), DateFormat.DEFAULT_FORMAT);
-                    let dismissalNoticeDate = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
-                    
-                    let dayDifference = retirementDate.diff(dismissalNoticeDate, 'days');
-                    if (empCurrent.dismissalNoticeDateAllow) {
-                        if (dayDifference >= 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_9" }).ifYes(() => {
-                                this.modifyRetireeInformation(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.modifyRetireeInformation(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    } else {
-                        if (dayDifference < 30) {
-                            nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_8" }).ifYes(() => {
-                                this.modifyRetireeInformation(command).done(() => {
-                                    dfd.resolve();
-                                });
-                            }).ifNo(() => { });
-                        } else {
-                            this.modifyRetireeInformation(command).done(() => {
-                                dfd.resolve();
-                            });
-                        }
-                    }
-                } else {
-                    this.modifyRetireeInformation(command).done(() => {
-                        dfd.resolve();    
-                    });
-                }
+
+                self.algorithmPreCheck(4 , command);
+
             }).fail((mes) => {
                 self.enable_disableInput(true);
                 block.clear();
@@ -744,17 +665,80 @@ module jcm007.a {
             });
             return dfd.promise();
         }
+
         
-        modifyRetireeInformation(command : any) : JQueryPromise<any>{
+        algorithmPreCheck(regisType, command) {
+            let self = this;
+            // アルゴリズム[日付確認チェック]を実行する(Thực hiện thuật toán [check xác nhận ngày]) 
+            // (thuat toan nay check ở dưới client sẽ hợp lý hơn)
+            let objResultOfterRetimentChange = self.currentEmployee().objResultOfterRetimentChange;
+            let releaseDateA22214 = moment.utc(self.currentEmployee().releaseDate(), DateFormat.DEFAULT_FORMAT);
+            let dismissalNoticeDateA22235 = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+
+            if (objResultOfterRetimentChange.releaseDate == null) {
+
+                self.modifyRetireeInformation(command);
+
+            } else if (objResultOfterRetimentChange.releaseDate != null) {
+
+                let releaseDateCalculator = moment.utc(objResultOfterRetimentChange.releaseDate, DateFormat.DEFAULT_FORMAT);
+                let dayDifferenceRelease = releaseDateA22214.diff(releaseDateCalculator, 'days');
+                if (dayDifferenceRelease > 0) {
+                    nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_13" }).ifYes(() => {
+
+                        if (objResultOfterRetimentChange.dismissalNoticeDate == null) {
+
+                            self.modifyRetireeInformation(command);
+
+                        } else if (objResultOfterRetimentChange.dismissalNoticeDate != null) {
+
+                            let dismissalNoticeDateCalculator = moment.utc(objResultOfterRetimentChange.dismissalNoticeDate, DateFormat.DEFAULT_FORMAT);
+
+                            let dayDifferenceDismissalNotice = dismissalNoticeDateA22235.diff(dismissalNoticeDateCalculator, 'days');
+
+                            if (dayDifferenceDismissalNotice > 0) {
+                                if (dismissalNoticeDateA22235 < dismissalNoticeDateCalculator) {
+
+                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                                        self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
+                                    } else {
+                                        self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
+                                    }
+
+                                } else if (dismissalNoticeDateA22235 > dismissalNoticeDateCalculator) {
+
+                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                                        self.showConfirmDialog("MsgJ_JCM007_8", command, regisType);
+                                    } else {
+                                        self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
+                                    }
+
+                                } else if (dismissalNoticeDateA22235 == dismissalNoticeDateCalculator) {
+
+                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                                        self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
+                                    } else {
+                                        self.modifyRetireeInformation(command);
+                                    }
+                                }
+                            }
+                        }
+
+                    }).ifNo(() => { return; });
+                }
+            }
+        }
+        
+        
+        // アルゴリズム[退職者情報の変更]を実行する (Thực hiện thuật toán [Thay đổi thông tin nhân viên người  nghỉ hưu])
+        modifyRetireeInformation(command: any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
             service.modifyRetireeInformation(command).done(() => {
-                console.log('UPDATE DONE!!');
+                console.log('UPDATE DONE!');
                 self.start(command.historyId).done(() => {
-                    self.enable_btnRegister(false);
-                    self.enable_btnRemove(false);
-                    
+                       console.log('START DONE!'); 
                 });
                 block.clear();
                 dialog.info({ messageId: "Msg_15" });
@@ -766,23 +750,38 @@ module jcm007.a {
             });
             return dfd.promise();
         }
-        
+
+
+        showConfirmDialog(messageId, command , regisType) {
+            let self = this;
+            nts.uk.ui.dialog.confirm({ messageId: messageId }).ifYes(() => {
+                if(regisType == 2){
+                    self.registerNewEmployee(command);
+                }else if(regisType == 3){
+                    self.registerNewRetireesApproved(command);
+                }else if(regisType == 4){
+                    self.modifyRetireeInformation(command);
+                }
+                
+            }).ifNo(() => { });
+        }
+
         remove() {
             let self = this;
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
             let itemSelectedTab2 = self.itemSelectedTab2();
-            let dataSource = $('#gridListEmployeesJcm007').igGrid('option','dataSource');
+            let dataSource = $('#gridListEmployeesJcm007').igGrid('option', 'dataSource');
 
             if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
                 && itemSelectedTab2.status != self.status_Unregistered) {
                 let histId = itemSelectedTab2.historyId;
                 let lengthListItemTab2 = self.employeeListTab2.length;
                 let indexItemDelete = _.findIndex(ko.toJS(dataSource), function(item: any) { return item.historyId == histId; });
-                
+
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.grayout();
                     service.remove(histId).done(() => {
@@ -793,17 +792,17 @@ module jcm007.a {
                             self.itemSelectedTab2(null);
                             self.start(null);
                         } else if (lengthListItemTab2 - 1 == indexItemDelete) {
-                            let itemSelectedAfterRemove  = dataSource[indexItemDelete - 1];
+                            let itemSelectedAfterRemove = dataSource[indexItemDelete - 1];
                             self.getListData(itemSelectedAfterRemove.historyId, true);
                         } else {
                             let itemSelectedAfterRemove = dataSource[indexItemDelete + 1];
                             self.getListData(itemSelectedAfterRemove.historyId, true);
                         }
-                        
+
                         block.clear();
-                        
-                        
-                        
+
+
+
                     }).fail((mes) => {
                         console.log('REMOVE FAIL!!');
                         block.clear();
@@ -835,35 +834,35 @@ module jcm007.a {
             });
 
         }
-        
-        setDataDetail(dataDetail : any){
+
+        setDataDetail(dataDetail: any) {
             let self = this;
             self.currentEmployee().retirementDate(dataDetail.retirementDate);
             self.currentEmployee().releaseDate(dataDetail.releaseDate);
-            
+
             self.currentEmployee().selectedCode_Retiment(dataDetail.retirementCategory);
             self.currentEmployee().selectedCode_Reason1(dataDetail.retirementReasonCtg1);
             self.currentEmployee().selectedCode_Reason2(dataDetail.retirementReasonCtg2);
             self.currentEmployee().retirementRemarks(dataDetail.retirementRemarks == null ? '' : dataDetail.retirementRemarks);
             // ----------------- //
-            self.currentEmployee().retirementReasonVal(dataDetail.retirementReasonVal == null ? '' :  dataDetail.retirementReasonVal);
+            self.currentEmployee().retirementReasonVal(dataDetail.retirementReasonVal == null ? '' : dataDetail.retirementReasonVal);
             // ----------------- //
             self.currentEmployee().dismissalNoticeDate(dataDetail.dismissalNoticeDate == null ? '' : dataDetail.dismissalNoticeDate);
             self.currentEmployee().dismissalNoticeDateAllow(dataDetail.dismissalNoticeDateAllow == null ? '' : dataDetail.dismissalNoticeDateAllow);
-            self.currentEmployee().reaAndProForDis(dataDetail.reaAndProForDis == null ? '' :  dataDetail.reaAndProForDis);
-            
+            self.currentEmployee().reaAndProForDis(dataDetail.reaAndProForDis == null ? '' : dataDetail.reaAndProForDis);
+
             self.currentEmployee().naturalUnaReasons_1(dataDetail.naturalUnaReasons_1 == 0 ? false : true);
-            self.currentEmployee().naturalUnaReasons_1Val(dataDetail.naturalUnaReasons_1Val == null ? '' :  dataDetail.naturalUnaReasons_1Val);
+            self.currentEmployee().naturalUnaReasons_1Val(dataDetail.naturalUnaReasons_1Val == null ? '' : dataDetail.naturalUnaReasons_1Val);
             self.currentEmployee().businessReduction_2(dataDetail.naturalUnaReasons_2 == 0 ? false : true);
-            self.currentEmployee().businessReduction_2Val(dataDetail.naturalUnaReasons_2Val == null ? '' :  dataDetail.naturalUnaReasons_2Val);
+            self.currentEmployee().businessReduction_2Val(dataDetail.naturalUnaReasons_2Val == null ? '' : dataDetail.naturalUnaReasons_2Val);
             self.currentEmployee().seriousViolationsOrder_3(dataDetail.naturalUnaReasons_3 == 0 ? false : true);
-            self.currentEmployee().seriousViolationsOrder_3Val(dataDetail.naturalUnaReasons_3Val == null ? '' :  dataDetail.naturalUnaReasons_3Val);
+            self.currentEmployee().seriousViolationsOrder_3Val(dataDetail.naturalUnaReasons_3Val == null ? '' : dataDetail.naturalUnaReasons_3Val);
             self.currentEmployee().unauthorizedConduct_4(dataDetail.naturalUnaReasons_4 == 0 ? false : true);
-            self.currentEmployee().unauthorizedConduct_4Val(dataDetail.naturalUnaReasons_4Val == null ? '' :  dataDetail.naturalUnaReasons_4Val);
+            self.currentEmployee().unauthorizedConduct_4Val(dataDetail.naturalUnaReasons_4Val == null ? '' : dataDetail.naturalUnaReasons_4Val);
             self.currentEmployee().leaveConsiderableTime_5(dataDetail.naturalUnaReasons_5 == 0 ? false : true);
-            self.currentEmployee().leaveConsiderableTime_5Val(dataDetail.naturalUnaReasons_5Val == null ? '' :  dataDetail.naturalUnaReasons_5Val);
+            self.currentEmployee().leaveConsiderableTime_5Val(dataDetail.naturalUnaReasons_5Val == null ? '' : dataDetail.naturalUnaReasons_5Val);
             self.currentEmployee().other_6(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
-            self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' :  dataDetail.naturalUnaReasons_6Val);
+            self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' : dataDetail.naturalUnaReasons_6Val);
         }
 
         initHeaderInfo() {
@@ -875,9 +874,9 @@ module jcm007.a {
             self.currentEmployee().position('');
             self.currentEmployee().employmentCls('');
             // set avatar blank
-            
+
         }
-        
+
         /** new mode */
         newMode() {
             let self = this;
@@ -892,7 +891,7 @@ module jcm007.a {
             self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
         }
-        
+
         initRetirementInfo() {
             let self = this;
             self.currentEmployee().retirementDate('');
@@ -907,35 +906,35 @@ module jcm007.a {
             self.currentEmployee().dismissalNoticeDate('');
             self.currentEmployee().dismissalNoticeDateAllow('');
             self.currentEmployee().reaAndProForDis('');
-            
+
             self.currentEmployee().naturalUnaReasons_1(false);
             self.currentEmployee().naturalUnaReasons_1Val('');
             self.currentEmployee().naturalUnaReasons_enable(false);
-            
+
             self.currentEmployee().businessReduction_2(false);
             self.currentEmployee().businessReduction_2Val('');
             self.currentEmployee().businessReduction_enable(false);
-            
+
             self.currentEmployee().seriousViolationsOrder_3(false);
             self.currentEmployee().seriousViolationsOrder_3Val('');
             self.currentEmployee().seriousViolationsOrder_enable(false);
-            
+
             self.currentEmployee().unauthorizedConduct_4(false);
             self.currentEmployee().unauthorizedConduct_4Val('');
             self.currentEmployee().unauthorizedConduct_enable(false);
-            
+
             self.currentEmployee().leaveConsiderableTime_5(false);
             self.currentEmployee().leaveConsiderableTime_5Val('');
             self.currentEmployee().leaveConsiderableTime_enable(false);
-            
+
             self.currentEmployee().other_6(false);
             self.currentEmployee().other_6Val('');
             self.currentEmployee().other_enable(false);
-            
+
             nts.uk.ui.errors.clearAll();
         }
-        
-        enable_disableInput(param : boolean) {
+
+        enable_disableInput(param: boolean) {
             let self = this;
             self.currentEmployee().enable_retirementDate(param);
             self.currentEmployee().enable_releaseDate(param);
@@ -947,39 +946,39 @@ module jcm007.a {
             self.currentEmployee().enable_dismissalNoticeDate(param);
             self.currentEmployee().enable_dismissalNoticeDateAllow(param);
             self.currentEmployee().enable_reaAndProForDis(param);
-            
+
             self.currentEmployee().enable_naturalUnaReasons1(param);
-            if ((self.currentEmployee().naturalUnaReasons_1() == false) || 
+            if ((self.currentEmployee().naturalUnaReasons_1() == false) ||
                 (self.currentEmployee().naturalUnaReasons_1() == true && self.currentEmployee().enable_naturalUnaReasons1() == false)) {
-                    self.currentEmployee().naturalUnaReasons_enable(false);
-            }else if (self.currentEmployee().naturalUnaReasons_1() == true){
-                    self.currentEmployee().naturalUnaReasons_enable(true);
+                self.currentEmployee().naturalUnaReasons_enable(false);
+            } else if (self.currentEmployee().naturalUnaReasons_1() == true) {
+                self.currentEmployee().naturalUnaReasons_enable(true);
             }
-            
+
             self.currentEmployee().enable_businessReduction2(param);
-            if ((self.currentEmployee().businessReduction_2() == false) || 
+            if ((self.currentEmployee().businessReduction_2() == false) ||
                 (self.currentEmployee().businessReduction_2() == true && self.currentEmployee().enable_businessReduction2() == false)) {
-                    self.currentEmployee().businessReduction_enable(false);
-            }else if (self.currentEmployee().businessReduction_2() == true && self.currentEmployee().enable_businessReduction2() == true){
-                    self.currentEmployee().businessReduction_enable(true);
+                self.currentEmployee().businessReduction_enable(false);
+            } else if (self.currentEmployee().businessReduction_2() == true && self.currentEmployee().enable_businessReduction2() == true) {
+                self.currentEmployee().businessReduction_enable(true);
             }
-            
+
             self.currentEmployee().enable_seriousViolationsOrder3(param);
-            if ((self.currentEmployee().seriousViolationsOrder_3() == false) || 
+            if ((self.currentEmployee().seriousViolationsOrder_3() == false) ||
                 (self.currentEmployee().seriousViolationsOrder_3() == true && self.currentEmployee().enable_seriousViolationsOrder3() == false)) {
-                    self.currentEmployee().seriousViolationsOrder_enable(false);
-            }else if (self.currentEmployee().seriousViolationsOrder_3() == true && self.currentEmployee().enable_seriousViolationsOrder3() == true){
-                    self.currentEmployee().seriousViolationsOrder_enable(true);
+                self.currentEmployee().seriousViolationsOrder_enable(false);
+            } else if (self.currentEmployee().seriousViolationsOrder_3() == true && self.currentEmployee().enable_seriousViolationsOrder3() == true) {
+                self.currentEmployee().seriousViolationsOrder_enable(true);
             }
-            
+
             self.currentEmployee().enable_unauthorizedConduct4(param);
-            if ((self.currentEmployee().unauthorizedConduct_4() == false) || 
+            if ((self.currentEmployee().unauthorizedConduct_4() == false) ||
                 (self.currentEmployee().unauthorizedConduct_4() == true && self.currentEmployee().enable_unauthorizedConduct4() == false)) {
-                    self.currentEmployee().unauthorizedConduct_enable(false);
-            }else if (self.currentEmployee().unauthorizedConduct_4() == true && self.currentEmployee().enable_unauthorizedConduct4() == true){
-                    self.currentEmployee().unauthorizedConduct_enable(true);
+                self.currentEmployee().unauthorizedConduct_enable(false);
+            } else if (self.currentEmployee().unauthorizedConduct_4() == true && self.currentEmployee().enable_unauthorizedConduct4() == true) {
+                self.currentEmployee().unauthorizedConduct_enable(true);
             }
-            
+
             self.currentEmployee().enable_leaveConsiderableTime5(param);
             if ((self.currentEmployee().leaveConsiderableTime_5() == false) ||
                 (self.currentEmployee().leaveConsiderableTime_5() == true && self.currentEmployee().enable_leaveConsiderableTime5() == false)) {
@@ -987,7 +986,7 @@ module jcm007.a {
             } else if (self.currentEmployee().leaveConsiderableTime_5() == true && self.currentEmployee().enable_leaveConsiderableTime5() == true) {
                 self.currentEmployee().leaveConsiderableTime_enable(true);
             }
-            
+
             self.currentEmployee().enable_other6(param);
             if ((self.currentEmployee().other_6() == false) ||
                 (self.currentEmployee().other_6() == true && self.currentEmployee().enable_other6() == false)) {
@@ -998,8 +997,8 @@ module jcm007.a {
         }
     }
     class EmployeeModel {
-        
-        avatarPerson : KnockoutObservable<string> = ko.observable('images/avatar.png');
+
+        avatarPerson: KnockoutObservable<string> = ko.observable('images/avatar.png');
         codeNameEmp: KnockoutObservable<string> = ko.observable('');   // A222_3
         department: KnockoutObservable<string> = ko.observable('');   // A222_5
         position: KnockoutObservable<string> = ko.observable('');   // A222_7
@@ -1009,9 +1008,9 @@ module jcm007.a {
         cid: string;
         sid: string;
         scd: string;
-        pid:string;
+        pid: string;
         bussinessName: string;
-        
+
         pendingFlag: number;
         status: string;
         notificationCategory: string;
@@ -1064,40 +1063,42 @@ module jcm007.a {
         other_6: KnockoutObservable<boolean> = ko.observable(false);
         other_6Val: KnockoutObservable<string> = ko.observable('');
         other_enable: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         // enabe input
-        enable_retirementDate : KnockoutObservable<boolean> = ko.observable(true);
-        enable_releaseDate :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_listRetirementCtg :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_listRetirementReason1 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_listRetirementReason2 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_retirementRemarks :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_retirementReasonVal :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_dismissalNoticeDate :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_dismissalNoticeDateAllow :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_reaAndProForDis :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_naturalUnaReasons1 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_businessReduction2 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_seriousViolationsOrder3 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_unauthorizedConduct4 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_leaveConsiderableTime5 :  KnockoutObservable<boolean> = ko.observable(true);
-        enable_other6 :  KnockoutObservable<boolean> = ko.observable(true);
+        enable_retirementDate: KnockoutObservable<boolean> = ko.observable(true);
+        enable_releaseDate: KnockoutObservable<boolean> = ko.observable(true);
+        enable_listRetirementCtg: KnockoutObservable<boolean> = ko.observable(true);
+        enable_listRetirementReason1: KnockoutObservable<boolean> = ko.observable(true);
+        enable_listRetirementReason2: KnockoutObservable<boolean> = ko.observable(true);
+        enable_retirementRemarks: KnockoutObservable<boolean> = ko.observable(true);
+        enable_retirementReasonVal: KnockoutObservable<boolean> = ko.observable(true);
+        enable_dismissalNoticeDate: KnockoutObservable<boolean> = ko.observable(true);
+        enable_dismissalNoticeDateAllow: KnockoutObservable<boolean> = ko.observable(true);
+        enable_reaAndProForDis: KnockoutObservable<boolean> = ko.observable(true);
+        enable_naturalUnaReasons1: KnockoutObservable<boolean> = ko.observable(true);
+        enable_businessReduction2: KnockoutObservable<boolean> = ko.observable(true);
+        enable_seriousViolationsOrder3: KnockoutObservable<boolean> = ko.observable(true);
+        enable_unauthorizedConduct4: KnockoutObservable<boolean> = ko.observable(true);
+        enable_leaveConsiderableTime5: KnockoutObservable<boolean> = ko.observable(true);
+        enable_other6: KnockoutObservable<boolean> = ko.observable(true);
+
+        objResultOfterRetimentChange: any;
 
         constructor(param: IEmployee) {
             let self = this;
-            
+
             self.hisId = param.hisId;
             self.cid = param.cid;
             self.sid = param.sid;
             self.scd = param.scd;
             self.pid = param.pid;
             self.bussinessName = param.bussinessName;
-            
+
             self.pendingFlag = param.pendingFlag;
             self.status = param.status;
             self.notificationCategory = param.notificationCategory;
             self.inputDate = param.inputDate;
-            
+
             self.retirementDate(param.retirementDate || '');
             self.releaseDate(param.releaseDate || '');
             self.listRetirementCtg = ko.observable([
@@ -1153,6 +1154,14 @@ module jcm007.a {
             self.other_6Val(param.other_6Val || '');
 
             //xử lý subscribe
+
+            self.retirementDate.subscribe((value) => {
+
+                console.log("retirementDate change");
+                // update bien objResultOfterRetimentChange
+
+            });
+
             self.selectedCode_Retiment.subscribe((value) => {
                 let self = this;
                 $('#dismissalNoticeDateId').ntsError('clear');
@@ -1176,43 +1185,43 @@ module jcm007.a {
                     self.unauthorizedConduct_4(false);
                     self.leaveConsiderableTime_5(false);
                     self.other_6(false);
-                    
+
                 } else if (value == 3) {
                     self.visible_NotDismissal(false);
                     self.visible_Dismissal(true);
                     self.retirementReasonVal('');
                     $('#retirementReasonVal').ntsError('clear');
-                    
-                    if(self.naturalUnaReasons_1() == false){
+
+                    if (self.naturalUnaReasons_1() == false) {
                         self.naturalUnaReasons_1Val('');
                         self.naturalUnaReasons_enable(false);
                     }
-                    if(self.businessReduction_2() == false){
+                    if (self.businessReduction_2() == false) {
                         self.businessReduction_2Val('');
                         self.businessReduction_enable(false);
                     }
-                    if(self.seriousViolationsOrder_3() == false){
+                    if (self.seriousViolationsOrder_3() == false) {
                         self.seriousViolationsOrder_3Val('');
                         self.seriousViolationsOrder_enable(false);
                     }
-                    if(self.unauthorizedConduct_4() == false){
+                    if (self.unauthorizedConduct_4() == false) {
                         self.unauthorizedConduct_4Val('');
                         self.unauthorizedConduct_enable(false);
                     }
-                    if(self.leaveConsiderableTime_5() == false){
+                    if (self.leaveConsiderableTime_5() == false) {
                         self.leaveConsiderableTime_5Val('');
                         self.leaveConsiderableTime_enable(false);
                     }
-                    if(self.other_6() == false){
+                    if (self.other_6() == false) {
                         self.other_6Val('');
                         self.other_enable(false);
                     }
                 }
             });
-            
+
             self.naturalUnaReasons_1.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_naturalUnaReasons1() == false){
+                if (value == true && self.enable_naturalUnaReasons1() == false) {
                     self.naturalUnaReasons_enable(false);
                     console.log('enable_disableInput 1');
                 } else if (value == true) {
@@ -1228,7 +1237,7 @@ module jcm007.a {
 
             self.businessReduction_2.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_businessReduction2() == false){
+                if (value == true && self.enable_businessReduction2() == false) {
                     self.businessReduction_enable(false);
                 } else if (value == true) {
                     self.businessReduction_enable(true);
@@ -1243,7 +1252,7 @@ module jcm007.a {
 
             self.seriousViolationsOrder_3.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_seriousViolationsOrder3() == false){
+                if (value == true && self.enable_seriousViolationsOrder3() == false) {
                     self.seriousViolationsOrder_enable(false);
                 } else if (value == true) {
                     self.seriousViolationsOrder_enable(true);
@@ -1258,7 +1267,7 @@ module jcm007.a {
 
             self.unauthorizedConduct_4.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_unauthorizedConduct4() == false){
+                if (value == true && self.enable_unauthorizedConduct4() == false) {
                     self.unauthorizedConduct_enable(false);
                 } else if (value == true) {
                     self.unauthorizedConduct_enable(true);
@@ -1273,7 +1282,7 @@ module jcm007.a {
 
             self.leaveConsiderableTime_5.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_leaveConsiderableTime5() == false){
+                if (value == true && self.enable_leaveConsiderableTime5() == false) {
                     self.leaveConsiderableTime_enable(false);
                 } else if (value == true) {
                     self.leaveConsiderableTime_enable(true);
@@ -1287,7 +1296,7 @@ module jcm007.a {
 
             self.other_6.subscribe((value) => {
                 let self = this;
-                if (value == true && self.enable_other6() == false){
+                if (value == true && self.enable_other6() == false) {
                     self.other_enable(false);
                 } else if (value == true) {
                     self.other_enable(true);
@@ -1300,27 +1309,27 @@ module jcm007.a {
             });
         }
     }
-    
+
     interface IEmpInfoHeader {
-        avartaFileId:  string;
-        businessName:  string;
-        businessNameKana:  string;
-        departmentCode:  string;
-        departmentName:  string;
-        employeeCode:  string;
-        employeeId:  string;
-        employmentCode:  string;
-        employmentName:  string;
-        mapFileId:  string;
-        personalId:  string;
-        positionCode:  string;
-        positionId:  string;
-        positionName:  string;
-        workplaceCode:  string;
-        workplaceId:  string;
-        workplaceName:  string;   
+        avartaFileId: string;
+        businessName: string;
+        businessNameKana: string;
+        departmentCode: string;
+        departmentName: string;
+        employeeCode: string;
+        employeeId: string;
+        employmentCode: string;
+        employmentName: string;
+        mapFileId: string;
+        personalId: string;
+        positionCode: string;
+        positionId: string;
+        positionName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
     }
-    
+
     class EmpInfoHerder {
         avartaFileId: string;
         businessName: string;
@@ -1343,21 +1352,21 @@ module jcm007.a {
         constructor(input: IEmpInfoHeader) {
             this.avartaFileId =
                 this.businessName = input.businessName;
-                this.businessNameKana = input.businessNameKana;
-                this.departmentCode = input.departmentCode; 
-                this.departmentName = input.departmentName
-                this.employeeCode = input.employeeCode;
-                this.employeeId = input.employeeId;
-                this.employmentCode = input.employmentCode;
-                this.employmentName = input.employmentName;
-                this.mapFileId = input.mapFileId;
-                this.personalId = input.personalId;
-                this.positionCode = input.positionCode;
-                this.positionId = input.positionId;
-                this.positionName = input.positionName;
-                this.workplaceCode = input.workplaceCode;
-                this.workplaceId = input.workplaceId;
-                this.workplaceName = input.workplaceName;
+            this.businessNameKana = input.businessNameKana;
+            this.departmentCode = input.departmentCode;
+            this.departmentName = input.departmentName
+            this.employeeCode = input.employeeCode;
+            this.employeeId = input.employeeId;
+            this.employmentCode = input.employmentCode;
+            this.employmentName = input.employmentName;
+            this.mapFileId = input.mapFileId;
+            this.personalId = input.personalId;
+            this.positionCode = input.positionCode;
+            this.positionId = input.positionId;
+            this.positionName = input.positionName;
+            this.workplaceCode = input.workplaceCode;
+            this.workplaceId = input.workplaceId;
+            this.workplaceName = input.workplaceName;
         }
     }
 
@@ -1372,7 +1381,7 @@ module jcm007.a {
         position: string;
         employment: string;
         fileId: string;
-        
+
         pendingFlag: number;
         status: string;
         notificationCategory: string;
@@ -1411,7 +1420,7 @@ module jcm007.a {
         other_6: boolean;  // A222_51
         other_6Val: string;  // A222_52
     }
-    
+
     class Input {
         systemType: number; //システム区分（0：共通、1：就業、2：給与、3：人事）
         includePreEmployee: boolean; //入社前社員を含める
@@ -1423,18 +1432,18 @@ module jcm007.a {
         getPosition: boolean; //職位を取得する
         getEmployment: boolean; //雇用を取得する
         getPersonalFileManagement: boolean; //個人ファイル管理を取得する
-        
+
         constructor(input: any) {
             this.systemType = input ? input.systemType || 3 : 3;
-            this.includePreEmployee = input ? input.includePreEmployee || false: false;
-            this.includeRetirement = input ? input.includeRetirement || false: false;
-            this.includeAbsence = input ? input.includeAbsence || true: true;
-            this.includeClosed = input ? input.includeClosed || true: true;
-            this.includeTransferEmployee = input ? input.includeTransferEmployee || true: true;
-            this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || false: false;
-            this.getPosition = input ? input.getPosition || true: true;
-            this.getEmployment = input ? input.getEmployment || true: true;
-            this.getPersonalFileManagement = input ? input.getPersonalFileManagement || true: true;
+            this.includePreEmployee = input ? input.includePreEmployee || false : false;
+            this.includeRetirement = input ? input.includeRetirement || false : false;
+            this.includeAbsence = input ? input.includeAbsence || true : true;
+            this.includeClosed = input ? input.includeClosed || true : true;
+            this.includeTransferEmployee = input ? input.includeTransferEmployee || true : true;
+            this.includeAcceptanceTransferEmployee = input ? input.includeAcceptanceTransferEmployee || false : false;
+            this.getPosition = input ? input.getPosition || true : true;
+            this.getEmployment = input ? input.getEmployment || true : true;
+            this.getPersonalFileManagement = input ? input.getPersonalFileManagement || true : true;
         }
     }
 

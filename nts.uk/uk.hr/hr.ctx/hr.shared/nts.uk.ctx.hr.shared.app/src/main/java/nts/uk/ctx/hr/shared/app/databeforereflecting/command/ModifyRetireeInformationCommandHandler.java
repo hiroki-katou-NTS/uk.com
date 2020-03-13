@@ -31,6 +31,7 @@ public class ModifyRetireeInformationCommandHandler extends CommandHandler<DataB
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
 		retirementInformationService.updateRetireInformation(domainObj);
+		
 	}
 	
 private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){

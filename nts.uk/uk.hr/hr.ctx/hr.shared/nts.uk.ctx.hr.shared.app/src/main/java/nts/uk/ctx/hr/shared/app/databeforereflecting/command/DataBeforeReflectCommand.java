@@ -3,7 +3,6 @@ package nts.uk.ctx.hr.shared.app.databeforereflecting.command;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @AllArgsConstructor
 @Data
