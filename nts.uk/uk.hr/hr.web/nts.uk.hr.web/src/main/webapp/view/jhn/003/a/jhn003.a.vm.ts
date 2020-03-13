@@ -104,6 +104,12 @@ module jhn003.a.vm {
 
             block.grayout();
 
+            let param  = ko.toJS(self.searchInfo());
+            
+            //set start date la dau ngay
+            param.appDate.startDate.setHours(0, 0, 0, 0);
+            //set end date la cuoi ngay
+            param.appDate.endDate.setHours(23, 59, 59, 999);
             service.findPersonReport(ko.toJS(self.searchInfo())).done((data) => {
 
                 self.reportList(_.map(data, x => new PersonReport(x)));
