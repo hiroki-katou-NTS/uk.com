@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 /**
@@ -11,7 +10,6 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author phongtq
  *
  */
-@Value
 @Getter
 public class StampPageLayout implements DomainValue{
 	

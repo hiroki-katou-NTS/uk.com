@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.stamp.management;
 
 import lombok.Getter;
-import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
@@ -9,7 +8,6 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author phongtq
  *
  */
-@Value
 public class ButtonType implements DomainValue{
 	
 	/** 予約区分 */

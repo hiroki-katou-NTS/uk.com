@@ -14,6 +14,12 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout
 public class StampPageLayoutTest {
 	
 	@Test
+	public void getter(){
+		StampPageLayout layout = Layout.DUMMY;
+		NtsAssert.invokeGetters(layout);
+	}
+	
+	@Test
 	public void checkCreateStampPageLayout_false(){
 		NtsAssert.businessException("Msg_1627", () -> {
 			new StampPageLayout(
@@ -21,8 +27,7 @@ public class StampPageLayoutTest {
 					new StampPageName("DUMMY"),//dummy 
 					Comment.DUMMY,//dummy 
 					EnumAdaptor.valueOf(0, ButtonLayoutType.class),//dummy
-					Collections.emptyList());
-		});
+					Collections.emptyList());});
 	}
 	
 	@Test
@@ -35,9 +40,4 @@ public class StampPageLayoutTest {
 					Arrays.asList(Button.DUMMY));
 	}
 	
-	@Test
-	public void getter(){
-		StampPageLayout layout = Layout.DUMMY;
-		NtsAssert.invokeGetters(layout);
-	}
 }

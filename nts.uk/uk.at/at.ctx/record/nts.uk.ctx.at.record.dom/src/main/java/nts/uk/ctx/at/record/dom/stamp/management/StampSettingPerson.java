@@ -89,9 +89,8 @@ public class StampSettingPerson implements DomainAggregate{
 	 * @param pageLayout
 	 */
 	public void update(StampPageLayout pageLayout) {
-		
 		// $打刻ページレイアウト = @ページレイアウト設定 : filter not $.ページNO = ページNO
-		List<StampPageLayout> layout = this.lstStampPageLayout.stream().filter(x -> x.getPageNo() != pageLayout.getPageNo()).collect(Collectors.toList());
+		List<StampPageLayout> layout = this.lstStampPageLayout.stream().filter(x -> x.getPageNo().v() != pageLayout.getPageNo().v()).collect(Collectors.toList());
 		
 		// $打刻ページリスト.add(打刻ページ)
 		layout.add(pageLayout);
