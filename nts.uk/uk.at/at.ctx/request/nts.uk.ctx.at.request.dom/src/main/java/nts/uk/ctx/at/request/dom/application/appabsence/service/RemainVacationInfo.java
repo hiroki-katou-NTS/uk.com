@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 休暇残数情報
@@ -10,6 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class RemainVacationInfo {
 	
 	/**
