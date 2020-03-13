@@ -173,10 +173,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
-                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                    nts.uk.ui.block.clear();
-                });
+            	if(res.messageId == 'Msg_426'){
+            		nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+            			nts.uk.ui.block.clear();
+            			appcommon.CommonProcess.callCMM045();
+            		});
+            	}else{
+            		nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+            			nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+            			nts.uk.ui.block.clear();
+            		});
+            	}
+
             });
 
             return dfd.promise();

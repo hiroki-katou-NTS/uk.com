@@ -1065,14 +1065,8 @@ public class AppHolidayWorkFinder {
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		appHolidayWorkDataHasDate.setListWorkTimeCodes(listWorkTimeCodes);
 		
-		// 社員所属雇用履歴を取得する
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
-		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-			throw new BusinessException("Msg_426");
-		}
 		// 雇用別申請承認設定を取得する
-		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), ApplicationType.BREAK_TIME_APPLICATION.value);
-		appHolidayWorkDataHasDate.setLstEmploymentWt(lstEmploymentWt);
+		appHolidayWorkDataHasDate.setLstEmploymentWt(appCommonSettingOutput.appEmploymentWorkType);
 
 		// INPUT．事前事後区分表示をチェックする
 		// 01-13_事前事後区分を取得

@@ -181,18 +181,13 @@ module nts.uk.at.view.kaf010.b {
                     dfd.resolve(); 
                 })
                 .fail(function(res) {
-                    if(res.messageId == 'Msg_426'){
-                       dialog.alertError({messageId : res.messageId}).then(function(){
-                            nts.uk.ui.block.clear();
-                           appcommon.CommonProcess.callCMM045();
-                    });
-                    }else if(res.messageId == 'Msg_423'){
+                    if(res.messageId == 'Msg_423'){
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                             .then(function() {
                                 nts.uk.ui.block.clear();
                                 appcommon.CommonProcess.callCMM045();
                             });
-                    }else{ 
+                    }else if (res.messageId != 'Msg_426'){ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
                             appcommon.CommonProcess.callCMM045();
                             nts.uk.ui.block.clear();
