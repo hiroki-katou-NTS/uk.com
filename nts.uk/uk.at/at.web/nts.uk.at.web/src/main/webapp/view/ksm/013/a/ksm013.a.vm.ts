@@ -214,7 +214,7 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName("");
                 self.license(0);
                 self.officeWorker(false);
-                ;
+                
 
             }
         }
