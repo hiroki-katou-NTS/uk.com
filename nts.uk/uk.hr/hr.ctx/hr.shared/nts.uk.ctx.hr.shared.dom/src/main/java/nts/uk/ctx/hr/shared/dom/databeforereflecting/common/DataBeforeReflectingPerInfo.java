@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.hr.shared.dom.databeforereflecting;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.common;
 
 import java.math.BigInteger;
 
@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDateTime;
 
 /**
  * 個人情報反映前データ
+ * path : UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報反映前データ.個人情報反映前データ_共通.個人情報反映前データ
  */
 @NoArgsConstructor
 @Getter

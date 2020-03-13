@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.databeforereflecting.service;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingRepository;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingRepository;
 
 @Stateless
 public class DataBeforeReflectingPerInfoService {

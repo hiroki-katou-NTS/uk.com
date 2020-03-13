@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.hr.shared.dom.databeforereflecting;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.common;
 
 import java.util.List;
 import java.util.Optional;

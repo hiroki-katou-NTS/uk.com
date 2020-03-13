@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.databeforereflecting.service;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,14 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.NoteRetiment;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.OnHoldFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementCategory;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementInformation;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.Status;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service.DataBeforeReflectingPerInfoService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

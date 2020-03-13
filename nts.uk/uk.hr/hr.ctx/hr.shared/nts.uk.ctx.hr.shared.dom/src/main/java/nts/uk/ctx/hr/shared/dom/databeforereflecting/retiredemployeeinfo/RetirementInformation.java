@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.hr.shared.dom.databeforereflecting;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDateTime;
 
 /**
  *  退職者情報
+ *  path : UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報反映前データ.個人情報反映前データ_退職者情報.退職者情報
  */
 @NoArgsConstructor
 @AllArgsConstructor

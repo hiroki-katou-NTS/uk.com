@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.OnHoldFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.Status;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

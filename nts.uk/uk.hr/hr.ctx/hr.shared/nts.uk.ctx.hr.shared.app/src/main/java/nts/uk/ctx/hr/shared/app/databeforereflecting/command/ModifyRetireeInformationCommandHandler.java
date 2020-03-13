@@ -8,9 +8,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementCategory;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementInformation;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

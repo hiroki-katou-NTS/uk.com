@@ -10,8 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementInformation;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;

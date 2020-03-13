@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.dom.databeforereflecting;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.common;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

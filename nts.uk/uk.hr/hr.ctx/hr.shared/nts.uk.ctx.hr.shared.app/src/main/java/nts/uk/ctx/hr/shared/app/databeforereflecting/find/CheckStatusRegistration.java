@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RetirementInformation;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,9 +18,18 @@ public class CheckStatusRegistration {
 	@Inject
 	private RetirementInformationService retirementInfoService;
 	
-
+	// Path : UKDesign.UniversalK.人事.JCM_異動・発令.JCM007_退職者の登録.A：退職者の登録.アルゴリズム.登録状況チェック
 	// アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "CHeck tình trạng đăng ký ")
 	public Boolean CheckStatusRegistration(String sid){
+		
+		
+		// アルゴリズム[退職登録済みチェック]を実行する(thực hiện thuật toán[check đã đăng ký nghỉ việc])
+		
+		
+		
+		
+		
+		
 		
 		String cid = AppContexts.user().companyId();
 		Integer workId = 1;

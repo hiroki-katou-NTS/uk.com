@@ -3,7 +3,7 @@ package nts.uk.ctx.hr.shared.app.databeforereflecting.command;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.RetirementInformationService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 
 @Stateless
 public class RemoveCommandHandler {

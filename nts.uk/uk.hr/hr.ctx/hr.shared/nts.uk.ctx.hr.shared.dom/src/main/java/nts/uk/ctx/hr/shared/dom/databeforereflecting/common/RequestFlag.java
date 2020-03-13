@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.hr.shared.dom.databeforereflecting;
+package nts.uk.ctx.hr.shared.dom.databeforereflecting.common;
 
 import lombok.AllArgsConstructor;
 
