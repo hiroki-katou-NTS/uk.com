@@ -63,6 +63,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 		entity.useApproval = x.getUseApproval().value;
 		entity.useMenu = x.getUseMenu().value;
 		entity.useNotice = x.getUseNotice().value;
+		entity.noRankOrder = x.isNoRankOrder()?1:0;
 		entity.ccd = x.getCcd();
 		return entity;
 	}
@@ -81,7 +82,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 	@Override
 	@SneakyThrows
 	public List<MenuInfoEx> findByApprUse(String companyId) {
-		String qr = "select menuO.PROGRAM_ID, PROGRAM_NAME, USE_APPROVAL from JCMST_MENU_OPERATION menuO inner join" + 
+		String qr = "select menuO.PROGRAM_ID, PROGRAM_NAME, USE_APPROVAL, menuO.NO_RANK_ORDER from JCMST_MENU_OPERATION menuO inner join" + 
 				"	( select PROGRAM_ID, PROGRAM_NAME from JCMMT_HRDEV_MENU where AVAILABLE_APPROVAL = 1 and AVAILABLE = 1 and EVENT_ID in " + 
 				"		(select EVENT_ID from JCMST_EVENT_OPERATION WHERE CID = 'companyId' and USE_EVENT = 1)" + 
 				"	) op" + 
@@ -99,7 +100,8 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 			return new MenuInfoEx(
 					x.getString("PROGRAM_ID"), 
 					x.getString("PROGRAM_NAME"), 
-					x.getInt("USE_APPROVAL"));
+					x.getInt("USE_APPROVAL"),
+					x.getInt("NO_RANK_ORDER"));
 		});
 	}
 }

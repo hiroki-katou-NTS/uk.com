@@ -1,63 +1,127 @@
-#contents-area {
-	margin-left: 25px
+.danger {
+	margin-left: 30px !important;
+	margin-right: 15px !important
 }
 
-#time-edit1, #time-edit2 {
-	text-align: center !important;
-	width: 43px !important;
+span#workplaceCode {
+	margin-left: 50px;
+	margin-right: 50px;
 }
 
-#set-work-type {
-	margin: 15px 0px
+hr {
+	width: 920px;
+	position: absolute;
+	margin: 0px 30px 0px 30px;
 }
 
-#set-work-type>* {
+#group-link-button-ja {
+	height: 30px;
+	width: 850px;
+	margin-top: 10px;
+	margin-left: 50px;
+
+}
+
+#group-link-button-ja a {
+	font-size: 13px;
+	margin-top: 5px;
+	margin-left: 10px;
+	display: inline-block;
+}
+
+#test2 {
+	background-color: #FBE5D6;
+	width: 810px;
+	padding: 3px;
+	display: inline-block;
+	margin-left: 8px;
+}
+
+#test2 button {
+	width: 75px !important;
+	height: 25px !important
+}
+
+#test2 table td {
+	padding: 3px 3px !important;
+}
+
+#test * {
+	font-size: 0.8rem
+}
+
+.caret-background.caret-bottom:after {
+	left: 5% !important;
+	border-width: 10px 30px !important;
+}
+
+.mt-10 {
+	margin-top: 10px;
+	margin-left: 50px;
+}
+
+#bt-clear {
+	margin-left: 765px
+}
+
+#multiline-textbox {
+	width: 650px !important;
+}
+
+#classification {
+	margin-left: 150px
+}
+
+#multiline-textbox {
+	margin-top: 15px;
+}
+
+#textName {
+	margin-left: 8px;
+}
+
+#name {
 	vertical-align: middle;
+	margin-right: 8px
 }
 
-#combo-box2 {
-	margin: 15px 0 10px 105px;
+.color-gray {
+	color: gray
 }
 
-.mw-90 {
-	min-width: 100px
+#h-50 {
+	height: 20px
 }
 
-#clear {
-	float: right;
-	margin-right: 25px;
-	margin-bottom: 10px
+#popup-area {
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	visibility: hidden;
+	z-index: 1000
 }
 
-#table-date {
-	margin-bottom: 10px
+#popup-area>div {
+	margin-top: 10px;
 }
 
-#table-date table, #table-date th, #table-date td {
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	width: 930px;
-	height: 26px;
-	text-align: center;
-	min-width: 25px;
+#contents-area{
+    overflow-y: hidden !important;
 }
 
-#table-date th {
-	background-color: #EDFAC2
+.color-gray {
+	cursor: default;
+	text-decoration: none;
 }
-
-#table-date td {
-	font-size: 14px;
+.valign-center.control-group{
+	margin-left: 50px;
 }
-
-#pairPatternName {
-	vertical-align: middle;
+.nts-switch-button.unselectable{
+	width: 100px;
 }
-
-#color-red {
-	color: red
-}
-
-#combo-box2 {
-	min-width: 770px !important
+#test2 button{
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

@@ -1,0 +1,25 @@
+
+.registration-panel, .setting-panel{
+   width: 200px;
+   float: left;
+   margin-left: 10px;
+   height: 150px;
+}
+.caret-panel{
+    float: left;
+    margin-left: 5px;
+    color: #E0F59E;
+}
+.caret-panel .caret-right{
+    font-size: 4rem;
+}
+.panel-footer {
+    position: absolute;
+    bottom: 16px;
+}
+.panel-footer button {
+    width: 150px;
+}
+.label-custom {
+    font-size: 2em;
+}

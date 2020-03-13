@@ -71,7 +71,7 @@ public class WorkInfoList {
 		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
 		WorkInformation record = this.workInfoOfDailyMap.get(ymd).getRecordInfo();
 		if (record == null) return Optional.empty();
-		return Optional.of(new WorkInformation(record.getSiftCode(), record.getWorkTypeCode()));
+		return Optional.of(new WorkInformation(record.getWorkTimeCode(), record.getWorkTypeCode()));
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class WorkInfoList {
 		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
 		WorkInformation schedule = this.workInfoOfDailyMap.get(ymd).getScheduleInfo();
 		if (schedule == null) return Optional.empty();
-		return Optional.of(new WorkInformation(schedule.getSiftCode(), schedule.getWorkTypeCode()));
+		return Optional.of(new WorkInformation(schedule.getWorkTimeCode(), schedule.getWorkTypeCode()));
 	}
 	
 	/**

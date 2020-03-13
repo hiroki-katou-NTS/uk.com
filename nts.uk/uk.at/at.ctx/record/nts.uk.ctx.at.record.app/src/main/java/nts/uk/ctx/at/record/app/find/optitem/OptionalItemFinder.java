@@ -4,12 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,6 +15,9 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOtherRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.LanguageConsts;
 
 /**
  * The Class OptionalItemFinder.
@@ -75,6 +77,9 @@ public class OptionalItemFinder {
 
 	@Inject
 	private AtItemNameAdapter attdItemNameAdapter;
+	
+	@Inject
+	private OptionalItemNameOtherRepository optItemNameOtherRepository;
 	
 	/**
 	 * Find.
@@ -239,6 +244,49 @@ public class OptionalItemFinder {
 			return dto;
 		}).collect(Collectors.toList());
 
+		return listDto;
+	}
+	
+	public OptionalItemDto findWithLang(Integer optionalItemNo, String langId) {
+		OptionalItemDto dto = new OptionalItemDto();
+		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
+		optionalItem.saveToMemento(dto);
+		// Set list formula.
+		dto.setFormulas(this.getFormulas(optionalItem));
+		if(!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
+			Optional<OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository.findByKey(AppContexts.user().companyId(), optionalItemNo, langId);
+			if(nameOtherOpt.isPresent()) {
+				dto.setOptionalItemName(nameOtherOpt.get().getOptionalItemName());
+			}else {
+				dto.setOptionalItemName(new OptionalItemName(""));
+			}
+		}
+
+		return dto;
+	}
+	
+	public List<OptionalItemHeaderDto> findAllWithLang(String langId) {
+		List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
+		List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
+			OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
+			item.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+
+		if (!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
+			Map<Integer, OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository
+					.findAll(AppContexts.user().companyId(), langId).stream().collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), x -> x));
+			listDto = listDto.stream().map(x -> {
+				if(nameOtherOpt.containsKey(x.getItemNo())) {
+					x.setNameNotJP(nameOtherOpt.get(x.getItemNo()).getOptionalItemName().v());
+					return x;
+				}else {
+					x.setNameNotJP("");
+					return x;
+				}
+			}).collect(Collectors.toList());
+			
+		}
 		return listDto;
 	}
 }

@@ -25,9 +25,10 @@ import approve.employee.EmployeeApproverRootOutputGenerator;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -127,10 +128,17 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			throw new BusinessException("Msg_7");
 		}
 		int firstRow = 1;
-		List<WorkplaceImport> lstWpInfor = dataSource.getLstWpInfor();
-		for (WorkplaceImport wp : lstWpInfor) {
-			WpApproverAsAppOutput workplace = lstWkpAppr.get(wp.getWkpId());
-			firstRow = this.printEachWorkplace(worksheets, cells, firstRow, workplace);
+		List<WkpDepInfo> lstWpInfor = dataSource.getLstWpInfor();
+		String text = "";
+		if(dataSource.getSysAtr() == 0) {
+			text = I18NText.getText("Com_Workplace");
+		}else {
+			text = I18NText.getText("Com_Department");
+		}
+		text = "【"+ text +"】";
+		for (WkpDepInfo wp : lstWpInfor) {
+			WpApproverAsAppOutput workplace = lstWkpAppr.get(wp.getId());
+			firstRow = this.printEachWorkplace(worksheets, cells, firstRow, workplace, text);
 		}
 	}
 
@@ -144,17 +152,17 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 	 * @return
 	 */
 	private int printEachWorkplace(WorksheetCollection worksheets, Cells cells, int firstRow,
-			WpApproverAsAppOutput workplace) {
-		WorkplaceImport wpInfor = workplace.getWpInfor();
+			WpApproverAsAppOutput workplace, String text) {
+		WkpDepInfo wpInfor = workplace.getWpInfor();
 		Map<String, EmpApproverAsApp> employee = workplace.getMapEmpRootInfo();
 		List<EmployeeApproverOutput> lstEmployeeInfo = workplace.getLstEmployeeInfo();
 		// set "【職場】"
 		Cell workPlace = cells.get(firstRow, COLUMN_INDEX[1]);
-		workPlace.setValue("[職場]");
+		workPlace.setValue(text);
 
 		// set worplace Name, workplace Code
 		Cell workPlaceCode = cells.get(firstRow, COLUMN_INDEX[2]);
-		workPlaceCode.setValue(wpInfor.getWkpCode() + " " + wpInfor.getWkpName());
+		workPlaceCode.setValue(wpInfor.getCode() + " " + wpInfor.getName());
 
 		// tăng rowIndex lên 1 theo template
 		firstRow = firstRow + 1;
@@ -399,7 +407,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
 			String appName = "";
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
-				appName = "共通";
+				appName = "共通ルート";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
 				appName = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}
@@ -480,7 +488,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
 			String appName1 = "";
 			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
-				appName1 = "共通";
+				appName1 = "共通ルート";
 			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
 				appName1 = EnumAdaptor.valueOf(Integer.valueOf(typeApp.getCode()), ApplicationType.class).nameId;
 			}

@@ -260,9 +260,10 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         openDialogJA(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            setShared('dataForJA', {
+            setShared('dataForJB', {
                 selectedTab: self.selectedTab(),
                 workplaceName: __viewContext.viewModel.viewA.workPlaceNameDisplay(),
+                workplaceCode: __viewContext.viewModel.viewA.workplaceCode(), 
                 workplaceId: self.selectedTab() === 'company' ? null : __viewContext.viewModel.viewA.workplaceId,
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
@@ -270,8 +271,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 // listCheckNeededOfWorkTime for JA to JA send to JB
                 listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             });
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => {
-                let selectedLB: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
+                let selectedLB: any = ko.observable(getShared("dataFromJB").selectedLinkButton);
                 if (self.selectedTab() == 'company') {
                     $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
                         self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);

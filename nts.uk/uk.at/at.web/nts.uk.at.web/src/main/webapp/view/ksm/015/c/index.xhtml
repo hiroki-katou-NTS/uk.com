@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="ksm015.c.css" />
+			<com:scriptfile path="ksm015.c.model.js" />
+			<com:scriptfile path="ksm015.c.vm.js" />
+			<com:scriptfile path="ksm015.c.service.js" />
+			<com:scriptfile path="ksm015.c.start.js" />
+
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#Com_Workplace" role="tab-navigator" class="active">#{i18n.getText('Com_Workplace')}</a></li>
+				<!-- <li><a href="#Com_ScheGroup" role="tab-navigator">#{i18n.getText('Com_WorkplaceGroup')}</a></li> -->
+			</ul>
+			<div class="divider"></div>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="Com_Workplace" role="tabpanel">
+				<ui:include src="c.xhtml" />
+			</div>
+			<div id="Com_ScheGroup" role="tabpanel">
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

@@ -116,7 +116,7 @@ public interface CollectApprovalRootService {
 	/**
 	 * 上位職場の承認者を探す
 	 * @param companyID
-	 * @param approverGroupCD
+	 * @param approverGroupCDLst
 	 * @param opDispOrder
 	 * @param employeeID
 	 * @param baseDate
@@ -125,7 +125,7 @@ public interface CollectApprovalRootService {
 	 * @param approvalAtr
 	 * @return
 	 */
-	public List<ApproverInfo> getUpperApproval(String companyID, String approverGroupCD, Optional<Integer> opDispOrder, 
+	public List<LevelApproverInfo> getUpperApproval(String companyID, List<String> approverGroupCDLst, Optional<Integer> opDispOrder, 
 			String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove, ApprovalAtr approvalAtr);
 	
 	/**

@@ -22,14 +22,10 @@ public interface EmployeeOfApprovalRoot {
 	 * @param rootType　就業ルート区分　
 	 * @param appType　対象申請
 	 * @param baseDate　基準日
+	 * @param sysAtr 承認ルート区分
 	 * @return　承認ルートあり＝＞true	// * 承認ルートなし　＝＞false
 	 */
-	boolean lstEmpApprovalRoot(String companyId,
-			List<CompanyApprovalRoot> lstCompanyRootInfor,
-			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
-			List<PersonApprovalRoot> lstPersonRootInfor,
-			EmployeeImport empInfor, 
-			String typeV,
-			GeneralDate baseDate,
-			int empR);
+	boolean lstEmpApprovalRoot(String companyId, List<CompanyApprovalRoot> lstCompanyRootInfor,
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
+			EmployeeImport empInfor, String typeV, GeneralDate baseDate, int empR, int sysAtr);
 }

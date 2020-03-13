@@ -1,0 +1,16 @@
+
+#tree-grid {
+    margin: 30px 30px 0px 20px;
+    width: 453px;
+    float: left;
+}
+#register-form {
+    padding-top: 30px;     
+    width: 200px;
+    float: left;
+}
+#form-title {
+    border-bottom: 1px solid black;
+    padding: 0px 0px 10px 0px;
+    margin: 0px 0px 14px 0px;
+}

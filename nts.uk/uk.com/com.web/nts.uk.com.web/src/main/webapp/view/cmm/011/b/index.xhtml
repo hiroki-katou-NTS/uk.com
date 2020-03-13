@@ -9,63 +9,71 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 700,
+					width : 620,
 					height : 350
 				};
 			</script>
 
 			<com:scriptfile set="IGNITE" />
 
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="../_base/cmm011.base.js" />
-			<com:scriptfile path="cmm011.b.service.js" />
-			<com:scriptfile path="cmm011.b.vm.js" />
-			<com:scriptfile path="cmm011.b.start.js" />
+			<com:scriptfile path="cmm011.v2.b.service.js" />
+			<com:scriptfile path="cmm011.v2.b.vm.js" />
+			<com:scriptfile path="cmm011.v2.b.start.js" />
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-inline caret-background pull-left"
-					data-bind="with: workplaceHistory">
-					<div>
-						<button tabindex="1"
-							data-bind="click: addHistory,enable: addBtnControl">#{i18n.getText('CMM011_18')}</button>
-						<button tabindex="2" style="margin-left: 4px; margin-right: 4px;"
-							data-bind="click: updateHistory,enable: updateBtnControl">#{i18n.getText('CMM011_19',['Com_Workplace'])}</button>
-						<button tabindex="3" class="danger"
-							data-bind="click: removeHistory,enable: addBtnControl">#{i18n.getText('CMM011_20')}</button>
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left">
+					<div class="valign-center control-group" style="padding-top: 20px">
+						<button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
+						<button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+						<button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
 					</div>
 
-					<div id="list-box" tabindex="4"
+					<div tabindex="4" id="B1_4"
 						data-bind="ntsListBox: {
-						name: '#[CMM011_22]',
+						name: '#[CMM011_120]',
 						options: lstWpkHistory,
 						optionsValue: 'historyId',
-						optionsText: 'textDisplay',
+						optionsText: 'displayText',
 						multiple: false,
 						value: selectedHistoryId,
 						enable: true,
-						rows: 4,
+						rows: 5,
 						columns: [
-							{ key: 'textDisplay', length: 15 }
+							{ key: 'displayText', length: 15 }
 						]}"></div>
 				</div>
 
-				<div id="right-content">
-					<div style="margin-left: 35px; margin-right: 20px;"
-						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
-					<div tabindex="5" id="startDate"
-						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD', enable: enable}"></div>
-					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span> <span
-						data-bind="text: endDate"></span>
+				<div class="fixed-flex-layout-right">
+					<div class="valign-center control-group" style="width: 323px; padding-top: 20px">
+						<span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('CMM011_121')}</span>
+						<span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011_122')}</span>
+						<span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('CMM011_123')}</span>
+					</div>
+					<div class="valign-center control-group" style="width: 323px;">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_124')}</div>
+				        <div tabindex="5" id="B3_5" data-bind="ntsDatePicker: {
+							name: '#[CMM011_126]', 
+							required: true, 
+							value: selectedStartDateInput, 
+							dateFormat: 'YYYY/MM/DD', 
+							enable: true}, visible: screenMode() == 1 || screenMode() == 2 || screenMode() == 3"></div>
+						<span class="label" data-bind="text: selectedStartDateText, visible: screenMode() == 0"></span>
+						<span class="label">#{i18n.getText('CMM011_125')}</span>
+						<span class="label" data-bind="text: selectedEndDate"></span>
+					</div>
+					<div class="valign-center control-group" data-bind="visible: screenMode() == 2"  style="width: 323px;">
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 0">#{i18n.getText('CMM011_206')}</div>
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 1">#{i18n.getText('CMM011_306')}</div>
+						<button data-bind="visible: false, ntsHelpButton: {textId: 'Help Button Text', position: 'right center' }">？</button>
+					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="6"
-					data-bind="click: execution">#{i18n.getText('CMM011_28')}</button>
-				<button class="large" tabindex="7" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
+				<button class="x-large proceed" tabindex="7" data-bind="click: registerConfig, enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())">#{i18n.getText('CMM011_127')}</button>
+				<button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('CMM011_128')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

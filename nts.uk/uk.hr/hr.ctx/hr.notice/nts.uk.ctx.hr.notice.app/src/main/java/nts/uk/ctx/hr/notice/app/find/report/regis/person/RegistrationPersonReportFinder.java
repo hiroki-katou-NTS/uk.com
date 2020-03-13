@@ -13,7 +13,6 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
 import nts.uk.ctx.hr.notice.dom.report.PersonalReportClassificationRepository;
-import nts.uk.ctx.hr.notice.dom.report.RegisterPersonalReportItemRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.AttachPersonReportFileRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReport;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
@@ -35,8 +34,6 @@ public class RegistrationPersonReportFinder {
 	@Inject
 	private PersonalReportClassificationRepository PerReportClassRepo;
 
-	@Inject
-	private AttachPersonReportFileRepository attachFileRepo;
 	
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
 	// アルゴリズム「起動処理」を実行する (Thực hiện thuật toán 「Xử lý khởi động」)
@@ -57,16 +54,14 @@ public class RegistrationPersonReportFinder {
 				PersonalReportDto dto = new PersonalReportDto();
 				Optional<RegistrationPersonReport> report = listReport.stream().filter(rpt -> rpt.getReportLayoutID() == rp.getReportClsId()).findFirst();
 				if (report.isPresent()) {
-					if (report.get().isDelFlg() == false) {
-						dto.setReportID(report.get().getReportID());
-						dto.setSendBackComment(report.get().getSendBackComment());
-						dto.setRootSateId(report.get().getRootSateId());
-						dto.setRegStatus(report.get().getRegStatus().value);
-						dto.setAprStatus(report.get().getAprStatus().value);
-						dto.setClsDto(rp);
-						result.add(dto);
-					}
-				}else{
+					dto.setReportID(report.get().getReportID());
+					dto.setSendBackComment(report.get().getSendBackComment());
+					dto.setRootSateId(report.get().getRootSateId());
+					dto.setRegStatus(report.get().getRegStatus().value);
+					dto.setAprStatus(report.get().getAprStatus().value);
+					dto.setClsDto(rp);
+					result.add(dto);
+				} else {
 					dto.setReportID(null);
 					dto.setSendBackComment("");
 					dto.setRegStatus(null);

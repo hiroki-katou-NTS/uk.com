@@ -17,9 +17,15 @@ module nts.uk.at.view.kmk002.a {
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
             langId: KnockoutObservable<string> = ko.observable('ja');
+            langJP: KnockoutObservable<boolean> = ko.observable(true); 
             constructor() {
                 let self = this;
-                self.optionalItemHeader = new OptionalItemHeader();
+                self.optionalItemHeader = new OptionalItemHeader(self.langId());
+                self.langId.subscribe((value) => {
+                    self.optionalItemHeader.langId = value;
+                    self.changeLanguage();
+                    self.langJP((value == "ja") ? true : false);
+                });
 
             }
 
@@ -29,7 +35,8 @@ module nts.uk.at.view.kmk002.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
+                $("#switch-language")['ntsSwitchMasterLanguage']();
+                $("#switch-language").on("selectionChanged", (event: any) => self.langId(event['detail']['languageId']));
                 // set ntsFixedTable style
                 $("#tbl-calc-formula").ntsFixedTable({ height: 250 });
 
@@ -74,7 +81,55 @@ module nts.uk.at.view.kmk002.a {
                 return dfd.promise();
             }
 
+            private changeLanguage(): void {
+                let self = this,
+                    grid = $("#tbl-master-list"),
+                    lang: string = ko.toJS(self.langId);
+                if (lang == 'ja') {
+                    $("#tbl-master-list").igGrid("option", "width", "380px");
 
+                    //remove columns otherLanguageName
+                    var cols = grid.igGrid("option", "columns");
+                    cols.splice(2, 1);
+                    grid.igGrid("option", "columns", cols);
+                    self.optionalItemHeader.selectedCode.valueHasMutated();
+                    $(".nts-fixed-table").removeClass("mask-calc-formula");
+                } else {
+                    self.findOptionalItemLanguage();
+                }
+            }
+            
+            private findOptionalItemLanguage(): JQueryPromise<any> {
+                let self = this,
+                    lstOptItem = self.optionalItemHeader.optionalItemHeaders,
+                    dfd = $.Deferred();
+
+                service.findByLangId(self.langId()).done((data) => {
+                    _.each(data, (x) => {
+                        let item = _.find(lstOptItem(), ['itemNo', x.optionalItemNo]);
+                        if (item) {
+                            item.nameNotJP = x.optionalItemName;
+                        }
+                    });
+                    $("#tbl-master-list").igGrid("option", "width", "500px");
+                    var cols = $("#tbl-master-list").igGrid("option", "columns");
+                    if ($("#tbl-master-list").igGrid("option", "columns").length == 4) {
+                        //add columns otherLanguageName   
+                        var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 120, formatter: _.escape };
+                        cols.splice(2, 0, newColumn);
+                        $("#tbl-master-list").igGrid("option", "columns", cols);
+                        $("#tbl-master-list").igGrid("option", "dataSource", lstOptItem());
+                    }
+
+                     self.optionalItemHeader.selectedCode.valueHasMutated();
+                     $(".nts-fixed-table").addClass("mask-calc-formula");
+
+                    dfd.resolve();
+                }).fail(() => {
+                    dfd.reject();
+                });
+                return dfd.promise();
+        }
 
         }
 
@@ -1179,9 +1234,11 @@ module nts.uk.at.view.kmk002.a {
             optionalItemHeaders: KnockoutObservableArray<OptionalItemHeaderDto>;
             optionalItem: OptionalItem;
             hasSelected: KnockoutObservable<boolean>;
+            langId: any;
 
-            constructor() {
+            constructor(langId: any) {
                 let self = this;
+                self.langId = langId;
                 self.optionalItemHeaders = ko.observableArray([]);
                 self.optionalItem = new OptionalItem();
                 self.hasSelected = ko.observable(true);
@@ -1275,7 +1332,7 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.block.invisible();
 
                 let command = self.optionalItem.toDto();
-
+                command["langId"] = __viewContext.vm.langId();
                 // call webservice to save optional item
                 service.saveOptionalItem(command)
                     .done(() => {
@@ -1360,7 +1417,7 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.block.invisible();
 
                 // get optional item headers
-                service.findOptionalItemHeaders()
+                service.findOptionalItemHeaders(self.langId)
                     .done(res => {
                         self.optionalItemHeaders(res);
                         dfd.resolve();
@@ -1381,7 +1438,7 @@ module nts.uk.at.view.kmk002.a {
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 // get optional item detail
-                service.findOptionalItemDetail(itemNo)
+                service.findOptionalItemDetail(itemNo, self.langId)
                     .done(res => {
                         // clear selected formula
                         OptionalItem.selectedFormulas([]);

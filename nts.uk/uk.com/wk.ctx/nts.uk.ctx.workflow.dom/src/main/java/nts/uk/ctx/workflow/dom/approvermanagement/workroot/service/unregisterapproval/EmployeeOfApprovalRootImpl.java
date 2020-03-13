@@ -7,26 +7,28 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
+import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 @Stateless
 public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	@Inject
-	private EmployeeAdapter employeeApproveAdapter;
+	private CollectApprovalRootService collectApprSv;
 	@Inject
 	private ApprovalPhaseRepository approvalPhase;
 	@Override
 	public boolean lstEmpApprovalRoot(String companyId, List<CompanyApprovalRoot> lstCompanyRootInfor,
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor, List<PersonApprovalRoot> lstPersonRootInfor,
-			EmployeeImport empInfor,  String typeV, GeneralDate baseDate, int empR) {
+			EmployeeImport empInfor,  String typeV, GeneralDate baseDate, int empR, int sysAtr) {
 		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」)
 		List<PersonApprovalRoot> personRootAll = this.checkExistPs(lstPersonRootInfor, empInfor.getSId(), typeV, empR);
 		//co truong hop co root nhung khong co phase
@@ -58,11 +60,14 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 			//データが０件(data = 0)
 			if(CollectionUtil.isEmpty(psRootCommonAtr)
 					|| CollectionUtil.isEmpty(approvalPhases)) {
-				//対象者の所属職場を含める上位職場を取得する(lấy thông tin Affiliation workplace và Upper workplace của nhân viên)
-				List<String> lstWpIds = employeeApproveAdapter.findWpkIdsBySid(companyId, empInfor.getSId(), baseDate);
-				if(!CollectionUtil.isEmpty(lstWpIds)) {
+				
+				//対象者の所属職場・部門を含める上位職場・部門を取得する
+				List<String> lstWpDepIds = collectApprSv.getUpperIDIncludeSelf(companyId, empInfor.getSId(), baseDate,
+						EnumAdaptor.valueOf(sysAtr, SystemAtr.class));
+				
+				if(!CollectionUtil.isEmpty(lstWpDepIds)) {
 					//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-					for(String WpId: lstWpIds) {
+					for(String WpId: lstWpDepIds) {
 						//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)  ※ 就業ルート区分(申請か、確認か、任意項目か)
 						List<WorkplaceApprovalRoot> wpRootAllAtr = this.checkExistWp(lstWorkpalceRootInfor, WpId, typeV, empR);
 						if(!CollectionUtil.isEmpty(wpRootAllAtr)) {

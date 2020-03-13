@@ -1,1 +1,13 @@
 @CHARSET "UTF-8";
+.tab3 .table{
+    margin: 25px 10px;
+}
+
+.tab3 .table td.center{
+    text-align: center;
+}
+
+.tab3 table.scroll{
+    overflow-y: scroll;
+    display: block;
+}
