@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 
 /**
@@ -12,6 +14,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.Ap
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
 public class AppDispInfoStartupOutput {
 	

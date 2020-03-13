@@ -14,4 +14,8 @@ public class AfterhandRestrictionDto {
 	public static AfterhandRestrictionDto fromDomain(AfterhandRestriction afterhandRestriction) {
 		return new AfterhandRestrictionDto(afterhandRestriction.getAllowFutureDay());
 	}
+	
+	public AfterhandRestriction toDomain() {
+		return new AfterhandRestriction(allowFutureDay);
+	}
 }

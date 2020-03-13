@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.request.app.find.setting.company.request.appreflect;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.PriorityTimeReflectAtr;
 
 public class AppReflectionSettingDto {
 	/**
@@ -32,5 +36,14 @@ public class AppReflectionSettingDto {
 		appReflectionSettingDto.classScheAchi = appReflectionSetting.getClassScheAchi().value;
 		appReflectionSettingDto.reflecTimeofSche = appReflectionSetting.getReflecTimeofSche().value;
 		return appReflectionSettingDto;
+	}
+	
+	public AppReflectionSetting toDomain() {
+		return new AppReflectionSetting(
+				scheReflectFlg, 
+				EnumAdaptor.valueOf(priorityTimeReflectFlag, PriorityTimeReflectAtr.class), 
+				attendentTimeReflectFlg, 
+				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class), 
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}
 }

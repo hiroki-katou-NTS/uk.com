@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -40,7 +40,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 就業時間帯表示フラグ
 	 */
-	public boolean workTimeDisp;
+	public boolean workHoursDisp;
 	
 	/**
 	 * 勤務種類一覧
@@ -74,23 +74,34 @@ public class AppAbsenceStartInfoDto {
 	
 	public List<HolidayAppTypeName> holidayAppTypeName;
 	
-	public SettingNo65 setingNo65;
-	
-	public NumberOfRemainOutput numberRemain;
-	
 	public static AppAbsenceStartInfoDto fromDomain(AppAbsenceStartInfoOutput absenceStartInfoOutput) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.hdAppSet = HdAppSetDto.convertToDto(absenceStartInfoOutput.getHdAppSet());
 		result.displayReasonLst = absenceStartInfoOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
-		result.workTimeDisp = absenceStartInfoOutput.isWorkTimeDisp();
-		result.workTypeLst = absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
+		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
+		result.workTypeLst = absenceStartInfoOutput.getWorkTypeLst() == null ? null : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
 		result.workTimeLst = absenceStartInfoOutput.getWorkTimeLst();
 		result.workTypeNotRegister = absenceStartInfoOutput.isWorkTypeNotRegister();
 		result.specAbsenceDispInfo = absenceStartInfoOutput.getSpecAbsenceDispInfo().map(x -> SpecAbsenceDispInfoDto.fromDomain(x)).orElse(null);
 		result.selectedWorkTypeCD = absenceStartInfoOutput.getSelectedWorkTypeCD().orElse(null);
 		result.selectedWorkTimeCD = absenceStartInfoOutput.getSelectedWorkTimeCD().orElse(null);
 		return result;
+	}
+	
+	public AppAbsenceStartInfoOutput toDomain() {
+		return new AppAbsenceStartInfoOutput(
+				appDispInfoStartupOutput.toDomain(), 
+				hdAppSet.toDomain(), 
+				displayReasonLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				remainVacationInfo, 
+				workHoursDisp, 
+				workTypeLst == null ? null : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				workTimeLst, 
+				workTypeNotRegister, 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty());
 	}
 }

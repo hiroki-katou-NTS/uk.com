@@ -50,4 +50,14 @@ public class RequestSettingDto {
 		requestSettingDto.appReflectAfterConfirm = AppReflectAfterConfirmDto.fromDomain(requestSetting.getAppReflectAfterConfirm());
 		return requestSettingDto;
 	}
+	
+	public RequestSetting toDomain() {
+		return new RequestSetting(
+				companyID, 
+				applicationSetting.toDomain(), 
+				appReflectionSetting.toDomain(), 
+				approvalListDisplaySetting.toDomain(), 
+				authorizationSetting, 
+				appReflectAfterConfirm.toDomain());
+	}
 }

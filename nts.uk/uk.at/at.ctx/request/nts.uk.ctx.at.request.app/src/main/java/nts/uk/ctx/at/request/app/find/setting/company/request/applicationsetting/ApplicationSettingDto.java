@@ -5,12 +5,14 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.applimitset.AppLimitSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.AppTypeSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.displaysetting.AppDisplaySettingDto;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,5 +60,15 @@ public class ApplicationSettingDto {
 		applicationSettingDto.listAppDeadlineSetting = applicationSetting.getListAppDeadlineSetting().stream()
 				.map(x -> AppDeadlineSettingDto.fromDomain(x)).collect(Collectors.toList());
 		return applicationSettingDto;
+	}
+	
+	public ApplicationSetting toDomain() {
+		return new ApplicationSetting(
+				EnumAdaptor.valueOf(recordDate, RecordDate.class), 
+				appDisplaySetting.toDomain(), 
+				listReceptionRestrictionSetting.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				listAppTypeSetting.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				appLimitSetting.toDomain(), 
+				listAppDeadlineSetting.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

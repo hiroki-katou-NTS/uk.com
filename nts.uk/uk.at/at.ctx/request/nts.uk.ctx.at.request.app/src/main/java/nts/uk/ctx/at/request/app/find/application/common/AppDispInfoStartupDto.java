@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -29,5 +31,15 @@ public class AppDispInfoStartupDto {
 		result.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
 		result.appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> AppDetailScreenInfoDto.fromDomain(x)).orElse(null);
 		return result;
+	}
+	
+	public AppDispInfoStartupOutput toDomain() {
+		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput();
+		output.setAppDispInfoNoDateOutput(appDispInfoNoDateOutput.toDomain());
+		
+		return new AppDispInfoStartupOutput(
+				appDispInfoNoDateOutput.toDomain(), 
+				appDispInfoWithDateOutput.toDomain(), 
+				appDetailScreenInfo == null ? Optional.empty() : Optional.of(appDetailScreenInfo.toDomain()));
 	}
 }

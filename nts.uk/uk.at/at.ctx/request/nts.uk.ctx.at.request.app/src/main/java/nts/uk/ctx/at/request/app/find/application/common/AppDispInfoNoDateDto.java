@@ -38,4 +38,11 @@ public class AppDispInfoNoDateDto {
 		return appDispInfoNoDateDto;
 	}
 	
+	public AppDispInfoNoDateOutput toDomain() {
+		return new AppDispInfoNoDateOutput(
+				employeeInfoLst, 
+				requestSetting.toDomain(), 
+				appReasonLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	}
+	
 }

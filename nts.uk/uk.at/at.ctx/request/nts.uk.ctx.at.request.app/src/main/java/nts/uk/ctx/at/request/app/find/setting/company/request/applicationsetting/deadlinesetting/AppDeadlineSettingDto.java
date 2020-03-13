@@ -37,4 +37,13 @@ public class AppDeadlineSettingDto {
 		appDeadlineSettingDto.deadlineCriteria = appDeadlineSetting.getDeadlineCriteria().value;
 		return appDeadlineSettingDto;
 	}
+	
+	public AppDeadlineSetting toDomain() {
+		return AppDeadlineSetting.createSimpleFromJavaType(
+				companyId, 
+				closureId, 
+				userAtr, 
+				deadline, 
+				deadlineCriteria);
+	}
 }
