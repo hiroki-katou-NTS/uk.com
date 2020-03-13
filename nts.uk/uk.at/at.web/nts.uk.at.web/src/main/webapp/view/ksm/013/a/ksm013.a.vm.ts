@@ -33,6 +33,7 @@ module nts.uk.at.view.ksm013.a {
                             self.nurseClModel.createDataModel(dataDetail);
                             self.clearErrorAll();
                             dfd.resolve();
+                                 $('#nurseClassificationName').focus();
                         })
                     }
                     return dfd.promise();
@@ -54,6 +55,7 @@ module nts.uk.at.view.ksm013.a {
                     if (!_.isEmpty(dataAll)) {
                         self.lstNurseCl(_.sortBy(dataAll, [function(o) { return o.code; }]));
                         self.selectedCode(self.lstNurseCl()[0].code);
+                         
                     } else {
                         self.isEditting(false);
                         $('[tabindex= 5]').focus();
@@ -68,12 +70,12 @@ module nts.uk.at.view.ksm013.a {
 
             public newCreate() {
                 let self = this;
-                self.isEditting(false);
+                self.isEditting(false);     
                 self.selectedCode("");
-                $('[tabindex= 5]').focus();
                 self.clearErrorAll();
                 self.nurseClModel.resetModel();
-            }
+                 $('#nurseClassificationCode').focus();
+           }
 
             public register() {
                 let self = this,
@@ -92,6 +94,7 @@ module nts.uk.at.view.ksm013.a {
                             nts.uk.ui.block.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.isEditting(true);
+                            
                             dfd.resolve();
                         })
                     }).fail((res) => {
@@ -115,6 +118,7 @@ module nts.uk.at.view.ksm013.a {
                         }));
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         nts.uk.ui.block.clear();
+                        $('#nurseClassificationName').focus();
                         self.isEditting(true);
                         dfd.resolve();
                     });
@@ -145,6 +149,7 @@ module nts.uk.at.view.ksm013.a {
                                 }
                             }
                             self.selectedCode(self.lstNurseCl()[indexSelected].code);
+                            $('#nurseClassificationName').focus();
                         }
                         nts.uk.ui.block.clear();
                         dfd.resolve();
@@ -209,6 +214,7 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName("");
                 self.license(0);
                 self.officeWorker(false);
+                ;
 
             }
         }

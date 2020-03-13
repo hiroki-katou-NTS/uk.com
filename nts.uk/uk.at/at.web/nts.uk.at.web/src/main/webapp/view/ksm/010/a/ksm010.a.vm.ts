@@ -112,13 +112,16 @@ module nts.uk.at.view.ksm010.a {
             saveData(): void {
                 let self = this;
                 self.rankSymbol($.trim(self.rankSymbol()));
-                
                 $("#rankCode").trigger("validate");
                 $("#rankSymbol").trigger("validate");
-
+                _.map(self.rankItems() , 'rankCd');
+                //_.map(self.rankItems() , 'rankCd').indexOf(self.rankCd) = -1.Check trùng lặp Rank Code
+                if (_.map(self.rankItems() , 'rankCd').indexOf(self.rankCd()) != -1){
+                    $('#rankCode').ntsError('set', {messageId:"Msg_3"});}
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+               
 
                 let command: any = {
                     rankCd: self.rankCd(),
@@ -153,11 +156,11 @@ module nts.uk.at.view.ksm010.a {
                 let self = this;
 
                 let command = { rankCd: self.rankCd() };
-
+     
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
                     service.deleteRank(command).done(() => {
-                        info(getMessage('Msg_16'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         self.setCurrentCodeAfterDelete();
                         self.getListRank();
                     }).fail(function(error) {
