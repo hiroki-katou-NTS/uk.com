@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.develop.infra.repository.sysoperationset.businessrecognition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,8 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 				+ "Set m.noRankOrder =:noRankOrder "
 				+ "Where m.jhnmtRptLayoutPk.cid = :cid "
 				+ "And m.jhnmtRptLayoutPk.rptLayoutId = :rptLayoutId ";
+		List<KeyDto> menuOperation = new ArrayList<>();
+		List<KeyDto> rptLayout = new ArrayList<>();
 		for (BusinessApprovalSettingsDto c : domain) {
 			this.commandProxy().update(JcmmtMenuApr.toEntity(c.getMenuApprovalSettings()));
 			this.getEntityManager().createQuery(updateJcmctMenuOperation)
