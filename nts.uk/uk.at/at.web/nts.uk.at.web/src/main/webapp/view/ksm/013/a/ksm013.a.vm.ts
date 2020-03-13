@@ -70,11 +70,9 @@ module nts.uk.at.view.ksm013.a {
 
             public newCreate() {
                 let self = this;
-                self.isEditting(false);     
-                self.selectedCode("");
-                self.clearErrorAll();
+                self.isEditting(false); 
                 self.nurseClModel.resetModel();
-                 $('#nurseClassificationCode').focus();
+                self.clearErrorAll();
            }
 
             public register() {
@@ -138,7 +136,7 @@ module nts.uk.at.view.ksm013.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         if (self.lstNurseCl().length == 1) {
                             self.lstNurseCl([]);
-                            self.newCreate();
+                            self.selectedCode("");
                         } else {
                             let indexSelected: number;
                             for (let index: number = 0; index < self.lstNurseCl().length; index++) {
@@ -149,9 +147,11 @@ module nts.uk.at.view.ksm013.a {
                                 }
                             }
                             self.selectedCode(self.lstNurseCl()[indexSelected].code);
-                            $('#nurseClassificationName').focus();
+                           
                         }
                         nts.uk.ui.block.clear();
+                            
+                        
                         dfd.resolve();
                     });
                 }).ifNo(function() {
@@ -206,6 +206,8 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName(data.name);
                 self.license(data.license);
                 self.officeWorker(data.officeWorker);
+                $('#nurseClassificationCode').focus();
+             
             }
 
             public resetModel() {
@@ -214,8 +216,7 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName("");
                 self.license(0);
                 self.officeWorker(false);
-                
-
+                $('#nurseClassificationCode').focus();
             }
         }
 

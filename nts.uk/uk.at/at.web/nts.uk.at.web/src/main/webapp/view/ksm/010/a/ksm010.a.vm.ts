@@ -114,15 +114,12 @@ module nts.uk.at.view.ksm010.a {
                 self.rankSymbol($.trim(self.rankSymbol()));
                 $("#rankCode").trigger("validate");
                 $("#rankSymbol").trigger("validate");
-                _.map(self.rankItems() , 'rankCd');
-                //_.map(self.rankItems() , 'rankCd').indexOf(self.rankCd) = -1.Check trùng lặp Rank Code
-                if (_.map(self.rankItems() , 'rankCd').indexOf(self.rankCd()) != -1){
-                    $('#rankCode').ntsError('set', {messageId:"Msg_3"});}
+                _.map(self.rankItems() , 'rankCd');       
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
                
-
+    
                 let command: any = {
                     rankCd: self.rankCd(),
                     rankSymbol: self.rankSymbol()
@@ -135,6 +132,10 @@ module nts.uk.at.view.ksm010.a {
                         self.getListRank();
                         self.currentCode(self.rankCd());
                     }).fail(function(error: any) {
+                        if (error.messageId == "Msg_3") {
+                            $('#rankCode').ntsError('set', { messageId: "Msg_3" });
+                        }
+                        else
                         alertError({ messageId: error.messageId });
                     }).always(() => {
                         blockUI.clear();
