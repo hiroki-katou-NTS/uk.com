@@ -685,9 +685,18 @@ public class AppAbsenceFinder {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public AppAbsenceDto getChangeDisplayHalfDay(String startAppDate, boolean displayHalfDayValue, String employeeID,
-			String workTypeCode, Integer holidayType, int alldayHalfDay) {
-		AppAbsenceDto result = new AppAbsenceDto();
+	public AppAbsenceStartInfoDto getChangeDisplayHalfDay(String startAppDate, boolean displayHalfDayValue, String employeeID,
+			String workTypeCode, Integer holidayType, int alldayHalfDay, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		appAbsenceStartInfoOutput = absenseProcess.allHalfDayChangeProcess(
+				companyID, 
+				appAbsenceStartInfoOutput, 
+				displayHalfDayValue, 
+				alldayHalfDay, 
+				Optional.ofNullable(holidayType));
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		/*AppAbsenceDto result = new AppAbsenceDto();
 		if (employeeID == null) {
 			employeeID = AppContexts.user().employeeId();
 		}
@@ -733,7 +742,7 @@ public class AppAbsenceFinder {
 //					appCommonSettingOutput.generalDate);
 
 		}
-		return result;
+		return result;*/
 	}
 
 	/**
