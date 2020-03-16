@@ -25,6 +25,7 @@ module nts.uk.at.view.ksm013.a {
                 self.selectedCode.subscribe(function(codeChanged: string) {
                     let dfd = $.Deferred();
                     if (_.isEmpty(codeChanged)) {
+                        self.newCreate();
                         dfd.resolve();
                     } else {
                         service.findDetail(codeChanged).done((dataDetail: NurseDetailClassification) => {
@@ -94,13 +95,13 @@ module nts.uk.at.view.ksm013.a {
                             dfd.resolve();
                         })
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res).then(function() {
+                       // nts.uk.ui.dialog.alertError(res).then(function() {
                             nts.uk.ui.block.clear();
                             if (res.messageId == "Msg_3") {
                                 self.selectedCode("");
                                 $('#nurseClassificationCode').ntsError('set', { messageId: "Msg_3" });
                             }
-                        });
+                      //  });
                     });
                 } else {
                     // update
@@ -124,11 +125,11 @@ module nts.uk.at.view.ksm013.a {
             public remove() {
                 let self = this,
                     dfd = $.Deferred();
-                nts.uk.ui.block.grayout();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let param = {
                         nurseClassificationCode: self.nurseClModel.nurseClassificationCode()
                     }
+                    nts.uk.ui.block.grayout();
                     service.remove(param).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         if (self.lstNurseCl().length == 1) {
@@ -149,7 +150,6 @@ module nts.uk.at.view.ksm013.a {
                         dfd.resolve();
                     });
                 }).ifNo(function() {
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                     return;
                 });
@@ -161,7 +161,7 @@ module nts.uk.at.view.ksm013.a {
                 $('#nurseClassificationName').ntsEditor('validate');
                 $('#license').ntsEditor('validate');
 
-                if ($('#nurseClassificationCode').ntsError("hasError") || $('#nurseClassificationCode').ntsError("hasError") || $('#license').ntsError("hasError")) {
+                if (nts.uk.ui.errors.hasError()) {
                     return true;
                 }
                 return false;

@@ -11,6 +11,8 @@ public interface ShiftMasterOrgRepository {
 	public void update(ShiftMasterOrganization shiftMaterOrganization);
 
 	public void delete(String companyId, TargetOrgIdenInfor targetOrg);
+	
+	public void deleteByShiftMasterCd(String shiftMasterCd);
 
 	public Optional<ShiftMasterOrganization> getByTargetOrg(String companyId, TargetOrgIdenInfor targetOrg);
 

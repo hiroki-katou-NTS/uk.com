@@ -21,8 +21,8 @@
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#Com_Workplace" role="tab-navigator" class="active">職場別</a></li>
-				<li><a href="#Com_ScheGroup" role="tab-navigator">職場グループ</a></li>
+				<li><a href="#Com_Workplace" role="tab-navigator" class="active">#{i18n.getText('Com_Workplace')}</a></li>
+				<!-- <li><a href="#Com_ScheGroup" role="tab-navigator">#{i18n.getText('Com_WorkplaceGroup')}</a></li> -->
 			</ul>
 			<div class="divider"></div>
 		</ui:define>
@@ -32,14 +32,7 @@
 				<ui:include src="c.xhtml" />
 			</div>
 			<div id="Com_ScheGroup" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">操作</span>
-					<button class="proceed">操作</button>
-					<button>の間</button>
-					<button>操作がなかったため</button>
-					<button>接続を切断しました</button>
-				</div>
-				<div class="contents-area">Content 2</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

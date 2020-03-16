@@ -117,6 +117,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			JhndtReportRegis entity = entityOpt.get();
 			updateEntity(entity, domain);
 			this.commandProxy().update(entity);
+			this.getEntityManager().flush();
 		}
 	}
 
@@ -144,6 +145,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		entity.reportType  = domain.getReportType().value;
 		entity.sendBackSID  = domain.getSendBackSID();
 		entity.sendBackComment = domain.getSendBackComment();
+		entity.aprStatus = domain.getAprStatus().value;
 	}
 
 	@Override
@@ -173,7 +175,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			query += " LEFT JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
 		}
 
-		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
+		query += " WHERE r.pk.cid = :cId AND r.appDate >= :startDate AND r.appDate <= :endDate";
 
 		if (reportId != null) {
 			query += " AND r.reportLayoutID = %s";
@@ -200,8 +202,10 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				query = String.format(query, inputName, inputName);
 			}
 		}
-		
-
+		// set start date la dau ngay
+		startDate = GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 00, 00, 00);
+		// set end date la cuoi ngay
+		endDate = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59);
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}

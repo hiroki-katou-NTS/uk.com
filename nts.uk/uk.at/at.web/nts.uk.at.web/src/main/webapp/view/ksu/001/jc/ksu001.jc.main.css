@@ -30,7 +30,8 @@
 }
 
 #table-date {
-	margin-bottom: 10px
+	margin-bottom: 10px;
+	margin-left: 104px;
 }
 
 #table-date table, #table-date th, #table-date td {

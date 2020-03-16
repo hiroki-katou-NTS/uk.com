@@ -28,7 +28,7 @@ public class RankPriority implements DomainAggregate {
 	 * 作る
 	 * 
 	 * @param companyId
-	 * @param listRankCd
+	 * @param listRankCd 
 	 */
 	public RankPriority(String companyId, List<RankCode> listRankCd) {
 		super();
@@ -63,7 +63,7 @@ public class RankPriority implements DomainAggregate {
 	 * @param rankCd
 	 */
 	public void delete(RankCode rankCd) {
-		if (this.listRankCd.size() <= 0) {
+		if (this.listRankCd.size() <= 1) {
 			throw new BusinessException("Msg_1622");
 		}
 		

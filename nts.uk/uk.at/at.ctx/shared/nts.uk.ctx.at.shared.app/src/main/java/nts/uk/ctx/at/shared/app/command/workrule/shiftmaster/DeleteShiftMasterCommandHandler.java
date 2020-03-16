@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,15 +21,19 @@ public class DeleteShiftMasterCommandHandler extends CommandHandler<DeleteShiftM
 
 	@Inject
 	private ShiftMasterRepository shiftMasterRepo;
+	
+	@Inject
+	private ShiftMasterOrgRepository shiftMasterOrgRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteShiftMasterCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		DeleteShiftMasterCommand cmd = context.getCommand();
-		String code = new ShiftMasterCode(cmd.getShiftMaterCode()).v();
+		String code = new ShiftMasterCode(cmd.getShiftMasterCode()).v();
 		Optional<ShiftMaster> existed = shiftMasterRepo.getByShiftMaterCd(companyId, code);
 		if (existed.isPresent()) {
 			shiftMasterRepo.delete(companyId, code);
+			shiftMasterOrgRepo.deleteByShiftMasterCd(code);
 		} 
 
 	}
