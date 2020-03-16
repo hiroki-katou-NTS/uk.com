@@ -83,7 +83,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 					.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
 				typicalReason += command.getAppReasonID();
 			}
 			if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
