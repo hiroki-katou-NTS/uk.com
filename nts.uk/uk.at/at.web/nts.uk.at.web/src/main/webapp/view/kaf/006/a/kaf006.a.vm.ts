@@ -632,7 +632,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
                 workTypeCode: self.selectedTypeOfDuty(),
-                workTimeCode: self.workTimeCode()
+                workTimeCode: self.workTimeCode(),
+                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
             }).done((result) => {
                 //hoatt 2018.08.09
                 self.isCheck(false);

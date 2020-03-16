@@ -84,7 +84,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("findChangeWorkType")
-	public AppAbsenceDto getChangeWorkType(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getChangeWorkType(param);
 	}
 	@POST

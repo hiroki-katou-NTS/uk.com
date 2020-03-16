@@ -755,8 +755,16 @@ public class AppAbsenceFinder {
 	 * @param workTimeCode
 	 * @return
 	 */
-	public AppAbsenceDto getChangeWorkType(ParamGetAllAppAbsence param) {
-		String workTypeCode = param.getWorkTypeCode();
+	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain();
+		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
+				companyID, 
+				appAbsenceStartInfoOutput, 
+				param.getHolidayType(), 
+				Optional.ofNullable(param.getWorkTypeCode()));
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		/*String workTypeCode = param.getWorkTypeCode();
 		Integer holidayType = param.getHolidayType();
 		String workTimeCode = param.getWorkTimeCode();
 		String companyID = AppContexts.user().companyId();
@@ -814,7 +822,7 @@ public class AppAbsenceFinder {
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
 		result.setHolidayAppType(holidayType);
-		return result;
+		return result;*/
 	}
 
 	/**
