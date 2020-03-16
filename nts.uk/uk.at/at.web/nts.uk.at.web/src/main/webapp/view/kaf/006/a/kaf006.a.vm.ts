@@ -638,7 +638,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 //hoatt 2018.08.09
                 self.isCheck(false);
                 self.changeForSpecHd(result);
-                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.workHoursDisp);
                 if (result.startTime1 != null) {
                     self.timeStart1(result.startTime1);
                 }
@@ -883,7 +883,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             {
                                 holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
                                 workTypeCode: self.selectedTypeOfDuty(),
-                                workTimeCode: self.workTimeCode()
+                                workTimeCode: self.workTimeCode(),
+                                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
                             }
                         ).done(data => {
                             if(nts.uk.util.isNullOrEmpty(data)){

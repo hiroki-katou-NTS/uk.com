@@ -95,7 +95,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getWorkingHours")
 	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType());
+		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType(), param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("insert")

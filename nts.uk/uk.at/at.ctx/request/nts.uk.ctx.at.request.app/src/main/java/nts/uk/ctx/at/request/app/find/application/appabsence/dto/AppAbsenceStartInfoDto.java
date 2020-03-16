@@ -1,18 +1,20 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,7 +52,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 勤務時間帯一覧
 	 */
-	public List<TimezoneUse> workTimeLst;
+	public List<TimeZoneUseDto> workTimeLst;
 	
 	/**
 	 * 勤務種類マスタ未登録
@@ -81,8 +83,8 @@ public class AppAbsenceStartInfoDto {
 		result.displayReasonLst = absenceStartInfoOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
 		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
-		result.workTypeLst = absenceStartInfoOutput.getWorkTypeLst() == null ? null : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
-		result.workTimeLst = absenceStartInfoOutput.getWorkTimeLst();
+		result.workTypeLst = CollectionUtil.isEmpty(absenceStartInfoOutput.getWorkTypeLst()) ? Collections.emptyList() : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
+		result.workTimeLst = absenceStartInfoOutput.getWorkTimeLst().stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
 		result.workTypeNotRegister = absenceStartInfoOutput.isWorkTypeNotRegister();
 		result.specAbsenceDispInfo = absenceStartInfoOutput.getSpecAbsenceDispInfo().map(x -> SpecAbsenceDispInfoDto.fromDomain(x)).orElse(null);
 		result.selectedWorkTypeCD = absenceStartInfoOutput.getSelectedWorkTypeCD().orElse(null);
@@ -97,8 +99,8 @@ public class AppAbsenceStartInfoDto {
 				displayReasonLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				remainVacationInfo, 
 				workHoursDisp, 
-				workTypeLst == null ? null : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-				workTimeLst, 
+				CollectionUtil.isEmpty(workTypeLst) ? Collections.emptyList() : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(workTimeLst) ? Collections.emptyList() : workTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				workTypeNotRegister, 
 				Optional.empty(), 
 				Optional.empty(), 

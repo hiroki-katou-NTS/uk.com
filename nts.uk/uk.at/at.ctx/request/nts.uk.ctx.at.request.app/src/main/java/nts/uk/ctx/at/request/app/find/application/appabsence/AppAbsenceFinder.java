@@ -849,8 +849,17 @@ public class AppAbsenceFinder {
 	 * @param holidayType
 	 * @return
 	 */
-	public List<TimeZoneUseDto> getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType) {
+	public List<TimeZoneUseDto> getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		appAbsenceStartInfoOutput = absenseProcess.workTimesChangeProcess(
+				companyID, 
+				appAbsenceStartInfoOutput, 
+				workTypeCode, 
+				Optional.of(workTimeCode), 
+				holidayType);
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput).workTimeLst;
+		/*String companyID = AppContexts.user().companyId();
 		List<TimeZoneUseDto> result = new ArrayList<>();
 		if (holidayType != null && holidayType == HolidayAppType.DIGESTION_TIME.value) {
 			// TODO
@@ -862,7 +871,7 @@ public class AppAbsenceFinder {
 				return listTimezone.stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
 			}
 		}
-		return result;
+		return result;*/
 	}
 
 	/**
