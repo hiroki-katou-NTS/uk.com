@@ -9,10 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettings;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettingsRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.dto.BusinessApprovalSettingsDto;
-import nts.uk.ctx.hr.develop.infra.entity.humanresourcedevevent.JcmmtHRDevMenu;
 import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition.JcmmtMenuApr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,8 +24,9 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 			+ "sm.displayName, " 
 			+ "sm.screenID, "
 			+ "mo.useApproval, " 
-			+ "mo.noRankOrder " 
-
+			+ "mo.noRankOrder, " 
+			+ "l.noRankOrder " 
+			
 			+ "FROM JcmmtMenuApr ma JOIN CcgstStandardMenu sm "
 			+ "ON ma.pkJcmmtMenuApr.programId = sm.programId "
 			+ "AND ma.pkJcmmtMenuApr.screenId = sm.screenID "
@@ -53,6 +52,10 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 
 	private BusinessApprovalSettingsDto joinObjectToDomain(Object[] object) {
 		JcmmtMenuApr menuApr = (JcmmtMenuApr) object[0];
+		Boolean noRankOrder = (object[6] == null ? null : (int) object[6] == 1);
+		if(menuApr.pkJcmmtMenuApr.programId.equals("JHN001")) {
+			noRankOrder = (object[7] == null ? null : (Boolean) object[7]);
+		}
 		return new BusinessApprovalSettingsDto(
 				menuApr.toDomain(),
 				object[1] == null ? "" : (String) object[1], 
@@ -60,7 +63,7 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 				object[3] == null ? "" : (String) object[3],
 				object[4] == null ? "" : (String) object[4], 
 				object[5] == null ? false : (int) object[5] == 1,
-				object[6] == null ? null : (int) object[6] == 1);
+				noRankOrder);
 				
 	}
 
@@ -75,20 +78,21 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 				+ "Set m.noRankOrder =:noRankOrder "
 				+ "Where m.jhnmtRptLayoutPk.cid = :cid "
 				+ "And m.jhnmtRptLayoutPk.rptLayoutId = :rptLayoutId ";
-		List<KeyDto> menuOperation = new ArrayList<>();
-		List<KeyDto> rptLayout = new ArrayList<>();
 		for (BusinessApprovalSettingsDto c : domain) {
 			this.commandProxy().update(JcmmtMenuApr.toEntity(c.getMenuApprovalSettings()));
-			this.getEntityManager().createQuery(updateJcmctMenuOperation)
-				.setParameter("noRankOrder", c.getNoRankOrder()?1:0)
-				.setParameter("cid", cid)
-				.setParameter("programId", c.getMenuApprovalSettings().getProgramId())
-				.executeUpdate();
-			this.getEntityManager().createQuery(updateJhnmtRptLayout)
+			if(c.getMenuApprovalSettings().getProgramId().equals("JHN001")) {
+				this.getEntityManager().createQuery(updateJhnmtRptLayout)
 				.setParameter("noRankOrder", c.getNoRankOrder())
 				.setParameter("cid", cid)
 				.setParameter("rptLayoutId", c.getMenuApprovalSettings().getRptLayoutId())
 				.executeUpdate();
+			}else {
+				this.getEntityManager().createQuery(updateJcmctMenuOperation)
+				.setParameter("noRankOrder", c.getNoRankOrder()?1:0)
+				.setParameter("cid", cid)
+				.setParameter("programId", c.getMenuApprovalSettings().getProgramId())
+				.executeUpdate();
+			}
 		}
 		
 	}
