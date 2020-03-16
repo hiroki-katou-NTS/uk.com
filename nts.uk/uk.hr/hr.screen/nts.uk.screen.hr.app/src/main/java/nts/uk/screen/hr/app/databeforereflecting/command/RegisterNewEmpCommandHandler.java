@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.app.databeforereflecting.command;
+package nts.uk.screen.hr.app.databeforereflecting.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -8,13 +8,14 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
+public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
 
 	@Inject
 	private RetirementInformationService retirementInformationService;
@@ -24,19 +25,18 @@ public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeRe
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	
 	
-	// 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
+	// 2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
-		
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
-		retirementInformationService.updateRetireInformation(domainObj);
+		retirementInformationService.addRetireInformation(domainObj);
 	}
 	
-private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
+	private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
 		
 		RetirementInformation domainObj = new RetirementInformation();
-		domainObj.historyId = command.historyId;
+		domainObj.historyId = IdentifierUtil.randomUniqueId();
 		domainObj.contractCode =  AppContexts.user().contractCode();
 		domainObj.companyId =  AppContexts.user().companyId();
 		domainObj.companyCode =  AppContexts.user().companyCode();
@@ -57,7 +57,7 @@ private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand co
 		
 		domainObj.retirementRemarks =  command.retirementRemarks;
 		domainObj.retirementReasonVal =  command.retirementReasonVal;
-		domainObj.dismissalNoticeDate      = command.dismissalNoticeDate != "" ? GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd") : null;
+		domainObj.dismissalNoticeDate      = (command.dismissalNoticeDate == "" || command.dismissalNoticeDate == null) ? null : GeneralDate.fromString(command.dismissalNoticeDate, "yyyy/MM/dd");
 		domainObj.dismissalNoticeDateAllow = (command.dismissalNoticeDateAllow == "" || command.dismissalNoticeDateAllow == null) ? null : GeneralDate.fromString(command.dismissalNoticeDateAllow, "yyyy/MM/dd");
 		domainObj.reaAndProForDis =  command.reaAndProForDis;
 		domainObj.naturalUnaReasons_1 =  command.naturalUnaReasons_1;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.app.databeforereflecting.command;
+package nts.uk.screen.hr.app.databeforereflecting.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

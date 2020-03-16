@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.shared.app.databeforereflecting.command;
+package nts.uk.screen.hr.app.databeforereflecting.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class ModifyRetireeInformationCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
+public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
 
 	@Inject
 	private RetirementInformationService retirementInformationService;
@@ -24,14 +24,13 @@ public class ModifyRetireeInformationCommandHandler extends CommandHandler<DataB
 	public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	
 	
-	// 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
+	// 3.届出承認済みの退職者を新規登録する (Đăng ký mới người nghỉ hưu đã phê duyệt đơn/notification)
 	@Override
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
 		retirementInformationService.updateRetireInformation(domainObj);
-		
 	}
 	
 private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
