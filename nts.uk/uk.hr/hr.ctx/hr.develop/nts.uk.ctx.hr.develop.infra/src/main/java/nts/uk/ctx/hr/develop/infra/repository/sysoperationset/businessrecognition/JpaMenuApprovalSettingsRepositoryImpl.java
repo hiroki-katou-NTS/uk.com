@@ -6,9 +6,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettings;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.MenuApprovalSettingsRepository;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.dto.BusinessApprovalSettingsDto;
+import nts.uk.ctx.hr.develop.infra.entity.humanresourcedevevent.JcmmtHRDevMenu;
 import nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition.JcmmtMenuApr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -87,5 +91,21 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 				.executeUpdate();
 		}
 		
+	}
+
+	private static final String GET_MENU_APPROVAL_SETTINGS = "SELECT * FROM JcmmtMenuApr ma "
+			+ "WHERE ma.pkJcmmtMenuApr.cId = :cId "
+			+ "AND (ma.availableAprWork1 = 1 AND ma.apr1Sid != '') OR (ma.availableAprWork2 = 1 AND ma.apr2Sid != '')";
+	
+	@Override
+	public List<String> getProgramId(String cid, List<String> programId) {
+		List<String> result = new ArrayList<>();
+		CollectionUtil.split(programId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			result.addAll(this.queryProxy().query(GET_MENU_APPROVAL_SETTINGS, JcmmtMenuApr.class)
+					.setParameter("cId", cid)
+					.getList(c-> c.pkJcmmtMenuApr.programId));
+		});
+		
+		return result;
 	}
 }
