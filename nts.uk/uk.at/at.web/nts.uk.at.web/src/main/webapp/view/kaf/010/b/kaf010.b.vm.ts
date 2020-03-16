@@ -697,7 +697,6 @@ module nts.uk.at.view.kaf010.b {
                         self.timeEnd1(childData.first.end);
                         self.timeStart2(childData.second.start);
                         self.timeEnd2(childData.second.end);
-                        let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
 
                         service.getRecordWork(
                         	{
@@ -706,6 +705,7 @@ module nts.uk.at.view.kaf010.b {
                         		siftCD: self.siftCD(),
                         		prePostAtr: self.prePostSelected(),
                         		overtimeHours: ko.toJS(self.breakTimes()),
+                        		workTypeCD: self.workTypeCd(), 
                         		appID: self.appID()
                         	}
                         ).done(data => {

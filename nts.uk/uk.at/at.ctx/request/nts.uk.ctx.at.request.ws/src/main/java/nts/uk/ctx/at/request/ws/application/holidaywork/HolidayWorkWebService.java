@@ -141,7 +141,9 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("findByAppID")
 	public AppHolidayWorkDto findByChangeAppID(String appID) {
-		return this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+		session.setAttribute("appHolidayWorkDataNoDate", appHolidayWorkDto.getAppHolidayWorkDataNoDate());
+		return appHolidayWorkDto;
 	}
 	@POST
 	@Path("beforeUpdateColorConfirm")
@@ -161,7 +163,8 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
-		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID());
+		AppHolidayWorkDataNoDate appHolidayWorkDataNoDate = (AppHolidayWorkDataNoDate) session.getAttribute("appHolidayWorkDataNoDate");
+		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDataNoDate);
 	}
 	
 	@POST

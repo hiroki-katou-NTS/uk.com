@@ -816,7 +816,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             siftCD: self.siftCD(),
                             prePostAtr: self.prePostSelected(),
                             overtimeHours: ko.toJS(self.breakTimes()),
-                            workTypeCD: childData.selectedWorkTypeCode,
+                            workTypeCD: self.workTypeCd(),
                             appID: null
                         }
                     ).done(data => {

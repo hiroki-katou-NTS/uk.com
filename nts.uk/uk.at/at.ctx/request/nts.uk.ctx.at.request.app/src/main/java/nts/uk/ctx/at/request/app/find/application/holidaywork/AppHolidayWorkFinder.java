@@ -36,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
@@ -95,7 +94,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -176,9 +174,6 @@ public class AppHolidayWorkFinder {
 	
 	@Inject
 	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
-	
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
 	
 	@Inject 
 	private InitMode initMode;
@@ -604,7 +599,7 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours, String workTypeCD, String appID){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours, String workTypeCD, String appID, AppHolidayWorkDataNoDate appHolidayWorkDataNoDate){
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
@@ -638,10 +633,8 @@ public class AppHolidayWorkFinder {
 				if (!opAppHolidayWork.isPresent()) {
 					throw new BusinessException("Msg_198");
 				}
-				AppHolidayWork appHolidayWork = opAppHolidayWork.get();
-				AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);
 				// 詳細画面の利用者とステータスを取得する
-				DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWork.getApplication().getEmployeeID(), appID, appHolidayWorkDto.getAppHolidayWorkDataNoDate().getAppCommonSettingOutput().generalDate);
+				DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWorkDataNoDate.getEmployeeOTs().get(0).getEmployeeIDs(), appID, appHolidayWorkDataNoDate.getAppCommonSettingOutput().generalDate);
 				if (detailedScreenPreBootModeOutput.getUser() == User.APPLICANT_APPROVER || detailedScreenPreBootModeOutput.getUser() == User.APPLICANT) {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
