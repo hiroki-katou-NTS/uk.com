@@ -296,22 +296,23 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             displayHalfDayValue: self.displayHalfDayValue(),
                             holidayType: value,
                             alldayHalfDay: self.selectedAllDayHalfDayValue(),
-                            relationCD: self.selectedRelation()
+                            relationCD: self.selectedRelation(),
+                            appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
                         }).done((data) => {
                             //hoatt 2018.08.09
 //                            self.changeForSpecHd(data);
                             self.displayStartFlg(true);
-                            self.changeWorkHourValueFlg(data.changeWorkHourFlg);
-                            if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
+                            self.changeWorkHourValueFlg(data.workHoursDisp);
+                            if (nts.uk.util.isNullOrEmpty(data.workTypeLst)) {
                                 self.typeOfDutys([]);
                                 self.workTypecodes([]);
                                 self.selectedTypeOfDuty(null);
                             } else {
                                 let a = [];
                                 self.workTypecodes.removeAll();
-                                for (let i = 0; i < data.workTypes.length; i++) {
-                                    a.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
-                                    self.workTypecodes.push(data.workTypes[i].workTypeCode);
+                                for (let i = 0; i < data.workTypeLst.length; i++) {
+                                    a.push(new common.TypeOfDuty(data.workTypeLst[i].workTypeCode, data.workTypeLst[i].workTypeCode + "　" + data.workTypeLst[i].name));
+                                    self.workTypecodes.push(data.workTypeLst[i].workTypeCode);
                                 }
                                 self.typeOfDutys(a);
                                 let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });

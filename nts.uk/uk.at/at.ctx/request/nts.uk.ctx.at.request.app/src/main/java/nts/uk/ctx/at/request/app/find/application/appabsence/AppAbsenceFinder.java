@@ -353,8 +353,18 @@ public class AppAbsenceFinder {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public AppAbsenceDto getAllDisplay(ParamGetAllAppAbsence param) {
-		String employeeID = param.getEmployeeID();
+	public AppAbsenceStartInfoDto getAllDisplay(ParamGetAllAppAbsence param) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
+				companyID, 
+				param.getAppAbsenceStartInfoDto().toDomain(), 
+				param.isDisplayHalfDayValue(), 
+				param.getAlldayHalfDay(), 
+				param.getHolidayType());
+		
+		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		
+		/*String employeeID = param.getEmployeeID();
 		String startAppDate = param.getStartAppDate();
 		Integer holidayType = param.getHolidayType();
 		Integer alldayHalfDay = param.getAlldayHalfDay();
@@ -414,12 +424,12 @@ public class AppAbsenceFinder {
 			result.setLstRela(lstRela);
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
-		return result;
+		return result;*/
 	}
 
 	/**
 	 * 申請日を変更する getChangeAppDate
-	 * 
+	 * 申請日変更時処理
 	 * @param startAppDate
 	 * @param displayHalfDayValue
 	 * @param employeeID

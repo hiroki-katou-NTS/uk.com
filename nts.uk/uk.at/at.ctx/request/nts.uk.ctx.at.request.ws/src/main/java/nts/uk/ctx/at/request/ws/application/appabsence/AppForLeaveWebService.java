@@ -40,7 +40,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getAllAppForLeave")
-	public AppAbsenceDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getAllDisplay(param);
 	}
 	@POST
