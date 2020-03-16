@@ -19,5 +19,7 @@ public class DataBeforeReflectingPerInfoExportService extends ExportService<Obje
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		DataBeforeReflectResultDto dto = this.finder.getDataBeforeReflect();
+		
+		this.generator.generate(context.getGeneratorContext(), dto);
 	}
 }
