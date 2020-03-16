@@ -59,6 +59,7 @@ public class RegistrationPersonReportFinder {
 					dto.setRootSateId(report.get().getRootSateId());
 					dto.setRegStatus(report.get().getRegStatus().value);
 					dto.setAprStatus(report.get().getAprStatus().value);
+					rp.setReportName(report.get().getReportName());
 					dto.setClsDto(rp);
 					result.add(dto);
 				} else {

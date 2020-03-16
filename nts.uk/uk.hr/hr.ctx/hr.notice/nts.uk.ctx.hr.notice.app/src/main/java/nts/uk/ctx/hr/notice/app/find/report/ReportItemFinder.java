@@ -45,6 +45,7 @@ import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateH
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PhaseSttHrImport;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -114,6 +115,8 @@ public class ReportItemFinder {
 				getInfoApprover(registrationPersonReport.get().getRootSateId(), approvalStateHrImport, appPhaseLst);
 				
 			}
+			
+			reportClsOpt.get().setPReportName(new String_Any_20(registrationPersonReport.get().getReportName()));
 			
 		 } else {
 			
