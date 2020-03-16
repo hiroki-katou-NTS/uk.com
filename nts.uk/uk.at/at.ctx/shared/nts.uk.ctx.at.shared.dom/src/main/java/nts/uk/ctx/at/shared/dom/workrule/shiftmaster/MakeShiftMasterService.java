@@ -19,7 +19,7 @@ public class MakeShiftMasterService {
 			ShiftMasterDisInfor displayInfor) {
 		String workTimeCdNew = workTimeCd.isPresent() ? workTimeCd.get() : null;
 		
-		if(require.checkExists(companyId, workTypeCd, workTypeCd)) {
+		if(require.checkExists(companyId, workTypeCd, workTimeCdNew)) {
 			throw new BusinessException("Msg_3");
 		}
 		// 1:作る(会社ID, シフトマスタコード, シフトマスタの表示情報, 勤務種類コード, 就業時間帯コード)

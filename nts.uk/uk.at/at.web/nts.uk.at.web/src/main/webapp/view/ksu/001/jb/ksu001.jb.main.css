@@ -107,12 +107,21 @@ hr {
 	margin-top: 10px;
 }
 
+#contents-area{
+    overflow-y: hidden !important;
+}
+
 .color-gray {
 	cursor: default;
+	text-decoration: none;
 }
 .valign-center.control-group{
 	margin-left: 50px;
 }
 .nts-switch-button.unselectable{
 	width: 100px;
+}
+#test2 button{
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

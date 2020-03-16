@@ -33,6 +33,7 @@ module nts.uk.at.view.ksm013.a {
                             self.nurseClModel.createDataModel(dataDetail);
                             self.clearErrorAll();
                             dfd.resolve();
+                                 $('#nurseClassificationName').focus();
                         })
                     }
                     return dfd.promise();
@@ -54,6 +55,7 @@ module nts.uk.at.view.ksm013.a {
                     if (!_.isEmpty(dataAll)) {
                         self.lstNurseCl(_.sortBy(dataAll, [function(o) { return o.code; }]));
                         self.selectedCode(self.lstNurseCl()[0].code);
+                         
                     } else {
                         self.isEditting(false);
                         $('[tabindex= 5]').focus();
@@ -68,12 +70,10 @@ module nts.uk.at.view.ksm013.a {
 
             public newCreate() {
                 let self = this;
-                self.isEditting(false);
-                self.selectedCode("");
-                $('[tabindex= 5]').focus();
-                self.clearErrorAll();
+                self.isEditting(false); 
                 self.nurseClModel.resetModel();
-            }
+                self.clearErrorAll();
+           }
 
             public register() {
                 let self = this,
@@ -92,6 +92,7 @@ module nts.uk.at.view.ksm013.a {
                             nts.uk.ui.block.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.isEditting(true);
+                            
                             dfd.resolve();
                         })
                     }).fail((res) => {
@@ -115,6 +116,7 @@ module nts.uk.at.view.ksm013.a {
                         }));
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         nts.uk.ui.block.clear();
+                        $('#nurseClassificationName').focus();
                         self.isEditting(true);
                         dfd.resolve();
                     });
@@ -134,7 +136,7 @@ module nts.uk.at.view.ksm013.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         if (self.lstNurseCl().length == 1) {
                             self.lstNurseCl([]);
-                            self.newCreate();
+                            self.selectedCode("");
                         } else {
                             let indexSelected: number;
                             for (let index: number = 0; index < self.lstNurseCl().length; index++) {
@@ -145,8 +147,11 @@ module nts.uk.at.view.ksm013.a {
                                 }
                             }
                             self.selectedCode(self.lstNurseCl()[indexSelected].code);
+                           
                         }
                         nts.uk.ui.block.clear();
+                            
+                        
                         dfd.resolve();
                     });
                 }).ifNo(function() {
@@ -201,6 +206,8 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName(data.name);
                 self.license(data.license);
                 self.officeWorker(data.officeWorker);
+                $('#nurseClassificationCode').focus();
+             
             }
 
             public resetModel() {
@@ -209,7 +216,7 @@ module nts.uk.at.view.ksm013.a {
                 self.nurseClassificationName("");
                 self.license(0);
                 self.officeWorker(false);
-
+                $('#nurseClassificationCode').focus();
             }
         }
 

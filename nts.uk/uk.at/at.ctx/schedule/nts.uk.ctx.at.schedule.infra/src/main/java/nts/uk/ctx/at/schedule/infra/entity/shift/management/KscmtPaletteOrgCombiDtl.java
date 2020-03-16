@@ -40,6 +40,7 @@ public class KscmtPaletteOrgCombiDtl extends ContractUkJpaEntity{
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
     	@PrimaryKeyJoinColumn(name = "TARGET_UNIT", referencedColumnName = "TARGET_UNIT"),
     	@PrimaryKeyJoinColumn(name = "TARGET_ID", referencedColumnName = "TARGET_ID"),
+    	@PrimaryKeyJoinColumn(name = "PAGE", referencedColumnName = "PAGE"),
     	@PrimaryKeyJoinColumn(name = "POSITION", referencedColumnName = "POSITION")
     })
 	public KscmtPaletteOrgCombi kscmtPaletteOrgCombi;

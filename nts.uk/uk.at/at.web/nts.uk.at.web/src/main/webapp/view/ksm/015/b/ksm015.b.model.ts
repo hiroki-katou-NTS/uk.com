@@ -40,7 +40,13 @@ class RegistrationForm {
        constructor() {
               let self = this;
               self.selectedCode = ko.observable("");
+              self.selectedCode.subscribe(function(codeChanged: string) {
+                     self.selectedCode($.trim(self.selectedCode()));
+              });
               self.shiftMasterName = ko.observable("");
+              self.shiftMasterName.subscribe(function(codeChanged: string) {
+                     self.shiftMasterName($.trim(self.shiftMasterName()));
+              });
               self.color = ko.observable("#FFFFFF");
               self.note = ko.observable("");
               self.newMode = ko.observable(false);
@@ -96,8 +102,12 @@ class RegistrationForm {
               self.workTimeSetCd('');
        }
 
-
-
+       public trimData() {
+              let self = this;
+              self.selectedCode(self.selectedCode().trim());
+              self.shiftMasterName(self.shiftMasterName().trim());
+       }
+       
 }
 
 interface ShiftMaster {
