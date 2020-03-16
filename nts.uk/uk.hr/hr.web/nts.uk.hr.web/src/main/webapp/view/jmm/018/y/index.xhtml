@@ -13,6 +13,9 @@
 			<com:scriptfile path="jmm018.y.service.js" />
 			<com:scriptfile path="jmm018.y.start.js" />
 			<com:scriptfile path="jmm018.y.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.hr.notice.dom.report.String_Any_20
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -24,6 +27,7 @@
 							<div style="display: inline-block; width: 360px" data-bind="ntsSearchBox: {
 								targetKey: 'departmentId', 
 								mode:'igTree', 
+								constraint: 'String_Any_20',
 								searchMode : 'highlight',
 								comId:'treegrid', 
 								items: departmentList, 
@@ -31,7 +35,7 @@
 								selectedKey: 'codeName', 
 								childField: 'children', 
 								fields: ['codeName']}" />
-							<div style="display: inline-block;" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM018_Y2_3')}</div>
+							<div style="display: inline-block; width: 122px" data-bind="ntsCheckBox: { checked: check }">#{i18n.getText('JMM018_Y2_3')}</div>
 							<div style="display: inline-block;">
 								<table id="treegrid"
 									data-bind="ntsTreeGridView:{
@@ -54,11 +58,17 @@
 							<div style="display: inline-block; width: 390px" class="nts-searchbbox-wrapper">
 								<div class="input-wrapper">
 									<span class="ntsControl">
-										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" data-bind="value: key, attr: {placeholder: '#{i18n.getText('JMM018_Y2_5')}'}" />
+										<input class= "ntsSearchBox nts-editor ntsSearchBox_Component" data-bind="ntsTextEditor: {
+											value: key, 
+											constraint: 'String_Any_20',
+											name:'#{i18n.getText('JMM018_Y2_5')}',
+											option: {
+												width: '200px'}}, 
+											attr: {placeholder: '#{i18n.getText('JMM018_Y2_5')}'}" />
 									</span>
 								</div>
 								<div class="input-wrapper">
-									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search">#{i18n.getText('JMM018_Y2_5_1')}</button>
+									<button class="search-btn caret-bottom ntsSearchBox_Component" data-bind="click: search, enable: $root.errors.isEmpty()">#{i18n.getText('JMM018_Y2_5_1')}</button>
 								</div>
 							</div>
 							<div style="display: inline-block;">
