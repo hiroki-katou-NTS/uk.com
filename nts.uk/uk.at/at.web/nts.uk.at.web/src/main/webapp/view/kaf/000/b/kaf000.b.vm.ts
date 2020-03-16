@@ -172,6 +172,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.getDetailCheck(self.inputDetail());
                 nts.uk.ui.block.clear();
                 dfd.resolve();
+                $("#inpStartTime1").focus();
             }).fail((res) => {
             	if(res.messageId == 'Msg_426'){
             		nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){

@@ -179,6 +179,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
+                    $("#inputdate").focus();
                 })
             })
 
@@ -255,7 +256,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 
                 dfd.resolve(data);
                 nts.uk.ui.block.clear();
-                $("#inputdate").focus();
             }).fail((res) => {
                 if(res.messageId == 'Msg_426'){
                     dialog.alertError({messageId : res.messageId}).then(function(){

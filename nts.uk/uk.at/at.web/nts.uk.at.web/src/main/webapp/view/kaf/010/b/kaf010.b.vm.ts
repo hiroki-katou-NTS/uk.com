@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf010.b {
                             $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 96 });
                             $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                         }
-                    } 
+                    }
                 });
             }
             
@@ -179,7 +179,6 @@ module nts.uk.at.view.kaf010.b {
                     //Check work content Changed
                     self.checkWorkContentChanged();
                     dfd.resolve();
-                    $("#inpStartTime1").focus();
                 })
                 .fail(function(res) {
                     if(res.messageId == 'Msg_423'){
