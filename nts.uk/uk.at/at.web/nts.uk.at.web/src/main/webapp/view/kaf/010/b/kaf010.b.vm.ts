@@ -223,7 +223,7 @@ module nts.uk.at.view.kaf010.b {
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
-                self.prePostSelected(data.application.prePostAtr);
+                self.prePostSelected(data.appDispInfoStartupDto.appDispInfoWithDateOutput.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf010.b {
                 }
                 
                 self.workTypecodes(data.workTypes);
-                self.workTimecodes(data.appHolidayWorkDataHasDate.listWorkTimeCodes);
+                self.workTimecodes(_.map(data.appDispInfoStartupDto.appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));
                 
                 self.timeStart1(data.workClockStart1);
                 self.timeEnd1(data.workClockEnd1);
@@ -261,10 +261,10 @@ module nts.uk.at.view.kaf010.b {
                 self.backSelected2(data.backAtr2);
                 self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
                 self.backSelected1Value(data.backAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
-                if(data.appHolidayWorkDataNoDate.applicationReasonDtos != null && data.appHolidayWorkDataNoDate.applicationReasonDtos.length > 0){
-                    let reasonID = data.appHolidayWorkDataNoDate.applicationReasonDtos[0].reasonID;
+                if(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst != null && data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst.length > 0){
+                    let reasonID = data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst[0].reasonID;
                     self.selectedReason(reasonID);
-                    let lstReasonCombo = _.map(data.appHolidayWorkDataNoDate.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+                    let lstReasonCombo = _.map(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                     self.reasonCombo(lstReasonCombo);
                 }
                 self.multilContent(data.application.applicationReason);

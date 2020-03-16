@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
@@ -250,8 +251,7 @@ public class AppHolidayWorkDto {
 	private int preExcessDisplaySetting;
 	private List<CaculationTime> caculationTimes;
 	
-	private AppHolidayWorkDataNoDate appHolidayWorkDataNoDate;
-	private AppHolidayWorkDataHasDate appHolidayWorkDataHasDate;
+	private AppDispInfoStartupDto appDispInfoStartupDto;
 	private DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput;
 	private DetailScreenInitModeOutput detailScreenInitModeOutput;
 	private PreActualColorResult preActualColorResult;
@@ -313,7 +313,6 @@ public class AppHolidayWorkDto {
 				0,
 				0,
 				Collections.emptyList(),
-				null,
 				null,
 				null,
 				null,

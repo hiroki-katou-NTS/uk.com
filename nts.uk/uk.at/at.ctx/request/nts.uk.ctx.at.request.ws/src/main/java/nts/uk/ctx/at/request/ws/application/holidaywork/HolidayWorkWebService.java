@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWo
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDataNoDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
@@ -65,15 +64,15 @@ public class HolidayWorkWebService extends WebService{
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
 		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
-		session.setAttribute("appHolidayWorkDataNoDate", appHolidayWorkDto.getAppHolidayWorkDataNoDate());
+		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
 		return appHolidayWorkDto;
 	}
 	@POST
 	@Path("findChangeAppDate")
 	public AppHolidayWorkDto findChangeAppDate(ParamChangeAppDate param) {
-		AppHolidayWorkDataNoDate appHolidayWorkDataNoDate = (AppHolidayWorkDataNoDate) session.getAttribute("appHolidayWorkDataNoDate");
+		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
 		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee(),
-				param.getStartTime(), param.getEndTime(), appHolidayWorkDataNoDate);
+				param.getStartTime(), param.getEndTime(), appHolidayWorkDto);
 	}
 	@POST
 	@Path("calculationresultConfirm")
@@ -142,7 +141,7 @@ public class HolidayWorkWebService extends WebService{
 	@Path("findByAppID")
 	public AppHolidayWorkDto findByChangeAppID(String appID) {
 		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
-		session.setAttribute("appHolidayWorkDataNoDate", appHolidayWorkDto.getAppHolidayWorkDataNoDate());
+		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
 		return appHolidayWorkDto;
 	}
 	@POST
@@ -163,8 +162,8 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
-		AppHolidayWorkDataNoDate appHolidayWorkDataNoDate = (AppHolidayWorkDataNoDate) session.getAttribute("appHolidayWorkDataNoDate");
-		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDataNoDate);
+		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
+		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDto);
 	}
 	
 	@POST

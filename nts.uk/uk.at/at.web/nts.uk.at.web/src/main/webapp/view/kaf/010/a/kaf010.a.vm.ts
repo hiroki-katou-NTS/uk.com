@@ -298,7 +298,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.checkBoxValue(data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
-            self.prePostSelected(data.application.prePostAtr);
+            self.prePostSelected(data.appDispInfoStartupDto.appDispInfoWithDateOutput.prePostAtr);
             self.displayCaculationTime(data.displayCaculationTime);
             self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
             self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
@@ -317,18 +317,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
             }
             self.workTypecodes(data.workTypes);
-            self.workTimecodes(data.appHolidayWorkDataHasDate.listWorkTimeCodes);
+            self.workTimecodes(_.map(data.appDispInfoStartupDto.appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));
             self.timeStart1(data.workClockStart1);
             self.timeEnd1(data.workClockEnd1);
             self.timeStart2(data.workClockStart2);
             self.timeEnd2(data.workClockEnd2);
-            if(data.appHolidayWorkDataNoDate.applicationReasonDtos != null && data.appHolidayWorkDataNoDate.applicationReasonDtos.length > 0){
-                let lstReasonCombo = _.map(data.appHolidayWorkDataNoDate.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+            if(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst != null && data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst.length > 0){
+                let lstReasonCombo = _.map(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
-                let reasonID = _.find(data.appHolidayWorkDataNoDate.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                let reasonID = _.find(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst, o => { return o.defaultFlg == 1 }).reasonID;
                 self.selectedReason(reasonID);
-                
-                self.multilContent(data.application.applicationReason);
             } 
             
             if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
@@ -861,7 +859,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             var self = this;
             let overtimeDto = data;
             if(overtimeDto.displayPrePostFlg==0){
-                self.prePostSelected(overtimeDto.application.prePostAtr);        
+                self.prePostSelected(overtimeDto.appDispInfoStartupDto.appDispInfoWithDateOutput.prePostAtr);        
             }
             
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
