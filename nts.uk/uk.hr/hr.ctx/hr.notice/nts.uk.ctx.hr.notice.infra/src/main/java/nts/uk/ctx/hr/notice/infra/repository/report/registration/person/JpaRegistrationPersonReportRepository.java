@@ -202,8 +202,10 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				query = String.format(query, inputName, inputName);
 			}
 		}
-		
-
+		// set start date la dau ngay
+		startDate = GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 00, 00, 00);
+		// set end date la cuoi ngay
+		endDate = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59);
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}

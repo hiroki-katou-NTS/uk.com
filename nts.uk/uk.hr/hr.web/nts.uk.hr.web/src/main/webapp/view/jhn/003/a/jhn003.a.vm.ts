@@ -104,7 +104,9 @@ module jhn003.a.vm {
 
             block.grayout();
 
-            service.findPersonReport(ko.toJS(self.searchInfo())).done((data) => {
+            let param  = ko.toJS(self.searchInfo());
+
+            service.findPersonReport(param).done((data) => {
 
                 self.reportList(_.map(data, x => new PersonReport(x)));
                 self.bindReportList();
@@ -222,7 +224,7 @@ module jhn003.a.vm {
     }
 
     class SearchInfo {
-        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment(new Date()).add(-1, 'M').toDate(), endDate: moment(new Date()).add(1, 'M').toDate() });
+        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment.utc(new Date()).add(-1, 'M').toDate(), endDate: moment.utc(new Date()).add(1, 'M').toDate() });
         inputName: KnockoutObservable<string> = ko.observable('');
         approvalReport: KnockoutObservable<boolean> = ko.observable(false);
         reportItems: KnockoutObservableArray<ItemModel> = ko.observableArray([
