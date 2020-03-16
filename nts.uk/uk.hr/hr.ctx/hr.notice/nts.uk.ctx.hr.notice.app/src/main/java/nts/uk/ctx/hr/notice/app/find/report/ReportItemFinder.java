@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.ietf.jgss.Oid;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -168,11 +170,16 @@ public class ReportItemFinder {
 	/*
 	 * 承認情報の取得
 	 */
-	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
+	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport,  List<ApprovalPhaseStateForAppDto> appPhaseLst) {
 		
-		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		ApprRootStateHrImport approvalStateHrImportResult = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		
+		approvalStateHrImport.setErrorFlg(approvalStateHrImportResult.isErrorFlg());
+		
+		approvalStateHrImport.setApprState(approvalStateHrImportResult.getApprState());
 		
 		convertData(approvalStateHrImport, appPhaseLst);
+		
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {

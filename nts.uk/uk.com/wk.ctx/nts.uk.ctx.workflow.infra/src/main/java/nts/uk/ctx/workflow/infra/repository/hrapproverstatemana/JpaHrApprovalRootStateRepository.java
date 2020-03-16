@@ -27,6 +27,7 @@ public class JpaHrApprovalRootStateRepository extends JpaRepository implements A
 	public void update(ApprovalRootStateHr root) {
 		WwfdtHrApprovalRootState entity = WwfdtHrApprovalRootState.fromDomain(root);
 		this.commandProxy().update(entity);
+		this.getEntityManager().flush();
 	}
 
 }

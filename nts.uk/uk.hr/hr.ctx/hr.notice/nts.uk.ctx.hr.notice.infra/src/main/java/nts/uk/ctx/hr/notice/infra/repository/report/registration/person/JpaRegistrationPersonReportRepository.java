@@ -117,6 +117,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			JhndtReportRegis entity = entityOpt.get();
 			updateEntity(entity, domain);
 			this.commandProxy().update(entity);
+			this.getEntityManager().flush();
 		}
 	}
 
@@ -144,6 +145,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		entity.reportType  = domain.getReportType().value;
 		entity.sendBackSID  = domain.getSendBackSID();
 		entity.sendBackComment = domain.getSendBackComment();
+		entity.aprStatus = domain.getAprStatus().value;
 	}
 
 	@Override
