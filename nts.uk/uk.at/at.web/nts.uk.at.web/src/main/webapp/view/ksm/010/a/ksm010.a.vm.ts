@@ -106,7 +106,7 @@ module nts.uk.at.view.ksm010.a {
 
                 self.isCreate(true);
                 self.currentCode(null);
-                self.currentCode.valueHasMutated();
+                //self.currentCode.valueHasMutated();
             }
 
             saveData(): void {
@@ -144,6 +144,7 @@ module nts.uk.at.view.ksm010.a {
                     service.updateRank(command).done(() => {
                         info({ messageId: "Msg_15" });
                         self.getListRank();
+                        $('#rankSymbol').focus();
                     }).fail(function(error: any) {
                         alertError({ messageId: error.messageId });
                     }).always(() => {
@@ -161,9 +162,10 @@ module nts.uk.at.view.ksm010.a {
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
                     service.deleteRank(command).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                         self.setCurrentCodeAfterDelete();
                         self.getListRank();
+                    });
                     }).fail(function(error) {
                         alertError(error.message);
                     }).always(function() {
