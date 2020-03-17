@@ -21,7 +21,7 @@ public class StampType {
 	/** 外出区分 */
 	//外出理由 old
 	@Getter
-	private GoingOutReason goOutArt;
+	private Optional<GoingOutReason> goOutArt;
 	
 	/** 所定時刻セット区分 */
 	//勤務種類を半休に変更する 2 old
@@ -42,7 +42,7 @@ public class StampType {
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		super();
 		this.changeHalfDay = changeHalfDay;
-		this.goOutArt = Optional.of(goOutArt).get() ;
+		this.goOutArt = Optional.ofNullable(goOutArt);
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
