@@ -116,4 +116,9 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 		return datas;
 	}
 
+	@Override
+	public boolean checkExistsByCd(String companyId, String shiftMaterCode) {
+		return getByShiftMaterCd(companyId, shiftMaterCode).isPresent();
+	}
+
 }

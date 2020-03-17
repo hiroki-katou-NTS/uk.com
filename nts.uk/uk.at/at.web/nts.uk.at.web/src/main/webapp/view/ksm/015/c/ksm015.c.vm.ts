@@ -162,7 +162,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isMultiSelect: true,
 				filter: 0,
 				permission: false,
-				shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				// shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				shifutoCodes: []
 			}, true);
 
 			nts.uk.ui.windows.sub.modal('/view/kdl/044/a/index.xhtml').onClosed(function (): any {
@@ -246,6 +247,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public reCalGridWidth() {
 			let panelWidthResize = window.innerWidth - 650;
+			panelWidthResize = panelWidthResize < 400 ? 400 : panelWidthResize;
 			$('#shift-list').igGrid("option", "width", panelWidthResize);
 			$('#form-title').css("width", panelWidthResize + "px");
 		}
