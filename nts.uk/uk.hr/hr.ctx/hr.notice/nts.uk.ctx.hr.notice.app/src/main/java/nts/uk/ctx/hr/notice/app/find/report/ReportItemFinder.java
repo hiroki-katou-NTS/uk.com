@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.ietf.jgss.Oid;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -43,6 +45,7 @@ import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprRootStateH
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApprStateHrImport;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.ApproveRepository;
 import nts.uk.ctx.hr.shared.dom.notice.report.registration.person.PhaseSttHrImport;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_20;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -113,6 +116,8 @@ public class ReportItemFinder {
 				
 			}
 			
+			reportClsOpt.get().setPReportName(new String_Any_20(registrationPersonReport.get().getReportName()));
+			
 		 } else {
 			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
@@ -168,11 +173,16 @@ public class ReportItemFinder {
 	/*
 	 * 承認情報の取得
 	 */
-	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport, List<ApprovalPhaseStateForAppDto> appPhaseLst) {
+	public void getInfoApprover(String rootInstanceId, ApprRootStateHrImport approvalStateHrImport,  List<ApprovalPhaseStateForAppDto> appPhaseLst) {
 		
-		approvalStateHrImport = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		ApprRootStateHrImport approvalStateHrImportResult = this.approveRepository.getApprovalRootStateHr(rootInstanceId);
+		
+		approvalStateHrImport.setErrorFlg(approvalStateHrImportResult.isErrorFlg());
+		
+		approvalStateHrImport.setApprState(approvalStateHrImportResult.getApprState());
 		
 		convertData(approvalStateHrImport, appPhaseLst);
+		
 	}
 	
 	private int getReportLayoutId(ReportParams params , Optional<PersonalReportClassification> reportClsOpt) {

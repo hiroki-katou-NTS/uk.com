@@ -428,7 +428,7 @@ module jhn001.a.viewmodel {
                 // push data layout to webservice
                 block();
                 service.saveData(command).done(() => {
-                    info({ messageId: "Msg_15" }).then(function() {
+                    info({ messageId: "MsgJ_36" }).then(function() {
                         self.enaRemove(true);
                         $( "#goBack" ).removeClass("goBackDisable");
                         self.start(null, false);

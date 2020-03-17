@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.infra.entity.databeforereflecting;
+package nts.uk.ctx.hr.shared.infra.entity.databeforereflecting;
 
 import java.io.Serializable;
 import java.math.BigInteger;
