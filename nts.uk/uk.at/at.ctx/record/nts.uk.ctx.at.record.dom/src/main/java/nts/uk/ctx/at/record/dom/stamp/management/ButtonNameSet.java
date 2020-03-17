@@ -18,10 +18,10 @@ public class ButtonNameSet {
 	
 	/** ボタン名称 */
 	@Getter
-	private ButtonName buttonName;
+	private Optional<ButtonName> buttonName;
 
 	public ButtonNameSet(ColorCode textColor,ButtonName buttonName) {
 		this.textColor = textColor;
-		this.buttonName = Optional.of(buttonName).get() ;
+		this.buttonName = Optional.ofNullable(buttonName);
 	}
 }

@@ -111,13 +111,13 @@ public class StampSettingPersonTest {
 
 		assertThat(settingPerson.getLstStampPageLayout().get(0).getLstButtonSet())
 				.extracting(b -> b.getButtonPositionNo().v(),
-						b -> b.getButtonDisSet().getButtonNameSet().getButtonName().v(),
+						b -> b.getButtonDisSet().getButtonNameSet().getButtonName().get().v(),
 						b -> b.getButtonDisSet().getButtonNameSet().getTextColor().v(),
 						b -> b.getButtonDisSet().getBackGroundColor().v(),
 						b -> b.getButtonType().getStampType().isChangeHalfDay(),
 						b -> b.getButtonType().getStampType().getChangeClockArt().value,
 						b -> b.getButtonType().getStampType().getChangeCalArt().value,
-						b -> b.getButtonType().getStampType().getGoOutArt().value,
+						b -> b.getButtonType().getStampType().getGoOutArt().get().value,
 						b -> b.getButtonType().getStampType().getSetPreClockArt().value, 
 						b -> b.getUsrArt().value,
 						b -> b.getAudioType().value)

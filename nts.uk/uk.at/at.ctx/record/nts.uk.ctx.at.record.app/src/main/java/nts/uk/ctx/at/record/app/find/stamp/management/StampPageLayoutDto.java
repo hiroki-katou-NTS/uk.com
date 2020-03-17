@@ -35,11 +35,12 @@ public class StampPageLayoutDto {
 	public static StampPageLayoutDto fromDomain(StampPageLayout pageLayout) {
 		StampPageCommentCommand stampPageComments = new StampPageCommentCommand(pageLayout.getStampPageComment().getPageComment().v(), pageLayout.getStampPageComment().getCommentColor().v());
 		List<ButtonSettingsCommand> lstButtonSets = pageLayout.getLstButtonSet().stream().map(x->{
-			ButtonNameSetCommand buttonNameSet = new ButtonNameSetCommand(x.getButtonDisSet().getButtonNameSet().getTextColor().v(), x.getButtonDisSet().getButtonNameSet().getButtonName().v());
+			ButtonNameSetCommand buttonNameSet = new ButtonNameSetCommand(x.getButtonDisSet().getButtonNameSet().getTextColor().v(), 
+					x.getButtonDisSet().getButtonNameSet().getButtonName() == null ? null : x.getButtonDisSet().getButtonNameSet().getButtonName().get().v());
 			ButtonDisSetCommand buttonDisSet = new ButtonDisSetCommand(buttonNameSet, x.getButtonDisSet().getBackGroundColor().v());
 			
 			StampTypeCommand stampType = new StampTypeCommand(x.getButtonType().getStampType().isChangeHalfDay(),
-					x.getButtonType().getStampType().getGoOutArt().value,
+					x.getButtonType().getStampType().getGoOutArt() == null ? null : x.getButtonType().getStampType().getGoOutArt().get().value,
 					x.getButtonType().getStampType().getSetPreClockArt().value,
 					x.getButtonType().getStampType().getChangeClockArt().value,
 					x.getButtonType().getStampType().getChangeCalArt().value);

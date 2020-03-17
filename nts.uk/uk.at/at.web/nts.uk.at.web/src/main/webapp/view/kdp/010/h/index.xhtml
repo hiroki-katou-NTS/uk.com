@@ -16,6 +16,9 @@
 			<com:EnumScript>
 				nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason
 				nts.uk.ctx.at.record.dom.stamp.management.AudioType
+				nts.uk.ctx.at.record.dom.stamp.management.ContentsStampType
+				nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt
+				nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt
 			</com:EnumScript>
 		</ui:define>
 
@@ -41,8 +44,8 @@
 						</td>
 						<td><div id="combobox1" class="cbx-days"
 								data-bind="ntsComboBox: {
-											options: dayOfWeek,
-											optionsValue: 'code',
+											options: contentsStampType,
+											optionsValue: 'value',
 											value: selectedDay,
 											optionsText: 'name',
 											enable: true,

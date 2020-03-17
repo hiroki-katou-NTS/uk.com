@@ -165,7 +165,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.changeCalArt = stamp.getType().getChangeCalArt().value;
 		this.preClockArt = stamp.getType().getSetPreClockArt().value;
 		this.changeHalfDay = stamp.getType().isChangeHalfDay();
-		this.goOutArt = stamp.getType().getGoOutArt().value;
+		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
 		this.reflectedAtr = stamp.isReflectedCategory();
 		this.suportCard = stamp.getRefActualResults().getCardNumberSupport().isPresent()
 				? stamp.getRefActualResults().getCardNumberSupport().get()

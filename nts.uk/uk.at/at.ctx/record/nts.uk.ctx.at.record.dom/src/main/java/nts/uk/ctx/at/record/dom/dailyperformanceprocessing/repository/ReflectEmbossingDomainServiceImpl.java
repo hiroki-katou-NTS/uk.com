@@ -2127,7 +2127,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							&& o.getGoOut().get().getNumberOfReflectionStamp() != null)
 									? o.getGoOut().get().getNumberOfReflectionStamp() : 0)),
 					o.getOutingTimeCalculation(), o.getOutingTime(),
-					EnumAdaptor.valueOf(x.getType().getGoOutArt().value, GoingOutReason.class), o.getComeBack());
+					x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 		}
 		// 反映済み区分 = true
@@ -2147,7 +2147,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						&& o.getGoOut().get().getNumberOfReflectionStamp() != null)
 								? o.getGoOut().get().getNumberOfReflectionStamp() + 1 : 0)),
 				o.getOutingTimeCalculation(), o.getOutingTime(),
-				EnumAdaptor.valueOf(x.getType().getGoOutArt().value, GoingOutReason.class), o.getComeBack());
+				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 	}
 
@@ -2222,7 +2222,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 
 			return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(),
-					o.getOutingTime(), EnumAdaptor.valueOf(x.getType().getGoOutArt().value, GoingOutReason.class),
+					o.getOutingTime(), x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 					Optional.ofNullable(new TimeActualStamp(newActualStamp,
 							(o.getComeBack() != null && o.getComeBack().isPresent()
 									&& o.getComeBack().get().getStamp() != null
@@ -2254,8 +2254,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						.getGoOut(),
 				o.getOutingTimeCalculation(), o
 						.getOutingTime(),
-				EnumAdaptor.valueOf(
-						x.getType().getGoOutArt().value, GoingOutReason.class),
+						x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 				Optional.ofNullable(new TimeActualStamp(
 						(o.getComeBack() != null && o.getComeBack().isPresent()
 								&& o.getComeBack().get().getActualStamp() != null
@@ -2351,7 +2350,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
-				EnumAdaptor.valueOf(x.getType().getGoOutArt().value, GoingOutReason.class),
+				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 				Optional.ofNullable(new TimeActualStamp(newActualStamp, newActualStamp, numberOfReflectionStamp + 1)));
 	}
 
@@ -2438,7 +2437,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		return new OutingTimeSheet(o.getOutingFrameNo(),
 				Optional.ofNullable(new TimeActualStamp(newActualStamp, newActualStamp, numberOfReflectionStamp + 1)),
 				o.getOutingTimeCalculation(), o.getOutingTime(),
-				EnumAdaptor.valueOf(x.getType().getGoOutArt().value, GoingOutReason.class), o.getComeBack());
+				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 	}
 

@@ -10,10 +10,8 @@ module nts.uk.at.view.kdp010.h {
             selectedHighlight: KnockoutObservable<number> = ko.observable(0);
             
             // H2_2
-            dayOfWeek: KnockoutObservableArray<any> = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText("使用しない") },
-                    { code: 1, name: nts.uk.resource.getText("使用する") }]);
-            selectedDay: KnockoutObservable<number> = ko.observable(0);
+            contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
+            selectedDay: KnockoutObservable<number> = ko.observable(1);
             
             // H3_2
             optionStamping: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.GoingOutReason);
@@ -23,45 +21,53 @@ module nts.uk.at.view.kdp010.h {
             simpleValue: KnockoutObservable<string> = ko.observable("");
             
             // H5_2
-            letterColors: KnockoutObservable<string> = ko.observable('#FFCC00');
+            letterColors: KnockoutObservable<string> = ko.observable('#0033cc');
             
             // H6_2
-            backgroundColors: KnockoutObservable<string> = ko.observable('#0000ff');
+            backgroundColors: KnockoutObservable<string> = ko.observable('#ccccff');
             
             // H7_2
             optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
             selectedAudio: KnockoutObservable<number> = ko.observable(0);
         
             dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
+           
+            lstChangeClock: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeClockArt);
+            lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
+            lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
+            
+            lstData: KnockoutObservableArray<any> = ko.observableArray();
             constructor() {
                 let self = this;
-
+                self.selectedDay.subscribe((newValue) => {
+                    self.getDataFromContents(newValue);
+                })
             }
             /**
              * start page  
              */
             public startPage(): JQueryPromise<any> {
                 let self = this,
-                    dfd = $.Deferred();
-                let dataStamp = nts.uk.ui.windows.getShared('KDP010_G');
+                dfd = $.Deferred();
+                self.getDataStamp();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            public getDataStamp(){
                 
+                let self = this;
+                let dataStamp = nts.uk.ui.windows.getShared('KDP010_G');
                 if (dataStamp) {
                         dataStamp = dataStamp.lstButtonSet ? dataStamp.lstButtonSet.filter(x=>x.buttonPositionNo == 1)[0] : dataStamp;
                         self.letterColors(dataStamp.buttonDisSet.buttonNameSet.textColor),
                         self.simpleValue(dataStamp.buttonDisSet.buttonNameSet.buttonName),
                         self.backgroundColors(dataStamp.buttonDisSet.backGroundColor),
-                        self.selectedDay(dataStamp.buttonType.reservationArt),
-                        self.selectedDay(dataStamp.buttonType.stampType.changeHalfDay),
+                        self.selectedDay(2),
                         self.selectedStamping(dataStamp.buttonType.stampType.goOutArt),
-                        self.selectedDay(dataStamp.buttonType.stampType.setPreClockArt),
-                        self.selectedDay(dataStamp.buttonType.stampType.changeClockArt),
-                        self.selectedDay(dataStamp.buttonType.stampType.changeCalArt),
                         self.selectedHighlight(dataStamp.usrArt),
                         self.selectedAudio(dataStamp.audioType)
                 }
-                
-                dfd.resolve();
-                return dfd.promise();
             }
             
             /**
@@ -80,13 +86,13 @@ module nts.uk.at.view.kdp010.h {
                         backGroundColor : self.backgroundColors()
                     }),
                     buttonType: new ButtonTypeCommand({
-                        reservationArt : self.selectedDay(),
+                        reservationArt : self.lstData.reservationArt,
                         stampType : new StampTypeCommand ({
-                            changeHalfDay : self.selectedDay(),
+                            changeHalfDay : self.lstData.changeHalfDay,
                             goOutArt : self.selectedStamping(),
-                            setPreClockArt : self.selectedDay(),
-                            changeClockArt : self.selectedDay(),
-                            changeCalArt : self.selectedDay()
+                            setPreClockArt : self.lstData.setPreClockArt,
+                            changeClockArt : self.lstData.changeClockArt,
+                            changeCalArt : self.lstData.changeCalArt
                         })
                     }),
                     usrArt: self.selectedHighlight(),
@@ -96,6 +102,79 @@ module nts.uk.at.view.kdp010.h {
                 
                 nts.uk.ui.windows.setShared('KDP010_H', self.dataStampPage);
                 nts.uk.ui.windows.close();
+            }
+            
+            public getDataFromContents(number : value): void{
+                let self = this;
+                self.lstData = {
+                    reservationArt: 1,
+                    changeHalfDay: 1,
+                    setPreClockArt: 1,
+                    changeClockArt: 1,
+                    changeCalArt: 1
+                };
+                switch (self.selectedDay()) {
+                    case 1:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 2:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 3:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 4:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 5:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 6:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 7:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 8:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 9:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 10:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 11:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 12:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[10].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 13:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[11].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 14:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 15:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 16:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 17:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 18:
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0,reservationArt: null};
+                        break;
+                    case 19:
+                        self.lstData = { changeClockArt: null, changeCalArt: null, changeCalArt: null, changeHalfDay: 0,reservationArt: 1};
+                        break;
+                    case 20:
+                        self.lstData = { changeClockArt: null, changeCalArt: null, changeCalArt: null, changeHalfDay: 0,reservationArt: 2};
+                        break;
+                }
             }
 
             /**

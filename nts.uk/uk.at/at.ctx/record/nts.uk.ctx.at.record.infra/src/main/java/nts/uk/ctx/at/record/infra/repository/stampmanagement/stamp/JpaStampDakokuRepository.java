@@ -130,7 +130,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
 				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
-				stamp.getType().getGoOutArt().value,
+				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()
 						? stamp.getRefActualResults().getCardNumberSupport().get()
@@ -147,8 +147,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				new BigDecimal(stamp.getLocationInfor().isPresent()?stamp.getLocationInfor().get().getPositionInfor().getLongitude():null), 
-				new BigDecimal(stamp.getLocationInfor().isPresent()?stamp.getLocationInfor().get().getPositionInfor().getLatitude():null), 
+				new BigDecimal(0), // TODO
+				new BigDecimal(0), // TODO
 				stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
 	}
 

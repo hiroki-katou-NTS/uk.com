@@ -22,7 +22,7 @@ module nts.uk.at.view.kdp010.g {
             commentDaily: KnockoutObservable<string> = ko.observable("");
 
             // G6_2
-            letterColors: KnockoutObservable<string> = ko.observable('#FFCC00');
+            letterColors: KnockoutObservable<string> = ko.observable('#000000');
             
             currentItem: KnockoutObservable<model.StampPageLayoutCommand> = ko.observable(new model.StampPageLayoutCommand({}));
             
@@ -72,7 +72,7 @@ module nts.uk.at.view.kdp010.g {
                 let self = this;
                 nts.uk.ui.block.invisible();
                 // Data from Screen 
-                let lstButton = new Array<ButtonSettingsCommand>; 
+                let lstButton = new Array<ButtonSettingsCommand>(); 
                 let lstButtonSet = new model.ButtonSettingsCommand({
                     buttonPositionNo: self.dataKdpH.buttonPositionNo,
                     buttonDisSet: new model.ButtonDisSetCommand({

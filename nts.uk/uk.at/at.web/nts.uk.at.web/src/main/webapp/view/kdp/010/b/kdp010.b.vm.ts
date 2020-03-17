@@ -114,10 +114,10 @@ module nts.uk.at.view.kdp010 {
             selectedStamping: KnockoutObservable<number> = ko.observable(0);
 
             // B6_3
-            letterColors: KnockoutObservable<string> = ko.observable('#FFCC00');
+            letterColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
             // B6_5
-            backgroundColors: KnockoutObservable<string> = ko.observable('#0000ff');
+            backgroundColors: KnockoutObservable<string> = ko.observable('#0033cc');
 
             // B10_2
             optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
