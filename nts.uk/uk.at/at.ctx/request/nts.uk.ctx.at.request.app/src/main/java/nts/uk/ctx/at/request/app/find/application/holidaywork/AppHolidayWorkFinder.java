@@ -189,8 +189,6 @@ public class AppHolidayWorkFinder {
 		// 01-08_乖離定型理由を取得, 01-07_乖離理由を取得
 		getDivigenceReason(overtimeRestAppCommonSet, result, companyID);
 		
-		result.setDisplayPrePostFlg(result.getAppDispInfoStartupDto().appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp);
-		
 		return result;
 	}
 	/**
@@ -741,6 +739,8 @@ public class AppHolidayWorkFinder {
 		result.setTypicalReasonDisplayFlg(appTypeSettingDtoOpt.get().displayFixedReason == AppDisplayAtr.DISPLAY.value ? true : false);
 
 		result.setDisplayAppReasonContentFlg(appTypeSettingDtoOpt.get().displayAppReason == AppDisplayAtr.DISPLAY.value ? true : false);
+		result.setDisplayPrePostFlg(result.getAppDispInfoStartupDto().appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp);
+		result.setPrePostCanChangeFlg(appTypeSettingDtoOpt.get().canClassificationChange);
 	}
 	/**
 	 * 01-03_休出時間を取得
