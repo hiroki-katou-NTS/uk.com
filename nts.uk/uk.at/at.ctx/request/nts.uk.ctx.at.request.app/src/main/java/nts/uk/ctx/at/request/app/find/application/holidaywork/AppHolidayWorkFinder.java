@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork;
 /*import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;*/
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.AppTypeSettingDto;
@@ -64,11 +66,13 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorCo
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
@@ -144,6 +148,9 @@ public class AppHolidayWorkFinder {
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private OvertimeService overtimeService;
 
 	/**
 	 * 1.休出申請（新規）起動処理
@@ -160,11 +167,6 @@ public class AppHolidayWorkFinder {
 		}
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		if (overtimeRestAppCommonSet.isPresent()) {
-			// 時間外表示区分
-			result.setExtratimeDisplayFlag(
-					overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
-		}
 		
 		// 起動時の申請表示情報を取得する
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
@@ -209,12 +211,7 @@ public class AppHolidayWorkFinder {
 
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		// xu li hien thi du lieu xin truoc
-		if (overtimeRestAppCommonSet.isPresent()) {
-			// 時間外表示区分
-			result.setExtratimeDisplayFlag(
-					overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
-		}
+
 		// 申請日を変更する
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if (appDispInfoNoDateDto.requestSetting.applicationSetting.recordDate == BaseDateFlg.SYSTEM_DATE.value) {
@@ -678,6 +675,7 @@ public class AppHolidayWorkFinder {
 			}
 			result.setHolidayWorkInputDtos(holidayWorkInputDtos);
 		} else {
+			// edit mode
 			// 01-03_休出時間枠を取得
 			getBreaktime(companyID, holidayWorkInputDtos);
 			List<HolidayWorkInputDto> breakTimes = result.getHolidayWorkInputDtos().stream()
@@ -711,6 +709,19 @@ public class AppHolidayWorkFinder {
 				;
 			});
 			result.setHolidayWorkInputDtos(holidayWorkInputDtos);
+			
+			if (overtimeRestAppCommonSet.isPresent()) {
+				Map<String,AppHolidayWork> appHolidayWorkDetailMap = appHolidayWorkRepository.getListAppHdWorkFrame(companyID, Arrays.asList(result.getAppID()));
+				if(!appHolidayWorkDetailMap.isEmpty()){
+					Optional<AppOvertimeDetail> appOvertimeDetail = appHolidayWorkDetailMap.entrySet().stream().findFirst().get().getValue().getAppOvertimeDetail();
+					result.setAppOvertimeDetailDto(AppOvertimeDetailDto.fromDomain(appOvertimeDetail));
+					if(!appOvertimeDetail.isPresent()){
+						result.setAppOvertimeDetailStatus(null);
+					} else {
+						result.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()));
+					}
+				}
+			}
 		}
 		
 		String employeeName = "";
@@ -741,6 +752,11 @@ public class AppHolidayWorkFinder {
 		result.setDisplayAppReasonContentFlg(appTypeSettingDtoOpt.get().displayAppReason == AppDisplayAtr.DISPLAY.value ? true : false);
 		result.setDisplayPrePostFlg(result.getAppDispInfoStartupDto().appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp);
 		result.setPrePostCanChangeFlg(appTypeSettingDtoOpt.get().canClassificationChange);
+		if (overtimeRestAppCommonSet.isPresent()) {
+			// 時間外表示区分
+			result.setExtratimeDisplayFlag(
+					overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
+		}
 	}
 	/**
 	 * 01-03_休出時間を取得
