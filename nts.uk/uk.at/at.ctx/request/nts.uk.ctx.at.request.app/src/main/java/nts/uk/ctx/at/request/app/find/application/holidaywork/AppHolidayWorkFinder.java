@@ -642,13 +642,13 @@ public class AppHolidayWorkFinder {
 		// 01-01_休憩時間を取得する
 		getWorkTypeAndWorkTime(companyID, employeeID, result, uiType, payoutType, false,
 				startTime, endTime);
+		// 01-03_休出時間枠を取得
+		getBreaktime(companyID, holidayWorkInputDtos);
 		
 		// new mode
 		if (CollectionUtil.isEmpty(result.getHolidayWorkInputDtos())) {
 			// 01-14_勤務時間取得
 			getWorkingHour(companyID, employeeID, appDate, result, "", null);
-			// 01-03_休出時間を取得
-			getBreaktime(companyID, holidayWorkInputDtos);
 			// 01-04_加給時間を取得
 			if (overtimeRestAppCommonSet.isPresent()) {
 				result.setDisplayBonusTime(false);
@@ -677,8 +677,6 @@ public class AppHolidayWorkFinder {
 			result.setHolidayWorkInputDtos(holidayWorkInputDtos);
 		} else {
 			// edit mode
-			// 01-03_休出時間枠を取得
-			getBreaktime(companyID, holidayWorkInputDtos);
 			List<HolidayWorkInputDto> breakTimes = result.getHolidayWorkInputDtos().stream()
 					.filter(x -> x.getAttendanceType() == AttendanceType.BREAKTIME.value).collect(Collectors.toList());
 			List<Integer> breakFrameNos = new ArrayList<>();
