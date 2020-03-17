@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
         workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
         workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode);
+        Jb2_1Name: KnockoutObservable<string> = ko.observable('');
         selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
         workplaceId: string = getShared('dataForJB').workplaceId;
         listWorkType: any[] = getShared('dataForJB').listWorkType;
@@ -66,6 +67,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             if (self.selectedTab() === 'company') {
                 self.isVisibleWkpName(false);
                 $.when(self.getDataComPattern()).done(() => {
+                    self.Jb2_1Name (nts.uk.resource.getText("Com_Company"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     var test = _.map(data, "groupName")
 
@@ -74,6 +76,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             } else {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpPattern()).done(() => {
+                    self.Jb2_1Name (nts.uk.resource.getText("Com_Workplace"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     self.workplaceName();
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
