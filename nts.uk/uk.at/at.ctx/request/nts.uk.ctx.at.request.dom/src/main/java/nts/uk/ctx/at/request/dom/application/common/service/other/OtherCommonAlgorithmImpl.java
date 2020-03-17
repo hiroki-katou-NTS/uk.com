@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -51,6 +52,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -172,6 +174,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
+	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -200,7 +205,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		*/
 		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId().value,
 				closure.get().getClosureMonth().getProcessingYm());
-		return new PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
+		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
 	 * 1.職場別就業時間帯を取得
@@ -659,5 +664,52 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 12.マスタ勤務種類、就業時間帯データをチェック
+	 * @param companyID
+	 * @param wkTypeCode
+	 * @param wkTimeCode
+	 * @return
+	 */
+	@Override
+	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode) {
+		CheckWorkingInfoResult result = new CheckWorkingInfoResult();
+		
+		
+		// 「勤務種類CD ＝＝ Null」 をチェック
+		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
+		if (isWkTypeCDNotEmpty) {
+			String WkTypeName = null;
+			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findByPK(companyID, wkTypeCode);
+			if (wkTypeOpt.isPresent()) {
+				WkTypeName = wkTypeOpt.get().getName().v();
+			}
+			// 「勤務種類名称を取得する」 ＝＝NULL をチェック
+			boolean isWkTypeNameEmpty = StringUtil.isNullOrEmpty(WkTypeName, true);
+			if (isWkTypeNameEmpty ) {
+				// 勤務種類エラーFlg ＝ True
+				result.setWkTypeError(true);
+			}
+		}
+		// 「就業時間帯CD ＝＝ NULL」をチェック
+		boolean isWkTimeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTimeCode, true);
+		if (isWkTimeCDNotEmpty) {
+			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
+			String WkTimeName = null;
+			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
+			if (wwktimeOpt.isPresent()) {
+				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+			boolean isWkTimeNameEmpty = StringUtil.isNullOrEmpty(WkTimeName, true);
+			if (isWkTimeNameEmpty) {
+				// 就業時間帯エラーFlg ＝ True
+				result.setWkTimeError(true);
+			}
+		}
+			
+		
+		return result;
 	}
 }

@@ -6,9 +6,12 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 
 public interface AbsenceServiceProcess {
 	/**
@@ -26,11 +29,10 @@ public interface AbsenceServiceProcess {
 	 * @param workTypeCD: 勤務種類コード
 	 * @param sDate: 申請開始日
 	 * @param eDate: 申請終了日
-	 * @param hdAppType: 休暇種類
 	 * @param lstDateIsHoliday: 休日の申請日
 	 */
 	void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, 
-			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType, List<GeneralDate> lstDateIsHoliday);
+			GeneralDate sDate, GeneralDate eDate, List<GeneralDate> lstDateIsHoliday);
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
@@ -40,20 +42,20 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate);
+	
 	/**
-	 * @author hoatt
 	 * 代休振休優先消化チェック
-	 * @param pridigCheck - 休暇申請設定．年休より優先消化チェック区分 - HdAppSet
-	 * @param isSubVacaManage - 振休管理設定．管理区分
-	 * @param subVacaTypeUseFlg - 休暇申請対象勤務種類．休暇種類を利用しない（振休） - AppEmploymentSetting
-	 * @param isSubHdManage - 代休管理設定．管理区分
-	 * @param subHdTypeUseFlg - 休暇申請対象勤務種類．休暇種類を利用しない（代休） - AppEmploymentSetting
-	 * @param numberSubHd - 代休残数
-	 * @param numberSubVaca - 振休残数
-	 * @return エラーメッセージ - 確認メッセージ
+	 * @param mode 画面モード  新規モード: true/更新モード: false
+	 * @param hdAppSet 休暇申請設定
+	 * @param employmentSet 雇用別申請承認設定
+	 * @param subVacaManage 振休管理区分
+	 * @param subHdManage 代休管理区分
+	 * @param subVacaRemain 振休残数
+	 * @param subHdRemain 代休残数
+	 * @return
 	 */
-	public void checkDigestPriorityHd(AppliedDate pridigCheck, boolean isSubVacaManage, boolean subVacaTypeUseFlg,
-			boolean isSubHdManage, boolean subHdTypeUseFlg, int numberSubHd, int numberSubVaca);
+	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HdAppSet hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+			boolean subHdManage, Double subVacaRemain, Double subHdRemain);
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック
@@ -66,7 +68,7 @@ public interface AbsenceServiceProcess {
 	 * @param numberSubVaca - 振休残数
 	 * @return エラーメッセージ - 確認メッセージ
 	 */
-	public void checkPriorityHoliday(AppliedDate pridigCheck,
+	public List<ConfirmMsgOutput> checkPriorityHoliday(AppliedDate pridigCheck,
 			boolean isSubVacaManage, boolean subVacaTypeUseFlg, boolean isSubHdManage, boolean subHdTypeUseFlg,
 			int numberSubHd, int numberSubVaca);
 	
@@ -155,4 +157,120 @@ public interface AbsenceServiceProcess {
 	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, Optional<Integer> holidayType);
 	
+	public List<ConfirmMsgOutput> checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
+			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
+	
+	/**
+	 * 申請日の矛盾チェック
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param startDate 申請日開始日
+	 * @param endDate 申請日終了日
+	 * @param alldayHalfDay 終日半日休暇区分
+	 * @param hdAppSet 休暇申請設定
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
+			Integer alldayHalfDay, HdAppSet hdAppSet);
+	
+	/**
+	 * 休暇残数チェック
+	 * @param companyID 会社ID
+	 * @param appAbsence 申請
+	 * @param closureStartDate 締め開始日
+	 * @param hdAppSet 休暇申請設定
+	 * @param holidayType 休暇種類 
+	 */
+	public void checkRemainVacation(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
+			HdAppSet hdAppSet, Integer holidayType);
+	
+	/**
+	 * 休暇種類共通エラーチェック
+	 * @param companyID 会社ID
+	 * @param appAbsence 申請
+	 * @param closureStartDate 締め開始日
+	 * @param hdAppSet 休暇申請設定
+	 * @param holidayType 休暇種類
+	 * @param alldayHalfDay 終日半日休暇区分
+	 */
+	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
+			HdAppSet hdAppSet, Integer holidayType, Integer alldayHalfDay);
+	
+	/**
+	 * 年休のチェック処理
+	 * @param mode 画面モード
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param startDate 申請開始日
+	 * @param endDate 申請終了日
+	 * @param workTypeCD 勤務種類コード
+	 * @param lstDateIsHoliday 休日の申請日<List>
+	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> annualLeaveCheck(boolean mode, String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate,
+			String workTypeCD, List<GeneralDate> lstDateIsHoliday, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
+	
+	/**
+	 * 特別休暇の上限チェック
+	 * @param companyID 会社ID
+	 * @param startDate 申請開始日
+	 * @param endDate 申請終了日
+	 * @param maxDays 上限日数
+	 * @param mournerAddDays 喪主加算日数<Optional>
+	 * @param mournerAtr 喪主区分<Optional>
+	 */
+	public void checkSpecHoliday(String companyID, GeneralDate startDate, GeneralDate endDate, int maxDays, 
+			Optional<Integer> mournerAddDays, Optional<Boolean> mournerAtr);
+	
+	/**
+	 * 特別休暇のチェック処理
+	 * @param companyID 会社ID
+	 * @param startDate 申請開始日
+	 * @param endDate 申請終了日
+	 * @param holidayDateLst 休日の申請日<List>
+	 * @param mournerAtr 喪主区分
+	 */
+	public void checkSpecLeaveProcess(String companyID, GeneralDate startDate, GeneralDate endDate, List<GeneralDate> holidayDateLst, 
+			int maxDays, Optional<Integer> mournerAddDays, Boolean mournerAtr);
+	
+	/**
+	 * 時間消化のチェック処理
+	 * @param startDate
+	 * @param endDate
+	 */
+	public void checkTimeDigestProcess(GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * 休暇種類別エラーチェック
+	 * @param mode 画面モード
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param startDate 申請開始日
+	 * @param endDate 申請終了日
+	 * @param workTypeCD 勤務種類コード
+	 * @param holidayDateLst 休日の申請日<List>
+	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 * @param mournerAtr 喪主区分<Optional>
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> errorCheckByHolidayType(boolean mode, String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate,
+			String workTypeCD, List<GeneralDate> holidayDateLst, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Optional<Boolean> mournerAtr);
+	
+	/**
+	 * 休暇申請登録時チェック処理
+	 * @param mode 画面モード
+	 * @param companyID 会社ID
+	 * @param appAbsence 申請
+	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 * @param holidayType 休暇種類
+	 * @param workTypeCD 勤務種類コード
+	 * @param closureStartDate 締め開始日
+	 * @param alldayHalfDay 終日半日休暇区分
+	 * @param holidayDateLst 休日の申請日<List>
+	 * @param mournerAtr 喪主区分<Optional>
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
+			Integer holidayType, String workTypeCD, GeneralDate closureStartDate, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
 }

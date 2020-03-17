@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
@@ -42,7 +43,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorCo
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
@@ -71,8 +71,6 @@ public class CheckBeforeRegisterHolidayWork {
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
-	@Inject
-	private OvertimeService overtimeService;
 	
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
@@ -103,6 +101,9 @@ public class CheckBeforeRegisterHolidayWork {
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -319,7 +320,7 @@ public class CheckBeforeRegisterHolidayWork {
 		int calculateFlg = command.getCalculateFlag();
 		// 登録前エラーチェック
 		//勤務種類、就業時間帯チェックのメッセージを表示
-				this.overtimeService.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
+		otherCommonAlgorithm.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
 		// 計算ボタン未クリックチェック
 		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
 				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());

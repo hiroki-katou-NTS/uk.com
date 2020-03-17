@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -220,7 +219,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		if (workTypeAndSiftType.getWorkType() != null && workTypeAndSiftType.getSiftType() != null) {
 			// 12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkResult = checkWorkingInfo(companyID,
+			CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID,
 					workTypeAndSiftType.getWorkType().getWorkTypeCode(),
 					workTypeAndSiftType.getSiftType().getSiftCode());
 			boolean wkTypeError = checkResult.isWkTypeError();
@@ -293,53 +292,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
 			workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
 			return workTypeAndSiftType;
-	}
-
-	/**
-	 * 12.マスタ勤務種類、就業時間帯データをチェック
-	 * @param companyID
-	 * @param wkTypeCode
-	 * @param wkTimeCode
-	 * @return
-	 */
-	@Override
-	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode) {
-		CheckWorkingInfoResult result = new CheckWorkingInfoResult();
-		
-		
-		// 「勤務種類CD ＝＝ Null」 をチェック
-		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
-		if (isWkTypeCDNotEmpty) {
-			String WkTypeName = null;
-			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findByPK(companyID, wkTypeCode);
-			if (wkTypeOpt.isPresent()) {
-				WkTypeName = wkTypeOpt.get().getName().v();
-			}
-			// 「勤務種類名称を取得する」 ＝＝NULL をチェック
-			boolean isWkTypeNameEmpty = StringUtil.isNullOrEmpty(WkTypeName, true);
-			if (isWkTypeNameEmpty ) {
-				// 勤務種類エラーFlg ＝ True
-				result.setWkTypeError(true);
-			}
-		}
-		// 「就業時間帯CD ＝＝ NULL」をチェック
-		boolean isWkTimeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTimeCode, true);
-		if (isWkTimeCDNotEmpty) {
-			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
-			String WkTimeName = null;
-			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
-			if (wwktimeOpt.isPresent()) {
-				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
-			}
-			boolean isWkTimeNameEmpty = StringUtil.isNullOrEmpty(WkTimeName, true);
-			if (isWkTimeNameEmpty) {
-				// 就業時間帯エラーFlg ＝ True
-				result.setWkTimeError(true);
-			}
-		}
-			
-		
-		return result;
 	}
 
 	@Override

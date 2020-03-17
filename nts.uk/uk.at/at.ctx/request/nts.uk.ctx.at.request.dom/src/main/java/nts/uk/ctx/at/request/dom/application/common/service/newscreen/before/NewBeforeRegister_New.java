@@ -5,7 +5,11 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 
 /**
  * 
@@ -62,4 +66,10 @@ public interface NewBeforeRegister_New {
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate);
 	
 	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate);
+	
+	/**
+	 * 2-1.新規画面登録前の処理
+	 */
+	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
+			Application_New application, OverTimeAtr overTimeAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd);
 }

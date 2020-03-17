@@ -174,7 +174,6 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
 				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
 				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
-				EnumAdaptor.valueOf(command.getHolidayAppType(),HolidayAppType.class),
 				lstDateIsHoliday);
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);

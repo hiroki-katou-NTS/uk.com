@@ -48,7 +48,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -134,8 +133,6 @@ public class HolidayShipmentScreenAFinder {
 	private AtEmployeeAdapter atEmpAdaptor;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private OvertimeService overtimeService;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -177,7 +174,7 @@ public class HolidayShipmentScreenAFinder {
 		String wkTimeCD = getWkTimeCD(wkingItem);
 		
         //12.マスタ勤務種類、就業時間帯データをチェック
-        CheckWorkingInfoResult checkResult = this.overtimeService.checkWorkingInfo(companyID, null,wkTimeCD);
+        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, null,wkTimeCD);
         //「職場別就業時間帯」を取得した先頭値を表示
         if(checkResult.isWkTimeError() && !listWorkTimeCodes.isEmpty()){
             wkTimeCD = listWorkTimeCodes.get(0);

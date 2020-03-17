@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -165,4 +166,13 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
+	
+	/**
+	 * 12.マスタ勤務種類、就業時間帯データをチェック
+	 * @param companyID
+	 * @param wkTypeCode
+	 * @param wkTimeCode
+	 * @return
+	 */
+	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode);
 }

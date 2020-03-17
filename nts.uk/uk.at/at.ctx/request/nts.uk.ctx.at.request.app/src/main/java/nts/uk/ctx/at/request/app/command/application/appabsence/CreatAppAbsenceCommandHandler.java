@@ -177,7 +177,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		//計画年休上限チェック(check giới han trên plan annual holiday)
 		//hoatt-2018-07-04
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				startDate, endDate, EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class), lstDateIsHoliday);
+				startDate, endDate, lstDateIsHoliday);
 		// insert
 		absenceServiceProcess.createAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
@@ -233,8 +233,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		}
 		SpecHolidayCommand specHd = command.getSpecHd();
 		//勤務種類、就業時間帯チェックのメッセージを表示
-		this.detailBeforeUpdate.displayWorkingHourCheck(companyID, command.getWorkTypeCode(),
-				command.getWorkTimeCode());
+		/*this.detailBeforeUpdate.displayWorkingHourCheck(companyID, command.getWorkTypeCode(),
+				command.getWorkTimeCode());*/
 		//アルゴリズム「7-1_申請日の矛盾チェック」を実行する
 		if (isInsert) {
 			for (int i = 0; startDate.compareTo(endDate) + i <= 0; i++) {
@@ -246,7 +246,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 
 		}
 		
-		//選択する休暇種類をチェックする-(check holidayType đang chọn)
+		/*//選択する休暇種類をチェックする-(check holidayType đang chọn)
 		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value){//選択する休暇種類が特別休暇の場合
 			//hoatt - 2018.08.08 - doi ung specHd
 			//INPUT．モードをチェックする-(Check INPUT.mode)
@@ -286,24 +286,24 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 					throw new BusinessException("Msg_632", Integer.toString(maxDaySpec));
 				}
 			}
-		}
-		//No.376
+		}*/
+		/*//No.376
 		//hoatt - QA#100286
 		//ドメインモデル「休暇申請設定」を取得する(lấy domain 「休暇申請設定」)
 		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
-		/**	・代休チェック区分 - HolidayType: 1*/
+		*//**	・代休チェック区分 - HolidayType: 1*//*
 		boolean chkSubHoliday = false;
-		/**	・振休チェック区分  - HolidayType: 7*/
+		*//**	・振休チェック区分  - HolidayType: 7*//*
 		boolean chkPause = false;
-		/**	・年休チェック区分 - HolidayType: 0*/
+		*//**	・年休チェック区分 - HolidayType: 0*//*
 		boolean chkAnnual = false;
-		/**	・積休チェック区分 - HolidayType: 4*/
+		*//**	・積休チェック区分 - HolidayType: 4*//*
 		boolean chkFundingAnnual = false;
-		/**	・特休チェック区分 - HolidayType: 3*/
+		*//**	・特休チェック区分 - HolidayType: 3*//*
 		boolean chkSpecial = true;
-		/**	・公休チェック区分 */
+		*//**	・公休チェック区分 *//*
 		boolean chkPublicHoliday = false;
-		/**	・超休チェック区分*/
+		*//**	・超休チェック区分*//*
 		boolean chkSuperBreak = true;
 		int holidayAppType = command.getHolidayAppType();
 		if(hdAppSet.isPresent()){
@@ -323,7 +323,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・基準日 = システム日付
 		PeriodCurrentMonth cls = otherCommonAlg.employeePeriodCurrentMonthCalculate(companyID, command.getEmployeeID(), GeneralDate.today());
 		//登録時の残数チェック
-		/** ・登録対象一覧 :	申請(List) */
+		*//** ・登録対象一覧 :	申請(List) *//*
 		//＜INPUT＞
 //		・会社ID＝ログイン会社ID
 //		・社員ID＝申請者社員ID
@@ -392,7 +392,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 			}
 			//エラーメッセージ（Msg_1409）
 			throw new BusinessException("Msg_1409", name);
-		}
+		}*/
 	}
 
 	/**
@@ -478,8 +478,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	public void checkRegister(ParamCheckRegister param){
 		SettingNo65 setNo65 = param.getSetNo65();
 		//アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
-		absenceServiceProcess.checkDigestPriorityHd(EnumAdaptor.valueOf(setNo65.getPridigCheck(), AppliedDate.class),
+		/*absenceServiceProcess.checkDigestPriorityHd(EnumAdaptor.valueOf(setNo65.getPridigCheck(), AppliedDate.class),
 				setNo65.isSubVacaManage(), setNo65.isSubVacaTypeUseFlg(), setNo65.isSubHdManage(), setNo65.isSubHdTypeUseFlg(),
-				param.getNumberSubHd(), param.getNumberSubVaca());
+				param.getNumberSubHd(), param.getNumberSubVaca());*/
 	}
 }
