@@ -642,10 +642,11 @@ public class AppHolidayWorkFinder {
 		// 01-01_休憩時間を取得する
 		getWorkTypeAndWorkTime(companyID, employeeID, result, uiType, payoutType, false,
 				startTime, endTime);
-		// 01-14_勤務時間取得
-		getWorkingHour(companyID, employeeID, appDate, result, "", null);
 		
+		// new mode
 		if (CollectionUtil.isEmpty(result.getHolidayWorkInputDtos())) {
+			// 01-14_勤務時間取得
+			getWorkingHour(companyID, employeeID, appDate, result, "", null);
 			// 01-03_休出時間を取得
 			getBreaktime(companyID, holidayWorkInputDtos);
 			// 01-04_加給時間を取得
