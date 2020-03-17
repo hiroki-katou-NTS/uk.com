@@ -3,6 +3,7 @@ package nts.uk.ctx.hr.shared.dom.databeforereflecting.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -44,4 +45,24 @@ public class DataBeforeReflectingPerInfoService {
 	public void removeDataBeforeReflectingPerInfo(String histId) {
 		repo.deleteDataByHistId(histId);
 	}
+	
+	//業務承認の有無チェック
+	public List<String> checkForBusinessApp(String cid, String employeeId){
+		List<Integer> workIds = repo.getWorkId(cid, employeeId);
+		return workIds.stream().map(c-> this.convertToProgramId(c)).collect(Collectors.toList());
+	}
+	
+	//業務IDをプログラムIDへ変換する
+	public String convertToProgramId(Integer workId){
+		if(workId == 1) {
+			return "JCM007";
+		}else if(workId == 2) {
+			return "JCM008";
+		}else if(workId == 3) {
+			return "JCM006";
+		}else{
+			return null;
+		}
+	}
+	
 }

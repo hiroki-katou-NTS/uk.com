@@ -21,10 +21,10 @@
 					<tr class="BgColor1">
 						<td >#{i18n.getText('JCG004_A1_4')}</td>
 						<td>
-							<com:ko-if bind="data1()">
+							<com:ko-if bind="approvalOfApplication()">
 								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_5')}'"></a>
 							</com:ko-if>
-							<com:ko-if bind="!data1()">
+							<com:ko-if bind="!approvalOfApplication()">
 								#{i18n.getText('JCG004_A1_6')}
 							</com:ko-if>
 						</td>
@@ -33,39 +33,21 @@
 						<td>#{i18n.getText('JCG004_A1_8')}</td>
 						<td></td>
 					</tr>
-					<tr class="BgColor2">
-						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
-						<td>
-							<com:ko-if bind="data1()">
-								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
-							</com:ko-if>
-							<com:ko-if bind="!data1()">
-								#{i18n.getText('JCG004_A1_13')}
-							</com:ko-if>
-						</td>
-					</tr>
-					<tr class="BgColor2">
-						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
-						<td>
-							<com:ko-if bind="data1()">
-								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
-							</com:ko-if>
-							<com:ko-if bind="!data1()">
-								#{i18n.getText('JCG004_A1_13')}
-							</com:ko-if>
-						</td>
-					</tr>
-					<tr class="BgColor2">
-						<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
-						<td>
-							<com:ko-if bind="data1()">
-								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
-							</com:ko-if>
-							<com:ko-if bind="!data1()">
-								#{i18n.getText('JCG004_A1_13')}
-							</com:ko-if>
-						</td>
-					</tr>
+				</table>
+				<table class="widget-table">
+					<tbody data-bind="">
+						<tr class="BgColor2">
+							<td class="tab">#{i18n.getText('JCG004_A1_4')}</td>
+							<td>
+								<com:ko-if bind="approvalOfApplication()">
+									<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
+								</com:ko-if>
+								<com:ko-if bind="!approvalOfApplication()">
+									#{i18n.getText('JCG004_A1_13')}
+								</com:ko-if>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</ui:define>

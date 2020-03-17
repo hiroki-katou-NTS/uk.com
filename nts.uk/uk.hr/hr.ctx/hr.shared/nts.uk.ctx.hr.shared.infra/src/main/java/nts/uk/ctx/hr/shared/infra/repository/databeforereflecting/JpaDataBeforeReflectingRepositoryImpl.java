@@ -413,4 +413,16 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 				entity.str_10);
 	}
 
+	private static final String SELECT_WORK_ID = "SELECT c.workId FROM PreReflecData c WHERE c.companyId = :companyId "
+			+ "AND ((c.approve_s_id_1 = :employeeId AND c.approve_status_1 = 0) "
+			+ "OR (c.approve_s_id_2 = :employeeId AND c.approve_status_2 = 0)) ";
+	
+	@Override
+	public List<Integer> getWorkId(String cId, String employeeId) {
+		return this.queryProxy().query(SELECT_WORK_ID, Integer.class)
+				.setParameter("companyId", cId)
+				.setParameter("employeeId", employeeId)
+				.getList();
+	}
+
 }

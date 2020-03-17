@@ -1,7 +1,7 @@
 #master-content #contents-area{padding: 5px 30px;}
 .widget-table{width:100%; min-width:260px; max-width:1200px; margin: 0 auto; table-layout: fixed;}
 .widget-table tr{display: block;}
-.widget-table tr:nth-child(1){border-bottom: 0; margin-bottom: 10px;}
+.first tr:nth-child(1){margin-bottom: 10px;}
 
 .widget-table td{padding:3px 0 3px 10px; height: 25px; width: 221px;}
 .widget-table td:nth-child(2){width:40px;}
