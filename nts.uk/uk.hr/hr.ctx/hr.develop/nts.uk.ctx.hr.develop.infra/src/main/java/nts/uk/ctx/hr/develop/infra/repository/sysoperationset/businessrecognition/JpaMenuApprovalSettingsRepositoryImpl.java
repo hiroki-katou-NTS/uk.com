@@ -97,7 +97,7 @@ public class JpaMenuApprovalSettingsRepositoryImpl extends JpaRepository impleme
 		
 	}
 
-	private static final String GET_MENU_APPROVAL_SETTINGS = "SELECT * FROM JcmmtMenuApr ma "
+	private static final String GET_MENU_APPROVAL_SETTINGS = "SELECT ma FROM JcmmtMenuApr ma "
 			+ "WHERE ma.pkJcmmtMenuApr.cId = :cId "
 			+ "AND (ma.availableAprWork1 = 1 AND ma.apr1Sid != '') OR (ma.availableAprWork2 = 1 AND ma.apr2Sid != '')";
 	
