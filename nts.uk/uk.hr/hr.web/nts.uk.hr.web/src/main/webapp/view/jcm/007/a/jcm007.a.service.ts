@@ -11,7 +11,7 @@ module jcm007.a.service {
         'registerNewRetireesApproved': 'databeforereflecting/register-new-retirees-approved',
         'modifyRetireeInformation': 'databeforereflecting/modify-retiree-information',
         'remove': 'databeforereflecting/remove/{0}',
-        'exportExcel': 'file/hr/report/retirementinformation/export',
+        'exportExcel': 'file/hr/report/databeforereflecting/export',
     }
 
     export function getData(): JQueryPromise<any> {
@@ -46,8 +46,8 @@ module jcm007.a.service {
         return ajax('hr', format(paths.remove, hisId));
     }
 
-    export function exportExcel(param): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.exportExcel, param);
+    export function exportExcel(): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.exportExcel);
     }
 
 

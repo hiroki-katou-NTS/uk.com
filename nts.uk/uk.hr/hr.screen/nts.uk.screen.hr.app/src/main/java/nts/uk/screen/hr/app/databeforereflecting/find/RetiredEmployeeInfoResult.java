@@ -68,9 +68,15 @@ public class RetiredEmployeeInfoResult {
 
 	// 退職理由区分1
 	public int retirementReasonCtg1;
+	
+	//退職理由区分1_コード
+	public String retirementReasonCtgName1;
 
 	// 退職理由区分2
 	public int retirementReasonCtg2;
+	
+	//退職理由区分2_コード
+	public String retirementReasonCtgName2;
 
 	// 退職の備考
 	public String retirementRemarks;

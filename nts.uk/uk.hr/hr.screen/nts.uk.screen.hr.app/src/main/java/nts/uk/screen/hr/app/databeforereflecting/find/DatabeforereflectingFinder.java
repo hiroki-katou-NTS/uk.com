@@ -105,7 +105,9 @@ public class DatabeforereflectingFinder {
 			obj.retirementDate = i.retirementDate;
 			obj.retirementCategory = i.retirementCategory.value;
 			obj.retirementReasonCtg1 = Integer.valueOf(i.retirementReasonCtgCode1);
+			obj.retirementReasonCtgName1 = i.retirementReasonCtgName1;
 			obj.retirementReasonCtg2 = Integer.valueOf(i.retirementReasonCtgCode2);
+			obj.retirementReasonCtgName2 = i.retirementReasonCtgName2;
 			obj.retirementRemarks = i.retirementRemarks;
 			obj.retirementReasonVal = i.retirementReasonVal;
 			obj.dismissalNoticeDate = i.dismissalNoticeDate;

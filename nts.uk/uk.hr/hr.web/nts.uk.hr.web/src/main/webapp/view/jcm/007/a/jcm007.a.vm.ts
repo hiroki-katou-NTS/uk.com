@@ -181,11 +181,8 @@ module jcm007.a {
 
         public exportExcel(): void {
 
-            let self = this,
-                param = _.map(self.employeeListTab2, item => { return { sid: item.sId, pid: item.pId } });
-
             block.grayout();
-            service.exportExcel({ listParam: param }).done(() => {
+            service.exportExcel().done(() => {
                 block.clear();
             });
         }
