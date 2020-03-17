@@ -173,7 +173,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			query += " LEFT JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
 		}
 
-		query += " WHERE r.pk.cid = :cId AND r.appDate >= :startDate AND r.appDate <= :endDate";
+		query += " WHERE r.pk.cid = :cId AND r.appDate >= :startDate AND r.appDate <= :endDate AND r.delFlg = 0";
 
 		if (reportId != null) {
 			query += " AND r.reportLayoutID = %s";
