@@ -239,14 +239,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		//if appdate > systemDate 
-		if(appDate.after(systemDate) ) {
-			//xin truoc 事前事後区分= 事前
-			prePostAtr = PrePostAtr.PREDICT;
-			
-		}else if(appDate.before(systemDate)) { // if appDate < systemDate
-			//xin sau 事前事後区分= 事後
-			prePostAtr = PrePostAtr.POSTERIOR;
-		}else{ // if appDate = systemDate
+		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
 //			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
 //			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
 //				prePostAtr = PrePostAtr.POSTERIOR;
@@ -285,7 +278,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				prePostAtr = PrePostAtr.POSTERIOR;
 			}
 			
+		} else if(appDate.after(systemDate) ) {
+			//xin truoc 事前事後区分= 事前
+			prePostAtr = PrePostAtr.PREDICT;
+			
+		} else if(appDate.before(systemDate)) { // if appDate < systemDate
+			//xin sau 事前事後区分= 事後
+			prePostAtr = PrePostAtr.POSTERIOR;
 		}
+		
 			
 		return prePostAtr;
 	}

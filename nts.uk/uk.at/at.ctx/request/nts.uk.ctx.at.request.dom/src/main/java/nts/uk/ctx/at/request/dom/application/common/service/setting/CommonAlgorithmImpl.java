@@ -134,8 +134,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			throw new BusinessException("Msg_426");
 		}
 		// 雇用別申請承認設定を取得する
-		AppEmploymentSetting employmentSet = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value)
-				.stream().findFirst().get();
+		Optional<AppEmploymentSetting> employmentSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value)
+				.stream().findFirst();
+		
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
 		if(mode) {
@@ -154,8 +155,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appTypeSetting.getDisplayInitialSegment());
 		// 取得したした情報をOUTPUT「申請表示情報(基準日関係あり)」にセットする
 		output.setApprovalFunctionSet(approvalFunctionSet);
-		output.setEmploymentSet(employmentSet);
 		output.setWorkTimeLst(workTimeLst);
+		output.setEmploymentSet(employmentSetOpt.get());
 		output.setApprovalRootState(approvalRootContentImport.approvalRootState);
 		output.setErrorFlag(approvalRootContentImport.getErrorFlag());
 		output.setPrePostAtr(appDispInfoWithDateOutput.getPrePostAtr());
@@ -197,7 +198,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
 			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.stream().findFirst().get(), 0);
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, CollectionUtil.isEmpty(dateLst) ? null : dateLst.stream().findFirst().get(), 0);
 			output.setPrePostAtr(prePostAtrJudgment);
 		} else {
 			// 申請表示情報(基準日関係あり)．事前事後区分=INPUT．事前事後区分の初期表示
