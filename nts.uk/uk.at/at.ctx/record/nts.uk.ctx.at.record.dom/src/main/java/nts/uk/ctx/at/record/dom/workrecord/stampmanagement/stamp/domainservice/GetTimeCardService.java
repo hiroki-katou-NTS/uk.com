@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
  * @author tutk
  *
  */
-@Stateless
 public class GetTimeCardService {
 
 	public static TimeCard getTimeCard(Require required, String employeeId, YearMonth yearMonth) {

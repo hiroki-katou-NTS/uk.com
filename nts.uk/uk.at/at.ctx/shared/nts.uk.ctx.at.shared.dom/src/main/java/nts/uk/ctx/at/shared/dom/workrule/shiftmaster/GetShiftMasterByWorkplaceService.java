@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,7 +14,6 @@ import nts.uk.shr.com.context.AppContexts;
  * @author anhdt
  *
  */
-@Stateless
 public class GetShiftMasterByWorkplaceService {
 
 	public static List<ShiftMasterDto> getShiftMasterByWorkplaceService(Require require,

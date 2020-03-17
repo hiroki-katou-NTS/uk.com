@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * VO : 実績への反映内容
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.実績への反映内容
  * @author tutk
  *
  */

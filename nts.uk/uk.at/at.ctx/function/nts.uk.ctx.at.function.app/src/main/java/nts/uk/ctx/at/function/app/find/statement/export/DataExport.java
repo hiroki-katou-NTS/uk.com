@@ -229,7 +229,6 @@ public class DataExport {
 				StatementList dto = new StatementList();
 				dto.setCardNo(domain.getCardNumber().v());
 				dto.setDate(domain.getStampDateTime());
-				//TODO : Chờ Anh Tuấn
 				dto.setAtdType(getAtdType(EnumAdaptor.valueOf(domain.getType().getChangeClockArt().value, StampAtr.class)));
 				dto.setWorkTimeZone(mapWorkCdWorkName.get(domain.getRefActualResults().getWorkTimeCode().get().v()));
 				dto.setTime(convertToTime(domain.getStampDateTime().clockHourMinute().v()));
@@ -261,7 +260,6 @@ public class DataExport {
 								dto.setEmpName(mapEmpIdName.get(employeeId));
 								dto.setCardNo(objStampItem.getCardNumber().v());
 								dto.setDate(objStampItem.getStampDateTime());
-								//TODO : Chờ Anh Tuấn
 								dto.setAtdType(getAtdType(
 										EnumAdaptor.valueOf(objStampItem.getType().getChangeClockArt().value, StampAtr.class)));
 								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getRefActualResults().getWorkTimeCode().get().v()));
